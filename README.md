@@ -1,6 +1,17 @@
-# Turborepo starter
+# リポジトリについて
 
-This is an official npm starter turborepo.
+## この構造における各ディレクトリの役割
+
+apps: このディレクトリには、個々の Next.js アプリケーションが含まれます。アプリケーションごとに独自のディレクトリがあり、それぞれが独立した package.json と tsconfig.json を持っています。
+
+libs: 共有ライブラリやコンポーネントがこのディレクトリに格納されます。これにより、複数のアプリケーション間でコードの再利用が可能になります。
+
+shared-components と utils: これらは共有ライブラリの例です。shared-components は複数のアプリケーションで使用される共通のコンポーネントが含まれ、utils は共通のユーティリティ関数が含まれます。それぞれに独自の package.json と tsconfig.json があります。
+
+この構造では、アプリケーションと共有ライブラリが明確に分離されており、コードの再利用と維持が容易にすることを目指しています。
+また、Turborepo により、依存関係の管理やビルドプロセスが効率化可能です。
+
+official npm starter turborepo を元に構築しています。
 
 ## What's inside?
 
