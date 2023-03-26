@@ -1,6 +1,6 @@
 # Tobiratory Web Project
 
-This is a monorepo project for two Next.js applications with shared components and utilities, using Turborepo. This project is intended for team development.
+This is a monorepo project for Next.js applications with shared components and utilities, using Turborepo. This project is intended for team development.
 
 ## Prerequisites
 
