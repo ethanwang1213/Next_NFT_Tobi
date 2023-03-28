@@ -4,9 +4,9 @@ import Layout from '../components/Layout'
 const IndexPage = () => (
   <Layout title="Home | Next.js + TypeScript Example">
     <h1 className="flex justify-center">Hello Next.js 👋</h1>
-    <p>
+    <button className='btn'>
       <Link href="/about">About</Link>
-    </p>
+    </button>
   </Layout>
 )
 

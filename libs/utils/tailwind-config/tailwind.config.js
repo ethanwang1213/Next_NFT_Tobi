@@ -11,5 +11,5 @@ module.exports = {
       fontFamily: {},
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
 };
