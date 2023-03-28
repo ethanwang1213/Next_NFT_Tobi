@@ -9,7 +9,7 @@
     ]
   },
   "scripts": {
-    "app1": "cd apps/app1 && npm run dev",
+    "journal": "cd apps/journal && npm run dev",
     "app2": "cd apps/app2 && npm run dev",
     "build": "turbo run build",
     "dev": "turbo run dev",
