@@ -25,13 +25,13 @@ cd your-repo
 npm install
 ```
 
-3. To start a specific application (e.g., `app1`), run:
+3. To start a specific application (e.g., `journal`), run:
 
 ```
-npm run app1
+npm run journal
 ```
 
-The application will be available at `http://localhost:3000`. Replace `app1` with `app2` to start the other application.
+The application will be available at `http://localhost:3000`. Replace `journal` with `app2` to start the other application.
 
 ## Development Workflow
 
