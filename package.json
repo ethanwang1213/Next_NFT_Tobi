@@ -1,31 +1,19 @@
 {
-  "name": "tobiratory-web",
-  "version": "0.0.0",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "apps/*",
-      "libs/*"
-    ]
-  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "journal": "cd apps/journal && npm run dev",
-    "app2": "cd apps/app2 && npm run dev",
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "lint": "turbo run lint"
   },
   "devDependencies": {
     "eslint-config-custom": "*",
-    "prettier": "latest",
+    "eslint": "7.32.0",
+    "prettier": "^2.5.1",
     "turbo": "latest"
   },
-  "engines": {
-    "node": ">=14.0.0"
-  },
-  "dependencies": {
-    "turbo": "latest"
-  },
-  "packageManager": "npm@8.11.0"
+  "packageManager": "npm@8.19.4"
 }
