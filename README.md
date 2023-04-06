@@ -1,6 +1,91 @@
-# Turborepo starter with npm
+# Tobiratory Web Project
 
-This is an official starter Turborepo.
+This is a monorepo project for Next.js applications with shared components and utilities, using Turborepo. This project is intended for team development.
+
+## Prerequisites
+
+- Node.js v14 or later
+- npm v6 or later
+- Git
+
+## Getting Started
+
+To set up the project for local development, follow these steps:
+
+1. Clone the repository:
+
+```
+git clone https://github.com/tobira-project/tobiratory-web.git
+cd your-repo
+```
+
+2. Install the dependencies:
+
+```
+npm install
+```
+
+3. To start a specific application run:
+
+```
+npm run dev
+```
+
+## Development Workflow
+
+1. 機能のための新しいブランチを作成する:
+
+```
+git checkout -b feature/hoge
+```
+
+2. 変更を加え、コミットして feature ブランチにプッシュします:
+
+```
+git add .
+git commit -m "feat: feature description"
+git push origin feature/hoge
+```
+
+3. GitHub に feature ブランチのプルリクエストを作成します.
+
+4. プルリクエストが少なくとも一人のチームメンバーによってレビューされ、承認されたら、`main`ブランチにマージすることができます.
+
+## Commits Rules
+
+[Conventional Commits](https://www.conventionalcommits.org/)の仕様に緩く従い、コミット履歴をより読みやすく、簡単にたどれるようにします。変更をコミットする際は、以下のガイドラインに緩くでもいいので従うと良きです:
+
+1. コミットメッセージに次のタイプのいずれかを接頭辞として付けてください:
+
+   - `feat`: 新機能
+   - `fix`: 諸々の修正
+   - `docs`: ドキュメントのみの変更
+   - `style`: コードの意味に影響を与えない変更（空白、フォーマット、セミコロンの欠落など）
+   - `refactor`: バグ修正も機能追加も行わないコード変更つまりリファクタ。
+   - `test`: テストの追加や既存テストの修正
+   - `chore`: src や test ファイルを変更しないその他の変更が本来の意味ですが、軽微な修正とかこれで良き。
+   - `revert`: 以前のコミットを取り消す
+
+2. コミットメッセージに変更の簡単な説明を含める。
+
+以下は、「メインページに検索機能を追加する」というコミットのコミットメッセージの例です:
+
+```
+feat: add search functionality to the main page
+```
+
+## Pull Request Merging Strategy
+
+Git の履歴をきれいに保つため、Pull Request をマージする際には以下のガイドラインを参考にしますが全てこの限りではないです。：
+
+1. bugfixes やちょっとした改善など、小さな変更には"Squash and merge"を使用する。
+2. "Create a merge commit” をする場合は、定期的なマージによって `main` ブランチと最新の状態に保たれている、長く続いている機能ブランチをマージする場合にのみ使用します。
+
+Pull Request には、レビュアーがあなたの変更を理解しやすいように、明確で簡潔なタイトルと説明を可能な限り書きましょう。
+
+## Design Pattern
+
+think about later.
 
 ## What's inside?
 
