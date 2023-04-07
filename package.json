@@ -11,6 +11,10 @@
   "scripts": {
     "journal": "cd apps/journal && npm run dev",
     "app2": "cd apps/app2 && npm run dev",
+    "emulate:flow": "cd apps/flow && npm run emulator",
+    "deploy:flow": "cd apps/flow && npm run deploy",
+    "mint:flow": "cd apps/flow && npm run mint",
+    "deploy-testnet:flow": "cd apps/flow && npm run deploy-testnet",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
