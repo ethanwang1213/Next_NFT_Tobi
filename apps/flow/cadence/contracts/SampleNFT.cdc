@@ -93,18 +93,18 @@ pub contract SampleNFT: NonFungibleToken {
         }
 
         pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver} {
-            let authRef = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT?
+            let authRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             let ref = authRef as! &NFT
             return ref as! &{MetadataViews.Resolver}
         }
 
         pub fun borrow(id: UInt64): &NFT? {
-            let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT?
-            return ref as! &SampleNFT.NFT
+            let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+            return ref as! &NFT
         }
 
         pub fun getMetadata(id: UInt64): {String:String} {
-            let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT?
+            let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             return (ref as! &SampleNFT.NFT).getMetadata()
         }
 
@@ -149,7 +149,7 @@ pub contract SampleNFT: NonFungibleToken {
 
         let collection <- self.createEmptyCollection()
         self.account.save(<- collection, to: self.collectionStoragePath)
-        self.account.link<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(self.collectionPublicPath, target: self.collectionStoragePath)
+        self.account.link<&{NonFungibleToken.CollectionPublic,SampleNFT.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
 
         emit ContractInitialized()
     }

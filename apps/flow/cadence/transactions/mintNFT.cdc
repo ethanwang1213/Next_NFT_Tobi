@@ -1,7 +1,8 @@
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
+import MetadataViews from "../contracts/core/MetadataViews.cdc"
 import SampleNFT from "../contracts/SampleNFT.cdc"
 
-transaction(metadata: String) {
+transaction(name: String, description: String, metaURI: String) {
     let minter: Capability<&SampleNFT.Minter>
     let receiver: Capability<&{NonFungibleToken.Receiver}>
     prepare(acct: AuthAccount) {
@@ -16,6 +17,6 @@ transaction(metadata: String) {
     }
     execute {
         let minter = self.minter.borrow() ?? panic("Could not borrow receiver capability (maybe receiver not configured?)")
-        minter.mintTo(creator: self.receiver, metadata: {"metaURI": metadata})
+        minter.mintTo(creator: self.receiver, metadata: {"name": name, "description": description, "metaURI": metaURI})
     }
 }
