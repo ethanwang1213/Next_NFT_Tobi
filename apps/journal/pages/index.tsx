@@ -4,6 +4,7 @@ import ProfilePage0 from '../components/pages/ProfilePage/ProfilePage0/ProfilePa
 
 const IndexPage = () => (
   <Layout title="Tobiratory Journal">
+    <ProfilePage0 />
   </Layout>
 );
 

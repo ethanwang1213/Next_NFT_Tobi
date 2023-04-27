@@ -1,0 +1,11 @@
+.info {
+  @apply w-full;
+}
+
+.dataType {
+  @apply text-start;
+}
+
+.dataValue {
+  @apply text-end text-2xl font-bold;
+}

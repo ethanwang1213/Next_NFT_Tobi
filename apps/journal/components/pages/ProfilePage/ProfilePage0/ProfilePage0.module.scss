@@ -1,0 +1,27 @@
+.page {
+  @apply w-full h-full;
+}
+
+.personal {
+  & {
+    @apply grid grid-cols-2 mb-14;
+  }
+
+  .icon {
+    @apply flex justify-center;
+  }
+
+  .info {
+    & {
+      @apply flex flex-col;
+    }
+
+    &Line {
+      @apply grow;
+    }
+  }
+}
+
+.attribute {
+  @apply grid gap-6;
+}
