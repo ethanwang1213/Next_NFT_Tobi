@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ProfileImage from "../sub/ProfileImage/ProfileImage";
-import ProfileInfo from "../sub/ProfileInfo/ProfileInfo";
+import PersonalIcon from "../sub/PersonalIcon/PersonalIcon";
+import PersonalInfo from "../sub/PersonalInfo/PersonalInfo";
 import AttributeLine from "../sub/AttributeLine/AttributeLine";
 import styles from "./ProfilePage0.module.scss";
 
@@ -13,6 +13,11 @@ type Attribute = {
   value: string;
 };
 
+/**
+ * プロフィールページの1ページ目
+ * @param param0 
+ * @returns 
+ */
 const ProfilePage0: React.FC<Props> = ({ }) => {
   const [name, setName] = useState<string>("KEISUKE");
   const [birthday, setBirthday] = useState<string>("2004/06/21");
@@ -47,20 +52,20 @@ const ProfilePage0: React.FC<Props> = ({ }) => {
   return <div className={styles.page}>
     <div className={styles.personal}>
       <div className={styles.icon}>
-        <ProfileImage
+        <PersonalIcon
           profileSrc="/mock/images/profile.png"
           badgeSrc="/mock/images/badge.png"
         />
       </div>
       <div className={styles.info}>
         <div className={styles.infoLine}>
-          <ProfileInfo dataType={"Name"} dataValue={name} />
+          <PersonalInfo dataType={"Name"} dataValue={name} />
         </div>
         <div className={styles.infoLine}>
-          <ProfileInfo dataType={"Birthday"} dataValue={birthday} />
+          <PersonalInfo dataType={"Birthday"} dataValue={birthday} />
         </div>
         <div className={styles.infoLine}>
-          <ProfileInfo dataType={"Registration date"} dataValue={registrationDate} />
+          <PersonalInfo dataType={"Registration date"} dataValue={registrationDate} />
         </div>
       </div>
     </div>

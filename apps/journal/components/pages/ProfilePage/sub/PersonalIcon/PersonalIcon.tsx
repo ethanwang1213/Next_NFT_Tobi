@@ -1,12 +1,17 @@
 import Image from "next/image";
-import styles from "./ProfileImage.module.scss";
+import styles from "./PersonalIcon.module.scss";
 
 type Props = {
   profileSrc: string;
   badgeSrc: string;
 };
 
-const ProfileImage: React.FC<Props> = ({ profileSrc, badgeSrc }) => {
+/**
+ * プロフィールのアイコンのコンポーネント
+ * @param param0 
+ * @returns 
+ */
+const PersonalIcon: React.FC<Props> = ({ profileSrc, badgeSrc }) => {
   return <div className={styles.image}>
     <Image src={profileSrc} alt="profile image" width={220} height={220} />
     <div className={styles.badge}>
@@ -15,4 +20,4 @@ const ProfileImage: React.FC<Props> = ({ profileSrc, badgeSrc }) => {
   </div>;
 };
 
-export default ProfileImage;
+export default PersonalIcon;

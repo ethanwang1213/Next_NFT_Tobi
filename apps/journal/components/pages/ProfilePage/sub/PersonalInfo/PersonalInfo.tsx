@@ -1,11 +1,16 @@
-import styles from "./ProfileInfo.module.scss";
+import styles from "./PersonalInfo.module.scss";
 
 type Props = {
   dataType: string;
   dataValue: string;
 };
 
-const ProfileInfo: React.FC<Props> = ({ dataType, dataValue }) => {
+/**
+ * プロフィールの情報のコンポーネント
+ * @param param0 
+ * @returns 
+ */
+const PersonalInfo: React.FC<Props> = ({ dataType, dataValue }) => {
   return <>
     <div className={styles.info}>
       <div className={styles.dataType}>
@@ -18,4 +23,4 @@ const ProfileInfo: React.FC<Props> = ({ dataType, dataValue }) => {
   </>;
 };
 
-export default ProfileInfo;
+export default PersonalInfo;
