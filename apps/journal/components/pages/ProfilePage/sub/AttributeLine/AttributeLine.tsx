@@ -12,8 +12,8 @@ type Props = {
  */
 const AttributeLine: React.FC<Props> = ({ type, value }) => {
   return <div className={styles.container}>
-    <div className={styles.type}>{type}</div>
-    <div className={styles.value}>{value}</div>
+    <div className={styles.attributeType}>{type}</div>
+    <div className={styles.attributeValue}>{value}</div>
   </div>;
 };
 
