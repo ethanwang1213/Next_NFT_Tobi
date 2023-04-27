@@ -3,11 +3,11 @@
 }
 
 .type {
-  @apply w-[60%];
+  @apply min-w-[60%];
   @apply font-bold;
 }
 
 .value {
-  @apply w-[40%] text-end;
+  @apply grow max-w-[40%] text-end;
   @apply font-bold text-lg;
 }

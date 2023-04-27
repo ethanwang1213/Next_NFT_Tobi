@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.page {
+  @apply w-full h-full;
+}

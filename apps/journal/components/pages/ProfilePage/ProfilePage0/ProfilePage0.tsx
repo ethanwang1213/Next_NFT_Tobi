@@ -3,15 +3,12 @@ import PersonalIcon from "../sub/PersonalIcon/PersonalIcon";
 import PersonalInfo from "../sub/PersonalInfo/PersonalInfo";
 import AttributeLine from "../sub/AttributeLine/AttributeLine";
 import styles from "./ProfilePage0.module.scss";
+import Attribute from "@/types/Attribute";
 
 type Props = {
 
 };
 
-type Attribute = {
-  type: string;
-  value: string;
-};
 
 /**
  * プロフィールページの1ページ目
@@ -49,7 +46,7 @@ const ProfilePage0: React.FC<Props> = ({ }) => {
     }
   ]);
 
-  return <div className={styles.page}>
+  return <div className="page">
     <div className={styles.personal}>
       <div className={styles.icon}>
         <PersonalIcon

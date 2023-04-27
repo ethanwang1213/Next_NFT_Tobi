@@ -1,7 +1,12 @@
-.image {
+.container {
+  @apply grid content-center;
+  @apply mr-4 sm:mr-0;
+}
+
+.icon {
   @apply relative;
 }
 
 .badge {
-  @apply absolute bottom-0 right-0;
+  @apply absolute -bottom-1 right-0 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px];
 }
