@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.page {
-  @apply w-full h-full;
+@layer components {
+  .page {
+    @apply w-full h-full;
+  }
 }
