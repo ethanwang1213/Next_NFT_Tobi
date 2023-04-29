@@ -25,13 +25,11 @@ cd your-repo
 npm install
 ```
 
-3. To start a specific application (e.g., `journal`), run:
+3. To start a specific application run:
 
 ```
-npm run journal
+npm run dev
 ```
-
-The application will be available at `http://localhost:3000`. Replace `journal` with `app2` to start the other application.
 
 ## Development Workflow
 
@@ -85,28 +83,13 @@ Git の履歴をきれいに保つため、Pull Request をマージする際に
 
 Pull Request には、レビュアーがあなたの変更を理解しやすいように、明確で簡潔なタイトルと説明を可能な限り書きましょう。
 
-## About the Repository
-
-### この構造における各ディレクトリの役割
-
-apps: このディレクトリには、個々の Next.js アプリケーションが含まれます。アプリケーションごとに独自のディレクトリがあり、それぞれが独立した package.json と tsconfig.json を持っています。
-
-libs: 共有ライブラリやコンポーネントがこのディレクトリに格納されます。これにより、複数のアプリケーション間でコードの再利用が可能になります。
-
-shared-components と utils: これらは共有ライブラリの例です。shared-components は複数のアプリケーションで使用される共通のコンポーネントが含まれ、utils は共通のユーティリティ関数が含まれます。それぞれに独自の package.json と tsconfig.json があります。
-
-この構造では、アプリケーションと共有ライブラリが明確に分離されており、コードの再利用と維持が容易にすることを目指しています。
-また、Turborepo により、依存関係の管理やビルドプロセスが効率化可能です。
-
-official npm starter turborepo を元に構築しています。
-
 ## Design Pattern
 
 think about later.
 
 ## What's inside?
 
-This turborepo uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
+This Turborepo uses [npm](https://www.npmjs.com/) as a packages manager. It includes the following packages/apps:
 
 ### Apps and Packages
 
@@ -120,11 +103,23 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Utilities
 
-This turborepo has some additional tools already setup for you:
+This Turborepo has some additional tools already setup for you:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
+
+## Setup
+
+This repository can be used by running `npx create-turbo@latest`, and selecting `npm` in the terminal prompt,
+or you can also download this folder like all the other examples with:
+
+```sh
+npx degit vercel/turbo/examples/with-npm with-npm
+cd with-npm
+npm install
+git init . && git add . && git commit -m "Init"
+```
 
 ### Build
 
@@ -133,6 +128,15 @@ To build all apps and packages, run the following command:
 ```
 cd my-turborepo
 npm run build
+```
+
+### Develop
+
+To develop all apps and packages, run the following command:
+
+```
+cd my-turborepo
+npm run dev
 ```
 
 ### Remote Caching
@@ -164,7 +168,3 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
