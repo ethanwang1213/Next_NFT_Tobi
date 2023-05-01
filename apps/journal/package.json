@@ -7,7 +7,12 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "daisyui": "^2.51.5",
+    "gsap": "npm:@gsap/business@^3.11.5",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
