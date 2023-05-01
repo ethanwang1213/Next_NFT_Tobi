@@ -1,3 +1,12 @@
-.attribute {
-  @apply grid gap-6;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .scroll {
+    @apply h-full overflow-y-auto;
+  }
+
+  .attribute {
+    @apply grid gap-6;
+  }
 }
