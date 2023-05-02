@@ -1,12 +1,12 @@
 .container {
-  @apply grid content-center;
+  @apply w-full h-full;
   @apply mr-4 sm:mr-0;
 }
 
 .icon {
-  @apply relative;
+  @apply relative h-full;
 }
 
 .badge {
-  @apply absolute -bottom-1 right-0 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px];
+  @apply absolute -bottom-1 right-0 w-[30%] aspect-square;
 }

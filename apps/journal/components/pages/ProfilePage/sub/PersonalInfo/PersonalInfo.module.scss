@@ -1,11 +1,11 @@
 .info {
-  @apply w-full;
+  @apply w-full text-center;
 }
 
 .dataType {
-  @apply text-start;
+  @apply text-xs sm:text-base sm:text-start mb-[-4px] sm:mb-1;
 }
 
 .dataValue {
-  @apply text-end text-2xl font-bold;
+  @apply text-base sm:text-2xl sm:text-end font-bold;
 }

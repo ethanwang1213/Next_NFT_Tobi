@@ -1,0 +1,18 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .button {
+    @apply text-center;
+  }
+
+  .icon {
+    @apply w-12 aspect-square rounded-xl;
+    @apply bg-[#894400];
+  }
+
+  .label {
+    @apply flex justify-center pt-0;
+    @apply text-xs font-bold text-[#894400];
+  }
+}

@@ -1,0 +1,17 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .recordLine {
+    @apply w-full flex;
+  }
+
+  .text {
+    @apply grow min-w-[60%];
+  }
+
+  .date {
+    @apply grow max-w-[40%] text-end;
+    @apply text-xs;
+  }
+}

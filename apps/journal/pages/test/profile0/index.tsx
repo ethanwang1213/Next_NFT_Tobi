@@ -2,7 +2,11 @@ import ProfilePage0 from "@/components/pages/ProfilePage/ProfilePage0/ProfilePag
 import { NextPage } from "next";
 
 const TestProfile0: NextPage = () => {
-  return <ProfilePage0 />;
+  return (
+    <div className="h-[90vh]">
+      <ProfilePage0 />
+    </div>
+  );
 };
 
 export default TestProfile0;

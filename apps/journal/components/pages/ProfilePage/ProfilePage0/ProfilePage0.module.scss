@@ -1,23 +1,32 @@
-.personal {
-  & {
-    @apply grid grid-cols-2 mb-14;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .personal {
+    @apply w-full sm:flex;
+  }
+
+  .iconContainer {
+    @apply w-full sm:w-[50%] mb-6 flex justify-center;
   }
 
   .icon {
-    @apply flex justify-center;
+    @apply w-[50%] min-w-[200px] sm:w-full sm:mr-10 aspect-square;
   }
 
-  .info {
-    & {
-      @apply flex flex-col gap-3;
-    }
-
-    &Line {
-      @apply grow;
-    }
+  .infoContainer {
+    @apply sm:w-[50%] mb-6 grid gap-2 sm:gap-6;
   }
-}
 
-.attribute {
-  @apply grid gap-6;
+  .buttonContainer {
+    @apply flex justify-center gap-4 mb-2;
+  }
+
+  .recordTitle {
+    @apply text-center text-xl font-bold mb-2;
+  }
+
+  .records {
+    @apply grid gap-2 overflow-y-auto;
+  }
 }
