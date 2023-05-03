@@ -1,17 +1,18 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PersonalIcon from "../sub/PersonalIcon/PersonalIcon";
 import PersonalInfo from "../sub/PersonalInfo/PersonalInfo";
 import styles from "./ProfilePage0.module.scss";
 import NavButton from "../sub/NavButton/NavButton";
-import AttributeLine from "../sub/AttributeLine/AttributeLine";
 import RecordLine from "../sub/RecordLine/RecordLine";
+import {
+  mockBirthday,
+  mockMail,
+  mockName,
+  mockRecordList,
+} from "@/libs/mocks/mockProfile0";
+import { ActivityRecord } from "../../../../types/ActivityRecord";
 
 type Props = {};
-
-type Record = {
-  text: string;
-  date: string;
-};
 
 /**
  * プロフィールページの1ページ目
@@ -19,67 +20,17 @@ type Record = {
  * @returns
  */
 const ProfilePage0: React.FC<Props> = ({}) => {
-  const [name, setName] = useState<string>("KEISUKE");
-  const [birthday, setBirthday] = useState<string>("2004/06/21");
-  const [mail, setMail] = useState<string>("aiueo.kakiku.123@gmail.com");
-  const [recordList, setRecordList] = useState<Record[]>([
-    {
-      text: "TOBIRA NEKOを購入した",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRA NEKOをジャーナルに追加した",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRAPOLISのメンバーになった",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRAPOLISのハウスバッジを入手した",
-      date: "2023/05/01",
-    },
-    {
-      text: "メッセージカードがとるとから届きました",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRA NEKOを購入した",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRA NEKOを購入した",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRA NEKOを購入した",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRA NEKOをジャーナルに追加した",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRAPOLISのメンバーになった",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRAPOLISのハウスバッジを入手した",
-      date: "2023/05/01",
-    },
-    {
-      text: "メッセージカードがとるとから届きました",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRA NEKOを購入した",
-      date: "2023/05/01",
-    },
-    {
-      text: "TOBIRA NEKOを購入した",
-      date: "2023/05/01",
-    },
-  ]);
+  const [name, setName] = useState<string>("");
+  const [birthday, setBirthday] = useState<string>("");
+  const [mail, setMail] = useState<string>("");
+  const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
+
+  useEffect(() => {
+    setName(mockName);
+    setBirthday(mockBirthday);
+    setMail(mockMail);
+    setRecordList(mockRecordList);
+  }, []);
 
   // メールアドレスをマスクする関数
   const maskMailAddress = useCallback((mailAddress: string) => {
@@ -95,8 +46,8 @@ const ProfilePage0: React.FC<Props> = ({}) => {
         <div className={styles.iconContainer}>
           <div className={styles.icon}>
             <PersonalIcon
-              profileSrc="/mock/images/profile.png"
-              badgeSrc="/mock/images/badge.png"
+              profileSrc="/mocks/images/profile.png"
+              badgeSrc="/mocks/images/badge.png"
             />
           </div>
         </div>
@@ -114,7 +65,7 @@ const ProfilePage0: React.FC<Props> = ({}) => {
       <h3 className={styles.recordTitle}>Activity Record</h3>
       <div className={styles.records}>
         {recordList.map((v) => (
-          <RecordLine text={v.text} date={v.date} />
+          <RecordLine key={v.id} text={v.text} date={v.date} />
         ))}
       </div>
     </div>

@@ -1,7 +1,8 @@
-import { useState } from "react";
-import Attribute from "@/types/Attribute";
+import { useEffect, useState } from "react";
+import ProfileAttribute from "@/types/ProfileAttribute";
 import AttributeLine from "../sub/AttributeLine/AttributeLine";
 import styles from "./ProfilePage1.module.scss";
+import { mockAttributeList } from "../../../../libs/mocks/mockProfile1";
 
 type Props = {};
 
@@ -11,91 +12,18 @@ type Props = {};
  * @returns
  */
 const ProfilePage1: React.FC<Props> = ({}) => {
-  const [attributeList, setAttributeList] = useState<Attribute[]>([
-    {
-      type: "Participation date of Tobiratory",
-      value: "2023/05/01",
-    },
-    {
-      type: "House Arkhē",
-      value: "Hydor",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Participation date of Tobiratory",
-      value: "2023/05/01",
-    },
-    {
-      type: "House Arkhē",
-      value: "Hydor",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Participation date of Tobiratory",
-      value: "2023/05/01",
-    },
-    {
-      type: "House Arkhē",
-      value: "Hydor",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-    {
-      type: "Lorem ipsum dolor sit amet",
-      value: "Lorem Ipsum",
-    },
-  ]);
+  const [attributeList, setAttributeList] = useState<ProfileAttribute[]>([]);
+
+  useEffect(() => {
+    setAttributeList(mockAttributeList);
+  }, []);
 
   return (
     <div className="page">
       <div className={styles.scroll}>
         <div className={styles.attribute}>
-          {attributeList.map((attribute, index) => (
-            <AttributeLine
-              key={index}
-              type={attribute.type}
-              value={attribute.value}
-            />
+          {attributeList.map((v) => (
+            <AttributeLine key={v.id} type={v.type} value={v.value} />
           ))}
         </div>
       </div>
