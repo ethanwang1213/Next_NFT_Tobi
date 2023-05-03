@@ -2,7 +2,11 @@ import { NextPage } from "next";
 import NekoPage from "../../../components/pages/NekoPage/NekoPage/NekoPage";
 
 const NekoLeftPage: NextPage = () => {
-  return <NekoPage pageNum={0} />;
+  return (
+    <div className="h-[90vh]">
+      <NekoPage pageNum={0} />
+    </div>
+  );
 };
 
 export default NekoLeftPage;
