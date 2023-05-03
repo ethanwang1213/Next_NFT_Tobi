@@ -59,7 +59,8 @@ const ProfilePage1: React.FC<Props> = ({}) => {
     {
       type: "Lorem ipsum dolor sit amet",
       value: "Lorem Ipsum",
-    },{
+    },
+    {
       type: "Participation date of Tobiratory",
       value: "2023/05/01",
     },

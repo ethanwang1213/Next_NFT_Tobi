@@ -4,7 +4,7 @@ import { NextPage } from "next";
 const TestProfile1: NextPage = () => {
   return (
     <div className="h-[90vh]">
-      <ProfilePage1 />;
+      <ProfilePage1 />
     </div>
   );
 };

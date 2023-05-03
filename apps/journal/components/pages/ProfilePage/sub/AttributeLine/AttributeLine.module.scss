@@ -2,12 +2,12 @@
   @apply w-full flex;
 }
 
-.attributeType {
+.type {
   @apply min-w-[60%];
-  @apply font-bold;
+  @apply text-sm sm:text-base font-bold;
 }
 
-.attributeValue {
+.value {
   @apply grow max-w-[40%] text-end;
-  @apply font-bold text-lg;
+  @apply text-sm sm:text-base font-bold;
 }

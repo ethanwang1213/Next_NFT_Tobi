@@ -7,14 +7,16 @@ type Props = {
 
 /**
  * プロフィールの各種情報の行のコンポーネント
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const AttributeLine: React.FC<Props> = ({ type, value }) => {
-  return <div className={styles.container}>
-    <div className={styles.attributeType}>{type}</div>
-    <div className={styles.attributeValue}>{value}</div>
-  </div>;
+  return (
+    <div className={styles.container}>
+      <div className={styles.type}>{type}</div>
+      <div className={styles.value}>{value}</div>
+    </div>
+  );
 };
 
 export default AttributeLine;
