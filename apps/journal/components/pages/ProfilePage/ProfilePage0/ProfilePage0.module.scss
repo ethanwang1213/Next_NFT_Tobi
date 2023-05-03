@@ -11,11 +11,13 @@
   }
 
   .icon {
-    @apply w-[50%] min-w-[200px] sm:w-full sm:mr-10 aspect-square;
+    @apply w-[50%] min-w-[200px] sm:w-full aspect-square;
+    @apply grid content-center;
   }
 
   .infoContainer {
-    @apply sm:w-[50%] mb-6 grid gap-2 sm:gap-6;
+    @apply sm:w-[50%] mb-6 sm:ml-10;
+    @apply grid gap-2 sm:gap-6;
   }
 
   .buttonContainer {
