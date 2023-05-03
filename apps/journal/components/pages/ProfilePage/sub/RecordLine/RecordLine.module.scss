@@ -8,10 +8,11 @@
 
   .text {
     @apply grow min-w-[60%];
+    @apply text-sm sm:text-base sm:font-bold;
   }
 
   .date {
     @apply grow max-w-[40%] text-end;
-    @apply text-xs;
+    @apply text-xs sm:text-base sm:font-bold;
   }
 }

@@ -13,10 +13,10 @@ type Props = {
 const PersonalInfo: React.FC<Props> = ({ dataType, dataValue }) => {
   return <>
     <div className={styles.info}>
-      <div className={styles.dataType}>
+      <div className={styles.type}>
         {dataType}
       </div>
-      <div className={styles.dataValue}>
+      <div className={styles.value}>
         {dataValue}
       </div>
     </div>

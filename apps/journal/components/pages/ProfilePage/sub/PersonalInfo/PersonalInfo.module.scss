@@ -2,10 +2,10 @@
   @apply w-full text-center;
 }
 
-.dataType {
+.type {
   @apply text-xs sm:text-base sm:text-start mb-[-4px] sm:mb-1;
 }
 
-.dataValue {
+.value {
   @apply text-base sm:text-2xl sm:text-end font-bold;
 }
