@@ -1,0 +1,9 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .nftGrid {
+    @apply h-full grid grid-cols-3 grid-rows-3 gap-6;
+    @apply content-start place-items-center;
+  }
+}
