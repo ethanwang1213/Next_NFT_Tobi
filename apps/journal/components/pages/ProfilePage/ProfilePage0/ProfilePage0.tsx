@@ -58,9 +58,10 @@ const ProfilePage0: React.FC<Props> = ({}) => {
         </div>
       </div>
       <div className={styles.buttonContainer}>
-        <NavButton label={"購入"} />
+        {/* // ゆくゆくはボタンを実装する */}
+        {/* <NavButton label={"購入"} />
         <NavButton label={"受け取り"} />
-        <NavButton label={"送信"} />
+        <NavButton label={"送信"} /> */}
       </div>
       <h3 className={styles.recordTitle}>Activity Record</h3>
       <div className={styles.records}>

@@ -17,15 +17,19 @@
 
   .infoContainer {
     @apply sm:w-[50%] mb-6 sm:ml-10;
-    @apply grid gap-2 sm:gap-6;
+    @apply grid gap-2 sm:gap-8;
   }
 
+  // ゆくゆくはボタンを実装する
+  // .buttonContainer {
+  //   @apply flex justify-center gap-4 mb-2;
+  // }
   .buttonContainer {
-    @apply flex justify-center gap-4 mb-2;
+    @apply mb-4 sm:mb-10;
   }
 
   .recordTitle {
-    @apply text-center text-xl font-bold mb-4;
+    @apply text-center text-xl font-bold mb-6;
   }
 
   .records {

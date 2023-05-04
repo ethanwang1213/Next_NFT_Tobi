@@ -7,7 +7,7 @@ type Props = {
 const NavButton: React.FC<Props> = ({ label }) => {
   return (
     <div className={styles.button}>
-      <button className={styles.icon}>とまと</button>
+      <button className={styles.icon}>ボタン</button>
       <p className={styles.label}>{label}</p>
     </div>
   );
