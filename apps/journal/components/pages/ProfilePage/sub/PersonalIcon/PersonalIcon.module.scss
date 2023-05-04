@@ -5,8 +5,10 @@
 
 .icon {
   @apply relative h-full;
+  @apply rounded-full bg-white border-white border-[10px];
 }
 
 .badge {
   @apply absolute -bottom-1 right-0 w-[30%] aspect-square;
+  @apply rounded-full bg-white border-white;
 }

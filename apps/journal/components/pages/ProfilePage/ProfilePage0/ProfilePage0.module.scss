@@ -11,7 +11,7 @@
   }
 
   .icon {
-    @apply w-[50%] min-w-[200px] sm:w-full aspect-square;
+    @apply w-[50%] min-w-[200px] max-w-[300px] sm:w-full aspect-square;
     @apply grid content-center;
   }
 
