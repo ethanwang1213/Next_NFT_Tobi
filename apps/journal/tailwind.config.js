@@ -2,6 +2,17 @@
 const general = require("../../packages/tailwind-config/tailwind.config.js");
 const config = {
   ...general,
+  theme: {
+    screens: {
+      sm: "520px", // TODO:スマホ表示の閾値を適切な値に更新する
+      md: "960px", // TODO:タブレット表示の閾値を適切な値に更新する
+    },
+    extend: {
+      fontFamily: {
+        body: ["fot-tsukubrdgothic-std", "sans-serif"],
+      },
+    },
+  },
   daisyui: {
     themes: [
       {
