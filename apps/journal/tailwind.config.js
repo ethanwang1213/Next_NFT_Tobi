@@ -4,8 +4,8 @@ const config = {
   ...general,
   theme: {
     screens: {
-      sm: "520px", // TODO:スマホ表示の閾値を適切な値に更新する
-      md: "960px", // TODO:タブレット表示の閾値を適切な値に更新する
+      sm: "576px", // landscape phones
+      md: "992px", // desktops
     },
     extend: {
       fontFamily: {
