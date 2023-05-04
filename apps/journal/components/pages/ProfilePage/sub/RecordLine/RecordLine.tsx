@@ -6,7 +6,7 @@ type Props = {
 };
 
 /**
- * プロフィールの各種情報の行のコンポーネント
+ * プロフィールのActivity Recordの一行
  * @param param0
  * @returns
  */
