@@ -8,8 +8,6 @@ type Props = {
 
 /**
  * 所有NFTの閲覧用ページ
- * PC表示について、引数pageNumが偶数のとき左ページ、奇数のとき右ページとして表示する
- * スマホ表示について、NFTはスクロールで表示される。
  */
 const NFTPage: React.FC<Props> = ({ pageNum }) => {
   return (
