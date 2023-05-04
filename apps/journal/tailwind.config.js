@@ -17,11 +17,14 @@ const config = {
     themes: [
       {
         mytheme: {
+          ...require("daisyui/src/colors/themes")["[data-theme=light]"],
           primary: "#BE6105",
-          secondary: "#F8F0D8",
+          secondary: "#FDFAF1",
+          "secondary-focus": "#dbd3ba",
+          "secondary-content": "#7D5337",
           accent: "#137BB1",
           neutral: "#7D5337",
-          "base-100": "#FCF9F1",
+          "base-100": "#FBEED0",
           info: "#3ABFF8",
           success: "#36D399",
           warning: "#FACC15",
