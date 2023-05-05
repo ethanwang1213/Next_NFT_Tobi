@@ -1,0 +1,17 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .icon {
+    @apply w-full h-[60%];
+  }
+
+  .title {
+    @apply w-full grow min-h-[50px];
+    @apply text-[60px] font-bold grid content-center;
+  }
+
+  .description {
+    @apply w-full grow min-h-[70px] flex justify-center;
+  }
+}

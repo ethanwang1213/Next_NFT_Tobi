@@ -1,6 +1,6 @@
 import PageTitle from "../../../PageTitle/PageTitle";
-import Redeem0PC from "../sub/Redeem0PC/Redeem0PC";
-import Redeem0SP from "../sub/Redeem0SP/Redeem0SP";
+import RedeemPC0 from "../sub/RedeemPC0/RedeemPC0";
+import RedeemSP0 from "../sub/RedeemSP0/RedeemSP0";
 
 /**
  * 引き換えページの左ページ
@@ -12,10 +12,10 @@ const RedeemPage0: React.FC = () => {
       <PageTitle isShown={true} pageType={"REDEEM"} />
       <>
         <div className={`hidden sm:block grow`}>
-          <Redeem0PC />
+          <RedeemPC0 />
         </div>
         <div className={`block sm:hidden grow`}>
-          <Redeem0SP />
+          <RedeemSP0 />
         </div>
       </>
     </div>

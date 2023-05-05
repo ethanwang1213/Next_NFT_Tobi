@@ -3,11 +3,11 @@
 
 @layer components {
   .nftPage {
-    @apply h-[100px];
+    @apply h-[100px] min-h-[150px];
   }
 
   .redeemPage {
-    @apply h-[150px] grid content-center;
+    @apply h-[200px] min-h-[200px] grid content-center;
   }
 
   .titleContainer {

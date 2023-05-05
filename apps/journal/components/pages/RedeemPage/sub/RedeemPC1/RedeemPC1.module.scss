@@ -1,0 +1,9 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .redeemContainer {
+    @apply h-full flex flex-col min-h-[300px] text-center;
+    @apply relative;
+  }
+}

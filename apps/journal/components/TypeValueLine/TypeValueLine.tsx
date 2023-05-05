@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import styles from "./TypeValueLine.module.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 type Props = {
   lineType: string;
@@ -76,7 +78,12 @@ const TypeValueLine: React.FC<Props> = ({
         <div className={styles[lineClass.value]}>
           <div className={styles.hidable}>
             <p>{hidableValue}</p>
-            <button onClick={isHidden ? showValue : hideValue}>hide</button>
+            <button onClick={isHidden ? showValue : hideValue}>
+              <FontAwesomeIcon
+                icon={isHidden ? faEyeSlash : faEye}
+                className="w-6"
+              />
+            </button>
           </div>
         </div>
       ) : (

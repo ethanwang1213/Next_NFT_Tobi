@@ -1,11 +1,11 @@
 import TypeValueLine from "../../../../TypeValueLine/TypeValueLine";
-import styles from "./Redeem0PC.module.scss";
+import styles from "./RedeemPC0.module.scss";
 
 /**
  * 引き換えページのPC版の左ページ
  * @returns
  */
-const Redeem0PC: React.FC = () => {
+const RedeemPC0: React.FC = () => {
   return (
     <div className={styles.redeemContainer}>
       <div className={styles.inputContainer}>
@@ -39,4 +39,4 @@ const Redeem0PC: React.FC = () => {
   );
 };
 
-export default Redeem0PC;
+export default RedeemPC0;
