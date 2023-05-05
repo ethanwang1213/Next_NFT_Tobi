@@ -30,7 +30,7 @@ const NFTPageSP: React.FC<Props> = ({ pageNum }) => {
   return (
     <div className={styles.nftGrid}>
       {nftSrcList.map((v) => (
-        <NFTImage key={v.id} src={v.src} />
+        <NFTImage key={v.id} src={v.src} alt={"nft"} />
       ))}
     </div>
   );

@@ -3,6 +3,7 @@ import styles from "./NFTImage.module.scss";
 
 type Props = {
   src: string;
+  alt: string;
 };
 
 /**
@@ -11,10 +12,10 @@ type Props = {
  * @param param0
  * @returns
  */
-const NFTImage: React.FC<Props> = ({ src }) => {
+const NFTImage: React.FC<Props> = ({ src, alt }) => {
   return (
     <div className={styles.image}>
-      <Image src={src} alt="neko" fill style={{ objectFit: "contain" }} />
+      <Image src={src} alt={alt} fill style={{ objectFit: "contain" }} />
     </div>
   );
 };
