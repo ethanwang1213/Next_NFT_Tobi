@@ -1,0 +1,38 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .default {
+    &Container {
+      @apply w-full flex;
+    }
+
+    &Type {
+      @apply min-w-[60%];
+      @apply text-sm sm:text-base font-bold;
+    }
+
+    &Value {
+      @apply grow max-w-[40%] text-end;
+      @apply text-sm sm:text-base font-bold;
+    }
+  }
+
+  .redeem {
+    &Container {
+      @apply defaultContainer;
+    }
+
+    &Type {
+      @apply defaultType text-xl;
+    }
+
+    &Value {
+      @apply defaultValue text-xl;
+    }
+  }
+
+  .hidable {
+    @apply flex justify-end gap-2;
+  }
+}

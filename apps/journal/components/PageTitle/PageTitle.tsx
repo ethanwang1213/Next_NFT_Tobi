@@ -1,19 +1,23 @@
 import { useMemo } from "react";
 import styles from "./PageTitle.module.scss";
 
-type PageType = "NFT" | "REDEEM";
+type Props = {
+  isShown: boolean;
+  pageType: "NFT" | "REDEEM";
+};
 
 type PageData = {
   class: string;
   title: string;
 };
 
-type Props = {
-  isShown: boolean;
-  pageType: PageType;
-};
-
+/**
+ * ページのタイトルを表示するコンポーネント
+ * @param param0
+ * @returns
+ */
 const PageTitle: React.FC<Props> = ({ isShown, pageType }) => {
+  // pageTypeによって、ページのタイトルとスタイルを変更する
   const pageData: PageData = useMemo(() => {
     switch (pageType) {
       case "NFT":
