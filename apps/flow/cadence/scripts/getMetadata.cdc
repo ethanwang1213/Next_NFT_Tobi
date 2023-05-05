@@ -5,33 +5,33 @@ import SampleNFT from "../contracts/SampleNFT.cdc"
 pub struct NFTView {
   pub let name: String
   pub let description: String
-  pub let externalURL: String
+  pub let thumbnail: String
 
   init(
       name: String,
       description: String,
-      externalURL: String
+      thumbnail: String
   ) {
       self.name = name
       self.description = description
-      self.externalURL = externalURL
+      self.thumbnail = thumbnail
   }
 }
 
-pub fun main(address: Address, id: UInt64): {String: String}? {
+pub fun main(address: Address, id: String): NFTView {
     let collection = getAccount(address)
         .getCapability(SampleNFT.collectionPublicPath)
         .borrow<&{SampleNFT.CollectionPublic,MetadataViews.ResolverCollection}>()
         ?? panic("NFT Collection not found")
 
-    // let nft = collection.borrowViewResolver(id: id)
-    // let display = MetadataViews.getDisplay(nft)
-    // return NFTView(
-    //     name: display!.name,
-    //     description: display!.description,
-    //     externalURL: display!.thumbnail.uri()
-    // )
+    let nft = collection.borrowViewResolver(id: UInt64.fromString(id)!)
+    let display = MetadataViews.getDisplay(nft)
+    return NFTView(
+        name: display!.name,
+        description: display!.description,
+        thumbnail: display!.thumbnail.uri()
+    )
 
-    let nft = collection.borrow(id: id)
-    return nft?.getMetadata()
+    // let nft = collection.borrow(id: UInt64.fromString(id)!)
+    // return nft?.getMetadata()
 }
