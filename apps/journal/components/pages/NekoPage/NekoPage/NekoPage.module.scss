@@ -2,22 +2,11 @@
 @tailwind utilities;
 
 @layer components {
-  .titleContainer {
-    @apply h-[100px];
+  .content {
+    @apply grow overflow-y-hidden;
   }
 
-  .title {
-    @apply w-full text-center text-[50px] sm:text-[60px] font-bold;
-  }
-
-  .nekoGrid {
-    & {
-      @apply w-full grow grid gap-10 place-items-center;
-      @apply grid-cols-1 sm:grid-cols-2;
-    }
-
-    & > * {
-      @apply hidden first:block sm:block;
-    }
+  .grid {
+    @apply h-full;
   }
 }

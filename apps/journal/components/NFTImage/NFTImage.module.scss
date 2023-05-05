@@ -1,3 +1,8 @@
-.image {
-  @apply relative w-full aspect-square;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .image {
+    @apply relative w-full aspect-square sm:h-full;
+  }
 }

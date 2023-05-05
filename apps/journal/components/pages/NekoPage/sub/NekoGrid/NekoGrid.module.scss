@@ -1,0 +1,15 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .nekoGrid {
+    & {
+      @apply h-full grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 overflow-hidden;
+      @apply gap-10 place-items-center;
+    }
+
+    & > * {
+      @apply hidden first:block sm:block;
+    }
+  }
+}
