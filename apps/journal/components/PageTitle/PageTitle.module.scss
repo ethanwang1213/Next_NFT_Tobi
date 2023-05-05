@@ -1,0 +1,20 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .nftPage {
+    @apply h-[100px];
+  }
+
+  .redeemPage {
+    @apply h-[150px] grid content-center;
+  }
+
+  .titleContainer {
+    @apply mb-0 sm:mb-8;
+  }
+
+  .title {
+    @apply w-full text-center text-[50px] sm:text-[60px] font-bold;
+  }
+}

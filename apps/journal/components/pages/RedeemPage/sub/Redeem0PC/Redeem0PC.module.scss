@@ -1,0 +1,13 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .redeemInput {
+    @apply input input-bordered;
+    @apply w-full  bg-transparent;
+  }
+
+  .description {
+    @apply text-xs text-end;
+  }
+}
