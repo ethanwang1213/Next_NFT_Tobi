@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <g id="Icon_feather-arrow-right-circle" data-name="Icon feather-arrow-right-circle" transform="translate(49 49) rotate(180)" opacity="0.731" style="mix-blend-mode: multiply;isolation: isolate">
+    <g id="グループ_904" data-name="グループ 904">
+      <path id="パス_983" data-name="パス 983" d="M25,1a24.006,24.006,0,0,1,9.343,46.113A24.006,24.006,0,0,1,15.658,2.887,23.852,23.852,0,0,1,25,1Zm0,44A20.006,20.006,0,0,0,32.784,6.571,20.006,20.006,0,0,0,17.216,43.429,19.873,19.873,0,0,0,25,45Z" fill="#a05a07"/>
+      <path id="パス_984" data-name="パス 984" d="M18,31.6a2,2,0,0,1-1.414-3.414L23.972,20.8l-7.386-7.386a2,2,0,0,1,2.828-2.828l8.8,8.8a2,2,0,0,1,0,2.828l-8.8,8.8A1.994,1.994,0,0,1,18,31.6Z" transform="translate(7 4.2)" fill="#a05a07"/>
+      <path id="パス_985" data-name="パス 985" d="M29.6,20H12a2,2,0,0,1,0-4H29.6a2,2,0,0,1,0,4Z" transform="translate(4.2 7)" fill="#a05a07"/>
+    </g>
+  </g>
+</svg>
