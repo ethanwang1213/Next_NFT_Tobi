@@ -33,7 +33,6 @@ const Pc = () => {
       e.pageX < bookImgRef.current?.offsetWidth / 2 ? pageNo - 2 : pageNo + 2;
     if (page < 0 || page >= pages.length) return;
     setOldPageNo(pageNo);
-    console.log(pageRef);
     gsap
       .timeline()
       .set(pageRef[0].current, { pointerEvents: "auto" })
@@ -48,7 +47,6 @@ const Pc = () => {
       .set(pageRef[0].current, { pointerEvents: "none" })
       .set(pageRef[1].current, { pointerEvents: "none" });
     setPageNo(page);
-    console.log(page);
   };
 
   const setAspect = () => {
@@ -89,7 +87,6 @@ const Pc = () => {
       height: bookHeight,
       center: width / 2.0,
     });
-    console.log(bookHeight, bookWidth);
   }, [innerWidth, innerHeight, bookAspect]);
 
   // TODO: メモ化
@@ -164,24 +161,28 @@ const Pc = () => {
             {pages[oldPageNo + 1]}
           </div>
 
-          {tags.map((tag, i) => (
-            <div
-              className={`absolute origin-top-left`}
-              style={{
-                left: `${
-                  bookPos.left -
-                  bookWidth *
-                    (pageNo === tag.page || pageNo === tag.page + 1
-                      ? 0.032
-                      : 0.04)
-                }px`,
-                top: `${bookPos.top + bookHeight * (0.05 + i * 0.07)}px`,
-                transform: `scale(${scale})`,
-              }}
-            >
-              <Tag image={tag.image} page={tag.page} key={i} />
-            </div>
-          ))}
+          <div
+            className="absolute flex flex-col origin-top-left gap-5"
+            style={{
+              transform: `scale(${scale})`,
+              left: bookPos.left,
+              top: `${bookPos.top + bookHeight * 0.05}px`,
+            }}
+          >
+            {tags.map((tag, i) => (
+              <div
+                className="relative"
+                style={{
+                  left:
+                    pageNo === tag.page || pageNo === tag.page + 1
+                      ? "-50%"
+                      : "-70%",
+                }}
+              >
+                <Tag image={tag.image} page={tag.page} key={i} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
