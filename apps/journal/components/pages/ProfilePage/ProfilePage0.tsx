@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import PersonalIcon from "../sub/PersonalIcon/PersonalIcon";
-import PersonalInfo from "../sub/PersonalInfo/PersonalInfo";
-import NavButton from "../sub/NavButton/NavButton";
-import RecordLine from "../sub/RecordLine/RecordLine";
+import PersonalIcon from "./sub/PersonalIcon";
+import PersonalInfo from "./sub/PersonalInfo";
+import RecordLine from "./sub/RecordLine";
 import {
   mockName,
   mockBirthday,
   mockMail,
   mockRecordList,
-} from "../../../../libs/mocks/mockProfile0";
+} from "../../../libs/mocks/mockProfile0";
 
 export type ActivityRecord = {
   id: number;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import AttributeLine from "../sub/AttributeLine/AttributeLine";
-import { mockAttributeList } from "../../../../libs/mocks/mockProfile1";
+import AttributeLine from "./sub/AttributeLine";
+import { mockAttributeList } from "../../../libs/mocks/mockProfile1";
 
 export type ProfileAttribute = {
   id: number;
