@@ -1,4 +1,4 @@
-import ProfileAttribute from "../../types/ProfileAttribute";
+import { ProfileAttribute } from "../../components/pages/ProfilePage/ProfilePage1/ProfilePage1";
 
 export const mockAttributeList: ProfileAttribute[] = [
   {

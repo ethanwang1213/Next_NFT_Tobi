@@ -10,16 +10,19 @@ import {
   mockName,
   mockRecordList,
 } from "@/libs/mocks/mockProfile0";
-import { ActivityRecord } from "../../../../types/ActivityRecord";
 
-type Props = {};
+export type ActivityRecord = {
+  id: number;
+  text: string;
+  date: string;
+};
 
 /**
  * プロフィールページの1ページ目
  * @param param0
  * @returns
  */
-const ProfilePage0: React.FC<Props> = ({}) => {
+const ProfilePage0: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [birthday, setBirthday] = useState<string>("");
   const [mail, setMail] = useState<string>("");
@@ -58,7 +61,7 @@ const ProfilePage0: React.FC<Props> = ({}) => {
         </div>
       </div>
       <div className={styles.buttonContainer}>
-        {/* // ゆくゆくはボタンを実装する */}
+        {/* TODO: ゆくゆくはボタンを実装する */}
         {/* <NavButton label={"購入"} />
         <NavButton label={"受け取り"} />
         <NavButton label={"送信"} /> */}

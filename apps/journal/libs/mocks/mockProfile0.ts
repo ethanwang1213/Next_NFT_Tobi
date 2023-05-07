@@ -1,4 +1,4 @@
-import { ActivityRecord } from "../../types/ActivityRecord";
+import { ActivityRecord } from "../../components/pages/ProfilePage/ProfilePage0/ProfilePage0";
 
 export const mockName = "KEISUKE";
 export const mockBirthday = "2004/06/21";

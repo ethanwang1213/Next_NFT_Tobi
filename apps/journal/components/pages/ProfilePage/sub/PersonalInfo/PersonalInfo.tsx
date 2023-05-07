@@ -7,20 +7,18 @@ type Props = {
 
 /**
  * プロフィールの情報のコンポーネント
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const PersonalInfo: React.FC<Props> = ({ dataType, dataValue }) => {
-  return <>
-    <div className={styles.info}>
-      <div className={styles.type}>
-        {dataType}
+  return (
+    <>
+      <div className={styles.info}>
+        <p className={styles.type}>{dataType}</p>
+        <p className={styles.value}>{dataValue}</p>
       </div>
-      <div className={styles.value}>
-        {dataValue}
-      </div>
-    </div>
-  </>;
+    </>
+  );
 };
 
 export default PersonalInfo;

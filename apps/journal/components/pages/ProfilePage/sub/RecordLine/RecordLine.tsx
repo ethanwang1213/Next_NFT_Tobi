@@ -13,8 +13,8 @@ type Props = {
 const RecordLine: React.FC<Props> = ({ text, date }) => {
   return (
     <div className={styles.recordLine}>
-      <div className={styles.text}>{text}</div>
-      <div className={styles.date}>{date}</div>
+      <p className={styles.text}>{text}</p>
+      <p className={styles.date}>{date}</p>
     </div>
   );
 };
