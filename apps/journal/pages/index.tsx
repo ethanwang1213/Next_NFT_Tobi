@@ -1,4 +1,3 @@
-import Mobile from "../components/book/Mobile";
 import Pc from "../components/book/pc";
 import Image from "next/image";
 

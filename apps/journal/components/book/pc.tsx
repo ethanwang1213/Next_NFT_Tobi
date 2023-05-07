@@ -4,6 +4,7 @@ import { useWindowSize } from "react-use";
 import { BookPos } from "../../types/type";
 import { BookContext } from "../../pages/_app";
 import Tag from "../Tag";
+import gsap from "gsap";
 
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
@@ -19,7 +20,9 @@ const Pc = () => {
   const [scale, setScale] = useState<number>(1);
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
+  const [oldPageNo, setOldPageNo] = useState<number>(0);
   const bookData = useContext(BookContext);
+  const pageRef = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
   const { current: pages } = bookData.pages;
   const { current: tags } = bookData.tags;
@@ -29,6 +32,21 @@ const Pc = () => {
     const page =
       e.pageX < bookImgRef.current?.offsetWidth / 2 ? pageNo - 2 : pageNo + 2;
     if (page < 0 || page >= pages.length) return;
+    setOldPageNo(pageNo);
+    console.log(pageRef);
+    gsap
+      .timeline()
+      .set(pageRef[0].current, { pointerEvents: "auto" })
+      .set(pageRef[1].current, { pointerEvents: "auto" })
+      .fromTo(pageRef[0].current, { opacity: 1 }, { opacity: 0, duration: 0.5 })
+      .fromTo(
+        pageRef[1].current,
+        { opacity: 1 },
+        { opacity: 0, duration: 0.5 },
+        "<"
+      )
+      .set(pageRef[0].current, { pointerEvents: "none" })
+      .set(pageRef[1].current, { pointerEvents: "none" });
     setPageNo(page);
     console.log(page);
   };
@@ -118,6 +136,34 @@ const Pc = () => {
           >
             {pages[pageNo + 1]}
           </div>
+
+          <div
+            className="absolute origin-top-left"
+            ref={pageRef[0]}
+            style={{
+              left: `${bookPos.left + bookWidth * 0.05}px`,
+              top: `${bookPos.top + bookHeight * 0.02}px`,
+              opacity: 0,
+              pointerEvents: "none",
+              ...pageStyle,
+            }}
+          >
+            {pages[oldPageNo]}
+          </div>
+          <div
+            className="absolute origin-top-left"
+            ref={pageRef[1]}
+            style={{
+              left: `${bookPos.center + bookWidth * 0.03}px`,
+              top: `${bookPos.top + bookHeight * 0.02}px`,
+              opacity: 0,
+              pointerEvents: "none",
+              ...pageStyle,
+            }}
+          >
+            {pages[oldPageNo + 1]}
+          </div>
+
           {tags.map((tag, i) => (
             <div
               className={`absolute origin-top-left`}
@@ -133,7 +179,7 @@ const Pc = () => {
                 transform: `scale(${scale})`,
               }}
             >
-              <Tag image={tag.image} page={tag.page} />
+              <Tag image={tag.image} page={tag.page} key={i} />
             </div>
           ))}
         </div>
