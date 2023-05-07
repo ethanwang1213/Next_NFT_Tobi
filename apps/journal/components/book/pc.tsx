@@ -6,6 +6,14 @@ import { BookContext } from "../../pages/_app";
 import Tag from "../Tag";
 import gsap from "gsap";
 
+const usePrevious = (value: any) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
   const { width: innerWidth, height: innerHeight } = useWindowSize();
@@ -20,19 +28,24 @@ const Pc = () => {
   const [scale, setScale] = useState<number>(1);
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
-  const [oldPageNo, setOldPageNo] = useState<number>(0);
   const bookData = useContext(BookContext);
   const pageRef = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
   const { current: pages } = bookData.pages;
   const { current: tags } = bookData.tags;
+  const oldPageNo = usePrevious(pageNo);
 
   const onPageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     // 右を押したらページ戻って左を押したらページ進む
     const page =
       e.pageX < bookImgRef.current?.offsetWidth / 2 ? pageNo - 2 : pageNo + 2;
     if (page < 0 || page >= pages.length) return;
-    setOldPageNo(pageNo);
+    setPageNo(page);
+  };
+
+  useEffect(() => {
+    if (!bookImgRef.current) return;
+    else if (pageNo === oldPageNo) return;
     gsap
       .timeline()
       .set(pageRef[0].current, { pointerEvents: "auto" })
@@ -46,8 +59,7 @@ const Pc = () => {
       )
       .set(pageRef[0].current, { pointerEvents: "none" })
       .set(pageRef[1].current, { pointerEvents: "none" });
-    setPageNo(page);
-  };
+  }, [pageNo, pageRef]);
 
   const setAspect = () => {
     // 本の画像のアスペクト比を設定
