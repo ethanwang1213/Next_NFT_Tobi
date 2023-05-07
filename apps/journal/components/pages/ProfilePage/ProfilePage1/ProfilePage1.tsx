@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import AttributeLine from "../sub/AttributeLine/AttributeLine";
-import styles from "./ProfilePage1.module.scss";
 import { mockAttributeList } from "../../../../libs/mocks/mockProfile1";
 
 export type ProfileAttribute = {
@@ -23,8 +22,8 @@ const ProfilePage1: React.FC = () => {
 
   return (
     <div className="page">
-      <div className={styles.scroll}>
-        <div className={styles.attribute}>
+      <div className="h-full overflow-y-auto">
+        <div className="grid gap-6">
           {attributeList.map((v) => (
             <AttributeLine key={v.id} type={v.type} value={v.value} />
           ))}

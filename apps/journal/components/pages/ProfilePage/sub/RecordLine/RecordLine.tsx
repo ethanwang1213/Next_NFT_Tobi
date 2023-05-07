@@ -1,5 +1,3 @@
-import styles from "./RecordLine.module.scss";
-
 type Props = {
   text: string;
   date: string;
@@ -12,9 +10,13 @@ type Props = {
  */
 const RecordLine: React.FC<Props> = ({ text, date }) => {
   return (
-    <div className={styles.recordLine}>
-      <p className={styles.text}>{text}</p>
-      <p className={styles.date}>{date}</p>
+    <div className="w-full flex">
+      <p className="grow min-w-[60%] text-sm sm:text-base sm:font-bold">
+        {text}
+      </p>
+      <p className="grow max-w-[40%] text-end text-xs sm:text-base sm:font-bold">
+        {date}
+      </p>
     </div>
   );
 };

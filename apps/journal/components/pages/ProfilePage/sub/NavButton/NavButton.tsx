@@ -1,5 +1,3 @@
-import styles from "./NavButton.module.scss";
-
 type Props = {
   label: string;
 };
@@ -13,9 +11,13 @@ type Props = {
  */
 const NavButton: React.FC<Props> = ({ label }) => {
   return (
-    <div className={styles.button}>
-      <button className={styles.icon}>ボタン</button>
-      <p className={styles.label}>{label}</p>
+    <div className="text-center">
+      <button className="w-12 aspect-square rounded-xl bg-[#894400]">
+        ボタン
+      </button>
+      <p className="flex justify-center pt-0 text-xs font-bold text-[#894400]">
+        {label}
+      </p>
     </div>
   );
 };

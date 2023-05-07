@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import PersonalIcon from "../sub/PersonalIcon/PersonalIcon";
 import PersonalInfo from "../sub/PersonalInfo/PersonalInfo";
-import styles from "./ProfilePage0.module.scss";
 import NavButton from "../sub/NavButton/NavButton";
 import RecordLine from "../sub/RecordLine/RecordLine";
 import {
@@ -45,29 +44,29 @@ const ProfilePage0: React.FC = () => {
 
   return (
     <div className="page">
-      <div className={styles.personal}>
-        <div className={styles.iconContainer}>
-          <div className={styles.icon}>
+      <div className="w-full sm:flex">
+        <div className="w-full sm:w-[50%] mb-6 flex justify-center">
+          <div className="w-[50%] min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
               profileSrc="/mocks/images/profile.png"
               badgeSrc="/mocks/images/badge.png"
             />
           </div>
         </div>
-        <div className={styles.infoContainer}>
+        <div className="sm:w-[50%] mb-6 sm:ml-10 grid gap-2 sm:gap-8">
           <PersonalInfo dataType={"Name"} dataValue={name} />
           <PersonalInfo dataType={"Birthday"} dataValue={birthday} />
           <PersonalInfo dataType={"Mail"} dataValue={maskMailAddress(mail)} />
         </div>
       </div>
-      <div className={styles.buttonContainer}>
+      <div className="mb-4 sm:mb-10">
         {/* TODO: ゆくゆくはボタンを実装する */}
         {/* <NavButton label={"購入"} />
         <NavButton label={"受け取り"} />
         <NavButton label={"送信"} /> */}
       </div>
-      <h3 className={styles.recordTitle}>Activity Record</h3>
-      <div className={styles.records}>
+      <h3 className="text-center text-xl font-bold mb-6">Activity Record</h3>
+      <div className="grid gap-2 overflow-y-auto">
         {recordList.map((v) => (
           <RecordLine key={v.id} text={v.text} date={v.date} />
         ))}

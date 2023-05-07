@@ -1,5 +1,3 @@
-import styles from "./AttributeLine.module.scss";
-
 type Props = {
   type: string;
   value: string;
@@ -12,9 +10,11 @@ type Props = {
  */
 const AttributeLine: React.FC<Props> = ({ type, value }) => {
   return (
-    <div className={styles.container}>
-      <p className={styles.type}>{type}</p>
-      <p className={styles.value}>{value}</p>
+    <div className="w-full flex">
+      <p className="min-w-[60%] text-sm sm:text-base font-bold">{type}</p>
+      <p className="grow max-w-[40%] text-end text-sm sm:text-base font-bold">
+        {value}
+      </p>
     </div>
   );
 };
