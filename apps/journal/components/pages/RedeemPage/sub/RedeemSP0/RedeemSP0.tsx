@@ -1,4 +1,5 @@
 import TypeValueLine from "../../../../TypeValueLine/TypeValueLine";
+import RedeemStatusModal from "../RedeemStatusModal/RedeemStatusModal";
 import styles from "./RedeemSP0.module.scss";
 
 const RedeemSP0: React.FC = ({}) => {
@@ -29,10 +30,14 @@ const RedeemSP0: React.FC = ({}) => {
           />
         </div>
         <div className={styles.buttonContainer}>
-          <button className={styles.redeemButton}>Redeem</button>
+          <label htmlFor="my-modal" className={styles.redeemButton}>
+            Redeem
+          </label>
         </div>
       </div>
       <p className={styles.howTo}>How to receive NFTs</p>
+
+      <RedeemStatusModal redeemStatus={"SERVER_ERROR"} />
     </div>
   );
 };

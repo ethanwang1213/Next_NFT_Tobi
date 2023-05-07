@@ -23,7 +23,7 @@ const RedeemPC1: React.FC<Props> = ({ redeemStatus }) => {
           title={"Success!!"}
           description={
             <button className="btn btn-outline btn-lg rounded-3xl text-3xl w-[40%] absolute bottom-0">
-              Check your NFT
+              Check your NFTs
             </button>
           }
         />
