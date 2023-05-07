@@ -1,5 +1,5 @@
-import ProfilePage1 from "@/components/pages/ProfilePage/ProfilePage1/ProfilePage1";
 import { NextPage } from "next";
+import ProfilePage1 from "../../../components/pages/ProfilePage/ProfilePage1/ProfilePage1";
 
 const TestProfile1: NextPage = () => {
   return (

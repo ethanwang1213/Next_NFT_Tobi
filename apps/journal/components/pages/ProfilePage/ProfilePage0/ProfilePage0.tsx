@@ -5,11 +5,11 @@ import styles from "./ProfilePage0.module.scss";
 import NavButton from "../sub/NavButton/NavButton";
 import RecordLine from "../sub/RecordLine/RecordLine";
 import {
+  mockName,
   mockBirthday,
   mockMail,
-  mockName,
   mockRecordList,
-} from "@/libs/mocks/mockProfile0";
+} from "../../../../libs/mocks/mockProfile0";
 
 export type ActivityRecord = {
   id: number;
