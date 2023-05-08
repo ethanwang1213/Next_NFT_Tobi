@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
@@ -58,6 +58,14 @@ const TypeValueLine: React.FC<Props> = ({
 
   const [hidableValue, setHideableValue] = useState<string>(lineValue);
   const [isHidden, setIsHidden] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isHidden) {
+      hideValue();
+    } else {
+      setHideableValue(lineValue);
+    }
+  }, [lineValue]);
 
   // hidableValueに、lineValueを*で隠した文字列をセットする
   const hideValue = () => {

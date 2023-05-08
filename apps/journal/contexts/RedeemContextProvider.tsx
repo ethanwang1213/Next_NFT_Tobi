@@ -11,7 +11,7 @@ type Props = {
   children: ReactNode;
 };
 
-export type RedeemStatus =
+type RedeemStatus =
   | "NONE"
   | "CHECKING"
   | "SUCCESS"
@@ -23,6 +23,18 @@ type RedeemContextType = {
     current: RedeemStatus;
     set: Dispatch<SetStateAction<RedeemStatus>>;
   };
+  inputCode: {
+    current: string;
+    set: Dispatch<SetStateAction<string>>;
+  };
+  receiverAccount: {
+    current: string;
+    set: Dispatch<SetStateAction<string>>;
+  };
+  receiverJournalId: {
+    current: string;
+    set: Dispatch<SetStateAction<string>>;
+  };
 };
 
 export const RedeemContext = createContext<RedeemContextType>(
@@ -31,10 +43,39 @@ export const RedeemContext = createContext<RedeemContextType>(
 
 const RedeemContextProvider: React.FC<Props> = ({ children }) => {
   const [redeemStatus, setRedeemStatus] = useState<RedeemStatus>("NONE");
+  const [inputCode, setInputCode] = useState<string>("");
+  const [receiverAccount, setReceiverAccount] = useState<string>("");
+  const [receiverJournalId, setReceiverJournalId] = useState<string>("");
 
   const redeemContextValue = useMemo<RedeemContextType>(
-    () => ({ redeemStatus: { current: redeemStatus, set: setRedeemStatus } }),
-    [redeemStatus, setRedeemStatus]
+    () => ({
+      redeemStatus: {
+        current: redeemStatus,
+        set: setRedeemStatus,
+      },
+      inputCode: {
+        current: inputCode,
+        set: setInputCode,
+      },
+      receiverAccount: {
+        current: receiverAccount,
+        set: setReceiverAccount,
+      },
+      receiverJournalId: {
+        current: receiverJournalId,
+        set: setReceiverJournalId,
+      },
+    }),
+    [
+      redeemStatus,
+      inputCode,
+      receiverAccount,
+      receiverJournalId,
+      setRedeemStatus,
+      setInputCode,
+      setReceiverAccount,
+      setReceiverJournalId,
+    ]
   );
 
   return (

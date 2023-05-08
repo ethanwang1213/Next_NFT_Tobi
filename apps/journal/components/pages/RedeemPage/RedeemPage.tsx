@@ -8,7 +8,13 @@ type Props = {
 };
 
 const RedeemPage: React.FC<Props> = ({ pageNum }) => {
-  const { redeemStatus } = useContext(RedeemContext);
+  const { redeemStatus, inputCode, receiverAccount, receiverJournalId } =
+    useContext(RedeemContext);
+
+  useEffect(() => {
+    receiverAccount.set("KEISUKE");
+    receiverJournalId.set("keisukeId");
+  }, [receiverJournalId.current]);
 
   useEffect(() => {
     console.log("current: ", redeemStatus);
