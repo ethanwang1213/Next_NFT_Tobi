@@ -1,6 +1,5 @@
 import { NFTSrc } from "@/types/NFTSrc";
 import { useEffect, useState } from "react";
-import styles from "./NekoGrid.module.scss";
 import NFTImage from "@/components/NFTImage/NFTImage";
 import { mockNekoSrcList } from "@/libs/mock/mockNekoSrcList";
 
@@ -30,9 +29,11 @@ const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
   }, [pageNum]);
 
   return (
-    <div className={styles.nekoGrid}>
+    <div className="h-full grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 overflow-hidden gap-10 place-items-center">
       {nekoSrcList.map((v) => (
-        <NFTImage key={v.id} src={v.src} alt={"neko"} />
+        <div className="hidden first:block sm:block w-full h-full grid content-center">
+          <NFTImage key={v.id} src={v.src} alt={"neko"} />
+        </div>
       ))}
     </div>
   );
