@@ -31,8 +31,11 @@ const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
   return (
     <div className="h-full grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 overflow-hidden gap-10 place-items-center">
       {nekoSrcList.map((v) => (
-        <div className="hidden first:block sm:block w-full h-full grid content-center">
-          <NFTImage key={v.id} src={v.src} alt={"neko"} />
+        <div
+          key={v.id}
+          className="hidden first:block sm:block w-full h-full grid content-center"
+        >
+          <NFTImage src={v.src} alt={"neko"} />
         </div>
       ))}
     </div>
