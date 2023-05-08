@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import styles from "./TypeValueLine.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
@@ -29,25 +28,30 @@ const TypeValueLine: React.FC<Props> = ({
   hidable = false,
 }) => {
   // styleModeによって、スタイルを変更する
+  const defaultClass: LineClass = {
+    container: "w-full flex",
+    type: "min-w-[60%] text-sm sm:text-base font-bold",
+    value: "grow max-w-[40%] text-end text-sm sm:text-base font-bold",
+  };
   const lineClass: LineClass = useMemo(() => {
     switch (styleMode) {
-      case "PROFILE_ATTRIBUTE":
-        return {
-          container: "attrContainer",
-          type: "attrType",
-          value: "attrValue",
-        };
-      case "ACTIVITY_RECORD":
-        return {
-          container: "recordContainer",
-          type: "recordType",
-          value: "recordValue",
-        };
+      // case "PROFILE_ATTRIBUTE":
+      //   return {
+      //     container: `${defaultClass.container}`,
+      //     type: `${defaultClass.type}`,
+      //     value: `${defaultClass.value}`,
+      //   };
+      // case "ACTIVITY_RECORD":
+      //   return {
+      //     container: `${defaultClass.container}`,
+      //     type: `${defaultClass.type}`,
+      //     value: `${defaultClass.value}`,
+      //   };
       case "REDEEM_DATA":
         return {
-          container: "redeemContainer",
-          type: "redeemType",
-          value: "redeemValue",
+          container: `${defaultClass.container}`,
+          type: `${defaultClass.type} text-xl`,
+          value: `${defaultClass.value} text-xl`,
         };
     }
   }, [styleMode]);
@@ -72,11 +76,11 @@ const TypeValueLine: React.FC<Props> = ({
   };
 
   return (
-    <div className={styles[lineClass.container]}>
-      <p className={styles[lineClass.type]}>{lineType}</p>
+    <div className={lineClass.container}>
+      <p className={lineClass.type}>{lineType}</p>
       {hidable ? (
-        <div className={styles[lineClass.value]}>
-          <div className={styles.hidable}>
+        <div className={lineClass.value}>
+          <div className="flex justify-end gap-1">
             <p>{hidableValue}</p>
             <button onClick={isHidden ? showValue : hideValue}>
               <FontAwesomeIcon
@@ -87,7 +91,7 @@ const TypeValueLine: React.FC<Props> = ({
           </div>
         </div>
       ) : (
-        <p className={styles[lineClass.value]}>{lineValue}</p>
+        <p className={lineClass.value}>{lineValue}</p>
       )}
     </div>
   );

@@ -10,7 +10,7 @@ type Props = {
 
 const RedeemPC1: React.FC<Props> = ({ redeemStatus }) => {
   return (
-    <div className={styles.redeemContainer}>
+    <div className="h-full flex flex-col min-h-[300px] text-center relative">
       {redeemStatus === "CHECKING" && (
         <RedeemStatusPC
           icon={<FeatherIcon className={"w-full h-full"} />}

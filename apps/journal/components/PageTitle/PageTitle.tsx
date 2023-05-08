@@ -22,20 +22,25 @@ const PageTitle: React.FC<Props> = ({ isShown, pageType }) => {
     switch (pageType) {
       case "NFT":
         return {
-          class: styles.nftPage,
+          class: "h-[100px] min-h-[100px]",
           title: "NFT",
         };
       case "REDEEM":
         return {
-          class: styles.redeemPage,
+          class:
+            "h-[150px] min-h-[150px] sm:h-[200px] sm:min-h-[200px] grid content-center",
           title: "Redeem Code",
         };
     }
   }, [pageType]);
 
   return (
-    <div className={`${styles.titleContainer} ${pageData.class}`}>
-      {isShown && <h1 className={styles.title}>{pageData.title}</h1>}
+    <div className={`mb-0 sm:mb-8 ${pageData.class}`}>
+      {isShown && (
+        <h1 className="w-full text-center text-[50px] sm:text-[60px] font-bold">
+          {pageData.title}
+        </h1>
+      )}
     </div>
   );
 };

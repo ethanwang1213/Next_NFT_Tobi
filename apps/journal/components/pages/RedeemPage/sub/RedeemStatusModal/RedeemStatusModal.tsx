@@ -15,7 +15,7 @@ const RedeemStatusModal: React.FC<Props> = ({ redeemStatus }) => {
       <input type="checkbox" id="my-modal" className="modal-toggle" />
       <div className="modal px-4">
         <div className="modal-box">
-          <div className={styles.redeemContainer}>
+          <div className="h-full flex flex-col text-center m-2 mt-6 relative">
             {redeemStatus === "CHECKING" && (
               <RedeemStatusSP
                 icon={

@@ -10,15 +10,17 @@ type Props = {
 const RedeemStatusSP: React.FC<Props> = ({ icon, title, description }) => {
   return (
     <>
-      <div className={styles.icon}>{icon}</div>
+      <div className="w-full h-[50%]">{icon}</div>
       <p
-        className={`${styles.title} ${
-          title.length > 10 ? styles.smallTitle : ""
+        className={`w-full grow min-h-[60px] mt-2 text-[42px] font-bold grid content-center ${
+          title.length > 10 ? "text-[28px]" : ""
         }`}
       >
         {title}
       </p>
-      <div className={styles.description}>{description}</div>
+      <div className="w-full grow min-h-[8px] flex justify-center">
+        {description}
+      </div>
     </>
   );
 };

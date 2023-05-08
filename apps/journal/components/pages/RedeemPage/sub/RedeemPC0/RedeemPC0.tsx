@@ -7,18 +7,18 @@ import styles from "./RedeemPC0.module.scss";
  */
 const RedeemPC0: React.FC = () => {
   return (
-    <div className={styles.redeemContainer}>
-      <div className={styles.inputContainer}>
+    <div className="relative h-full">
+      <div className="mb-10">
         <input
           type="text"
           placeholder="Enter Redemption Code"
-          className={styles.redeemInput}
+          className="input input-bordered w-full bg-transparent text-lg"
         />
-        <p className={styles.description}>
+        <p className="text-xs text-end font-bold">
           NFT受け取りコードを入力してください。
         </p>
       </div>
-      <div className={styles.dataLineContainer}>
+      <div className="grid gap-4 mb-4">
         <TypeValueLine
           lineType={"Receive Account"}
           lineValue={"KEISUKE"}
@@ -31,9 +31,11 @@ const RedeemPC0: React.FC = () => {
           hidable={true}
         />
       </div>
-      <p className={styles.howTo}>How to receive NFTs</p>
-      <div className={styles.buttonContainer}>
-        <button className={styles.redeemButton}>Redeem</button>
+      <p className="link link-info text-end text-lg">How to receive NFTs</p>
+      <div className="w-full absolute bottom-[5%] flex justify-center">
+        <button className="btn btn-lg rounded-3xl w-[40%] text-3xl">
+          Redeem
+        </button>
       </div>
     </div>
   );

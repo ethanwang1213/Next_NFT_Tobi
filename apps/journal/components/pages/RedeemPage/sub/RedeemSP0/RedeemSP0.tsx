@@ -4,19 +4,19 @@ import styles from "./RedeemSP0.module.scss";
 
 const RedeemSP0: React.FC = ({}) => {
   return (
-    <div className={styles.redeemContainer}>
-      <div className={styles.inputContainer}>
+    <div className="relative h-full">
+      <div className="mb-10">
         <input
           type="text"
           placeholder="Enter Redemption Code"
-          className={styles.redeemInput}
+          className="input input-bordered w-full bg-transparent text-lg"
         />
-        <p className={styles.description}>
+        <p className="text-xs text-end font-bold">
           NFT受け取りコードを入力してください。
         </p>
       </div>
-      <div className={styles.bottomContainer}>
-        <div className={styles.dataLineContainer}>
+      <div className="w-full absolute bottom-[13%]">
+        <div className="grid gap-4 mb-6">
           <TypeValueLine
             lineType={"Receive Account"}
             lineValue={"KEISUKE"}
@@ -29,13 +29,18 @@ const RedeemSP0: React.FC = ({}) => {
             hidable={true}
           />
         </div>
-        <div className={styles.buttonContainer}>
-          <label htmlFor="my-modal" className={styles.redeemButton}>
+        <div className="w-full flex justify-center">
+          <label
+            htmlFor="my-modal"
+            className="btn btn-md btn-circle w-[60%] text-2xl"
+          >
             Redeem
           </label>
         </div>
       </div>
-      <p className={styles.howTo}>How to receive NFTs</p>
+      <p className="w-full absolute bottom-0 link link-info text-end text-lg">
+        How to receive NFTs
+      </p>
 
       <RedeemStatusModal redeemStatus={"SERVER_ERROR"} />
     </div>
