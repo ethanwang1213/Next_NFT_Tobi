@@ -1,4 +1,7 @@
 import TypeValueLine from "../../../../TypeValueLine";
+import HowToLink from "../HowToLink";
+import InputRedemptionCodeBox from "../InputRedemptionCodeBox";
+import ReceiverData from "../ReceiverData";
 import RedeemButton from "../RedeemButton";
 
 /**
@@ -9,29 +12,17 @@ const RedeemPC0: React.FC = () => {
   return (
     <div className="relative h-full">
       <div className="mb-10">
-        <input
-          type="text"
-          placeholder="Enter Redemption Code"
-          className="input input-bordered w-full bg-transparent text-lg"
-        />
-        <p className="text-xs text-end font-bold">
-          NFT受け取りコードを入力してください。
-        </p>
-      </div>
-      <div className="grid gap-4 mb-4">
-        <TypeValueLine
-          lineType={"Receive Account"}
-          lineValue={"KEISUKE"}
-          styleMode={"REDEEM_DATA"}
-        />
-        <TypeValueLine
-          lineType={"Receive Journal ID"}
-          lineValue={"KEISUKE"}
-          styleMode={"REDEEM_DATA"}
-          hidable={true}
+        <InputRedemptionCodeBox
+          classNames={{
+            input: "input input-bordered w-full bg-transparent text-lg",
+            p: "text-xs text-end font-bold",
+          }}
         />
       </div>
-      <p className="link link-info text-end text-lg">How to receive NFTs</p>
+      <div className="mb-4">
+        <ReceiverData />
+      </div>
+      <HowToLink className="link link-info text-end text-lg" />
       <div className="w-full absolute bottom-[5%] flex justify-center">
         <RedeemButton isPc={true} />
       </div>
