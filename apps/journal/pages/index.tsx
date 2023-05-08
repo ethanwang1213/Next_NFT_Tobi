@@ -1,5 +1,15 @@
-import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
+import Pc from "../components/book/pc";
+import Image from "next/image";
 
-const IndexPage = () => <></>;
+const Index = () => {
+  return (
+    <>
+      <Image src="/images/book/bg_journal.png" fill alt="bg_journal"></Image>
+      <div className="hidden md:block">
+        <Pc />
+      </div>
+    </>
+  );
+};
 
-export default IndexPage;
+export default Index;
