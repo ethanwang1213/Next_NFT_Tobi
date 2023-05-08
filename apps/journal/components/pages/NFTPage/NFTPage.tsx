@@ -1,4 +1,4 @@
-import PageTitle from "@/components/PageTitle/PageTitle";
+import PageTitle from "../../PageTitle";
 import NFTPagePC from "./sub/NFTPagePC";
 import NFTPageSP from "./sub/NFTPageSP";
 

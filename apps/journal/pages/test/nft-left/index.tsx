@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import NFTPage from "@/components/pages/NFTPage/NFTPage/NFTPage";
+import NFTPage from "../../../components/pages/NFTPage/NFTPage";
 
 const NFTLeftPage: NextPage = () => {
   return (
