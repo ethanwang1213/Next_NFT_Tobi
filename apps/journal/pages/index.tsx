@@ -1,0 +1,5 @@
+import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
+
+const IndexPage = () => <></>;
+
+export default IndexPage;
