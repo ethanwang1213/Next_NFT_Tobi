@@ -4,12 +4,12 @@ import IncorrectSp from "./RedeemStatusSp/IncorrectSp";
 import ServerErrorSp from "./RedeemStatusSp/ServerErrorSp";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext } from "react";
+import { RedeemStatusContext } from "../../RedeemPage";
 
-type Props = {
-  redeemStatus: "CHECKING" | "SUCCESS" | "INCORRECT" | "SERVER_ERROR";
-};
+const RedeemStatusModal: React.FC = () => {
+  const { current: redeemStatus } = useContext(RedeemStatusContext);
 
-const RedeemStatusModal: React.FC<Props> = ({ redeemStatus }) => {
   return (
     <>
       <input type="checkbox" id="my-modal" className="modal-toggle" />

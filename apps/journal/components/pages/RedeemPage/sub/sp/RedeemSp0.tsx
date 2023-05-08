@@ -1,7 +1,7 @@
 import TypeValueLine from "../../../../TypeValueLine";
 import RedeemStatusModal from "./RedeemStatusModal";
 
-const RedeemSP0: React.FC = ({}) => {
+const RedeemSP0: React.FC = () => {
   return (
     <div className="relative h-full">
       <div className="mb-10">
@@ -41,12 +41,7 @@ const RedeemSP0: React.FC = ({}) => {
         How to receive NFTs
       </p>
 
-      <RedeemStatusModal redeemStatus={
-        "CHECKING"
-        // "SUCCESS"
-        // "INCORRECT"
-        // "SERVER_ERROR"
-        } />
+      <RedeemStatusModal />
     </div>
   );
 };
