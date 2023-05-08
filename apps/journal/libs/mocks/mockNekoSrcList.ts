@@ -17,4 +17,8 @@ export const mockNekoSrcList: NFTSrc[] = [
     id: 3,
     src: "/mock/images/neko.png",
   },
+  {
+    id: 4,
+    src: "/mock/images/neko.png",
+  },
 ];
