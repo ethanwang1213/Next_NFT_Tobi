@@ -12,13 +12,13 @@ export const BookContext = createContext<bookContext>(null);
 const App = ({ Component, pageProps }: AppProps) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactNode[]>([
-    <TestPage color="red" />,
-    <TestPage color="blue" />,
-    <TestPage color="pink" />,
-    <TestPage color="green" />,
-    <TestPage color="purple" />,
-    <TestPage color="black" />,
-    <TestPage color="gray" />,
+    <TestPage key={0} color="red" />,
+    <TestPage key={1} color="blue" />,
+    <TestPage key={2} color="pink" />,
+    <TestPage key={3} color="green" />,
+    <TestPage key={4} color="purple" />,
+    <TestPage key={5} color="black" />,
+    <TestPage key={6} color="gray" />,
   ]);
   const [tags, setTags] = useState<tagType[]>([
     { image: "/images/icon/Profile_journal.svg", page: 0 },
