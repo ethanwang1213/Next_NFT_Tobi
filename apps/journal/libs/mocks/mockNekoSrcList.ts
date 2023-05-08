@@ -1,9 +1,6 @@
-export type MockNekoSrc = {
-  id: number;
-  src: string;
-};
+import { NFTSrc } from "../../types/NFTSrc";
 
-export const mockNekoSrcList: MockNekoSrc[] = [
+export const mockNekoSrcList: NFTSrc[] = [
   {
     id: 0,
     src: "/mock/images/neko.png",
