@@ -2,6 +2,7 @@ import Link from "next/link";
 import RedeemStatusPC from "./RedeemStatusPC";
 import FeatherIcon from "../../../../../public/images/icon/feather_journal.svg";
 import FeatherCheckIcon from "../../../../../public/images/icon/feathercheck_journal.svg";
+import CautionIcon from "../../../../../public/images/icon/caution_journal.svg";
 
 type Props = {
   redeemStatus: "CHECKING" | "SUCCESS" | "INCORRECT" | "SERVER_ERROR";
@@ -29,7 +30,7 @@ const RedeemPC1: React.FC<Props> = ({ redeemStatus }) => {
       )}
       {redeemStatus === "INCORRECT" && (
         <RedeemStatusPC
-          icon={"icon"}
+          icon={<CautionIcon className={"w-[20%] h-full"} />}
           title={"Error"}
           description={
             <p className="text-3xl font-bold text-error grid content-center">
@@ -41,7 +42,7 @@ const RedeemPC1: React.FC<Props> = ({ redeemStatus }) => {
       {redeemStatus === "SERVER_ERROR" && (
         <>
           <RedeemStatusPC
-            icon={"icon"}
+            icon={<CautionIcon className={"w-[20%] h-full"} />}
             title={"Error"}
             description={
               <p className="text-2xl text-primary grid content-center">

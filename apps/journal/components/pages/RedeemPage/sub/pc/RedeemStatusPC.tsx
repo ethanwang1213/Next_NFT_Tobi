@@ -9,7 +9,7 @@ type Props = {
 const RedeemStatusPC: React.FC<Props> = ({ icon, title, description }) => {
   return (
     <>
-      <div className="w-full h-[60%]">{icon}</div>
+      <div className="w-full h-[60%] flex justify-center">{icon}</div>
       <p className="w-full grow min-h-[50px] text-[60px] font-bold grid content-center">
         {title}
       </p>
