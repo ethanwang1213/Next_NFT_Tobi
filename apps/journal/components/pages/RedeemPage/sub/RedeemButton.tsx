@@ -1,15 +1,15 @@
 import { useContext } from "react";
-import { RedeemStatusContext } from "../../../../contexts/RedeemStatusContextProvider";
+import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
 
 type Props = {
   isPc: boolean;
 };
 
 const RedeemButton: React.FC<Props> = ({ isPc }) => {
-  const { set: setRedeemContext } = useContext(RedeemStatusContext);
+  const { redeemStatus } = useContext(RedeemContext);
 
   const onClick = () => {
-    setRedeemContext("CHECKING");
+    redeemStatus.set("CHECKING");
   };
 
   return isPc ? (

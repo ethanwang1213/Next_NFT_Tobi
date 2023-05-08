@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import RedeemPage from "../../../components/pages/RedeemPage/RedeemPage";
-import RedeemStatusContextProvider from "../../../contexts/RedeemStatusContextProvider";
+import RedeemStatusContextProvider from "../../../contexts/RedeemContextProvider";
 
 const TestRedeem1: NextPage = () => {
   return (

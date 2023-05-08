@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { RedeemStatusContext } from "../../../../../contexts/RedeemStatusContextProvider";
+import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
 
 type Props = {
   className: string;
@@ -12,13 +12,13 @@ const CloseModalButton: React.FC<Props> = ({
   callback,
   children,
 }) => {
-  const { set: setRedeemStatus } = useContext(RedeemStatusContext);
+  const { redeemStatus } = useContext(RedeemContext);
 
   const onClick = () => {
     // すぐにstatusを更新すると、モーダルを閉じるアニメーションが発生せず、
     // モーダルが開いたままになってしまうので、少し遅らせてからstatusを更新している
     setTimeout(() => {
-      setRedeemStatus("NONE");
+      redeemStatus.set("NONE");
     }, 300);
 
     if (callback) {
