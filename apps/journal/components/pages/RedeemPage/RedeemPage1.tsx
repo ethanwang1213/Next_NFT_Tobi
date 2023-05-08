@@ -6,7 +6,14 @@ const RedeemPage0: React.FC = () => {
     <div className="page">
       <PageTitle isShown={false} pageType={"REDEEM"} />
       <div className={`hidden sm:block grow overflow-y-hidden text-[#7D5337]`}>
-        <RedeemPC1 redeemStatus={"SUCCESS"} />
+        <RedeemPC1
+          redeemStatus={
+            "CHECKING"
+            // "SUCCESS"
+            // "INCORRECT"
+            // "SERVER_ERROR"
+          }
+        />
       </div>
     </div>
   );

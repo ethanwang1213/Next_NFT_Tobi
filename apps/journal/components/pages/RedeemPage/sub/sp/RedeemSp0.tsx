@@ -41,7 +41,12 @@ const RedeemSP0: React.FC = ({}) => {
         How to receive NFTs
       </p>
 
-      <RedeemStatusModal redeemStatus={"SERVER_ERROR"} />
+      <RedeemStatusModal redeemStatus={
+        "CHECKING"
+        // "SUCCESS"
+        // "INCORRECT"
+        // "SERVER_ERROR"
+        } />
     </div>
   );
 };
