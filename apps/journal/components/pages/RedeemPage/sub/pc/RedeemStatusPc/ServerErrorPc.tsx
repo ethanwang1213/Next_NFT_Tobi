@@ -1,4 +1,4 @@
-import RedeemStatusPC from "./RedeemStatusPc";
+import RedeemStatusPC from "./parent/RedeemStatusPc";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import CustomerSupportButton from "../../CloseModalButton/CustomerSupportButton";
 

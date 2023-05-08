@@ -1,4 +1,4 @@
-import RedeemStatusPC from "./RedeemStatusPc";
+import RedeemStatusPC from "./parent/RedeemStatusPc";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 

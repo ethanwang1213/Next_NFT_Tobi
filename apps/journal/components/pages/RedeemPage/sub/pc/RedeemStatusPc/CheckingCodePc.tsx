@@ -1,4 +1,4 @@
-import RedeemStatusPC from "./RedeemStatusPc";
+import RedeemStatusPC from "./parent/RedeemStatusPc";
 import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
 
 const CheckingCodePc: React.FC = () => {

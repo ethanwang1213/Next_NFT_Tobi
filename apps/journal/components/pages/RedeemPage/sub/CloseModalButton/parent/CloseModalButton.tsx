@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
+import { RedeemContext } from "../../../../../../contexts/RedeemContextProvider";
 
 type Props = {
   className: string;

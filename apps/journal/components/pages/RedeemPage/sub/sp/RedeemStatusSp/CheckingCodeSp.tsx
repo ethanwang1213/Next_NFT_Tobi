@@ -1,5 +1,5 @@
 import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
-import RedeemStatusSP from "./RedeemStatusSp";
+import RedeemStatusSP from "./parent/RedeemStatusSp";
 
 const CheckingCodeSp: React.FC = () => {
   return (

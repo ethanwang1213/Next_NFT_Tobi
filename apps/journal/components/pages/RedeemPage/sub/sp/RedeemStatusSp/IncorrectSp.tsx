@@ -1,5 +1,5 @@
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
-import RedeemStatusSP from "./RedeemStatusSp";
+import RedeemStatusSP from "./parent/RedeemStatusSp";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 
 const IncorrectSp: React.FC = () => {

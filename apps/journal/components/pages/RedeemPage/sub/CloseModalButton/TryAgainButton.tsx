@@ -1,4 +1,4 @@
-import CloseModalButton from "./CloseModalButton";
+import CloseModalButton from "./parent/CloseModalButton";
 
 type Props = {
   className: string;
