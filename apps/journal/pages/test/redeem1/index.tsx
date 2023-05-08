@@ -1,10 +1,10 @@
 import { NextPage } from "next";
-import RedeemPage1 from "../../../components/pages/RedeemPage/RedeemPage1";
+import RedeemPage from "../../../components/pages/RedeemPage/RedeemPage";
 
 const TestRedeem1: NextPage = () => {
   return (
     <div className="h-[90vh]">
-      <RedeemPage1 />
+      <RedeemPage pageNum={1} />
     </div>
   );
 };

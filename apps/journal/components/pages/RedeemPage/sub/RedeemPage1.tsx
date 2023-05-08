@@ -1,5 +1,6 @@
-import PageTitle from "../../PageTitle";
-import RedeemPC1 from "./sub/pc/RedeemPc1";
+import PageTitle from "../../../PageTitle";
+import RedeemPC1 from "./pc/RedeemPc1";
+
 
 const RedeemPage1: React.FC = () => {
   return (

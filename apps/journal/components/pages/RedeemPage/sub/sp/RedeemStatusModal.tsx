@@ -4,8 +4,8 @@ import IncorrectSp from "./RedeemStatusSp/IncorrectSp";
 import ServerErrorSp from "./RedeemStatusSp/ServerErrorSp";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
-import { RedeemStatusContext } from "../../RedeemPage";
+import { useContext, useEffect } from "react";
+import { RedeemStatusContext } from "../../../../../contexts/RedeemStatusContextProvider";
 
 const RedeemStatusModal: React.FC = () => {
   const { current: redeemStatus } = useContext(RedeemStatusContext);
@@ -25,6 +25,7 @@ const RedeemStatusModal: React.FC = () => {
             </label>
           )}
           <div className="h-full flex flex-col text-center m-2 mt-6 relative">
+            {redeemStatus === "NONE" && <></>}
             {redeemStatus === "CHECKING" && <CheckingCodeSp />}
             {redeemStatus === "SUCCESS" && <SuccessSp />}
             {redeemStatus === "INCORRECT" && <IncorrectSp />}

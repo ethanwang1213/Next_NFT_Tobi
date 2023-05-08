@@ -2,7 +2,7 @@ import CheckingCodePc from "./RedeemStatusPc/CheckingCodePc";
 import SuccessPc from "./RedeemStatusPc/SuccessPc";
 import IncorrectPc from "./RedeemStatusPc/IncorrectPc";
 import ServerErrorPc from "./RedeemStatusPc/ServerErrorPc";
-import { RedeemStatusContext } from "../../RedeemPage";
+import { RedeemStatusContext } from "../../../../../contexts/RedeemStatusContextProvider";
 import { useContext } from "react";
 
 const RedeemPC1: React.FC = () => {
@@ -10,6 +10,7 @@ const RedeemPC1: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col min-h-[300px] text-center relative">
+      {redeemStatus === "NONE" && <></>}
       {redeemStatus === "CHECKING" && <CheckingCodePc />}
       {redeemStatus === "SUCCESS" && <SuccessPc />}
       {redeemStatus === "INCORRECT" && <IncorrectPc />}
