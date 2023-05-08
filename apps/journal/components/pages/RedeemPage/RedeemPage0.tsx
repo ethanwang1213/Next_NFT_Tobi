@@ -1,6 +1,6 @@
 import PageTitle from "../../PageTitle";
-import RedeemPC0 from "./sub/pc/RedeemPC0";
-import RedeemSP0 from "./sub/sp/RedeemSP0";
+import RedeemPC0 from "./sub/pc/RedeemPc0";
+import RedeemSP0 from "./sub/sp/RedeemSp0";
 
 /**
  * 引き換えページの左ページ
