@@ -1,9 +1,13 @@
 import HowToLink from "../HowToLink";
 import InputRedemptionCodeBox from "../InputRedemptionCodeBox";
-import ReceiverData from "../ReceiverData";
 import RedeemButton from "../RedeemButton";
+import SelfData from "../SelfData";
 import RedeemStatusModal from "./RedeemStatusModal";
 
+/**
+ * redeemページの左ページのスマホ表示用コンポーネント
+ * @returns
+ */
 const RedeemSP0: React.FC = () => {
   return (
     <div className="relative h-full">
@@ -17,7 +21,7 @@ const RedeemSP0: React.FC = () => {
       </div>
       <div className="w-full absolute bottom-[13%]">
         <div className="mb-6">
-          <ReceiverData />
+          <SelfData />
         </div>
         <div className="w-full flex justify-center">
           <RedeemButton isPc={false} />

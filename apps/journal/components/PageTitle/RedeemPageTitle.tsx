@@ -4,6 +4,11 @@ type Props = {
   isShown: boolean;
 };
 
+/**
+ * redeemページのタイトルを表示するコンポーネント
+ * @param param0
+ * @returns
+ */
 const RedeemPageTitle: React.FC<Props> = ({ isShown }) => {
   return (
     <PageTitle

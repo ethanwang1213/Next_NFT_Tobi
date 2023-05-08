@@ -19,19 +19,23 @@ type RedeemStatus =
   | "SERVER_ERROR";
 
 type RedeemContextType = {
+  // 引き換えコードのチェックの状態
   redeemStatus: {
     current: RedeemStatus;
     set: Dispatch<SetStateAction<RedeemStatus>>;
   };
+  // 引き換えコードの入力値
   inputCode: {
     current: string;
     set: Dispatch<SetStateAction<string>>;
   };
-  receiverAccount: {
+  // 自身のアカウント名
+  selfAccount: {
     current: string;
     set: Dispatch<SetStateAction<string>>;
   };
-  receiverJournalId: {
+  // 自身のジャーナルID
+  selfJournalId: {
     current: string;
     set: Dispatch<SetStateAction<string>>;
   };
@@ -41,11 +45,16 @@ export const RedeemContext = createContext<RedeemContextType>(
   {} as RedeemContextType
 );
 
+/**
+ * redeemページのデータを管理するコンテキスト
+ * @param param0
+ * @returns
+ */
 const RedeemContextProvider: React.FC<Props> = ({ children }) => {
   const [redeemStatus, setRedeemStatus] = useState<RedeemStatus>("NONE");
   const [inputCode, setInputCode] = useState<string>("");
-  const [receiverAccount, setReceiverAccount] = useState<string>("");
-  const [receiverJournalId, setReceiverJournalId] = useState<string>("");
+  const [selfAccount, setSelfAccount] = useState<string>("");
+  const [selfJournalId, setSelfJournalId] = useState<string>("");
 
   const redeemContextValue = useMemo<RedeemContextType>(
     () => ({
@@ -57,24 +66,24 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
         current: inputCode,
         set: setInputCode,
       },
-      receiverAccount: {
-        current: receiverAccount,
-        set: setReceiverAccount,
+      selfAccount: {
+        current: selfAccount,
+        set: setSelfAccount,
       },
-      receiverJournalId: {
-        current: receiverJournalId,
-        set: setReceiverJournalId,
+      selfJournalId: {
+        current: selfJournalId,
+        set: setSelfJournalId,
       },
     }),
     [
       redeemStatus,
       inputCode,
-      receiverAccount,
-      receiverJournalId,
+      selfAccount,
+      selfJournalId,
       setRedeemStatus,
       setInputCode,
-      setReceiverAccount,
-      setReceiverJournalId,
+      setSelfAccount,
+      setSelfJournalId,
     ]
   );
 

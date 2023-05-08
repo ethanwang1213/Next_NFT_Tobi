@@ -2,6 +2,11 @@ import RedeemStatusPC from "./parent/RedeemStatusPc";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import CustomerSupportButton from "../../CloseModalButton/CustomerSupportButton";
 
+/**
+ * PC表示右ページの
+ * サーバーエラーによる引き換え失敗時の表示用コンポーネント
+ * @returns
+ */
 const ServerErrorPc: React.FC = () => {
   return (
     <RedeemStatusPC

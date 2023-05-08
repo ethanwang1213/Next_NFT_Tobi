@@ -8,6 +8,12 @@ type Props = {
   };
 };
 
+/**
+ * redeem code入力ボックスのコンポーネント
+ * 値はRedeemContextのinputCodeに保存される
+ * @param param0
+ * @returns
+ */
 const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
   const { inputCode } = useContext(RedeemContext);
 

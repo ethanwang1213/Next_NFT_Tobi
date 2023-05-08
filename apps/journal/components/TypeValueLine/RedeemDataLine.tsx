@@ -6,6 +6,11 @@ type Props = {
   hidable?: boolean;
 };
 
+/**
+ * redeemページのデータ 一行を表示するコンポーネント
+ * @param param0
+ * @returns
+ */
 const RedeemDataLine: React.FC<Props> = ({ lineType, lineValue, hidable }) => {
   return (
     <TypeValueLine

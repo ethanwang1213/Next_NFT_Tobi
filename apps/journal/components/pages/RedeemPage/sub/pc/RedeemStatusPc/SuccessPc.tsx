@@ -2,6 +2,11 @@ import RedeemStatusPC from "./parent/RedeemStatusPc";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 
+/**
+ * PC表示右ページの
+ * 引き換え成功時の表示用コンポーネント
+ * @returns
+ */
 const SuccessPc: React.FC = () => {
   return (
     <RedeemStatusPC

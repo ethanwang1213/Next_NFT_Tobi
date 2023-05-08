@@ -6,6 +6,12 @@ type Props = {
   description?: ReactNode;
 };
 
+/**
+ * スマホ表示モーダル内の表示に
+ * 共通する枠のコンポーネント
+ * @param param0
+ * @returns
+ */
 const RedeemStatusSP: React.FC<Props> = ({ icon, title, description }) => {
   return (
     <>

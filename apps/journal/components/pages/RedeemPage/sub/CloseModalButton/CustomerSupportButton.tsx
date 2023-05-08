@@ -5,6 +5,11 @@ type Props = {
   text: string;
 };
 
+/**
+ * redeemページからのサポートページ遷移用ボタン
+ * @param param0
+ * @returns
+ */
 const CustomerSupportButton: React.FC<Props> = ({ className, text }) => {
   const callback = () => {
     // TODO: サポートページに遷移

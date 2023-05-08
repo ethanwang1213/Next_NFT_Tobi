@@ -1,10 +1,10 @@
 import HowToLink from "../HowToLink";
 import InputRedemptionCodeBox from "../InputRedemptionCodeBox";
-import ReceiverData from "../ReceiverData";
+import SelfData from "../SelfData";
 import RedeemButton from "../RedeemButton";
 
 /**
- * 引き換えページのPC版の左ページ
+ * redeemページの左ページのPC表示用コンポーネント
  * @returns
  */
 const RedeemPC0: React.FC = () => {
@@ -19,7 +19,7 @@ const RedeemPC0: React.FC = () => {
         />
       </div>
       <div className="mb-4">
-        <ReceiverData />
+        <SelfData />
       </div>
       <HowToLink className="link link-info text-end text-lg" />
       <div className="w-full absolute bottom-[5%] flex justify-center">

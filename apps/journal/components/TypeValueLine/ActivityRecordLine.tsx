@@ -6,6 +6,11 @@ type Props = {
   hidable?: boolean;
 };
 
+/**
+ * profileページのActivityRecord 一行を表示するコンポーネント
+ * @param param0
+ * @returns
+ */
 const ActivityRecordLine: React.FC<Props> = ({
   lineType,
   lineValue,

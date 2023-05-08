@@ -4,6 +4,11 @@ type Props = {
   isShown: boolean;
 };
 
+/**
+ * NFTページのタイトルを表示するコンポーネント
+ * @param param0 
+ * @returns 
+ */
 const NFTPageTitle: React.FC<Props> = ({ isShown }) => {
   return (
     <PageTitle

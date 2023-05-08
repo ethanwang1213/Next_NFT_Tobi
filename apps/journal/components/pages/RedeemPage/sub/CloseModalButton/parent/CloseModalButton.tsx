@@ -7,6 +7,11 @@ type Props = {
   callback?: () => void;
 };
 
+/**
+ * redeemStatusをNONEに戻し、モーダルを閉じるボタン
+ * @param param0
+ * @returns
+ */
 const CloseModalButton: React.FC<Props> = ({
   className,
   callback,

@@ -1,6 +1,10 @@
 import RedeemPageTitle from "../../../PageTitle/RedeemPageTitle";
 import RedeemPC1 from "./pc/RedeemPc1";
 
+/**
+ * redeemページの右ページを表示するコンポーネント
+ * @returns
+ */
 const RedeemPage1: React.FC = () => {
   return (
     <div className="page">

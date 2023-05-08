@@ -2,6 +2,10 @@ import { NextPage } from "next";
 import RedeemPage from "../../../components/pages/RedeemPage/RedeemPage";
 import RedeemStatusContextProvider from "../../../contexts/RedeemContextProvider";
 
+/**
+ * 主にPC表示のテスト用ページ
+ * @returns
+ */
 const TestRedeem1: NextPage = () => {
   return (
     <div className="h-[90vh] flex">

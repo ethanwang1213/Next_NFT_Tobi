@@ -2,22 +2,22 @@ import { useContext } from "react";
 import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
 import RedeemDataLine from "../../../TypeValueLine/RedeemDataLine";
 
-const ReceiverData: React.FC = () => {
-  const { receiverAccount, receiverJournalId } = useContext(RedeemContext);
+const SelfData: React.FC = () => {
+  const { selfAccount, selfJournalId } = useContext(RedeemContext);
 
   return (
     <div className="grid gap-4">
       <RedeemDataLine
         lineType={"Receive Account"}
-        lineValue={receiverAccount.current}
+        lineValue={selfAccount.current}
       />
       <RedeemDataLine
         lineType={"Receive Journal ID"}
-        lineValue={receiverJournalId.current}
+        lineValue={selfJournalId.current}
         hidable={true}
       />
     </div>
   );
 };
 
-export default ReceiverData;
+export default SelfData;

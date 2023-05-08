@@ -4,6 +4,11 @@ type Props = {
   className: string;
 };
 
+/**
+ * redeemページからのNEKO/NFT一覧ページ遷移用ボタン
+ * @param param0
+ * @returns
+ */
 const CheckNFTButton: React.FC<Props> = ({ className }) => {
   const callback = () => {
     // TODO: NEKO一覧ページに遷移

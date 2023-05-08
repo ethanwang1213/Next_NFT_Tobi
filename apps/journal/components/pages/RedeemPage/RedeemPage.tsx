@@ -7,29 +7,21 @@ type Props = {
   pageNum: number;
 };
 
+/**
+ * redeemページのコンポーネント
+ * RedeemContextの状態管理はここで行う
+ * @param param0
+ * @returns
+ */
 const RedeemPage: React.FC<Props> = ({ pageNum }) => {
-  const { redeemStatus, receiverAccount, receiverJournalId } =
+  const { redeemStatus, selfAccount, selfJournalId } =
     useContext(RedeemContext);
 
+  // TODO: アカウント情報の読み込み
   useEffect(() => {
-    receiverAccount.set("KEISUKE");
-    receiverJournalId.set("keisukeId");
-  }, [receiverJournalId.current]);
-
-  useEffect(() => {
-    console.log("current: ", redeemStatus);
-    if (redeemStatus.current === "CHECKING") {
-      // TODO: 引き換えの処理を実行する
-      // 仮置きとして、1秒後にCHECKINGからstatusが更新されるようにしている
-      setTimeout(() => {
-        redeemStatus.set(
-          "INCORRECT"
-          // "SERVER_ERROR"
-          // "SUCCESS"
-        );
-      }, 1000);
-    }
-  }, [redeemStatus.current]);
+    selfAccount.set("KEISUKE");
+    selfJournalId.set("keisukeId");
+  }, []);
 
   return pageNum % 2 === 0 ? <RedeemPage0 /> : <RedeemPage1 />;
 };

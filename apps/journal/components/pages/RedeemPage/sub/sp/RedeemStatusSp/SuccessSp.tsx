@@ -2,6 +2,11 @@ import RedeemStatusSP from "./parent/RedeemStatusSp";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 
+/**
+ * スマホ表示モーダル内の
+ * 引き換え成功時の表示用コンポーネント
+ * @returns
+ */
 const SuccessSp: React.FC = () => {
   return (
     <RedeemStatusSP

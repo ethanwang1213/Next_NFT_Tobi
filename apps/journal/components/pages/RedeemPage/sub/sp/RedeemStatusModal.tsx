@@ -8,6 +8,10 @@ import { useContext } from "react";
 import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
 import CloseModalButton from "../CloseModalButton/parent/CloseModalButton";
 
+/**
+ * redeem codeチェックの状態を表示するモーダルのコンポーネント
+ * @returns
+ */
 const RedeemStatusModal: React.FC = () => {
   const { redeemStatus } = useContext(RedeemContext);
 

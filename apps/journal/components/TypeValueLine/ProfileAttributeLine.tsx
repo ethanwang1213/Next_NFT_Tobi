@@ -6,6 +6,11 @@ type Props = {
   hidable?: boolean;
 };
 
+/**
+ * profileページの属性データ 一行を表示するコンポーネント
+ * @param param0
+ * @returns
+ */
 const ProfileAttributeLine: React.FC<Props> = ({
   lineType,
   lineValue,

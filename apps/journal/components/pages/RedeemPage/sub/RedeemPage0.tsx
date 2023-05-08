@@ -3,7 +3,7 @@ import RedeemPC0 from "./pc/RedeemPc0";
 import RedeemSP0 from "./sp/RedeemSp0";
 
 /**
- * 引き換えページの左ページ
+ * redeemページの左ページを表示するコンポーネント
  * @returns
  */
 const RedeemPage0: React.FC = () => {

@@ -2,6 +2,11 @@ import CautionIcon from "../../../../../../public/images/icon/caution_journal.sv
 import RedeemStatusSP from "./parent/RedeemStatusSp";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 
+/**
+ * スマホ表示モーダル内の
+ * コード不適合による引き換え失敗時の表示用コンポーネント
+ * @returns
+ */
 const IncorrectSp: React.FC = () => {
   return (
     <RedeemStatusSP

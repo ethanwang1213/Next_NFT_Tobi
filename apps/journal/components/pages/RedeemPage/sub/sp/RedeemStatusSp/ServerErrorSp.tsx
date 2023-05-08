@@ -3,6 +3,11 @@ import CautionIcon from "../../../../../../public/images/icon/caution_journal.sv
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 import CustomerSupportButton from "../../CloseModalButton/CustomerSupportButton";
 
+/**
+ * スマホ表示モーダル内の
+ * サーバーエラーによる引き換え失敗時の表示用コンポーネント
+ * @returns
+ */
 const ServerErrorSp: React.FC = () => {
   return (
     <RedeemStatusSP

@@ -5,6 +5,10 @@ import ServerErrorPc from "./RedeemStatusPc/ServerErrorPc";
 import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
 import { useContext } from "react";
 
+/**
+ * redeemページの右ページのPC表示用コンポーネント
+ * @returns 
+ */
 const RedeemPC1: React.FC = () => {
   const { redeemStatus } = useContext(RedeemContext);
 

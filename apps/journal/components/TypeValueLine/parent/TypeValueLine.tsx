@@ -28,8 +28,10 @@ const TypeValueLine: React.FC<Props> = ({
   const [hidableValue, setHideableValue] = useState<string>(lineValue);
   const [isHidden, setIsHidden] = useState<boolean>(false);
 
+  // 表示データの更新処理
   useEffect(() => {
     if (isHidden) {
+      // 隠すボタンが押されている場合、値を隠した状態で更新
       hideValue();
     } else {
       setHideableValue(lineValue);
