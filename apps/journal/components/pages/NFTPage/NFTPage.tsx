@@ -1,6 +1,6 @@
 import PageTitle from "@/components/PageTitle/PageTitle";
-import NFTPagePC from "../sub/NFTPagePC/NFTPagePC";
-import NFTPageSP from "../sub/NFTPageSP/NFTPageSP";
+import NFTPagePC from "./sub/NFTPagePC";
+import NFTPageSP from "./sub/NFTPageSP";
 
 type Props = {
   pageNum: number;
