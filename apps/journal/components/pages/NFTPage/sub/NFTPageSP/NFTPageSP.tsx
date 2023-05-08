@@ -1,5 +1,4 @@
 import { NFTSrc } from "@/types/NFTSrc";
-import styles from "./NFTPageSP.module.scss";
 import NFTImage from "@/components/NFTImage/NFTImage";
 import { useEffect, useState } from "react";
 import { mockNFTSrcList } from "@/libs/mocks/mockNFTSrcList";
@@ -28,7 +27,7 @@ const NFTPageSP: React.FC<Props> = ({ pageNum }) => {
   }, [pageNum]);
 
   return (
-    <div className={styles.nftGrid}>
+    <div className="h-full grid grid-cols-3 gap-y-4 gap-x-2 content-start place-items-center">
       {nftSrcList.map((v) => (
         <NFTImage key={v.id} src={v.src} alt={"nft"} />
       ))}

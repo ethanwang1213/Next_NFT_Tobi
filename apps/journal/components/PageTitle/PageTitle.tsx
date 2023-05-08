@@ -1,5 +1,3 @@
-import styles from "./PageTitle.module.scss";
-
 type Props = {
   isShown: boolean;
   title: string;
@@ -7,8 +5,12 @@ type Props = {
 
 const PageTitle: React.FC<Props> = ({ isShown, title }) => {
   return (
-    <div className={styles.titleContainer}>
-      {isShown && <h1 className={styles.title}>{title}</h1>}
+    <div className="h-[100px] mb-0 sm:mb-8">
+      {isShown && (
+        <h1 className="w-full text-center text-[50px] sm:text-[60px] font-bold">
+          {title}
+        </h1>
+      )}
     </div>
   );
 };
