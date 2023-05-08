@@ -190,8 +190,9 @@ const Pc = () => {
                       ? "-50%"
                       : "-70%",
                 }}
+                key={i}
               >
-                <Tag image={tag.image} page={tag.page} key={i} />
+                <Tag image={tag.image} page={tag.page} />
               </div>
             ))}
           </div>
