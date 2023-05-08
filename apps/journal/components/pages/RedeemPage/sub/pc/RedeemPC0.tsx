@@ -1,5 +1,4 @@
-import TypeValueLine from "../../../../TypeValueLine/TypeValueLine";
-import styles from "./RedeemPC0.module.scss";
+import TypeValueLine from "../../../../TypeValueLine";
 
 /**
  * 引き換えページのPC版の左ページ

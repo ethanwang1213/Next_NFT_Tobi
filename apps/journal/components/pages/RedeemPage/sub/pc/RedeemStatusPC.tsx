@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import styles from "./RedeemStatusPC.module.scss";
 
 type Props = {
   icon: ReactNode;

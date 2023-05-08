@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import RedeemPage1 from "../../../components/pages/RedeemPage/RedeemPage1/RedeemPage1";
+import RedeemPage1 from "../../../components/pages/RedeemPage/RedeemPage1";
 
 const TestRedeem1: NextPage = () => {
   return (

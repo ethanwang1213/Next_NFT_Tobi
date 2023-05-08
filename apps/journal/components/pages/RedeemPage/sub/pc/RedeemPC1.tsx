@@ -1,6 +1,5 @@
 import Link from "next/link";
-import styles from "./RedeemPC1.module.scss";
-import RedeemStatusPC from "../RedeemStatusPC/RedeemStatusPC";
+import RedeemStatusPC from "./RedeemStatusPC";
 import FeatherIcon from "../../../../../public/images/icon/feather_journal.svg";
 import FeatherCheckIcon from "../../../../../public/images/icon/feathercheck_journal.svg";
 

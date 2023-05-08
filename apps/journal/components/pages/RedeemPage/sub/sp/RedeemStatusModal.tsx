@@ -1,8 +1,7 @@
-import RedeemStatusSP from "../RedeemStatusSP/RedeemStatusSp";
+import RedeemStatusSP from "./RedeemStatusSp";
 import Link from "next/link";
 import FeatherIcon from "../../../../../public/images/icon/feather_journal.svg";
 import FeatherCheckIcon from "../../../../../public/images/icon/feathercheck_journal.svg";
-import styles from "./RedeemStatusModal.module.scss";
 
 type Props = {
   redeemStatus: "CHECKING" | "SUCCESS" | "INCORRECT" | "SERVER_ERROR";

@@ -1,6 +1,5 @@
-import TypeValueLine from "../../../../TypeValueLine/TypeValueLine";
-import RedeemStatusModal from "../RedeemStatusModal/RedeemStatusModal";
-import styles from "./RedeemSP0.module.scss";
+import TypeValueLine from "../../../../TypeValueLine";
+import RedeemStatusModal from "./RedeemStatusModal";
 
 const RedeemSP0: React.FC = ({}) => {
   return (

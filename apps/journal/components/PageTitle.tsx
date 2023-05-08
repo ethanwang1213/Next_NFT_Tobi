@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import styles from "./PageTitle.module.scss";
 
 type Props = {
   isShown: boolean;
