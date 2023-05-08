@@ -3,6 +3,11 @@ type Props = {
   title: string;
 };
 
+/**
+ * ページタイトルを表示するコンポーネント
+ * @param param0
+ * @returns
+ */
 const PageTitle: React.FC<Props> = ({ isShown, title }) => {
   return (
     <div className="h-[100px] mb-0 sm:mb-8">
