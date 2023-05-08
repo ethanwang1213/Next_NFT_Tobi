@@ -36,7 +36,9 @@ const RedeemButton: React.FC<Props> = ({ isPc }) => {
   ) : (
     <label
       htmlFor="my-modal"
-      className="btn btn-md btn-circle w-[60%] text-2xl"
+      className={`btn btn-md btn-circle w-[60%] text-2xl ${
+        redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
+      }`}
       onClick={onClick}
     >
       Redeem

@@ -1,7 +1,7 @@
 import HowToLink from "../HowToLink";
 import InputRedemptionCodeBox from "../InputRedemptionCodeBox";
-import SelfData from "../SelfData";
 import RedeemButton from "../RedeemButton";
+import SelfData from "../SelfData";
 
 /**
  * redeemページの左ページのPC表示用コンポーネント

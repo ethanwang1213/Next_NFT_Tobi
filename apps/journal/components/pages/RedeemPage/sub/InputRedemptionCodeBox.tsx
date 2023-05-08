@@ -15,7 +15,7 @@ type Props = {
  * @returns
  */
 const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
-  const { inputCode } = useContext(RedeemContext);
+  const { redeemStatus, inputCode } = useContext(RedeemContext);
 
   return (
     <div>
@@ -25,6 +25,7 @@ const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
         className={classNames.input}
         onChange={(e) => inputCode.set(e.target.value)}
         value={inputCode.current}
+        disabled={redeemStatus.current === "CHECKING"}
       />
       <p className={classNames.p}>NFT受け取りコードを入力してください。</p>
     </div>
