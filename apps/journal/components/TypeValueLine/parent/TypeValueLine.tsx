@@ -1,18 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 type Props = {
   lineType: string;
   lineValue: string;
-  styleMode: "PROFILE_ATTRIBUTE" | "ACTIVITY_RECORD" | "REDEEM_DATA";
   hidable?: boolean;
-};
-
-type LineClass = {
-  container: string;
-  type: string;
-  value: string;
+  classNames: {
+    container: string;
+    type: string;
+    value: string;
+  };
 };
 
 /**
@@ -24,38 +22,9 @@ type LineClass = {
 const TypeValueLine: React.FC<Props> = ({
   lineType,
   lineValue,
-  styleMode,
   hidable = false,
+  classNames,
 }) => {
-  // styleModeによって、スタイルを変更する
-  const defaultClass: LineClass = {
-    container: "w-full flex",
-    type: "min-w-[60%] text-sm sm:text-base font-bold",
-    value: "grow max-w-[40%] text-end text-sm sm:text-base font-bold",
-  };
-  const lineClass: LineClass = useMemo(() => {
-    switch (styleMode) {
-      // case "PROFILE_ATTRIBUTE":
-      //   return {
-      //     container: `${defaultClass.container}`,
-      //     type: `${defaultClass.type}`,
-      //     value: `${defaultClass.value}`,
-      //   };
-      // case "ACTIVITY_RECORD":
-      //   return {
-      //     container: `${defaultClass.container}`,
-      //     type: `${defaultClass.type}`,
-      //     value: `${defaultClass.value}`,
-      //   };
-      case "REDEEM_DATA":
-        return {
-          container: `${defaultClass.container}`,
-          type: `${defaultClass.type} text-xl`,
-          value: `${defaultClass.value} text-xl`,
-        };
-    }
-  }, [styleMode]);
-
   const [hidableValue, setHideableValue] = useState<string>(lineValue);
   const [isHidden, setIsHidden] = useState<boolean>(false);
 
@@ -84,10 +53,16 @@ const TypeValueLine: React.FC<Props> = ({
   };
 
   return (
-    <div className={lineClass.container}>
-      <p className={lineClass.type}>{lineType}</p>
+    <div className={`w-full flex ${classNames.container}`}>
+      <p
+        className={`min-w-[60%] text-sm sm:text-base font-bold ${classNames.type}`}
+      >
+        {lineType}
+      </p>
       {hidable ? (
-        <div className={lineClass.value}>
+        <div
+          className={`grow max-w-[40%] text-end text-sm sm:text-base font-bold ${classNames.value}`}
+        >
           <div className="flex justify-end gap-1">
             <p>{hidableValue}</p>
             <button onClick={isHidden ? showValue : hideValue}>
@@ -99,7 +74,11 @@ const TypeValueLine: React.FC<Props> = ({
           </div>
         </div>
       ) : (
-        <p className={lineClass.value}>{lineValue}</p>
+        <p
+          className={`grow max-w-[40%] text-end text-sm sm:text-base font-bold ${classNames.value}`}
+        >
+          {lineValue}
+        </p>
       )}
     </div>
   );

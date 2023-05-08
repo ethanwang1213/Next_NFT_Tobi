@@ -1,4 +1,3 @@
-import TypeValueLine from "../../../../TypeValueLine";
 import HowToLink from "../HowToLink";
 import InputRedemptionCodeBox from "../InputRedemptionCodeBox";
 import ReceiverData from "../ReceiverData";

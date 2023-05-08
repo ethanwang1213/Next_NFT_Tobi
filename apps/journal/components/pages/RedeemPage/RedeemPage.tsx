@@ -8,7 +8,7 @@ type Props = {
 };
 
 const RedeemPage: React.FC<Props> = ({ pageNum }) => {
-  const { redeemStatus, inputCode, receiverAccount, receiverJournalId } =
+  const { redeemStatus, receiverAccount, receiverJournalId } =
     useContext(RedeemContext);
 
   useEffect(() => {
