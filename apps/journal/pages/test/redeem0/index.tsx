@@ -1,10 +1,13 @@
 import { NextPage } from "next";
 import RedeemPage from "../../../components/pages/RedeemPage/RedeemPage";
+import RedeemStatusContextProvider from "../../../contexts/RedeemStatusContextProvider";
 
 const TestRedeem0: NextPage = () => {
   return (
     <div className="h-[90vh]">
-      <RedeemPage pageNum={0} />
+      <RedeemStatusContextProvider>
+        <RedeemPage pageNum={0} />
+      </RedeemStatusContextProvider>
     </div>
   );
 };

@@ -4,8 +4,9 @@ import IncorrectSp from "./RedeemStatusSp/IncorrectSp";
 import ServerErrorSp from "./RedeemStatusSp/ServerErrorSp";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { RedeemStatusContext } from "../../../../../contexts/RedeemStatusContextProvider";
+import CloseModalButton from "../CloseModalButton/CloseModalButton";
 
 const RedeemStatusModal: React.FC = () => {
   const { current: redeemStatus } = useContext(RedeemStatusContext);
@@ -17,12 +18,9 @@ const RedeemStatusModal: React.FC = () => {
         <div className="modal-box">
           {(redeemStatus === "INCORRECT" ||
             redeemStatus === "SERVER_ERROR") && (
-            <label
-              htmlFor="my-modal"
-              className="btn btn-ghost btn-sm btn-circle absolute right-2 top-2"
-            >
+            <CloseModalButton className="btn btn-ghost btn-sm btn-circle absolute right-2 top-2">
               <FontAwesomeIcon icon={faXmark} fontSize={24} />
-            </label>
+            </CloseModalButton>
           )}
           <div className="h-full flex flex-col text-center m-2 mt-6 relative">
             {redeemStatus === "NONE" && <></>}

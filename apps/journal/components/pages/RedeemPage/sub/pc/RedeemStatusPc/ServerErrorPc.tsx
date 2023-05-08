@@ -1,6 +1,6 @@
-import Link from "next/link";
 import RedeemStatusPC from "./RedeemStatusPc";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
+import CustomerSupportButton from "../../CloseModalButton/CustomerSupportButton";
 
 const ServerErrorPc: React.FC = () => {
   return (
@@ -13,9 +13,10 @@ const ServerErrorPc: React.FC = () => {
             {"An error has occurred."}
             <br />
             {"Please contact "}
-            <Link href={"#"} className="link link-info">
-              {"customer support"}
-            </Link>
+            <CustomerSupportButton
+              className="link link-info"
+              text="customer support"
+            />
             {"."}
           </span>
         </p>

@@ -28,13 +28,7 @@ export const RedeemStatusContext = createContext<RedeemStatusContext>(
 );
 
 const RedeemStatusContextProvider: React.FC<Props> = ({ children }) => {
-  const [redeemStatus, setRedeemStatus] = useState<RedeemStatus>(
-    // "NONE"
-    // "CHECKING"
-    "SUCCESS"
-    // "INCORRECT"
-    // "SERVER_ERROR"
-  );
+  const [redeemStatus, setRedeemStatus] = useState<RedeemStatus>("NONE");
 
   const redeemStatusContextValue = useMemo<RedeemStatusContext>(
     () => ({ current: redeemStatus, set: setRedeemStatus }),

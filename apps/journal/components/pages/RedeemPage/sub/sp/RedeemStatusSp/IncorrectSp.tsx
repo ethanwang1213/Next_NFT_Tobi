@@ -1,5 +1,6 @@
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import RedeemStatusSP from "./RedeemStatusSp";
+import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 
 const IncorrectSp: React.FC = () => {
   return (
@@ -11,9 +12,7 @@ const IncorrectSp: React.FC = () => {
           <p className="font-bold text-error grid content-center mb-8">
             The Redemption Code is incorrect.
           </p>
-          <button className="btn btn-secondary btn-md btn-circle text-lg w-[90%]">
-            Check your NFTs
-          </button>
+          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[90%]" />
         </div>
       }
     />

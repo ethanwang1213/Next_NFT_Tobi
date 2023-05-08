@@ -1,4 +1,5 @@
 import TypeValueLine from "../../../../TypeValueLine";
+import RedeemButton from "../RedeemButton";
 import RedeemStatusModal from "./RedeemStatusModal";
 
 const RedeemSP0: React.FC = () => {
@@ -29,12 +30,7 @@ const RedeemSP0: React.FC = () => {
           />
         </div>
         <div className="w-full flex justify-center">
-          <label
-            htmlFor="my-modal"
-            className="btn btn-md btn-circle w-[60%] text-2xl"
-          >
-            Redeem
-          </label>
+          <RedeemButton isPc={false} />
         </div>
       </div>
       <p className="w-full absolute bottom-0 link link-info text-end text-lg">

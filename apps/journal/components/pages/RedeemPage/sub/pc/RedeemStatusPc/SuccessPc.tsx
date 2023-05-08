@@ -1,5 +1,6 @@
 import RedeemStatusPC from "./RedeemStatusPc";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
+import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 
 const SuccessPc: React.FC = () => {
   return (
@@ -7,9 +8,7 @@ const SuccessPc: React.FC = () => {
       icon={<FeatherCheckIcon className={"w-full h-full"} />}
       title={"Success!!"}
       description={
-        <button className="btn btn-outline btn-lg rounded-3xl text-3xl w-[40%] absolute bottom-0">
-          Check your NFTs
-        </button>
+        <CheckNFTButton className="btn btn-outline btn-lg rounded-3xl text-3xl w-[40%] absolute bottom-0" />
       }
     />
   );

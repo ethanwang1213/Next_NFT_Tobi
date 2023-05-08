@@ -1,6 +1,7 @@
 import RedeemStatusSP from "./RedeemStatusSp";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
-import Link from "next/link";
+import TryAgainButton from "../../CloseModalButton/TryAgainButton";
+import CustomerSupportButton from "../../CloseModalButton/CustomerSupportButton";
 
 const ServerErrorSp: React.FC = () => {
   return (
@@ -14,18 +15,18 @@ const ServerErrorSp: React.FC = () => {
               {"An error has occurred."}
               <br />
               {"Please contact "}
-              <Link href={"#"} className="link link-info">
-                {"customer support"}
-              </Link>
+              <CustomerSupportButton
+                className="link link-info"
+                text="customer support"
+              />
               {"."}
             </span>
           </p>
-          <button className="btn btn-secondary btn-md btn-circle text-lg w-[90%] mb-6">
-            Contact
-          </button>
-          <button className="btn btn-secondary btn-md btn-circle text-lg w-[90%]">
-            Try again
-          </button>
+          <CustomerSupportButton
+            className="btn btn-secondary btn-md btn-circle text-lg w-[90%] mb-6"
+            text="Contact"
+          />
+          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[90%]" />
         </div>
       }
     />

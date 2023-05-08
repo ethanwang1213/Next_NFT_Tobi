@@ -1,4 +1,5 @@
 import TypeValueLine from "../../../../TypeValueLine";
+import RedeemButton from "../RedeemButton";
 
 /**
  * 引き換えページのPC版の左ページ
@@ -32,9 +33,7 @@ const RedeemPC0: React.FC = () => {
       </div>
       <p className="link link-info text-end text-lg">How to receive NFTs</p>
       <div className="w-full absolute bottom-[5%] flex justify-center">
-        <button className="btn btn-lg rounded-3xl w-[40%] text-3xl">
-          Redeem
-        </button>
+        <RedeemButton isPc={true} />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import RedeemStatusSP from "./RedeemStatusSp";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
+import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 
 const SuccessSp: React.FC = () => {
   return (
@@ -11,9 +12,7 @@ const SuccessSp: React.FC = () => {
       }
       title={"Success!!"}
       description={
-        <button className="btn btn-secondary btn-md btn-circle text-lg w-[90%] mt-6">
-          Check your NFTs
-        </button>
+        <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[90%] mt-6" />
       }
     />
   );
