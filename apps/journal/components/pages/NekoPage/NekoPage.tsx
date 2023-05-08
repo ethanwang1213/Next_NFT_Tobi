@@ -1,5 +1,5 @@
-import PageTitle from "@/components/PageTitle/PageTitle";
-import NekoGrid from "../sub/NekoGrid/NekoGrid";
+import PageTitle from "../../PageTitle";
+import NekoGrid from "./sub/NekoGrid";
 
 type Props = {
   pageNum: number;

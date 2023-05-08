@@ -1,7 +1,7 @@
 import { NFTSrc } from "@/types/NFTSrc";
 import { useEffect, useState } from "react";
-import NFTImage from "@/components/NFTImage/NFTImage";
 import { mockNekoSrcList } from "@/libs/mock/mockNekoSrcList";
+import NFTImage from "../../../NFTImage";
 
 type Props = {
   pageNum: number;

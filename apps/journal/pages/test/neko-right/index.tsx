@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import NekoPage from "../../../components/pages/NekoPage/NekoPage/NekoPage";
+import NekoPage from "../../../components/pages/NekoPage/NekoPage";
 
 const NekoRightPage: NextPage = () => {
   return (
