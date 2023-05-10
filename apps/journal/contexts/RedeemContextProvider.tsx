@@ -1,0 +1,97 @@
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useMemo,
+  useState,
+} from "react";
+
+type Props = {
+  children: ReactNode;
+};
+
+type RedeemStatus =
+  | "NONE"
+  | "CHECKING"
+  | "SUCCESS"
+  | "INCORRECT"
+  | "SERVER_ERROR";
+
+type RedeemContextType = {
+  // 引き換えコードのチェックの状態
+  redeemStatus: {
+    current: RedeemStatus;
+    set: Dispatch<SetStateAction<RedeemStatus>>;
+  };
+  // 引き換えコードの入力値
+  inputCode: {
+    current: string;
+    set: Dispatch<SetStateAction<string>>;
+  };
+  // 自身のアカウント名
+  selfAccount: {
+    current: string;
+    set: Dispatch<SetStateAction<string>>;
+  };
+  // 自身のジャーナルID
+  selfJournalId: {
+    current: string;
+    set: Dispatch<SetStateAction<string>>;
+  };
+};
+
+export const RedeemContext = createContext<RedeemContextType>(
+  {} as RedeemContextType
+);
+
+/**
+ * redeemページのデータを管理するコンテキスト
+ * @param param0
+ * @returns
+ */
+const RedeemContextProvider: React.FC<Props> = ({ children }) => {
+  const [redeemStatus, setRedeemStatus] = useState<RedeemStatus>("NONE");
+  const [inputCode, setInputCode] = useState<string>("");
+  const [selfAccount, setSelfAccount] = useState<string>("");
+  const [selfJournalId, setSelfJournalId] = useState<string>("");
+
+  const redeemContextValue = useMemo<RedeemContextType>(
+    () => ({
+      redeemStatus: {
+        current: redeemStatus,
+        set: setRedeemStatus,
+      },
+      inputCode: {
+        current: inputCode,
+        set: setInputCode,
+      },
+      selfAccount: {
+        current: selfAccount,
+        set: setSelfAccount,
+      },
+      selfJournalId: {
+        current: selfJournalId,
+        set: setSelfJournalId,
+      },
+    }),
+    [
+      redeemStatus,
+      inputCode,
+      selfAccount,
+      selfJournalId,
+      setRedeemStatus,
+      setInputCode,
+      setSelfAccount,
+      setSelfJournalId,
+    ]
+  );
+
+  return (
+    <RedeemContext.Provider value={redeemContextValue}>
+      {children}
+    </RedeemContext.Provider>
+  );
+};
+
+export default RedeemContextProvider;
