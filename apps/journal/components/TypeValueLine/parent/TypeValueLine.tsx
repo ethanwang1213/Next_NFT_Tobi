@@ -26,7 +26,7 @@ const TypeValueLine: React.FC<Props> = ({
   classNames,
 }) => {
   const [hidableValue, setHideableValue] = useState<string>(lineValue);
-  const [isHidden, setIsHidden] = useState<boolean>(false);
+  const [isHidden, setIsHidden] = useState<boolean>(true);
 
   // 表示データの更新処理
   useEffect(() => {
