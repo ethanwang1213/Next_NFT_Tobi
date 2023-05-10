@@ -14,14 +14,16 @@ const RedeemButton: React.FC<Props> = ({ isPc }) => {
   const { redeemStatus } = useContext(RedeemContext);
 
   const onClick = () => {
+    if (redeemStatus.current === "CHECKING") return;
+
     redeemStatus.set("CHECKING");
     // TODO: 引き換えの処理を実行する
     // 仮置きとして、1秒後にCHECKINGからstatusが更新されるようにしている
     setTimeout(() => {
       redeemStatus.set(
-        "INCORRECT"
+        // "INCORRECT"
         // "SERVER_ERROR"
-        // "SUCCESS"
+        "SUCCESS"
       );
     }, 1000);
   };
@@ -29,7 +31,9 @@ const RedeemButton: React.FC<Props> = ({ isPc }) => {
   return isPc ? (
     <button
       onClick={onClick}
-      className="btn btn-lg rounded-3xl w-[40%] text-3xl"
+      className={`btn btn-lg rounded-3xl w-[40%] text-3xl ${
+        redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
+      }`}
     >
       Redeem
     </button>
