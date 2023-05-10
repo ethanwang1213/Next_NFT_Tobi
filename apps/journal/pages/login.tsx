@@ -2,7 +2,6 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormEventHandler, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import AccountEmailNotif from "../components/AccountEmailNotif";
 
 const Login = () => {
   const loginRef = useRef<HTMLDivElement>(null);
@@ -18,16 +17,12 @@ const Login = () => {
   // Googleアカウントでログインする関数
   const withGoogle = () => {};
 
-  const [isOkNotif, setIsOkNotif] = useState(false);
-
   useEffect(() => {
-    if (!isOkNotif) return;
-
     gsap
       .timeline()
-      .to(loginRef.current, { width: "161px" }, "0.5")
+      .to(loginRef.current, { width: "161px" }, "2")
       .from(loginRef.current, { opacity: 0 }, "<0.3");
-  }, [isOkNotif]);
+  });
 
   return (
     // TODO: 背景設定
@@ -35,16 +30,15 @@ const Login = () => {
       {/* // ロゴ設置 */}
       <h1 className="text-5xl">Login</h1>
 
-      <div
-        className="relative h-[300px]"
-        ref={loginRef}
-        style={{ display: isOkNotif ? "block" : "none" }}
-      >
+      <div className="relative h-[300px]" ref={loginRef}>
         <form
           className="backdrop-blur-md bg-white/50 p-5 rounded-2xl flex flex-col gap-3 items-center absolute"
           onSubmit={signIn}
         >
           <input type="text" placeholder="Email" className="input" />
+          <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
+            これはサンプルです。これはサンプルです。これはサンプルです。これはサンプルです。
+          </p>
           <button
             className="btn btn-ghost btn-outline btn-circle"
             type="button"
@@ -64,8 +58,6 @@ const Login = () => {
           </p>
         </form>
       </div>
-
-      <AccountEmailNotif setIsOkNotif={setIsOkNotif} />
     </div>
   );
 };
