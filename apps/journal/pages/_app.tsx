@@ -5,6 +5,8 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { ReactNode, createContext, useMemo, useState } from "react";
 import { bookContext, tagType } from "../types/type";
 import TestPage from "../components/TestComponent";
+import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
+import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 config.autoAddCss = false;
 
 export const BookContext = createContext<bookContext>(null);
@@ -12,8 +14,8 @@ export const BookContext = createContext<bookContext>(null);
 const App = ({ Component, pageProps }: AppProps) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactNode[]>([
-    <TestPage key={0} color="red" />,
-    <TestPage key={1} color="blue" />,
+    <ProfilePage0 />,
+    <ProfilePage1 />,
     <TestPage key={2} color="pink" />,
     <TestPage key={3} color="green" />,
     <TestPage key={4} color="purple" />,
