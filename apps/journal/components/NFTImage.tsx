@@ -13,7 +13,7 @@ type Props = {
  */
 const NFTImage: React.FC<Props> = ({ src, alt }) => {
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full aspect-square sm:h-full">
       <Image src={src} alt={alt} fill style={{ objectFit: "contain" }} />
     </div>
   );
