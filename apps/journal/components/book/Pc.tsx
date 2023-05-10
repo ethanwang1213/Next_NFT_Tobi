@@ -59,7 +59,7 @@ const Pc = () => {
       )
       .set(pageRef[0].current, { pointerEvents: "none" })
       .set(pageRef[1].current, { pointerEvents: "none" });
-  }, [pageNo, pageRef]);
+  }, [pageNo, pageRef, oldPageNo]);
 
   const setAspect = () => {
     // 本の画像のアスペクト比を設定
@@ -89,7 +89,7 @@ const Pc = () => {
     setBookHeight(bookHeight);
 
     // 本の画像の拡大率を設定
-    setScale(bookWidth / 1500);
+    setScale(bookWidth / 1000);
 
     // 本の画像の左上隅座標を更新
     setBookPos({
@@ -174,7 +174,7 @@ const Pc = () => {
           </div>
 
           <div
-            className="absolute flex flex-col origin-top-left gap-5"
+            className="absolute flex flex-col origin-top-left gap-2"
             style={{
               transform: `scale(${scale})`,
               left: bookPos.left,
@@ -185,10 +185,7 @@ const Pc = () => {
               <div
                 className="relative"
                 style={{
-                  left:
-                    pageNo === tag.page || pageNo === tag.page + 1
-                      ? "-50%"
-                      : "-70%",
+                  left: "-66%",
                 }}
                 key={i}
               >

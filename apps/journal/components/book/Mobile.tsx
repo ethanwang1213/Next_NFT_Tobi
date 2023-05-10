@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { BookContext } from "../../pages/_app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,6 +12,10 @@ const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
   const [isShowTag, setIsShowTag] = useState<Boolean>(false);
   const bookContext = useContext(BookContext);
+  const { current: pageNo } = bookContext.pageNo;
+  useEffect(() => {
+    setIsShowTag(false);
+  }, [pageNo]);
 
   return (
     <div className="overflow-hidden">
@@ -40,11 +44,11 @@ const Mobile = () => {
       </div>
       <FontAwesomeIcon
         icon={isLeftPage ? faCircleRight : faCircleLeft}
-        size="3x"
-        className="absolute bottom-0 right-0 p-5"
+        size="4x"
+        className="absolute bottom-0 right-0 p-5 scale-[0.875] origin-bottom-right"
         onClick={() => setIsLeftPage(!isLeftPage)}
       />
-      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
+      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-18px]">
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
