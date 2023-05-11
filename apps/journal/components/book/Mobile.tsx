@@ -10,6 +10,7 @@ import Tag from "../Tag";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import NFTPage from "../pages/NFTPage/NFTPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
+import RedeemPage from "../pages/RedeemPage/RedeemPage";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -25,7 +26,11 @@ const Mobile = () => {
     if (pages.length === 0) return;
 
     // スマホ表示が1ページで十分な場合、左右移動の矢印を非表示にする
-    if (pages[pageNo].type === NFTPage || pages[pageNo].type === NekoPage) {
+    if (
+      pages[pageNo].type === NFTPage ||
+      pages[pageNo].type === NekoPage ||
+      pages[pageNo].type === RedeemPage
+    ) {
       setIsArrowShown(false);
     } else {
       setIsArrowShown(true);
