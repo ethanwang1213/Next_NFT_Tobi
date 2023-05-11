@@ -41,9 +41,6 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 
   useEffect(() => {
-    // ページ数の取得
-    const profilePageNum = 2;
-
     // TODO: TOBIRA NEKOの数を取得する
     let nekoPageNum = Math.trunc(mockNekoSrcList.length / 4);
     if (mockNekoSrcList.length % 4 !== 0) nekoPageNum++; // 余りがある場合はページ数を+1
@@ -56,30 +53,40 @@ const App = ({ Component, pageProps }: AppProps) => {
     if (nftPageNum === 0) nftPageNum = 1; // ページ数0の場合は1ページとする
     if (nftPageNum % 2 === 1) nftPageNum++; // 奇数ページならページ数+1
 
+    // 各ページの開始ページ番号を設定
+    const profilePageNum = 2;
+    const nekoPageIndex = profilePageNum;
+    const nftPageIndex = nekoPageIndex + nekoPageNum;
+    const redeemPageIndex = nftPageIndex + nftPageNum;
+
     // 各ページを生成し配列に格納する
     // TODO: 所有NFTが増加するほど、ページも増加していく。
     // 現状の実装では事前に生成し配列に保存するため、NFTを所有するほどメモリを喰うことになる。
     // ゆくゆくは動的にページを生成するようにしたい。
     setPages([
-      <ProfilePage0 />,
-      <ProfilePage1 />,
-      ...[...Array(nekoPageNum)].map((_, i) => <NekoPage pageNum={i} />),
-      ...[...Array(nftPageNum)].map((_, i) => <NFTPage pageNum={i} />),
-      <RedeemPage pageNum={0} />,
-      <RedeemPage pageNum={1} />,
+      <ProfilePage0 key={0} />,
+      <ProfilePage1 key={1} />,
+      ...[...Array(nekoPageNum)].map((_, i) => (
+        <NekoPage pageNum={i} key={nekoPageIndex + i} />
+      )),
+      ...[...Array(nftPageNum)].map((_, i) => (
+        <NFTPage pageNum={i} key={nftPageIndex + i} />
+      )),
+      <RedeemPage pageNum={0} key={redeemPageIndex + 0} />,
+      <RedeemPage pageNum={1} key={redeemPageIndex + 1} />,
     ]);
 
     // 各ページの開始ページ番号にタグを設定
     setTags([
       { image: "/images/icon/Profile_journal.svg", page: 0 },
-      { image: "/images/icon/TOBIRANEKO_journal.svg", page: profilePageNum },
+      { image: "/images/icon/TOBIRANEKO_journal.svg", page: nekoPageIndex },
       {
         image: "/images/icon/NFTs_journal.svg",
-        page: profilePageNum + nekoPageNum,
+        page: nftPageIndex,
       },
       {
         image: "/images/icon/Serial_journal.svg",
-        page: profilePageNum + nekoPageNum + nftPageNum,
+        page: redeemPageIndex,
       },
     ]);
   }, []);
