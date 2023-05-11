@@ -1,6 +1,6 @@
 import { FC, ReactElement, useContext, useMemo } from "react";
-import { BookContext } from "../pages/_app";
 import useSound from "use-sound";
+import { BookContext } from "../contexts/BookContextProvider";
 
 const Tag: FC<{
   image: string | ReactElement;

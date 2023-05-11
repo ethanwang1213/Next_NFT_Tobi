@@ -2,9 +2,9 @@ import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
 import { BookPos } from "../../types/type";
-import { BookContext } from "../../pages/_app";
 import Tag from "../Tag";
 import gsap from "gsap";
+import { BookContext } from "../../contexts/BookContextProvider";
 
 const usePrevious = (value: any) => {
   const ref = useRef(null);

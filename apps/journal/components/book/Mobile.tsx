@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { BookContext } from "../../pages/_app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -11,6 +10,7 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import NFTPage from "../pages/NFTPage/NFTPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
+import { BookContext } from "../../contexts/BookContextProvider";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
