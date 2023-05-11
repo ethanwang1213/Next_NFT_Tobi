@@ -24,7 +24,7 @@ const RedeemSP0: React.FC = () => {
           <SelfData />
         </div>
         <div className="w-full flex justify-center">
-          <RedeemButton isPc={false} />
+          <RedeemButton />
         </div>
       </div>
       <HowToLink className="w-full absolute bottom-0 link link-info text-end text-lg" />
