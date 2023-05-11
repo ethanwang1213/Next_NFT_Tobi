@@ -1,7 +1,7 @@
 import RedeemStatusSP from "./parent/RedeemStatusSp";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
-import CustomerSupportButton from "../../CloseModalButton/CustomerSupportButton";
+import CustomerSupportButton from "../../CustomerSupportButton";
 
 /**
  * スマホ表示モーダル内の

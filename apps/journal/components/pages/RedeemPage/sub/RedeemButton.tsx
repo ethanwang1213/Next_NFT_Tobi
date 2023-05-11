@@ -19,8 +19,8 @@ const RedeemButton: React.FC = () => {
     setTimeout(() => {
       redeemStatus.set(
         // "INCORRECT"
-        // "SERVER_ERROR"
-        "SUCCESS"
+        "SERVER_ERROR"
+        // "SUCCESS"
       );
     }, 1000);
   };
