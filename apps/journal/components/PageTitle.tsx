@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
+
 type Props = {
   isShown: boolean;
-  title: string;
+  title: ReactNode;
 };
 
 /**

@@ -1,4 +1,4 @@
-import CloseModalButton from "./parent/CloseModalButton";
+import Link from "next/link";
 
 type Props = {
   className: string;
@@ -11,14 +11,14 @@ type Props = {
  * @returns
  */
 const CustomerSupportButton: React.FC<Props> = ({ className, text }) => {
-  const callback = () => {
-    // TODO: サポートページに遷移
-  };
-
   return (
-    <CloseModalButton className={className} callback={callback}>
+    <Link
+      target="_blank"
+      href={"https://tobiratory.myshopify.com/pages/faq"}
+      className={className}
+    >
       {text}
-    </CloseModalButton>
+    </Link>
   );
 };
 

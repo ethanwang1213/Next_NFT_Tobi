@@ -57,7 +57,7 @@ const TypeValueLine: React.FC<Props> = ({
   return (
     <div className={`w-full flex ${classNames.container}`}>
       <p
-        className={`min-w-[60%] text-sm sm:text-base font-bold ${classNames.type}`}
+        className={`grow min-w-[60%] text-sm sm:text-base font-bold ${classNames.type}`}
       >
         {lineType}
       </p>
