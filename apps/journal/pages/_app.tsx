@@ -1,6 +1,12 @@
 import type { AppProps } from "next/app";
 import "../styles/global.scss";
 import Script from "next/script";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import RedeemStatusContextProvider from "../contexts/RedeemContextProvider";
+import BookContextProvider from "../contexts/BookContextProvider";
+
+config.autoAddCss = false;
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
@@ -15,7 +21,11 @@ const App = ({ Component, pageProps }: AppProps) => {
           h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
         })(document);`}
       </Script>
-      <Component {...pageProps} />
+      <BookContextProvider>
+        <RedeemStatusContextProvider>
+          <Component {...pageProps} />
+        </RedeemStatusContextProvider>
+      </BookContextProvider>
     </>
   );
 };
