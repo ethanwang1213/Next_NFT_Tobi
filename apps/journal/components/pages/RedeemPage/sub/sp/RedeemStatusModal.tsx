@@ -22,6 +22,7 @@ const RedeemStatusModal: React.FC = () => {
         id="redeem-modal"
         className="modal-toggle"
         checked={modalInputIsChecked.current}
+        onChange={() => {}}
       />
       <div className="modal px-4">
         <div className="modal-box">

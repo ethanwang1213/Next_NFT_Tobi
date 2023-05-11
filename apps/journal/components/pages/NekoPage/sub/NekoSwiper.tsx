@@ -41,6 +41,7 @@ const NekoSwiper: React.FC = () => {
 
   useEffect(() => {
     if (!cardImgRef.current) return;
+    if (innerHeight === 0 || cardAspect === 0) return;
 
     let cardWidth: number;
     let cardHeight: number;
