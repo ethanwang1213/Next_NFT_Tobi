@@ -10,6 +10,8 @@ import NekoPage from "../components/pages/NekoPage/NekoPage";
 import NFTPage from "../components/pages/NFTPage/NFTPage";
 import RedeemStatusContextProvider from "../contexts/RedeemContextProvider";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
+import { mockNekoSrcList } from "../libs/mocks/mockNekoSrcList";
+import { mockNFTSrcList } from "../libs/mocks/mockNFTSrcList";
 
 config.autoAddCss = false;
 
@@ -42,10 +44,12 @@ const App = ({ Component, pageProps }: AppProps) => {
     // ページ数の取得
     const profilePageNum = 2;
     // TODO: TOBIRA NEKOの数を取得する
-    let nekoPageNum = 3;
+    let nekoPageNum = Math.trunc(mockNekoSrcList.length / 4) + 1;
+    if (nekoPageNum === 0) nekoPageNum = 1;
     if (nekoPageNum % 2 === 1) nekoPageNum++;
     // TODO: NFTの数を取得する
-    let nftPageNum = 3;
+    let nftPageNum = Math.trunc(mockNFTSrcList.length / 9) + 1;
+    if (nftPageNum === 0) nftPageNum = 1;
     if (nftPageNum % 2 === 1) nftPageNum++;
 
     // 各ページを生成し配列に格納する
