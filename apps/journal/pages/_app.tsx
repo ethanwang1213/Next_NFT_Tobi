@@ -45,11 +45,12 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     // TODO: TOBIRA NEKOの数を取得する
-    // TODO: 奇数の時に空白ページを入れる
-    const nekoPages = 2;
+    let nekoPages = 3;
+    if (nekoPages % 2 === 1) nekoPages++;
+
     // TODO: NFTの数を取得する
-    // TODO: 奇数の時に空白ページを入れる
-    const nftPages = 4;
+    let nftPages = 3;
+    if (nftPages % 2 === 1) nftPages++;
     setPages([
       <ProfilePage0 />,
       <ProfilePage1 />,
