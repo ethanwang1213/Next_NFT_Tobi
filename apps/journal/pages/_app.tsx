@@ -18,12 +18,7 @@ export const BookContext = createContext<bookContext>(null);
 const App = ({ Component, pageProps }: AppProps) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactNode[]>([]);
-  const [tags, setTags] = useState<tagType[]>([
-    { image: "/images/icon/Profile_journal.svg", page: 0 },
-    { image: "/images/icon/TOBIRANEKO_journal.svg", page: 2 },
-    { image: "/images/icon/NFTs_journal.svg", page: 4 },
-    { image: "/images/icon/Serial_journal.svg", page: 6 },
-  ]);
+  const [tags, setTags] = useState<tagType[]>([]);
 
   const pageContextValue = useMemo(
     () => ({
@@ -44,20 +39,40 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 
   useEffect(() => {
+    // ページ数の取得
+    const profilePageNum = 2;
     // TODO: TOBIRA NEKOの数を取得する
-    let nekoPages = 3;
-    if (nekoPages % 2 === 1) nekoPages++;
-
+    let nekoPageNum = 3;
+    if (nekoPageNum % 2 === 1) nekoPageNum++;
     // TODO: NFTの数を取得する
-    let nftPages = 3;
-    if (nftPages % 2 === 1) nftPages++;
+    let nftPageNum = 3;
+    if (nftPageNum % 2 === 1) nftPageNum++;
+
+    // 各ページを生成し配列に格納する
+    // TODO: 所有NFTが増加するほど、ページも増加していく。
+    // 現状の実装では事前に生成し配列に保存するため、NFTを所有するほどメモリを喰うことになる。
+    // ゆくゆくは動的にページを生成するようにしたい。
     setPages([
       <ProfilePage0 />,
       <ProfilePage1 />,
-      ...[...Array(nekoPages)].map((_, i) => <NekoPage pageNum={i} />),
-      ...[...Array(nftPages)].map((_, i) => <NFTPage pageNum={i} />),
+      ...[...Array(nekoPageNum)].map((_, i) => <NekoPage pageNum={i} />),
+      ...[...Array(nftPageNum)].map((_, i) => <NFTPage pageNum={i} />),
       <RedeemPage pageNum={0} />,
       <RedeemPage pageNum={1} />,
+    ]);
+
+    // 各ページの開始ページ番号にタグを設定
+    setTags([
+      { image: "/images/icon/Profile_journal.svg", page: 0 },
+      { image: "/images/icon/TOBIRANEKO_journal.svg", page: profilePageNum },
+      {
+        image: "/images/icon/NFTs_journal.svg",
+        page: profilePageNum + nekoPageNum,
+      },
+      {
+        image: "/images/icon/Serial_journal.svg",
+        page: profilePageNum + nekoPageNum + nftPageNum,
+      },
     ]);
   }, []);
 
