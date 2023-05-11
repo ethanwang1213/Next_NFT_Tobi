@@ -17,11 +17,13 @@ const CloseModalButton: React.FC<Props> = ({
   callback,
   children,
 }) => {
-  const { redeemStatus } = useContext(RedeemContext);
+  const { redeemStatus, modalInputIsChecked } = useContext(RedeemContext);
 
   const onClick = () => {
-    // すぐにstatusを更新すると、モーダルを閉じるアニメーションが発生せず、
-    // モーダルが開いたままになってしまうので、少し遅らせてからstatusを更新している
+    modalInputIsChecked.set(false);
+
+    // すぐにstatusを更新すると、空になったモーダルがアニメーション中に見えてしまうので、
+    // 少し遅らせてからstatusを更新している
     setTimeout(() => {
       redeemStatus.set("NONE");
     }, 300);
@@ -32,7 +34,7 @@ const CloseModalButton: React.FC<Props> = ({
   };
 
   return (
-    <label htmlFor="my-modal" className={className} onClick={onClick}>
+    <label htmlFor="redeem-modal" className={className} onClick={onClick}>
       {children}
     </label>
   );

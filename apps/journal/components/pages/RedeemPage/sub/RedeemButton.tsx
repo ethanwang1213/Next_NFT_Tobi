@@ -1,20 +1,17 @@
 import { useContext } from "react";
 import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
 
-type Props = {
-  isPc: boolean;
-};
-
 /**
  * 引き換えボタンのコンポーネント
  * @param param0
  * @returns
  */
-const RedeemButton: React.FC<Props> = ({ isPc }) => {
-  const { redeemStatus } = useContext(RedeemContext);
+const RedeemButton: React.FC = () => {
+  const { redeemStatus, modalInputIsChecked } = useContext(RedeemContext);
 
   const onClick = () => {
     if (redeemStatus.current === "CHECKING") return;
+    modalInputIsChecked.set(true);
 
     redeemStatus.set("CHECKING");
     // TODO: 引き換えの処理を実行する
@@ -28,25 +25,15 @@ const RedeemButton: React.FC<Props> = ({ isPc }) => {
     }, 1000);
   };
 
-  return isPc ? (
+  return (
     <button
       onClick={onClick}
-      className={`btn btn-lg rounded-3xl w-[40%] text-3xl ${
+      className={`btn btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[60%] sm:w-[40%] text-2xl sm:text-3xl ${
         redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
       }`}
     >
       Redeem
     </button>
-  ) : (
-    <label
-      htmlFor="my-modal"
-      className={`btn btn-md btn-circle w-[60%] text-2xl ${
-        redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
-      }`}
-      onClick={onClick}
-    >
-      Redeem
-    </label>
   );
 };
 
