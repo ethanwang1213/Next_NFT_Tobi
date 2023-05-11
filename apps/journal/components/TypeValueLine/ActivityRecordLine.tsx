@@ -23,8 +23,8 @@ const ActivityRecordLine: React.FC<Props> = ({
       hidable={hidable}
       classNames={{
         container: "",
-        type: "",
-        value: "",
+        type: "font-normal",
+        value: "text-xs font-normal",
       }}
     />
   );
