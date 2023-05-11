@@ -9,9 +9,7 @@ import RedeemStatusContextProvider from "../../../contexts/RedeemContextProvider
 const TestRedeem0: NextPage = () => {
   return (
     <div className="h-[90vh]">
-      <RedeemStatusContextProvider>
-        <RedeemPage pageNum={0} />
-      </RedeemStatusContextProvider>
+      <RedeemPage pageNum={0} />
     </div>
   );
 };

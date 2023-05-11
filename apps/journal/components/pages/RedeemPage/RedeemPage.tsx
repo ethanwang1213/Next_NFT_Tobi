@@ -9,7 +9,6 @@ type Props = {
 
 /**
  * redeemページのコンポーネント
- * RedeemContextの状態管理はここで行う
  * @param param0
  * @returns
  */
