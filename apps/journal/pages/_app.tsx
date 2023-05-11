@@ -43,14 +43,18 @@ const App = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
     // ページ数の取得
     const profilePageNum = 2;
+
     // TODO: TOBIRA NEKOの数を取得する
-    let nekoPageNum = Math.trunc(mockNekoSrcList.length / 4) + 1;
-    if (nekoPageNum === 0) nekoPageNum = 1;
-    if (nekoPageNum % 2 === 1) nekoPageNum++;
+    let nekoPageNum = Math.trunc(mockNekoSrcList.length / 4);
+    if (mockNekoSrcList.length % 4 !== 0) nekoPageNum++; // 余りがある場合はページ数を+1
+    if (nekoPageNum === 0) nekoPageNum = 1; // ページ数0の場合は1ページとする
+    if (nekoPageNum % 2 === 1) nekoPageNum++; // 奇数ページならページ数+1
+
     // TODO: NFTの数を取得する
-    let nftPageNum = Math.trunc(mockNFTSrcList.length / 9) + 1;
-    if (nftPageNum === 0) nftPageNum = 1;
-    if (nftPageNum % 2 === 1) nftPageNum++;
+    let nftPageNum = Math.trunc(mockNFTSrcList.length / 9);
+    if (mockNFTSrcList.length % 9 !== 0) nftPageNum++; // 余りがある場合はページ数を+1
+    if (nftPageNum === 0) nftPageNum = 1; // ページ数0の場合は1ページとする
+    if (nftPageNum % 2 === 1) nftPageNum++; // 奇数ページならページ数+1
 
     // 各ページを生成し配列に格納する
     // TODO: 所有NFTが増加するほど、ページも増加していく。
