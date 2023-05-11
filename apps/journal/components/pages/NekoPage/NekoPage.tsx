@@ -1,6 +1,6 @@
 import PageTitle from "../../PageTitle";
 import NekoGrid from "./sub/NekoGrid";
-import NekoSwiper from "./sub/NekoSwiper";
+import NekoSwiper from "./sub/NekoSwiper/NekoSwiper";
 
 type Props = {
   pageNum: number;

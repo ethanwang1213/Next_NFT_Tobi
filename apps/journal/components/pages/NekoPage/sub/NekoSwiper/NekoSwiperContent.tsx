@@ -1,0 +1,59 @@
+import Image from "next/image";
+import PageTitle from "../../../../PageTitle";
+
+type Props = {
+  width: number;
+  height: number;
+  cardImgRef: React.RefObject<HTMLImageElement>;
+  onCardImgLoad: () => void;
+  imgSrc?: string;
+};
+
+/**
+ * TOBIRA NEKOページ スマホ表示での、
+ * swiperのカード一枚のコンテンツを表示するコンポーネント
+ * @param param0
+ * @returns
+ */
+const NekoSwiperContent: React.FC<Props> = ({
+  width,
+  height,
+  cardImgRef,
+  onCardImgLoad,
+  imgSrc = null,
+}) => {
+  return (
+    <div
+      className="flex flex-col p-[40px]"
+      style={{
+        width: width,
+        height: height,
+      }}
+    >
+      <Image
+        src="/images/book/openpage_single.png"
+        fill
+        alt="cart"
+        className="object-contain absolute z-[-1]"
+        ref={cardImgRef}
+        onLoad={onCardImgLoad}
+      />
+      <PageTitle isShown={true} title="TOBIRA NEKO" />
+      <div className="w-full grow p-16 ">
+        {!!imgSrc && (
+          <div className="relative w-full h-full ">
+            <Image
+              src={imgSrc}
+              alt={"neko"}
+              fill
+              style={{ objectFit: "cover" }}
+              className="overflow-visible"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default NekoSwiperContent;

@@ -1,13 +1,11 @@
+import { useWindowSize } from "react-use";
+import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { mockNekoSrcList } from "../../../../libs/mocks/mockNekoSrcList";
-import NFTImage from "../../../NFTImage";
 import { EffectCards } from "swiper";
 import "swiper/css";
 import "swiper/css/effect-cards";
-import { useWindowSize } from "react-use";
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import PageTitle from "../../../PageTitle";
+import NekoSwiperContent from "./NekoSwiperContent";
+import { mockNekoSrcList } from "../../../../../libs/mocks/mockNekoSrcList";
 
 type CardPos = {
   left: number;
@@ -75,45 +73,43 @@ const NekoSwiper: React.FC = () => {
         top: cardPos.top,
       }}
     >
-      <Swiper
-        effect={"cards"}
-        grabCursor={true}
-        modules={[EffectCards]}
-        className="mySwiper"
-      >
-        {mockNekoSrcList.map((v) => (
-          <SwiperSlide key={v.id}>
-            <div
-              className="flex flex-col p-[40px]"
-              style={{
-                width: cardPos.width,
-                height: cardPos.height,
-              }}
-            >
-              <Image
-                src="/images/book/openpage_single.png"
-                fill
-                alt="cart"
-                className="object-contain absolute z-[-1]"
-                ref={cardImgRef}
-                onLoad={setAspect}
-              />
-              <PageTitle isShown={true} title="TOBIRA NEKO" />
-              <div className="w-full grow p-16 ">
-                <div className="relative w-full h-full ">
-                  <Image
-                    src={v.src}
-                    alt={"neko"}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    className="overflow-visible"
-                  />
-                </div>
-              </div>
-            </div>
+      {/* TOBIRA NEKOを持っていない場合、空白のカードを一枚表示する */}
+      {mockNekoSrcList.length === 0 ? (
+        <Swiper
+          effect={"cards"}
+          grabCursor={false}
+          modules={[]}
+          className="mySwiper"
+        >
+          <SwiperSlide key={0}>
+            <NekoSwiperContent
+              width={cardPos.width}
+              height={cardPos.height}
+              cardImgRef={cardImgRef}
+              onCardImgLoad={setAspect}
+            />
           </SwiperSlide>
-        ))}
-      </Swiper>
+        </Swiper>
+      ) : (
+        <Swiper
+          effect={"cards"}
+          grabCursor={true}
+          modules={[EffectCards]}
+          className="mySwiper"
+        >
+          {mockNekoSrcList.map((v) => (
+            <SwiperSlide key={v.id}>
+              <NekoSwiperContent
+                width={cardPos.width}
+                height={cardPos.height}
+                cardImgRef={cardImgRef}
+                onCardImgLoad={setAspect}
+                imgSrc={v.src}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 };
