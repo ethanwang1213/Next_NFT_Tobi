@@ -37,7 +37,9 @@ const Login = () => {
         >
           <input type="text" placeholder="Email" className="input" />
           <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
-            これはサンプルです。これはサンプルです。これはサンプルです。これはサンプルです。
+            {
+              "TOBIRA NEKOをご購入予定、購入後の方は購入時に使用したメールアドレスでご登録ください。"
+            }
           </p>
           <button
             className="btn btn-ghost btn-outline btn-circle"
@@ -50,12 +52,6 @@ const Login = () => {
           <button className="btn btn-block" type="submit">
             sign in
           </button>
-          <p>
-            Don&apos;t have an account?
-            <button onClick={signUp} className="btn btn-link" type="button">
-              Sign Up
-            </button>
-          </p>
         </form>
       </div>
     </div>
