@@ -49,7 +49,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     const nekoPages = 2;
     // TODO: NFTの数を取得する
     // TODO: 奇数の時に空白ページを入れる
-    const nftPages = 2;
+    const nftPages = 4;
     setPages([
       <ProfilePage0 />,
       <ProfilePage1 />,

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BookContext } from "../../pages/_app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,10 +8,24 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import Tag from "../Tag";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import NFTPage from "../pages/NFTPage/NFTPage";
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
   const [isShowTag, setIsShowTag] = useState<Boolean>(false);
   const bookContext = useContext(BookContext);
+  const pages = bookContext.pages.current;
+  const pageNo = bookContext.pageNo.current;
+  const [isArrowShown, setIsAllowShown] = useState<Boolean>(true);
+
+  // スマホ表示が1ページで十分な場合、左右移動の矢印を非表示にする
+  useEffect(() => {
+    if (pages.length === 0) return;
+    if (pages[pageNo].type === NFTPage) {
+      setIsAllowShown(false);
+    } else {
+      setIsAllowShown(true);
+    }
+  }, [pages, pageNo]);
 
   return (
     <div className="overflow-hidden">
@@ -38,12 +52,14 @@ const Mobile = () => {
           </div>
         </div>
       </div>
-      <FontAwesomeIcon
-        icon={isLeftPage ? faCircleRight : faCircleLeft}
-        size="3x"
-        className="absolute bottom-0 right-0 p-5"
-        onClick={() => setIsLeftPage(!isLeftPage)}
-      />
+      {isArrowShown && (
+        <FontAwesomeIcon
+          icon={isLeftPage ? faCircleRight : faCircleLeft}
+          size="3x"
+          className="absolute bottom-0 right-0 p-5"
+          onClick={() => setIsLeftPage(!isLeftPage)}
+        />
+      )}
       <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
         <div
           className={`flex flex-col gap-2 ${
