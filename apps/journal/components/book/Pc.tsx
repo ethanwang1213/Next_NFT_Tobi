@@ -210,8 +210,11 @@ const Pc = () => {
           >
             <div className="w-full h-full relative">
               <div
-                className="absolute top-0 left-0 h-full bg-black/0 pointer-events-auto"
-                style={{ width: `${flipAreaWRatio}%` }}
+                className="absolute top-0 h-full bg-black/0 pointer-events-auto"
+                style={{
+                  width: `${flipAreaWRatio}%`,
+                  left: `-${flipAreaWRatio + 2}%`,
+                }}
                 onMouseEnter={(e) => handleFlipAreaEnter(e, -2)}
                 onMouseLeave={handleFlipAreaLeave}
                 onClick={(e) => tryFlipPage(e, -2)}
@@ -229,7 +232,10 @@ const Pc = () => {
             <div className="w-full h-full relative">
               <div
                 className="absolute top-0 right-0 h-full bg-black/0 pointer-events-auto"
-                style={{ width: `${flipAreaWRatio}%` }}
+                style={{
+                  width: `${flipAreaWRatio}%`,
+                  right: `-${flipAreaWRatio + 2}%`,
+                }}
                 onMouseEnter={(e) => handleFlipAreaEnter(e, 2)}
                 onMouseLeave={handleFlipAreaLeave}
                 onClick={(e) => tryFlipPage(e, 2)}
