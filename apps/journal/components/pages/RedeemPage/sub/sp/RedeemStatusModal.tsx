@@ -26,10 +26,15 @@ const RedeemStatusModal: React.FC = () => {
       />
       <div className="modal px-4">
         <div className="modal-box">
-          {(redeemStatus.current === "INCORRECT" ||
+          {(redeemStatus.current === "SUCCESS" ||
+            redeemStatus.current === "INCORRECT" ||
             redeemStatus.current === "SERVER_ERROR") && (
             <CloseModalButton className="btn btn-ghost btn-sm btn-circle absolute right-2 top-2">
-              <FontAwesomeIcon icon={faXmark} fontSize={24} />
+              <FontAwesomeIcon
+                icon={faXmark}
+                fontSize={24}
+                className="text-accent"
+              />
             </CloseModalButton>
           )}
           <div className="h-full flex flex-col text-center m-2 mt-6 relative">

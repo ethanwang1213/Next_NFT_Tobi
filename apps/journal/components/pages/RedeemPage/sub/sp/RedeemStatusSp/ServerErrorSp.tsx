@@ -11,27 +11,28 @@ import CustomerSupportButton from "../../CustomerSupportButton";
 const ServerErrorSp: React.FC = () => {
   return (
     <RedeemStatusSP
-      icon={<CautionIcon className={"w-[40%] h-full"} />}
+      icon={<CautionIcon className={"w-[54%] h-full"} />}
       title={"Error"}
+      titleSize={34}
       description={
         <div>
-          <p className="text-primary grid content-center mb-6">
+          <p className="font-bold text-error grid content-center mb-6">
             <span>
               {"An error has occurred."}
               <br />
               {"Please contact "}
               <CustomerSupportButton
-                className="link link-primary"
+                className="link link-error"
                 text="customer support"
               />
               {"."}
             </span>
           </p>
           <CustomerSupportButton
-            className="btn btn-secondary btn-md btn-circle text-lg w-[90%] mb-6"
+            className="btn btn-secondary btn-md btn-circle text-lg w-[88%] mb-6"
             text="Contact"
           />
-          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[90%]" />
+          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[88%]" />
         </div>
       }
     />

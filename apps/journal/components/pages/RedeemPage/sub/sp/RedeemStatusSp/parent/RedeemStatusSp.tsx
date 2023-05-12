@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 type Props = {
   icon: ReactNode;
   title: string;
+  titleSize: number;
   description?: ReactNode;
 };
 
@@ -12,16 +13,20 @@ type Props = {
  * @param param0
  * @returns
  */
-const RedeemStatusSP: React.FC<Props> = ({ icon, title, description }) => {
+const RedeemStatusSP: React.FC<Props> = ({
+  icon,
+  title,
+  titleSize,
+  description,
+}) => {
   return (
     <>
       <div className="[&>svg_*]:!fill-accent w-full h-[50%] flex justify-center">
         {icon}
       </div>
       <p
-        className={`w-full grow min-h-[60px] mt-2 text-[42px] text-accent font-bold grid content-center ${
-          title.length > 10 ? "text-[28px]" : ""
-        }`}
+        className={`w-full grow min-h-[60px] mt-2 text-[42px] text-accent font-bold grid content-center`}
+        style={{ fontSize: `${titleSize}px` }}
       >
         {title}
       </p>
