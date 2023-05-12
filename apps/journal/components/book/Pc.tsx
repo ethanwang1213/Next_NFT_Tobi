@@ -152,7 +152,7 @@ const Pc = () => {
             priority
           ></Image>
           <div
-            className="absolute origin-top-left"
+            className="absolute origin-top-left page"
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
@@ -162,7 +162,7 @@ const Pc = () => {
             {pages[pageNo]}
           </div>
           <div
-            className="absolute origin-top-left"
+            className="absolute origin-top-left page page-right"
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
@@ -173,7 +173,7 @@ const Pc = () => {
           </div>
 
           <div
-            className="absolute origin-top-left"
+            className="absolute origin-top-left page"
             ref={pageRef[0]}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
@@ -186,7 +186,7 @@ const Pc = () => {
             {pages[oldPageNo]}
           </div>
           <div
-            className="absolute origin-top-left"
+            className="absolute origin-top-left page page-right"
             ref={pageRef[1]}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,

@@ -61,13 +61,13 @@ const Mobile = () => {
           />
         )}
         <div className="absolute top-4 left-10 bottom-5 right-[70vh] flex justify-end">
-          <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3">
+          <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3 page">
             {bookContext.pages.current[bookContext.pageNo.current]}
           </div>
         </div>
         {!isSwiperPage && (
           <div className="absolute top-4 left-[70vh] bottom-5 right-5 flex justify-start">
-            <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3">
+            <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3 page">
               {bookContext.pages.current[bookContext.pageNo.current + 1]}
             </div>
           </div>

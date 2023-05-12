@@ -42,7 +42,7 @@ const ProfilePage0: React.FC = () => {
   }, []);
 
   return (
-    <div className="page">
+    <>
       <div className="w-full sm:flex">
         <div className="w-full sm:w-[50%] mb-6 flex justify-center">
           <div className="w-[50%] min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
@@ -72,7 +72,7 @@ const ProfilePage0: React.FC = () => {
           <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

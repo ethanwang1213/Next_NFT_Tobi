@@ -12,7 +12,7 @@ type Props = {
  */
 const NFTPage: React.FC<Props> = ({ pageNum }) => {
   return (
-    <div className="page">
+    <>
       <NFTPageTitle
         isShown={pageNum % 2 === 0}
         title={
@@ -31,7 +31,7 @@ const NFTPage: React.FC<Props> = ({ pageNum }) => {
           <NFTPageSP pageNum={pageNum} />
         </div>
       </>
-    </div>
+    </>
   );
 };
 

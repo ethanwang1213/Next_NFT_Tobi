@@ -8,6 +8,10 @@
     @apply px-10 pt-14 pb-24;
   }
 
+  .page-right {
+    @apply pr-4;
+  }
+
   .swiper-slide {
     display: flex;
     align-items: center;

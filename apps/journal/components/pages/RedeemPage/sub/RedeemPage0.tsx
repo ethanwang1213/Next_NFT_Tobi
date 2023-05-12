@@ -8,7 +8,7 @@ import RedeemSP0 from "./sp/RedeemSp0";
  */
 const RedeemPage0: React.FC = () => {
   return (
-    <div className="page">
+    <>
       <RedeemPageTitle isShown={true} />
       <>
         <div className={`hidden sm:block grow`}>
@@ -18,7 +18,7 @@ const RedeemPage0: React.FC = () => {
           <RedeemSP0 />
         </div>
       </>
-    </div>
+    </>
   );
 };
 
