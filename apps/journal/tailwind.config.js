@@ -7,6 +7,7 @@ const config = {
       sm: "576px", // landscape phones
       md: "992px", // desktops
     },
+
     extend: {
       fontFamily: {
         body: ["fot-tsukubrdgothic-std", "sans-serif"],
@@ -24,11 +25,11 @@ const config = {
           "secondary-content": "#7D5337",
           accent: "#753A00",
           "accent-content": "#FDFAF1",
-          neutral: "#000000",
+          neutral: "#753A00",
           "base-100": "#FBEED0",
           info: "#137BB1",
           success: "#36D399",
-          warning: "#FACC15",
+          warning: "#B25748",
           error: "#E5574B",
         },
       },

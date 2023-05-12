@@ -11,6 +11,7 @@ const CheckingCodePc: React.FC = () => {
     <RedeemStatusPC
       icon={<FeatherIcon className={"w-full h-full text-accent"} />}
       title={"Checking code..."}
+      titleSize={72}
     />
   );
 };
