@@ -15,7 +15,7 @@ const NFTPageTitle: React.FC<Props> = ({ isShown, title }) => {
   return (
     <PageTitle
       isShown={isShown}
-      className="h-[100px] min-h-[100px]"
+      className="h-[100px] min-h-[130px]"
       title={title}
     />
   );

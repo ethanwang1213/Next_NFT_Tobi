@@ -1,10 +1,12 @@
 import Image from "next/image";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
 import { BookPos } from "../../types/type";
 import Tag from "../Tag";
 import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
+import NekoPage from "../pages/NekoPage/NekoPage";
+import NFTPage from "../pages/NFTPage/NFTPage";
 
 const usePrevious = (value: any) => {
   const ref = useRef(null);
@@ -138,6 +140,11 @@ const Pc = () => {
     transform: `scale(${scale})`,
   };
 
+  const isGridPage = useMemo(
+    () => pages[pageNo]?.type === NekoPage || pages[pageNo]?.type === NFTPage,
+    [pages, pageNo]
+  );
+
   return (
     <>
       <div className="w-screen h-screen md:p-20 p-10">
@@ -152,7 +159,9 @@ const Pc = () => {
             priority
           ></Image>
           <div
-            className="absolute origin-top-left page"
+            className={`absolute origin-top-left page ${
+              isGridPage ? "px-0" : ""
+            }`}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
@@ -162,7 +171,9 @@ const Pc = () => {
             {pages[pageNo]}
           </div>
           <div
-            className="absolute origin-top-left page page-right"
+            className={`absolute origin-top-left page page-right ${
+              isGridPage ? "px-0" : ""
+            }`}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
@@ -173,7 +184,9 @@ const Pc = () => {
           </div>
 
           <div
-            className="absolute origin-top-left page"
+            className={`absolute origin-top-left page ${
+              isGridPage ? "px-0" : ""
+            }`}
             ref={pageRef[0]}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
@@ -186,7 +199,9 @@ const Pc = () => {
             {pages[oldPageNo]}
           </div>
           <div
-            className="absolute origin-top-left page page-right"
+            className={`absolute origin-top-left page page-right ${
+              isGridPage ? "px-0" : ""
+            }`}
             ref={pageRef[1]}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,

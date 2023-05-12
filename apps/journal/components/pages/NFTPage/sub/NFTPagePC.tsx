@@ -26,7 +26,7 @@ const NFTPagePC: React.FC<Props> = ({ pageNum }) => {
   }, [pageNum]);
 
   return (
-    <div className="h-full grid grid-cols-3 grid-rows-3 gap-6 content-start place-items-center">
+    <div className="h-full pt-10 grid grid-cols-3 grid-rows-3 gap-6 content-start place-items-center">
       {nftSrcList.map((v) => (
         <NFTImage key={v.id} src={v.src} alt={"nft"} />
       ))}
