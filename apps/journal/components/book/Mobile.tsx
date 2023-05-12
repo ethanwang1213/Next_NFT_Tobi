@@ -76,7 +76,11 @@ const Mobile = () => {
         </div>
         {!isSwiperPage && (
           <div className="absolute top-4 left-[70vh] bottom-5 right-5 flex justify-start">
-            <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3 page pb-8">
+            <div
+              className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3 page pb-8 ${
+                isNFTPage ? "px-2" : ""
+              }`}
+            >
               {bookContext.pages.current[bookContext.pageNo.current + 1]}
             </div>
           </div>
