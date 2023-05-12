@@ -16,4 +16,9 @@
     font-weight: bold;
     color: #fff;
   }
+
+  // daisyUIのbtnのUPPERCASEを解除
+  .btn {
+    @apply normal-case;
+  }
 }

@@ -19,8 +19,8 @@ const RedeemDataLine: React.FC<Props> = ({ lineType, lineValue, hidable }) => {
       hidable={hidable}
       classNames={{
         container: ``,
-        type: `text-xl`,
-        value: `text-xl`,
+        type: `text-xl text-accent`,
+        value: `text-xl text-accent`,
       }}
     />
   );

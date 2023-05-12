@@ -1,5 +1,5 @@
 import Image from "next/image";
-import PageTitle from "../../../../PageTitle";
+import NFTPageTitle from "../../../../PageTitle/NFTPageTitle";
 
 type Props = {
   width: number;
@@ -38,7 +38,7 @@ const NekoSwiperContent: React.FC<Props> = ({
         ref={cardImgRef}
         onLoad={onCardImgLoad}
       />
-      <PageTitle isShown={true} title="TOBIRA NEKO" />
+      <NFTPageTitle isShown={true} title="TOBIRA NEKO" />
       <div className="w-full grow p-16 ">
         {!!imgSrc && (
           <div className="relative w-full h-full ">

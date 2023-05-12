@@ -21,7 +21,7 @@ const ServerErrorSp: React.FC = () => {
               <br />
               {"Please contact "}
               <CustomerSupportButton
-                className="link link-info"
+                className="link link-primary"
                 text="customer support"
               />
               {"."}

@@ -64,7 +64,7 @@ const ProfilePage0: React.FC = () => {
         <NavButton label={"受け取り"} />
         <NavButton label={"送信"} /> */}
       </div>
-      <h3 className="text-center text-xl font-bold mb-6">Activity Record</h3>
+      <h3 className="text-center text-xl text-primary font-bold mb-6">Activity Record</h3>
       <div className="grid gap-2 overflow-y-auto">
         {recordList.map((v) => (
           <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />

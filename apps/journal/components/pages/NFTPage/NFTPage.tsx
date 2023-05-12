@@ -1,4 +1,5 @@
-import PageTitle from "../../PageTitle";
+import NFTPageTitle from "../../PageTitle/NFTPageTitle";
+import PageTitle from "../../PageTitle/parent/PageTitle";
 import NFTPagePC from "./sub/NFTPagePC";
 import NFTPageSP from "./sub/NFTPageSP";
 
@@ -12,7 +13,7 @@ type Props = {
 const NFTPage: React.FC<Props> = ({ pageNum }) => {
   return (
     <div className="page">
-      <PageTitle
+      <NFTPageTitle
         isShown={pageNum % 2 === 0}
         title={
           <>

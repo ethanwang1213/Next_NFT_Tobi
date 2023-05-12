@@ -23,8 +23,8 @@ const ProfileAttributeLine: React.FC<Props> = ({
       hidable={hidable}
       classNames={{
         container: "",
-        type: "",
-        value: "",
+        type: "text-primary",
+        value: "text-primary",
       }}
     />
   );

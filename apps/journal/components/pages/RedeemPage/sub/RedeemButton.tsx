@@ -18,8 +18,8 @@ const RedeemButton: React.FC = () => {
     // 仮置きとして、1秒後にCHECKINGからstatusが更新されるようにしている
     setTimeout(() => {
       redeemStatus.set(
-        // "INCORRECT"
-        "SERVER_ERROR"
+        "INCORRECT"
+        // "SERVER_ERROR"
         // "SUCCESS"
       );
     }, 1000);
@@ -28,7 +28,7 @@ const RedeemButton: React.FC = () => {
   return (
     <button
       onClick={onClick}
-      className={`btn btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[60%] sm:w-[40%] text-2xl sm:text-3xl ${
+      className={`btn btn-accent btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[60%] sm:w-[40%] text-2xl sm:text-3xl ${
         redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
       }`}
     >
