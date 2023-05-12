@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -44,6 +44,11 @@ const Mobile = () => {
     }
   }, [pages, pageNo]);
 
+  const isNFTPage = useMemo(
+    () => pages[pageNo]?.type === NFTPage,
+    [pages, pageNo]
+  );
+
   return (
     <div className="overflow-hidden">
       <div
@@ -61,7 +66,11 @@ const Mobile = () => {
           />
         )}
         <div className="absolute top-4 left-10 bottom-5 right-[70vh] flex justify-end">
-          <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3 page">
+          <div
+            className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3 page ${
+              isNFTPage ? "px-2" : ""
+            }`}
+          >
             {bookContext.pages.current[bookContext.pageNo.current]}
           </div>
         </div>
