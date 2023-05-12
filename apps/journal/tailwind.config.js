@@ -25,7 +25,7 @@ const config = {
           "secondary-content": "#7D5337",
           accent: "#753A00",
           "accent-content": "#FDFAF1",
-          neutral: "#753A00",
+          neutral: "#000000",
           "base-100": "#FBEED0",
           info: "#137BB1",
           success: "#36D399",
