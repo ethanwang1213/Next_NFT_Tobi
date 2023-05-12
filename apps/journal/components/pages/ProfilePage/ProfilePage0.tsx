@@ -67,7 +67,7 @@ const ProfilePage0: React.FC = () => {
       <h3 className="text-center text-[18px] sm:text-[28px] text-primary font-bold mb-4 sm:mb-10">
         Activity Record
       </h3>
-      <div className="grid gap-2 overflow-y-auto">
+      <div className="grid gap-2 overflow-y-auto mb-16 sm:mb-0">
         {recordList.map((v) => (
           <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
         ))}
