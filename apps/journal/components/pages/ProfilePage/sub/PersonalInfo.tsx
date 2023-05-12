@@ -12,10 +12,8 @@ const PersonalInfo: React.FC<Props> = ({ dataType, dataValue }) => {
   return (
     <>
       <div className="relative w-full text-center text-primary">
-        <p className="text-xs sm:text-base sm:text-start mb-[-4px]">
-          {dataType}
-        </p>
-        <p className="text-base sm:text-2xl font-bold sm:absolute sm:bottom-0 sm:right-0">
+        <p className="text-xs sm:text-[20px] sm:text-start mb-10">{dataType}</p>
+        <p className="text-base sm:text-[28px] font-bold sm:absolute sm:bottom-0 sm:right-0">
           {dataValue}
         </p>
       </div>
