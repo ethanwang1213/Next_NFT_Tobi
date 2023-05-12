@@ -10,16 +10,17 @@ import RedeemStatusModal from "./RedeemStatusModal";
  */
 const RedeemSP0: React.FC = () => {
   return (
-    <div className="relative h-full">
+    <div className="relative h-full pt-4">
       <div className="mb-10">
         <InputRedemptionCodeBox
           classNames={{
-            input: "input input-bordered w-full bg-transparent text-lg",
+            input:
+              "input input-bordered w-full h-[46px] bg-transparent text-lg border-2 rounded-xl",
             p: "text-xs text-end font-bold",
           }}
         />
       </div>
-      <div className="w-full absolute bottom-[13%]">
+      <div className="w-full absolute bottom-[11%]">
         <div className="mb-6">
           <SelfData />
         </div>

@@ -70,7 +70,7 @@ const TypeValueLine: React.FC<Props> = ({
             <button onClick={isHidden ? showValue : hideValue}>
               <FontAwesomeIcon
                 icon={isHidden ? faEyeSlash : faEye}
-                className="w-8"
+                className="sm:w-8"
               />
             </button>
           </div>

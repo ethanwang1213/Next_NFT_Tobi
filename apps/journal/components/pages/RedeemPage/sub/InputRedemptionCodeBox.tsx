@@ -34,12 +34,12 @@ const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
       <input
         type="text"
         placeholder="Enter Redemption Code"
-        className={`${classNames.input} border-accent text-primary placeholder-primary/80`}
+        className={`${classNames.input} border-accent text-primary placeholder-primary/80 font-bold h-11 mb-2 sm:mb-0`}
         onChange={(e) => handleChange(e)}
         value={inputCode.current}
         disabled={redeemStatus.current === "CHECKING"}
       />
-      <p className={`${classNames.p} text-accent`}>
+      <p className={`${classNames.p} text-accent `}>
         NFT受け取りコードを入力してください。
       </p>
     </div>
