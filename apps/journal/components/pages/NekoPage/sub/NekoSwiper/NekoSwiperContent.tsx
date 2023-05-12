@@ -39,7 +39,7 @@ const NekoSwiperContent: React.FC<Props> = ({
         onLoad={onCardImgLoad}
       />
       <NFTPageTitle isShown={true} title="TOBIRA NEKO" />
-      <div className="w-full grow p-24 pt-10 pb-44 ">
+      <div className="w-full grow pt-10 pb-[30%] ">
         {!!imgSrc && (
           <div className="relative w-full h-full ">
             <Image
