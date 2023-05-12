@@ -23,6 +23,13 @@ const Mobile = () => {
   const [isSwiperPage, setIsSwiperPage] = useState<Boolean>(false);
 
   useEffect(() => {
+    // ページ移動したときに左ページを表示する
+    if (!isLeftPage) {
+      setIsLeftPage(true);
+    }
+  }, [pageNo]);
+
+  useEffect(() => {
     if (pages.length === 0) return;
 
     // スマホ表示が1ページで十分な場合、左右移動の矢印を非表示にする
@@ -91,7 +98,7 @@ const Mobile = () => {
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
           size="3x"
-          className="absolute bottom-0 right-0 p-5"
+          className="absolute bottom-0 right-0 p-5 mb-6 text-accent/80"
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
