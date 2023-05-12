@@ -1,5 +1,12 @@
 import Image from "next/image";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useWindowSize } from "react-use";
 import { BookPos } from "../../types/type";
 import Tag from "../Tag";
@@ -140,9 +147,9 @@ const Pc = () => {
     transform: `scale(${scale})`,
   };
 
-  const isGridPage = useMemo(
-    () => pages[pageNo]?.type === NekoPage || pages[pageNo]?.type === NFTPage,
-    [pages, pageNo]
+  const isGridPage = useCallback(
+    (no: number) => pages[no]?.type === NekoPage || pages[no]?.type === NFTPage,
+    [pages]
   );
 
   return (
@@ -159,34 +166,38 @@ const Pc = () => {
             priority
           ></Image>
           <div
-            className={`absolute origin-top-left page ${
-              isGridPage ? "px-0" : ""
-            }`}
+            className={`absolute origin-top-left `}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
               ...pageStyle,
             }}
           >
-            {pages[pageNo]}
+            {/* page */}
+            <div className={`page ${isGridPage(pageNo) ? "px-0" : ""}`}>
+              {pages[pageNo]}
+            </div>
           </div>
           <div
-            className={`absolute origin-top-left page page-right ${
-              isGridPage ? "px-0" : ""
-            }`}
+            className={`absolute origin-top-left`}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
               ...pageStyle,
             }}
           >
-            {pages[pageNo + 1]}
+            {/* right page */}
+            <div
+              className={`page page-right ${
+                isGridPage(pageNo + 1) ? "px-0" : ""
+              }`}
+            >
+              {pages[pageNo + 1]}
+            </div>
           </div>
 
           <div
-            className={`absolute origin-top-left page ${
-              isGridPage ? "px-0" : ""
-            }`}
+            className={`absolute origin-top-left`}
             ref={pageRef[0]}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
@@ -196,12 +207,12 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {pages[oldPageNo]}
+            <div className={`page ${isGridPage(oldPageNo) ? "px-0" : ""}`}>
+              {pages[oldPageNo]}
+            </div>
           </div>
           <div
-            className={`absolute origin-top-left page page-right ${
-              isGridPage ? "px-0" : ""
-            }`}
+            className={`absolute origin-top-left`}
             ref={pageRef[1]}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,
@@ -211,7 +222,13 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {pages[oldPageNo + 1]}
+            <div
+              className={`page page-right ${
+                isGridPage(oldPageNo + 1) ? "px-0" : ""
+              }`}
+            >
+              {pages[oldPageNo + 1]}
+            </div>
           </div>
 
           {/* ページめくりのクリック領域の表示 */}
