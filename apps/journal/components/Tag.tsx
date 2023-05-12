@@ -32,7 +32,7 @@ const Tag: FC<{
         pageNo === page || pageNo + 1 === page || !isNumber
           ? "bg-red-700"
           : "bg-white"
-      } mb-6`}
+      }`}
     >
       {typeof image === "string" ? (
         <div

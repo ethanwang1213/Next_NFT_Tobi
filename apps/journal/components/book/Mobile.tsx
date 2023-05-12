@@ -102,7 +102,7 @@ const Mobile = () => {
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
-      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
+      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px] mb-6">
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
