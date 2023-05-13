@@ -8,8 +8,7 @@ import {
   mockRecordList,
 } from "../../../libs/mocks/mockProfile0";
 import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AuthDiscordButton from "./sub/AuthDiscordButton";
 
 export type ActivityRecord = {
   id: number;
@@ -75,14 +74,7 @@ const ProfilePage0: React.FC = () => {
         ))}
       </div>
       <div className="w-full grow min-h-[100px] sm:min-h-[80px] flex justify-center">
-        <button className="mt-6 sm:mt-10 btn btn-accent rounded-full sm:btn-lg w-[64%] sm:w-[50%]">
-          <FontAwesomeIcon
-            icon={faDiscord}
-            size="2x"
-            className="mr-2 h-[40px]"
-          />
-          TOBIRA POLISへ
-        </button>
+        <AuthDiscordButton />
       </div>
     </>
   );
