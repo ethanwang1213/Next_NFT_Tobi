@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormEventHandler, useEffect, useRef } from "react";
 import {
   getAuth,
-  sendSignInLinkToEmail
+  sendSignInLinkToEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth'
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -48,7 +50,16 @@ const Login = () => {
   };
 
   // Googleアカウントでログインする関数
-  const withGoogle = () => {};
+  const withGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+
+    try {
+      await signInWithPopup(auth, provider);
+      router.push('/'); // ログイン後にリダイレクトするURLを指定
+    } catch (error) {
+      console.error('Googleログインに失敗しました。', error);
+    }
+  };
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);

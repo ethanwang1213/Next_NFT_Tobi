@@ -36,28 +36,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log(`UID: ${firebaseUser.uid}`);
         console.log(`メールアドレス: ${firebaseUser.email}`)
 
-        // ユーザーコレクションからユーザーデータを参照
-        const ref = doc(db, `users/${firebaseUser.uid}`);
-        const snap = await getDoc(ref);
+        try {
+          // ユーザーコレクションからユーザーデータを参照
+          const ref = doc(db, `users/${firebaseUser.uid}`);
+          const snap = await getDoc(ref);
 
-        if (snap.exists()) {
-          // ユーザーデータを取得してstateに格納
-          const appUser = (await getDoc(ref)).data() as User;
-          // console.log(`データ取得: ${appUser?.id}`);
-          setUser(appUser);
-        } else {
-          // ユーザーが未作成の場合、新規作成して格納
-          // console.log(`データ作成: ${firebaseUser.uid}`);
-          createUser(firebaseUser.uid);
+          if (snap.exists()) {
+            // ユーザーデータを取得してstateに格納
+            const appUser = (await getDoc(ref)).data() as User;
+            // console.log(`データ取得: ${appUser?.id}`);
+            setUser(appUser);
+          } else {
+            // ユーザーが未作成の場合、新規作成して格納
+            // console.log(`データ作成: ${firebaseUser.uid}`);
+            createUser(firebaseUser.uid);
+          }
+        } catch (error) {
+          console.error(error);
         }
+
       } else {
-        // // ログインしていない場合、匿名ログイン
-        // signInAnonymously(auth).then(async (e) => {
-        //   // console.log(`匿名ログイン: ${e.user.uid}`);
-        //   if (e.user) {
-        //     createUser(e.user.uid);
-        //   }
-        // });
+        // ログインしていない場合、匿名ログイン
+        signInAnonymously(auth).then(async (e) => {
+          // console.log(`匿名ログイン: ${e.user.uid}`);
+          if (e.user) {
+            createUser(e.user.uid);
+          }
+        });
       }
 
       return unsubscribe;
