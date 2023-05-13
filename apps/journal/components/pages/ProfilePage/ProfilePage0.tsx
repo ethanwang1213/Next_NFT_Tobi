@@ -8,6 +8,8 @@ import {
   mockRecordList,
 } from "../../../libs/mocks/mockProfile0";
 import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export type ActivityRecord = {
   id: number;
@@ -67,10 +69,20 @@ const ProfilePage0: React.FC = () => {
       <h3 className="text-center text-[18px] sm:text-[28px] text-primary font-bold mb-4 sm:mb-10">
         Activity Record
       </h3>
-      <div className="grid gap-2 overflow-y-auto mb-16 sm:mb-0">
+      <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">
         {recordList.map((v) => (
           <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
         ))}
+      </div>
+      <div className="w-full grow min-h-[100px] sm:min-h-[80px] flex justify-center">
+        <button className="mt-6 sm:mt-10 btn btn-accent rounded-full sm:btn-lg w-[64%] sm:w-[50%]">
+          <FontAwesomeIcon
+            icon={faDiscord}
+            size="2x"
+            className="mr-2 h-[40px]"
+          />
+          TOBIRA POLISへ
+        </button>
       </div>
     </>
   );

@@ -14,6 +14,7 @@ import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import NFTPage from "../pages/NFTPage/NFTPage";
+import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
 
 const usePrevious = (value: any) => {
   const ref = useRef(null);
@@ -147,10 +148,19 @@ const Pc = () => {
     transform: `scale(${scale})`,
   };
 
-  const isGridPage = useCallback(
-    (no: number) => pages[no]?.type === NekoPage || pages[no]?.type === NFTPage,
-    [pages]
-  );
+  const pagePadding = (no: number) => {
+    if (!pages[no]) return "";
+
+    switch (pages[no].type) {
+      case NekoPage:
+      case NFTPage:
+        return " px-0";
+      case ProfilePage0:
+        return " pb-0";
+      default:
+        return "";
+    }
+  };
 
   return (
     <>
@@ -176,9 +186,7 @@ const Pc = () => {
             }}
           >
             {/* ページによってpaddingを変更する */}
-            <div className={`page ${isGridPage(pageNo) ? "px-0" : ""}`}>
-              {pages[pageNo]}
-            </div>
+            <div className={`page ${pagePadding(pageNo)}`}>{pages[pageNo]}</div>
           </div>
           {/* 右ページ */}
           <div
@@ -190,11 +198,7 @@ const Pc = () => {
             }}
           >
             {/* ページによってpaddingを変更する */}
-            <div
-              className={`page page-right ${
-                isGridPage(pageNo + 1) ? "px-0" : ""
-              }`}
-            >
+            <div className={`page page-right ${pagePadding(pageNo + 1)}`}>
               {pages[pageNo + 1]}
             </div>
           </div>
@@ -212,7 +216,7 @@ const Pc = () => {
             }}
           >
             {/* ページによってpaddingを変更する */}
-            <div className={`page ${isGridPage(oldPageNo) ? "px-0" : ""}`}>
+            <div className={`page ${pagePadding(oldPageNo)}`}>
               {pages[oldPageNo]}
             </div>
           </div>
@@ -229,11 +233,7 @@ const Pc = () => {
             }}
           >
             {/* ページによってpaddingを変更する */}
-            <div
-              className={`page page-right ${
-                isGridPage(oldPageNo + 1) ? "px-0" : ""
-              }`}
-            >
+            <div className={`page page-right ${pagePadding(oldPageNo + 1)}`}>
               {pages[oldPageNo + 1]}
             </div>
           </div>

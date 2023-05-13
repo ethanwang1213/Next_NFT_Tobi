@@ -11,6 +11,7 @@ import NFTPage from "../pages/NFTPage/NFTPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
+import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -51,7 +52,18 @@ const Mobile = () => {
     }
   }, [pages, pageNo]);
 
-  const isNFTPage = useCallback((no) => pages[no]?.type === NFTPage, [pages]);
+  const pagePadding = (no: number) => {
+    if (!pages[no]) return "";
+
+    switch (pages[no].type) {
+      case NFTPage:
+        return " px-2";
+      case ProfilePage0:
+        return " pb-0";
+      default:
+        return "";
+    }
+  };
 
   return (
     <div className="overflow-hidden">
@@ -74,11 +86,7 @@ const Mobile = () => {
         <div className="absolute top-4 left-10 bottom-5 right-[70vh] flex justify-end">
           <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3`}>
             {/* ページによってpaddingを変更する */}
-            <div
-              className={` page pb-8 ${
-                isNFTPage(bookContext.pageNo.current) ? "px-2" : ""
-              }`}
-            >
+            <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
             </div>
           </div>
@@ -89,9 +97,9 @@ const Mobile = () => {
             <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3`}>
               {/* ページによってpaddingを変更する */}
               <div
-                className={`page pb-8 ${
-                  isNFTPage(bookContext.pageNo.current + 1) ? "px-2" : ""
-                }`}
+                className={`page ${pagePadding(
+                  bookContext.pageNo.current + 1
+                )}`}
               >
                 {bookContext.pages.current[bookContext.pageNo.current + 1]}
               </div>
@@ -104,7 +112,7 @@ const Mobile = () => {
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
           size="3x"
-          className="absolute bottom-0 right-0 p-5 mb-6 text-accent/80"
+          className="absolute bottom-0 right-0 p-5 mb-7 text-accent/80"
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
