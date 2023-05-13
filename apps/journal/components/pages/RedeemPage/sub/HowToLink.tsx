@@ -11,11 +11,15 @@ type Props = {
  */
 const HowToLink: React.FC<Props> = ({ className }) => {
   return (
-    <p className={className}>
-      <Link target="_blank" href="https://tobiratory.myshopify.com/pages/faq">
+    <div className={className}>
+      <Link
+        target="_blank"
+        href="https://tobiratory.myshopify.com/pages/faq"
+        className="link link-info"
+      >
         How to receive NFTs
       </Link>
-    </p>
+    </div>
   );
 };
 

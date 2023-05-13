@@ -56,15 +56,9 @@ const TypeValueLine: React.FC<Props> = ({
 
   return (
     <div className={`w-full flex ${classNames.container}`}>
-      <p
-        className={`grow min-w-[60%] text-sm sm:text-base font-bold ${classNames.type}`}
-      >
-        {lineType}
-      </p>
+      <p className={`grow min-w-[60%] ${classNames.type}`}>{lineType}</p>
       {hidable ? (
-        <div
-          className={`grow max-w-[40%] text-end text-sm sm:text-base font-bold ${classNames.value}`}
-        >
+        <div className={`grow max-w-[40%] text-end ${classNames.value}`}>
           <div className="flex justify-end gap-1">
             <p>{hidableValue}</p>
             <button onClick={isHidden ? showValue : hideValue}>
@@ -76,9 +70,7 @@ const TypeValueLine: React.FC<Props> = ({
           </div>
         </div>
       ) : (
-        <p
-          className={`grow max-w-[40%] text-end text-sm sm:text-base font-bold ${classNames.value}`}
-        >
+        <p className={`grow max-w-[40%] text-end ${classNames.value}`}>
           {lineValue}
         </p>
       )}

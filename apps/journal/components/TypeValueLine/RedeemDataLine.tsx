@@ -18,9 +18,9 @@ const RedeemDataLine: React.FC<Props> = ({ lineType, lineValue, hidable }) => {
       lineValue={lineValue}
       hidable={hidable}
       classNames={{
-        container: ``,
-        type: `text-[17px] sm:text-[26px] text-accent`,
-        value: `text-[17px] sm:text-[26px] text-accent`,
+        container: `text-[17px] sm:text-[30px] text-accent font-bold`,
+        type: ``,
+        value: ``,
       }}
     />
   );

@@ -22,7 +22,7 @@ const RedeemPC0: React.FC = () => {
       <div className="mb-8">
         <SelfData />
       </div>
-      <HowToLink className="link link-info text-end sm:text-[27px]" />
+      <HowToLink className="text-end sm:text-[27px]" />
       <div className="w-full absolute bottom-[5%] flex justify-center">
         <RedeemButton />
       </div>
