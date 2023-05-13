@@ -69,8 +69,11 @@ const Mobile = () => {
             priority
           />
         )}
+        {/* 現在ページの表示 */}
+        {/* 左ページ */}
         <div className="absolute top-4 left-10 bottom-5 right-[70vh] flex justify-end">
           <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3`}>
+            {/* ページによってpaddingを変更する */}
             <div
               className={` page pb-8 ${
                 isNFTPage(bookContext.pageNo.current) ? "px-2" : ""
@@ -80,9 +83,11 @@ const Mobile = () => {
             </div>
           </div>
         </div>
+        {/* 右ページ */}
         {!isSwiperPage && (
           <div className="absolute top-4 left-[70vh] bottom-5 right-5 flex justify-start">
             <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3`}>
+              {/* ページによってpaddingを変更する */}
               <div
                 className={`page pb-8 ${
                   isNFTPage(bookContext.pageNo.current + 1) ? "px-2" : ""
@@ -94,6 +99,7 @@ const Mobile = () => {
           </div>
         )}
       </div>
+      {/* 矢印アイコンの表示 */}
       {isArrowShown && (
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
@@ -102,6 +108,7 @@ const Mobile = () => {
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
+      {/* タグの表示 */}
       <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px] mb-6">
         <div
           className={`flex flex-col gap-2 ${

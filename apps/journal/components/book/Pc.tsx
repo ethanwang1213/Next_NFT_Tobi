@@ -165,6 +165,8 @@ const Pc = () => {
             onLoad={setAspect}
             priority
           ></Image>
+          {/* 現在ページの表示 */}
+          {/* 左ページ */}
           <div
             className={`absolute origin-top-left `}
             style={{
@@ -173,11 +175,12 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {/* page */}
+            {/* ページによってpaddingを変更する */}
             <div className={`page ${isGridPage(pageNo) ? "px-0" : ""}`}>
               {pages[pageNo]}
             </div>
           </div>
+          {/* 右ページ */}
           <div
             className={`absolute origin-top-left`}
             style={{
@@ -186,7 +189,7 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {/* right page */}
+            {/* ページによってpaddingを変更する */}
             <div
               className={`page page-right ${
                 isGridPage(pageNo + 1) ? "px-0" : ""
@@ -195,7 +198,8 @@ const Pc = () => {
               {pages[pageNo + 1]}
             </div>
           </div>
-
+          {/* 前ページの表示 */}
+          {/* 前の左ページ */}
           <div
             className={`absolute origin-top-left`}
             ref={pageRef[0]}
@@ -207,10 +211,12 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
+            {/* ページによってpaddingを変更する */}
             <div className={`page ${isGridPage(oldPageNo) ? "px-0" : ""}`}>
               {pages[oldPageNo]}
             </div>
           </div>
+          {/* 前の右ページ */}
           <div
             className={`absolute origin-top-left`}
             ref={pageRef[1]}
@@ -222,6 +228,7 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
+            {/* ページによってpaddingを変更する */}
             <div
               className={`page page-right ${
                 isGridPage(oldPageNo + 1) ? "px-0" : ""
@@ -230,8 +237,8 @@ const Pc = () => {
               {pages[oldPageNo + 1]}
             </div>
           </div>
-
           {/* ページめくりのクリック領域の表示 */}
+          {/* 左ページめくり */}
           <div
             className="absolute origin-top-left pointer-events-none"
             style={{
@@ -253,6 +260,7 @@ const Pc = () => {
               />
             </div>
           </div>
+          {/* 右ページめくり */}
           <div
             className="absolute origin-top-left pointer-events-none"
             style={{
@@ -274,7 +282,7 @@ const Pc = () => {
               />
             </div>
           </div>
-
+          {/* タグの表示 */}
           <div
             className="absolute flex flex-col origin-top-left gap-5"
             style={{
