@@ -17,10 +17,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserContextType>();
 
   // ユーザー作成用関数
-  function createUser(uid: string) {
+  function createUser(uid: string, email?: string) {
     const ref = doc(db, `users/${uid}`);
     const appUser: User = {
       id: uid,
+      name: email ? email.split("@")[0] : "",
+      email: email ? email : "",
+      icon: "", // TODO: アイコンの初期値を設定する
       createdAt: Date.now()
     };
     setDoc(ref, appUser).then(() => {
@@ -49,7 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           } else {
             // ユーザーが未作成の場合、新規作成して格納
             // console.log(`データ作成: ${firebaseUser.uid}`);
-            createUser(firebaseUser.uid);
+            createUser(firebaseUser.uid, firebaseUser.email);
           }
         } catch (error) {
           console.error(error);
