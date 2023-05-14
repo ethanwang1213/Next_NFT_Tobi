@@ -25,7 +25,7 @@ export const storage = getStorage();
 export const auth = getAuth();
 export const functions = getFunctions(app);
 export const analytics = app.name && typeof window !== 'undefined' ? getAnalytics(app) : null;
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NEXT_PUBLIC_FIREBASE_USING_EMULATOR === 'true') {
   connectAuthEmulator(auth, 'http://localhost:9099');
   connectFirestoreEmulator(db, 'localhost', 8080);
   connectFunctionsEmulator(functions, 'localhost', 5001);
