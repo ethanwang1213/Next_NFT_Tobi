@@ -25,7 +25,7 @@ const RedeemStatusModal: React.FC = () => {
         onChange={() => {}}
       />
       <div className="modal px-4">
-        <div className="modal-box">
+        <div className="modal-box px-0">
           {(redeemStatus.current === "SUCCESS" ||
             redeemStatus.current === "INCORRECT" ||
             redeemStatus.current === "SERVER_ERROR") && (

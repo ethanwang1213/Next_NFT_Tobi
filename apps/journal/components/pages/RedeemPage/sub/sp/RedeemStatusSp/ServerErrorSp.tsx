@@ -16,7 +16,7 @@ const ServerErrorSp: React.FC = () => {
       titleSize={34}
       description={
         <div>
-          <p className="font-bold text-error grid content-center mb-6">
+          <p className="font-bold text-error grid content-center mt-1 mb-6 text-[17px]">
             <span>
               {"An error has occurred."}
               <br />
@@ -29,10 +29,10 @@ const ServerErrorSp: React.FC = () => {
             </span>
           </p>
           <CustomerSupportButton
-            className="btn btn-secondary btn-md btn-circle text-lg w-[88%] mb-6"
+            className="btn btn-secondary btn-md btn-circle text-lg w-[88%] mb-6 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]"
             text="Contact"
           />
-          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[88%]" />
+          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[88%] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
         </div>
       }
     />

@@ -15,10 +15,10 @@ const IncorrectSp: React.FC = () => {
       titleSize={34}
       description={
         <div>
-          <p className="font-bold text-error grid content-center mb-8">
+          <p className="font-bold text-error text-[17px] grid content-center mb-8">
             The Redemption Code is incorrect.
           </p>
-          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[88%]" />
+          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[88%] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.5)]" />
         </div>
       }
     />

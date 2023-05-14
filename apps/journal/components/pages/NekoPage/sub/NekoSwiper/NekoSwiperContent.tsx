@@ -47,7 +47,7 @@ const NekoSwiperContent: React.FC<Props> = ({
               alt={"neko"}
               fill
               style={{ objectFit: "cover" }}
-              className="overflow-visible"
+              className="overflow-visible drop-shadow-[-8px_0px_8px_rgba(0,0,0,0.2)]"
             />
           </div>
         )}

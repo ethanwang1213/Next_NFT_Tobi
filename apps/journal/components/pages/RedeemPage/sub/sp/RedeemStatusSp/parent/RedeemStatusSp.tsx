@@ -24,12 +24,12 @@ const RedeemStatusSP: React.FC<Props> = ({
       <div className="[&>svg_*]:!fill-accent w-full h-[50%] flex justify-center">
         {icon}
       </div>
-      <p
-        className={`w-full grow min-h-[60px] mt-2 text-[42px] text-accent font-bold grid content-center`}
+      <h3
+        className={`w-full grow min-h-[60px] mt-2 text-[42px] text-accent font-bold grid content-center drop-shadow-lg`}
         style={{ fontSize: `${titleSize}px` }}
       >
         {title}
-      </p>
+      </h3>
       <div className="w-full grow min-h-[8px] flex justify-center">
         {description}
       </div>
