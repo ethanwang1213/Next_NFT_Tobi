@@ -19,7 +19,7 @@ const NFTImage: React.FC<Props> = ({ src, alt }) => {
         alt={alt}
         fill
         style={{ objectFit: "contain" }}
-        className="drop-shadow-[-2px_0px_6px_rgba(0,0,0,0.4)] sm:drop-shadow-[-6px_0px_8px_rgba(0,0,0,0.4)]"
+        className="drop-shadow-[-1px_0px_6px_rgba(0,0,0,0.4)] sm:drop-shadow-[-6px_0px_8px_rgba(0,0,0,0.4)]"
       />
     </div>
   );

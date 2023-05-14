@@ -57,7 +57,7 @@ const Mobile = () => {
 
     switch (pages[no].type) {
       case NFTPage:
-        return " px-2";
+        return " px-0";
       case ProfilePage0:
         return " pb-0";
       default:
