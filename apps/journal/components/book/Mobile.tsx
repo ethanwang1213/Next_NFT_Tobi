@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
+import { BookContext } from "../../pages/_app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -42,6 +43,8 @@ const Mobile = () => {
     } else {
       setIsSwiperPage(false);
     }
+    
+    setIsShowTag(false);
   }, [pages, pageNo]);
 
   return (
@@ -75,13 +78,13 @@ const Mobile = () => {
       </div>
       {isArrowShown && (
         <FontAwesomeIcon
-          icon={isLeftPage ? faCircleRight : faCircleLeft}
-          size="3x"
-          className="absolute bottom-0 right-0 p-5"
-          onClick={() => setIsLeftPage(!isLeftPage)}
-        />
+        icon={isLeftPage ? faCircleRight : faCircleLeft}
+        size="4x"
+        className="absolute bottom-0 right-0 p-5 scale-[0.875] origin-bottom-right"
+        onClick={() => setIsLeftPage(!isLeftPage)}
+      />
       )}
-      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
+      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-18px]">
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"

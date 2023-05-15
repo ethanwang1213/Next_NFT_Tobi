@@ -27,11 +27,11 @@ const Tag: FC<{
 
   return (
     <div
-      onClick={handleClick}
+      onClick={() => (isNumber ? setPageNo(page) : (page as () => void)())}
       className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 ${
         pageNo === page || pageNo + 1 === page || !isNumber
-          ? "bg-red-700"
-          : "bg-white"
+          ? "bg-red-700 w-24"
+          : "bg-white w-24 md:w-20"
       }`}
     >
       {typeof image === "string" ? (
