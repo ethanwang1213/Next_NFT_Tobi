@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
-import RecordLine from "./sub/RecordLine";
 import {
   mockName,
   mockBirthday,
   mockMail,
   mockRecordList,
 } from "../../../libs/mocks/mockProfile0";
+import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
 
 export type ActivityRecord = {
   id: number;
@@ -67,7 +67,7 @@ const ProfilePage0: React.FC = () => {
       <h3 className="text-center text-xl font-bold mb-6">Activity Record</h3>
       <div className="grid gap-2 overflow-y-auto">
         {recordList.map((v) => (
-          <RecordLine key={v.id} text={v.text} date={v.date} />
+          <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
         ))}
       </div>
     </div>

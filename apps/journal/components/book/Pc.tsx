@@ -2,9 +2,9 @@ import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
 import { BookPos } from "../../types/type";
-import { BookContext } from "../../pages/_app";
 import Tag from "../Tag";
 import gsap from "gsap";
+import { BookContext } from "../../contexts/BookContextProvider";
 
 const usePrevious = (value: any) => {
   const ref = useRef(null);
@@ -35,12 +35,40 @@ const Pc = () => {
   const { current: tags } = bookData.tags;
   const oldPageNo = usePrevious(pageNo);
 
-  const onPageClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    // 右を押したらページ戻って左を押したらページ進む
-    const page =
-      e.pageX < bookImgRef.current?.offsetWidth / 2 ? pageNo - 2 : pageNo + 2;
+  // ページめくり領域の幅 (%)
+  const flipAreaWRatio = 15;
+
+  // 右を押したらページ戻って左を押したらページ進む
+  const tryFlipPage = (e: React.MouseEvent<HTMLDivElement>, offset: number) => {
+    const page = pageNo + offset;
     if (page < 0 || page >= pages.length) return;
     setPageNo(page);
+
+    // 最初ページか最後ページに到着した場合、ページめくり領域のホバー表示を消す
+    // 最後ページの判定は、ページ数の偶奇で分けている
+    if (
+      page === 0 ||
+      (pages.length % 2 === 0 && page === pages.length - 2) ||
+      (pages.length % 2 === 1 && page === pages.length - 1)
+    ) {
+      e.currentTarget.style.backgroundColor = "rgba(0,0,0,0)";
+    }
+  };
+
+  // ページめくり領域のホバー表示 (enter)
+  const handleFlipAreaEnter = (
+    e: React.MouseEvent<HTMLDivElement>,
+    offset: number
+  ) => {
+    const page = pageNo + offset;
+    if (page < 0 || page >= pages.length) return;
+
+    e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.2)";
+  };
+
+  // ページめくり領域のホバー処理 (leave)
+  const handleFlipAreaLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.backgroundColor = "rgba(0,0,0,0)";
   };
 
   useEffect(() => {
@@ -130,7 +158,6 @@ const Pc = () => {
               top: `${bookPos.top + bookHeight * 0.02}px`,
               ...pageStyle,
             }}
-            onClick={onPageClick}
           >
             {pages[pageNo]}
           </div>
@@ -141,7 +168,6 @@ const Pc = () => {
               top: `${bookPos.top + bookHeight * 0.02}px`,
               ...pageStyle,
             }}
-            onClick={onPageClick}
           >
             {pages[pageNo + 1]}
           </div>
@@ -171,6 +197,50 @@ const Pc = () => {
             }}
           >
             {pages[oldPageNo + 1]}
+          </div>
+
+          {/* ページめくりのクリック領域の表示 */}
+          <div
+            className="absolute origin-top-left pointer-events-none"
+            style={{
+              left: `${bookPos.left + bookWidth * 0.05}px`,
+              top: `${bookPos.top + bookHeight * 0.02}px`,
+              ...pageStyle,
+            }}
+          >
+            <div className="w-full h-full relative">
+              <div
+                className="absolute top-0 h-full bg-black/0 pointer-events-auto"
+                style={{
+                  width: `${flipAreaWRatio}%`,
+                  left: `-${flipAreaWRatio + 2}%`,
+                }}
+                onMouseEnter={(e) => handleFlipAreaEnter(e, -2)}
+                onMouseLeave={handleFlipAreaLeave}
+                onClick={(e) => tryFlipPage(e, -2)}
+              />
+            </div>
+          </div>
+          <div
+            className="absolute origin-top-left pointer-events-none"
+            style={{
+              left: `${bookPos.center + bookWidth * 0.03}px`,
+              top: `${bookPos.top + bookHeight * 0.02}px`,
+              ...pageStyle,
+            }}
+          >
+            <div className="w-full h-full relative">
+              <div
+                className="absolute top-0 right-0 h-full bg-black/0 pointer-events-auto"
+                style={{
+                  width: `${flipAreaWRatio}%`,
+                  right: `-${flipAreaWRatio + 2}%`,
+                }}
+                onMouseEnter={(e) => handleFlipAreaEnter(e, 2)}
+                onMouseLeave={handleFlipAreaLeave}
+                onClick={(e) => tryFlipPage(e, 2)}
+              />
+            </div>
           </div>
 
           <div

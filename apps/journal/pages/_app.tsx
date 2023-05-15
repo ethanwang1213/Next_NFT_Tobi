@@ -1,52 +1,32 @@
 import type { AppProps } from "next/app";
 import "../styles/global.scss";
+import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { ReactNode, createContext, useMemo, useState } from "react";
-import { bookContext, tagType } from "../types/type";
-import TestPage from "../components/TestComponent";
+import RedeemStatusContextProvider from "../contexts/RedeemContextProvider";
+import BookContextProvider from "../contexts/BookContextProvider";
+
 config.autoAddCss = false;
 
-export const BookContext = createContext<bookContext>(null);
-
 const App = ({ Component, pageProps }: AppProps) => {
-  const [pageNo, setPageNo] = useState<number>(0);
-  const [pages, setPages] = useState<ReactNode[]>([
-    <TestPage key={0} color="red" />,
-    <TestPage key={1} color="blue" />,
-    <TestPage key={2} color="pink" />,
-    <TestPage key={3} color="green" />,
-    <TestPage key={4} color="purple" />,
-    <TestPage key={5} color="black" />,
-    <TestPage key={6} color="gray" />,
-  ]);
-  const [tags, setTags] = useState<tagType[]>([
-    { image: "/images/icon/Profile_journal.svg", page: 0 },
-    { image: "/images/icon/Serial_journal.svg", page: 2 },
-  ]);
-
-  const pageContextValue = useMemo(
-    () => ({
-      pageNo: {
-        current: pageNo,
-        set: setPageNo,
-      },
-      pages: {
-        current: pages,
-        set: setPages,
-      },
-      tags: {
-        current: tags,
-        set: setTags,
-      },
-    }),
-    [pageNo, pages, tags, setPageNo, setPages, setTags]
-  );
-
   return (
-    <BookContext.Provider value={pageContextValue}>
-      <Component {...pageProps} />
-    </BookContext.Provider>
+    <>
+      <Script id="font">
+        {`(function(d) {
+          var config = {
+            kitId: 'ysy1ycw',
+            scriptTimeout: 3000,
+            async: true
+          },
+          h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+        })(document);`}
+      </Script>
+      <BookContextProvider>
+        <RedeemStatusContextProvider>
+          <Component {...pageProps} />
+        </RedeemStatusContextProvider>
+      </BookContextProvider>
+    </>
   );
 };
 

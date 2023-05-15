@@ -1,5 +1,6 @@
 import { FC, ReactElement, useContext, useMemo } from "react";
-import { BookContext } from "../pages/_app";
+import useSound from "use-sound";
+import { BookContext } from "../contexts/BookContextProvider";
 
 const Tag: FC<{
   image: string | ReactElement;
@@ -10,10 +11,24 @@ const Tag: FC<{
 
   const isNumber = useMemo(() => typeof page === "number", [page]);
 
+  const [play] = useSound("/sounds/paging_Journal.mp3", { volume: 0.1 });
+
+  const handleClick = () => {
+    if (isNumber) {
+      setPageNo(page);
+    } else {
+      (page as () => void)();
+    }
+    // Tagでページを遷移するときのみ、ページめくりの音を再生する
+    if (page !== pageNo && typeof page === "number") {
+      play();
+    }
+  };
+
   return (
     <div
       onClick={() => (isNumber ? setPageNo(page) : (page as () => void)())}
-      className={`flex items-center justify-end sm:justify-start rounded-r-xl sm:rounded-l-xl sm:rounded-r-none h-14 shadow-tag ${
+      className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 ${
         pageNo === page || pageNo + 1 === page || !isNumber
           ? "bg-red-700 w-24"
           : "bg-white w-24 md:w-20"

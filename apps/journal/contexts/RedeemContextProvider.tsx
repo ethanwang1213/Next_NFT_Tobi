@@ -39,6 +39,15 @@ type RedeemContextType = {
     current: string;
     set: Dispatch<SetStateAction<string>>;
   };
+  // モーダルのチェックボックスの状態
+  //  通常のDaisyUIのモーダルではlabelとinputをidで紐づけて操作するが、
+  //  inputが複数あると正常に動作しない（idはただ一つの要素を指すため）。
+  //  PCとスマホのコンポーネントが共存するためこの不具合が発生してしまう。
+  //  そこで、通常の方法ではなく、inputのcheckedをstateで管理することで対応している。
+  modalInputIsChecked: {
+    current: boolean;
+    set: Dispatch<SetStateAction<boolean>>;
+  };
 };
 
 export const RedeemContext = createContext<RedeemContextType>(
@@ -55,6 +64,8 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
   const [inputCode, setInputCode] = useState<string>("");
   const [selfAccount, setSelfAccount] = useState<string>("");
   const [selfJournalId, setSelfJournalId] = useState<string>("");
+  const [modalInputIsChecked, setModalInputIsChecked] =
+    useState<boolean>(false);
 
   const redeemContextValue = useMemo<RedeemContextType>(
     () => ({
@@ -74,16 +85,22 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
         current: selfJournalId,
         set: setSelfJournalId,
       },
+      modalInputIsChecked: {
+        current: modalInputIsChecked,
+        set: setModalInputIsChecked,
+      },
     }),
     [
       redeemStatus,
       inputCode,
       selfAccount,
       selfJournalId,
+      modalInputIsChecked,
       setRedeemStatus,
       setInputCode,
       setSelfAccount,
       setSelfJournalId,
+      setModalInputIsChecked,
     ]
   );
 

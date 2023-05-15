@@ -23,7 +23,7 @@ const RedeemPC0: React.FC = () => {
       </div>
       <HowToLink className="link link-info text-end text-lg" />
       <div className="w-full absolute bottom-[5%] flex justify-center">
-        <RedeemButton isPc={true} />
+        <RedeemButton />
       </div>
     </div>
   );

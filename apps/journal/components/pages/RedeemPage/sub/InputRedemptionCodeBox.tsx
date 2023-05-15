@@ -15,7 +15,19 @@ type Props = {
  * @returns
  */
 const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
-  const { redeemStatus, inputCode } = useContext(RedeemContext);
+  const { redeemStatus, inputCode, modalInputIsChecked } =
+    useContext(RedeemContext);
+
+  const handleChange = (e) => {
+    // テキストボックスを操作し始めたらモーダルを閉じる
+    //  スマホ表示でモーダルがエラーが表示されていても、PC表示ではテキストボックスを操作できる
+    //  PC表示でテキストボックスを操作し始めたら、スマホ表示でもモーダルを閉じてよいという考えでこうしている
+    if (modalInputIsChecked.current) {
+      modalInputIsChecked.set(false);
+    }
+
+    inputCode.set(e.target.value);
+  };
 
   return (
     <div>
@@ -23,7 +35,7 @@ const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
         type="text"
         placeholder="Enter Redemption Code"
         className={classNames.input}
-        onChange={(e) => inputCode.set(e.target.value)}
+        onChange={(e) => handleChange(e)}
         value={inputCode.current}
         disabled={redeemStatus.current === "CHECKING"}
       />

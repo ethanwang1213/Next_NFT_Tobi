@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import AttributeLine from "./sub/AttributeLine";
 import { mockAttributeList } from "../../../libs/mocks/mockProfile1";
+import ProfileAttributeLine from "../../TypeValueLine/ProfileAttributeLine";
 
 export type ProfileAttribute = {
   id: number;
@@ -25,7 +25,11 @@ const ProfilePage1: React.FC = () => {
       <div className="h-full overflow-y-auto">
         <div className="grid gap-6">
           {attributeList.map((v) => (
-            <AttributeLine key={v.id} type={v.type} value={v.value} />
+            <ProfileAttributeLine
+              key={v.id}
+              lineType={v.type}
+              lineValue={v.value}
+            />
           ))}
         </div>
       </div>

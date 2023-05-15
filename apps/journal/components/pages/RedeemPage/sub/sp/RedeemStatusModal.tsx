@@ -13,11 +13,17 @@ import CloseModalButton from "../CloseModalButton/parent/CloseModalButton";
  * @returns
  */
 const RedeemStatusModal: React.FC = () => {
-  const { redeemStatus } = useContext(RedeemContext);
+  const { redeemStatus, modalInputIsChecked } = useContext(RedeemContext);
 
   return (
     <>
-      <input type="checkbox" id="my-modal" className="modal-toggle" />
+      <input
+        type="checkbox"
+        id="redeem-modal"
+        className="modal-toggle"
+        checked={modalInputIsChecked.current}
+        onChange={() => {}}
+      />
       <div className="modal px-4">
         <div className="modal-box">
           {(redeemStatus.current === "INCORRECT" ||

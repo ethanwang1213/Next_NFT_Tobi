@@ -12,7 +12,16 @@ type Props = {
 const NFTPage: React.FC<Props> = ({ pageNum }) => {
   return (
     <div className="page">
-      <PageTitle isShown={pageNum % 2 === 0} title="NFTs" />
+      <PageTitle
+        isShown={pageNum % 2 === 0}
+        title={
+          <>
+            COLLECTION
+            <br />
+            LIBRARY
+          </>
+        }
+      />
       <>
         <div className="hidden sm:block grow overflow-y-hidden">
           <NFTPagePC pageNum={pageNum} />

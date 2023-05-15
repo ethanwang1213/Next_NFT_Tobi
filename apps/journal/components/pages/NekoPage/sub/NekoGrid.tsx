@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NFTImage from "../../../NFTImage";
+import NFTImage from "../../NFTPage/sub/NFTImage";
 import { mockNekoSrcList } from "../../../../libs/mocks/mockNekoSrcList";
 import { NFTSrc } from "../../../../types/NFTSrc";
 
