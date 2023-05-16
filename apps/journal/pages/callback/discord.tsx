@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { createUser } from "@/firebase/firestore";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const Discord = () => {
 
+  const auth = useAuth();
   const router = useRouter();
   const query = router.query;
 
@@ -16,20 +19,22 @@ const Discord = () => {
       }
     };
 
-    if (router.isReady) {
-      const code = query.code;
-      if (!code) {
-        router.replace("/");
-        return;
+    (async () => {
+      if (router.isReady) {
+        const code = query.code;
+        if (!code) {
+          router.push("/");
+          return;
+        }
+        const userdata = await getUserdata();
+        if (userdata) {
+          await createUser(auth.id, userdata.id);
+        } else {
+          router.push("/");
+        }
       }
-      const userdata = getUserdata();
-      if (userdata) {
-        // firestore
-      } else {
-        router.replace("/");
-      }
-    }
-  }), [query, router]);
+    })();
+  }), [auth.id, query, router]);
 
   return (
     <div className={"flex justify-center items-center"}>
