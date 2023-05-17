@@ -23,13 +23,22 @@ const Discord = () => {
       if (router.isReady) {
         const code = query.code;
         if (!code) {
+          // not found code error
           router.push("/");
           return;
         }
         const userdata = await getUserdata();
         if (userdata) {
-          await createUser(auth.id, userdata.id);
+          const result = await createUser(auth.id, userdata.id);
+          if (result) {
+            // success
+            router.push("/");
+          } else {
+            // firestore error
+            router.push("/");
+          }
         } else {
+          // cant get discord user data error
           router.push("/");
         }
       }

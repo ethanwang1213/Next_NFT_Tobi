@@ -5,11 +5,16 @@ export const createUser = async (uid: string, discordId: string) => {
   const batch = writeBatch(db);
   const docRef = doc(db, "users", uid)
   batch.set(docRef, {
-    discordId,
+    discord: discordId,
   });
   const indexRef = doc(db, "index", "users", "discord", discordId);
   batch.set(indexRef, {
-    user: uid,
+    userId: uid,
   });
-  await batch.commit()
+  try {
+    await batch.commit();
+    return true;
+  } catch (e) {
+    return false;
+  }
 };
