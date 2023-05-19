@@ -99,8 +99,8 @@ const Login = () => {
           <Image src="/images/login/Journal.svg" alt="logo" fill />
         </div>
       </div>
-      <div className="flex items-center justify-center p-5 w-screen h-screen">
-        <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center md:hidden">
+      <div className="flex items-center justify-center p-5 w-screen h-screen md:hidden">
+        <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center">
           <Image src="/images/login/box_journal.svg" alt="logo" fill />
           <div
             className="absolute flex items-center justify-center h-[75%] w-[75%]"
