@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { BookContext } from "../../pages/_app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
