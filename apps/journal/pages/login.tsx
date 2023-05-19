@@ -128,8 +128,7 @@ const Login = () => {
             className="input w-full input-bordered"
           />
           <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
-            TOBIRA
-            NEKOをご購入予定、購入後の方は購入時に使用したメールアドレスでご登録ください。
+            TOBIRA NEKOをご購入予定、購入後の方は購入時に使用したメールアドレスでご登録ください。
           </p>
           <button
             className="btn btn-ghost btn-outline btn-circle"
