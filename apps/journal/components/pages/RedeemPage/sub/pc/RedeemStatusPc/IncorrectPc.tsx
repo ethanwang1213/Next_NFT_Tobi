@@ -14,7 +14,7 @@ const IncorrectPc: React.FC = () => {
       titleSize={84}
       description={
         <p className="sm:text-[35px] font-bold text-error mt-2 text-warning">
-          The Redemption Code is incorrect.
+          シリアルコードが正しくありません。
         </p>
       }
     />

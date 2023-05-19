@@ -18,21 +18,23 @@ const ServerErrorSp: React.FC = () => {
         <div>
           <p className="font-bold text-error grid content-center mt-1 mb-6 text-[17px]">
             <span>
-              {"An error has occurred."}
+              {"予期せぬエラーが発生しました。"}
               <br />
-              {"Please contact "}
               <CustomerSupportButton
                 className="link link-error"
-                text="customer support"
+                text="カスタマーサポート"
               />
-              {"."}
+              {"にお問い合わせください。"}
             </span>
           </p>
           <CustomerSupportButton
             className="btn btn-secondary btn-md btn-circle text-lg w-[88%] mb-6 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]"
-            text="Contact"
+            text="お問い合わせ"
           />
-          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[88%] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
+          <TryAgainButton
+            className="btn btn-secondary btn-md btn-circle text-lg w-[88%] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]"
+            text="もう一度試す"
+          />
         </div>
       }
     />

@@ -17,7 +17,7 @@ const HowToLink: React.FC<Props> = ({ className }) => {
         href="https://tobiratory.myshopify.com/pages/faq"
         className="link link-info"
       >
-        How to receive NFTs
+        NFTを引き換えるには？
       </Link>
     </div>
   );

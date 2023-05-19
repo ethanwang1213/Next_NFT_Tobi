@@ -23,7 +23,7 @@ const config = {
           secondary: "#FDFAF1",
           "secondary-focus": "#dbd3ba",
           "secondary-content": "#7D5337",
-          accent: "#753A00",
+          accent: "#7D5337",
           "accent-content": "#FDFAF1",
           neutral: "#000000",
           "base-100": "#FBEED0",

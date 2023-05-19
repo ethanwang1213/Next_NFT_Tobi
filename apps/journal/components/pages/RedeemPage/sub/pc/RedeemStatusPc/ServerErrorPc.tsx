@@ -14,15 +14,14 @@ const ServerErrorPc: React.FC = () => {
       title={"Error"}
       titleSize={84}
       description={
-        <div className="text-3xl font-bold text-warning mt-2">
-          <p className="mb-4">{"An error has occurred."}</p>
+        <div className="text-[28px] font-bold text-warning mt-2">
+          <p className="mb-4">{"予期せぬエラーが発生しました。"}</p>
           <p>
-            {"Please contact "}
             <CustomerSupportButton
               className="link link-warning"
-              text="customer support"
+              text="カスタマーサポート"
             />
-            {"."}
+            {"にお問い合わせください。"}
           </p>
         </div>
       }

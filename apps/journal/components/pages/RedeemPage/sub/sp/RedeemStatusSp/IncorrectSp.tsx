@@ -16,9 +16,12 @@ const IncorrectSp: React.FC = () => {
       description={
         <div>
           <p className="font-bold text-error text-[17px] grid content-center mb-8">
-            The Redemption Code is incorrect.
+            シリアルコードが正しくありません。
           </p>
-          <TryAgainButton className="btn btn-secondary btn-md btn-circle text-lg w-[88%] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.5)]" />
+          <TryAgainButton
+            className="btn btn-secondary btn-md btn-circle text-lg w-[88%] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.5)]"
+            text="戻る"
+          />
         </div>
       }
     />

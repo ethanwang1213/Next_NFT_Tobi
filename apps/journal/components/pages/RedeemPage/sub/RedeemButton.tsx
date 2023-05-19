@@ -32,7 +32,7 @@ const RedeemButton: React.FC = () => {
         redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
       }`}
     >
-      Redeem
+      引き換え
     </button>
   );
 };
