@@ -27,12 +27,12 @@ const Login = () => {
   useEffect(() => {
     gsap
       .timeline()
-      .from(loginRef.current, { top: "-100vh" }, "2")
-      .to(logoRef.current, { x: "-250px" }, "<")
-      .from(bookRef.current, { y: "14rem" }, "<")
-      .to(arcRef1.current, { left: "5vw", top: "5vh" }, "<")
-      .to(arcRef2.current, { top: "-2vh" }, "<")
-      .to(arcRef3.current, { left: "-5vw" }, "<")
+      .from(loginRef.current, { top: "-100vh", ease: "power4.inOut", duration: 1.5 }, "2")
+      .to(logoRef.current, { x: "-250px", ease: "power4.inOut", duration: 1.5 }, "<")
+      .from(bookRef.current, { y: "14rem", ease: "power4.inOut", duration: 1.5 }, "<")
+      .to(arcRef1.current, { left: "5vw", top: "5vh", ease: "power4.inOut", duration: 1.5 }, "<")
+      .to(arcRef2.current, { top: "-2vh", ease: "power4.inOut", duration: 1.5 }, "<")
+      .to(arcRef3.current, { left: "-5vw", ease: "power4.inOut", duration: 1.5 }, "<")
       .fromTo(
         logoMobileRef.current,
         { y: 0, maxHeight: "100%" },
