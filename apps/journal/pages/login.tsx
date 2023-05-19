@@ -1,5 +1,3 @@
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormEventHandler, useEffect, useRef } from "react";
 import gsap from "gsap";
 import Image from "next/image";
@@ -12,9 +10,6 @@ const Login = () => {
   const arcRef2 = useRef<HTMLDivElement>(null);
   const arcRef3 = useRef<HTMLDivElement>(null);
   const logoMobileRef = useRef<HTMLDivElement>(null);
-
-  // サインアップリンクが押されたときに実行される関数
-  const signUp = () => {};
 
   // sign inボタンが押されたときに実行する関数
   const signIn: FormEventHandler<HTMLFormElement> = (e) => {
@@ -115,32 +110,31 @@ const Login = () => {
       </div>
 
       <div
-        className="flex items-center justify-center absolute top-0 left-0 w-screen h-screen p-10"
+        className="flex items-center justify-center absolute top-0 left-0 w-screen h-screen p-3 sm:p-10"
         ref={loginRef}
       >
         <form
-          className="bg-white p-10 rounded-2xl flex flex-col gap-3 items-center md:translate-x-[250px] max-w-[400px] z-10"
+          className="bg-white p-7 sm:p-10 rounded-2xl flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
           onSubmit={signIn}
         >
+          <button className="btn btn-block sm:btn-lg gap-3 flex-row btn-outline text-xs sm:text-xl" type="button" onClick={withGoogle}>
+          <div className="relative h-[50%] aspect-square">
+              <Image src="/images/icon/google_journal.svg" alt="google" fill />
+            </div>
+            Sign in with Google
+          </button>
+          <div className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black flex items-center text-center gap-5"><p>or</p></div>
           <input
             type="text"
             placeholder="Email"
             className="input w-full input-bordered"
           />
-          <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
-            TOBIRA NEKOをご購入予定、購入後の方は購入時に使用したメールアドレスでご登録ください。
-          </p>
-          <button
-            className="btn btn-ghost btn-outline btn-circle"
-            type="button"
-            onClick={withGoogle}
-          >
-            <FontAwesomeIcon icon={faGoogle} size="xl" />
-          </button>
-          <p className="text-sm">Or Login With Social Media</p>
-          <button className="btn btn-block btn-lg" type="submit">
+          <button className="btn btn-block btn-lg btn-outline" type="submit">
             sign in
           </button>
+          <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
+            ※TOBIRA NEKO購入済みの方<br />受取には購入時に使用したメールアドレスでログインが必要です。
+          </p>
         </form>
       </div>
       <div
