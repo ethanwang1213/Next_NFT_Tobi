@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -50,6 +50,8 @@ const Mobile = () => {
     } else {
       setIsSwiperPage(false);
     }
+    
+    setIsShowTag(false);
   }, [pages, pageNo]);
 
   const pagePadding = (no: number) => {
@@ -111,8 +113,8 @@ const Mobile = () => {
       {isArrowShown && (
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
-          size="3x"
-          className="absolute bottom-0 right-0 p-5 text-accent/80"
+          size="4x"
+          className="absolute bottom-0 right-0 p-5 text-accent/80 scale-[0.875] origin-bottom-right"
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
