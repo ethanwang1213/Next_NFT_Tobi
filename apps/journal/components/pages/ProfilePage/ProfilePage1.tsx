@@ -21,17 +21,15 @@ const ProfilePage1: React.FC = () => {
   }, []);
 
   return (
-    <div className="page">
-      <div className="h-full overflow-y-auto">
-        <div className="grid gap-6">
-          {attributeList.map((v) => (
-            <ProfileAttributeLine
-              key={v.id}
-              lineType={v.type}
-              lineValue={v.value}
-            />
-          ))}
-        </div>
+    <div className="h-full overflow-y-auto mb-16 sm:mb-0">
+      <div className="grid gap-8 pt-8 sm:pt-4">
+        {attributeList.map((v) => (
+          <ProfileAttributeLine
+            key={v.id}
+            lineType={v.type}
+            lineValue={v.value}
+          />
+        ))}
       </div>
     </div>
   );

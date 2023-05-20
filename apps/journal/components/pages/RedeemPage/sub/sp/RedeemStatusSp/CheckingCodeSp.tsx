@@ -11,10 +11,11 @@ const CheckingCodeSp: React.FC = () => {
     <RedeemStatusSP
       icon={
         <div className="w-full flex justify-center">
-          <FeatherIcon className={"w-[70%] h-full"} />
+          <FeatherIcon className={"w-[68%] h-full"} />
         </div>
       }
       title={"Checking Code..."}
+      titleSize={26}
     />
   );
 };

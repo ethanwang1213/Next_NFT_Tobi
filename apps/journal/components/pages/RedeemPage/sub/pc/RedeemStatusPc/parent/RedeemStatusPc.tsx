@@ -3,6 +3,7 @@ import { ReactNode, memo } from "react";
 type Props = {
   icon: ReactNode;
   title: string;
+  titleSize: number;
   description?: ReactNode;
 };
 
@@ -12,14 +13,26 @@ type Props = {
  * @param param0
  * @returns
  */
-const RedeemStatusPC: React.FC<Props> = ({ icon, title, description }) => {
+const RedeemStatusPC: React.FC<Props> = ({
+  icon,
+  title,
+  titleSize,
+  description,
+}) => {
   return (
     <>
-      <div className="w-full h-[60%] flex justify-center">{icon}</div>
-      <p className="w-full grow min-h-[50px] text-[60px] font-bold grid content-center">
+      <div className="[&>svg_*]:!fill-accent w-full h-[55%] flex justify-center">
+        {icon}
+      </div>
+      <h3
+        className="w-full grow min-h-[30px] text-accent font-bold grid content-center drop-shadow-lg"
+        style={{
+          fontSize: `${titleSize}px`,
+        }}
+      >
         {title}
-      </p>
-      <div className="w-full grow min-h-[70px] flex justify-center">
+      </h3>
+      <div className="w-full grow min-h-[150px] flex justify-center">
         {description}
       </div>
     </>

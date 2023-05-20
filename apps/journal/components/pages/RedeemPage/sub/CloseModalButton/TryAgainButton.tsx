@@ -1,16 +1,17 @@
 import CloseModalButton from "./parent/CloseModalButton";
 
 type Props = {
+  text: string;
   className: string;
 };
 
 /**
  * Try againボタン
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-const TryAgainButton: React.FC<Props> = ({ className }) => {
-  return <CloseModalButton className={className}>Try again</CloseModalButton>;
+const TryAgainButton: React.FC<Props> = ({ text, className }) => {
+  return <CloseModalButton className={className}>{text}</CloseModalButton>;
 };
 
 export default TryAgainButton;

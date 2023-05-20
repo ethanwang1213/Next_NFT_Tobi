@@ -1,14 +1,13 @@
 import { NextPage } from "next";
-import Script from "next/script";
 
 const FontTest: NextPage = () => {
   return (
     <>
-      <h1 className="text-2xl font-bold text-neutral">Redeem Code</h1>
+      <h1 className="text-2xl font-bold text-accent">Redeem Code</h1>
       <h3 className="font-bold text-primary">Activity Record</h3>
       <p className="text-primary">TOBIRA NEKOを購入した</p>
       <p className="text-accent">How to receive NFTs</p>
-      <button className="btn btn-neutral">Redeem</button>
+      <button className="btn btn-accent">Redeem</button>
       <button className="btn btn-secondary">Redeem</button>
       <p className="text-error font-bold">The Redemption Code is incorrect.</p>
 
@@ -28,7 +27,7 @@ const FontTest: NextPage = () => {
             >
               ✕
             </label>
-            <h3 className="text-neutral text-2xl font-bold">Error</h3>
+            <h3 className="text-accent text-2xl font-bold">Error</h3>
             <p className="text-error font-bold py-4">
               The Redemption Code is innorrect.
             </p>
