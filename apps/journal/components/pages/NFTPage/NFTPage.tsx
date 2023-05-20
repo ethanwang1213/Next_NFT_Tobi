@@ -27,7 +27,7 @@ const NFTPage: React.FC<Props> = ({ pageNum }) => {
         <div className="hidden sm:block grow overflow-y-hidden">
           <NFTPagePC pageNum={pageNum} />
         </div>
-        <div className="block sm:hidden grow overflow-y-auto pt-4 mb-14">
+        <div className="block sm:hidden grow overflow-y-auto pt-4 mb-[4%]">
           <NFTPageSP pageNum={pageNum} />
         </div>
       </>

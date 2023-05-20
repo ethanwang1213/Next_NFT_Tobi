@@ -46,7 +46,7 @@ const ProfilePage0: React.FC = () => {
     <>
       <div className="w-full sm:flex">
         <div className="w-full sm:w-[50%] mb-6 flex justify-center">
-          <div className="w-[60%] sm:w-[50%] min-w-[220px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
+          <div className="w-[60%] sm:w-[50%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
               profileSrc="/mocks/images/profile.png"
               badgeSrc="/mocks/images/badge.png"
@@ -59,7 +59,7 @@ const ProfilePage0: React.FC = () => {
           <PersonalInfo dataType={"Mail"} dataValue={maskMailAddress(mail)} />
         </div>
       </div>
-      <div className="mb-4 sm:mb-14">
+      <div className="mb-0 sm:mb-14">
         {/* TODO: ゆくゆくはボタンを実装する */}
         {/* <NavButton label={"購入"} />
         <NavButton label={"受け取り"} />
@@ -73,7 +73,7 @@ const ProfilePage0: React.FC = () => {
           <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
         ))}
       </div>
-      <div className="w-full grow min-h-[60px] sm:min-h-[80px] flex justify-center">
+      <div className="w-full grow min-h-[12%] sm:min-h-[80px] flex justify-center">
         <AuthDiscordButton />
       </div>
     </>

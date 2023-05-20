@@ -34,7 +34,7 @@ const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
       <input
         type="text"
         placeholder="引き換えコードを入力してください"
-        className={`${classNames.input} border-accent text-primary placeholder-primary/80 font-bold h-11 mb-2 sm:mb-0 shadow-[inset_0_5px_14px_0_rgba(0,0,0,0.3)]`}
+        className={`${classNames.input} border-accent text-primary placeholder-primary/50 font-bold h-11 mb-2 sm:mb-0 shadow-[inset_0_5px_14px_0_rgba(0,0,0,0.3)]`}
         onChange={(e) => handleChange(e)}
         value={inputCode.current}
         disabled={redeemStatus.current === "CHECKING"}

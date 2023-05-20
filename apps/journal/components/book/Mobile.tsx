@@ -70,7 +70,7 @@ const Mobile = () => {
       <div
         className={`relative ${
           isLeftPage ? "left-[calc(100vw_-_60vh)]" : "left-[-70vh]"
-        } w-[130vh] h-screen transition-[left]`}
+        } w-[130vh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
           <Image
@@ -112,12 +112,12 @@ const Mobile = () => {
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
           size="3x"
-          className="absolute bottom-0 right-0 p-5 mb-7 text-accent/80"
+          className="absolute bottom-0 right-0 p-5 text-accent/80"
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
       {/* タグの表示 */}
-      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px] mb-6">
+      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
