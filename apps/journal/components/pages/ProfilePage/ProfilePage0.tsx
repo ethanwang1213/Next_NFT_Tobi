@@ -73,7 +73,7 @@ const ProfilePage0: React.FC = () => {
           <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
         ))}
       </div>
-      <div className="w-full grow min-h-[100px] sm:min-h-[80px] flex justify-center">
+      <div className="w-full grow min-h-[60px] sm:min-h-[80px] flex justify-center">
         <AuthDiscordButton />
       </div>
     </>
