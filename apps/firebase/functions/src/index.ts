@@ -4,6 +4,7 @@ import * as sendgrid from "@sendgrid/mail";
 import * as voucher from "voucher-code-generator";
 import {initializeApp, applicationDefault} from "firebase-admin/app";
 import {firestore} from "firebase-admin";
+import {getDoc, doc, getFirestore} from "firebase/firestore";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -104,4 +105,42 @@ export const pubsubHelper = functions.https.onRequest(async (request, response) 
   response.status(201).send(
       {success: "Published to pubsub test-topic -- message ID: ", messageID}
   );
+});
+
+export const discordUser = functions.https.onRequest(async (request, response) => {
+  const discordId = request.query.discordId;
+  if (discordId == null || !discordId || typeof discordId !== "string") {
+    const errorResponse = {
+      status: 400,
+      content: "query parameter 'discordId' does not exist",
+    };
+    response.status(400).json(JSON.stringify(errorResponse));
+    return;
+  }
+  const encodeDiscordId = encodeURIComponent(discordId);
+  const db = getFirestore();
+  const docDiscordRef = doc(db, "index/users/discord", encodeDiscordId);
+  const docDiscordSnap = await getDoc(docDiscordRef);
+  if (docDiscordSnap.exists()) {
+    const docDiscordData = docDiscordSnap.data();
+    const discordUserId = docDiscordData.userId;
+    const docTobiratoryRef = doc(db, "users", discordUserId, "nft");
+    const docTobiratorySnap = await getDoc(docTobiratoryRef);
+    if (docTobiratorySnap.exists()) {
+      const tobiratoryNFTData = docTobiratorySnap.data();
+      response.status(200).json(tobiratoryNFTData);
+    } else {
+      const errorResponse = {
+        status: 404,
+        content: "Unable to see the Tobiratory account associated with your Discord account",
+      };
+      response.status(404).json(JSON.stringify(errorResponse));
+    }
+  } else {
+    const errorResponse = {
+      status: 404,
+      content: "Discord account cannot be referenced",
+    };
+    response.status(404).json(JSON.stringify(errorResponse));
+  }
 });
