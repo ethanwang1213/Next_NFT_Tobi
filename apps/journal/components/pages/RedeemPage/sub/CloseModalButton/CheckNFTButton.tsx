@@ -17,7 +17,7 @@ const CheckNFTButton: React.FC<Props> = ({ className }) => {
 
   return (
     <CloseModalButton className={className} callback={callback}>
-      Check your NFTs
+      NFTを確認する
     </CloseModalButton>
   );
 };

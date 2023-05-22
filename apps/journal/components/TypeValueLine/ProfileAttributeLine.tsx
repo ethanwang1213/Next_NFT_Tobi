@@ -22,7 +22,7 @@ const ProfileAttributeLine: React.FC<Props> = ({
       lineValue={lineValue}
       hidable={hidable}
       classNames={{
-        container: "",
+        container: "text-sm sm:text-lg text-primary font-bold",
         type: "",
         value: "",
       }}

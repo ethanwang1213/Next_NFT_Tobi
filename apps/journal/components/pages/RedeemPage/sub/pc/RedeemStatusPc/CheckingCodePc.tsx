@@ -9,8 +9,9 @@ import FeatherIcon from "../../../../../../public/images/icon/feather_journal.sv
 const CheckingCodePc: React.FC = () => {
   return (
     <RedeemStatusPC
-      icon={<FeatherIcon className={"w-full h-full"} />}
+      icon={<FeatherIcon className={"w-full h-full text-accent drop-shadow-lg"} />}
       title={"Checking code..."}
+      titleSize={72}
     />
   );
 };

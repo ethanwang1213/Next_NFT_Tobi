@@ -1,10 +1,20 @@
 import Image from "next/image";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useWindowSize } from "react-use";
 import { BookPos } from "../../types/type";
 import Tag from "../Tag";
 import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
+import NekoPage from "../pages/NekoPage/NekoPage";
+import NFTPage from "../pages/NFTPage/NFTPage";
+import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
 
 const usePrevious = (value: any) => {
   const ref = useRef(null);
@@ -36,7 +46,7 @@ const Pc = () => {
   const oldPageNo = usePrevious(pageNo);
 
   // ページめくり領域の幅 (%)
-  const flipAreaWRatio = 15;
+  const flipAreaWRatio = 18;
 
   // 右を押したらページ戻って左を押したらページ進む
   const tryFlipPage = (e: React.MouseEvent<HTMLDivElement>, offset: number) => {
@@ -87,7 +97,7 @@ const Pc = () => {
       )
       .set(pageRef[0].current, { pointerEvents: "none" })
       .set(pageRef[1].current, { pointerEvents: "none" });
-  }, [pageNo, pageRef]);
+  }, [pageNo, pageRef, oldPageNo]);
 
   const setAspect = () => {
     // 本の画像のアスペクト比を設定
@@ -117,7 +127,7 @@ const Pc = () => {
     setBookHeight(bookHeight);
 
     // 本の画像の拡大率を設定
-    setScale(bookWidth / 1500);
+    setScale(bookWidth / 1000);
 
     // 本の画像の左上隅座標を更新
     setBookPos({
@@ -138,6 +148,20 @@ const Pc = () => {
     transform: `scale(${scale})`,
   };
 
+  const pagePadding = (no: number) => {
+    if (!pages[no]) return "";
+
+    switch (pages[no].type) {
+      case NekoPage:
+      case NFTPage:
+        return " px-0";
+      case ProfilePage0:
+        return " pb-0";
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
       <div className="w-screen h-screen md:p-20 p-10">
@@ -151,29 +175,37 @@ const Pc = () => {
             onLoad={setAspect}
             priority
           ></Image>
+          {/* 現在ページの表示 */}
+          {/* 左ページ */}
           <div
-            className="absolute origin-top-left"
+            className={`absolute origin-top-left `}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
               ...pageStyle,
             }}
           >
-            {pages[pageNo]}
+            {/* ページによってpaddingを変更する */}
+            <div className={`page ${pagePadding(pageNo)}`}>{pages[pageNo]}</div>
           </div>
+          {/* 右ページ */}
           <div
-            className="absolute origin-top-left"
+            className={`absolute origin-top-left`}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
               ...pageStyle,
             }}
           >
-            {pages[pageNo + 1]}
+            {/* ページによってpaddingを変更する */}
+            <div className={`page page-right ${pagePadding(pageNo + 1)}`}>
+              {pages[pageNo + 1]}
+            </div>
           </div>
-
+          {/* 前ページの表示 */}
+          {/* 前の左ページ */}
           <div
-            className="absolute origin-top-left"
+            className={`absolute origin-top-left`}
             ref={pageRef[0]}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
@@ -183,10 +215,14 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {pages[oldPageNo]}
+            {/* ページによってpaddingを変更する */}
+            <div className={`page ${pagePadding(oldPageNo)}`}>
+              {pages[oldPageNo]}
+            </div>
           </div>
+          {/* 前の右ページ */}
           <div
-            className="absolute origin-top-left"
+            className={`absolute origin-top-left`}
             ref={pageRef[1]}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,
@@ -196,21 +232,25 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {pages[oldPageNo + 1]}
+            {/* ページによってpaddingを変更する */}
+            <div className={`page page-right ${pagePadding(oldPageNo + 1)}`}>
+              {pages[oldPageNo + 1]}
+            </div>
           </div>
-
           {/* ページめくりのクリック領域の表示 */}
+          {/* 左ページめくり */}
           <div
-            className="absolute origin-top-left pointer-events-none"
+            className="absolute origin-bottom-left pointer-events-none"
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
-              top: `${bookPos.top + bookHeight * 0.02}px`,
+              bottom: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
+              height: (bookPos.height * 0.7 - bookHeight * 0.05) / scale,
             }}
           >
             <div className="w-full h-full relative">
               <div
-                className="absolute top-0 h-full bg-black/0 pointer-events-auto"
+                className="absolute top-0 h-full bg-black/0 pointer-events-auto rounded-bl-3xl"
                 style={{
                   width: `${flipAreaWRatio}%`,
                   left: `-${flipAreaWRatio + 2}%`,
@@ -221,17 +261,19 @@ const Pc = () => {
               />
             </div>
           </div>
+          {/* 右ページめくり */}
           <div
             className="absolute origin-top-left pointer-events-none"
             style={{
-              left: `${bookPos.center + bookWidth * 0.03}px`,
-              top: `${bookPos.top + bookHeight * 0.02}px`,
+              left: `${bookPos.center + bookWidth * 0.02}px`,
+              top: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
+              height: (bookPos.height - bookHeight * 0.02) / scale,
             }}
           >
             <div className="w-full h-full relative">
               <div
-                className="absolute top-0 right-0 h-full bg-black/0 pointer-events-auto"
+                className="absolute top-0 right-0 h-full bg-black/0 pointer-events-auto rounded-r-3xl"
                 style={{
                   width: `${flipAreaWRatio}%`,
                   right: `-${flipAreaWRatio + 2}%`,
@@ -242,9 +284,9 @@ const Pc = () => {
               />
             </div>
           </div>
-
+          {/* タグの表示 */}
           <div
-            className="absolute flex flex-col origin-top-left gap-5"
+            className="absolute flex flex-col origin-top-left gap-2"
             style={{
               transform: `scale(${scale})`,
               left: bookPos.left,
@@ -255,10 +297,7 @@ const Pc = () => {
               <div
                 className="relative"
                 style={{
-                  left:
-                    pageNo === tag.page || pageNo === tag.page + 1
-                      ? "-50%"
-                      : "-70%",
+                  left: "-66%",
                 }}
                 key={i}
               >
