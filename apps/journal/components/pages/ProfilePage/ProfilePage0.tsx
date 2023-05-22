@@ -43,7 +43,7 @@ const ProfilePage0: React.FC = () => {
 
   return (
     <div className="page">
-      <div className="w-full sm:flex">
+      <div className="w-full sm:flex relative">
         <div className="w-full sm:w-[50%] mb-6 flex justify-center">
           <div className="w-[50%] min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
@@ -56,6 +56,12 @@ const ProfilePage0: React.FC = () => {
           <PersonalInfo dataType={"Name"} dataValue={name} />
           <PersonalInfo dataType={"Birthday"} dataValue={birthday} />
           <PersonalInfo dataType={"Mail"} dataValue={maskMailAddress(mail)} />
+        </div>
+        <div className="absolute top-0 right-0">
+          {/* The button to open modal */}
+          <label htmlFor="edit-profile-modal" className="btn">
+            open modal
+          </label>
         </div>
       </div>
       <div className="mb-4 sm:mb-10">
