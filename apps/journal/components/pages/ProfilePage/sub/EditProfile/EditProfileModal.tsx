@@ -1,5 +1,4 @@
-import { useEditProfile } from "@/contexts/EditProfileProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CloseModalButton from "./sub/CloseModalButton/CloseModalButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +8,7 @@ import NameInput from "./sub/NameInput";
 import SubmitButton from "./sub/CloseModalButton/SubmitButton";
 
 const EditProfileModal: React.FC = () => {
-  const [iconBlob, setIconBlob] = useState<Blob>(null);
+  const [iconFile, setIconFile] = useState<File>(null);
   const [iconUrl, setIconUrl] = useState<string>(null);
 
   const [newName, setNewName] = useState<string>("");
@@ -33,8 +32,8 @@ const EditProfileModal: React.FC = () => {
           <h3 className="font-bold text-lg">プロフィールの編集</h3>
           <p className="py-4">Icon</p>
           <IconSelect
-            iconBlob={iconBlob}
-            setIconBlob={setIconBlob}
+            iconFile={iconFile}
+            setIconFile={setIconFile}
             iconUrl={iconUrl}
             setIconUrl={setIconUrl}
           />
@@ -61,7 +60,7 @@ const EditProfileModal: React.FC = () => {
             <SubmitButton
               className="btn btn-accent"
               modalId="edit-profile-modal"
-              iconBlob={iconBlob}
+              iconFile={iconFile}
               iconUrl={iconUrl}
               newName={newName}
               selectedYear={selectedYear}

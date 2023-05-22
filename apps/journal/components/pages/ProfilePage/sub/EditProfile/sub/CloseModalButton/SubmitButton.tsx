@@ -1,5 +1,9 @@
 import { useEffect, useMemo } from "react";
 import CloseModalButton from "./CloseModalButton";
+import { postUserIcon } from "@/libs/postUserIcon";
+import { useAuth } from "@/contexts/AuthProvider";
+import Jimp from "jimp";
+import scaleImage from "@/libs/scaleImage";
 
 type Props = {
   modalId: string;
@@ -7,7 +11,7 @@ type Props = {
   children: React.ReactNode;
   callback?: () => void;
 
-  iconBlob: Blob | null;
+  iconFile: File | null;
   iconUrl: string;
   newName: string;
   selectedYear: number;
@@ -24,13 +28,14 @@ const SubmitButton: React.FC<Props> = ({
   modalId,
   className,
   children,
-  iconBlob,
+  iconFile,
   iconUrl,
   newName,
   selectedYear,
   selectedMonth,
   selectedDay,
 }) => {
+  const auth = useAuth();
   const isDisabled = useMemo(
     () =>
       !iconUrl ||
@@ -41,10 +46,19 @@ const SubmitButton: React.FC<Props> = ({
     [iconUrl, newName, selectedYear, selectedMonth, selectedDay]
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!iconFile) return;
     // 保存処理
     console.log("ほぞん");
-    
+    const imgUrl = URL.createObjectURL(iconFile);
+    const img = await scaleImage(imgUrl);
+    img.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
+      const uploadedUrl = await postUserIcon(
+        auth.id,
+        new File([buf], "img.png", { type: "image/png" })
+      );
+      console.log(uploadedUrl);
+    });
   };
 
   return (

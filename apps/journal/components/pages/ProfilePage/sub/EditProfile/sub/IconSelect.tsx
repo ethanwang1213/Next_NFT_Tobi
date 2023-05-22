@@ -3,15 +3,15 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type Props = {
-  iconBlob: Blob;
-  setIconBlob: React.Dispatch<React.SetStateAction<Blob>>;
+  iconFile: File | null;
+  setIconFile: React.Dispatch<React.SetStateAction<File | null>>;
   iconUrl: string;
   setIconUrl: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const IconSelect: React.FC<Props> = ({
-  iconBlob,
-  setIconBlob,
+  iconFile,
+  setIconFile,
   iconUrl,
   setIconUrl,
 }) => {
@@ -25,12 +25,11 @@ const IconSelect: React.FC<Props> = ({
   const handleIconChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const file = ev.currentTarget.files[0];
     if (!file) return;
+
+    setIconFile(file);
     file.arrayBuffer().then((buffer) => {
-      // // Blobをセット
-      const blob = new Blob([buffer], { type: "image/png" });
-      // setIconBlob(blob);
       // 表示用にURLをセット
-      const url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(file);
       setIconUrl(url);
       // クロップウィンドウを開く
       isCropWindowOpen.set(true);
