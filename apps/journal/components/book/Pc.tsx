@@ -36,7 +36,7 @@ const Pc = () => {
   });
   const [bookAspect, setBookAspect] = useState<number>(0);
   const [tagScale, setTagScale] = useState<number>(1);
-  const [pageScale, setPageContentScale] = useState<number>(1);
+  const [pageScale, setPageScale] = useState<number>(1);
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
   const bookData = useContext(BookContext);
@@ -129,7 +129,7 @@ const Pc = () => {
 
     // 本の画像の拡大率を設定
     setTagScale(bookWidth / 1000);
-    setPageContentScale(bookWidth / 1500);
+    setPageScale(bookWidth / 1500);
 
     // 本の画像の左上隅座標を更新
     setBookPos({
