@@ -35,7 +35,8 @@ const Pc = () => {
     center: 0,
   });
   const [bookAspect, setBookAspect] = useState<number>(0);
-  const [scale, setScale] = useState<number>(1);
+  const [tagScale, setTagScale] = useState<number>(1);
+  const [pageContentScale, setPageContentScale] = useState<number>(1);
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
   const bookData = useContext(BookContext);
@@ -127,7 +128,8 @@ const Pc = () => {
     setBookHeight(bookHeight);
 
     // 本の画像の拡大率を設定
-    setScale(bookWidth / 1000);
+    setTagScale(bookWidth / 1000);
+    setPageContentScale(bookWidth / 1500);
 
     // 本の画像の左上隅座標を更新
     setBookPos({
@@ -141,11 +143,13 @@ const Pc = () => {
 
   // TODO: メモ化
   const pageStyle = {
-    width: `calc(calc(${bookPos.width}px - ${bookWidth * 0.07}px ) / ${scale})`,
+    width: `calc(calc(${bookPos.width}px - ${
+      bookWidth * 0.07
+    }px ) / ${pageContentScale})`,
     height: `calc(calc(${bookPos.height}px - ${
       bookHeight * 0.05
-    }px) / ${scale})`,
-    transform: `scale(${scale})`,
+    }px) / ${pageContentScale})`,
+    transform: `scale(${pageContentScale})`,
   };
 
   const pagePadding = (no: number) => {
@@ -245,7 +249,8 @@ const Pc = () => {
               left: `${bookPos.left + bookWidth * 0.05}px`,
               bottom: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
-              height: (bookPos.height * 0.7 - bookHeight * 0.05) / scale,
+              height:
+                (bookPos.height * 0.7 - bookHeight * 0.05) / pageContentScale,
             }}
           >
             <div className="w-full h-full relative">
@@ -268,7 +273,7 @@ const Pc = () => {
               left: `${bookPos.center + bookWidth * 0.02}px`,
               top: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
-              height: (bookPos.height - bookHeight * 0.02) / scale,
+              height: (bookPos.height - bookHeight * 0.02) / pageContentScale,
             }}
           >
             <div className="w-full h-full relative">
@@ -288,7 +293,7 @@ const Pc = () => {
           <div
             className="absolute flex flex-col origin-top-left gap-2"
             style={{
-              transform: `scale(${scale})`,
+              transform: `scale(${tagScale})`,
               left: bookPos.left,
               top: `${bookPos.top + bookHeight * 0.05}px`,
             }}
