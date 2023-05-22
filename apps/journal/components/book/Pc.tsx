@@ -36,7 +36,7 @@ const Pc = () => {
   });
   const [bookAspect, setBookAspect] = useState<number>(0);
   const [tagScale, setTagScale] = useState<number>(1);
-  const [pageContentScale, setPageContentScale] = useState<number>(1);
+  const [pageScale, setPageContentScale] = useState<number>(1);
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
   const bookData = useContext(BookContext);
@@ -145,11 +145,11 @@ const Pc = () => {
   const pageStyle = {
     width: `calc(calc(${bookPos.width}px - ${
       bookWidth * 0.07
-    }px ) / ${pageContentScale})`,
+    }px ) / ${pageScale})`,
     height: `calc(calc(${bookPos.height}px - ${
       bookHeight * 0.05
-    }px) / ${pageContentScale})`,
-    transform: `scale(${pageContentScale})`,
+    }px) / ${pageScale})`,
+    transform: `scale(${pageScale})`,
   };
 
   const pagePadding = (no: number) => {
@@ -250,7 +250,7 @@ const Pc = () => {
               bottom: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
               height:
-                (bookPos.height * 0.7 - bookHeight * 0.05) / pageContentScale,
+                (bookPos.height * 0.7 - bookHeight * 0.05) / pageScale,
             }}
           >
             <div className="w-full h-full relative">
@@ -273,7 +273,7 @@ const Pc = () => {
               left: `${bookPos.center + bookWidth * 0.02}px`,
               top: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
-              height: (bookPos.height - bookHeight * 0.02) / pageContentScale,
+              height: (bookPos.height - bookHeight * 0.02) / pageScale,
             }}
           >
             <div className="w-full h-full relative">
