@@ -50,7 +50,7 @@ const Mobile = () => {
     } else {
       setIsSwiperPage(false);
     }
-    
+
     setIsShowTag(false);
   }, [pages, pageNo]);
 
@@ -61,7 +61,7 @@ const Mobile = () => {
       case NFTPage:
         return " px-0";
       case ProfilePage0:
-        return " pb-0";
+        return " pb-2";
       default:
         return "";
     }

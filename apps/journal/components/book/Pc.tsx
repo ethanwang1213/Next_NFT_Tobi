@@ -249,8 +249,7 @@ const Pc = () => {
               left: `${bookPos.left + bookWidth * 0.05}px`,
               bottom: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
-              height:
-                (bookPos.height * 0.7 - bookHeight * 0.05) / pageScale,
+              height: (bookPos.height * 0.7 - bookHeight * 0.05) / pageScale,
             }}
           >
             <div className="w-full h-full relative">
