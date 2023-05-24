@@ -52,7 +52,11 @@ const IconCrop: React.FC<Props> = ({ url, func }) => {
             onChange={(e) => setZoom(Number(e.target.value))}
           />
           <div className="flex justify-center">
-            <button type="button" className="inline" onClick={submit}>
+            <button
+              type="button"
+              className="btn btn-accent w-[30%]"
+              onClick={submit}
+            >
               OK
             </button>
           </div>

@@ -1,9 +1,9 @@
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import IconCrop from "./sub/IconCrop";
 import { useAuth } from "@/contexts/AuthProvider";
-import Jimp from "jimp";
-import { error } from "console";
 import { Area } from "react-easy-crop";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {};
 
@@ -31,21 +31,25 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
       {/* 表示前に選択画像のURL生成などを行うため、変数で表示を管理している */}
       <input
         type="checkbox"
-        id="sample-modal"
+        id="crop-modal"
         className="modal-toggle"
         checked={isCropModalOpen.current}
         onChange={() => {}}
       />
       <div className="modal">
-        {isCropModalOpen.current && (
-          <div className="modal-box max-w-full h-[60dvh]">
-            {auth.user && (
-              <div className="w-full h-full">
-                <IconCrop url={iconForCrop.current} func={cropCallback} />
-              </div>
-            )}
-          </div>
-        )}
+        <div className="modal-box max-w-full h-[60dvh] pt-10 pb-8">
+          <button
+            className="btn btn-ghost btn-sm btn-circle absolute right-2 top-2 text-accent z-10"
+            onClick={() => isCropModalOpen.set(false)}
+          >
+            <FontAwesomeIcon icon={faXmark} fontSize={24} />
+          </button>
+          {isCropModalOpen.current && auth.user && (
+            <div className="w-full h-full">
+              <IconCrop url={iconForCrop.current} func={cropCallback} />
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
