@@ -37,23 +37,23 @@ const SubmitButton: React.FC<Props> = ({
   selectedMonth,
   selectedDay,
 }) => {
-  const auth = useAuth();
+  const { user, updateProfile } = useAuth();
 
   // 保存処理
   const handleSubmit = async () => {
-    const isNewIcon = iconUrl !== auth.user.icon;
+    const isNewIcon = iconUrl !== user.icon;
     if (isNewIcon) {
       // アイコン画像に変更があればアップロード
       const scaled = await processNewIcon(iconUrl, cropData);
       scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
         await uploadNewIcon(
-          auth.user.id,
+          user.id,
           new File([buf], "img.png", { type: "image/png" })
         );
       });
       // ローカルのプロフィール情報を更新
       scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
-        auth.updateProfile(src, newName, isBirthdayHidden, {
+        updateProfile(src, newName, isBirthdayHidden, {
           year: selectedYear,
           month: selectedMonth,
           day: selectedDay,
@@ -61,7 +61,7 @@ const SubmitButton: React.FC<Props> = ({
       });
     } else {
       // ローカルのプロフィール情報を更新
-      auth.updateProfile(iconUrl, newName, isBirthdayHidden, {
+      updateProfile(iconUrl, newName, isBirthdayHidden, {
         year: selectedYear,
         month: selectedMonth,
         day: selectedDay,
@@ -70,7 +70,7 @@ const SubmitButton: React.FC<Props> = ({
 
     // データベース上のプロフィール情報を更新
     await postProfile(
-      auth.user,
+      user,
       isNewIcon,
       newName,
       isBirthdayHidden,

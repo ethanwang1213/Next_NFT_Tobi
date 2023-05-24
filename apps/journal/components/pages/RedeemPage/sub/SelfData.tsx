@@ -9,11 +9,11 @@ const SelfData: React.FC = () => {
     <div className="grid gap-4">
       <RedeemDataLine
         lineType={"Receive Account"}
-        lineValue={selfAccount.current}
+        lineValue={selfAccount.current ? selfAccount.current : "-"}
       />
       <RedeemDataLine
         lineType={"Receive Journal ID"}
-        lineValue={selfJournalId.current}
+        lineValue={selfJournalId.current ? selfJournalId.current : "-"}
         hidable={true}
       />
     </div>

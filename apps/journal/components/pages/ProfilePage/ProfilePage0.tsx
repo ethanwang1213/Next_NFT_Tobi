@@ -17,24 +17,24 @@ export type ActivityRecord = {
  * @returns
  */
 const ProfilePage0: React.FC = () => {
-  const auth = useAuth();
+  const {user} = useAuth();
   const [birthday, setBirthday] = useState<string>("");
   const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
-    if (!auth.user) return;
+    if (!user) return;
 
-    if (!!auth.user.birthday) {
-      if (auth.user.isBirthdayHidden) {
+    if (!!user.birthday) {
+      if (user.isBirthdayHidden) {
         setBirthday("-");
       } else {
-        const month = auth.user.birthday.month.toString().padStart(2, "0");
-        const day = auth.user.birthday.day.toString().padStart(2, "0");
-        setBirthday(`${auth.user.birthday.year}/${month}/${day}`);
+        const month = user.birthday.month.toString().padStart(2, "0");
+        const day = user.birthday.day.toString().padStart(2, "0");
+        setBirthday(`${user.birthday.year}/${month}/${day}`);
       }
     }
     setRecordList(mockRecordList);
-  }, [auth.user]);
+  }, [user]);
 
   // メールアドレスをマスクする関数
   const maskMailAddress = useCallback((mailAddress: string) => {
@@ -51,8 +51,8 @@ const ProfilePage0: React.FC = () => {
           <div className="w-[50%] min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
               profileSrc={
-                auth.user && auth.user.icon !== ""
-                  ? auth.user.icon
+                user && user.icon !== ""
+                  ? user.icon
                   : "/mocks/images/profile.png"
               }
               badgeSrc="/mocks/images/badge.png"
@@ -60,11 +60,11 @@ const ProfilePage0: React.FC = () => {
           </div>
         </div>
         <div className="sm:w-[50%] mb-6 sm:ml-10 grid gap-2 sm:gap-8">
-          {auth.user && (
+          {user && (
             <>
               <PersonalInfo
                 dataType={"Name"}
-                dataValue={auth.user.name === "" ? "-" : auth.user.name}
+                dataValue={user.name === "" ? "-" : user.name}
               />
               <PersonalInfo
                 dataType={"Birthday"}
@@ -72,7 +72,7 @@ const ProfilePage0: React.FC = () => {
               />
               <PersonalInfo
                 dataType={"Mail"}
-                dataValue={auth.user.email === "" ? "-" : auth.user.email}
+                dataValue={user.email === "" ? "-" : user.email}
               />
             </>
           )}

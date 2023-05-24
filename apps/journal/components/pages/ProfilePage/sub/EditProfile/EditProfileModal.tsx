@@ -15,7 +15,7 @@ import { useEditProfile } from "@/contexts/EditProfileProvider";
  * @returns
  */
 const EditProfileModal: React.FC = () => {
-  const auth = useAuth();
+  const { user } = useAuth();
   const { cropData } = useEditProfile();
 
   // TODO: Contextに全部移動したほうがレンダリングの効率が良さそう
@@ -28,19 +28,19 @@ const EditProfileModal: React.FC = () => {
 
   // モーダルが開かれたときにユーザー情報を取得する
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    if (!auth.user) return;
+    if (!user) return;
     if (!ev.currentTarget.checked) return;
 
     setIconUrl(
-      auth.user.icon !== "" ? auth.user.icon : "/mocks/images/profile.png"
+      user.icon !== "" ? user.icon : "/mocks/images/profile.png"
     );
     cropData.set(null);
-    setNewName(auth.user.name);
-    setIsBirthdayHidden(auth.user.isBirthdayHidden);
-    if (auth.user.birthday) {
-      setSelectedYear(auth.user.birthday.year);
-      setSelectedMonth(auth.user.birthday.month);
-      setSelectedDay(auth.user.birthday.day);
+    setNewName(user.name);
+    setIsBirthdayHidden(user.isBirthdayHidden);
+    if (user.birthday) {
+      setSelectedYear(user.birthday.year);
+      setSelectedMonth(user.birthday.month);
+      setSelectedDay(user.birthday.day);
     } else {
       setSelectedYear(1);
       setSelectedMonth(1);

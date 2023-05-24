@@ -16,7 +16,7 @@ type Props = {};
  * @returns
  */
 const CropNewIconModal: React.FC<Props> = ({}) => {
-  const auth = useAuth();
+  const { user } = useAuth();
   const { isCropModalOpen, iconForCrop, cropData } = useEditProfile();
 
   // クロップ完了時のコールバック関数
@@ -44,7 +44,7 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
           >
             <FontAwesomeIcon icon={faXmark} fontSize={24} />
           </button>
-          {isCropModalOpen.current && auth.user && (
+          {isCropModalOpen.current && user && (
             <div className="w-full h-full">
               <IconCrop url={iconForCrop.current} func={cropCallback} />
             </div>
