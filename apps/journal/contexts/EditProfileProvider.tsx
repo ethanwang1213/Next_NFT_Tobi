@@ -13,6 +13,10 @@ type Props = {
 };
 
 type ContextType = {
+  isEditModalOpen: {
+    current: boolean;
+    set: Dispatch<SetStateAction<boolean>>;
+  };
   isCropWindowOpen: {
     current: boolean;
     set: Dispatch<SetStateAction<boolean>>;
@@ -27,16 +31,21 @@ const EditProfileContext = createContext<ContextType>({} as ContextType);
  * @returns
  */
 export const EditProfileProvider: React.FC<Props> = ({ children }) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isCropWindowOpen, setIsCropWindowOpen] = useState<boolean>(false);
 
   const contextValue = useMemo<ContextType>(
     () => ({
+      isEditModalOpen: {
+        current: isEditModalOpen,
+        set: setIsEditModalOpen,
+      },
       isCropWindowOpen: {
         current: isCropWindowOpen,
         set: setIsCropWindowOpen,
       },
     }),
-    [isCropWindowOpen, setIsCropWindowOpen]
+    [isEditModalOpen, setIsEditModalOpen, isCropWindowOpen, setIsCropWindowOpen]
   );
 
   return (

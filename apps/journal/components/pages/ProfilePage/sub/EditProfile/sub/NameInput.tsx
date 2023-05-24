@@ -17,7 +17,7 @@ const NameInput: React.FC<Props> = ({ newName, setNewName }) => {
   return (
     <input
       type="text"
-      className="input input-primary"
+      className="input input-accent"
       value={newName}
       onChange={handleChange}
     />

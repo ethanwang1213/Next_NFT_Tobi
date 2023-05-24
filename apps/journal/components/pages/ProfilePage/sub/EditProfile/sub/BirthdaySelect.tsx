@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type Props = {
+  // isEditBirthday: boolean;
+  // setIsEditBirthday: Dispatch<SetStateAction<boolean>>;
   selectedYear: number;
-  setSelectedYear: (year: number) => void;
+  setSelectedYear: Dispatch<SetStateAction<number>>;
   selectedMonth: number;
-  setSelectedMonth: (month: number) => void;
+  setSelectedMonth: Dispatch<SetStateAction<number>>;
   selectedDay: number;
-  setSelectedDay: (day: number) => void;
+  setSelectedDay: Dispatch<SetStateAction<number>>;
+  isBirthdayHidden: boolean;
+  setIsBirthdayHidden: Dispatch<SetStateAction<boolean>>;
 };
 
 const BirthdaySelect: React.FC<Props> = ({
@@ -16,6 +20,8 @@ const BirthdaySelect: React.FC<Props> = ({
   setSelectedMonth,
   selectedDay,
   setSelectedDay,
+  isBirthdayHidden,
+  setIsBirthdayHidden,
 }) => {
   const [thisYear, setThisYear] = useState<number>(null);
   // 指定年月の末日
@@ -37,45 +43,58 @@ const BirthdaySelect: React.FC<Props> = ({
 
   return (
     <>
-      <select
-        className="select select-primary w-[30%]"
-        value={selectedYear}
-        onChange={(ev) => setSelectedYear(parseInt(ev.target.value))}
-      >
-        <option disabled selected>
-          年
-        </option>
-        {[...Array(120)].map((_, i) => (
-          <option>{(thisYear - i).toString()}</option>
-        ))}
-      </select>
-      年
-      <select
-        className="select select-primary w-[20%]"
-        value={selectedMonth}
-        onChange={(ev) => setSelectedMonth(parseInt(ev.target.value))}
-      >
-        <option disabled selected>
-          月
-        </option>
-        {[...Array(12)].map((_, i) => (
-          <option>{i + 1}</option>
-        ))}
-      </select>
-      月
-      <select
-        className="select select-primary w-[20%]"
-        value={selectedDay}
-        onChange={(ev) => setSelectedDay(parseInt(ev.target.value))}
-      >
-        <option disabled selected>
-          日
-        </option>
-        {[...Array(endDay)].map((_, i) => (
-          <option>{(i + 1).toString()}</option>
-        ))}
-      </select>
-      日
+      <div className="text-accent flex w-full">
+        <div className="w-[30%]">
+          <select
+            className="select select-accent"
+            value={selectedYear}
+            onChange={(ev) => setSelectedYear(parseInt(ev.target.value))}
+          >
+            <option disabled>年</option>
+            {[...Array(120)].map((_, i) => (
+              <option key={i}>{(thisYear - i).toString()}</option>
+            ))}
+          </select>
+          <span>年</span>
+        </div>
+        <div className="w-[26%]">
+          <select
+            className="select select-accent"
+            value={selectedMonth}
+            onChange={(ev) => setSelectedMonth(parseInt(ev.target.value))}
+          >
+            <option disabled>月</option>
+            {[...Array(12)].map((_, i) => (
+              <option key={i}>{i + 1}</option>
+            ))}
+          </select>
+          <span>月</span>
+        </div>
+        <div className="w-[26%]">
+          <select
+            className="select select-accent"
+            value={selectedDay}
+            onChange={(ev) => setSelectedDay(parseInt(ev.target.value))}
+          >
+            <option disabled>日</option>
+            {[...Array(endDay)].map((_, i) => (
+              <option key={i}>{(i + 1).toString()}</option>
+            ))}
+          </select>
+          <span>日</span>
+        </div>
+      </div>
+      <div className="mb-2 font-bold">
+        <label className="cursor-pointer label gap-2 justify-start">
+          <input
+            type="checkbox"
+            className="checkbox checkbox-accent"
+            checked={isBirthdayHidden}
+            onChange={(ev) => setIsBirthdayHidden(ev.target.checked)}
+          />
+          <span className="label-text text-accent">誕生日を隠す</span>
+        </label>
+      </div>
     </>
   );
 };

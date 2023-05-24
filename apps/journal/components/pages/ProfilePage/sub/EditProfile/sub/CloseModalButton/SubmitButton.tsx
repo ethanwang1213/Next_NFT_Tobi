@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from "react";
 import CloseModalButton from "./CloseModalButton";
-import { postUserIcon } from "@/libs/postUserIcon";
 import { useAuth } from "@/contexts/AuthProvider";
 import Jimp from "jimp";
 import scaleImage from "@/libs/scaleImage";
+import { postProfile, uploadNewIcon } from "@/libs/postProfile";
 
 type Props = {
   modalId: string;
@@ -14,6 +14,7 @@ type Props = {
   iconFile: File | null;
   iconUrl: string;
   newName: string;
+  isBirthdayHidden: boolean;
   selectedYear: number;
   selectedMonth: number;
   selectedDay: number;
@@ -28,36 +29,43 @@ const SubmitButton: React.FC<Props> = ({
   modalId,
   className,
   children,
-  iconFile,
   iconUrl,
   newName,
+  isBirthdayHidden,
   selectedYear,
   selectedMonth,
   selectedDay,
 }) => {
   const auth = useAuth();
-  const isDisabled = useMemo(
-    () =>
-      !iconUrl ||
-      newName === "" ||
-      !selectedYear ||
-      !selectedMonth ||
-      !selectedDay,
-    [iconUrl, newName, selectedYear, selectedMonth, selectedDay]
-  );
 
   const handleSubmit = async () => {
-    if (!iconFile) return;
     // 保存処理
     console.log("ほぞん");
-    const imgUrl = URL.createObjectURL(iconFile);
-    const img = await scaleImage(imgUrl);
-    img.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
-      const uploadedUrl = await postUserIcon(
-        auth.id,
-        new File([buf], "img.png", { type: "image/png" })
-      );
-      console.log(uploadedUrl);
+    const isNewIcon = iconUrl !== auth.user.icon;
+    // アイコン画像に変更があればアップロード
+    if (isNewIcon) {
+      const scaled = await scaleImage(iconUrl);
+      scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
+        await uploadNewIcon(
+          auth.user.id,
+          new File([buf], "img.png", { type: "image/png" })
+        );
+      });
+    }
+    // プロフィール情報を更新
+    await postProfile(
+      auth.user,
+      isNewIcon,
+      newName,
+      isBirthdayHidden,
+      selectedYear,
+      selectedMonth,
+      selectedDay
+    );
+    auth.updateProfile(iconUrl, newName, isBirthdayHidden, {
+      year: selectedYear,
+      month: selectedMonth,
+      day: selectedDay,
     });
   };
 
@@ -66,7 +74,6 @@ const SubmitButton: React.FC<Props> = ({
       modalId={modalId}
       className={className}
       callback={handleSubmit}
-      disabled={isDisabled}
     >
       {children}
     </CloseModalButton>

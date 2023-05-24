@@ -27,17 +27,28 @@ export type BookPos = {
   center: number;
 };
 
+export type Birthday = {
+  year: number;
+  month: number;
+  day: number;
+};
+
 export type User = {
   id: string;
   name: string;
   email: string;
   icon: string;
   createdAt: number;
-  birthDay?: {
-    year: number;
-    month: number;
-    day: number;
-  };
+  isBirthdayHidden: boolean;
+  birthday?: Birthday;
 };
 
-export type UserContextType = User | null | undefined;
+export type UserContextType = {
+  user: User | null | undefined;
+  updateProfile: (
+    newIcon: string,
+    newName: string,
+    isBirthdayHidden: boolean,
+    newBirthday: Birthday
+  ) => void;
+};

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import {
@@ -8,6 +8,7 @@ import {
   mockRecordList,
 } from "../../../libs/mocks/mockProfile0";
 import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
+import { useAuth } from "@/contexts/AuthProvider";
 
 export type ActivityRecord = {
   id: number;
@@ -21,17 +22,24 @@ export type ActivityRecord = {
  * @returns
  */
 const ProfilePage0: React.FC = () => {
-  const [name, setName] = useState<string>("");
+  const auth = useAuth();
   const [birthday, setBirthday] = useState<string>("");
-  const [mail, setMail] = useState<string>("");
   const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
-    setName(mockName);
-    setBirthday(mockBirthday);
-    setMail(mockMail);
+    if (!auth.user) return;
+
+    if (!!auth.user.birthday) {
+      if (auth.user.isBirthdayHidden) {
+        setBirthday("-");
+      } else {
+        const month = auth.user.birthday.month.toString().padStart(2, "0");
+        const day = auth.user.birthday.day.toString().padStart(2, "0");
+        setBirthday(`${auth.user.birthday.year}/${month}/${day}`);
+      }
+    }
     setRecordList(mockRecordList);
-  }, []);
+  }, [auth.user]);
 
   // メールアドレスをマスクする関数
   const maskMailAddress = useCallback((mailAddress: string) => {
@@ -47,15 +55,32 @@ const ProfilePage0: React.FC = () => {
         <div className="w-full sm:w-[50%] mb-6 flex justify-center">
           <div className="w-[50%] min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
-              profileSrc="/mocks/images/profile.png"
+              profileSrc={
+                auth.user && auth.user.icon !== ""
+                  ? auth.user.icon
+                  : "/mocks/images/profile.png"
+              }
               badgeSrc="/mocks/images/badge.png"
             />
           </div>
         </div>
         <div className="sm:w-[50%] mb-6 sm:ml-10 grid gap-2 sm:gap-8">
-          <PersonalInfo dataType={"Name"} dataValue={name} />
-          <PersonalInfo dataType={"Birthday"} dataValue={birthday} />
-          <PersonalInfo dataType={"Mail"} dataValue={maskMailAddress(mail)} />
+          {auth.user && (
+            <>
+              <PersonalInfo
+                dataType={"Name"}
+                dataValue={auth.user.name === "" ? "-" : auth.user.name}
+              />
+              <PersonalInfo
+                dataType={"Birthday"}
+                dataValue={birthday === "" ? "-" : birthday}
+              />
+              <PersonalInfo
+                dataType={"Mail"}
+                dataValue={auth.user.email === "" ? "-" : auth.user.email}
+              />
+            </>
+          )}
         </div>
         <div className="absolute top-0 right-0">
           {/* The button to open modal */}

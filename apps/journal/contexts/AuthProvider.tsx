@@ -8,13 +8,13 @@ import {
   useState,
 } from "react";
 import { auth, db } from "@/firebase/client";
-import { User, UserContextType } from "@/types/type";
+import { Birthday, User, UserContextType } from "@/types/type";
 
 const AuthContext = createContext<UserContextType>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // ユーザー情報を格納するstate
-  const [user, setUser] = useState<UserContextType>();
+  const [user, setUser] = useState<User>();
 
   // ユーザー作成用関数
   function createUser(uid: string, email?: string) {
@@ -24,7 +24,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       name: email ? email.split("@")[0] : "",
       email: email ? email : "",
       icon: "", // TODO: アイコンの初期値を設定する
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      isBirthdayHidden: true,
     };
     setDoc(ref, appUser).then(() => {
       setUser(appUser);
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // ログイン状態の場合
       if (firebaseUser) {
         console.log(`UID: ${firebaseUser.uid}`);
-        console.log(`メールアドレス: ${firebaseUser.email}`)
+        console.log(`メールアドレス: ${firebaseUser.email}`);
 
         try {
           // ユーザーコレクションからユーザーデータを参照
@@ -57,7 +58,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
           console.error(error);
         }
-
       } else {
         // ログインしていない場合、匿名ログイン
         signInAnonymously(auth).then(async (e) => {
@@ -72,7 +72,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+  const updateProfile = (
+    newIcon: string,
+    newName: string,
+    isBirthdayHidden: boolean,
+    newBirthday: Birthday
+  ) => {
+    const newUser = {
+      ...user,
+      icon: newIcon,
+      name: newName,
+      isBirthdayHidden: isBirthdayHidden,
+      birthday: newBirthday,
+    };
+    setUser(newUser);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, updateProfile }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);
