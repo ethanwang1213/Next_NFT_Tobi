@@ -67,7 +67,7 @@ const BirthdaySelect: React.FC<Props> = ({
               <option key={i}>{(thisYear - i).toString()}</option>
             ))}
           </select>
-          <span>年</span>
+          <span className="ml-1">年</span>
         </div>
         <div className="w-[26%]">
           <select
@@ -80,7 +80,7 @@ const BirthdaySelect: React.FC<Props> = ({
               <option key={i}>{i + 1}</option>
             ))}
           </select>
-          <span>月</span>
+          <span className="ml-1">月</span>
         </div>
         <div className="w-[26%]">
           <select
@@ -93,7 +93,7 @@ const BirthdaySelect: React.FC<Props> = ({
               <option key={i}>{(i + 1).toString()}</option>
             ))}
           </select>
-          <span>日</span>
+          <span className="ml-1">日</span>
         </div>
       </div>
       <div className="mb-2 font-bold">

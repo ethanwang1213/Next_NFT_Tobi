@@ -68,13 +68,13 @@ const EditProfileModal: React.FC = () => {
             </CloseModalButton>
             <h3 className="font-bold text-lg">プロフィールの編集</h3>
             {/* ユーザーアイコン */}
-            <p className="py-4">Icon</p>
+            <p className="py-4 font-bold">Icon</p>
             <IconSelect iconUrl={iconUrl} setIconUrl={setIconUrl} />
             {/* ユーザー名 */}
-            <p className="py-4">Name</p>
+            <p className="py-4 font-bold">Name</p>
             <NameInput newName={newName} setNewName={setNewName} />
             {/* 誕生日 */}
-            <p className="pt-4 pb-2">Birthday</p>
+            <p className="pt-4 pb-2 font-bold">Birthday</p>
             <div>
               <BirthdaySelect
                 selectedYear={selectedYear}

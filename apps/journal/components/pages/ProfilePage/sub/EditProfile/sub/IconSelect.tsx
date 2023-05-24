@@ -20,7 +20,7 @@ const IconSelect: React.FC<Props> = ({ iconUrl, setIconUrl }) => {
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    // 画像オブジェクトの生成
+    // メソッド定義：画像オブジェクトの生成
     const createImage = (url: string): Promise<HTMLImageElement> =>
       new Promise((resolve, reject) => {
         const image = new Image();
@@ -29,7 +29,7 @@ const IconSelect: React.FC<Props> = ({ iconUrl, setIconUrl }) => {
         image.src = url;
       });
 
-    // アイコンプレビュー用キャンバスの描画
+    // メソッドの定義：アイコンプレビュー用キャンバスの描画
     const displayCanvas = async () => {
       canvasRef.current.width = 100;
       canvasRef.current.height = 100;
@@ -54,6 +54,7 @@ const IconSelect: React.FC<Props> = ({ iconUrl, setIconUrl }) => {
       }
     };
 
+    // 実行
     displayCanvas();
   }, [isCropModalOpen.current, canvasRef.current, iconUrl, cropData.current]);
 
@@ -65,7 +66,6 @@ const IconSelect: React.FC<Props> = ({ iconUrl, setIconUrl }) => {
     file.arrayBuffer().then(() => {
       // 表示用にURLをセット
       const url = URL.createObjectURL(file);
-      setIconUrl(url);
       iconForCrop.set(url);
       // クロップウィンドウを開く
       isCropModalOpen.set(true);
@@ -96,7 +96,12 @@ const IconSelect: React.FC<Props> = ({ iconUrl, setIconUrl }) => {
       />
       <div className="w-[20%] aspect-square relative">
         <label htmlFor="new-icon">
-          {iconUrl && <canvas ref={canvasRef}></canvas>}
+          {iconUrl && (
+            <canvas
+              ref={canvasRef}
+              className="rounded-full overflow-hidden border-4 border-black/50"
+            ></canvas>
+          )}
         </label>
       </div>
     </>
