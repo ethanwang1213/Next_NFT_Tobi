@@ -1,35 +1,51 @@
 import { useEditProfile } from "@/contexts/EditProfileProvider";
+import IconCrop from "./sub/IconCrop";
+import { useAuth } from "@/contexts/AuthProvider";
+import Jimp from "jimp";
+import { error } from "console";
+import { Area } from "react-easy-crop";
 
 type Props = {};
 
+/**
+ * 選択されたアイコン画像のクロップを行うモーダル。
+ * このモーダルは、プロフィール編集モーダル表示中に、
+ * さらに上に重なるように表示されることを想定している。
+ *
+ * @param param0
+ * @returns
+ */
 const CropNewIconModal: React.FC<Props> = ({}) => {
-  const { isCropWindowOpen } = useEditProfile();
+  const auth = useAuth();
+  const { isCropModalOpen, iconForCrop, cropData } = useEditProfile();
+
+  // クロップ完了時のコールバック関数
+  const cropCallback = (crop: Area) => {
+    cropData.set(crop);
+    isCropModalOpen.set(false);
+  };
 
   return (
     <>
-      {/* Put this part before </body> tag */}
+      {/* DaisyUIのmodalを使用。 */}
+      {/* 表示前に選択画像のURL生成などを行うため、変数で表示を管理している */}
       <input
         type="checkbox"
         id="sample-modal"
         className="modal-toggle"
-        checked={isCropWindowOpen.current}
+        checked={isCropModalOpen.current}
         onChange={() => {}}
       />
       <div className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">
-            Congratulations random Internet user!
-          </h3>
-          <p className="py-4">
-            You've been selected for a chance to get one year of subscription to
-            use Wikipedia for free!
-          </p>
-          <div className="modal-action">
-            <button onClick={() => isCropWindowOpen.set(false)} className="btn">
-              Yay!
-            </button>
+        {isCropModalOpen.current && (
+          <div className="modal-box max-w-full h-[60dvh]">
+            {auth.user && (
+              <div className="w-full h-full">
+                <IconCrop url={iconForCrop.current} func={cropCallback} />
+              </div>
+            )}
           </div>
-        </div>
+        )}
       </div>
     </>
   );

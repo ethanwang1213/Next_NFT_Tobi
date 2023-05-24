@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
 import CloseModalButton from "./CloseModalButton";
 import { useAuth } from "@/contexts/AuthProvider";
 import Jimp from "jimp";
-import scaleImage from "@/libs/scaleImage";
 import { postProfile, uploadNewIcon } from "@/libs/postProfile";
+import processNewIcon from "@/libs/processNewIcon";
+import { Area } from "react-easy-crop";
 
 type Props = {
   modalId: string;
@@ -11,8 +11,8 @@ type Props = {
   children: React.ReactNode;
   callback?: () => void;
 
-  iconFile: File | null;
   iconUrl: string;
+  cropData: Area;
   newName: string;
   isBirthdayHidden: boolean;
   selectedYear: number;
@@ -21,7 +21,7 @@ type Props = {
 };
 
 /**
- * redeemStatusをNONEに戻し、モーダルを閉じるボタン
+ * プロフィール編集モーダルの保存ボタン
  * @param param0
  * @returns
  */
@@ -30,6 +30,7 @@ const SubmitButton: React.FC<Props> = ({
   className,
   children,
   iconUrl,
+  cropData,
   newName,
   isBirthdayHidden,
   selectedYear,
@@ -38,21 +39,36 @@ const SubmitButton: React.FC<Props> = ({
 }) => {
   const auth = useAuth();
 
+  // 保存処理
   const handleSubmit = async () => {
-    // 保存処理
-    console.log("ほぞん");
     const isNewIcon = iconUrl !== auth.user.icon;
-    // アイコン画像に変更があればアップロード
     if (isNewIcon) {
-      const scaled = await scaleImage(iconUrl);
+      // アイコン画像に変更があればアップロード
+      const scaled = await processNewIcon(iconUrl, cropData);
       scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
         await uploadNewIcon(
           auth.user.id,
           new File([buf], "img.png", { type: "image/png" })
         );
       });
+      // ローカルのプロフィール情報を更新
+      scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
+        auth.updateProfile(src, newName, isBirthdayHidden, {
+          year: selectedYear,
+          month: selectedMonth,
+          day: selectedDay,
+        });
+      });
+    } else {
+      // ローカルのプロフィール情報を更新
+      auth.updateProfile(iconUrl, newName, isBirthdayHidden, {
+        year: selectedYear,
+        month: selectedMonth,
+        day: selectedDay,
+      });
     }
-    // プロフィール情報を更新
+
+    // データベース上のプロフィール情報を更新
     await postProfile(
       auth.user,
       isNewIcon,
@@ -62,11 +78,6 @@ const SubmitButton: React.FC<Props> = ({
       selectedMonth,
       selectedDay
     );
-    auth.updateProfile(iconUrl, newName, isBirthdayHidden, {
-      year: selectedYear,
-      month: selectedMonth,
-      day: selectedDay,
-    });
   };
 
   return (

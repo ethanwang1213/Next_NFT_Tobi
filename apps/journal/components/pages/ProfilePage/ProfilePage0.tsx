@@ -1,12 +1,7 @@
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
-import {
-  mockName,
-  mockBirthday,
-  mockMail,
-  mockRecordList,
-} from "../../../libs/mocks/mockProfile0";
+import { mockRecordList } from "../../../libs/mocks/mockProfile0";
 import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
 import { useAuth } from "@/contexts/AuthProvider";
 
@@ -83,7 +78,7 @@ const ProfilePage0: React.FC = () => {
           )}
         </div>
         <div className="absolute top-0 right-0">
-          {/* The button to open modal */}
+          {/* EditProfileModalに紐づく */}
           <label htmlFor="edit-profile-modal" className="btn">
             open modal
           </label>

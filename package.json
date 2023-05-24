@@ -21,5 +21,8 @@
     "prettier": "latest",
     "turbo": "latest"
   },
-  "packageManager": "npm@8.19.4"
+  "packageManager": "npm@8.19.4",
+  "dependencies": {
+    "react-easy-crop": "^4.7.4"
+  }
 }
