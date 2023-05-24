@@ -1,8 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type Props = {
-  // isEditBirthday: boolean;
-  // setIsEditBirthday: Dispatch<SetStateAction<boolean>>;
   selectedYear: number;
   setSelectedYear: Dispatch<SetStateAction<number>>;
   selectedMonth: number;
@@ -24,21 +22,35 @@ const BirthdaySelect: React.FC<Props> = ({
   setIsBirthdayHidden,
 }) => {
   const [thisYear, setThisYear] = useState<number>(null);
+  // 今年の月表示は今月まで
+  const [endMonth, setEndMonth] = useState<number>(null);
   // 指定年月の末日
   const [endDay, setEndDay] = useState<number>(null);
 
   useEffect(() => {
-    // TODO: 現在の誕生日が設定されている場合、その日付をセットする
-    const now = new Date();
-    const year = now.getFullYear();
-    setThisYear(year);
-    setSelectedYear(year);
+    setThisYear(new Date().getFullYear());
   }, []);
 
+  // 今年を選択している場合のみ、月の選択肢を今月までに設定
+  // それ以外は12月までに設定
   useEffect(() => {
-    // その年月の末日を設定
+    const thisMonth = new Date().getMonth() + 1;
+    const isThisYear = selectedYear === thisYear;
+    setEndMonth(isThisYear ? thisMonth : 12);
+    // 選択値が超えていた場合は、今月に設定
+    if (isThisYear && selectedMonth > thisMonth) {
+      setSelectedMonth(thisMonth);
+    }
+  }, [selectedYear]);
+
+  // その年月の末日を設定
+  useEffect(() => {
     const endDay = new Date(selectedYear, selectedMonth, 0).getDate();
     setEndDay(endDay);
+    // 選択値が超えていた場合は、末日に設定
+    if (selectedDay > endDay) {
+      setSelectedDay(endDay);
+    }
   }, [selectedYear, selectedMonth]);
 
   return (
@@ -64,7 +76,7 @@ const BirthdaySelect: React.FC<Props> = ({
             onChange={(ev) => setSelectedMonth(parseInt(ev.target.value))}
           >
             <option disabled>月</option>
-            {[...Array(12)].map((_, i) => (
+            {[...Array(endMonth)].map((_, i) => (
               <option key={i}>{i + 1}</option>
             ))}
           </select>
