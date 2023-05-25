@@ -17,15 +17,19 @@ export type ActivityRecord = {
  * @returns
  */
 const ProfilePage0: React.FC = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
   const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
     if (!user) return;
 
-    if (!!user.birthday) {
-      if (user.isBirthdayHidden) {
+    if (user.birthday) {
+      if (
+        user.birthday.year === 0 ||
+        user.birthday.month === 0 ||
+        user.birthday.day === 0
+      ) {
         setBirthday("-");
       } else {
         const month = user.birthday.month.toString().padStart(2, "0");

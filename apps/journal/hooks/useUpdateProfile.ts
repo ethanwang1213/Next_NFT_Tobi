@@ -43,7 +43,6 @@ const useUpdateProfile = () => {
   const postProfile = async (
     isNewIcon: boolean,
     name: string,
-    isBirthdayHidden: boolean,
     year: number,
     month: number,
     day: number
@@ -65,11 +64,6 @@ const useUpdateProfile = () => {
         isAnyChanged = true;
       }
       // 誕生日
-      if (isBirthdayHidden !== auth.user.isBirthdayHidden) {
-        obj["isBirthdayHidden"] = isBirthdayHidden;
-        isAnyChanged = true;
-      }
-
       if (
         year !== auth.user.birthday?.year ||
         month !== auth.user.birthday?.month ||
@@ -98,7 +92,23 @@ const useUpdateProfile = () => {
   };
 
   const updateProfile = async (formValues: EditProfileValues) => {
-    const { iconUrl, newName, isBirthdayHidden, year, month, day } = formValues;
+    const { iconUrl, newName } = formValues;
+    // 誕生日のフォームをクリアしたときに、string型になってしまったりするので、
+    // 正常な値に変換する
+    let { year, month, day } = formValues;
+    if (typeof year === "string") {
+      if (year === "") year = 0;
+      else year = parseInt(year);
+    }
+    if (typeof month === "string") {
+      if (month === "") month = 0;
+      else month = parseInt(month);
+    }
+    if (typeof day === "string") {
+      if (day === "") day = 0;
+      else day = parseInt(day);
+    }
+
     const isNewIcon = !!cropData.current;
 
     if (isNewIcon) {
@@ -109,7 +119,7 @@ const useUpdateProfile = () => {
       });
       // ローカルのプロフィール情報を更新
       scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
-        auth.updateProfile(src, newName, isBirthdayHidden, {
+        auth.updateProfile(src, newName, {
           year: year,
           month: month,
           day: day,
@@ -117,7 +127,7 @@ const useUpdateProfile = () => {
       });
     } else {
       // ローカルのプロフィール情報を更新
-      auth.updateProfile(iconUrl, newName, isBirthdayHidden, {
+      auth.updateProfile(iconUrl, newName, {
         year: year,
         month: month,
         day: day,
@@ -125,7 +135,7 @@ const useUpdateProfile = () => {
     }
 
     // データベース上のプロフィール情報を更新
-    postProfile(isNewIcon, newName, isBirthdayHidden, year, month, day);
+    postProfile(isNewIcon, newName, year, month, day);
   };
 
   return { updateProfile };

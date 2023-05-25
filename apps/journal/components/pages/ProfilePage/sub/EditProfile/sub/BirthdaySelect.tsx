@@ -46,34 +46,59 @@ const BirthdaySelect: React.FC<Props> = ({
       setValue("month", user.birthday.month);
       setValue("day", user.birthday.day);
     } else {
-      setValue("year", thisY);
-      setValue("month", new Date().getMonth() + 1);
-      setValue("day", new Date().getDate());
+      setValue("year", 0);
+      setValue("month", 0);
+      setValue("day", 0);
     }
-    setValue("isBirthdayHidden", user.isBirthdayHidden);
   }, [user, isModalOpen]);
 
   // 今年を選択している場合のみ、月の選択肢を今月までに設定
   // それ以外は12月までに設定
   useEffect(() => {
-    const thisMonth = new Date().getMonth() + 1;
-    const isThisYear = getValues("year") === thisYear;
-    setEndMonth(isThisYear ? thisMonth : 12);
-    // 選択値が超えていた場合は、今月に設定
-    if (isThisYear && getValues("month") > thisMonth) {
-      setValue("month", thisMonth);
+    if (getValues("year") === 0) {
+      setEndMonth(0);
+    } else {
+      const thisMonth = new Date().getMonth() + 1;
+      const isThisYear = getValues("year") === thisYear;
+      setEndMonth(isThisYear ? thisMonth : 12);
+      // 月が未設定だった場合は、1月に設定
+      if (getValues("month") === 0) {
+        setValue("month", 1);
+      }
+      // 選択値が超えていた場合は、今月に設定
+      if (isThisYear && getValues("month") > thisMonth) {
+        setValue("month", thisMonth);
+      }
     }
   }, [watch("year")]);
 
   // その年月の末日を設定
   useEffect(() => {
-    const endDay = new Date(getValues("year"), getValues("month"), 0).getDate();
-    setEndDay(endDay);
-    // 選択値が超えていた場合は、末日に設定
-    if (getValues("day") > endDay) {
-      setValue("day", endDay);
+    if (getValues("year") === 0 || getValues("month") === 0) {
+      setEndDay(0);
+    } else {
+      const endDay = new Date(
+        getValues("year"),
+        getValues("month"),
+        0
+      ).getDate();
+      setEndDay(endDay);
+      // 日が未設定だった場合は、1日に設定
+      if (getValues("day") === 0) {
+        setValue("day", 1);
+      }
+      // 選択値が超えていた場合は、末日に設定
+      if (getValues("day") > endDay) {
+        setValue("day", endDay);
+      }
     }
-  }, [watch("year"), watch("month")]);
+  }, [watch("month"), endMonth]);
+
+  const handleClearValues = () => {
+    setValue("year", 0);
+    setValue("month", 0);
+    setValue("day", 0);
+  };
 
   return (
     <>
@@ -109,16 +134,15 @@ const BirthdaySelect: React.FC<Props> = ({
           <span className="ml-1 mr-2">日</span>
         </div>
       </div>
-      {/* 誕生日を隠す設定 */}
-      <div className="mb-2 font-bold">
-        <label className="cursor-pointer label gap-2 justify-start">
-          <input
-            type="checkbox"
-            className="checkbox checkbox-accent"
-            {...register("isBirthdayHidden")}
-          />
-          <span className="label-text text-accent">誕生日を隠す</span>
-        </label>
+      {/* 誕生日をクリア */}
+      <div className="mt-2 font-bold">
+        <button
+          type="button"
+          className="text-primary text-sm"
+          onClick={handleClearValues}
+        >
+          誕生日をクリア
+        </button>
       </div>
     </>
   );

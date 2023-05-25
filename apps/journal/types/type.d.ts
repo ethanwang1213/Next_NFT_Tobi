@@ -39,7 +39,6 @@ export type User = {
   email: string;
   icon: string;
   createdAt: number;
-  isBirthdayHidden: boolean;
   birthday?: Birthday;
 };
 
@@ -48,7 +47,6 @@ export type UserContextType = {
   updateProfile: (
     newIcon: string,
     newName: string,
-    isBirthdayHidden: boolean,
     newBirthday: Birthday
   ) => void;
 };

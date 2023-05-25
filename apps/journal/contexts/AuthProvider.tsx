@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: email ? email : "",
       icon: "", // TODO: アイコンの初期値を設定する
       createdAt: Date.now(),
-      isBirthdayHidden: true,
     };
     setDoc(ref, appUser).then(() => {
       setUser(appUser);
@@ -75,14 +74,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateProfile = (
     newIcon: string,
     newName: string,
-    isBirthdayHidden: boolean,
     newBirthday: Birthday
   ) => {
     const newUser = {
       ...user,
       icon: newIcon,
       name: newName,
-      isBirthdayHidden: isBirthdayHidden,
       birthday: newBirthday,
     };
     setUser(newUser);

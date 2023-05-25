@@ -11,7 +11,6 @@ import useUpdateProfile from "@/hooks/useUpdateProfile";
 export type EditProfileValues = {
   iconUrl: string;
   newName: string;
-  isBirthdayHidden: boolean;
   year: number;
   month: number;
   day: number;
