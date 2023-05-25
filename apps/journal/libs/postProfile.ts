@@ -3,10 +3,14 @@ import { User } from "@/types/type";
 import { doc, setDoc } from "@firebase/firestore";
 import { ref, uploadBytes } from "@firebase/storage";
 
+/**
+ * 新しいアイコンをfirebase storageにアップロード
+ * @param uid
+ * @param icon
+ */
 export const uploadNewIcon = async (uid: string, icon: File) => {
   try {
     // アイコンpngファイルのアップロード
-    console.log(uid);
     const ext = icon.name.split(".").pop();
     const storageRef = ref(storage, `users/${uid}/icon.${ext}`);
     await uploadBytes(storageRef, icon);
@@ -15,6 +19,16 @@ export const uploadNewIcon = async (uid: string, icon: File) => {
   }
 };
 
+/**
+ * 変更があったプロフィールについて、firestore上の情報を更新する
+ * @param user
+ * @param isNewIcon
+ * @param name
+ * @param isBirthdayHidden
+ * @param year
+ * @param month
+ * @param day
+ */
 export const postProfile = async (
   user: User,
   isNewIcon: boolean,
@@ -29,11 +43,10 @@ export const postProfile = async (
     const usersSrcRef = doc(db, `users/${user.id}`);
     const obj = {};
     let isAnyChanged = false;
-    console.log(isNewIcon, name, year, month, day, user.name, user.birthday);
     // ユーザーアイコンurl
-    if (isNewIcon) {
-      const url = `/proxy/users%2F${user.id}%2Ficon.png?alt=media`;
-      obj["icon"] = url;
+    // 初めてアイコンを設定するときのみ保存（アイコンに変更があってもurlは同一）
+    if (isNewIcon && user.icon === "") {
+      obj["icon"] = `/proxy/users%2F${user.id}%2Ficon.png?alt=media`;
       isAnyChanged = true;
     }
     // ユーザー名

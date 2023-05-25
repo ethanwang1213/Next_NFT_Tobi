@@ -54,7 +54,9 @@ const EditProfileModal: React.FC = () => {
     const selectedMonth = getValues("month");
     const selectedDay = getValues("day");
 
-    if (!!cropData.current) {
+    const isNewIcon = !!cropData.current;
+
+    if (isNewIcon) {
       // アイコン画像に変更があればアップロード
       const scaled = await processNewIcon(iconUrl, cropData.current);
       scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
@@ -81,15 +83,17 @@ const EditProfileModal: React.FC = () => {
     }
 
     // データベース上のプロフィール情報を更新
-    await postProfile(
+    postProfile(
       user,
-      !!cropData,
+      isNewIcon,
       newName,
       isBirthdayHidden,
       selectedYear,
       selectedMonth,
       selectedDay
     );
+
+    setIsModalOpen(false);
   };
 
   return (
@@ -99,6 +103,7 @@ const EditProfileModal: React.FC = () => {
         type="checkbox"
         id="edit-profile-modal"
         className="modal-toggle"
+        checked={isModalOpen}
         onChange={handleChange}
       />
       <div className="modal">
