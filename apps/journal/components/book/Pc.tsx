@@ -29,11 +29,16 @@ const Pc = () => {
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
   const bookData = useContext(BookContext);
-  const pageRef = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+  const pageRef = [
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+  ];
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
   const { current: pages } = bookData.pages;
   const { current: tags } = bookData.tags;
-  const oldPageNo = usePrevious(pageNo);
+  const [newPageNo, setNewPageNo] = useState<number>(pageNo);
 
   // ページめくり領域の幅 (%)
   const flipAreaWRatio = 15;
@@ -73,21 +78,26 @@ const Pc = () => {
 
   useEffect(() => {
     if (!bookImgRef.current) return;
-    else if (pageNo === oldPageNo) return;
+    else if (pageNo === newPageNo) return;
     gsap
       .timeline()
-      .set(pageRef[0].current, { pointerEvents: "auto" })
-      .set(pageRef[1].current, { pointerEvents: "auto" })
-      .fromTo(pageRef[0].current, { opacity: 1 }, { opacity: 0, duration: 0.5 })
-      .fromTo(
-        pageRef[1].current,
-        { opacity: 1 },
-        { opacity: 0, duration: 0.5 },
+      .set(pageRef[0].current, { pointerEvents: "auto", opacity: 1 })
+      .set(pageRef[1].current, { pointerEvents: "auto", opacity: 1 })
+      .set(pageRef[2].current, { pointerEvents: "none", opacity: 0 })
+      .set(pageRef[3].current, { pointerEvents: "none", opacity: 0 })
+      .to(pageRef[0].current, { opacity: 0 })
+      .to(pageRef[1].current, { opacity: 0 }, "<")
+      .to(pageRef[2].current, { opacity: 1 }, "<")
+      .to(
+        pageRef[3].current,
+        { opacity: 1, onComplete: () => setNewPageNo(pageNo) },
         "<"
       )
-      .set(pageRef[0].current, { pointerEvents: "none" })
-      .set(pageRef[1].current, { pointerEvents: "none" });
-  }, [pageNo, pageRef, oldPageNo]);
+      .set(pageRef[0].current, { pointerEvents: "none", opacity: 0 })
+      .set(pageRef[1].current, { pointerEvents: "none", opacity: 0 })
+      .set(pageRef[2].current, { pointerEvents: "auto", opacity: 1 })
+      .set(pageRef[3].current, { pointerEvents: "auto", opacity: 1 });
+  }, [pageNo, pageRef, newPageNo]);
 
   const setAspect = () => {
     // 本の画像のアスペクト比を設定
@@ -153,6 +163,7 @@ const Pc = () => {
           ></Image>
           <div
             className="absolute origin-top-left"
+            ref={pageRef[2]}
             style={{
               left: `${bookPos.left + bookWidth * 0.05}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
@@ -163,6 +174,7 @@ const Pc = () => {
           </div>
           <div
             className="absolute origin-top-left"
+            ref={pageRef[3]}
             style={{
               left: `${bookPos.center + bookWidth * 0.03}px`,
               top: `${bookPos.top + bookHeight * 0.02}px`,
@@ -183,7 +195,7 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {pages[oldPageNo]}
+            {pages[newPageNo]}
           </div>
           <div
             className="absolute origin-top-left"
@@ -196,7 +208,7 @@ const Pc = () => {
               ...pageStyle,
             }}
           >
-            {pages[oldPageNo + 1]}
+            {pages[newPageNo + 1]}
           </div>
 
           {/* ページめくりのクリック領域の表示 */}
