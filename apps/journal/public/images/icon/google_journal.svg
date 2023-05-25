@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_レイヤー_2" data-name="レイヤー 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 17.64 18">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-2 {
+        fill: #f0bd41;
+      }
+
+      .cls-3 {
+        fill: #d64f3f;
+      }
+
+      .cls-4 {
+        fill: #57a55c;
+      }
+
+      .cls-5 {
+        fill: #4f81e9;
+      }
+
+      .cls-6 {
+        clip-rule: evenodd;
+        fill: none;
+      }
+
+      .cls-7 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-8 {
+        clip-path: url(#clippath-3);
+      }
+
+      .cls-9 {
+        clip-path: url(#clippath-2);
+      }
+    </style>
+    <clipPath id="clippath">
+      <path class="cls-6" d="m17.64,9.2c0-.64-.06-1.25-.16-1.84h-8.48v3.48h4.84c-.21,1.12-.84,2.08-1.8,2.72v2.26h2.91c1.7-1.57,2.68-3.87,2.68-6.61h0Z"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <path class="cls-6" d="m9,18c2.43,0,4.47-.81,5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34,0-4.33-1.58-5.04-3.71H.96v2.33c1.48,2.94,4.52,4.96,8.04,4.96h0Z"/>
+    </clipPath>
+    <clipPath id="clippath-2">
+      <path class="cls-6" d="m3.96,10.71c-.18-.54-.28-1.12-.28-1.71s.1-1.17.28-1.71v-2.33H.96c-.61,1.21-.96,2.59-.96,4.04s.35,2.83.96,4.04l3.01-2.33h0Z"/>
+    </clipPath>
+    <clipPath id="clippath-3">
+      <path class="cls-6" d="m9,3.58c1.32,0,2.51.45,3.44,1.35l2.58-2.58c-1.56-1.45-3.6-2.34-6.02-2.34C5.48,0,2.44,2.02.96,4.96l3.01,2.33c.71-2.13,2.69-3.71,5.04-3.71h0Z"/>
+    </clipPath>
+  </defs>
+  <g id="_レイヤー_1-2" data-name="レイヤー 1">
+    <g>
+      <g class="cls-1">
+        <rect class="cls-5" x="4" y="2.36" width="18.64" height="18.46"/>
+      </g>
+      <g class="cls-7">
+        <rect class="cls-4" x="-4.04" y="5.71" width="24" height="17.29"/>
+      </g>
+      <g class="cls-9">
+        <rect class="cls-2" x="-5" y="-.04" width="13.96" height="18.08"/>
+      </g>
+      <g class="cls-8">
+        <rect class="cls-3" x="-4.04" y="-5" width="24.06" height="17.29"/>
+      </g>
+    </g>
+  </g>
+</svg>
