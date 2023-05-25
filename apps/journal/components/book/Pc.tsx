@@ -6,14 +6,6 @@ import Tag from "../Tag";
 import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
 
-const usePrevious = (value: any) => {
-  const ref = useRef(null);
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-};
-
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
   const { width: innerWidth, height: innerHeight } = useWindowSize();
