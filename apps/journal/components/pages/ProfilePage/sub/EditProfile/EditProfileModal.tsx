@@ -5,12 +5,8 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import IconSelect from "./sub/IconSelect";
 import BirthdaySelect from "./sub/BirthdaySelect";
 import NameInput from "./sub/NameInput";
-import { useEditProfile } from "@/contexts/EditProfileProvider";
 import { useForm } from "react-hook-form";
-import { useAuth } from "@/contexts/AuthProvider";
-import { uploadNewIcon, postProfile } from "@/libs/postProfile";
-import processNewIcon from "@/libs/processNewIcon";
-import Jimp from "jimp";
+import useUpdateProfile from "@/hooks/useUpdateProfile";
 
 export type EditProfileValues = {
   iconUrl: string;
@@ -27,7 +23,7 @@ export type EditProfileValues = {
  * @returns
  */
 const EditProfileModal: React.FC = () => {
-  const { user, updateProfile } = useAuth();
+  const { updateProfile } = useUpdateProfile();
 
   const {
     register,
@@ -37,7 +33,6 @@ const EditProfileModal: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<EditProfileValues>({ mode: "onChange" });
-  const { cropData } = useEditProfile();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // モーダルが開かれたときにユーザー情報を取得する
@@ -47,52 +42,7 @@ const EditProfileModal: React.FC = () => {
 
   // 保存処理
   const onSubmit = async () => {
-    const iconUrl = getValues("iconUrl");
-    const newName = getValues("newName");
-    const isBirthdayHidden = getValues("isBirthdayHidden");
-    const selectedYear = getValues("year");
-    const selectedMonth = getValues("month");
-    const selectedDay = getValues("day");
-
-    const isNewIcon = !!cropData.current;
-
-    if (isNewIcon) {
-      // アイコン画像に変更があればアップロード
-      const scaled = await processNewIcon(iconUrl, cropData.current);
-      scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
-        await uploadNewIcon(
-          user.id,
-          new File([buf], "img.png", { type: "image/png" })
-        );
-      });
-      // ローカルのプロフィール情報を更新
-      scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
-        updateProfile(src, newName, isBirthdayHidden, {
-          year: selectedYear,
-          month: selectedMonth,
-          day: selectedDay,
-        });
-      });
-    } else {
-      // ローカルのプロフィール情報を更新
-      updateProfile(iconUrl, newName, isBirthdayHidden, {
-        year: selectedYear,
-        month: selectedMonth,
-        day: selectedDay,
-      });
-    }
-
-    // データベース上のプロフィール情報を更新
-    postProfile(
-      user,
-      isNewIcon,
-      newName,
-      isBirthdayHidden,
-      selectedYear,
-      selectedMonth,
-      selectedDay
-    );
-
+    updateProfile(getValues());
     setIsModalOpen(false);
   };
 
