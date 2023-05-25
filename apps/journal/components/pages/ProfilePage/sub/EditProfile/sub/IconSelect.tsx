@@ -67,7 +67,6 @@ const IconSelect: React.FC<Props> = ({
       canvasRef.current.height = 100;
       const ctx = canvasRef.current.getContext("2d");
       const image = await createImage(getValues("iconUrl"));
-
       if (cropData.current) {
         ctx.drawImage(
           image,
@@ -81,6 +80,7 @@ const IconSelect: React.FC<Props> = ({
           100
         );
       } else {
+        ctx.resetTransform();
         ctx.scale(100 / image.naturalWidth, 100 / image.naturalHeight);
         ctx.drawImage(image, 0, 0);
       }
