@@ -5,8 +5,21 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import IconSelect from "./sub/IconSelect";
 import BirthdaySelect from "./sub/BirthdaySelect";
 import NameInput from "./sub/NameInput";
-import SubmitButton from "./sub/CloseModalButton/SubmitButton";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
+import { useForm } from "react-hook-form";
+import { useAuth } from "@/contexts/AuthProvider";
+import { uploadNewIcon, postProfile } from "@/libs/postProfile";
+import processNewIcon from "@/libs/processNewIcon";
+import Jimp from "jimp";
+
+export type EditProfileValues = {
+  iconUrl: string;
+  newName: string;
+  isBirthdayHidden: boolean;
+  year: number;
+  month: number;
+  day: number;
+};
 
 /**
  * プロフィール編集モーダル
@@ -14,21 +27,69 @@ import { useEditProfile } from "@/contexts/EditProfileProvider";
  * @returns
  */
 const EditProfileModal: React.FC = () => {
+  const { user, updateProfile } = useAuth();
+
+  const {
+    register,
+    getValues,
+    watch,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EditProfileValues>({ mode: "onChange" });
   const { cropData } = useEditProfile();
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  // TODO: Contextに全部移動したほうがレンダリングの効率が良さそう
-  const [iconUrl, setIconUrl] = useState<string>(null);
-  const [newName, setNewName] = useState<string>("");
-  const [isBirthdayHidden, setIsBirthdayHidden] = useState<boolean>(false);
-  const [selectedYear, setSelectedYear] = useState<number>(1);
-  const [selectedMonth, setSelectedMonth] = useState<number>(1);
-  const [selectedDay, setSelectedDay] = useState<number>(1);
 
   // モーダルが開かれたときにユーザー情報を取得する
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setIsModalOpen(ev.currentTarget.checked);
+  };
+
+  // 保存処理
+  const onSubmit = async () => {
+    const iconUrl = getValues("iconUrl");
+    const newName = getValues("newName");
+    const isBirthdayHidden = getValues("isBirthdayHidden");
+    const selectedYear = getValues("year");
+    const selectedMonth = getValues("month");
+    const selectedDay = getValues("day");
+
+    if (!!cropData.current) {
+      // アイコン画像に変更があればアップロード
+      const scaled = await processNewIcon(iconUrl, cropData.current);
+      scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
+        await uploadNewIcon(
+          user.id,
+          new File([buf], "img.png", { type: "image/png" })
+        );
+      });
+      // ローカルのプロフィール情報を更新
+      scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
+        updateProfile(src, newName, isBirthdayHidden, {
+          year: selectedYear,
+          month: selectedMonth,
+          day: selectedDay,
+        });
+      });
+    } else {
+      // ローカルのプロフィール情報を更新
+      updateProfile(iconUrl, newName, isBirthdayHidden, {
+        year: selectedYear,
+        month: selectedMonth,
+        day: selectedDay,
+      });
+    }
+
+    // データベース上のプロフィール情報を更新
+    await postProfile(
+      user,
+      !!cropData,
+      newName,
+      isBirthdayHidden,
+      selectedYear,
+      selectedMonth,
+      selectedDay
+    );
   };
 
   return (
@@ -50,56 +111,51 @@ const EditProfileModal: React.FC = () => {
               <FontAwesomeIcon icon={faXmark} fontSize={24} />
             </CloseModalButton>
             <h3 className="font-bold text-lg">プロフィールの編集</h3>
-            {/* ユーザーアイコン */}
-            <p className="py-4 font-bold">Icon</p>
-            <IconSelect
-              isModalOpen={isModalOpen}
-              iconUrl={iconUrl}
-              setIconUrl={setIconUrl}
-            />
-            {/* ユーザー名 */}
-            <p className="py-4 font-bold">Name</p>
-            <NameInput
-              isModalOpen={isModalOpen}
-              newName={newName}
-              setNewName={setNewName}
-            />
-            {/* 誕生日 */}
-            <p className="pt-4 pb-2 font-bold">Birthday</p>
-            <div>
-              <BirthdaySelect
+            <form onSubmit={handleSubmit(onSubmit)} className="form-control">
+              {/* ユーザーアイコン */}
+              <p className="py-4 font-bold">Icon</p>
+              <IconSelect
+                register={register}
+                getValues={getValues}
+                watch={watch}
+                setValue={setValue}
                 isModalOpen={isModalOpen}
-                selectedYear={selectedYear}
-                setSelectedYear={setSelectedYear}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                selectedDay={selectedDay}
-                setSelectedDay={setSelectedDay}
-                isBirthdayHidden={isBirthdayHidden}
-                setIsBirthdayHidden={setIsBirthdayHidden}
               />
-            </div>
-            <div className="modal-action">
-              <CloseModalButton
-                className="btn btn-ghost"
-                modalId="edit-profile-modal"
-              >
-                キャンセル
-              </CloseModalButton>
-              <SubmitButton
-                className="btn btn-accent"
-                modalId="edit-profile-modal"
-                iconUrl={iconUrl}
-                cropData={cropData.current}
-                newName={newName}
-                isBirthdayHidden={isBirthdayHidden}
-                selectedYear={selectedYear}
-                selectedMonth={selectedMonth}
-                selectedDay={selectedDay}
-              >
-                完了
-              </SubmitButton>
-            </div>
+              {/* ユーザー名 */}
+              <p className="py-4 font-bold">Name</p>
+              <NameInput
+                register={register}
+                setValue={setValue}
+                errors={errors}
+                isModalOpen={isModalOpen}
+              />
+              {/* 誕生日 */}
+              <p className="pt-4 pb-2 font-bold">Birthday</p>
+              <div>
+                <BirthdaySelect
+                  register={register}
+                  getValues={getValues}
+                  watch={watch}
+                  setValue={setValue}
+                  isModalOpen={isModalOpen}
+                />
+              </div>
+              <div className="modal-action">
+                <CloseModalButton
+                  className="btn btn-ghost"
+                  modalId="edit-profile-modal"
+                >
+                  キャンセル
+                </CloseModalButton>
+                <button
+                  type="submit"
+                  className="btn btn-accent"
+                  onSubmit={handleSubmit(onSubmit)}
+                >
+                  完了
+                </button>
+              </div>
+            </form>
           </>
         </div>
       </div>

@@ -1,135 +1,121 @@
 import { useAuth } from "@/contexts/AuthProvider";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  UseFormGetValues,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
+import { EditProfileValues } from "../EditProfileModal";
 
 type Props = {
+  register: UseFormRegister<EditProfileValues>;
+  getValues: UseFormGetValues<EditProfileValues>;
+  watch: UseFormWatch<EditProfileValues>;
+  setValue: UseFormSetValue<EditProfileValues>;
   isModalOpen: boolean;
-  selectedYear: number;
-  setSelectedYear: Dispatch<SetStateAction<number>>;
-  selectedMonth: number;
-  setSelectedMonth: Dispatch<SetStateAction<number>>;
-  selectedDay: number;
-  setSelectedDay: Dispatch<SetStateAction<number>>;
-  isBirthdayHidden: boolean;
-  setIsBirthdayHidden: Dispatch<SetStateAction<boolean>>;
 };
 
 const BirthdaySelect: React.FC<Props> = ({
+  register,
+  getValues,
+  watch,
+  setValue,
   isModalOpen,
-  selectedYear,
-  setSelectedYear,
-  selectedMonth,
-  setSelectedMonth,
-  selectedDay,
-  setSelectedDay,
-  isBirthdayHidden,
-  setIsBirthdayHidden,
 }) => {
   const { user } = useAuth();
 
   const [thisYear, setThisYear] = useState<number>(null);
-  // 今年の月表示は今月まで
   const [endMonth, setEndMonth] = useState<number>(null);
-  // 指定年月の末日
   const [endDay, setEndDay] = useState<number>(null);
 
-  // 初期設定
+  // モーダルを開く前の初期化処理
+  useEffect(() => {
+    setThisYear(new Date().getFullYear());
+  }, []);
+
+  // 初期化処理
   useEffect(() => {
     if (!user) return;
     if (!isModalOpen) return;
 
     const thisY = new Date().getFullYear();
-    setThisYear(new Date().getFullYear());
+    setThisYear(thisY);
     if (user.birthday) {
-      setSelectedYear(user.birthday.year);
-      setSelectedMonth(user.birthday.month);
-      setSelectedDay(user.birthday.day);
+      setValue("year", user.birthday.year);
+      setValue("month", user.birthday.month);
+      setValue("day", user.birthday.day);
     } else {
-      setSelectedYear(thisY);
-      setSelectedMonth(new Date().getMonth() + 1);
-      setSelectedDay(new Date().getDate());
+      setValue("year", thisY);
+      setValue("month", new Date().getMonth() + 1);
+      setValue("day", new Date().getDate());
     }
-
-    setIsBirthdayHidden(user.isBirthdayHidden);
+    setValue("isBirthdayHidden", user.isBirthdayHidden);
   }, [user, isModalOpen]);
 
   // 今年を選択している場合のみ、月の選択肢を今月までに設定
   // それ以外は12月までに設定
   useEffect(() => {
-    if (!user) return;
-    if (!isModalOpen) return;
-
     const thisMonth = new Date().getMonth() + 1;
-    const isThisYear = selectedYear === thisYear;
+    const isThisYear = getValues("year") === thisYear;
     setEndMonth(isThisYear ? thisMonth : 12);
     // 選択値が超えていた場合は、今月に設定
-    if (isThisYear && selectedMonth > thisMonth) {
-      setSelectedMonth(thisMonth);
+    if (isThisYear && getValues("month") > thisMonth) {
+      setValue("month", thisMonth);
     }
-  }, [isModalOpen, selectedYear]);
+  }, [watch("year")]);
 
   // その年月の末日を設定
   useEffect(() => {
-    if (!user) return;
-    if (!isModalOpen) return;
-
-    const endDay = new Date(selectedYear, selectedMonth, 0).getDate();
+    const endDay = new Date(getValues("year"), getValues("month"), 0).getDate();
     setEndDay(endDay);
     // 選択値が超えていた場合は、末日に設定
-    if (selectedDay > endDay) {
-      setSelectedDay(endDay);
+    if (getValues("day") > endDay) {
+      setValue("day", endDay);
     }
-  }, [isModalOpen, selectedYear, selectedMonth]);
+  }, [watch("year"), watch("month")]);
 
   return (
     <>
       <div className="text-accent flex w-full">
-        <div className="w-[30%]">
-          <select
-            className="select select-accent"
-            value={selectedYear}
-            onChange={(ev) => setSelectedYear(parseInt(ev.target.value))}
-          >
+        {/* 年設定 */}
+        <div className="">
+          <select className="select select-accent" {...register("year")}>
             <option disabled>年</option>
             {[...Array(120)].map((_, i) => (
               <option key={i}>{(thisYear - i).toString()}</option>
             ))}
           </select>
-          <span className="ml-1">年</span>
+          <span className="ml-1 mr-2">年</span>
         </div>
-        <div className="w-[26%]">
-          <select
-            className="select select-accent"
-            value={selectedMonth}
-            onChange={(ev) => setSelectedMonth(parseInt(ev.target.value))}
-          >
+        {/* 月設定 */}
+        <div className="">
+          <select className="select select-accent" {...register("month")}>
             <option disabled>月</option>
             {[...Array(endMonth)].map((_, i) => (
               <option key={i}>{i + 1}</option>
             ))}
           </select>
-          <span className="ml-1">月</span>
+          <span className="ml-1 mr-2">月</span>
         </div>
-        <div className="w-[26%]">
-          <select
-            className="select select-accent"
-            value={selectedDay}
-            onChange={(ev) => setSelectedDay(parseInt(ev.target.value))}
-          >
+        {/* 日設定 */}
+        <div className="">
+          <select className="select select-accent" {...register("day")}>
             <option disabled>日</option>
             {[...Array(endDay)].map((_, i) => (
-              <option key={i}>{(i + 1).toString()}</option>
+              <option key={i}>{i + 1}</option>
             ))}
           </select>
-          <span className="ml-1">日</span>
+          <span className="ml-1 mr-2">日</span>
         </div>
       </div>
+      {/* 誕生日を隠す設定 */}
       <div className="mb-2 font-bold">
         <label className="cursor-pointer label gap-2 justify-start">
           <input
             type="checkbox"
             className="checkbox checkbox-accent"
-            checked={isBirthdayHidden}
-            onChange={(ev) => setIsBirthdayHidden(ev.target.checked)}
+            {...register("isBirthdayHidden")}
           />
           <span className="label-text text-accent">誕生日を隠す</span>
         </label>

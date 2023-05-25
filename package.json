@@ -23,6 +23,7 @@
   },
   "packageManager": "npm@8.19.4",
   "dependencies": {
-    "react-easy-crop": "^4.7.4"
+    "react-easy-crop": "^4.7.4",
+    "react-hook-form": "^7.43.9"
   }
 }

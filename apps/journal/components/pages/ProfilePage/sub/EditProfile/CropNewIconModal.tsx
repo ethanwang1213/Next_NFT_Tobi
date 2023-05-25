@@ -1,6 +1,5 @@
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import IconCrop from "./sub/IconCrop";
-import { useAuth } from "@/contexts/AuthProvider";
 import { Area } from "react-easy-crop";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,7 +15,6 @@ type Props = {};
  * @returns
  */
 const CropNewIconModal: React.FC<Props> = ({}) => {
-  const { user } = useAuth();
   const { isCropModalOpen, iconForCrop, cropData } = useEditProfile();
 
   // クロップ完了時のコールバック関数
@@ -44,9 +42,12 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
           >
             <FontAwesomeIcon icon={faXmark} fontSize={24} />
           </button>
-          {isCropModalOpen.current && user && (
+          {isCropModalOpen.current && (
             <div className="w-full h-full">
-              <IconCrop url={iconForCrop.current} func={cropCallback} />
+              <IconCrop
+                url={iconForCrop.current ? iconForCrop.current : ""}
+                func={cropCallback}
+              />
             </div>
           )}
         </div>

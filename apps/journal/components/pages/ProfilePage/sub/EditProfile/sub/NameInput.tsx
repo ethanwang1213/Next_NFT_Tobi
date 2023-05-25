@@ -1,33 +1,46 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { useEffect } from "react";
+import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { EditProfileValues } from "../EditProfileModal";
 
 type Props = {
+  register: UseFormRegister<EditProfileValues>;
+  setValue: UseFormSetValue<EditProfileValues>;
+  errors: FieldErrors<EditProfileValues>;
   isModalOpen: boolean;
-  newName: string;
-  setNewName: (newName: string) => void;
 };
 
-const NameInput: React.FC<Props> = ({ isModalOpen, newName, setNewName }) => {
+const NameInput: React.FC<Props> = ({
+  register,
+  setValue,
+  errors,
+  isModalOpen,
+}) => {
   const { user } = useAuth();
 
   useEffect(() => {
     if (!user) return;
     if (!isModalOpen) return;
-
-    setNewName(user.name);
+    setValue("newName", user.name);
   }, [user, isModalOpen]);
 
-  const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(ev.currentTarget.value);
-  };
-
   return (
-    <input
-      type="text"
-      className="input input-accent"
-      value={newName}
-      onChange={handleChange}
-    />
+    <>
+      <input
+        type="text"
+        className="input input-accent"
+        {...register("newName", {
+          maxLength: { value: 20, message: "20文字以内で入力してください。" },
+        })}
+      />
+      {errors.newName && (
+        <label className="label">
+          <span className="label-text-alt font-bold text-error">
+            {errors.newName.message}
+          </span>
+        </label>
+      )}
+    </>
   );
 };
 

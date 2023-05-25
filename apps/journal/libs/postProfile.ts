@@ -64,6 +64,7 @@ export const postProfile = async (
     if (day !== user.birthday?.day) {
       obj["birthday"]["day"] = day;
     }
+    console.log(obj);
 
     if (isAnyChanged) {
       setDoc(usersSrcRef, obj, { merge: true });
