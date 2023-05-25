@@ -39,7 +39,7 @@ export type User = {
   email: string;
   icon: string;
   createdAt: number;
-  birthday?: Birthday;
+  birthday: Birthday;
 };
 
 export type UserContextType = {

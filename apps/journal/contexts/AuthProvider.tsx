@@ -25,6 +25,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: email ? email : "",
       icon: "", // TODO: アイコンの初期値を設定する
       createdAt: Date.now(),
+      birthday: {
+        year: 0,
+        month: 0,
+        day: 0,
+      },
     };
     setDoc(ref, appUser).then(() => {
       setUser(appUser);
