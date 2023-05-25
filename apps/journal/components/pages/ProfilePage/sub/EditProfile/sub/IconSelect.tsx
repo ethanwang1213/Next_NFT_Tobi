@@ -1,7 +1,9 @@
+import { useAuth } from "@/contexts/AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import { useEffect, useRef } from "react";
 
 type Props = {
+  isModalOpen: boolean;
   iconUrl: string;
   setIconUrl: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -11,9 +13,19 @@ type Props = {
  * @param param0
  * @returns
  */
-const IconSelect: React.FC<Props> = ({ iconUrl, setIconUrl }) => {
+const IconSelect: React.FC<Props> = ({ isModalOpen, iconUrl, setIconUrl }) => {
+  const { user } = useAuth();
+
   const { isCropModalOpen, iconForCrop, cropData } = useEditProfile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    if (!isModalOpen) return;
+
+    setIconUrl(user.icon !== "" ? user.icon : "/mocks/images/profile.png");
+    cropData.set(null);
+  }, [user, isModalOpen]);
 
   // プロフィール編集モーダルのアイコンプレビューを表示
   // クロップのプレビューを軽量で表示するためにcanvasを使用している

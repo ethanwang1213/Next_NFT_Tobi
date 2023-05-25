@@ -41,8 +41,7 @@ const SubmitButton: React.FC<Props> = ({
 
   // 保存処理
   const handleSubmit = async () => {
-    const isNewIcon = iconUrl !== user.icon;
-    if (isNewIcon) {
+    if (!!cropData) {
       // アイコン画像に変更があればアップロード
       const scaled = await processNewIcon(iconUrl, cropData);
       scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
@@ -71,7 +70,7 @@ const SubmitButton: React.FC<Props> = ({
     // データベース上のプロフィール情報を更新
     await postProfile(
       user,
-      isNewIcon,
+      !!cropData,
       newName,
       isBirthdayHidden,
       selectedYear,

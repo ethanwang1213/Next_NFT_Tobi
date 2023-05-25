@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CloseModalButton from "./sub/CloseModalButton/CloseModalButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -6,7 +6,6 @@ import IconSelect from "./sub/IconSelect";
 import BirthdaySelect from "./sub/BirthdaySelect";
 import NameInput from "./sub/NameInput";
 import SubmitButton from "./sub/CloseModalButton/SubmitButton";
-import { useAuth } from "@/contexts/AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 
 /**
@@ -15,8 +14,9 @@ import { useEditProfile } from "@/contexts/EditProfileProvider";
  * @returns
  */
 const EditProfileModal: React.FC = () => {
-  const { user } = useAuth();
   const { cropData } = useEditProfile();
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // TODO: Contextに全部移動したほうがレンダリングの効率が良さそう
   const [iconUrl, setIconUrl] = useState<string>(null);
@@ -28,24 +28,7 @@ const EditProfileModal: React.FC = () => {
 
   // モーダルが開かれたときにユーザー情報を取得する
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    if (!user) return;
-    if (!ev.currentTarget.checked) return;
-
-    setIconUrl(
-      user.icon !== "" ? user.icon : "/mocks/images/profile.png"
-    );
-    cropData.set(null);
-    setNewName(user.name);
-    setIsBirthdayHidden(user.isBirthdayHidden);
-    if (user.birthday) {
-      setSelectedYear(user.birthday.year);
-      setSelectedMonth(user.birthday.month);
-      setSelectedDay(user.birthday.day);
-    } else {
-      setSelectedYear(1);
-      setSelectedMonth(1);
-      setSelectedDay(1);
-    }
+    setIsModalOpen(ev.currentTarget.checked);
   };
 
   return (
@@ -69,14 +52,23 @@ const EditProfileModal: React.FC = () => {
             <h3 className="font-bold text-lg">プロフィールの編集</h3>
             {/* ユーザーアイコン */}
             <p className="py-4 font-bold">Icon</p>
-            <IconSelect iconUrl={iconUrl} setIconUrl={setIconUrl} />
+            <IconSelect
+              isModalOpen={isModalOpen}
+              iconUrl={iconUrl}
+              setIconUrl={setIconUrl}
+            />
             {/* ユーザー名 */}
             <p className="py-4 font-bold">Name</p>
-            <NameInput newName={newName} setNewName={setNewName} />
+            <NameInput
+              isModalOpen={isModalOpen}
+              newName={newName}
+              setNewName={setNewName}
+            />
             {/* 誕生日 */}
             <p className="pt-4 pb-2 font-bold">Birthday</p>
             <div>
               <BirthdaySelect
+                isModalOpen={isModalOpen}
                 selectedYear={selectedYear}
                 setSelectedYear={setSelectedYear}
                 selectedMonth={selectedMonth}

@@ -1,14 +1,21 @@
+import { useAuth } from "@/contexts/AuthProvider";
 import { useEffect } from "react";
 
 type Props = {
+  isModalOpen: boolean;
   newName: string;
   setNewName: (newName: string) => void;
 };
 
-const NameInput: React.FC<Props> = ({ newName, setNewName }) => {
+const NameInput: React.FC<Props> = ({ isModalOpen, newName, setNewName }) => {
+  const { user } = useAuth();
+
   useEffect(() => {
-    // TODO: 現在の名前が設定されている場合、その名前をセットする
-  }, []);
+    if (!user) return;
+    if (!isModalOpen) return;
+
+    setNewName(user.name);
+  }, [user, isModalOpen]);
 
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setNewName(ev.currentTarget.value);

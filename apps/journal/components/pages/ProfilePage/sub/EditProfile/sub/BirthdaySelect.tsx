@@ -1,6 +1,8 @@
+import { useAuth } from "@/contexts/AuthProvider";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type Props = {
+  isModalOpen: boolean;
   selectedYear: number;
   setSelectedYear: Dispatch<SetStateAction<number>>;
   selectedMonth: number;
@@ -12,6 +14,7 @@ type Props = {
 };
 
 const BirthdaySelect: React.FC<Props> = ({
+  isModalOpen,
   selectedYear,
   setSelectedYear,
   selectedMonth,
@@ -21,19 +24,40 @@ const BirthdaySelect: React.FC<Props> = ({
   isBirthdayHidden,
   setIsBirthdayHidden,
 }) => {
+  const { user } = useAuth();
+
   const [thisYear, setThisYear] = useState<number>(null);
   // 今年の月表示は今月まで
   const [endMonth, setEndMonth] = useState<number>(null);
   // 指定年月の末日
   const [endDay, setEndDay] = useState<number>(null);
 
+  // 初期設定
   useEffect(() => {
+    if (!user) return;
+    if (!isModalOpen) return;
+
+    const thisY = new Date().getFullYear();
     setThisYear(new Date().getFullYear());
-  }, []);
+    if (user.birthday) {
+      setSelectedYear(user.birthday.year);
+      setSelectedMonth(user.birthday.month);
+      setSelectedDay(user.birthday.day);
+    } else {
+      setSelectedYear(thisY);
+      setSelectedMonth(new Date().getMonth() + 1);
+      setSelectedDay(new Date().getDate());
+    }
+
+    setIsBirthdayHidden(user.isBirthdayHidden);
+  }, [user, isModalOpen]);
 
   // 今年を選択している場合のみ、月の選択肢を今月までに設定
   // それ以外は12月までに設定
   useEffect(() => {
+    if (!user) return;
+    if (!isModalOpen) return;
+
     const thisMonth = new Date().getMonth() + 1;
     const isThisYear = selectedYear === thisYear;
     setEndMonth(isThisYear ? thisMonth : 12);
@@ -41,17 +65,20 @@ const BirthdaySelect: React.FC<Props> = ({
     if (isThisYear && selectedMonth > thisMonth) {
       setSelectedMonth(thisMonth);
     }
-  }, [selectedYear]);
+  }, [isModalOpen, selectedYear]);
 
   // その年月の末日を設定
   useEffect(() => {
+    if (!user) return;
+    if (!isModalOpen) return;
+
     const endDay = new Date(selectedYear, selectedMonth, 0).getDate();
     setEndDay(endDay);
     // 選択値が超えていた場合は、末日に設定
     if (selectedDay > endDay) {
       setSelectedDay(endDay);
     }
-  }, [selectedYear, selectedMonth]);
+  }, [isModalOpen, selectedYear, selectedMonth]);
 
   return (
     <>
