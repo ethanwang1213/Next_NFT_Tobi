@@ -1,13 +1,15 @@
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormEventHandler, useEffect, useRef } from "react";
 import gsap from "gsap";
+import Image from "next/image";
 
 const Login = () => {
   const loginRef = useRef<HTMLDivElement>(null);
-
-  // サインアップリンクが押されたときに実行される関数
-  const signUp = () => {};
+  const logoRef = useRef<HTMLDivElement>(null);
+  const bookRef = useRef<HTMLDivElement>(null);
+  const arcRef1 = useRef<HTMLDivElement>(null);
+  const arcRef2 = useRef<HTMLDivElement>(null);
+  const arcRef3 = useRef<HTMLDivElement>(null);
+  const logoMobileRef = useRef<HTMLDivElement>(null);
 
   // sign inボタンが押されたときに実行する関数
   const signIn: FormEventHandler<HTMLFormElement> = (e) => {
@@ -20,39 +22,132 @@ const Login = () => {
   useEffect(() => {
     gsap
       .timeline()
-      .to(loginRef.current, { width: "161px" }, "2")
-      .from(loginRef.current, { opacity: 0 }, "<0.3");
+      .from(loginRef.current, { top: "-100vh", ease: "power4.inOut", duration: 1.5 }, "2")
+      .to(logoRef.current, { x: "-250px", ease: "power4.inOut", duration: 1.5 }, "<")
+      .from(bookRef.current, { y: "14rem", ease: "power4.inOut", duration: 1.5 }, "<")
+      .to(arcRef1.current, { left: "5vw", top: "5vh", ease: "power4.inOut", duration: 1.5 }, "<")
+      .to(arcRef2.current, { top: "-2vh", ease: "power4.inOut", duration: 1.5 }, "<")
+      .to(arcRef3.current, { left: "-5vw", ease: "power4.inOut", duration: 1.5 }, "<")
+      .fromTo(
+        logoMobileRef.current,
+        { y: 0, maxHeight: "100%" },
+        { y: "-40vh", maxHeight: "15vh" },
+        "<"
+      );
   });
 
   return (
-    // TODO: 背景設定
-    <div className="w-screen h-screen flex items-center justify-center bg-pink-100 gap-10">
-      {/* // ロゴ設置 */}
-      <h1 className="text-5xl">Login</h1>
+    <>
+      <div className="fixed -top-6 -left-6 -bottom-6 -right-6">
+        <Image
+          src="/images/login/Journal_topbg.png"
+          alt="background image"
+          fill
+        />
+      </div>
 
-      <div className="relative h-[300px]" ref={loginRef}>
+      <div
+        className="fixed top-[-3vh] left-[20vw] w-[30vw] h-[30vh] scale-75"
+        ref={arcRef1}
+      >
+        <Image
+          src="/images/login/arc/arc1_journal.svg"
+          alt="logo"
+          fill
+          className="object-contain"
+        />
+      </div>
+      <div
+        className="fixed top-[30vh] right-[3vw] w-[30vw] h-[30vh] scale-125"
+        ref={arcRef2}
+      >
+        <Image
+          src="/images/login/arc/arc2_journal.svg"
+          alt="logo"
+          fill
+          className="object-contain"
+        />
+      </div>
+      <div
+        className="fixed bottom-[-3vh] left-[20vw] w-[30vw] h-[30vh] scale-150 rotate-90"
+        ref={arcRef3}
+      >
+        <Image
+          src="/images/login/arc/arc3_journal.svg"
+          alt="logo"
+          fill
+          className="object-contain"
+        />
+      </div>
+
+      <div
+        className="md:flex items-center justify-center relative top-0 left-0 w-screen h-screen hidden"
+        ref={logoRef}
+      >
+        <div className="absolute h-[400px] w-[400px]">
+          <Image src="/images/login/box_journal.svg" alt="logo" fill />
+        </div>
+        <div className="absolute h-[300px] w-[300px]">
+          <Image src="/images/login/liner_journal.svg" alt="logo" fill />
+        </div>
+        <div className="absolute h-[300px] w-[300px]">
+          <Image src="/images/login/Journal.svg" alt="logo" fill />
+        </div>
+      </div>
+      <div className="flex items-center justify-center p-5 w-screen h-screen md:hidden">
+        <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center">
+          <Image src="/images/login/box_journal.svg" alt="logo" fill />
+          <div
+            className="absolute flex items-center justify-center h-[75%] w-[75%]"
+            ref={logoMobileRef}
+          >
+            <div className="absolute h-[80%] w-[80%] block md:hidden">
+              <Image src="/images/login/liner_journal.svg" alt="logo" fill />
+            </div>
+            <Image src="/images/login/Journal.svg" alt="logo" fill />
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="flex items-center justify-center absolute top-0 left-0 w-screen h-screen p-3 sm:p-10"
+        ref={loginRef}
+      >
         <form
-          className="backdrop-blur-md bg-white/50 p-5 rounded-2xl flex flex-col gap-3 items-center absolute"
+          className="bg-white p-7 sm:p-10 rounded-2xl flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
           onSubmit={signIn}
         >
-          <input type="text" placeholder="Email" className="input" />
-          <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
-        TOBIRA NEKOをご購入予定、購入後の方は購入時に使用したメールアドレスでご登録ください。
-          </p>
-          <button
-            className="btn btn-ghost btn-outline btn-circle"
-            type="button"
-            onClick={withGoogle}
-          >
-            <FontAwesomeIcon icon={faGoogle} size="xl" />
+          <button className="btn btn-block sm:btn-lg gap-3 flex-row btn-outline text-xs sm:text-xl" type="button" onClick={withGoogle}>
+          <div className="relative h-[50%] aspect-square">
+              <Image src="/images/icon/google_journal.svg" alt="google" fill />
+            </div>
+            Sign in with Google
           </button>
-          <p className="text-sm">Or Login With Social Media</p>
-          <button className="btn btn-block" type="submit">
+          <div className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black flex items-center text-center gap-5"><p>or</p></div>
+          <input
+            type="text"
+            placeholder="Email"
+            className="input w-full input-bordered"
+          />
+          <button className="btn btn-block btn-lg btn-outline" type="submit">
             sign in
           </button>
+          <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
+            ※TOBIRA NEKO購入済みの方<br />受取には購入時に使用したメールアドレスでログインが必要です。
+          </p>
         </form>
       </div>
-    </div>
+      <div
+        className="flex justify-center fixed -bottom-32 right-0 left-0 h-72"
+        ref={bookRef}
+      >
+        <Image
+          src="/images/login/Journalbookangle_journal.svg"
+          alt="logo"
+          fill
+        />
+      </div>
+    </>
   );
 };
 
