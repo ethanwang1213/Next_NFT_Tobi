@@ -77,18 +77,19 @@ const Pc = () => {
       .set(pageRef[1].current, { pointerEvents: "auto", opacity: 1 })
       .set(pageRef[2].current, { pointerEvents: "none", opacity: 0 })
       .set(pageRef[3].current, { pointerEvents: "none", opacity: 0 })
+      .add(() => setNewPageNo(pageNo))
       .to(pageRef[0].current, { opacity: 0 })
       .to(pageRef[1].current, { opacity: 0 }, "<")
       .to(pageRef[2].current, { opacity: 1 }, "<")
       .to(
         pageRef[3].current,
-        { opacity: 1, onComplete: () => setNewPageNo(pageNo) },
+        { opacity: 1 },
         "<"
       )
-      .set(pageRef[0].current, { pointerEvents: "none", opacity: 0 })
-      .set(pageRef[1].current, { pointerEvents: "none", opacity: 0 })
-      .set(pageRef[2].current, { pointerEvents: "auto", opacity: 1 })
-      .set(pageRef[3].current, { pointerEvents: "auto", opacity: 1 });
+      .set(pageRef[0].current, { pointerEvents: "none" })
+      .set(pageRef[1].current, { pointerEvents: "none" })
+      .set(pageRef[2].current, { pointerEvents: "auto" })
+      .set(pageRef[3].current, { pointerEvents: "auto" });
   }, [pageNo, pageRef, newPageNo]);
 
   const setAspect = () => {
