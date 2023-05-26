@@ -9,11 +9,12 @@ import CautionIcon from "../../../../../../public/images/icon/caution_journal.sv
 const IncorrectPc: React.FC = () => {
   return (
     <RedeemStatusPC
-      icon={<CautionIcon className={"w-[20%] h-full"} />}
+      icon={<CautionIcon className={"w-[40%] h-full"} />}
       title={"Error"}
+      titleSize={84}
       description={
-        <p className="text-3xl font-bold text-error grid content-center">
-          The Redemption Code is incorrect.
+        <p className="sm:text-[35px] font-bold text-error mt-2 text-warning">
+          シリアルコードが正しくありません。
         </p>
       }
     />

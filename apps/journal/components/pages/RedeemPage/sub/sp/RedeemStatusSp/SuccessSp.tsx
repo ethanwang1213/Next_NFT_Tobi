@@ -16,8 +16,9 @@ const SuccessSp: React.FC = () => {
         </div>
       }
       title={"Success!!"}
+      titleSize={36}
       description={
-        <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[90%] mt-6" />
+        <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
       }
     />
   );

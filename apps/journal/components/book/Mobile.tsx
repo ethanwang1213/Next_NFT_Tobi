@@ -11,6 +11,7 @@ import NFTPage from "../pages/NFTPage/NFTPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
+import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -21,6 +22,13 @@ const Mobile = () => {
 
   const [isArrowShown, setIsArrowShown] = useState<Boolean>(true);
   const [isSwiperPage, setIsSwiperPage] = useState<Boolean>(false);
+
+  useEffect(() => {
+    // ページ移動したときに左ページを表示する
+    if (!isLeftPage) {
+      setIsLeftPage(true);
+    }
+  }, [pageNo]);
 
   useEffect(() => {
     if (pages.length === 0) return;
@@ -46,12 +54,25 @@ const Mobile = () => {
     setIsShowTag(false);
   }, [pages, pageNo]);
 
+  const pagePadding = (no: number) => {
+    if (!pages[no]) return "";
+
+    switch (pages[no].type) {
+      case NFTPage:
+        return " px-0";
+      case ProfilePage0:
+        return " pb-0";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="overflow-hidden">
       <div
         className={`relative ${
           isLeftPage ? "left-[calc(100vw_-_60vh)]" : "left-[-70vh]"
-        } w-[130vh] h-screen transition-[left]`}
+        } w-[130vh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
           <Image
@@ -62,28 +83,43 @@ const Mobile = () => {
             priority
           />
         )}
+        {/* 現在ページの表示 */}
+        {/* 左ページ */}
         <div className="absolute top-4 left-10 bottom-5 right-[70vh] flex justify-end">
-          <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3">
-            {bookContext.pages.current[bookContext.pageNo.current]}
+          <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3`}>
+            {/* ページによってpaddingを変更する */}
+            <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
+              {bookContext.pages.current[bookContext.pageNo.current]}
+            </div>
           </div>
         </div>
+        {/* 右ページ */}
         {!isSwiperPage && (
           <div className="absolute top-4 left-[70vh] bottom-5 right-5 flex justify-start">
-            <div className="max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3">
-              {bookContext.pages.current[bookContext.pageNo.current + 1]}
+            <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3`}>
+              {/* ページによってpaddingを変更する */}
+              <div
+                className={`page ${pagePadding(
+                  bookContext.pageNo.current + 1
+                )}`}
+              >
+                {bookContext.pages.current[bookContext.pageNo.current + 1]}
+              </div>
             </div>
           </div>
         )}
       </div>
+      {/* 矢印アイコンの表示 */}
       {isArrowShown && (
         <FontAwesomeIcon
-        icon={isLeftPage ? faCircleRight : faCircleLeft}
-        size="4x"
-        className="absolute bottom-0 right-0 p-5 scale-[0.875] origin-bottom-right"
-        onClick={() => setIsLeftPage(!isLeftPage)}
-      />
+          icon={isLeftPage ? faCircleRight : faCircleLeft}
+          size="4x"
+          className="absolute bottom-0 right-0 p-5 text-accent/80 scale-[0.875] origin-bottom-right"
+          onClick={() => setIsLeftPage(!isLeftPage)}
+        />
       )}
-      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-18px]">
+      {/* タグの表示 */}
+      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
