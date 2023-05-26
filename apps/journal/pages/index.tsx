@@ -1,5 +1,5 @@
-import Mobile from "../components/book/Mobile";
-import Pc from "../components/book/Pc";
+import Mobile from "../components/Book/Mobile";
+import Pc from "../components/Book/Pc";
 import Image from "next/image";
 
 const Index = () => {

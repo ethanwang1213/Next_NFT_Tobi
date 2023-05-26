@@ -13,18 +13,6 @@ const Tag: FC<{
 
   const [play] = useSound("/sounds/paging_Journal.mp3", { volume: 0.1 });
 
-  const handleClick = () => {
-    if (isNumber) {
-      setPageNo(page);
-    } else {
-      (page as () => void)();
-    }
-    // Tagでページを遷移するときのみ、ページめくりの音を再生する
-    if (page !== pageNo && typeof page === "number") {
-      play();
-    }
-  };
-
   return (
     <div
       onClick={() => (isNumber ? setPageNo(page) : (page as () => void)())}
