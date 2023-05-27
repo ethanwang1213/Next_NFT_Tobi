@@ -92,11 +92,7 @@ const Pc = () => {
       .to(pageRef[0].current, { opacity: 0 })
       .to(pageRef[1].current, { opacity: 0 }, "<")
       .to(pageRef[2].current, { opacity: 1 }, "<")
-      .to(
-        pageRef[3].current,
-        { opacity: 1 },
-        "<"
-      )
+      .to(pageRef[3].current, { opacity: 1 }, "<")
       .set(pageRef[0].current, { pointerEvents: "none" })
       .set(pageRef[1].current, { pointerEvents: "none" })
       .set(pageRef[2].current, { pointerEvents: "auto" })
@@ -255,7 +251,9 @@ const Pc = () => {
               bottom: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
               height:
-                (bookPos.height * 0.7 - bookHeight * 0.05) / pageScale,
+                pageScale > 0
+                  ? (bookPos.height * 0.7 - bookHeight * 0.05) / pageScale
+                  : 1,
             }}
           >
             <div className="w-full h-full relative">
@@ -278,7 +276,9 @@ const Pc = () => {
               left: `${bookPos.center + bookWidth * 0.02}px`,
               top: `${bookPos.top + bookHeight * 0.01}px`,
               ...pageStyle,
-              height: (bookPos.height - bookHeight * 0.02) / pageScale,
+              height: pageScale
+                ? (bookPos.height - bookHeight * 0.02) / pageScale
+                : 1,
             }}
           >
             <div className="w-full h-full relative">

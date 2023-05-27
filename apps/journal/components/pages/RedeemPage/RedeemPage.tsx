@@ -15,7 +15,7 @@ type Props = {
  */
 const RedeemPage: React.FC<Props> = ({ pageNum }) => {
   const { selfAccount, selfJournalId } = useContext(RedeemContext);
-  const user = useAuth();
+  const { user } = useAuth();
 
   // TODO: アカウント情報の読み込み
   useEffect(() => {
