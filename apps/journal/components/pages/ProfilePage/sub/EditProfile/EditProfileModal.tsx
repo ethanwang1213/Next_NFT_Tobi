@@ -7,6 +7,7 @@ import BirthdaySelect from "./sub/BirthdaySelect";
 import NameInput from "./sub/NameInput";
 import { useForm } from "react-hook-form";
 import useUpdateProfile from "@/hooks/useUpdateProfile";
+import { useEditProfile } from "@/contexts/EditProfileProvider";
 
 export type EditProfileValues = {
   iconUrl: string;
@@ -23,7 +24,6 @@ export type EditProfileValues = {
  */
 const EditProfileModal: React.FC = () => {
   const { updateProfile } = useUpdateProfile();
-
   const {
     register,
     getValues,
@@ -34,6 +34,7 @@ const EditProfileModal: React.FC = () => {
     formState: { errors },
   } = useForm<EditProfileValues>({ mode: "onChange" });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { cropData } = useEditProfile();
 
   // モーダルが開かれたときにユーザー情報を取得する
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +47,7 @@ const EditProfileModal: React.FC = () => {
   // 保存処理
   const onSubmit = async () => {
     updateProfile(getValues());
+    cropData.set(null);
     setIsModalOpen(false);
   };
 
