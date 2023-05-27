@@ -1,6 +1,8 @@
+import { ReactElement } from "react";
+
 export type tagType = {
   page: number;
-  image: string;
+  image: string | ReactElement;
 };
 
 export type bookContext = {

@@ -7,6 +7,8 @@ import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
 import { mockNFTSrcList } from "../libs/mocks/mockNFTSrcList";
 import { mockNekoSrcList } from "../libs/mocks/mockNekoSrcList";
 import { bookContext, tagType } from "../types/type";
+import { useAuth } from "./AuthProvider";
+import Image from "next/image";
 
 type Props = {
   children: ReactNode;
@@ -23,6 +25,8 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactNode[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
+
+  const { user } = useAuth();
 
   const pageContextValue = useMemo(
     () => ({
@@ -92,6 +96,29 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       },
     ]);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    setTags([
+      {
+        image: (
+          <div
+            className="relative w-full h-full rounded-full overflow-hidden"
+            style={{ border: "solid 3px white" }}
+          >
+            <Image
+              src={user.icon}
+              alt="profile-tag"
+              fill
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        ),
+        page: 0,
+      },
+      ...tags.slice(1),
+    ]);
+  }, [user]);
 
   return (
     <BookContext.Provider value={pageContextValue}>
