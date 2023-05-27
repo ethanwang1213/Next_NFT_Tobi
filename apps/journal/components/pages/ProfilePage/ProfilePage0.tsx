@@ -44,15 +44,15 @@ const ProfilePage0: React.FC = () => {
   return (
     <>
       <div className="w-full sm:flex relative">
-        <div className="w-full sm:w-[50%] mb-6 flex justify-center">
-          <div className="w-[60%] sm:w-[50%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
+        <div className="w-full sm:w-[60%] mb-6 flex justify-center">
+          <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
               profileSrc={user ? user.icon : ""}
               badgeSrc="/mocks/images/badge.png"
             />
           </div>
         </div>
-        <div className="sm:w-[50%] mt-2 mb-6 sm:ml-10 grid gap-2 sm:gap-2">
+        <div className="sm:w-[50%] mt-2 mb-6 sm:ml-10 grid gap-2 sm:gap-4">
           {user && (
             <>
               <PersonalInfo
@@ -68,10 +68,10 @@ const ProfilePage0: React.FC = () => {
                 dataValue={user.email === "" ? "-" : user.email}
               />
               {/* EditProfileModalに紐づく */}
-              <div className="hidden sm:block w-full relative">
+              <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
                 <label
                   htmlFor="edit-profile-modal"
-                  className="btn btn-outline btn-lg btn-primary rounded-3xl sm:w-[60%] sm:min-h-[10px] h-[40px] text-sm sm:text-[16px] px-0 border-2 rounded-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)] absolute right-0 bottom-0"
+                  className="btn btn-outline btn-lg btn-primary rounded-3xl sm:w-[60%] sm:min-h-[10px] h-[40px] text-sm sm:text-[16px] px-0 border-2 rounded-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
                 >
                   プロフィールを編集
                 </label>
@@ -80,7 +80,7 @@ const ProfilePage0: React.FC = () => {
           )}
         </div>
       </div>
-      <div className="mb-0 sm:mb-14">
+      <div className="mb-0 sm:mb-10">
         {/* TODO: ゆくゆくはボタンを実装する */}
         {/* <NavButton label={"購入"} />
         <NavButton label={"受け取り"} />
