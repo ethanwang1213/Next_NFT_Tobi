@@ -16,7 +16,7 @@ const PersonalIcon: React.FC<Props> = ({ profileSrc, badgeSrc }) => {
     <div className="w-full aspect-square mr-4 sm:mr-0">
       <div className="relative h-full">
         <div className="relative h-full rounded-full bg-white border-white border-[10px] overflow-hidden">
-          <label htmlFor="edit-profile-modal" className="">
+          <label htmlFor="edit-profile-modal" className="cursor-pointer">
             {profileSrc === "" ? (
               <DefaultIcon />
             ) : (

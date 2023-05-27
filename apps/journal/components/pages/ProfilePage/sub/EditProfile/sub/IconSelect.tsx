@@ -121,7 +121,7 @@ const IconSelect: React.FC<Props> = ({
         onChange={handleIconChange}
       />
       <div className="w-[20%] aspect-square relative">
-        <label htmlFor="new-icon">
+        <label htmlFor="new-icon" className="cursor-pointer">
           {getValues("iconUrl") ? (
             <canvas
               ref={canvasRef}

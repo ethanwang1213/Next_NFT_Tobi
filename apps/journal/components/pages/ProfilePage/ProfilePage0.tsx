@@ -40,14 +40,6 @@ const ProfilePage0: React.FC = () => {
     setRecordList(mockRecordList);
   }, [user]);
 
-  // メールアドレスをマスクする関数
-  const maskMailAddress = useCallback((mailAddress: string) => {
-    const mailAddressArray = mailAddress.split("@");
-    const maskedMailAddress =
-      mailAddressArray[0].slice(0, 3) + "****" + "@" + mailAddressArray[1];
-    return maskedMailAddress;
-  }, []);
-
   return (
     <div className="page">
       <div className="w-full sm:flex relative">
