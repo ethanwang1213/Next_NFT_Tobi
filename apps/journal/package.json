@@ -10,12 +10,17 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@firebase/analytics": "^0.10.0",
+    "@firebase/auth": "^0.23.1",
+    "@firebase/firestore": "^3.11.0",
+    "@firebase/storage": "^0.11.2",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "daisyui": "^2.51.5",
+    "firebase": "^9.21.0",
     "gsap": "npm:@gsap/business@^3.11.5",
     "next": "latest",
     "react": "^18.2.0",

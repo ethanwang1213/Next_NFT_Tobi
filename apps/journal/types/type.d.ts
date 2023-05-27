@@ -25,4 +25,14 @@ export type BookPos = {
     width: number;
     height: number;
     center: number;
-  };
+};
+
+export type User = {
+    id: string;
+    name: string;
+    email: string;
+    icon: string;
+    createdAt: number;
+};
+
+export type UserContextType = User | null | undefined;

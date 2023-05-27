@@ -4,7 +4,7 @@
     "lint": "eslint --ext .js,.ts . --fix",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions,pubsub,firestore",
+    "serve": "npm run build && firebase emulators:start --only auth,functions,pubsub,firestore",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@google-cloud/pubsub": "^3.5.2",
     "@sendgrid/mail": "^7.7.0",
+    "cors": "^2.8.5",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
     "node-fetch": "^2.6.11",

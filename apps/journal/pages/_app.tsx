@@ -3,14 +3,15 @@ import "../styles/global.scss";
 import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import RedeemStatusContextProvider from "../contexts/RedeemContextProvider";
-import BookContextProvider from "../contexts/BookContextProvider";
+import { AuthProvider } from "@/contexts/AuthProvider";
+import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
+import BookContextProvider from "@/contexts/BookContextProvider";
 
 config.autoAddCss = false;
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <>
+    <AuthProvider>
       <Script id="font">
         {`(function(d) {
           var config = {
@@ -26,7 +27,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           <Component {...pageProps} />
         </RedeemStatusContextProvider>
       </BookContextProvider>
-    </>
+    </AuthProvider>
   );
 };
 
