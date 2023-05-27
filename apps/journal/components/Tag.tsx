@@ -44,7 +44,7 @@ const Tag: FC<{
         ></div>
       ) : (
         <div
-          className={`mx-4 w-[40px] h-[40px] transition-all ${
+          className={`mx-4 w-[44px] h-[44px] transition-all select-none ${
             pageNo === page || pageNo + 1 === page || !isNumber
               ? "text-white"
               : "text-red-700"

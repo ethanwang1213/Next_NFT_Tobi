@@ -16,10 +16,14 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
-    "eslint-config-custom": "*",
     "eslint": "7.32.0",
+    "eslint-config-custom": "*",
     "prettier": "latest",
     "turbo": "latest"
   },
-  "packageManager": "npm@8.19.4"
+  "packageManager": "npm@8.19.4",
+  "dependencies": {
+    "react-easy-crop": "^4.7.4",
+    "react-hook-form": "^7.43.9"
+  }
 }

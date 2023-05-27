@@ -7,6 +7,9 @@ import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
 import { mockNFTSrcList } from "../libs/mocks/mockNFTSrcList";
 import { mockNekoSrcList } from "../libs/mocks/mockNekoSrcList";
 import { bookContext, tagType } from "../types/type";
+import { useAuth } from "./AuthProvider";
+import Image from "next/image";
+import DefaultIcon from "../public/images/icon/Profiledefault_journal.svg";
 
 type Props = {
   children: ReactNode;
@@ -24,6 +27,8 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pages, setPages] = useState<ReactNode[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
 
+  const { user } = useAuth();
+
   const pageContextValue = useMemo(
     () => ({
       pageNo: {
@@ -40,6 +45,27 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       },
     }),
     [pageNo, pages, tags, setPageNo, setPages, setTags]
+  );
+
+  // プロフィールタグ
+  // アイコンが設定されている場合はタグにもアイコンを表示する
+  const profileTag = useMemo(
+    () => (
+      <div
+        className="relative w-full h-full rounded-full overflow-hidden"
+        style={{ border: "solid 3px white" }}
+      >
+        {user && user.icon !== "" && (
+          <Image
+            src={user.icon}
+            alt="profile-tag"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        )}
+      </div>
+    ),
+    [user]
   );
 
   useEffect(() => {
@@ -80,7 +106,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
 
     // 各ページの開始ページ番号にタグを設定
     setTags([
-      { image: "/images/icon/Profile_journal.svg", page: 0 },
+      { image: profileTag, page: 0 },
       { image: "/images/icon/TOBIRANEKO_journal.svg", page: nekoPageIndex },
       {
         image: "/images/icon/NFTs_journal.svg",
@@ -92,6 +118,18 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       },
     ]);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    if (user.icon === "") return;
+    setTags([
+      {
+        image: profileTag,
+        page: 0,
+      },
+      ...tags.slice(1),
+    ]);
+  }, [user]);
 
   return (
     <BookContext.Provider value={pageContextValue}>
