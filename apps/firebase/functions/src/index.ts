@@ -4,6 +4,7 @@ import * as sendgrid from "@sendgrid/mail";
 import * as voucher from "voucher-code-generator";
 import {initializeApp, applicationDefault} from "firebase-admin/app";
 import {firestore} from "firebase-admin";
+import * as cors from "cors";
 // import fetch from "node-fetch";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
@@ -16,14 +17,17 @@ const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
 
 export const background = functions.https.onRequest((request, response) => {
   functions.logger.info("Hello logs!", {structuredData: true});
-  const resData = {
-    data: {
-      v1: "111,000",
-      v2: "367872",
-      v3: "306",
-    },
-  };
-  response.status(200).json(resData);
+  const corsHandler = cors({origin: true});
+  corsHandler(request, response, () => {
+    const resData = {
+      data: {
+        v1: "111,000",
+        v2: "367872",
+        v3: "306",
+      },
+    };
+    response.status(200).json(resData);
+  });
 });
 
 const generateRedeemCode = () => {
