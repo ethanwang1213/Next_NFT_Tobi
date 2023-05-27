@@ -34,6 +34,26 @@ const BirthdaySelect: React.FC<Props> = ({
     setThisYear(new Date().getFullYear());
   }, []);
 
+  // selectで選択するとstring型になる場合があるため、numberに強制変換する
+  const forceIntValues = () => {
+    let y = getValues("year");
+    if (typeof y === "string") {
+      y = y === "" ? 0 : parseInt(y);
+      setValue("year", y);
+    }
+    let m = getValues("month");
+    if (typeof m === "string") {
+      m = m === "" ? 0 : parseInt(m);
+      setValue("month", m);
+    }
+    let d = getValues("day");
+    if (typeof d === "string") {
+      d = d === "" ? 0 : parseInt(d);
+      setValue("day", d);
+    }
+    return { y, m, d };
+  };
+
   // 初期化処理
   useEffect(() => {
     if (!user) return;
@@ -55,44 +75,57 @@ const BirthdaySelect: React.FC<Props> = ({
   // 今年を選択している場合のみ、月の選択肢を今月までに設定
   // それ以外は12月までに設定
   useEffect(() => {
-    if (getValues("year") === 0) {
+    const { y, m } = forceIntValues();
+
+    if (y === 0) {
       setEndMonth(0);
     } else {
       const thisMonth = new Date().getMonth() + 1;
-      const isThisYear = getValues("year") === thisYear;
+      const isThisYear = y === thisYear;
       setEndMonth(isThisYear ? thisMonth : 12);
+
       // 月が未設定だった場合は、1月に設定
-      if (getValues("month") === 0) {
+      if (m === 0) {
         setValue("month", 1);
       }
       // 選択値が超えていた場合は、今月に設定
-      if (isThisYear && getValues("month") > thisMonth) {
+      if (isThisYear && m > thisMonth) {
         setValue("month", thisMonth);
       }
     }
-  }, [watch("year")]);
+  }, [isModalOpen, watch("year")]);
 
   // その年月の末日を設定
   useEffect(() => {
-    if (getValues("year") === 0 || getValues("month") === 0) {
+    // formの値がstring型になる場合があるので、確実にnumberに変換
+    const { y, m, d } = forceIntValues();
+
+    if (y === 0 || m === 0) {
       setEndDay(0);
     } else {
-      const endDay = new Date(
-        getValues("year"),
-        getValues("month"),
-        0
-      ).getDate();
+      const endDay = new Date(y, m, 0).getDate();
       setEndDay(endDay);
+
       // 日が未設定だった場合は、1日に設定
-      if (getValues("day") === 0) {
+      if (d === 0) {
         setValue("day", 1);
       }
       // 選択値が超えていた場合は、末日に設定
-      if (getValues("day") > endDay) {
+      if (d > endDay) {
         setValue("day", endDay);
       }
+      // 今日より後の日付を選択していた場合は、今日に設定
+      const thisDay = new Date().getDate();
+      const isThisYear = y === thisYear;
+      const isThisMonth = isThisYear && m === new Date().getMonth() + 1;
+      if (isThisMonth) {
+        setEndDay(thisDay);
+        if (d > thisDay) {
+          setValue("day", thisDay);
+        }
+      }
     }
-  }, [watch("month"), endMonth]);
+  }, [isModalOpen, watch("month"), endMonth]);
 
   const handleClearValues = () => {
     setValue("year", 0);
@@ -108,7 +141,7 @@ const BirthdaySelect: React.FC<Props> = ({
           <select className="select select-accent" {...register("year")}>
             <option disabled>年</option>
             {[...Array(120)].map((_, i) => (
-              <option key={i}>{(thisYear - i).toString()}</option>
+              <option key={i}>{thisYear - i}</option>
             ))}
           </select>
           <span className="ml-1 mr-2">年</span>
