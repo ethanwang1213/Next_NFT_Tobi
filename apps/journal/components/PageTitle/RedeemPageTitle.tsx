@@ -13,8 +13,8 @@ const RedeemPageTitle: React.FC<Props> = ({ isShown }) => {
   return (
     <PageTitle
       isShown={isShown}
-      className="h-[150px] min-h-[150px] sm:h-[200px] sm:min-h-[200px] grid content-center"
-      title="Redeem Code"
+      className="h-[18%] min-h-[18%] sm:h-[214px] sm:min-h-[214px] grid content-center"
+      title="シリアルコード"
     />
   );
 };

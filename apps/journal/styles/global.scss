@@ -4,7 +4,12 @@
 
 @layer components {
   .page {
-    @apply w-full h-full flex flex-col;
+    @apply w-full h-full flex flex-col relative;
+    @apply px-6 pt-8 pb-8 sm:px-10 sm:pt-14 sm:pb-20;
+  }
+
+  .page-right {
+    @apply pr-4;
   }
 
   .swiper-slide {
@@ -15,5 +20,18 @@
     font-size: 22px;
     font-weight: bold;
     color: #fff;
+  }
+
+  // daisyUIのbtnのUPPERCASEを解除
+  .btn {
+    @apply normal-case;
+  }
+
+  input::placeholder {
+    font-family: fot-tsukubrdgothic-std, sans-serif;
+  }
+
+  input::-webkit-input-placeholder {
+    font-family: hiragino-kaku-gothic-pron, sans-serif;
   }
 }

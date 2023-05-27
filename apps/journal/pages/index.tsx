@@ -1,6 +1,6 @@
-import { useContext, useEffect, useMemo } from "react";
-import Mobile from "../components/book/Mobile";
-import Pc from "../components/book/Pc";
+import { useContext, useMemo } from "react";
+import Mobile from "../components/Book/Mobile";
+import Pc from "../components/Book/Pc";
 import Image from "next/image";
 import { BookContext } from "@/contexts/BookContextProvider";
 import ProfilePage0 from "@/components/pages/ProfilePage/ProfilePage0";
