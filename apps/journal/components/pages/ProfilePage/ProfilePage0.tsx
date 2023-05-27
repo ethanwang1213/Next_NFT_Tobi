@@ -59,7 +59,7 @@ const ProfilePage0: React.FC = () => {
             />
           </div>
         </div>
-        <div className="sm:w-[50%] mb-6 sm:ml-10 grid gap-2 sm:gap-8">
+        <div className="sm:w-[50%] mb-6 sm:ml-10 grid gap-2 sm:gap-2">
           {user && (
             <>
               <PersonalInfo
@@ -74,14 +74,17 @@ const ProfilePage0: React.FC = () => {
                 dataType={"Mail"}
                 dataValue={user.email === "" ? "-" : user.email}
               />
+              {/* EditProfileModalに紐づく */}
+              <div className="hidden sm:block w-full relative">
+                <label
+                  htmlFor="edit-profile-modal"
+                  className="btn btn-outline btn-lg btn-primary rounded-3xl sm:w-[60%] sm:min-h-[10px] h-[40px] text-sm sm:text-[16px] px-0 border-2 rounded-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)] absolute right-0 bottom-0"
+                >
+                  プロフィールを編集
+                </label>
+              </div>
             </>
           )}
-        </div>
-        <div className="absolute top-0 right-0">
-          {/* EditProfileModalに紐づく */}
-          <label htmlFor="edit-profile-modal" className="btn">
-            open modal
-          </label>
         </div>
       </div>
       <div className="mb-4 sm:mb-10">
