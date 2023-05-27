@@ -54,11 +54,7 @@ const ProfilePage0: React.FC = () => {
         <div className="w-full sm:w-[50%] mb-6 flex justify-center">
           <div className="w-[50%] min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
-              profileSrc={
-                user && user.icon !== ""
-                  ? user.icon
-                  : "/mocks/images/profile.png"
-              }
+              profileSrc={user ? user.icon : ""}
               badgeSrc="/mocks/images/badge.png"
             />
           </div>
