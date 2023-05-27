@@ -16,6 +16,11 @@ type Props = {
   isModalOpen: boolean;
 };
 
+/**
+ * 誕生日設定のセレクタを管理するコンポーネント
+ * @param param0
+ * @returns
+ */
 const BirthdaySelect: React.FC<Props> = ({
   register,
   getValues,

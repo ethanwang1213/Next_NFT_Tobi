@@ -30,6 +30,7 @@ const EditProfileModal: React.FC = () => {
     watch,
     setValue,
     handleSubmit,
+    trigger,
     formState: { errors },
   } = useForm<EditProfileValues>({ mode: "onChange" });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -37,6 +38,9 @@ const EditProfileModal: React.FC = () => {
   // モーダルが開かれたときにユーザー情報を取得する
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setIsModalOpen(ev.currentTarget.checked);
+    if (ev.currentTarget.checked) {
+      trigger();
+    }
   };
 
   // 保存処理
