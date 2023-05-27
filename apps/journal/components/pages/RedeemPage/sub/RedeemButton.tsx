@@ -36,11 +36,11 @@ const RedeemButton: React.FC = () => {
   return (
     <button
       onClick={onClick}
-      className={`btn btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[60%] sm:w-[40%] text-2xl sm:text-3xl ${
+      className={`btn btn-accent btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[70%] sm:w-[60%] sm:h-[74px] text-[22px] sm:text-[36px] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)] ${
         redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
       }`}
     >
-      Redeem
+      引き換え
     </button>
   );
 };

@@ -10,21 +10,20 @@ import CustomerSupportButton from "../../CustomerSupportButton";
 const ServerErrorPc: React.FC = () => {
   return (
     <RedeemStatusPC
-      icon={<CautionIcon className={"w-[20%] h-full"} />}
+      icon={<CautionIcon className={"w-[40%] h-full"} />}
       title={"Error"}
+      titleSize={84}
       description={
-        <p className="text-2xl text-primary grid content-center">
-          <span>
-            {"An error has occurred."}
-            <br />
-            {"Please contact "}
+        <div className="text-[28px] font-bold text-warning mt-2">
+          <p className="mb-4">{"予期せぬエラーが発生しました。"}</p>
+          <p>
             <CustomerSupportButton
-              className="link link-info"
-              text="customer support"
+              className="link link-warning"
+              text="カスタマーサポート"
             />
-            {"."}
-          </span>
-        </p>
+            {"にお問い合わせください。"}
+          </p>
+        </div>
       }
     />
   );

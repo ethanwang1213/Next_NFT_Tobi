@@ -34,13 +34,18 @@ Mint an NFT by the emulater-account (f8d6e0586b0a20c7)
 > yarn getIds
 ```
 
-Mint an NFT by the emulater-account-2 (01cf0e2f2f715450)
+Create NFT Collection by the emulater-account-2 (01cf0e2f2f715450)
 ```
 > yarn createAccount
 
-> yarn mint2
+> yarn createCollection2
 
 > yarn getIds2
+```
+
+Fail: Mint an NFT by the emulater-account-2 (01cf0e2f2f715450) will fail because the account is not the creator of the NFT
+```
+> yarn mint2
 ```
 
 #### Get Metadata

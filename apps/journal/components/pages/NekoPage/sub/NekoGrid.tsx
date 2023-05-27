@@ -29,7 +29,7 @@ const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
   }, [pageNum]);
 
   return (
-    <div className="h-full grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 overflow-hidden gap-10 place-items-center">
+    <div className="h-full grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 overflow-hidden gap-y-20 gap-x-4 place-items-center">
       {nekoSrcList.map((v) => (
         <div
           key={v.id}

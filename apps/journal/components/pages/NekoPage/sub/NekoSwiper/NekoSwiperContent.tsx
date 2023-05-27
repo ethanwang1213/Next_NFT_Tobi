@@ -1,5 +1,5 @@
 import Image from "next/image";
-import PageTitle from "../../../../PageTitle";
+import NFTPageTitle from "../../../../PageTitle/NFTPageTitle";
 
 type Props = {
   width: number;
@@ -38,16 +38,16 @@ const NekoSwiperContent: React.FC<Props> = ({
         ref={cardImgRef}
         onLoad={onCardImgLoad}
       />
-      <PageTitle isShown={true} title="TOBIRA NEKO" />
-      <div className="w-full grow p-16 ">
+      <NFTPageTitle isShown={true} title="TOBIRA NEKO" />
+      <div className="w-full h-full grow pt-10 pb-[30%] ">
         {!!imgSrc && (
           <div className="relative w-full h-full ">
             <Image
               src={imgSrc}
               alt={"neko"}
               fill
-              style={{ objectFit: "cover" }}
-              className="overflow-visible"
+              style={{ objectFit: "contain" }}
+              className="overflow-visible drop-shadow-[-8px_0px_8px_rgba(0,0,0,0.2)]"
             />
           </div>
         )}
