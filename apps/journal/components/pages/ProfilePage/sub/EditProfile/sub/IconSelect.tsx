@@ -8,6 +8,7 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 import { EditProfileValues } from "../EditProfileModal";
+import DefaultIcon from "../../../../../../public/images/icon/Profiledefault_journal.svg";
 
 type Props = {
   register: UseFormRegister<EditProfileValues>;
@@ -39,10 +40,7 @@ const IconSelect: React.FC<Props> = ({
     if (!user) return;
     if (!isModalOpen) return;
 
-    setValue(
-      "iconUrl",
-      user.icon !== "" ? user.icon : "/mocks/images/profile.png"
-    );
+    setValue("iconUrl", user.icon !== "" ? user.icon : "");
     cropData.set(null);
   }, [user, isModalOpen]);
 
@@ -124,11 +122,18 @@ const IconSelect: React.FC<Props> = ({
       />
       <div className="w-[20%] aspect-square relative">
         <label htmlFor="new-icon">
-          {getValues("iconUrl") && (
+          {getValues("iconUrl") ? (
             <canvas
               ref={canvasRef}
               className="rounded-full overflow-hidden border-4 border-black/50"
             ></canvas>
+          ) : (
+            <div
+            className="rounded-full overflow-hidden border-4 border-black/50"
+            >
+
+            <DefaultIcon />
+            </div>
           )}
         </label>
       </div>
