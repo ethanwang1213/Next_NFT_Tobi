@@ -1,6 +1,6 @@
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import MetadataViews from "../contracts/core/MetadataViews.cdc"
-import SampleNFT from "../contracts/SampleNFT.cdc"
+import TobiraNeko from "../contracts/TobiraNeko.cdc"
 
 pub struct NFTView {
   pub let name: String
@@ -20,8 +20,8 @@ pub struct NFTView {
 
 pub fun main(address: Address, id: String): NFTView {
     let collection = getAccount(address)
-        .getCapability(SampleNFT.collectionPublicPath)
-        .borrow<&{SampleNFT.CollectionPublic,MetadataViews.ResolverCollection}>()
+        .getCapability(TobiraNeko.collectionPublicPath)
+        .borrow<&{TobiraNeko.CollectionPublic,MetadataViews.ResolverCollection}>()
         ?? panic("NFT Collection not found")
 
     let nft = collection.borrowViewResolver(id: UInt64.fromString(id)!)

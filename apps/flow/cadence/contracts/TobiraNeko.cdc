@@ -1,7 +1,7 @@
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 import MetadataViews from "./core/MetadataViews.cdc"
 
-pub contract SampleNFT: NonFungibleToken {
+pub contract TobiraNeko: NonFungibleToken {
 
     pub var totalSupply: UInt64
 
@@ -77,7 +77,7 @@ pub contract SampleNFT: NonFungibleToken {
         }
 
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let token <- token as! @SampleNFT.NFT
+            let token <- token as! @TobiraNeko.NFT
             let id: UInt64 = token.id
             let dummy <- self.ownedNFTs[id] <- token
             destroy dummy
@@ -105,7 +105,7 @@ pub contract SampleNFT: NonFungibleToken {
 
         pub fun getMetadata(id: UInt64): {String:String} {
             let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-            return (ref as! &SampleNFT.NFT).getMetadata()
+            return (ref as! &TobiraNeko.NFT).getMetadata()
         }
 
         destroy() {
@@ -120,11 +120,11 @@ pub contract SampleNFT: NonFungibleToken {
     pub resource Minter {
         pub fun mintTo(creator: Capability<&{NonFungibleToken.Receiver}>, metadata: {String:String}): &NonFungibleToken.NFT {
             let token <- create NFT(
-                id: SampleNFT.totalSupply,
+                id: TobiraNeko.totalSupply,
                 creator: creator.address,
                 metadata: metadata
             )
-            SampleNFT.totalSupply = SampleNFT.totalSupply + 1
+            TobiraNeko.totalSupply = TobiraNeko.totalSupply + 1
             let tokenRef = &token as &NonFungibleToken.NFT
             emit Mint(id: token.id, creator: creator.address, metadata: metadata)
             creator.borrow()!.deposit(token: <- token)
@@ -138,10 +138,10 @@ pub contract SampleNFT: NonFungibleToken {
 
     init() {
         self.totalSupply = 0
-        self.collectionPublicPath = /public/SampleNFTCollection
-        self.collectionStoragePath = /storage/SampleNFTCollection
-        // self.minterPublicPath = /public/SampleNFTMinter
-        self.minterStoragePath = /storage/SampleNFTMinter
+        self.collectionPublicPath = /public/TobiraNekoCollection001
+        self.collectionStoragePath = /storage/TobiraNekoCollection001
+        // self.minterPublicPath = /public/TobiraNekoMinter001
+        self.minterStoragePath = /storage/TobiraNekoMinter001
 
         let minter <- create Minter()
         self.account.save(<- minter, to: self.minterStoragePath)
@@ -149,7 +149,7 @@ pub contract SampleNFT: NonFungibleToken {
 
         let collection <- self.createEmptyCollection()
         self.account.save(<- collection, to: self.collectionStoragePath)
-        self.account.link<&{NonFungibleToken.CollectionPublic,SampleNFT.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
+        self.account.link<&{NonFungibleToken.CollectionPublic,TobiraNeko.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
 
         emit ContractInitialized()
     }
