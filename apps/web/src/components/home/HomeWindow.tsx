@@ -1,0 +1,63 @@
+import useHomeStore from "@/stores/homeStore";
+import { useGesture } from "@use-gesture/react";
+import { shallow } from "zustand/shallow";
+import HomeCanvas from "./canvas/HomeCanvas";
+import ForbidLandcape from "./ui/ForbidLandcape";
+import HomeTextContainer from "./ui/HomeTextContainer";
+import DprController from "../saidan/ui/dpr/DprController";
+
+type Props = {};
+
+const HomeWindow: React.FC<Props> = ({}) => {
+  const backPhase = useHomeStore((state) => state.backPhase);
+  const progressPhase = useHomeStore((state) => state.progressPhase);
+
+  // スクロールジェスチャーの実装
+  const bind = useGesture(
+    {
+      onWheel: (state) => {
+        const dy = state.delta[1];
+        if (dy < 0) {
+          const backed = backPhase();
+          if (backed) {
+            window.location.hash = "#";
+          }
+        } else if (dy > 0) {
+          const progressed = progressPhase();
+          if (progressed) {
+            window.location.hash = "#";
+          }
+        }
+      },
+
+      onDrag: (state) => {
+        if (state.tap) return;
+        const dy = state.delta[1];
+        if (dy > 0) {
+          const backed = backPhase();
+          if (backed) {
+            window.location.hash = "#";
+          }
+        } else if (dy < 0) {
+          const progressed = progressPhase();
+          if (progressed) {
+            window.location.hash = "#";
+          }
+        }
+      },
+    },
+    { drag: { pointer: { buttons: [1] }, filterTaps: true, tapsThreshold: 10 } }
+  );
+
+  return (
+    <>
+      <div className="relative w-full h-full touch-none" {...bind()}>
+        <HomeCanvas />
+        <HomeTextContainer />
+      </div>
+      <ForbidLandcape />
+    </>
+  );
+};
+
+export default HomeWindow;
