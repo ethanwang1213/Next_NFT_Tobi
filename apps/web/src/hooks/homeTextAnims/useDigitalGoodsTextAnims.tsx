@@ -2,7 +2,6 @@ import useHomeStore from "@/stores/homeStore";
 import { ScrollDownConfig } from "@/types/ScrollDownConfig";
 import { useSpring, config } from "@react-spring/web";
 import { useState } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top1 DigitalGoodsセクションのUIのアニメーション用変数を管理する
@@ -16,6 +15,7 @@ const useDigitalGoodsTextAnims = (scrollDownConfig: ScrollDownConfig) => {
   const homePhase = useHomeStore((state) => state.homePhase);
   const isInit = useHomeStore((state) => state.isInit);
   const setCanProgress = useHomeStore((state) => state.setCanProgress);
+  const setCanInteract = useHomeStore((state) => state.setCanInteract);
 
   // top1 DIGI
   const [activeT1, setActiveT1] = useState(false);
@@ -26,6 +26,7 @@ const useDigitalGoodsTextAnims = (scrollDownConfig: ScrollDownConfig) => {
       onResolve: (result) => {
         if (homePhase === "DIGITAL_GOODS" && activeT1 && !result.noop) {
           setCanProgress(true);
+          setCanInteract(true);
           api1_1.start({
             t1_1: 1,
             ...scrollDownConfig.enter,

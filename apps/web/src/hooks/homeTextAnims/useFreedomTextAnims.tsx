@@ -2,7 +2,6 @@ import useHomeStore from "@/stores/homeStore";
 import { ScrollDownConfig } from "@/types/ScrollDownConfig";
 import { useSpring } from "@react-spring/web";
 import { useState } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top4 FREEDOMセクションのUIのアニメーション用変数を管理する
@@ -14,6 +13,7 @@ const useFreedomTextAnims = (scrollDownConfig: ScrollDownConfig) => {
   const homePhase = useHomeStore((state) => state.homePhase);
   const setCanProgress = useHomeStore((state) => state.setCanProgress);
   const isInit = useHomeStore((state) => state.isInit);
+  const setCanInteract = useHomeStore((state) => state.setCanInteract);
 
   // top4 FREE
   const [activeT4, setActiveT4] = useState(false);
@@ -24,6 +24,7 @@ const useFreedomTextAnims = (scrollDownConfig: ScrollDownConfig) => {
       onResolve: (result) => {
         if (homePhase === "FREEDOM" && activeT4 && !result.noop) {
           setCanProgress(true);
+          setCanInteract(true);
           api4_1.start({
             t4_1: 1,
             ...scrollDownConfig.enter,

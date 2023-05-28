@@ -2,7 +2,6 @@ import useHomeStore from "@/stores/homeStore";
 import { ScrollDownConfig } from "@/types/ScrollDownConfig";
 import { useSpring } from "@react-spring/web";
 import { useState } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top0 TITLEセクションのUIのアニメーション用変数を管理する
@@ -14,6 +13,7 @@ const useTitleTextAnims = (scrollDownConfig: ScrollDownConfig) => {
   const homePhase = useHomeStore((state) => state.homePhase);
   const setCanProgress = useHomeStore((state) => state.setCanProgress);
   const isInit = useHomeStore((state) => state.isInit);
+  const setCanInteract = useHomeStore((state) => state.setCanInteract);
 
   // top0 TITLE
   const [activeT0, setActiveT0] = useState(false);
@@ -24,6 +24,7 @@ const useTitleTextAnims = (scrollDownConfig: ScrollDownConfig) => {
       onResolve: (result) => {
         if (homePhase === "TITLE" && activeT0 && !result.noop) {
           setCanProgress(true);
+          setCanInteract(true);
           api0_1.start({
             t0_1: 1,
             ...scrollDownConfig.enter,
