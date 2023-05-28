@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+require('dotenv').config()
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
@@ -27,6 +28,18 @@ const nextConfig = {
       {
         source: "/i2m/:path*",
         destination: "https://image2model-fxkvliun3q-an.a.run.app/:path*",
+      },
+      {
+        source: "/login",
+        destination: `${process.env.JOURNAL_URL}/journal/login`,
+      },
+      {
+        source: "/journal",
+        destination: `${process.env.JOURNAL_URL}/journal`,
+      },
+      {
+        source: "/journal/:path*",
+        destination: `${process.env.JOURNAL_URL}/journal/:path*`,
       },
     ];
   },

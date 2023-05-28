@@ -107,13 +107,13 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
     // 各ページの開始ページ番号にタグを設定
     setTags([
       { image: profileTag, page: 0 },
-      { image: "/images/icon/TOBIRANEKO_journal.svg", page: nekoPageIndex },
+      { image: "/journal/images/icon/TOBIRANEKO_journal.svg", page: nekoPageIndex },
       {
-        image: "/images/icon/NFTs_journal.svg",
+        image: "/journal/images/icon/NFTs_journal.svg",
         page: nftPageIndex,
       },
       {
-        image: "/images/icon/Serial_journal.svg",
+        image: "/journal/images/icon/Serial_journal.svg",
         page: redeemPageIndex,
       },
     ]);
