@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+require('dotenv').config()
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
@@ -30,15 +31,15 @@ const nextConfig = {
       },
       {
         source: "/login",
-        destination: "http://localhost:3001/journal/login",
+        destination: `${process.env.JOURNAL_URL}/journal/login`,
       },
       {
         source: "/journal",
-        destination: "http://localhost:3001/journal",
+        destination: `${process.env.JOURNAL_URL}/journal`,
       },
       {
         source: "/journal/:path*",
-        destination: "http://localhost:3001/journal/:path*",
+        destination: `${process.env.JOURNAL_URL}/journal/:path*`,
       },
     ];
   },
