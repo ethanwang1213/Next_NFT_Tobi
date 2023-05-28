@@ -22,19 +22,44 @@ const Login = () => {
   useEffect(() => {
     gsap
       .timeline()
-      .from(loginRef.current, { top: "-100vh", ease: "power4.inOut", duration: 1.5 }, "2")
-      .to(logoRef.current, { x: "-250px", ease: "power4.inOut", duration: 1.5 }, "<")
-      .from(bookRef.current, { y: "14rem", ease: "power4.inOut", duration: 1.5 }, "<")
-      .to(arcRef1.current, { left: "5vw", top: "5vh", ease: "power4.inOut", duration: 1.5 }, "<")
-      .to(arcRef2.current, { top: "-2vh", ease: "power4.inOut", duration: 1.5 }, "<")
-      .to(arcRef3.current, { left: "-5vw", ease: "power4.inOut", duration: 1.5 }, "<")
+      .fromTo(
+        loginRef.current,
+        { top: "-100vh", ease: "power4.inOut" },
+        { top: 0, duration: 1.5 },
+        "2"
+      )
+      .to(
+        logoRef.current,
+        { x: "-250px", ease: "power4.inOut", duration: 1.5 },
+        "<"
+      )
+      .from(
+        bookRef.current,
+        { y: "14rem", ease: "power4.inOut", duration: 1.5 },
+        "<"
+      )
+      .to(
+        arcRef1.current,
+        { left: "5vw", top: "5vh", ease: "power4.inOut", duration: 1.5 },
+        "<"
+      )
+      .to(
+        arcRef2.current,
+        { top: "-2vh", ease: "power4.inOut", duration: 1.5 },
+        "<"
+      )
+      .to(
+        arcRef3.current,
+        { left: "-5vw", ease: "power4.inOut", duration: 1.5 },
+        "<"
+      )
       .fromTo(
         logoMobileRef.current,
         { y: 0, maxHeight: "100%" },
         { y: "-40vh", maxHeight: "15vh" },
         "<"
       );
-  });
+  }, []);
 
   return (
     <>
@@ -110,20 +135,26 @@ const Login = () => {
       </div>
 
       <div
-        className="flex items-center justify-center absolute top-0 left-0 w-screen h-screen p-3 sm:p-10"
+        className="flex items-center justify-center absolute left-0 w-screen h-screen p-3 sm:p-10"
         ref={loginRef}
       >
         <form
           className="bg-white p-7 sm:p-10 rounded-2xl flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
           onSubmit={signIn}
         >
-          <button className="btn btn-block sm:btn-lg gap-3 flex-row btn-outline text-xs sm:text-xl" type="button" onClick={withGoogle}>
-          <div className="relative h-[50%] aspect-square">
-              <Image src="/journal/images/icon/google_journal.svg" alt="google" fill />
+          <button
+            className="btn btn-block sm:btn-lg gap-3 flex-row btn-outline text-xs sm:text-xl"
+            type="button"
+            onClick={withGoogle}
+          >
+            <div className="relative h-[50%] aspect-square">
+              <Image src="/images/icon/google_journal.svg" alt="google" fill />
             </div>
             Sign in with Google
           </button>
-          <div className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black flex items-center text-center gap-5"><p>or</p></div>
+          <div className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black flex items-center text-center gap-5">
+            <p>or</p>
+          </div>
           <input
             type="text"
             placeholder="Email"
@@ -133,7 +164,9 @@ const Login = () => {
             sign in
           </button>
           <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
-            ※TOBIRA NEKO購入済みの方<br />受取には購入時に使用したメールアドレスでログインが必要です。
+            ※TOBIRA NEKO購入済みの方
+            <br />
+            受取には購入時に使用したメールアドレスでログインが必要です。
           </p>
         </form>
       </div>
