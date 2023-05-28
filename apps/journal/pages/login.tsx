@@ -65,7 +65,7 @@ const Login = () => {
     <>
       <div className="fixed -top-6 -left-6 -bottom-6 -right-6">
         <Image
-          src="/images/login/Journal_topbg.png"
+          src="/journal/images/login/Journal_topbg.png"
           alt="background image"
           fill
         />
@@ -76,7 +76,7 @@ const Login = () => {
         ref={arcRef1}
       >
         <Image
-          src="/images/login/arc/arc1_journal.svg"
+          src="/journal/images/login/arc/arc1_journal.svg"
           alt="logo"
           fill
           className="object-contain"
@@ -87,7 +87,7 @@ const Login = () => {
         ref={arcRef2}
       >
         <Image
-          src="/images/login/arc/arc2_journal.svg"
+          src="/journal/images/login/arc/arc2_journal.svg"
           alt="logo"
           fill
           className="object-contain"
@@ -98,7 +98,7 @@ const Login = () => {
         ref={arcRef3}
       >
         <Image
-          src="/images/login/arc/arc3_journal.svg"
+          src="/journal/images/login/arc/arc3_journal.svg"
           alt="logo"
           fill
           className="object-contain"
@@ -110,26 +110,26 @@ const Login = () => {
         ref={logoRef}
       >
         <div className="absolute h-[400px] w-[400px]">
-          <Image src="/images/login/box_journal.svg" alt="logo" fill />
+          <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
         </div>
         <div className="absolute h-[300px] w-[300px]">
-          <Image src="/images/login/liner_journal.svg" alt="logo" fill />
+          <Image src="/journal/images/login/liner_journal.svg" alt="logo" fill />
         </div>
         <div className="absolute h-[300px] w-[300px]">
-          <Image src="/images/login/Journal.svg" alt="logo" fill />
+          <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
         </div>
       </div>
       <div className="flex items-center justify-center p-5 w-screen h-screen md:hidden">
         <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center">
-          <Image src="/images/login/box_journal.svg" alt="logo" fill />
+          <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
           <div
             className="absolute flex items-center justify-center h-[75%] w-[75%]"
             ref={logoMobileRef}
           >
             <div className="absolute h-[80%] w-[80%] block md:hidden">
-              <Image src="/images/login/liner_journal.svg" alt="logo" fill />
+              <Image src="/journal/images/login/liner_journal.svg" alt="logo" fill />
             </div>
-            <Image src="/images/login/Journal.svg" alt="logo" fill />
+            <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
           </div>
         </div>
       </div>
@@ -175,7 +175,7 @@ const Login = () => {
         ref={bookRef}
       >
         <Image
-          src="/images/login/Journalbookangle_journal.svg"
+          src="/journal/images/login/Journalbookangle_journal.svg"
           alt="logo"
           fill
         />

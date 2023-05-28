@@ -11,7 +11,7 @@ const Tag: FC<{
 
   const isNumber = useMemo(() => typeof page === "number", [page]);
 
-  const [play] = useSound("/sounds/paging_Journal.mp3", { volume: 0.1 });
+  const [play] = useSound("/journal/sounds/paging_Journal.mp3", { volume: 0.1 });
 
   return (
     <div

@@ -76,7 +76,7 @@ const Mobile = () => {
       >
         {!isSwiperPage && (
           <Image
-            src="/images/book/openpage.png"
+            src="/journal/images/book/openpage.png"
             fill
             alt="page"
             className="object-contain"

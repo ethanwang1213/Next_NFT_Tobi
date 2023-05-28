@@ -1,0 +1,57 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  // "extends": [
+  //    "plugin:@next/next/recommended",
+  //  "plugin:react/recommended",
+  //  "airbnb",
+  //  "prettier"
+  // ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "plugins": ["react", "@typescript-eslint", "jsx-a11y"],
+  "rules": {
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": [
+      2,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
+    "react/function-component-definition": [
+      2,
+      { "namedComponents": "arrow-function" }
+    ],
+    "import/extensions": [
+      "off",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+       {
+         "required" :{
+           "some": ["nesting", "id"]
+          }
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": { "project": "./" }
+    }
+  }
+}
