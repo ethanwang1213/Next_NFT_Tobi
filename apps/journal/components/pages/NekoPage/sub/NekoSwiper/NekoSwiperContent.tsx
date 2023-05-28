@@ -31,7 +31,7 @@ const NekoSwiperContent: React.FC<Props> = ({
       }}
     >
       <Image
-        src="/images/book/openpage_single.png"
+        src="/journal/images/book/openpage_single.png"
         fill
         alt="cart"
         className="object-contain absolute z-[-1]"

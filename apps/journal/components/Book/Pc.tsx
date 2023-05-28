@@ -170,7 +170,7 @@ const Pc = () => {
       <div className="w-screen h-screen md:p-20 p-10">
         <div className="relative w-full h-full">
           <Image
-            src="/images/book/openpage.png"
+            src="/journal/images/book/openpage.png"
             fill
             alt="page"
             className="object-contain absolute"

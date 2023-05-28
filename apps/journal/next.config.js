@@ -1,4 +1,5 @@
 module.exports = {
+  basePath: '/journal',
   reactStrictMode: true,
   transpilePackages: ["ui"],
   webpack: (config) => {
@@ -18,6 +19,10 @@ module.exports = {
   },
   async rewrites() {
     return [
+      {
+        source: '/:path*',
+        destination: `/journal/:path*`,
+      },
       {
         source: "/proxy/:path*",
         destination:

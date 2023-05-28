@@ -36,7 +36,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合
       if (firebaseUser) {
-        console.log(`ログイン中: ${firebaseUser.uid}`);
+        console.log(`UID: ${firebaseUser.uid}`);
+        console.log(`メールアドレス: ${firebaseUser.email}`);
 
         // ユーザーコレクションからユーザーデータを参照
         const ref = doc(db, `users/${firebaseUser.uid}`);

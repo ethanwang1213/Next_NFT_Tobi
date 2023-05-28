@@ -18,7 +18,7 @@ const Index = () => {
 
   return (
     <>
-      <Image src="/images/book/bg_journal.png" fill alt="bg_journal"></Image>
+      <Image src="/journal/images/book/bg_journal.png" fill alt="bg_journal"></Image>
       <div className="hidden sm:block">
         <Pc />
       </div>

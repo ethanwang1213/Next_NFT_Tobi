@@ -48,7 +48,7 @@ const ProfilePage0: React.FC = () => {
           <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
               profileSrc={user ? user.icon : ""}
-              badgeSrc="/mocks/images/badge.png"
+              badgeSrc="/journal/mocks/images/badge.png"
             />
           </div>
         </div>

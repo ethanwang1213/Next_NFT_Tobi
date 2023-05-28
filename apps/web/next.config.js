@@ -28,6 +28,18 @@ const nextConfig = {
         source: "/i2m/:path*",
         destination: "https://image2model-fxkvliun3q-an.a.run.app/:path*",
       },
+      {
+        source: "/login",
+        destination: "http://localhost:3001/journal/login",
+      },
+      {
+        source: "/journal",
+        destination: "http://localhost:3001/journal",
+      },
+      {
+        source: "/journal/:path*",
+        destination: "http://localhost:3001/journal/:path*",
+      },
     ];
   },
   images: {
