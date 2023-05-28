@@ -22,6 +22,10 @@ type HoldNFTsContextType = {
     current: NFTData[];
     set: React.Dispatch<React.SetStateAction<NFTData[]>>;
   };
+  shouldUpdate: {
+    current: boolean;
+    set: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 };
 
 const HoldNFTsContext = createContext<HoldNFTsContextType>(
@@ -33,7 +37,8 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
   const [otherNFTs, setOtherNFTs] = useState<NFTData[]>([]);
 
   const NEKO_NFT_ID = "A.01ab36aaf654a13e.TobiraNeko";
-  // const [otherNFTIds, setOtherNFTIds] = useState<string[]>([]);
+
+  const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const { user } = useAuth();
   const { fetchNFTCollectionIds, fetchHoldNFTs } = useFetchNftDatas();
@@ -70,6 +75,17 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     loadOtherNFTs();
   }, [user]);
 
+  // NFTのデータを更新
+  // TODO: 引き換え処理のレスポンスでurlを返してもらう
+  useEffect(() => {
+    if (!user) return;
+
+    if (shouldUpdate) {
+      loadNekos();
+      loadOtherNFTs();
+    }
+  }, [shouldUpdate]);
+
   const holdNFTContextValue = {
     nekoNFTs: {
       current: nekoNFTs,
@@ -78,6 +94,10 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     otherNFTs: {
       current: otherNFTs,
       set: setOtherNFTs,
+    },
+    shouldUpdate: {
+      current: shouldUpdate,
+      set: setShouldUpdate,
     },
   };
 

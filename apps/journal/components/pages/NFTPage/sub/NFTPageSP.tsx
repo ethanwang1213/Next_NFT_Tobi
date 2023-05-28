@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import { mockNFTSrcList } from "../../../../libs/mocks/mockNFTSrcList";
-import { NFTSrc } from "../../../../types/NFTSrc";
 import NFTImage from "./NFTImage";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 
