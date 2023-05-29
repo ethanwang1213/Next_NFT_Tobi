@@ -37,10 +37,10 @@ export type Birthday = {
 
 type NFTData = {
   name: string;
-  description?: string;
+  description: string;
   thumbnail: string;
-  acquisitionTime?: number;
-  acquisitionMethod?: string;
+  acquisition_time: number;
+  acquisition_method: string;
 };
 
 export type NFTCollection = {
