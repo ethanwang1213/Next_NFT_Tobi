@@ -1,5 +1,4 @@
-import generateHash from "@/libs/generateHash";
-import {
+import React, {
   ReactNode,
   createContext,
   useContext,
@@ -9,6 +8,7 @@ import {
 import { useAuth } from "./AuthProvider";
 import useFetchActivityRecords from "@/hooks/useFetchActivityRecords";
 import { LocalActivityRecord } from "@/types/type";
+import _ from "lodash";
 
 type Props = {
   children: ReactNode;
@@ -23,7 +23,7 @@ const ActivityRecordContext = createContext<ActivityRecordContextType>(
   {} as ActivityRecordContextType
 );
 
-export const ActivityRecordProvider = ({ children }) => {
+export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
   const [activityRecords, setActivityRecords] = useState<LocalActivityRecord[]>(
     []
   );
@@ -36,6 +36,9 @@ export const ActivityRecordProvider = ({ children }) => {
 
     const activityRecords: LocalActivityRecord[] = await fetchActivityRecords();
     console.log(activityRecords);
+    activityRecords.sort((a, b) => {
+      return b.date.getTime() - a.date.getTime();
+    });
     setActivityRecords(activityRecords);
   };
 
@@ -44,8 +47,8 @@ export const ActivityRecordProvider = ({ children }) => {
     loadActivityRecords();
   }, [user]);
 
-  const addActivityRecord = async (newRecord: LocalActivityRecord) => {
-    setActivityRecords((prev) => [...prev, newRecord]);
+  const addActivityRecord = (newRecord: LocalActivityRecord) => {
+    setActivityRecords((prev) => [newRecord, ...prev]);
   };
 
   return (
