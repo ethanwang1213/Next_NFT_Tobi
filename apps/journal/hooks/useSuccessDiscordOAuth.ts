@@ -1,7 +1,7 @@
 import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/firebase/client";
-import { ActivityRecordData } from "@/types/type";
+import { DBActivityRecord } from "@/types/type";
 import { Timestamp, collection, doc, writeBatch } from "@firebase/firestore";
 import { useMemo } from "react";
 
@@ -18,10 +18,7 @@ const useSuccessDiscordOAuth = () => {
   );
 
   // characteristic.join_tobiratory_atと参加のactivityレコードをまとめてpost
-  const postOnSuccess = async (
-    joinDate: Date,
-    newRecord: ActivityRecordData
-  ) => {
+  const postOnSuccess = async (joinDate: Date, newRecord: DBActivityRecord) => {
     const batch = writeBatch(db);
 
     const usersSrcRef = doc(db, `users/${auth.user.id}`);
@@ -54,17 +51,21 @@ const useSuccessDiscordOAuth = () => {
     if (joinAtExists) return;
 
     const joinDate = new Date();
-    const newRecord = {
-      text: "TOBIRAPOLISのメンバーになった",
-      timestamp: Timestamp.fromDate(joinDate),
-    };
+    const text = "TOBIRAPOLISのメンバーになった";
+
     // ローカルのTobiratory参加Timestampをセット
     auth.setJoinTobiratoryAt(joinDate);
     // ローカルのActivityRecordsにTobiratory参加の記録を追加
-    addActivityRecord(newRecord);
+    addActivityRecord({
+      text: text,
+      date: joinDate,
+    });
 
     // データベース上のTobiratory参加Timestampをセット
-    postOnSuccess(joinDate, newRecord);
+    postOnSuccess(joinDate, {
+      text: text,
+      timestamp: Timestamp.fromDate(joinDate),
+    });
   };
 
   return { updateOnSuccess };

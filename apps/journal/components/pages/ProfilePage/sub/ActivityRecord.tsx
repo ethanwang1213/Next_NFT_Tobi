@@ -4,6 +4,7 @@ import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
 const ActivityRecord: React.FC = () => {
   const { activityRecords } = useActivityRecord();
 
+
   return (
     <>
       {activityRecords.map((v, i) => (

@@ -71,9 +71,14 @@ export type HoldingNFTs = {
   [collection: string]: NFTCollection;
 };
 
-export type ActivityRecord = {
+export type LocalActivityRecord = {
   text: string;
   date: Date; // firestoreのTimestamp型をDate型に変換したもの
+};
+
+export type DBActivityRecord = {
+  text: string;
+  timestamp: Timestamp;
 };
 
 export type UserContextType = {

@@ -8,15 +8,15 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import useFetchActivityRecords from "@/hooks/useFetchActivityRecords";
-import { ActivityRecord } from "@/types/type";
+import { LocalActivityRecord } from "@/types/type";
 
 type Props = {
   children: ReactNode;
 };
 
 type ActivityRecordContextType = {
-  activityRecords: ActivityRecord[];
-  addActivityRecord: (newRecord: ActivityRecord) => void;
+  activityRecords: LocalActivityRecord[];
+  addActivityRecord: (newRecord: LocalActivityRecord) => void;
 };
 
 const ActivityRecordContext = createContext<ActivityRecordContextType>(
@@ -24,7 +24,9 @@ const ActivityRecordContext = createContext<ActivityRecordContextType>(
 );
 
 export const ActivityRecordProvider = ({ children }) => {
-  const [activityRecords, setActivityRecords] = useState<ActivityRecord[]>([]);
+  const [activityRecords, setActivityRecords] = useState<LocalActivityRecord[]>(
+    []
+  );
 
   const { user } = useAuth();
   const { fetchActivityRecords } = useFetchActivityRecords();
@@ -32,24 +34,19 @@ export const ActivityRecordProvider = ({ children }) => {
   const loadActivityRecords = async () => {
     if (!user) return;
 
-    const activityRecords: ActivityRecord[] = await fetchActivityRecords();
+    const activityRecords: LocalActivityRecord[] = await fetchActivityRecords();
     console.log(activityRecords);
     setActivityRecords(activityRecords);
   };
 
   useEffect(() => {
     if (!user) return;
-
     loadActivityRecords();
   }, [user]);
 
-  const addActivityRecord = async (newRecord: ActivityRecord) => {
+  const addActivityRecord = async (newRecord: LocalActivityRecord) => {
     setActivityRecords((prev) => [...prev, newRecord]);
   };
-
-  useEffect(() => {
-    console.log(activityRecords);
-  }, [activityRecords]);
 
   return (
     <ActivityRecordContext.Provider
