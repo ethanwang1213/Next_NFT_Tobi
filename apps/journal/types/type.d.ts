@@ -53,13 +53,27 @@ export type User = {
   characteristic?: Characteristic;
 };
 
-export type ActivityRecordData = {
-  text: string;
-  timestamp: Timestamp;
+type NFTData = {
+  name: string;
+  description?: string;
+  thumbnail: string;
+  acquisitionTime?: number;
+  acquisitionMethod?: string;
 };
 
-export type ActivityRecords = {
-  [activityId]: ActivityRecordData;
+export type NFTCollection = {
+  hold: {
+    [tokenId: string]: NFTData;
+  };
+};
+
+export type HoldingNFTs = {
+  [collection: string]: NFTCollection;
+};
+
+export type ActivityRecord = {
+  text: string;
+  date: Date; // firestoreのTimestamp型をDate型に変換したもの
 };
 
 export type UserContextType = {

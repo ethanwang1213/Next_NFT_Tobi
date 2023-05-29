@@ -30,7 +30,10 @@ service cloud.firestore {
       match /nft/{nftId} {
         allow read, write: if isCurrentUser(userId);
       }
-      match /activity/{activity_id} {
+      match /nft/{nftId}/hold/{holdId} {
+        allow read, write: if isCurrentUser(userId);
+      }
+      match /activity/{activytyId} {
         allow read, write: if isCurrentUser(userId);
       }
     }

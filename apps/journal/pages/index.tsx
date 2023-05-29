@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import Mobile from "../components/Book/Mobile";
 import Pc from "../components/Book/Pc";
 import Image from "next/image";
@@ -6,6 +6,9 @@ import { BookContext } from "@/contexts/BookContextProvider";
 import ProfilePage0 from "@/components/pages/ProfilePage/ProfilePage0";
 import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
 import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
+import { useAuth } from "@/contexts/AuthProvider";
+import { collection, getDocs, query } from "@firebase/firestore";
+import { db } from "@/firebase/client";
 
 const Index = () => {
   const { pages, pageNo } = useContext(BookContext);
@@ -16,6 +19,8 @@ const Index = () => {
     [pages.current, pageNo.current]
   );
 
+  const { user } = useAuth();
+  
   return (
     <>
       <Image src="/journal/images/book/bg_journal.png" fill alt="bg_journal"></Image>
