@@ -2,7 +2,6 @@ import useHomeStore from "@/stores/homeStore";
 import { ScrollDownConfig } from "@/types/ScrollDownConfig";
 import { useSpring } from "@react-spring/web";
 import { useState } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top5 ECO_FRIENDLYセクションのUIのアニメーション用変数を管理する
@@ -14,6 +13,7 @@ const useEcoFriendlyTextAnims = (scrollDownConfig: ScrollDownConfig) => {
   const homePhase = useHomeStore((state) => state.homePhase);
   const setCanProgress = useHomeStore((state) => state.setCanProgress);
   const isInit = useHomeStore((state) => state.isInit);
+  const setCanInteract = useHomeStore((state) => state.setCanInteract);
 
   // top5 ECO
   const [activeT5, setActiveT5] = useState(false);
@@ -24,6 +24,7 @@ const useEcoFriendlyTextAnims = (scrollDownConfig: ScrollDownConfig) => {
       onResolve: (result) => {
         if (homePhase === "ECO_FRIENDRY" && activeT5 && !result.noop) {
           setCanProgress(true);
+          setCanInteract(true);
           api5_1.start({
             t5_1: 1,
             ...scrollDownConfig.enter,

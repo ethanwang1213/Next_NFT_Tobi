@@ -1,4 +1,4 @@
-import { RefObject, useMemo } from "react";
+import { RefObject, useCallback, useMemo } from "react";
 import { create } from "zustand";
 
 type HomePhase =
@@ -32,7 +32,6 @@ const PHASE_ARR: HomePhase[] = [
   "END",
 ];
 
-
 export const isAnimationPhase = (phase: HomePhase) =>
   phase === "TITLE_TO_GOODS" ||
   phase === "GOODS_TO_FAMI" ||
@@ -40,7 +39,6 @@ export const isAnimationPhase = (phase: HomePhase) =>
   phase === "ENJOY_TO_FREE" ||
   phase === "FREE_TO_ECO" ||
   phase === "ECO_TO_END";
-
 
 type HomeState = {
   // ホームアニメーションのフェーズ
@@ -51,6 +49,9 @@ type HomeState = {
   // フェーズを前後できるかどうかのフラグ
   canProgress: boolean;
   setCanProgress: (b: boolean) => void;
+
+  canInteract: boolean;
+  setCanInteract: (b: boolean) => void;
 
   // フェーズの初期化
   // initPhase: (hash: string) => void;
@@ -73,7 +74,6 @@ type HomeState = {
   debugMode: boolean;
 };
 
-
 const useHomeStore = create<HomeState>((set) => ({
   // ホームアニメーションのフェーズ
   homePhase: "TITLE",
@@ -83,14 +83,20 @@ const useHomeStore = create<HomeState>((set) => ({
   canProgress: false,
   setCanProgress: (b) => set((state) => ({ canProgress: b })),
 
+  canInteract: false,
+  setCanInteract: (b) => set((state) => ({ canInteract: b })),
+
   // フェーズの初期化
   isInit: false,
   setIsInit: (b) => set((state) => ({ isInit: b })),
-  initPhase: (p) => set((state) => {
-    const currentIndex = PHASE_ARR.indexOf(state.homePhase);
-    const pIndex = currentIndex === 0 ? 0 : currentIndex - 1;
-    return (state.isInit ? {} : { homePhase: p, pPhase: PHASE_ARR[pIndex] });
-  }),
+  initPhase: (p) =>
+    set((state) => {
+      const currentIndex = PHASE_ARR.indexOf(state.homePhase);
+      const pIndex = currentIndex === 0 ? 0 : currentIndex - 1;
+      return state.isInit
+        ? {}
+        : { homePhase: p, pPhase: PHASE_ARR[pIndex], canInteract: false };
+    }),
 
   // フェーズの前進
   progressPhase: () => {
@@ -106,10 +112,12 @@ const useHomeStore = create<HomeState>((set) => ({
       }
       // 前進する
       progressResult = true;
+
       return {
         homePhase: PHASE_ARR[currentIndex + 1],
         pPhase: state.homePhase,
         canProgress: false,
+        canInteract: false,
       };
     });
 
@@ -133,6 +141,7 @@ const useHomeStore = create<HomeState>((set) => ({
         homePhase: PHASE_ARR[currentIndex - 1],
         pPhase: state.homePhase,
         canProgress: false,
+        canInteract: false,
       };
     });
 

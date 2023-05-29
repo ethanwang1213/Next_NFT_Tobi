@@ -2,7 +2,6 @@ import useHomeStore from "@/stores/homeStore";
 import { ScrollDownConfig } from "@/types/ScrollDownConfig";
 import { config, useSpring } from "@react-spring/web";
 import { useState } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top3 ENJOYIMENTセクションのUIのアニメーション用変数を管理する
@@ -14,6 +13,7 @@ const useEnjoymentTextAnims = (scrollDownConfig: ScrollDownConfig) => {
   const homePhase = useHomeStore((state) => state.homePhase);
   const setCanProgress = useHomeStore((state) => state.setCanProgress);
   const isInit = useHomeStore((state) => state.isInit);
+  const setCanInteract = useHomeStore((state) => state.setCanInteract);
 
   // top3 ENJOY
   const [activeT3, setActiveT3] = useState(false);
@@ -25,6 +25,7 @@ const useEnjoymentTextAnims = (scrollDownConfig: ScrollDownConfig) => {
       onResolve: (result) => {
         if (homePhase === "ENJOYMENT" && activeT3 && !result.noop) {
           setCanProgress(true);
+          setCanInteract(true);
           api3_1.start({
             t3_1: 1,
             ...scrollDownConfig.enter,

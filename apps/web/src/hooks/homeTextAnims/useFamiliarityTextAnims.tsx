@@ -2,7 +2,6 @@ import useHomeStore from "@/stores/homeStore";
 import { ScrollDownConfig } from "@/types/ScrollDownConfig";
 import { config, useSpring } from "@react-spring/web";
 import { useState } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top2 FAMILIARITYセクションのUIのアニメーション用変数を管理する
@@ -14,6 +13,7 @@ const useFamiliarityTextAnims = (scrollDownConfig: ScrollDownConfig) => {
   const homePhase = useHomeStore((state) => state.homePhase);
   const setCanProgress = useHomeStore((state) => state.setCanProgress);
   const isInit = useHomeStore((state) => state.isInit);
+  const setCanInteract = useHomeStore((state) => state.setCanInteract);
 
   // top2 FAMI
   const [activeT2, setActiveT2] = useState(false);
@@ -25,6 +25,7 @@ const useFamiliarityTextAnims = (scrollDownConfig: ScrollDownConfig) => {
       onResolve: (result) => {
         if (homePhase === "FAMI" && activeT2 && !result.noop) {
           setCanProgress(true);
+          setCanInteract(true);
           api2_1.start({
             t2_1: 1,
             ...scrollDownConfig.enter,

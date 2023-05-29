@@ -1,21 +1,25 @@
 import useHomeStore from "@/stores/homeStore";
 import { useGesture } from "@use-gesture/react";
-import { shallow } from "zustand/shallow";
 import HomeCanvas from "./canvas/HomeCanvas";
 import ForbidLandcape from "./ui/ForbidLandcape";
 import HomeTextContainer from "./ui/HomeTextContainer";
-import DprController from "../saidan/ui/dpr/DprController";
+import { useEffect } from "react";
 
 type Props = {};
 
 const HomeWindow: React.FC<Props> = ({}) => {
   const backPhase = useHomeStore((state) => state.backPhase);
   const progressPhase = useHomeStore((state) => state.progressPhase);
+  const canInteract = useHomeStore((state) => state.canInteract);
+  const homePhase = useHomeStore((state) => state.homePhase);
+  const canProgress = useHomeStore((state) => state.canProgress);
 
   // スクロールジェスチャーの実装
   const bind = useGesture(
     {
       onWheel: (state) => {
+        if (!canInteract) return;
+
         const dy = state.delta[1];
         if (dy < 0) {
           const backed = backPhase();
@@ -31,6 +35,8 @@ const HomeWindow: React.FC<Props> = ({}) => {
       },
 
       onDrag: (state) => {
+        if (!canInteract) return;
+
         if (state.tap) return;
         const dy = state.delta[1];
         if (dy > 0) {
@@ -48,6 +54,10 @@ const HomeWindow: React.FC<Props> = ({}) => {
     },
     { drag: { pointer: { buttons: [1] }, filterTaps: true, tapsThreshold: 10 } }
   );
+
+  useEffect(() => {
+    console.log(canInteract, homePhase, canProgress);
+  }, [canInteract, homePhase, canProgress]);
 
   return (
     <>
