@@ -31,8 +31,8 @@ const AboutSection = ({ title, texts }: Props) => {
           fontSize: isWide ? "20px" : "16px",
         }}
       >
-        {texts.map((v) => (
-          <div>{v === "" ? <br /> : v}</div>
+        {texts.map((v, i) => (
+          <div key={i}>{v === "" ? <br /> : v}</div>
         ))}
       </div>
     </div>

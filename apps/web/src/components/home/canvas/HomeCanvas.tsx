@@ -5,7 +5,7 @@ import {
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { BasicShadowMap } from "three";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
+import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import useHomeStore from "@/stores/homeStore";
 import AnimationContainer from "./AnimationContainer";
 import EndPhaseVideo from "./phases/EndPhaseVideo";
@@ -15,7 +15,7 @@ import { useContext } from "react";
 const HomeCanvas = () => {
   const debugMode = useHomeStore((state) => state.debugMode);
 
-  const { planeWidth, planeHeight } = getHomePlaneSize();
+  const { planeWidth, planeHeight } = useHomePlaneSize();
 
   // dprの取得
   const { dpr, setMonitorFactor } = useContext(CanvasDprContext);

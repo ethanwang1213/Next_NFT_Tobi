@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 
-const AllScrollLock = React.memo(() => {
+const AllScrollLock = () => {
   /**
    * モバイルスクロール禁止処理
    */
@@ -21,6 +21,6 @@ const AllScrollLock = React.memo(() => {
   }, []);
 
   return <div />;
-});
+};
 
-export default AllScrollLock;
+export default React.memo(AllScrollLock);

@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default async (token: string, res: NextApiResponse) => {
   const params = {
-    secret: process.env.GOOGLE_RECAPTCHA_KEY!,
+    secret: process.env["GOOGLE_RECAPTCHA_KEY"]!,
     response: token,
   };
   try {

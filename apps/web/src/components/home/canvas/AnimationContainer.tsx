@@ -1,7 +1,7 @@
 import { animated, to } from "@react-spring/three";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import useHomeStore, { isAnimationPhase } from "@/stores/homeStore";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
+import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import preloadTextures from "@/methods/home/preloadTextures";
 import ARectAreaLight from "./animatedThrees/ARectAreaLight";
 import AAmbientLight from "./animatedThrees/AAmbientLight";
@@ -33,7 +33,7 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
 
   const { isForward } = useIsForward();
 
-  const { isWideMode, isSet } = getHomePlaneSize();
+  const { isWideMode, isSet } = useHomePlaneSize();
 
   // スマホでの横向き表示禁止
   const { displayWidth, displayHeight } = useWindowSize();

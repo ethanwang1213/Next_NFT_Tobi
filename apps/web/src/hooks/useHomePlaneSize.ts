@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import getWindowOrientation from "./getWindowOrientation";
 import useWindowSize from "./useWindowSize";
 
 type PlaneSize = {
@@ -12,9 +11,8 @@ type PlaneSize = {
   isSet: boolean;
 };
 
-const getHomePlaneSize = () => {
+const useHomePlaneSize = () => {
   const { innerWidth, innerHeight, devicePixelRatio } = useWindowSize();
-  const { isLandscape } = getWindowOrientation();
   const [planeSize, setPlaneSize] = useState<PlaneSize>({
     innerWidth,
     innerHeight,
@@ -33,7 +31,6 @@ const getHomePlaneSize = () => {
     let h = 0;
     let w = 0;
     let wide = false;
-    let forbidden = false;
     if (innerWidth > 520) {
       // pc
       const pcRatio = 1920 / 1080;
@@ -71,4 +68,4 @@ const getHomePlaneSize = () => {
   return planeSize;
 };
 
-export default getHomePlaneSize;
+export default useHomePlaneSize;

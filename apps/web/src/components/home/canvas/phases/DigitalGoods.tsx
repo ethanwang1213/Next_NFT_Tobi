@@ -1,6 +1,6 @@
 import { a, SpringValue, to } from "@react-spring/three";
 import { useMemo } from "react";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
+import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
 import useWindowSize from "@/hooks/useWindowSize";
 import ImageModel from "../imageModel/ImageModel";
@@ -16,7 +16,7 @@ type Props = {
  * top1「グッズをデジタルに」での背景表示
  */
 const GoodsPhase = ({ activeT1Start, t1_1, t1_2, t1_4 }: Props) => {
-  const { planeWidth, planeHeight, isSet } = getHomePlaneSize();
+  const { planeWidth, planeHeight, isSet } = useHomePlaneSize();
   const { displayWidth, displayHeight, isWide } = useWindowSize();
   const AImageModel = useMemo(() => a(ImageModel), []);
 
@@ -31,10 +31,14 @@ const GoodsPhase = ({ activeT1Start, t1_1, t1_2, t1_4 }: Props) => {
   const originalAspect = originalW / originalH;
   const innerAspect = displayWidth / displayHeight;
   const w = isWide
-    ? innerAspect < originalAspect ? displayHeight * originalAspect : displayWidth
+    ? innerAspect < originalAspect
+      ? displayHeight * originalAspect
+      : displayWidth
     : displayWidth;
   let h = isWide
-    ? innerAspect < originalAspect ? displayHeight : displayWidth / originalAspect
+    ? innerAspect < originalAspect
+      ? displayHeight
+      : displayWidth / originalAspect
     : displayWidth / originalAspect;
   h *= srcHRatio; // 縦に余白があるので調整
 

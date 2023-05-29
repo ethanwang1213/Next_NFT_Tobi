@@ -42,10 +42,10 @@
     ],
     "jsx-a11y/label-has-associated-control": [
       "error",
-       {
-         "required" :{
-           "some": ["nesting", "id"]
-          }
+      {
+        "required": {
+          "some": ["nesting", "id"]
+        }
       }
     ]
   },
