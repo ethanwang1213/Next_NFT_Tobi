@@ -30,6 +30,9 @@ service cloud.firestore {
       match /nft/{nftId} {
         allow read, write: if isCurrentUser(userId);
       }
+      match /activity/{activity_id} {
+        allow read, write: if isCurrentUser(userId);
+      }
     }
 
     // Shopサイトでの注文情報を格納するコレクション

@@ -1,5 +1,5 @@
 import { signInAnonymously, onAuthStateChanged } from "@firebase/auth";
-import { doc, getDoc, setDoc } from "@firebase/firestore";
+import { Timestamp, doc, getDoc, setDoc } from "@firebase/firestore";
 import {
   createContext,
   ReactNode,
@@ -90,8 +90,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(newUser);
   };
 
+  const setJoinTobiratoryAt = (joinDate: Date) => {
+    // 既に参加日が設定されている場合は何もしない
+    if (!!user.characteristic && !!user.characteristic.join_tobiratory_at)
+      return;
+    const newUser = { ...user };
+    const joinAt = Timestamp.fromDate(joinDate);
+
+    newUser.characteristic
+      ? (newUser.characteristic.join_tobiratory_at = joinAt)
+      : (newUser.characteristic = { join_tobiratory_at: joinAt });
+    setUser(newUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, updateProfile }}>
+    <AuthContext.Provider value={{ user, updateProfile, setJoinTobiratoryAt }}>
       {children}
     </AuthContext.Provider>
   );

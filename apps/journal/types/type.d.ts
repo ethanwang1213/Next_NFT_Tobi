@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { Timestamp } from "@firebase/firestore";
 
 export type tagType = {
   page: number;
@@ -29,20 +30,36 @@ export type BookPos = {
   center: number;
 };
 
+// ユーザープロフィールの誕生日の型
 export type Birthday = {
   year: number;
   month: number;
   day: number;
 };
 
+// ユーザーの特徴情報の型
+export type Characteristic = {
+  join_tobiratory_at?: Timestamp;
+};
+
 export type User = {
-    id: string;
-    name: string;
-    email: string;
-    discord?: string;
-    icon: string;
-    createdAt: number;
-    birthday: Birthday;
+  id: string;
+  name: string;
+  email: string;
+  discord?: string;
+  icon: string;
+  createdAt: number;
+  birthday: Birthday;
+  characteristic?: Characteristic;
+};
+
+export type ActivityRecordData = {
+  text: string;
+  timestamp: Timestamp;
+};
+
+export type ActivityRecords = {
+  [activityId]: ActivityRecordData;
 };
 
 export type UserContextType = {
@@ -52,4 +69,5 @@ export type UserContextType = {
     newName: string,
     newBirthday: Birthday
   ) => void;
+  setJoinTobiratoryAt: (joinDate: Date) => void;
 };

@@ -10,7 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
  */
 const DiscordOAuthButton: React.FC = () => {
   const auth = getAuth();
-  const user = useAuth();
+  const { user } = useAuth();
   const [discordId, setDiscordId] = useState<string | null>();
 
   useEffect(() => {
