@@ -1,26 +1,45 @@
 import { useAuth } from "@/contexts/AuthProvider";
-import { getAuth } from "@firebase/auth";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import StampIcon from "@/public/images/icon/stamp_TOBIRAPOLIS.svg";
+import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+
+type DisplayMode = "NONE" | "OAUTH" | "JOIN" | "STAMP";
 
 /**
  * Discordコミュニティ参加のための認証ボタン
  * @returns
  */
 const DiscordOAuthButton: React.FC = () => {
-  const auth = getAuth();
   const { user } = useAuth();
-  const [discordId, setDiscordId] = useState<string | null>();
+  const { nekoNFTs } = useHoldNFTs();
+
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
 
   useEffect(() => {
-    if (auth.currentUser) {
+    if (!user || nekoNFTs.current.length < 0) {
+      // TOBIRA NEKOを持っていない場合
+      setDisplayMode("NONE");
+      return;
+    } else {
       const discord = user.discord;
-      if (discord) {
-        setDiscordId(discord);
+      if (!discord) {
+        // Discord連携していない場合
+        setDisplayMode("OAUTH");
+      } else {
+        // Discord連携済みの場合
+        setDisplayMode("JOIN");
+        if (user.community) {
+          const joined = user.community.joined;
+          if (joined) {
+            // さらにサーバー参加済みの場合
+            setDisplayMode("STAMP");
+          }
+        }
       }
     }
-  }, [auth.currentUser, user]);
+  }, [user]);
 
   const createButton = useCallback(
     (href: string, text: string) => (
@@ -44,15 +63,18 @@ const DiscordOAuthButton: React.FC = () => {
 
   return (
     <>
-      {discordId
-        ? createButton(
-            process.env.NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL!,
-            "コミュニティに参加"
-          )
-        : createButton(
-            process.env.NEXT_PUBLIC_DISCORD_OAUTH_URL!,
-            "TOBIRA POLISへ"
-          )}
+      {displayMode === "NONE" && <></>}
+      {displayMode === "OAUTH" &&
+        createButton(
+          process.env.NEXT_PUBLIC_DISCORD_OAUTH_URL!,
+          "TOBIRA POLISへ"
+        )}
+      {displayMode === "JOIN" &&
+        createButton(
+          process.env.NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL!,
+          "コミュニティに参加"
+        )}
+      {displayMode === "STAMP" && <StampIcon />}
     </>
   );
 };

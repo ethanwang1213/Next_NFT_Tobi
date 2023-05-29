@@ -42,6 +42,10 @@ export type Characteristic = {
   join_tobiratory_at?: Timestamp;
 };
 
+type Community = {
+  joined: boolean;
+};
+
 export type User = {
   id: string;
   name: string;
@@ -51,6 +55,7 @@ export type User = {
   createdAt: number;
   birthday: Birthday;
   characteristic?: Characteristic;
+  community?: Community;
 };
 
 type NFTData = {
