@@ -1,18 +1,48 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-  
-  	function isCurrentUser(userId) {
-    	return request.auth != null && request.auth.uid == userId;
+
+    // ログイン中のユーザー判定
+    function isCurrentUser(userId) {
+      return request.auth != null && request.auth.uid == userId;
     }
+
+    // 管理者判定
+    // 基本的にはフロントからは呼ばれない
+    function isAdmin() {
+      // return request.auth != null && request.auth.token.admin == true;
+      return false;
+    }
+
+    // users以下のデータは、基本的にログイン中のユーザーのみ読み書き可能
     match /users/{userId} {
       allow read, write: if isCurrentUser(userId);
-    	match /src/{srcId} {
-    	  allow read, write: if isCurrentUser(userId);
-	    }
-    	match /item/{itemId} {
-    	  allow read, write: if isCurrentUser(userId);
-	    }
+      allow create: if
+        getAfter(
+          /databases/$(database)/documents/index/users/discord/$(request.resource.data.discord)
+        ).data.user == userId && isCurrentUser(userId);
+      match /src/{srcId} {
+        allow read, write: if isCurrentUser(userId);
+      }
+      match /item/{itemId} {
+        allow read, write: if isCurrentUser(userId);
+      }
+      match /nft/{nftId} {
+        allow read, write: if isCurrentUser(userId);
+      }
     }
+
+    // Shopサイトでの注文情報を格納するコレクション
+    // 注文情報は、管理者のみが読み書き可能
+    match /orders/{orderId} {
+      allow read, write: if isAdmin();
+    }
+    match /index/users/discord/{discord} {
+      allow create: if
+      getAfter(
+        /databases/$(database)/documents/users/$(request.resource.data.userId)
+      ).data.discord == discord && request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+
   }
 }

@@ -11,19 +11,7 @@ const Tag: FC<{
 
   const isNumber = useMemo(() => typeof page === "number", [page]);
 
-  const [play] = useSound("/sounds/paging_Journal.mp3", { volume: 0.1 });
-
-  const handleClick = () => {
-    if (isNumber) {
-      setPageNo(page);
-    } else {
-      (page as () => void)();
-    }
-    // Tagでページを遷移するときのみ、ページめくりの音を再生する
-    if (page !== pageNo && typeof page === "number") {
-      play();
-    }
-  };
+  const [play] = useSound("/journal/sounds/paging_Journal.mp3", { volume: 0.1 });
 
   return (
     <div
@@ -56,7 +44,7 @@ const Tag: FC<{
         ></div>
       ) : (
         <div
-          className={`mx-4 w-[40px] h-[40px] transition-all ${
+          className={`mx-4 w-[44px] h-[44px] transition-all select-none ${
             pageNo === page || pageNo + 1 === page || !isNumber
               ? "text-white"
               : "text-red-700"

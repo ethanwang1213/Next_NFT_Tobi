@@ -6,6 +6,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
 import BookContextProvider from "@/contexts/BookContextProvider";
+import { EditProfileProvider } from "@/contexts/EditProfileProvider";
 
 config.autoAddCss = false;
 
@@ -24,7 +25,9 @@ const App = ({ Component, pageProps }: AppProps) => {
       </Script>
       <BookContextProvider>
         <RedeemStatusContextProvider>
-          <Component {...pageProps} />
+          <EditProfileProvider>
+            <Component {...pageProps} />
+          </EditProfileProvider>
         </RedeemStatusContextProvider>
       </BookContextProvider>
     </AuthProvider>

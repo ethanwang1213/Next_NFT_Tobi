@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_レイヤー_2" data-name="レイヤー 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2556 1441.19">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#_名称未設定グラデーション_2);
+      }
+    </style>
+    <radialGradient id="_名称未設定グラデーション_2" data-name="名称未設定グラデーション 2" cx="715.03" cy="1939.2" fx="715.03" fy="1939.2" r="1.31" gradientTransform="translate(-697274.53 1068935.97) scale(976.96 -550.85)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#001f43"/>
+      <stop offset="1" stop-color="#00060d"/>
+    </radialGradient>
+  </defs>
+  <g id="_レイヤー_1-2" data-name="レイヤー 1">
+    <rect id="_長方形_1" data-name="長方形 1" class="cls-1" width="2556" height="1441.19"/>
+  </g>
+</svg>

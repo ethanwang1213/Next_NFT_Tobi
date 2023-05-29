@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
+import { functions } from "@/firebase/client";
+import { httpsCallable } from "firebase/functions";
 
 /**
  * 引き換えボタンのコンポーネント
@@ -7,22 +9,28 @@ import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
  * @returns
  */
 const RedeemButton: React.FC = () => {
-  const { redeemStatus, modalInputIsChecked } = useContext(RedeemContext);
+  const { redeemStatus, inputCode, modalInputIsChecked } = useContext(RedeemContext);
 
   const onClick = () => {
     if (redeemStatus.current === "CHECKING") return;
     modalInputIsChecked.set(true);
 
     redeemStatus.set("CHECKING");
-    // TODO: 引き換えの処理を実行する
-    // 仮置きとして、1秒後にCHECKINGからstatusが更新されるようにしている
-    setTimeout(() => {
+
+    const redeem = inputCode.current;
+    const callable = httpsCallable(functions, "checkRedeem");
+    callable({ redeem }).then((result) => {
+      console.log(result);
       redeemStatus.set(
-        // "INCORRECT"
-        // "SERVER_ERROR"
         "SUCCESS"
       );
-    }, 1000);
+    }).catch((error) => {
+      console.log(error);
+      redeemStatus.set(
+        "INCORRECT"
+        // "SERVER_ERROR"
+      );
+    });
   };
 
   return (

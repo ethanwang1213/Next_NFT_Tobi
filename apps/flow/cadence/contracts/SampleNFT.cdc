@@ -10,7 +10,7 @@ pub contract SampleNFT: NonFungibleToken {
     /***********************************************/
     pub var collectionPublicPath: PublicPath
     pub var collectionStoragePath: StoragePath
-    pub var minterPublicPath: PublicPath
+    // pub var minterPublicPath: PublicPath
     pub var minterStoragePath: StoragePath
 
     /************************************************/
@@ -132,20 +132,20 @@ pub contract SampleNFT: NonFungibleToken {
         }
     }
 
-    pub fun minter(): Capability<&Minter> {
-        return self.account.getCapability<&Minter>(self.minterPublicPath)
-    }
+    // pub fun minter(): Capability<&Minter> {
+    //     return self.account.getCapability<&Minter>(self.minterPublicPath)
+    // }
 
     init() {
         self.totalSupply = 0
         self.collectionPublicPath = /public/SampleNFTCollection
         self.collectionStoragePath = /storage/SampleNFTCollection
-        self.minterPublicPath = /public/SampleNFTMinter
+        // self.minterPublicPath = /public/SampleNFTMinter
         self.minterStoragePath = /storage/SampleNFTMinter
 
         let minter <- create Minter()
         self.account.save(<- minter, to: self.minterStoragePath)
-        self.account.link<&Minter>(self.minterPublicPath, target: self.minterStoragePath)
+        // self.account.link<&Minter>(self.minterPublicPath, target: self.minterStoragePath)
 
         let collection <- self.createEmptyCollection()
         self.account.save(<- collection, to: self.collectionStoragePath)
