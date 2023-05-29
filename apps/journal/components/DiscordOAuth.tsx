@@ -20,11 +20,11 @@ const DiscordOAuth = () => {
   return (
     <>
       { discordId ? (
-        <a href={process.env.DISCORD_COMMUNITY_INVITE_URL}>
+        <a href={process.env.NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL}>
           コミュニティに参加
         </a>
       ) : (
-        <a href={process.env.DISCORD_OAUTH_URL}>
+        <a href={process.env.NEXT_PUBLIC_DISCORD_OAUTH_URL}>
           Discord 連携
         </a>
       ) }

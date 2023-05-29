@@ -11,7 +11,7 @@ const Discord = () => {
 
   useEffect((() => {
     const getUserdata = async () => {
-      const response = await fetch(process.env.DISCORD_OAUTH_USERDATA_API_URL);
+      const response = await fetch(process.env.NEXT_PUBLIC_DISCORD_OAUTH_USERDATA_API_URL);
       if (response.status == 200) {
         return await response.json();
       } else {
