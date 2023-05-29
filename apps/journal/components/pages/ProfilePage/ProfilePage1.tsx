@@ -21,6 +21,15 @@ const ProfilePage1: React.FC = () => {
     [user]
   );
 
+  const houseDataExists = useMemo(
+    () =>
+      user &&
+      user.community &&
+      user.community.house &&
+      user.community.house.name,
+    [user]
+  );
+
   return (
     <div className="h-full overflow-y-auto mb-16 sm:mb-0">
       <div className="grid gap-8 pt-8 sm:pt-4">
@@ -30,6 +39,12 @@ const ProfilePage1: React.FC = () => {
             lineValue={user.characteristic.join_tobiratory_at
               .toDate()
               .toLocaleDateString()}
+          />
+        )}
+        {houseDataExists && (
+          <CharacteristicLine
+            lineType={"House Arkhē"}
+            lineValue={user.community.house.name}
           />
         )}
       </div>
