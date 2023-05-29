@@ -6,17 +6,13 @@ import { useEffect, useState } from "react";
 import { HouseBadgeNFTData } from "@/types/type";
 import { HOUSE_BADGE_NFT_ID } from "@/libs/constants";
 
-type Props = {
-  profileSrc: string;
-};
-
 /**
  * プロフィールのアイコンのコンポーネント
  * 所属のハウスバッジのNFTを持っていれば右下に表示する
  * @param param0
  * @returns
  */
-const PersonalIcon: React.FC<Props> = ({ profileSrc }) => {
+const PersonalIcon: React.FC = () => {
   const { user } = useAuth();
   const { otherNFTs } = useHoldNFTs();
   const [badgeSrc, setBadgeSrc] = useState<string>("");
@@ -47,10 +43,10 @@ const PersonalIcon: React.FC<Props> = ({ profileSrc }) => {
       <div className="relative h-full">
         <div className="relative h-full rounded-full bg-white border-white border-[10px] overflow-hidden">
           <label htmlFor="edit-profile-modal" className="cursor-pointer">
-            {profileSrc === "" ? (
+            {!user || user.icon === "" ? (
               <DefaultIcon />
             ) : (
-              <Image src={profileSrc} alt="profile image" fill />
+              <Image src={user.icon} alt="profile image" fill />
             )}
           </label>
         </div>
