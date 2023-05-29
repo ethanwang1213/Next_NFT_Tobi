@@ -1,4 +1,4 @@
-import { NFTData } from "@/types/type";
+import { HouseBadgeNFTData, NFTData } from "@/types/type";
 import React, {
   ReactNode,
   createContext,
@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import useFetchNftDatas from "@/hooks/useFetchNftDatas";
+import { HOUSE_BADGE_NFT_ID, NEKO_NFT_ID } from "@/libs/constants";
 
 type Props = {
   children: ReactNode;
@@ -20,7 +21,7 @@ type HoldNFTsContextType = {
     set: React.Dispatch<React.SetStateAction<NFTData[]>>;
   };
   otherNFTs: {
-    current: NFTData[];
+    current: (NFTData | HouseBadgeNFTData)[];
     set: React.Dispatch<React.SetStateAction<NFTData[]>>;
   };
   shouldUpdate: {
@@ -35,9 +36,11 @@ const HoldNFTsContext = createContext<HoldNFTsContextType>(
 
 export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
   const [nekoNFTs, setNekoNFTs] = useState<NFTData[]>([]);
-  const [otherNFTs, setOtherNFTs] = useState<NFTData[]>([]);
+  const [otherNFTs, setOtherNFTs] = useState<(NFTData | HouseBadgeNFTData)[]>(
+    []
+  );
 
-  const NEKO_NFT_ID = "A.01ab36aaf654a13e.TobiraNeko";
+
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
@@ -58,11 +61,18 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     if (!user) return;
     const ids = await fetchNFTCollectionIds();
     const otherNFTs = [];
-    ids.map(async (id) => {
-      if (id === NEKO_NFT_ID) return;
-      const nfts = await fetchHoldNFTs(id);
-      otherNFTs.push(...nfts);
-    });
+    await Promise.all(
+      ids.map(async (id) => {
+        if (id === NEKO_NFT_ID) return;
+        if (id === HOUSE_BADGE_NFT_ID) {
+          const nfts = (await fetchHoldNFTs(id)) as HouseBadgeNFTData[];
+          otherNFTs.push(...nfts);
+        } else {
+          const nfts = (await fetchHoldNFTs(id)) as NFTData[];
+          otherNFTs.push(...nfts);
+        }
+      })
+    );
     setOtherNFTs(otherNFTs);
     console.log(otherNFTs);
   };
