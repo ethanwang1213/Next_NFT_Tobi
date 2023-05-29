@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 
 export type tagType = {
-  page: number;
+  page: number | (() => void);
   image: string | ReactElement;
 };
 
