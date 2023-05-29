@@ -1,6 +1,6 @@
 import { a, SpringValue, to, useSpring } from "@react-spring/three";
 import { useMemo, useState } from "react";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
+import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
 import useWindowSize from "@/hooks/useWindowSize";
 import ImageModel from "../imageModel/ImageModel";
@@ -14,7 +14,6 @@ type Props = {
   }[];
 };
 
-
 type FamiData = {
   src: string;
   scale: number;
@@ -25,7 +24,7 @@ type FamiData = {
 };
 
 type SrcDataType = {
-  pc: FamiData[],
+  pc: FamiData[];
   sp: FamiData[];
 };
 
@@ -122,7 +121,7 @@ const sourceData: SrcDataType = {
       scale: 1.2,
       x: 0,
       y: -10,
-      destY: spDestYBase + (0),
+      destY: spDestYBase + 0,
     },
     {
       src: "island",
@@ -131,7 +130,7 @@ const sourceData: SrcDataType = {
       scale: 1.2,
       x: 0,
       y: 50,
-      destY: spDestYBase + (0),
+      destY: spDestYBase + 0,
     },
     {
       src: "cyber",
@@ -140,7 +139,7 @@ const sourceData: SrcDataType = {
       scale: 1.1,
       x: 0,
       y: 0,
-      destY: spDestYBase + (0),
+      destY: spDestYBase + 0,
     },
     {
       src: "building",
@@ -149,7 +148,7 @@ const sourceData: SrcDataType = {
       scale: 1.1,
       x: 0,
       y: 0,
-      destY: spDestYBase + (-400),
+      destY: spDestYBase + -400,
     },
     {
       src: "castle",
@@ -158,7 +157,7 @@ const sourceData: SrcDataType = {
       scale: 1.2,
       x: 0,
       y: 40,
-      destY: spDestYBase + (-300),
+      destY: spDestYBase + -300,
     },
     {
       src: "cloud-front",
@@ -167,7 +166,7 @@ const sourceData: SrcDataType = {
       scale: 0.5,
       x: 40,
       y: 50,
-      destY: spDestYBase + (-350),
+      destY: spDestYBase + -350,
     },
     {
       src: "cloud-back",
@@ -176,7 +175,7 @@ const sourceData: SrcDataType = {
       scale: 0.5,
       x: 80,
       y: 100,
-      destY: spDestYBase + (-350),
+      destY: spDestYBase + -350,
     },
     {
       src: "back",
@@ -185,7 +184,7 @@ const sourceData: SrcDataType = {
       scale: 1.1,
       x: 0,
       y: 11,
-      destY: spDestYBase + (-400),
+      destY: spDestYBase + -400,
     },
   ],
 };
@@ -199,7 +198,7 @@ const imageData = {
  * top2「いつでも身近に」での背景表示
  */
 const FamiliarityPhase = ({ starts, ends }: Props) => {
-  const { planeWidth, planeHeight, isSet } = getHomePlaneSize();
+  const { planeWidth, planeHeight, isSet } = useHomePlaneSize();
   const { displayWidth, displayHeight, isWide } = useWindowSize();
   const AImageModel = useMemo(() => a(ImageModel), []);
   const device = isWide ? "pc" : "sp";
@@ -244,9 +243,7 @@ const FamiliarityPhase = ({ starts, ends }: Props) => {
         // 割り出している計算式
         // ちゃんと考えれば導ける気がするがとりあえずで
         // マジックナンバー4.5, 3.7で置いてしまっている
-        const aidY = isWide
-          ? 4500 - 4.5 * h
-          : 3300 - 3.7 * h;
+        const aidY = isWide ? 4500 - 4.5 * h : 3300 - 3.7 * h;
 
         const { sv } = srcData.src === "06-back-1" ? starts[i - 1] : starts[i];
         return (
@@ -282,7 +279,10 @@ const FamiliarityPhase = ({ starts, ends }: Props) => {
               [ev, sv],
               (v1, v2) => -100 + srcData.z + v1 * v1 * 200 + (-100 + v2 * 100)
             )}
-            opacity={to([ev, sv.to([0, 0.5, 1], [0, 1, 1])], (v1, v2) => (1 - v1 * v1) * v2 * v2)}
+            opacity={to(
+              [ev, sv.to([0, 0.5, 1], [0, 1, 1])],
+              (v1, v2) => (1 - v1 * v1) * v2 * v2
+            )}
             useBasicMaterial={
               srcData.src === "07-cloud-front" ||
               srcData.src === "08-cloud-back" ||

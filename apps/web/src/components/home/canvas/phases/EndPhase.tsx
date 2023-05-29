@@ -1,10 +1,7 @@
-import { a } from "@react-spring/three";
 import { SpringValue } from "@react-spring/web";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { VideoTexture } from "three";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
 import useHomeStore from "@/stores/homeStore";
-import ImageModel from "../imageModel/ImageModel";
 import AMeshBasicMaterial from "../animatedThrees/AMeshBasicMaterial";
 
 type Props = {
@@ -18,9 +15,6 @@ type Props = {
 const EndPhase = ({ isVideoStarted, start }: Props) => {
   const endVideoRef = useHomeStore((state) => state.endVideoRef);
 
-  const { planeWidth, planeHeight, isWideMode, isSet } = getHomePlaneSize();
-  const AImageModel = useMemo(() => a(ImageModel), []);
-  const device = () => (isWideMode ? "pc" : "sp");
   // const texture = useVideoTexture('/home/end/end.mp4')
 
   const [videoTexture, setVideoTexture] = useState<VideoTexture>();

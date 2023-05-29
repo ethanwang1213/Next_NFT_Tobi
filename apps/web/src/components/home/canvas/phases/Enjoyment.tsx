@@ -1,7 +1,7 @@
 import { SpringValue, to } from "@react-spring/core";
 import { a } from "@react-spring/three";
 import { useMemo } from "react";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
+import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
 import ImageModel from "../imageModel/ImageModel";
 
@@ -56,7 +56,7 @@ const imageData = {
  * top3「さらなる楽しみ」での背景表示
  */
 const EnjoymentPhase = ({ starts, ends }: Props) => {
-  const { planeWidth, planeHeight, isWideMode, isSet } = getHomePlaneSize();
+  const { planeWidth, planeHeight, isWideMode, isSet } = useHomePlaneSize();
   const AImageModel = useMemo(() => a(ImageModel), []);
   const device = isWideMode ? "pc" : "sp";
   const imgData = imageData[device];

@@ -1,7 +1,7 @@
 import { a, SpringValue, to } from "@react-spring/web";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useState } from "react";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
+import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
 import useHomeStore from "@/stores/homeStore";
 import ImageModel from "../imageModel/ImageModel";
@@ -169,7 +169,7 @@ const sourceData: SrcDataType = {
  */
 const FreedomPhase = ({ starts, ends }: Props) => {
   const homePhase = useHomeStore((state) => state.homePhase);
-  const { planeWidth, planeHeight, isWideMode, isSet } = getHomePlaneSize();
+  const { planeWidth, planeHeight, isWideMode, isSet } = useHomePlaneSize();
   const AImageModel = useMemo(() => a(ImageModel), []);
   const device = isWideMode ? "pc" : "sp";
   // const imgData = imageData[device()]

@@ -1,6 +1,6 @@
 import { a, SpringValue, to } from "@react-spring/three";
 import { useMemo, useState } from "react";
-import getHomePlaneSize from "@/hooks/getHomePlaneSize";
+import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
 import { useSpring } from "@react-spring/web";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -25,7 +25,7 @@ type EcoData = {
 };
 
 type SrcDataType = {
-  pc: EcoData[],
+  pc: EcoData[];
   sp: EcoData[];
 };
 
@@ -140,7 +140,7 @@ const sourceData: SrcDataType = {
  * top5「環境への配慮」での背景表示
  */
 const EcoPhase = ({ starts, ends }: Props) => {
-  const { planeWidth, planeHeight, isSet } = getHomePlaneSize();
+  const { planeWidth, planeHeight, isSet } = useHomePlaneSize();
   const { displayWidth, displayHeight, isWide } = useWindowSize();
 
   const AImageModel = useMemo(() => a(ImageModel), []);
@@ -183,9 +183,15 @@ const EcoPhase = ({ starts, ends }: Props) => {
         const srcWRatio = srcW / originalW;
         const originalAspect = originalW / originalH;
         const innerAspect = displayWidth / innerHeight;
-        let w = innerAspect < originalAspect ? innerHeight * originalAspect : displayWidth;
+        let w =
+          innerAspect < originalAspect
+            ? innerHeight * originalAspect
+            : displayWidth;
         w *= srcWRatio + 0.2;
-        let h = innerAspect < originalAspect ? innerHeight : displayWidth / originalAspect;
+        let h =
+          innerAspect < originalAspect
+            ? innerHeight
+            : displayWidth / originalAspect;
         h *= 1 + 0.2;
         // const w = isWide ? planeWidth : (1920 * planeHeight) / 2092;
         // const h = isWide ? (2092 * planeWidth) / 1920 : planeHeight;
@@ -207,7 +213,6 @@ const EcoPhase = ({ starts, ends }: Props) => {
           rotZ = t5_2
             .to([0, 0.2, 0.8, 1], [-0.2, 0, 0.4, -0.2])
             .to((v) => -(0.03 / Math.PI) * v);
-
         } else {
           rotZ = 0;
         }
@@ -221,16 +226,16 @@ const EcoPhase = ({ starts, ends }: Props) => {
             src={getImgSrc(5, `${srcData.src}`, true)} // 素材が変わらないので第三引数isPCはtrue
             width={to(
               [ev, sv.to([0, 1], [0.8, 1])],
-              (v1, v2) => w * (1 + (magni + srcData.scale) * v1 * v1 * 20) * v2 * v2
+              (v1, v2) =>
+                w * (1 + (magni + srcData.scale) * v1 * v1 * 20) * v2 * v2
             )}
             height={to(
               [ev, sv.to([0, 1], [0.8, 1])],
-              (v1, v2) => h * (1 + (magni + srcData.scale) * v1 * v1 * 20) * v2 * v2
+              (v1, v2) =>
+                h * (1 + (magni + srcData.scale) * v1 * v1 * 20) * v2 * v2
             )}
             x={isWide ? -2 : 20}
-            y={ev.to(
-              (v) => (h * ((magni + srcData.scale) * v * v * 20)) / 20
-            )}
+            y={ev.to((v) => (h * ((magni + srcData.scale) * v * v * 20)) / 20)}
             z={to(
               [ev, sv],
               (v1, v2) => -100 + srcData.z + v1 * v1 * i * 100 + (-60 + v2 * 60)

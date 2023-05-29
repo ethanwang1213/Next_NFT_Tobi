@@ -23,7 +23,7 @@
     "firebase": "^9.21.0",
     "gsap": "npm:@gsap/business@^3.11.5",
     "jimp": "^0.3.11",
-    "next": "latest",
+    "next": "^13.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-use": "^17.4.0",

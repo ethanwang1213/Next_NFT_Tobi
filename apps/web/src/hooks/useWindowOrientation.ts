@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import isiOS from "@/methods/isiOS";
 import isMobile from "@/methods/isMobile";
 
-const getWindowOrientation = () => {
+const useWindowOrientation = () => {
   const [orientationData, setOrientationData] = useState({
     isLandscape: false,
   });
@@ -40,4 +40,4 @@ const getWindowOrientation = () => {
   return orientationData;
 };
 
-export default getWindowOrientation;
+export default useWindowOrientation;

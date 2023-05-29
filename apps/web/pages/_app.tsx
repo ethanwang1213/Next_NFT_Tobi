@@ -83,7 +83,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         <MenuAnimationProvider>
           {/* メイン */}
           <GoogleReCaptchaProvider
-            reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY!}
+            reCaptchaKey={process.env["NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY"]!}
             language="ja"
           >
             <CanvasDprProvider>
