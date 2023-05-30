@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import { Timestamp } from "@firebase/firestore";
 
 export type tagType = {
-  page: number;
+  page: number | (() => void);
   image: string | ReactElement;
 };
 

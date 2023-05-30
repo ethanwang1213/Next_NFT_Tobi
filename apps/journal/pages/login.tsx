@@ -113,7 +113,11 @@ const Login = () => {
           <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
         </div>
         <div className="absolute h-[300px] w-[300px]">
-          <Image src="/journal/images/login/liner_journal.svg" alt="logo" fill />
+          <Image
+            src="/journal/images/login/liner_journal.svg"
+            alt="logo"
+            fill
+          />
         </div>
         <div className="absolute h-[300px] w-[300px]">
           <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
@@ -127,7 +131,11 @@ const Login = () => {
             ref={logoMobileRef}
           >
             <div className="absolute h-[80%] w-[80%] block md:hidden">
-              <Image src="/journal/images/login/liner_journal.svg" alt="logo" fill />
+              <Image
+                src="/journal/images/login/liner_journal.svg"
+                alt="logo"
+                fill
+              />
             </div>
             <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
           </div>
@@ -148,7 +156,11 @@ const Login = () => {
             onClick={withGoogle}
           >
             <div className="relative h-[50%] aspect-square">
-              <Image src="/images/icon/google_journal.svg" alt="google" fill />
+              <Image
+                src="/journal/images/icon/google_journal.svg"
+                alt="google"
+                fill
+              />
             </div>
             Sign in with Google
           </button>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import { mockRecordList } from "../../../libs/mocks/mockProfile0";
-import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
 import ActivityRecord from "./sub/ActivityRecord";
