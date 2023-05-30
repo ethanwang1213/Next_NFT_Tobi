@@ -30,9 +30,9 @@ const BirthdaySelect: React.FC<Props> = ({
 }) => {
   const { user } = useAuth();
 
-  const [thisYear, setThisYear] = useState<number>(null);
-  const [endMonth, setEndMonth] = useState<number>(null);
-  const [endDay, setEndDay] = useState<number>(null);
+  const [thisYear, setThisYear] = useState<number>(0);
+  const [endMonth, setEndMonth] = useState<number>(0);
+  const [endDay, setEndDay] = useState<number>(0);
 
   // モーダルを開く前の初期化処理
   useEffect(() => {
@@ -46,16 +46,22 @@ const BirthdaySelect: React.FC<Props> = ({
       y = y === "" ? 0 : parseInt(y);
       setValue("year", y);
     }
+    y = !y ? 0 : y;
+
     let m = getValues("month");
     if (typeof m === "string") {
       m = m === "" ? 0 : parseInt(m);
       setValue("month", m);
     }
+    m = !m ? 0 : m;
+
     let d = getValues("day");
     if (typeof d === "string") {
-      d = d === "" ? 0 : parseInt(d);
+      d = !d || d === "" ? 0 : parseInt(d);
       setValue("day", d);
     }
+    d = !d ? 0 : d;
+
     return { y, m, d };
   };
 

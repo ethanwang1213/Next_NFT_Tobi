@@ -63,6 +63,7 @@ const IconSelect: React.FC<Props> = ({
     const displayCanvas = async () => {
       canvasRef.current.width = 100;
       canvasRef.current.height = 100;
+      if (getValues("iconUrl") === "") return;
       const ctx = canvasRef.current.getContext("2d");
       const image = await createImage(getValues("iconUrl"));
       if (cropData.current) {
@@ -128,11 +129,8 @@ const IconSelect: React.FC<Props> = ({
               className="rounded-full overflow-hidden border-4 border-black/50"
             ></canvas>
           ) : (
-            <div
-            className="rounded-full overflow-hidden border-4 border-black/50"
-            >
-
-            <DefaultIcon />
+            <div className="rounded-full overflow-hidden border-4 border-black/50">
+              <DefaultIcon />
             </div>
           )}
         </label>

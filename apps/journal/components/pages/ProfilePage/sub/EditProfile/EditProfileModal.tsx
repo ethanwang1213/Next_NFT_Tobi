@@ -32,7 +32,14 @@ const EditProfileModal: React.FC = () => {
     handleSubmit,
     trigger,
     formState: { errors },
-  } = useForm<EditProfileValues>({ mode: "onChange" });
+  } = useForm<EditProfileValues>({
+    mode: "onChange",
+    defaultValues: {
+      year: 0,
+      month: 0,
+      day: 0,
+    },
+  });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { cropData } = useEditProfile();
 

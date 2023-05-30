@@ -5,6 +5,10 @@ import { DBActivityRecord } from "@/types/type";
 import { Timestamp, collection, doc, writeBatch } from "@firebase/firestore";
 import { useMemo } from "react";
 
+/**
+ * Discord認証完了時の処理をまとめたカスタムフック
+ * @returns
+ */
 const useSuccessDiscordOAuth = () => {
   const auth = useAuth();
   const { addActivityRecord } = useActivityRecord();
@@ -17,7 +21,8 @@ const useSuccessDiscordOAuth = () => {
     [auth.user]
   );
 
-  // characteristic.join_tobiratory_atと参加のactivityレコードをまとめてpost
+  // characteristic.join_tobiratory_atと
+  // TOBIRA POLIS参加のactivityレコードをまとめてpost
   const postOnSuccess = async (joinDate: Date, newRecord: DBActivityRecord) => {
     const batch = writeBatch(db);
 

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import { mockRecordList } from "../../../libs/mocks/mockProfile0";
-import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
 import ActivityRecord from "./sub/ActivityRecord";
@@ -21,7 +20,6 @@ export type ActivityRecord = {
 const ProfilePage0: React.FC = () => {
   const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
-  const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -39,7 +37,6 @@ const ProfilePage0: React.FC = () => {
         setBirthday(`${user.birthday.year}/${month}/${day}`);
       }
     }
-    setRecordList(mockRecordList);
   }, [user]);
 
   return (
