@@ -22,7 +22,7 @@ type HoldNFTsContextType = {
   };
   otherNFTs: {
     current: (NFTData | HouseBadgeNFTData)[];
-    set: React.Dispatch<React.SetStateAction<NFTData[]>>;
+    set: React.Dispatch<React.SetStateAction<(NFTData | HouseBadgeNFTData)[]>>;
   };
   shouldUpdate: {
     current: boolean;
@@ -34,13 +34,16 @@ const HoldNFTsContext = createContext<HoldNFTsContextType>(
   {} as HoldNFTsContextType
 );
 
+/**
+ * 保有NFTのデータを管理するコンテキストプロバイダー
+ * @param param0
+ * @returns
+ */
 export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
   const [nekoNFTs, setNekoNFTs] = useState<NFTData[]>([]);
   const [otherNFTs, setOtherNFTs] = useState<(NFTData | HouseBadgeNFTData)[]>(
     []
   );
-
-
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
 

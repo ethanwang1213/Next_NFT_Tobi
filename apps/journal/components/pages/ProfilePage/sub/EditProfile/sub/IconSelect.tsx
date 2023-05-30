@@ -64,6 +64,7 @@ const IconSelect: React.FC<Props> = ({
       if (getValues("iconUrl") === "") return;
       canvasRef.current.width = 100;
       canvasRef.current.height = 100;
+      if (getValues("iconUrl") === "") return;
       const ctx = canvasRef.current.getContext("2d");
       const image = await createImage(getValues("iconUrl"));
       if (cropData.current) {

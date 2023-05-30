@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import { Timestamp } from "@firebase/firestore";
 
 export type tagType = {
-  page: number;
+  page: number | (() => void);
   image: string | ReactElement;
 };
 
@@ -67,8 +67,8 @@ export type NFTData = {
   collectionId: string;
   name: string;
   description?: string;
-  thumbnail?: string;
-  acquisition_time?: number;
+  thumbnail: string;
+  acquisition_time: number;
   acquisition_method?: string;
 };
 

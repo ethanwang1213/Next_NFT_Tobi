@@ -23,6 +23,11 @@ const ActivityRecordContext = createContext<ActivityRecordContextType>(
   {} as ActivityRecordContextType
 );
 
+/**
+ * Activity Recordのデータを管理するコンテキストプロバイダー
+ * @param param0
+ * @returns
+ */
 export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
   const [activityRecords, setActivityRecords] = useState<LocalActivityRecord[]>(
     []

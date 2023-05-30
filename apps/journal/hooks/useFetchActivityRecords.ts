@@ -1,8 +1,12 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/firebase/client";
 import { DBActivityRecord, LocalActivityRecord } from "@/types/type";
-import { getDocs, collection, Timestamp } from "@firebase/firestore";
+import { getDocs, collection } from "@firebase/firestore";
 
+/**
+ * Activity Recordのデータをロードするためのカスタムフック
+ * @returns
+ */
 const useFetchActivityRecords = () => {
   const { user } = useAuth();
 
@@ -26,6 +30,7 @@ const useFetchActivityRecords = () => {
       console.log(error);
     }
   };
+
   return { fetchActivityRecords };
 };
 
