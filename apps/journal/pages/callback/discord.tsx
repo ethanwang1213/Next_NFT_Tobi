@@ -30,7 +30,6 @@ const Discord = () => {
         if (!code) {
           // not found code error
           router.push("/");
-          updateOnSuccess();
           return;
         }
         const userdata = await getUserdata();
@@ -39,7 +38,7 @@ const Discord = () => {
           if (result) {
             // success
             router.push("/");
-            // updateOnSuccess();
+            updateOnSuccess();
           } else {
             // firestore error
             router.push("/");
