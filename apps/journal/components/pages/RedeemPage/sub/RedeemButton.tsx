@@ -3,7 +3,7 @@ import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
 import { functions } from "@/firebase/client";
 import { httpsCallable } from "firebase/functions";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
-import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
+import useRecordNewActivity from "@/hooks/useRecordNewActivity";
 
 /**
  * 引き換えボタンのコンポーネント
@@ -14,7 +14,7 @@ const RedeemButton: React.FC = () => {
   const { redeemStatus, inputCode, modalInputIsChecked } =
     useContext(RedeemContext);
   const { shouldUpdate } = useHoldNFTs();
-  const { addActivityRecord } = useActivityRecord();
+  const { recordNewActivity } = useRecordNewActivity();
 
   const onClick = () => {
     if (redeemStatus.current === "CHECKING") return;
@@ -29,10 +29,7 @@ const RedeemButton: React.FC = () => {
         console.log(result);
         redeemStatus.set("SUCCESS");
         shouldUpdate.set(true);
-        // addActivityRecord({
-        //   text: `${result.data as string} をJournalに追加した`,
-        //   date: Date.now() / 1000,
-        // });
+        recordNewActivity(`${result.data as string} をJournalに追加した`);
       })
       .catch((error) => {
         console.log(error);

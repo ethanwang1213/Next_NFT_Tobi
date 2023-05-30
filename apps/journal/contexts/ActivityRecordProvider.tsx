@@ -40,6 +40,9 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
 
     const activityRecords: LocalActivityRecord[] = await fetchActivityRecords();
     console.log(activityRecords);
+    activityRecords.sort((a, b) => {
+      return b.date.getTime() - a.date.getTime();
+    });
     setActivityRecords(activityRecords);
   };
 
@@ -48,8 +51,8 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
     loadActivityRecords();
   }, [user]);
 
-  const addActivityRecord = async (newRecord: LocalActivityRecord) => {
-    setActivityRecords((prev) => [...prev, newRecord]);
+  const addActivityRecord = (newRecord: LocalActivityRecord) => {
+    setActivityRecords((prev) => [newRecord, ...prev]);
   };
 
   return (
