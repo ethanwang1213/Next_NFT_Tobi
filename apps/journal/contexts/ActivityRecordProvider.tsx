@@ -8,7 +8,6 @@ import React, {
 import { useAuth } from "./AuthProvider";
 import useFetchActivityRecords from "@/hooks/useFetchActivityRecords";
 import { LocalActivityRecord } from "@/types/type";
-import _ from "lodash";
 
 type Props = {
   children: ReactNode;
