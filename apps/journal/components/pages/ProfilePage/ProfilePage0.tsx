@@ -44,10 +44,7 @@ const ProfilePage0: React.FC = () => {
       <div className="w-full sm:flex relative">
         <div className="w-full sm:w-[60%] mb-6 flex justify-center">
           <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
-            <PersonalIcon
-              profileSrc={user ? user.icon : ""}
-              badgeSrc="/journal/mocks/images/badge.png"
-            />
+            <PersonalIcon />
           </div>
         </div>
         <div className="sm:w-[50%] mt-2 mb-6 sm:ml-10 grid gap-2 sm:gap-4">

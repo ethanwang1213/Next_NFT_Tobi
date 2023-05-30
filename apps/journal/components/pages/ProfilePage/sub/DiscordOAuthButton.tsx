@@ -66,12 +66,12 @@ const DiscordOAuthButton: React.FC = () => {
       {displayMode === "NONE" && <></>}
       {displayMode === "OAUTH" &&
         createButton(
-          process.env.NEXT_PUBLIC_DISCORD_OAUTH_URL!,
+          process.env["NEXT_PUBLIC_DISCORD_OAUTH_URL"]!,
           "TOBIRA POLISへ"
         )}
       {displayMode === "JOIN" &&
         createButton(
-          process.env.NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL!,
+          process.env["NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL"]!,
           "コミュニティに参加"
         )}
       {displayMode === "STAMP" && <StampIcon />}

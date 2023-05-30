@@ -29,10 +29,10 @@ const RedeemButton: React.FC = () => {
         console.log(result);
         redeemStatus.set("SUCCESS");
         shouldUpdate.set(true);
-        addActivityRecord({
-          text: `${result.data as string} をJournalに追加した`,
-          timestamp: Date.now() / 1000,
-        });
+        // addActivityRecord({
+        //   text: `${result.data as string} をJournalに追加した`,
+        //   date: Date.now() / 1000,
+        // });
       })
       .catch((error) => {
         console.log(error);
