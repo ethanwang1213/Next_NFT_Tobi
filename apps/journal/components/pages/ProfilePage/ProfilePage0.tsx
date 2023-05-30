@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import { mockRecordList } from "../../../libs/mocks/mockProfile0";
-import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
+import ActivityRecord from "./sub/ActivityRecord";
 
 export type ActivityRecord = {
   id: number;
@@ -20,7 +20,6 @@ export type ActivityRecord = {
 const ProfilePage0: React.FC = () => {
   const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
-  const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -38,7 +37,6 @@ const ProfilePage0: React.FC = () => {
         setBirthday(`${user.birthday.year}/${month}/${day}`);
       }
     }
-    setRecordList(mockRecordList);
   }, [user]);
 
   return (
@@ -89,10 +87,8 @@ const ProfilePage0: React.FC = () => {
       <h3 className="text-center text-[18px] sm:text-[28px] text-primary font-bold mb-4 sm:mb-10">
         Activity Record
       </h3>
-      <div className="sm:max-h-[42%] grid gap-2 overflow-y-auto">
-        {recordList.map((v) => (
-          <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
-        ))}
+      <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">
+        <ActivityRecord />
       </div>
       <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
         <div className="w-full h-full flex justify-center">

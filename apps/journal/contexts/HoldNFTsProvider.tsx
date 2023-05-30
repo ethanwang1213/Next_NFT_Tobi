@@ -4,6 +4,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useAuth } from "./AuthProvider";
@@ -32,6 +33,11 @@ const HoldNFTsContext = createContext<HoldNFTsContextType>(
   {} as HoldNFTsContextType
 );
 
+/**
+ * 保有NFTのデータを管理するコンテキストプロバイダー
+ * @param param0
+ * @returns
+ */
 export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
   const [nekoNFTs, setNekoNFTs] = useState<NFTData[]>([]);
   const [otherNFTs, setOtherNFTs] = useState<NFTData[]>([]);
@@ -86,20 +92,30 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     }
   }, [shouldUpdate]);
 
-  const holdNFTContextValue = {
-    nekoNFTs: {
-      current: nekoNFTs,
-      set: setNekoNFTs,
-    },
-    otherNFTs: {
-      current: otherNFTs,
-      set: setOtherNFTs,
-    },
-    shouldUpdate: {
-      current: shouldUpdate,
-      set: setShouldUpdate,
-    },
-  };
+  const holdNFTContextValue = useMemo<HoldNFTsContextType>(
+    () => ({
+      nekoNFTs: {
+        current: nekoNFTs,
+        set: setNekoNFTs,
+      },
+      otherNFTs: {
+        current: otherNFTs,
+        set: setOtherNFTs,
+      },
+      shouldUpdate: {
+        current: shouldUpdate,
+        set: setShouldUpdate,
+      },
+    }),
+    [
+      nekoNFTs,
+      setNekoNFTs,
+      otherNFTs,
+      setOtherNFTs,
+      shouldUpdate,
+      setShouldUpdate,
+    ]
+  );
 
   return (
     <HoldNFTsContext.Provider value={holdNFTContextValue}>
