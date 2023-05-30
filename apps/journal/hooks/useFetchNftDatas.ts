@@ -10,7 +10,6 @@ const useFetchNftDatas = () => {
       const snapshots = await getDocs(collection(db, `users`, user.id, `nft`));
       const ids = [];
       snapshots.forEach((nftId) => {
-        // console.log(doc.id, doc.data());
         ids.push(nftId.id);
       });
       return ids;
@@ -26,8 +25,9 @@ const useFetchNftDatas = () => {
       );
       const nfts = [];
       snapshots.forEach((nft) => {
-        // console.log(nft.data());
-        nfts.push(nft.data());
+        const data = nft.data();
+        data["collectionId"] = collectionId;
+        nfts.push(data);
       });
       return nfts;
     } catch (error) {
