@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthProvider";
 import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
 import BookContextProvider from "@/contexts/BookContextProvider";
 import { EditProfileProvider } from "@/contexts/EditProfileProvider";
+import { HoldNFTsProvider } from "@/contexts/HoldNFTsProvider";
+import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
 
 config.autoAddCss = false;
 
@@ -24,11 +26,15 @@ const App = ({ Component, pageProps }: AppProps) => {
         })(document);`}
       </Script>
       <BookContextProvider>
-        <RedeemStatusContextProvider>
-          <EditProfileProvider>
-            <Component {...pageProps} />
-          </EditProfileProvider>
-        </RedeemStatusContextProvider>
+        <ActivityRecordProvider>
+          <HoldNFTsProvider>
+            <RedeemStatusContextProvider>
+              <EditProfileProvider>
+                <Component {...pageProps} />
+              </EditProfileProvider>
+            </RedeemStatusContextProvider>
+          </HoldNFTsProvider>
+        </ActivityRecordProvider>
       </BookContextProvider>
     </AuthProvider>
   );

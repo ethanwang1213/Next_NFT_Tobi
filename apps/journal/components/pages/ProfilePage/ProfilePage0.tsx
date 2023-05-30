@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import { mockRecordList } from "../../../libs/mocks/mockProfile0";
-import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
+import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
-import AuthDiscordButton from "./sub/AuthDiscordButton";
+import ActivityRecord from "./sub/ActivityRecord";
 
 export type ActivityRecord = {
   id: number;
@@ -20,7 +20,6 @@ export type ActivityRecord = {
 const ProfilePage0: React.FC = () => {
   const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
-  const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -38,7 +37,6 @@ const ProfilePage0: React.FC = () => {
         setBirthday(`${user.birthday.year}/${month}/${day}`);
       }
     }
-    setRecordList(mockRecordList);
   }, [user]);
 
   return (
@@ -46,10 +44,7 @@ const ProfilePage0: React.FC = () => {
       <div className="w-full sm:flex relative">
         <div className="w-full sm:w-[60%] mb-6 flex justify-center">
           <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
-            <PersonalIcon
-              profileSrc={user ? user.icon : ""}
-              badgeSrc="/journal/mocks/images/badge.png"
-            />
+            <PersonalIcon />
           </div>
         </div>
         <div className="sm:w-[50%] mt-2 mb-6 sm:ml-10 grid gap-2 sm:gap-4">
@@ -90,12 +85,12 @@ const ProfilePage0: React.FC = () => {
         Activity Record
       </h3>
       <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">
-        {recordList.map((v) => (
-          <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
-        ))}
+        <ActivityRecord />
       </div>
-      <div className="w-full grow min-h-[12%] sm:min-h-[80px] flex justify-center">
-        <AuthDiscordButton />
+      <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
+        <div className="w-full h-full flex justify-center">
+          <DiscordOAuthButton />
+        </div>
       </div>
     </>
   );

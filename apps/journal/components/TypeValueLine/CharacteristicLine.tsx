@@ -7,11 +7,11 @@ type Props = {
 };
 
 /**
- * profileページの属性データ 一行を表示するコンポーネント
+ * profileページの特徴データ 一行を表示するコンポーネント
  * @param param0
  * @returns
  */
-const ProfileAttributeLine: React.FC<Props> = ({
+const CharacteristicLine: React.FC<Props> = ({
   lineType,
   lineValue,
   hidable,
@@ -30,4 +30,4 @@ const ProfileAttributeLine: React.FC<Props> = ({
   );
 };
 
-export default ProfileAttributeLine;
+export default CharacteristicLine;

@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 import NekoSwiperContent from "./NekoSwiperContent";
 import { mockNekoSrcList } from "../../../../../libs/mocks/mockNekoSrcList";
+import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 
 type CardPos = {
   left: number;
@@ -20,6 +21,8 @@ type CardPos = {
  * @returns
  */
 const NekoSwiper: React.FC = () => {
+  const { nekoNFTs } = useHoldNFTs();
+
   const { width: innerWidth, height: innerHeight } = useWindowSize();
   const cardImgRef = useRef<HTMLImageElement>(null);
   const [cardAspect, setCardAspect] = useState<number>(0);
@@ -97,14 +100,14 @@ const NekoSwiper: React.FC = () => {
           modules={[EffectCards]}
           className="mySwiper"
         >
-          {mockNekoSrcList.map((v) => (
-            <SwiperSlide key={v.id}>
+          {[...nekoNFTs.current].reverse().map((v, i) => (
+            <SwiperSlide key={i}>
               <NekoSwiperContent
                 width={cardPos.width}
                 height={cardPos.height}
                 cardImgRef={cardImgRef}
                 onCardImgLoad={setAspect}
-                imgSrc={v.src}
+                imgSrc={v.thumbnail}
               />
             </SwiperSlide>
           ))}
