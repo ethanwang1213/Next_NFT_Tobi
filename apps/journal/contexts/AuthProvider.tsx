@@ -12,6 +12,11 @@ import { Birthday, User, UserContextType } from "@/types/type";
 
 const AuthContext = createContext<UserContextType>(undefined);
 
+/**
+ * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー
+ * @param param0
+ * @returns
+ */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User>();

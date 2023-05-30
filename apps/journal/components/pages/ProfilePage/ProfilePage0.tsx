@@ -20,7 +20,6 @@ export type ActivityRecord = {
 const ProfilePage0: React.FC = () => {
   const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
-  const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -38,7 +37,6 @@ const ProfilePage0: React.FC = () => {
         setBirthday(`${user.birthday.year}/${month}/${day}`);
       }
     }
-    setRecordList(mockRecordList);
   }, [user]);
 
   return (

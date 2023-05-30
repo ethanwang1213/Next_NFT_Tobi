@@ -33,6 +33,11 @@ const HoldNFTsContext = createContext<HoldNFTsContextType>(
   {} as HoldNFTsContextType
 );
 
+/**
+ * 保有NFTのデータを管理するコンテキストプロバイダー
+ * @param param0
+ * @returns
+ */
 export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
   const [nekoNFTs, setNekoNFTs] = useState<NFTData[]>([]);
   const [otherNFTs, setOtherNFTs] = useState<NFTData[]>([]);

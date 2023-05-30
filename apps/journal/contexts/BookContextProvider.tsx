@@ -25,7 +25,7 @@ type Props = {
 export const BookContext = createContext<bookContext>(null);
 
 /**
- * 本の状態を管理するコンテキスト
+ * 本の状態を管理するコンテキストプロバイダー
  * @param param0
  * @returns
  */

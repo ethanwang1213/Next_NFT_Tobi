@@ -2,12 +2,6 @@ import { useMemo } from "react";
 import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
 import { useAuth } from "@/contexts/AuthProvider";
 
-// export type ProfileAttribute = {
-//   id: number;
-//   type: string;
-//   value: string;
-// };
-
 /**
  * プロフィールページの2ページ目
  * @param param0
