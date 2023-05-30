@@ -4,6 +4,9 @@ import { db } from "@/firebase/client";
 import { DBActivityRecord } from "@/types/type";
 import { Timestamp, addDoc, collection } from "@firebase/firestore";
 
+/**
+ * Activity Recordに新しいActivityを追加する処理を行うためのカスタムフック
+ */
 const useRecordActivity = () => {
   const { user } = useAuth();
   const { addActivityRecord } = useActivityRecord();
