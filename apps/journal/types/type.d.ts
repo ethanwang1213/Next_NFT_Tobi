@@ -44,7 +44,7 @@ export type Characteristic = {
 
 type Community = {
   joined: boolean;
-};
+}
 
 export type User = {
   id: string;
@@ -60,10 +60,10 @@ export type User = {
 
 type NFTData = {
   name: string;
-  description?: string;
+  description: string;
   thumbnail: string;
-  acquisitionTime?: number;
-  acquisitionMethod?: string;
+  acquisition_time: number;
+  acquisition_method: string;
 };
 
 export type NFTCollection = {
