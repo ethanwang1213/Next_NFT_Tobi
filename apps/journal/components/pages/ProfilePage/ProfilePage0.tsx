@@ -3,8 +3,8 @@ import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import { mockRecordList } from "../../../libs/mocks/mockProfile0";
 import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
+import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
-import AuthDiscordButton from "./sub/AuthDiscordButton";
 
 export type ActivityRecord = {
   id: number;
@@ -89,13 +89,15 @@ const ProfilePage0: React.FC = () => {
       <h3 className="text-center text-[18px] sm:text-[28px] text-primary font-bold mb-4 sm:mb-10">
         Activity Record
       </h3>
-      <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">
+      <div className="sm:max-h-[42%] grid gap-2 overflow-y-auto">
         {recordList.map((v) => (
           <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
         ))}
       </div>
-      <div className="w-full grow min-h-[12%] sm:min-h-[80px] flex justify-center">
-        <AuthDiscordButton />
+      <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
+        <div className="w-full h-full flex justify-center">
+          <DiscordOAuthButton />
+        </div>
       </div>
     </>
   );

@@ -54,12 +54,13 @@ export type HoldingNFTs = {
 };
 
 export type User = {
-  id: string;
-  name: string;
-  email: string;
-  icon: string;
-  createdAt: number;
-  birthday: Birthday;
+    id: string;
+    name: string;
+    email: string;
+    discord?: string;
+    icon: string;
+    createdAt: number;
+    birthday: Birthday;
 };
 
 export type UserContextType = {
