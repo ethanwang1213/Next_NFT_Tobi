@@ -35,6 +35,24 @@ export type Birthday = {
   day: number;
 };
 
+type NFTData = {
+  name: string;
+  description: string;
+  thumbnail: string;
+  acquisition_time: number;
+  acquisition_method: string;
+};
+
+export type NFTCollection = {
+  hold: {
+    [tokenId: string]: NFTData;
+  };
+};
+
+export type HoldingNFTs = {
+  [collection: string]: NFTCollection;
+};
+
 export type User = {
     id: string;
     name: string;
