@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
-import {
-  mockName,
-  mockBirthday,
-  mockMail,
-  mockRecordList,
-} from "../../../libs/mocks/mockProfile0";
+import { mockRecordList } from "../../../libs/mocks/mockProfile0";
 import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
+import { useAuth } from "@/contexts/AuthProvider";
 
 export type ActivityRecord = {
   id: number;
@@ -22,44 +18,69 @@ export type ActivityRecord = {
  * @returns
  */
 const ProfilePage0: React.FC = () => {
-  const [name, setName] = useState<string>("");
+  const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
-  const [mail, setMail] = useState<string>("");
   const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
 
   useEffect(() => {
-    setName(mockName);
-    setBirthday(mockBirthday);
-    setMail(mockMail);
-    setRecordList(mockRecordList);
-  }, []);
+    if (!user) return;
 
-  // メールアドレスをマスクする関数
-  const maskMailAddress = useCallback((mailAddress: string) => {
-    const mailAddressArray = mailAddress.split("@");
-    const maskedMailAddress =
-      mailAddressArray[0].slice(0, 3) + "****" + "@" + mailAddressArray[1];
-    return maskedMailAddress;
-  }, []);
+    if (user.birthday) {
+      if (
+        user.birthday.year === 0 ||
+        user.birthday.month === 0 ||
+        user.birthday.day === 0
+      ) {
+        setBirthday("-");
+      } else {
+        const month = user.birthday.month.toString().padStart(2, "0");
+        const day = user.birthday.day.toString().padStart(2, "0");
+        setBirthday(`${user.birthday.year}/${month}/${day}`);
+      }
+    }
+    setRecordList(mockRecordList);
+  }, [user]);
 
   return (
     <>
-      <div className="w-full sm:flex">
-        <div className="w-full sm:w-[50%] mb-6 flex justify-center">
-          <div className="w-[60%] sm:w-[50%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
+      <div className="w-full sm:flex relative">
+        <div className="w-full sm:w-[60%] mb-6 flex justify-center">
+          <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon
-              profileSrc="/mocks/images/profile.png"
-              badgeSrc="/mocks/images/badge.png"
+              profileSrc={user ? user.icon : ""}
+              badgeSrc="/journal/mocks/images/badge.png"
             />
           </div>
         </div>
-        <div className="sm:w-[50%] mt-2 mb-6 sm:mb-10 sm:ml-10 grid gap-2 sm:gap-6">
-          <PersonalInfo dataType={"Name"} dataValue={name} />
-          <PersonalInfo dataType={"Birthday"} dataValue={birthday} />
-          <PersonalInfo dataType={"Mail"} dataValue={maskMailAddress(mail)} />
+        <div className="sm:w-[50%] mt-2 mb-6 sm:ml-10 grid gap-2 sm:gap-4">
+          {user && (
+            <>
+              <PersonalInfo
+                dataType={"Name"}
+                dataValue={user.name === "" ? "-" : user.name}
+              />
+              <PersonalInfo
+                dataType={"Birthday"}
+                dataValue={birthday === "" ? "-" : birthday}
+              />
+              <PersonalInfo
+                dataType={"Mail"}
+                dataValue={user.email === "" ? "-" : user.email}
+              />
+              {/* EditProfileModalに紐づく */}
+              <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
+                <label
+                  htmlFor="edit-profile-modal"
+                  className="btn btn-outline btn-lg btn-primary rounded-3xl sm:w-[60%] sm:min-h-[10px] h-[40px] text-sm sm:text-[16px] px-0 border-2 rounded-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
+                >
+                  プロフィールを編集
+                </label>
+              </div>
+            </>
+          )}
         </div>
       </div>
-      <div className="mb-0 sm:mb-14">
+      <div className="mb-0 sm:mb-10">
         {/* TODO: ゆくゆくはボタンを実装する */}
         {/* <NavButton label={"購入"} />
         <NavButton label={"受け取り"} />

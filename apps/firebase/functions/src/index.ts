@@ -4,7 +4,8 @@ import * as sendgrid from "@sendgrid/mail";
 import * as voucher from "voucher-code-generator";
 import {initializeApp, applicationDefault} from "firebase-admin/app";
 import {firestore} from "firebase-admin";
-import fetch from "node-fetch";
+import * as cors from "cors";
+// import fetch from "node-fetch";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -16,14 +17,17 @@ const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
 
 export const background = functions.https.onRequest((request, response) => {
   functions.logger.info("Hello logs!", {structuredData: true});
-  const resData = {
-    data: {
-      v1: "111,000",
-      v2: "367872",
-      v3: "306",
-    },
-  };
-  response.status(200).json(resData);
+  const corsHandler = cors({origin: true});
+  corsHandler(request, response, () => {
+    const resData = {
+      data: {
+        v1: "111,000",
+        v2: "367872",
+        v3: "306",
+      },
+    };
+    response.status(200).json(resData);
+  });
 });
 
 const generateRedeemCode = () => {
@@ -80,6 +84,7 @@ export const pubsubHelper = functions.https.onRequest(async (request, response) 
 
   const email = request.body.email;
   const name = request.body.name;
+  const items = request.body.items;
 
   const pubsub = new PubSub();
 
@@ -95,10 +100,7 @@ export const pubsubHelper = functions.https.onRequest(async (request, response) 
 
   // 3. publish to test topic and get message ID
   const messageID = await pubsub.topic(topicName).publishMessage({
-    json: {email: email, name: name, line_items: [
-      {name: "TOBIRA NEKO #3"},
-      {name: "TOBIRA NEKO #4"},
-    ]},
+    json: {email: email, name: name, line_items: items},
   });
 
   // 4. send back a helpful message
@@ -107,39 +109,81 @@ export const pubsubHelper = functions.https.onRequest(async (request, response) 
   );
 });
 
-export const discordOAuth = functions.https.onRequest(async (request, response) => {
-  const code = request.query.code;
-  if (!code || typeof code !== "string") {
-    response.status(500).send("Invalid parameter of code").end();
-    return;
+// export const discordOAuth = functions.https.onRequest(async (request, response) => {
+//   const code = request.query.code;
+//   if (!code || typeof code !== "string") {
+//     response.status(500).send("Invalid parameter of code").end();
+//     return;
+//   }
+//   const params = new URLSearchParams();
+//   params.append("client_id", process.env.DISCORD_OAUTH_CLIENT_ID || "discord_oauth_client_id");
+//   params.append("client_secret", process.env.DISCORD_OAUTH_CLIENT_SECRET || "discord_oauth_client_secret");
+//   params.append("grant_type", "authorization_code");
+//   params.append("code", code);
+//   params.append("redirect_uri", process.env.DISCORD_OAUTH_CLIENT_REDIRECT_URI || "http://localhost:3000/authed");
+//   params.append("scope", "identify");
+//   const tokenResponse: any = await (await fetch("https://discordapp.com/api/oauth2/token", {
+//     method: "POST",
+//     body: params,
+//     headers: {
+//       "Content-type": "application/x-www-form-urlencoded",
+//     },
+//   })).json();
+//   if (tokenResponse.error) {
+//     response.status(500).send( "Can't get token").end();
+//     return;
+//   }
+//   const accessToken = tokenResponse.access_token;
+//   const userdata: any = await (await fetch("https://discordapp.com/api/users/@me", {
+//     headers: {
+//       "Authorization": `Bearer ${accessToken}`,
+//     },
+//   })).json();
+//   if (userdata.code == 0) {
+//     response.status(500).send("Can't get userdata").end();
+//     return;
+//   }
+//   response.status(200).send(userdata).end();
+// });
+
+export const checkRedeem = functions.https.onCall(async (data, context) => {
+  console.log("checkRedeem");
+  console.log(data);
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
-  const params = new URLSearchParams();
-  params.append("client_id", process.env.DISCORD_OAUTH_CLIENT_ID || "discord_oauth_client_id");
-  params.append("client_secret", process.env.DISCORD_OAUTH_CLIENT_SECRET || "discord_oauth_client_secret");
-  params.append("grant_type", "authorization_code");
-  params.append("code", code);
-  params.append("redirect_uri", process.env.DISCORD_OAUTH_CLIENT_REDIRECT_URI || "http://localhost:3000/authed");
-  params.append("scope", "identify");
-  const tokenResponse: any = await (await fetch("https://discordapp.com/api/oauth2/token", {
-    method: "POST",
-    body: params,
-    headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-    },
-  })).json();
-  if (tokenResponse.error) {
-    response.status(500).send( "Can't get token").end();
-    return;
+  const userDoc = await firestore().collection("users").doc(context.auth.uid).get();
+  if (!userDoc.exists) {
+    throw new functions.https.HttpsError("not-found", "The user doesn't exist.");
   }
-  const accessToken = tokenResponse.access_token;
-  const userdata: any = await (await fetch("https://discordapp.com/api/users/@me", {
-    headers: {
-      "Authorization": `Bearer ${accessToken}`,
-    },
-  })).json();
-  if (userdata.code == 0) {
-    response.status(500).send("Can't get userdata").end();
-    return;
+  const user = userDoc.data();
+  const email = user?.email;
+  if (!email) {
+    throw new functions.https.HttpsError("not-found", "The user doesn't have email.");
   }
-  response.status(200).send(userdata).end();
+  const redeem = data.redeem;
+  console.log(redeem);
+  if (!redeem) {
+    throw new functions.https.HttpsError("invalid-argument", "The function must be called with redeem.");
+  }
+  const orders = await firestore().collection("orders").where("email", "==", email).get();
+  if (orders.empty) {
+    throw new functions.https.HttpsError("not-found", "The user doesn't have orders.");
+  }
+  // loop orders
+  for (const order of orders.docs) {
+    const items = order.data().items;
+    if (!items) {
+      continue;
+    }
+    const item = items.filter((item: Item) => item.redeem === redeem)[0];
+    if (item) {
+      await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(item.redeem).set({
+        name: item.name,
+        type: "tobira-neko",
+      });
+      return item.name;
+    }
+  }
+  throw new functions.https.HttpsError("not-found", "The redeem code is invalid.");
 });

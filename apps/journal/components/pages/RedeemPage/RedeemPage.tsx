@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { RedeemContext } from "../../../contexts/RedeemContextProvider";
 import RedeemPage0 from "./sub/RedeemPage0";
 import RedeemPage1 from "./sub/RedeemPage1";
+import { useAuth } from "@/contexts/AuthProvider";
 
 type Props = {
   pageNum: number;
@@ -13,14 +14,15 @@ type Props = {
  * @returns
  */
 const RedeemPage: React.FC<Props> = ({ pageNum }) => {
-  const { redeemStatus, selfAccount, selfJournalId } =
-    useContext(RedeemContext);
+  const { selfAccount, selfJournalId } = useContext(RedeemContext);
+  const { user } = useAuth();
 
   // TODO: アカウント情報の読み込み
   useEffect(() => {
-    selfAccount.set("KEISUKE");
+    if (!user) return;
+    selfAccount.set(user.name);
     selfJournalId.set("keisukeId");
-  }, []);
+  }, [user]);
 
   return pageNum % 2 === 0 ? <RedeemPage0 /> : <RedeemPage1 />;
 };

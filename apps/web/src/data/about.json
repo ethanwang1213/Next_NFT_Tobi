@@ -1,0 +1,69 @@
+{
+  "title": ["TOBIRAが", "つなぐ世界へ"],
+  "sub-title": [
+    "想いが鍵となり扉は開かれる―",
+    "コンテンツとWeb3、そして心までも"
+  ],
+  "sections": [
+    {
+      "title": "NFTの持つ可能性",
+      "text": [
+        "いま世の中にあるグッズと呼ばれるもの、なぜデジタルグッズは少ないのでしょうか。",
+        "",
+        "それはコピーし放題だから。",
+        "もしデジタル上で購入したものに「購入した証明」がついていたら…?",
+        "",
+        "グッズだけでなく、音楽やチケット等それぞれに「あなたが購入した証明」がついていたら、あなた自身「自分のモノ」と胸を張ってグッズを所有することができます。",
+        "",
+        "それだけではなく、その作品を生み出したクリエイター自身も、転売や複製品などによって本来得られるべき収益を逃すことなく、あるべき形でクリエイターに収益を還元することができます。"
+      ]
+    },
+    {
+      "title": "「好き」をNFT所有で表現する",
+      "text": [
+        "大事なグッズを外に持ち歩いて失くした経験や、家に忘れてがっかりした経験はありませんか？",
+        "",
+        "デジタルグッズならスマホを片手に友人とカフェで見せあったり、イベントでデジタルグッズをARで表示し、記念撮影をしたりすることも可能になるかもしれません。",
+        "",
+        "好きなコンテンツのデジタルグッズを飾って「好き」に囲まれてみませんか？"
+      ]
+    },
+    {
+      "title": "ワクワクに導かれて",
+      "text": [
+        "久しぶりに会う幼馴染との食事。",
+        "",
+        "立つ舞台のジャンルは違えどお互いに演者であり、エンターテイメント界隈に属していた。",
+        "",
+        "NFTの持つ可能性に胸を踊らせ、互いの熱い想いはエンジニアの参加とともに現実味を帯びていき、プロジェクトが誕生したのであった。"
+      ]
+    }
+  ],
+  "our-team": [
+    {
+      "icon": "/about/member-icons/au-inutanuki.webp",
+      "name": "Inutanuki",
+      "roll": ["Founder"],
+      "twitter": "https://twitter.com/inutanuking"
+    },
+    {
+      "icon": "/about/member-icons/au-keisuke.webp",
+      "name": "Keisuke",
+      "roll": ["Producer"],
+      "twitter": "https://twitter.com/Keisuke_TBR"
+    },
+    {
+      "icon": "/about/member-icons/au-toruto.webp",
+      "name": "Toruto",
+      "roll": ["Engineer (Front end)"],
+      "twitter": "https://twitter.com/toru_toruto_"
+    },
+    {
+      "icon": "/about/member-icons/au-knagato.webp",
+      "name": "Nagato",
+      "roll": ["Engineer (Blockchain)"],
+      "twitter": "https://twitter.com/knagato"
+    }
+  ],
+  "bottom-of-our-team": "そしていまも私達はTOBIRAを創造し続けています。"
+}

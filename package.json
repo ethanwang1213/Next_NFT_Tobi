@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "journal": "cd apps/journal && npm run dev",
-    "app2": "cd apps/app2 && npm run dev",
+    "web": "cd apps/web && npm run dev",
     "emulate:flow": "cd apps/flow && npm run emulator",
     "deploy:flow": "cd apps/flow && npm run deploy",
     "mint:flow": "cd apps/flow && npm run mint",
@@ -16,10 +16,14 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
-    "eslint-config-custom": "*",
     "eslint": "7.32.0",
+    "eslint-config-custom": "*",
     "prettier": "latest",
     "turbo": "latest"
   },
-  "packageManager": "npm@8.19.4"
+  "packageManager": "npm@8.19.4",
+  "dependencies": {
+    "react-easy-crop": "^4.7.4",
+    "react-hook-form": "^7.43.9"
+  }
 }

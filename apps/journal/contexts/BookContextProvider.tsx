@@ -1,4 +1,11 @@
-import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import NFTPage from "../components/pages/NFTPage/NFTPage";
 import NekoPage from "../components/pages/NekoPage/NekoPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
@@ -7,6 +14,9 @@ import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
 import { mockNFTSrcList } from "../libs/mocks/mockNFTSrcList";
 import { mockNekoSrcList } from "../libs/mocks/mockNekoSrcList";
 import { bookContext, tagType } from "../types/type";
+import { useAuth } from "./AuthProvider";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 type Props = {
   children: ReactNode;
@@ -23,6 +33,10 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactNode[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
+  const router = useRouter();
+  const logoutModal = useRef<HTMLInputElement>();
+
+  const { user } = useAuth();
 
   const pageContextValue = useMemo(
     () => ({
@@ -40,6 +54,27 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       },
     }),
     [pageNo, pages, tags, setPageNo, setPages, setTags]
+  );
+
+  // プロフィールタグ
+  // アイコンが設定されている場合はタグにもアイコンを表示する
+  const profileTag = useMemo(
+    () => (
+      <div
+        className="relative w-full h-full rounded-full overflow-hidden"
+        style={{ border: "solid 3px white" }}
+      >
+        {user && user.icon !== "" && (
+          <Image
+            src={user.icon}
+            alt="profile-tag"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        )}
+      </div>
+    ),
+    [user]
   );
 
   useEffect(() => {
@@ -80,21 +115,67 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
 
     // 各ページの開始ページ番号にタグを設定
     setTags([
-      { image: "/images/icon/Profile_journal.svg", page: 0 },
-      { image: "/images/icon/TOBIRANEKO_journal.svg", page: nekoPageIndex },
+      { image: profileTag, page: 0 },
       {
-        image: "/images/icon/NFTs_journal.svg",
+        image: "/journal/images/icon/TOBIRANEKO_journal.svg",
+        page: nekoPageIndex,
+      },
+      {
+        image: "/journal/images/icon/NFTs_journal.svg",
         page: nftPageIndex,
       },
       {
-        image: "/images/icon/Serial_journal.svg",
+        image: "/journal/images/icon/Serial_journal.svg",
         page: redeemPageIndex,
+      },
+      {
+        image: "/journal/images/icon/logout_journal.svg",
+        page: () => {
+          logoutModal.current.checked = true;
+        },
       },
     ]);
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    if (user.icon === "") return;
+    setTags([
+      {
+        image: profileTag,
+        page: 0,
+      },
+      ...tags.slice(1),
+    ]);
+  }, [user]);
+
   return (
     <BookContext.Provider value={pageContextValue}>
+      <input
+        type="checkbox"
+        className="modal-toggle"
+        ref={logoutModal}
+        id="logout-modal"
+      />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg p-5 text-center">
+            ログアウトしますか？
+          </h3>
+          <div className="flex flex-col gap-3">
+            <label
+              className="btn btn-block btn-error btn-outline"
+              onClick={() => router.replace("/logout")}
+              htmlFor="logout-modal"
+            >
+              ログアウト
+            </label>
+            <label className="btn btn-block btn-outline" htmlFor="logout-modal">
+              キャンセル
+            </label>
+          </div>
+        </div>
+      </div>
       {children}
     </BookContext.Provider>
   );

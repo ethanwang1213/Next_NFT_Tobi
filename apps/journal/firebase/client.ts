@@ -1,9 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "@firebase/app";
-import { getFirestore } from "@firebase/firestore";
-import { getStorage } from "@firebase/storage";
-import { getAuth } from "@firebase/auth";
+import { getFirestore, connectFirestoreEmulator } from "@firebase/firestore";
+import { connectStorageEmulator, getStorage } from "@firebase/storage";
+import { getAuth, connectAuthEmulator } from "@firebase/auth";
 import { getAnalytics } from "@firebase/analytics";
+import { getFunctions, connectFunctionsEmulator } from "@firebase/functions";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -22,4 +23,12 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore();
 export const storage = getStorage();
 export const auth = getAuth();
-export const analytics = app.name && typeof window !== 'undefined' ? getAnalytics(app) : null;
+export const functions = getFunctions(app);
+export const analytics =
+  app.name && typeof window !== "undefined" ? getAnalytics(app) : null;
+if (process.env.NEXT_PUBLIC_FIREBASE_USING_EMULATOR === "true") {
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectFirestoreEmulator(db, "localhost", 8080);
+  connectFunctionsEmulator(functions, "localhost", 5001);
+  connectStorageEmulator(storage, "localhost", 7777);
+}
