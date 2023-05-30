@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
 import { functions } from "@/firebase/client";
 import { httpsCallable } from "firebase/functions";
+import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 
 /**
  * 引き換えボタンのコンポーネント
@@ -9,7 +10,9 @@ import { httpsCallable } from "firebase/functions";
  * @returns
  */
 const RedeemButton: React.FC = () => {
-  const { redeemStatus, inputCode, modalInputIsChecked } = useContext(RedeemContext);
+  const { redeemStatus, inputCode, modalInputIsChecked } =
+    useContext(RedeemContext);
+  const { shouldUpdate } = useHoldNFTs();
 
   const onClick = () => {
     if (redeemStatus.current === "CHECKING") return;
@@ -19,18 +22,19 @@ const RedeemButton: React.FC = () => {
 
     const redeem = inputCode.current;
     const callable = httpsCallable(functions, "checkRedeem");
-    callable({ redeem }).then((result) => {
-      console.log(result);
-      redeemStatus.set(
-        "SUCCESS"
-      );
-    }).catch((error) => {
-      console.log(error);
-      redeemStatus.set(
-        "INCORRECT"
-        // "SERVER_ERROR"
-      );
-    });
+    callable({ redeem })
+      .then((result) => {
+        console.log(result);
+        redeemStatus.set("SUCCESS");
+        shouldUpdate.set(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        redeemStatus.set(
+          "INCORRECT"
+          // "SERVER_ERROR"
+        );
+      });
   };
 
   return (
