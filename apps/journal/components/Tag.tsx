@@ -35,7 +35,7 @@ const Tag: FC<{
       className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 cursor-pointer ${
         ((pageNo === page || pageNo + 1 === page) && isNumber) || isHamburger
           ? "bg-red-700 w-24"
-          : "bg-base-100 w-24 md:w-20"
+          : "bg-[#F0E8E1] w-24 md:w-20"
       }`}
     >
       {typeof image === "string" ? (
@@ -55,7 +55,7 @@ const Tag: FC<{
           className={`mx-4 w-[40px] h-[40px] transition-all ${
             ((pageNo === page || pageNo + 1 === page) && isNumber) ||
             isHamburger
-              ? "bg-secondary"
+              ? "bg-white"
               : "bg-accent"
           }`}
         ></div>
