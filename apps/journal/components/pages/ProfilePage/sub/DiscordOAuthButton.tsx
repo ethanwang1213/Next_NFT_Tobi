@@ -18,7 +18,7 @@ const DiscordOAuthButton: React.FC = () => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
 
   useEffect(() => {
-    if (!user || nekoNFTs.current.length < 0) {
+    if (!user || nekoNFTs.current.length === 0) {
       // TOBIRA NEKOを持っていない場合
       setDisplayMode("NONE");
       return;
