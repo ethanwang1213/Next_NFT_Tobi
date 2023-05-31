@@ -42,7 +42,7 @@ const ProfilePage0: React.FC = () => {
   return (
     <>
       <div className="w-full sm:flex relative">
-        <div className="w-full sm:w-[60%] mb-6 flex justify-center">
+        <div className="w-full sm:w-[50%] mb-6 flex justify-center">
           <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon />
           </div>
@@ -69,7 +69,7 @@ const ProfilePage0: React.FC = () => {
                   className="
                     btn btn-outline btn-lg btn-primary 
                     min-h-[40px] h-[40px] 
-                    text-sm text-[16px] border-2 rounded-full 
+                    text-sm text-[20px] border-2 rounded-full 
                     drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
                 >
                   プロフィールを編集
