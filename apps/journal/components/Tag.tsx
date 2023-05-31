@@ -66,6 +66,12 @@ const Tag: FC<{
             isHamburger
               ? "text-white"
               : "text-accent"
+          } ${
+            isHamburger
+              ? ""
+              : `border-solid border-[3px] ${
+                  pageNo === 0 ? "border-white" : "border-accent"
+                }`
           }`}
         >
           {image}
