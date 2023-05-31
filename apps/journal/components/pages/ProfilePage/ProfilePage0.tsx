@@ -5,6 +5,7 @@ import { mockRecordList } from "../../../libs/mocks/mockProfile0";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
 import ActivityRecord from "./sub/ActivityRecord";
+import useDateFormat from "@/hooks/useDateFormat";
 
 export type ActivityRecord = {
   id: number;
@@ -20,6 +21,7 @@ export type ActivityRecord = {
 const ProfilePage0: React.FC = () => {
   const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
+  const { formattedFromYMD } = useDateFormat();
 
   useEffect(() => {
     if (!user) return;
@@ -32,9 +34,8 @@ const ProfilePage0: React.FC = () => {
       ) {
         setBirthday("-");
       } else {
-        const month = user.birthday.month.toString().padStart(2, "0");
-        const day = user.birthday.day.toString().padStart(2, "0");
-        setBirthday(`${user.birthday.year}/${month}/${day}`);
+        const { year, month, day } = user.birthday;
+        setBirthday(formattedFromYMD(year, month, day));
       }
     }
   }, [user]);

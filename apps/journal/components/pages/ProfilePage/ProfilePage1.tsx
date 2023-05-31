@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
 import { useAuth } from "@/contexts/AuthProvider";
+import useDateFormat from "@/hooks/useDateFormat";
 
 /**
  * プロフィールページの2ページ目
@@ -9,6 +10,7 @@ import { useAuth } from "@/contexts/AuthProvider";
  */
 const ProfilePage1: React.FC = () => {
   const { user } = useAuth();
+  const { formattedFromDate } = useDateFormat();
 
   const joinAtExists = useMemo(
     () => user && user.characteristic && user.characteristic.join_tobiratory_at,
@@ -30,9 +32,9 @@ const ProfilePage1: React.FC = () => {
         {joinAtExists && (
           <CharacteristicLine
             lineType={"Participation date of Tobiratory"}
-            lineValue={user.characteristic.join_tobiratory_at
-              .toDate()
-              .toLocaleDateString()}
+            lineValue={formattedFromDate(
+              user.characteristic.join_tobiratory_at.toDate()
+            )}
           />
         )}
         {houseDataExists && (
