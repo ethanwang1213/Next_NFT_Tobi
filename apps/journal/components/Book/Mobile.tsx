@@ -138,6 +138,7 @@ const Mobile = () => {
             )
           }
           page={() => setIsShowTag(!isShowTag)}
+          isHamburger={true}
           key={-1}
         />
       </div>

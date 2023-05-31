@@ -20,8 +20,6 @@ const Index = () => {
     [pages.current, pageNo.current]
   );
 
-  const { user } = useAuth();
-
   return (
     <>
       <Image src="/journal/images/book/bg_journal.png" fill alt="bg_journal" />

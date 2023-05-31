@@ -5,9 +5,11 @@ import { BookContext } from "../contexts/BookContextProvider";
 const Tag: FC<{
   image: string | ReactElement;
   page: Number | (() => void);
-}> = ({ image, page }) => {
+  isHamburger?: boolean;
+}> = ({ image, page, isHamburger = false }) => {
   const bookData = useContext(BookContext);
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
+  const { current: isMute } = bookData.isMute;
 
   const isNumber = useMemo(() => typeof page === "number", [page]);
 
@@ -22,11 +24,7 @@ const Tag: FC<{
       (page as () => void)();
     }
     // Tagでページを遷移するときのみ、ページめくりの音を再生する
-    if (
-      !bookData.isMute.current &&
-      page !== pageNo &&
-      typeof page === "number"
-    ) {
+    if (!isMute && page !== pageNo && typeof page === "number") {
       play();
     }
   };
@@ -35,7 +33,7 @@ const Tag: FC<{
     <div
       onClick={handleClick}
       className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 cursor-pointer ${
-        pageNo === page || (pageNo + 1 === page && isNumber)
+        ((pageNo === page || pageNo + 1 === page) && isNumber) || isHamburger
           ? "bg-red-700 w-24"
           : "bg-base-100 w-24 md:w-20"
       }`}
@@ -55,17 +53,19 @@ const Tag: FC<{
             WebkitMaskSize: "40px 40px",
           }}
           className={`mx-4 w-[40px] h-[40px] transition-all ${
-            (pageNo === page || pageNo + 1 === page) && isNumber
+            ((pageNo === page || pageNo + 1 === page) && isNumber) ||
+            isHamburger
               ? "bg-secondary"
               : "bg-accent"
           }`}
         ></div>
       ) : (
         <div
-          className={`mx-4 w-[44px] h-[44px] transition-all select-none rounded-full border-[3px] border-solid ${
-            (pageNo === page || pageNo + 1 === page) && isNumber
-              ? "text-white border-white"
-              : "text-red-700 border-accent"
+          className={`mx-4 w-[44px] h-[44px] transition-all select-none rounded-full ${
+            ((pageNo === page || pageNo + 1 === page) && isNumber) ||
+            isHamburger
+              ? "text-white"
+              : "text-accent"
           }`}
         >
           {image}
