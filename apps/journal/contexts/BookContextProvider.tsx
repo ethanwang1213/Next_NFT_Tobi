@@ -33,6 +33,8 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactNode[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
+  const [isMute, setIsMute] = useState<boolean>(false);
+
   const router = useRouter();
   const logoutModal = useRef<HTMLInputElement>();
 
@@ -52,8 +54,12 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
         current: tags,
         set: setTags,
       },
+      isMute: {
+        current: isMute,
+        set: setIsMute,
+      },
     }),
-    [pageNo, pages, tags, setPageNo, setPages, setTags]
+    [pageNo, pages, tags, isMute, setPageNo, setPages, setTags, setIsMute]
   );
 
   // プロフィールタグ

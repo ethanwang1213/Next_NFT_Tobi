@@ -15,9 +15,25 @@ const Tag: FC<{
     volume: 0.1,
   });
 
+  const handleClick = () => {
+    if (isNumber) {
+      setPageNo(page);
+    } else {
+      (page as () => void)();
+    }
+    // Tagでページを遷移するときのみ、ページめくりの音を再生する
+    if (
+      !bookData.isMute.current &&
+      page !== pageNo &&
+      typeof page === "number"
+    ) {
+      play();
+    }
+  };
+
   return (
     <div
-      onClick={() => (isNumber ? setPageNo(page) : (page as () => void)())}
+      onClick={handleClick}
       className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 cursor-pointer ${
         pageNo === page || (pageNo + 1 === page && isNumber)
           ? "bg-red-700 w-24"
