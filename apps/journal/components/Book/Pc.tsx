@@ -15,6 +15,7 @@ import { BookContext } from "../../contexts/BookContextProvider";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import NFTPage from "../pages/NFTPage/NFTPage";
 import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
+import ProfilePage1 from "../pages/ProfilePage/ProfilePage1";
 
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
@@ -159,7 +160,9 @@ const Pc = () => {
       case NFTPage:
         return " px-0";
       case ProfilePage0:
-        return " pb-0";
+        return " pb-0 pl-0 pr-4";
+      case ProfilePage1:
+        return " pl-4";
       default:
         return "";
     }

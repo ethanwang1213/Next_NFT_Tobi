@@ -66,7 +66,11 @@ const ProfilePage0: React.FC = () => {
               <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
                 <label
                   htmlFor="edit-profile-modal"
-                  className="btn btn-outline btn-lg btn-primary rounded-3xl sm:w-[60%] sm:min-h-[10px] h-[40px] text-sm sm:text-[16px] px-0 border-2 rounded-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
+                  className="
+                    btn btn-outline btn-lg btn-primary 
+                    min-h-[40px] h-[40px] 
+                    text-sm text-[16px] border-2 rounded-full 
+                    drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
                 >
                   プロフィールを編集
                 </label>
