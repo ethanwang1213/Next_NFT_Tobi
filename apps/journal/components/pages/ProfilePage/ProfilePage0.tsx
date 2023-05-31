@@ -61,6 +61,7 @@ const ProfilePage0: React.FC = () => {
               <PersonalInfo
                 dataType={"Mail"}
                 dataValue={user.email === "" ? "-" : user.email}
+                hidable={true}
               />
               {/* EditProfileModalに紐づく */}
               <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">

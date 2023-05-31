@@ -1,5 +1,5 @@
-import HidableText from "@/components/HidableWord";
 import { useMemo } from "react";
+import HidableText from "../../../HidableWord";
 
 type Props = {
   dataType: string;
@@ -8,11 +8,11 @@ type Props = {
 };
 
 /**
- * プロフィールの情報のコンポーネント
+ * redeemページのデータ 一行を表示するコンポーネント
  * @param param0
  * @returns
  */
-const PersonalInfo: React.FC<Props> = ({
+const RedeemDataLine: React.FC<Props> = ({
   dataType,
   dataValue,
   hidable = false,
@@ -27,11 +27,11 @@ const PersonalInfo: React.FC<Props> = ({
 
   return (
     <>
-      <div className="relative w-full text-center text-primary">
-        <p className="text-[10px] sm:text-[20px] sm:text-start mb-[-2px] sm:mb-2">
+      <div className="relative w-full text-center text-primary font-bold">
+        <p className="text-[16px] sm:text-[28px] text-start mb-[2%] sm:mb-4">
           {dataType}
         </p>
-        <p className="text-[14px] sm:text-[24px] font-bold  sm:text-end leading-8">
+        <p className="text-[16px] sm:text-[28px] text-end leading-10">
           {value}
         </p>
       </div>
@@ -39,4 +39,4 @@ const PersonalInfo: React.FC<Props> = ({
   );
 };
 
-export default PersonalInfo;
+export default RedeemDataLine;

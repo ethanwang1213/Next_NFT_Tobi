@@ -12,7 +12,7 @@ import BookIcon from "../../../../../public/images/icon/Journalbook_journal.svg"
 const RedeemSP0: React.FC = () => {
   return (
     <div className="h-full pt-4 flex flex-col">
-      <div className="">
+      <div>
         <InputRedemptionCodeBox
           classNames={{
             input:
@@ -21,22 +21,18 @@ const RedeemSP0: React.FC = () => {
           }}
         />
       </div>
-      <div className="grow grid content-center flex justify-center px-[10%] py-[5%] max-h-[54%]">
-        <div className="h-full">
-          <BookIcon className="w-full" />
-        </div>
+      <div className="grow grid content-center flex justify-center px-[24%] py-[5%] pb-[7%]">
+        <BookIcon className="w-full h-full" />
       </div>
-      <div className="w-full">
-        <div className="mb-[6%]">
-          <SelfData />
-        </div>
+      <div className="w-full mb-[4%]">
+        <SelfData />
       </div>
       <div className="w-full">
         <div className="w-full flex justify-center">
           <RedeemButton />
         </div>
       </div>
-      <HowToLink className="w-full link link-info text-end text-sm pt-[6%] relative min-h-[7%]" />
+      <HowToLink className="w-full link link-info text-end text-sm pt-[10%] relative min-h-[7%] h-[7%]" />
       {/* スマホ表示用モーダル */}
       <RedeemStatusModal />
     </div>
