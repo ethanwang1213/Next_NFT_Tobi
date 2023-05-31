@@ -31,9 +31,11 @@ const PersonalInfo: React.FC<Props> = ({
         <p className="text-[10px] sm:text-[20px] sm:text-start mb-[-2px] sm:mb-2">
           {dataType}
         </p>
-        <p className="text-[14px] sm:text-[24px] font-bold  sm:text-end leading-8">
-          {value}
-        </p>
+        <div className="w-full">
+          <p className="text-[14px] sm:text-[24px] font-bold  sm:text-end leading-8 break-all">
+            {value}
+          </p>
+        </div>
       </div>
     </>
   );

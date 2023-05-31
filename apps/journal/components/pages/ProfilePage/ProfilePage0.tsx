@@ -60,7 +60,15 @@ const ProfilePage0: React.FC = () => {
               />
               <PersonalInfo
                 dataType={"Mail"}
-                dataValue={user.email === "" ? "-" : user.email}
+                dataValue={
+                  user.email === ""
+                    ? "-"
+                    : `${
+                        user.email.length < 21
+                          ? user.email
+                          : user.email.slice(0, 20) + "..."
+                      }`
+                }
                 hidable={true}
               />
               {/* EditProfileModalに紐づく */}
@@ -69,8 +77,8 @@ const ProfilePage0: React.FC = () => {
                   htmlFor="edit-profile-modal"
                   className="
                     btn btn-outline btn-lg btn-primary 
-                    min-h-[40px] h-[40px] 
-                    text-sm text-[20px] border-2 rounded-full 
+                    min-h-[40px] h-[45px] 
+                    text-[18px] border-2 rounded-full 
                     drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
                 >
                   プロフィールを編集
