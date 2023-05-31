@@ -21,20 +21,22 @@ const RedeemSP0: React.FC = () => {
           }}
         />
       </div>
-      <div className="grow grid content-center flex justify-center px-[16%] py-[5%]">
+      <div className="grow grid content-center flex justify-center px-[10%] py-[5%] max-h-[54%]">
         <div className="h-full">
           <BookIcon className="w-full" />
         </div>
       </div>
-      <div className="w-full pb-[5%]">
-        <div className="mb-6">
+      <div className="w-full">
+        <div className="mb-[6%]">
           <SelfData />
         </div>
+      </div>
+      <div className="w-full">
         <div className="w-full flex justify-center">
           <RedeemButton />
         </div>
       </div>
-      <HowToLink className="w-full absolute bottom-0 right-0 link link-info text-end text-md" />
+      <HowToLink className="w-full link link-info text-end text-sm pt-[6%] relative min-h-[7%]" />
       {/* スマホ表示用モーダル */}
       <RedeemStatusModal />
     </div>

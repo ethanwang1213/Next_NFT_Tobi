@@ -16,6 +16,7 @@ import NekoPage from "../pages/NekoPage/NekoPage";
 import NFTPage from "../pages/NFTPage/NFTPage";
 import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../pages/ProfilePage/ProfilePage1";
+import RedeemPage from "../pages/RedeemPage/RedeemPage";
 
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
@@ -163,6 +164,12 @@ const Pc = () => {
         return " pb-0 pl-0 pr-4";
       case ProfilePage1:
         return " pl-4";
+      case RedeemPage:
+        if (no % 2 === 0) {
+          return " pb-8";
+        } else {
+          return "";
+        }
       default:
         return "";
     }

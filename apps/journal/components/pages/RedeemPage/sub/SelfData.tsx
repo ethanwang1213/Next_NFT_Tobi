@@ -6,15 +6,15 @@ const SelfData: React.FC = () => {
   const { selfAccount, selfJournalId } = useContext(RedeemContext);
 
   return (
-    <div className="grid gap-3 sm:gap-10">
+    <div className="grid gap-[1%] sm:gap-10">
       <RedeemDataLine
-        lineType={"受け取り対象アカウント名"}
-        lineValue={selfAccount.current ? selfAccount.current : "-"}
+        dataType={"受け取り対象アカウント名"}
+        dataValue={selfAccount.current ? selfAccount.current : "-"}
       />
       <RedeemDataLine
-        lineType={"受け取り対象メールアドレス"}
-        lineValue={selfJournalId.current ? selfJournalId.current : "-"}
-        hidable={true}
+        dataType={"受け取り対象メールアドレス"}
+        dataValue={selfJournalId.current ? selfJournalId.current : "-"}
+        // hidable={true}
       />
     </div>
   );
