@@ -21,7 +21,7 @@ const Tag: FC<{
       className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 cursor-pointer ${
         pageNo === page || (pageNo + 1 === page && isNumber)
           ? "bg-red-700 w-24"
-          : "bg-white w-24 md:w-20"
+          : "bg-base-100 w-24 md:w-20"
       }`}
     >
       {typeof image === "string" ? (
@@ -40,16 +40,16 @@ const Tag: FC<{
           }}
           className={`mx-4 w-[40px] h-[40px] transition-all ${
             (pageNo === page || pageNo + 1 === page) && isNumber
-              ? "bg-white"
-              : "bg-red-700"
+              ? "bg-secondary"
+              : "bg-accent"
           }`}
         ></div>
       ) : (
         <div
-          className={`mx-4 w-[44px] h-[44px] transition-all select-none ${
+          className={`mx-4 w-[44px] h-[44px] transition-all select-none rounded-full border-[3px] border-solid ${
             (pageNo === page || pageNo + 1 === page) && isNumber
-              ? "text-white"
-              : "text-red-700"
+              ? "text-white border-white"
+              : "text-red-700 border-accent"
           }`}
         >
           {image}

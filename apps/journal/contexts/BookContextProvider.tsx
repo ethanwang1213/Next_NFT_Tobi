@@ -60,10 +60,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   // アイコンが設定されている場合はタグにもアイコンを表示する
   const profileTag = useMemo(
     () => (
-      <div
-        className="relative w-full h-full rounded-full overflow-hidden"
-        style={{ border: "solid 3px white" }}
-      >
+      <div className="relative w-full h-full rounded-full overflow-hidden">
         {user && user.icon !== "" && (
           <Image
             src={user.icon}
