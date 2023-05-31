@@ -65,7 +65,6 @@ const NekoSwiper: React.FC = () => {
       height: cardHeight,
     });
   }, [innerWidth, innerHeight, cardAspect]);
-
   return (
     <div
       className="fixed"
@@ -77,7 +76,7 @@ const NekoSwiper: React.FC = () => {
       }}
     >
       {/* TOBIRA NEKOを持っていない場合、空白のカードを一枚表示する */}
-      {mockNekoSrcList.length === 0 ? (
+      {nekoNFTs.current.length === 0 ? (
         <Swiper
           effect={"cards"}
           grabCursor={false}
