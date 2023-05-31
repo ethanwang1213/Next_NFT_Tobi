@@ -262,7 +262,7 @@ const Pc = () => {
               ...pageStyle,
               height:
                 pageScale > 0
-                  ? (bookPos.height * 0.7 - bookHeight * 0.05) / pageScale
+                  ? (bookPos.height * 0.55 - bookHeight * 0.05) / pageScale
                   : 1,
             }}
           >
