@@ -11,12 +11,11 @@ import NekoPage from "../components/pages/NekoPage/NekoPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
-import { mockNFTSrcList } from "../libs/mocks/mockNFTSrcList";
-import { mockNekoSrcList } from "../libs/mocks/mockNekoSrcList";
 import { bookContext, tagType } from "../types/type";
 import { useAuth } from "./AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useHoldNFTs } from "./HoldNFTsProvider";
 
 type Props = {
   children: ReactNode;
@@ -33,10 +32,15 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactNode[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
+  const [isMute, setIsMute] = useState<boolean>(false);
+  const [profilePageNo, setProfilePageNo] = useState<number>(0);
+  const [nekoPageNo, setNekoPageNo] = useState<number>(0);
+
   const router = useRouter();
   const logoutModal = useRef<HTMLInputElement>();
 
   const { user } = useAuth();
+  const { nekoNFTs, otherNFTs } = useHoldNFTs();
 
   const pageContextValue = useMemo(
     () => ({
@@ -52,18 +56,32 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
         current: tags,
         set: setTags,
       },
+      isMute: {
+        current: isMute,
+        set: setIsMute,
+      },
+      profilePageNo: profilePageNo,
+      nekoPageNo: nekoPageNo,
     }),
-    [pageNo, pages, tags, setPageNo, setPages, setTags]
+    [
+      pageNo,
+      pages,
+      tags,
+      isMute,
+      profilePageNo,
+      nekoPageNo,
+      setPageNo,
+      setPages,
+      setTags,
+      setIsMute,
+    ]
   );
 
   // プロフィールタグ
   // アイコンが設定されている場合はタグにもアイコンを表示する
   const profileTag = useMemo(
     () => (
-      <div
-        className="relative w-full h-full rounded-full overflow-hidden"
-        style={{ border: "solid 3px white" }}
-      >
+      <div className="relative w-full h-full rounded-full overflow-hidden">
         {user && user.icon !== "" && (
           <Image
             src={user.icon}
@@ -78,27 +96,30 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   );
 
   useEffect(() => {
-    // TODO: TOBIRA NEKOの数を取得する
-    let nekoPageNum = Math.trunc(mockNekoSrcList.length / 4);
-    if (mockNekoSrcList.length % 4 !== 0) nekoPageNum++; // 余りがある場合はページ数を+1
+    const profilePageNum = 2;
+
+    let nekoPageNum = Math.trunc(nekoNFTs.current.length / 4);
+    if (nekoNFTs.current.length % 4 !== 0) nekoPageNum++; // 余りがある場合はページ数を+1
     if (nekoPageNum === 0) nekoPageNum = 1; // ページ数0の場合は1ページとする
     if (nekoPageNum % 2 === 1) nekoPageNum++; // 奇数ページならページ数+1
 
-    // TODO: NFTの数を取得する
-    let nftPageNum = Math.trunc(mockNFTSrcList.length / 9);
-    if (mockNFTSrcList.length % 9 !== 0) nftPageNum++; // 余りがある場合はページ数を+1
+    let nftPageNum = Math.trunc(otherNFTs.current.length / 9);
+    if (otherNFTs.current.length % 9 !== 0) nftPageNum++; // 余りがある場合はページ数を+1
     if (nftPageNum === 0) nftPageNum = 1; // ページ数0の場合は1ページとする
     if (nftPageNum % 2 === 1) nftPageNum++; // 奇数ページならページ数+1
 
     // 各ページの開始ページ番号を設定
-    const profilePageNum = 2;
-    const nekoPageIndex = profilePageNum;
+    const profilePageIndex = 0;
+    const nekoPageIndex = profilePageIndex + profilePageNum;
     const nftPageIndex = nekoPageIndex + nekoPageNum;
     const redeemPageIndex = nftPageIndex + nftPageNum;
 
+    setProfilePageNo(profilePageIndex);
+    setNekoPageNo(nekoPageIndex);
+
     // 各ページを生成し配列に格納する
-    // TODO: 所有NFTが増加するほど、ページも増加していく。
-    // 現状の実装では事前に生成し配列に保存するため、NFTを所有するほどメモリを喰うことになる。
+    // 所有NFTが増加するほど、ページも増加していく。
+    // TODO: 現状の実装では事前に生成し配列に保存するため、NFTを所有するほどメモリを喰うことになる。
     // ゆくゆくは動的にページを生成するようにしたい。
     setPages([
       <ProfilePage0 key={0} />,
@@ -135,7 +156,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
         },
       },
     ]);
-  }, []);
+  }, [nekoNFTs.current, otherNFTs.current]);
 
   useEffect(() => {
     if (!user) return;

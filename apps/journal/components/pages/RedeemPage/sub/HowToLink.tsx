@@ -12,13 +12,15 @@ type Props = {
 const HowToLink: React.FC<Props> = ({ className }) => {
   return (
     <div className={className}>
-      <Link
-        target="_blank"
-        href="https://tobiratory.myshopify.com/pages/faq"
-        className="link link-info"
-      >
-        NFTを引き換えるには？
-      </Link>
+      <div className="h-full align-bottom align-text-bottom ">
+        <Link
+          target="_blank"
+          href="https://tobiratory.myshopify.com/pages/faq"
+          className="link link-info w-full absolute bottom-0 right-0"
+        >
+          NFTを引き換えるには？
+        </Link>
+      </div>
     </div>
   );
 };

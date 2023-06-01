@@ -27,8 +27,8 @@ module.exports = {
         basePath: false,
         source: "/proxy/:path*",
         destination:
-          "http://127.0.0.1:7777/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
-        // "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
+          // "http://127.0.0.1:7777/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
+        "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
         // "https://firebasestorage.googleapis.com/v0/b/tobiratory.appspot.com/o/:path*",
       },
     ];

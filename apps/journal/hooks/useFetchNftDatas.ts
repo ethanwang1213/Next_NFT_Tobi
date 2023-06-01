@@ -32,6 +32,7 @@ const useFetchNftDatas = () => {
       return nfts;
     } catch (error) {
       console.log(error);
+      return [];
     }
   };
 

@@ -9,7 +9,7 @@ import SelfData from "../SelfData";
  */
 const RedeemPC0: React.FC = () => {
   return (
-    <div className="relative h-full pt-6">
+    <div className="relative h-full pt-6 flex flex-col">
       <div className="mb-[76px]">
         <InputRedemptionCodeBox
           classNames={{
@@ -22,10 +22,12 @@ const RedeemPC0: React.FC = () => {
       <div className="mb-8">
         <SelfData />
       </div>
-      <HowToLink className="text-end sm:text-[27px]" />
-      <div className="w-full absolute bottom-[5%] flex justify-center">
-        <RedeemButton />
+      <div className="grow w-full relative">
+        <div className="w-full absolute bottom-0 flex justify-center">
+          <RedeemButton />
+        </div>
       </div>
+      <HowToLink className="text-end sm:text-[27px] relative min-h-[12%]" />
     </div>
   );
 };

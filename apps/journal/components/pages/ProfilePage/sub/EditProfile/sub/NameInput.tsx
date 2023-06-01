@@ -17,6 +17,7 @@ const NameInput: React.FC<Props> = ({
   isModalOpen,
 }) => {
   const { user } = useAuth();
+  const MAX_NAME_LENGTH = 12;
 
   useEffect(() => {
     if (!user) return;
@@ -30,7 +31,10 @@ const NameInput: React.FC<Props> = ({
         type="text"
         className="input input-accent"
         {...register("newName", {
-          maxLength: { value: 20, message: "20文字以内で入力してください。" },
+          maxLength: {
+            value: MAX_NAME_LENGTH,
+            message: `${MAX_NAME_LENGTH}文字以内で入力してください。`,
+          },
         })}
       />
       {errors.newName && (

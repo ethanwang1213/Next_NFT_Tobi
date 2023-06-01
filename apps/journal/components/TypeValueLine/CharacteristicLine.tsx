@@ -22,7 +22,7 @@ const CharacteristicLine: React.FC<Props> = ({
       lineValue={lineValue}
       hidable={hidable}
       classNames={{
-        container: "text-sm sm:text-lg text-primary font-bold",
+        container: "text-sm sm:text-xl text-primary font-bold",
         type: "",
         value: "",
       }}

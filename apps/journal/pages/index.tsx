@@ -9,6 +9,7 @@ import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/Cro
 import { useAuth } from "@/contexts/AuthProvider";
 import { collection, getDocs, query } from "@firebase/firestore";
 import { db } from "@/firebase/client";
+import SoundToggle from "@/components/SoundToggle";
 
 const Index = () => {
   const { pages, pageNo } = useContext(BookContext);
@@ -19,11 +20,9 @@ const Index = () => {
     [pages.current, pageNo.current]
   );
 
-  const { user } = useAuth();
-  
   return (
     <>
-      <Image src="/journal/images/book/bg_journal.png" fill alt="bg_journal"></Image>
+      <Image src="/journal/images/book/bg_journal.png" fill alt="bg_journal" />
       <div className="hidden sm:block">
         <Pc />
       </div>
@@ -36,6 +35,7 @@ const Index = () => {
           <CropNewIconModal />
         </>
       )}
+      <SoundToggle />
     </>
   );
 };

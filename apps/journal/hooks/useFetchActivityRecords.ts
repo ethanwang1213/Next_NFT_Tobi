@@ -28,6 +28,7 @@ const useFetchActivityRecords = () => {
       return records;
     } catch (error) {
       console.log(error);
+      return [];
     }
   };
 

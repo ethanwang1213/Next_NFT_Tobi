@@ -5,6 +5,7 @@ import { mockRecordList } from "../../../libs/mocks/mockProfile0";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
 import ActivityRecord from "./sub/ActivityRecord";
+import useDateFormat from "@/hooks/useDateFormat";
 
 export type ActivityRecord = {
   id: number;
@@ -20,6 +21,7 @@ export type ActivityRecord = {
 const ProfilePage0: React.FC = () => {
   const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
+  const { formattedFromYMD } = useDateFormat();
 
   useEffect(() => {
     if (!user) return;
@@ -32,9 +34,8 @@ const ProfilePage0: React.FC = () => {
       ) {
         setBirthday("-");
       } else {
-        const month = user.birthday.month.toString().padStart(2, "0");
-        const day = user.birthday.day.toString().padStart(2, "0");
-        setBirthday(`${user.birthday.year}/${month}/${day}`);
+        const { year, month, day } = user.birthday;
+        setBirthday(formattedFromYMD(year, month, day));
       }
     }
   }, [user]);
@@ -42,7 +43,7 @@ const ProfilePage0: React.FC = () => {
   return (
     <>
       <div className="w-full sm:flex relative">
-        <div className="w-full sm:w-[60%] mb-6 flex justify-center">
+        <div className="w-full sm:w-[50%] mb-6 flex justify-center">
           <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon />
           </div>
@@ -60,13 +61,26 @@ const ProfilePage0: React.FC = () => {
               />
               <PersonalInfo
                 dataType={"Mail"}
-                dataValue={user.email === "" ? "-" : user.email}
+                dataValue={
+                  user.email === ""
+                    ? "-"
+                    : `${
+                        user.email.length < 21
+                          ? user.email
+                          : user.email.slice(0, 20) + "..."
+                      }`
+                }
+                hidable={true}
               />
               {/* EditProfileModalに紐づく */}
               <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
                 <label
                   htmlFor="edit-profile-modal"
-                  className="btn btn-outline btn-lg btn-primary rounded-3xl sm:w-[60%] sm:min-h-[10px] h-[40px] text-sm sm:text-[16px] px-0 border-2 rounded-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
+                  className="
+                    btn btn-outline btn-lg btn-primary 
+                    min-h-[40px] h-[45px] 
+                    text-[18px] border-2 rounded-full 
+                    drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
                 >
                   プロフィールを編集
                 </label>

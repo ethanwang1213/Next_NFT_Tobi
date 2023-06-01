@@ -56,7 +56,6 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
 
     const nekos = await fetchHoldNFTs(NEKO_NFT_ID);
     setNekoNFTs(nekos);
-    console.log(nekos);
   };
 
   // 他のNFTを取得
@@ -77,14 +76,12 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
       })
     );
     setOtherNFTs(otherNFTs);
-    console.log(otherNFTs);
   };
 
   // 初期化処理。NFTのデータを取得
   useEffect(() => {
     if (!user) return;
 
-    console.log(user);
     loadNekos();
     loadOtherNFTs();
   }, [user]);

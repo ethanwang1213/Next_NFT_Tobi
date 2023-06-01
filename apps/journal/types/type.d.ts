@@ -19,6 +19,12 @@ export type bookContext = {
     current: tagType[];
     set: Dispatch<SetStateAction<tagType[]>>;
   };
+  isMute: {
+    current: boolean;
+    set: Dispatch<SetStateAction<boolean>>;
+  };
+  profilePageNo: number;
+  nekoPageNo: number;
 };
 
 // 本の画像の左上隅座標を表す型

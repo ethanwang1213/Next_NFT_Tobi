@@ -15,6 +15,8 @@ import { BookContext } from "../../contexts/BookContextProvider";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import NFTPage from "../pages/NFTPage/NFTPage";
 import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
+import ProfilePage1 from "../pages/ProfilePage/ProfilePage1";
+import RedeemPage from "../pages/RedeemPage/RedeemPage";
 
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
@@ -159,7 +161,15 @@ const Pc = () => {
       case NFTPage:
         return " px-0";
       case ProfilePage0:
-        return " pb-0";
+        return " pb-0 pl-0 pr-4";
+      case ProfilePage1:
+        return " pl-4";
+      case RedeemPage:
+        if (no % 2 === 0) {
+          return " pb-8";
+        } else {
+          return "";
+        }
       default:
         return "";
     }
@@ -252,7 +262,7 @@ const Pc = () => {
               ...pageStyle,
               height:
                 pageScale > 0
-                  ? (bookPos.height * 0.7 - bookHeight * 0.05) / pageScale
+                  ? (bookPos.height * 0.55 - bookHeight * 0.05) / pageScale
                   : 1,
             }}
           >

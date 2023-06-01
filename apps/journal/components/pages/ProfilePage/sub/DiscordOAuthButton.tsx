@@ -18,7 +18,7 @@ const DiscordOAuthButton: React.FC = () => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
 
   useEffect(() => {
-    if (!user || nekoNFTs.current.length < 0) {
+    if (!user || nekoNFTs.current.length === 0) {
       // TOBIRA NEKOを持っていない場合
       setDisplayMode("NONE");
       return;
@@ -45,7 +45,11 @@ const DiscordOAuthButton: React.FC = () => {
     (href: string, text: string) => (
       <a
         href={href}
-        className="btn btn-accent bg-transparent hover:bg-accent/60 border-none btn-circle sm:btn-lg w-[64%] sm:w-[70%] relative overflow-hidden shadow-lg drop-shadow-[0_10px_6px_rgba(117,58,0,0.6)]"
+        className="
+          btn btn-accent bg-transparent hover:bg-accent/60 
+          border-none btn-circle sm:btn-lg 
+          w-[64%] sm:w-[70%] relative 
+          overflow-hidden shadow-lg drop-shadow-[0_10px_6px_rgba(117,58,0,0.6)]"
       >
         <div className="bg-accent/90 rounded-full blur-[2px] w-full h-full absolute"></div>
         <div className="text-white absolute pointer-events-none flex">
@@ -54,7 +58,7 @@ const DiscordOAuthButton: React.FC = () => {
             size="2x"
             className="mr-2 h-[40px]"
           />
-          <p className="grid content-center">{text}</p>
+          <p className="grid content-center sm:text-[20px]">{text}</p>
         </div>
       </a>
     ),
