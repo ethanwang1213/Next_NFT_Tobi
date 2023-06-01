@@ -159,7 +159,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       />
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg p-5 text-center">
+          <h3 className="font-bold text-xl p-5 text-center text-accent">
             ログアウトしますか？
           </h3>
           <div className="flex flex-col gap-3">
@@ -170,7 +170,10 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
             >
               ログアウト
             </label>
-            <label className="btn btn-block btn-outline" htmlFor="logout-modal">
+            <label
+              className="btn btn-block btn-outline btn-accent"
+              htmlFor="logout-modal"
+            >
               キャンセル
             </label>
           </div>
