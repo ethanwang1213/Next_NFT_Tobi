@@ -6,6 +6,8 @@ import { BookContext } from "@/contexts/BookContextProvider";
 import ProfilePage0 from "@/components/pages/ProfilePage/ProfilePage0";
 import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
 import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
+import SoundToggle from "@/components/SoundToggle";
+import DebugText from "@/components/DebugText";
 
 const Index = () => {
   const { pages, pageNo } = useContext(BookContext);
@@ -18,7 +20,7 @@ const Index = () => {
 
   return (
     <>
-      <Image src="/images/book/bg_journal.png" fill alt="bg_journal"></Image>
+      <Image src="/journal/images/book/bg_journal.png" fill alt="bg_journal" />
       <div className="hidden sm:block">
         <Pc />
       </div>
@@ -30,6 +32,10 @@ const Index = () => {
           <EditProfileModal />
           <CropNewIconModal />
         </>
+      )}
+      <SoundToggle />
+      {process.env.NEXT_PUBLIC_DEBUG_MODE && (
+        <DebugText />
       )}
     </>
   );

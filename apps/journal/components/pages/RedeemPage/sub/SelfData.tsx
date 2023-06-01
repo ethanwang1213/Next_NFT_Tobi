@@ -1,19 +1,20 @@
 import { useContext } from "react";
 import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
-import RedeemDataLine from "../../../TypeValueLine/RedeemDataLine";
+import RedeemDataLine from "./RedeemDataLine";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const SelfData: React.FC = () => {
-  const { selfAccount, selfJournalId } = useContext(RedeemContext);
+  const { user } = useAuth();
 
   return (
-    <div className="grid gap-3 sm:gap-10">
+    <div className="grid gap-[1%] sm:gap-10">
       <RedeemDataLine
-        lineType={"受け取り対象アカウント名"}
-        lineValue={selfAccount.current ? selfAccount.current : "-"}
+        dataType={"受け取り対象アカウント名"}
+        dataValue={user && user.name !== "" ? user.name : "-"}
       />
       <RedeemDataLine
-        lineType={"受け取り対象メールアドレス"}
-        lineValue={selfJournalId.current ? selfJournalId.current : "-"}
+        dataType={"受け取り対象メールアドレス"}
+        dataValue={user && user.email ? user.email : "-"}
         hidable={true}
       />
     </div>

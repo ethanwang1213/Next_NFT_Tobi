@@ -11,7 +11,7 @@ type Props = {
   children: ReactNode;
 };
 
-type RedeemStatus =
+export type RedeemStatus =
   | "NONE"
   | "CHECKING"
   | "SUCCESS"

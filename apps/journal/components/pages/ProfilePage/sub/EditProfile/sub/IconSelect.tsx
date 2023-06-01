@@ -61,8 +61,10 @@ const IconSelect: React.FC<Props> = ({
 
     // メソッドの定義：アイコンプレビュー用キャンバスの描画
     const displayCanvas = async () => {
+      if (getValues("iconUrl") === "") return;
       canvasRef.current.width = 100;
       canvasRef.current.height = 100;
+      if (getValues("iconUrl") === "") return;
       const ctx = canvasRef.current.getContext("2d");
       const image = await createImage(getValues("iconUrl"));
       if (cropData.current) {
@@ -128,11 +130,8 @@ const IconSelect: React.FC<Props> = ({
               className="rounded-full overflow-hidden border-4 border-black/50"
             ></canvas>
           ) : (
-            <div
-            className="rounded-full overflow-hidden border-4 border-black/50"
-            >
-
-            <DefaultIcon />
+            <div className="rounded-full overflow-hidden border-4 border-black/50">
+              <DefaultIcon />
             </div>
           )}
         </label>

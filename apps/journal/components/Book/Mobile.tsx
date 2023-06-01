@@ -50,7 +50,7 @@ const Mobile = () => {
     } else {
       setIsSwiperPage(false);
     }
-    
+
     setIsShowTag(false);
   }, [pages, pageNo]);
 
@@ -61,7 +61,7 @@ const Mobile = () => {
       case NFTPage:
         return " px-0";
       case ProfilePage0:
-        return " pb-0";
+        return " pb-2";
       default:
         return "";
     }
@@ -76,7 +76,7 @@ const Mobile = () => {
       >
         {!isSwiperPage && (
           <Image
-            src="/images/book/openpage.png"
+            src="/journal/images/book/openpage.png"
             fill
             alt="page"
             className="object-contain"
@@ -138,6 +138,7 @@ const Mobile = () => {
             )
           }
           page={() => setIsShowTag(!isShowTag)}
+          isHamburger={true}
           key={-1}
         />
       </div>

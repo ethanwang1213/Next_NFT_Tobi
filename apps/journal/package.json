@@ -9,6 +9,9 @@
     "lint": "next lint",
     "type-check": "tsc"
   },
+  "browser": {
+    "fs": false
+  },
   "dependencies": {
     "@blocto/fcl": "^0.0.71",
     "@firebase/analytics": "^0.10.0",
@@ -24,8 +27,8 @@
     "ethers": "^5.7.2",
     "firebase": "^9.21.0",
     "gsap": "npm:@gsap/business@^3.11.5",
-    "jimp": "^0.3.11",
-    "next": "latest",
+    "jimp": "^0.16.13",
+    "next": "^13.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-use": "^17.4.0",
