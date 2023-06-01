@@ -69,10 +69,16 @@ const DiscordOAuthButton: React.FC = () => {
   // Debug用
   const { shouldRefresh } = useDebug();
   // displayModeをランダムで設定する
-  const mockMode = useMemo(
-    () => ["NONE", "OAUTH", "JOIN", "STAMP"][Math.floor(Math.random() * 4)],
-    [shouldRefresh]
-  );
+  const [mockMode, setMockMode] = useState<DisplayMode>("NONE");
+  useEffect(() => {
+    if (shouldRefresh) {
+      setMockMode(
+        ["NONE", "OAUTH", "JOIN", "STAMP"][
+          Math.floor(Math.random() * 4)
+        ] as DisplayMode
+      );
+    }
+  }, [shouldRefresh]);
 
   return (
     <>

@@ -3,7 +3,7 @@ import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
 import { useDebug } from "@/contexts/DebugProvider";
 import useDateFormat from "@/hooks/useDateFormat";
 import { mockRecordList } from "@/libs/mocks/mockProfile0";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 /**
  * アクティビティの記録を表示するコンポーネント
@@ -16,10 +16,12 @@ const ActivityRecord: React.FC = () => {
   // DEBUG用
   const { shouldRefresh } = useDebug();
   // 表示するmockレコードの数をランダムに決定
-  const mockRecordNum = useMemo(
-    () => Math.floor(Math.random() * mockRecordList.length),
-    [shouldRefresh]
-  );
+  const [mockRecordNum, setMockDataNum] = useState(mockRecordList.length);
+  useEffect(() => {
+    if (shouldRefresh) {
+      setMockDataNum(Math.floor(Math.random() * mockRecordList.length));
+    }
+  }, [shouldRefresh]);
 
   return (
     <>

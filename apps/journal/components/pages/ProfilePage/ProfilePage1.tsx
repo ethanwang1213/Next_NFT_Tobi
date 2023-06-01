@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
 import { useAuth } from "@/contexts/AuthProvider";
 import useDateFormat from "@/hooks/useDateFormat";
@@ -31,10 +31,12 @@ const ProfilePage1: React.FC = () => {
   // Debug用
   const { shouldRefresh } = useDebug();
   // 表示するmockデータの数をランダムに決定
-  const mockDataNum = useMemo(
-    () => Math.floor(Math.random() * mockCharacteristicList.length),
-    [shouldRefresh]
-  );
+  const [mockDataNum, setMockDataNum] = useState(mockCharacteristicList.length);
+  useEffect(() => {
+    if (shouldRefresh) {
+      setMockDataNum(Math.floor(Math.random() * mockCharacteristicList.length));
+    }
+  }, [shouldRefresh]);
 
   return (
     <div className="h-full overflow-y-auto mb-16 sm:mb-0">
