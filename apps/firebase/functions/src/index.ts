@@ -48,6 +48,7 @@ type Item = {
   price?: number;
   quantity?: number;
   redeem?: string;
+  used_at?: Date;
 }
 
 /**
@@ -60,21 +61,24 @@ export const handleOrdersPaid = functions.pubsub.topic(topicNames["ordersPaid"])
   const order = {
     email: message.json.email,
     name: message.json.name,
-    items: message.json.line_items.map((item: any): Item => {
-      return {
-        id: item.id,
-        redeem: generateRedeemCode(),
-      };
-    }),
   };
-  await firestore().collection("orders").add(order);
+  const items = message.json.line_items.map((item: any): Item => {
+    return {
+      id: item.id,
+      redeem: generateRedeemCode(),
+    };
+  });
+  const orderRef = await firestore().collection("orders").add(order);
+  for (const item of items) {
+    await orderRef.collection("items").add(item);
+  }
   sendgrid.setApiKey(sgAPIKey);
   const mailOptions = {
     from: process.env.SENDGRID_SENDER_EMAIL || "",
     to: order.email,
     subject: `Order ${order.name} redeem codes`,
     html: `<p style="font-size: 16px;">Redeem Codes</p><br />
-${order.items.map((item: Item) => {
+${items.map((item: Item) => {
     return `<p>${item.id}: ${item.redeem}</p>`;
   }).join("\n").toString()}
 `,
@@ -197,7 +201,6 @@ export const checkRedeem = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("not-found", "The user doesn't have email.");
   }
   const redeem = data.redeem;
-  console.log(redeem);
   if (!redeem) {
     throw new functions.https.HttpsError("invalid-argument", "The function must be called with redeem.");
   }
@@ -207,13 +210,14 @@ export const checkRedeem = functions.https.onCall(async (data, context) => {
   }
   // loop orders
   for (const order of orders.docs) {
-    const items = order.data().items;
-    if (!items) {
+    const items = await order.ref.collection("items").where("redeem", "==", redeem).get();
+    if (items.size == 0) {
       continue;
     }
-    const item = items.filter((item: Item) => item.redeem === redeem)[0];
-    if (item) {
+    const item = items.docs[0].data();
+    if (!item.used_at) {
       // TODO: get metadata from NFT
+      // TODO: make them as a transaction
       await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(NEKO_NFT_ID).collection("hold").doc(item.id).set({
         name: `TOBIRA NEKO # ${item.id}`,
         description: "",
@@ -221,10 +225,15 @@ export const checkRedeem = functions.https.onCall(async (data, context) => {
         acquisition_time: new Date(),
         acquisition_method: "purchase_in_shop",
       });
+      await items.docs[0].ref.update({
+        used_at: new Date(),
+      });
       return item.name;
+    } else {
+      throw new functions.https.HttpsError("unavailable", "The redeem code is already used.");
     }
   }
-  throw new functions.https.HttpsError("not-found", "The redeem code is invalid.");
+  throw new functions.https.HttpsError("not-found", "The redeem code is not found.");
 });
 
 export const getPayments = functions.https.onCall(async (data, context) => {
