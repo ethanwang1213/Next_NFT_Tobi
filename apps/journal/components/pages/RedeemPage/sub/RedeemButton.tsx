@@ -1,5 +1,8 @@
 import { useContext } from "react";
-import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
+import {
+  RedeemContext,
+  RedeemStatus,
+} from "../../../../contexts/RedeemContextProvider";
 import { functions } from "@/firebase/client";
 import { httpsCallable } from "firebase/functions";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
@@ -22,22 +25,33 @@ const RedeemButton: React.FC = () => {
 
     redeemStatus.set("CHECKING");
 
-    const redeem = inputCode.current;
-    const callable = httpsCallable(functions, "checkRedeem");
-    callable({ redeem })
-      .then((result) => {
-        console.log(result);
-        redeemStatus.set("SUCCESS");
-        shouldUpdate.set(true);
-        recordNewActivity(`${result.data as string} をJournalに追加した`);
-      })
-      .catch((error) => {
-        console.log(error);
-        redeemStatus.set(
-          "INCORRECT"
-          // "SERVER_ERROR"
-        );
-      });
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE!) {
+      // Debugモード：1秒後にランダムなステータスを返す
+      setTimeout(() => {
+        // "SUCCESS", "INCORRECT", "SERVER_ERROR"からランダムに取得
+        const status = ["SUCCESS", "INCORRECT", "SERVER_ERROR"][
+          Math.floor(Math.random() * 3)
+        ] as RedeemStatus;
+        redeemStatus.set(status);
+      }, 1000);
+    } else {
+      const redeem = inputCode.current;
+      const callable = httpsCallable(functions, "checkRedeem");
+      callable({ redeem })
+        .then((result) => {
+          console.log(result);
+          redeemStatus.set("SUCCESS");
+          shouldUpdate.set(true);
+          recordNewActivity(`${result.data as string} をJournalに追加した`);
+        })
+        .catch((error) => {
+          console.log(error);
+          redeemStatus.set(
+            "INCORRECT"
+            // "SERVER_ERROR"
+          );
+        });
+    }
   };
 
   return (
