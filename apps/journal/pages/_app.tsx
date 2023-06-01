@@ -9,6 +9,7 @@ import BookContextProvider from "@/contexts/BookContextProvider";
 import { EditProfileProvider } from "@/contexts/EditProfileProvider";
 import { HoldNFTsProvider } from "@/contexts/HoldNFTsProvider";
 import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
+import DebugProvider from "@/contexts/DebugProvider";
 
 config.autoAddCss = false;
 
@@ -30,7 +31,13 @@ const App = ({ Component, pageProps }: AppProps) => {
           <RedeemStatusContextProvider>
             <EditProfileProvider>
               <BookContextProvider>
-                <Component {...pageProps} />
+                {process.env.NEXT_PUBLIC_DEBUG_MODE ? (
+                  <DebugProvider>
+                    <Component {...pageProps} />
+                  </DebugProvider>
+                ) : (
+                  <Component {...pageProps} />
+                )}
               </BookContextProvider>
             </EditProfileProvider>
           </RedeemStatusContextProvider>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import Mobile from "../components/Book/Mobile";
 import Pc from "../components/Book/Pc";
 import Image from "next/image";
@@ -6,10 +6,8 @@ import { BookContext } from "@/contexts/BookContextProvider";
 import ProfilePage0 from "@/components/pages/ProfilePage/ProfilePage0";
 import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
 import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
-import { useAuth } from "@/contexts/AuthProvider";
-import { collection, getDocs, query } from "@firebase/firestore";
-import { db } from "@/firebase/client";
 import SoundToggle from "@/components/SoundToggle";
+import DebugText from "@/components/DebugText";
 
 const Index = () => {
   const { pages, pageNo } = useContext(BookContext);
@@ -36,6 +34,9 @@ const Index = () => {
         </>
       )}
       <SoundToggle />
+      {process.env.NEXT_PUBLIC_DEBUG_MODE && (
+        <DebugText />
+      )}
     </>
   );
 };
