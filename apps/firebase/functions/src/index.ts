@@ -5,7 +5,9 @@ import * as voucher from "voucher-code-generator";
 import {initializeApp, applicationDefault} from "firebase-admin/app";
 import {firestore} from "firebase-admin";
 import * as cors from "cors";
-// import fetch from "node-fetch";
+import fetch from "node-fetch";
+
+const NEKO_NFT_ID = "A.01ab36aaf654a13e.TobiraNeko";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -42,7 +44,7 @@ const generateRedeemCode = () => {
 };
 
 type Item = {
-  name: string;
+  id: string;
   price?: number;
   quantity?: number;
   redeem?: string;
@@ -60,7 +62,7 @@ export const handleOrdersPaid = functions.pubsub.topic(topicNames["ordersPaid"])
     name: message.json.name,
     items: message.json.line_items.map((item: any): Item => {
       return {
-        name: item.name,
+        id: item.id,
         redeem: generateRedeemCode(),
       };
     }),
@@ -73,7 +75,7 @@ export const handleOrdersPaid = functions.pubsub.topic(topicNames["ordersPaid"])
     subject: `Order ${order.name} redeem codes`,
     html: `<p style="font-size: 16px;">Redeem Codes</p><br />
 ${order.items.map((item: Item) => {
-    return `<p>${item.name}: ${item.redeem}</p>`;
+    return `<p>${item.id}: ${item.redeem}</p>`;
   }).join("\n").toString()}
 `,
   };
@@ -97,7 +99,7 @@ export const handleOrdersCreate = functions.pubsub.topic(topicNames["ordersCreat
     total_price: message.json.total_price,
     items: message.json.line_items.map((item: any): Item => {
       return {
-        name: item.name,
+        id: item.id,
         price: item.price,
         quantity: item.quantity,
       };
@@ -211,9 +213,13 @@ export const checkRedeem = functions.https.onCall(async (data, context) => {
     }
     const item = items.filter((item: Item) => item.redeem === redeem)[0];
     if (item) {
-      await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(item.redeem).set({
-        name: item.name,
-        type: "tobira-neko",
+      // TODO: get metadata from NFT
+      await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(NEKO_NFT_ID).collection("hold").doc(item.id).set({
+        name: `TOBIRA NEKO # ${item.id}`,
+        description: "",
+        thumbnail: `https://storage.googleapis.com/tobiratory-dev_media/nft/tobiraneko/${item.id}.png`,
+        acquisition_time: new Date(),
+        acquisition_method: "purchase_in_shop",
       });
       return item.name;
     }

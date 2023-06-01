@@ -2,6 +2,9 @@ module.exports = {
   basePath: "/journal",
   reactStrictMode: true,
   transpilePackages: ["ui"],
+  images: {
+    domains: ["storage.googleapis.com"],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
