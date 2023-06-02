@@ -1,46 +1,17 @@
-import { useAuth } from "@/contexts/AuthProvider";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import StampIcon from "@/public/images/icon/stamp_TOBIRAPOLIS.svg";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useCallback } from "react";
 import { useDebug } from "@/contexts/DebugProvider";
-
-type DisplayMode = "NONE" | "OAUTH" | "JOIN" | "STAMP";
+import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 
 /**
  * Discordコミュニティ参加のための認証ボタン
+ * スタンプの表示はprofileページ内だとDOMの構造的に問題があるので、
+ * 別のコンポーネント(SuccessDiscordStamp)で表示している
  * @returns
  */
 const DiscordOAuthButton: React.FC = () => {
-  const { user } = useAuth();
-  const { nekoNFTs } = useHoldNFTs();
-
-  const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
-
-  useEffect(() => {
-    if (!user || nekoNFTs.current.length === 0) {
-      // TOBIRA NEKOを持っていない場合
-      setDisplayMode("NONE");
-      return;
-    } else {
-      const discord = user.discord;
-      if (!discord) {
-        // Discord連携していない場合
-        setDisplayMode("OAUTH");
-      } else {
-        // Discord連携済みの場合
-        setDisplayMode("JOIN");
-        if (user.community) {
-          const joined = user.community.joined;
-          if (joined) {
-            // さらにサーバー参加済みの場合
-            setDisplayMode("STAMP");
-          }
-        }
-      }
-    }
-  }, [user]);
+  const { displayMode } = useDiscordOAuth();
 
   const createButton = useCallback(
     (href: string, text: string) => (
@@ -66,51 +37,38 @@ const DiscordOAuthButton: React.FC = () => {
     []
   );
 
-  // Debug用
-  const { shouldRefresh } = useDebug();
-  // displayModeをランダムで設定する
-  const [mockMode, setMockMode] = useState<DisplayMode>("NONE");
-  useEffect(() => {
-    if (shouldRefresh) {
-      setMockMode(
-        ["NONE", "OAUTH", "JOIN", "STAMP"][
-          Math.floor(Math.random() * 4)
-        ] as DisplayMode
-      );
-    }
-  }, [shouldRefresh]);
+  const debug = useDebug();
+  const { current: debugButtonMode } = debug.debugDiscordButtonMode;
 
   return (
     <>
-      {process.env.NEXT_PUBLIC_DEBUG_MODE! ? (
+      {process.env.NEXT_PUBLIC_DEBUG_MODE === "true" ? (
         <>
-          {mockMode === "NONE" && <></>}
-          {mockMode === "OAUTH" &&
+          {debugButtonMode === "NONE" && <></>}
+          {debugButtonMode === "OAUTH" &&
             createButton(
               process.env["NEXT_PUBLIC_DISCORD_OAUTH_URL"]!,
               "TOBIRA POLISへ"
             )}
-          {mockMode === "JOIN" &&
+          {debugButtonMode === "JOIN" &&
             createButton(
               process.env["NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL"]!,
               "コミュニティに参加"
             )}
-          {mockMode === "STAMP" && <StampIcon />}
         </>
       ) : (
         <>
-          {displayMode === "NONE" && <></>}
-          {displayMode === "OAUTH" &&
+          {displayMode.current === "NONE" && <></>}
+          {displayMode.current === "OAUTH" &&
             createButton(
               process.env["NEXT_PUBLIC_DISCORD_OAUTH_URL"]!,
               "TOBIRA POLISへ"
             )}
-          {displayMode === "JOIN" &&
+          {displayMode.current === "JOIN" &&
             createButton(
               process.env["NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL"]!,
               "コミュニティに参加"
             )}
-          {displayMode === "STAMP" && <StampIcon />}
         </>
       )}
     </>

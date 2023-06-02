@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
-import { mockRecordList } from "../../../libs/mocks/mockProfile0";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
 import ActivityRecord from "./sub/ActivityRecord";
 import useDateFormat from "@/hooks/useDateFormat";
+import JournalStampIcon from "@/public/images/icon/stamp_journal.svg";
 
 export type ActivityRecord = {
   id: number;
@@ -104,6 +104,11 @@ const ProfilePage0: React.FC = () => {
       <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
         <div className="w-full h-full flex justify-center">
           <DiscordOAuthButton />
+        </div>
+      </div>
+      <div className="sm:hidden absolute top-[-0px] right-[-10%] w-2/5 aspect-square">
+        <div className="relative overflow-hidden w-full h-full  [&>svg_*]:!fill-[#9F5C00]">
+          <JournalStampIcon className="absolute top-[-30%] right-[-20%]" />
         </div>
       </div>
     </>

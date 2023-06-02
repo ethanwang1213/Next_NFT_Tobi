@@ -34,9 +34,7 @@ const Index = () => {
         </>
       )}
       <SoundToggle />
-      {process.env.NEXT_PUBLIC_DEBUG_MODE && (
-        <DebugText />
-      )}
+      {process.env.NEXT_PUBLIC_DEBUG_MODE === "true" && <DebugText />}
     </>
   );
 };

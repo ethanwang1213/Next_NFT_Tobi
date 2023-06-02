@@ -25,7 +25,7 @@ const RedeemButton: React.FC = () => {
 
     redeemStatus.set("CHECKING");
 
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE!) {
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE === "true") {
       // Debugモード：1秒後にランダムなステータスを返す
       setTimeout(() => {
         // "SUCCESS", "INCORRECT", "SERVER_ERROR"からランダムに取得

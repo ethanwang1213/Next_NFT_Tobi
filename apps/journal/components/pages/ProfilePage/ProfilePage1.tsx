@@ -29,7 +29,8 @@ const ProfilePage1: React.FC = () => {
   );
 
   // Debug用
-  const { shouldRefresh } = useDebug();
+  const debug = useDebug();
+  const { current: shouldRefresh } = debug.shouldRefresh;
   // 表示するmockデータの数をランダムに決定
   const [mockDataNum, setMockDataNum] = useState(mockCharacteristicList.length);
   useEffect(() => {
@@ -41,7 +42,7 @@ const ProfilePage1: React.FC = () => {
   return (
     <div className="h-full overflow-y-auto mb-16 sm:mb-0">
       <div className="grid gap-8 pt-8 sm:pt-4">
-        {process.env.NEXT_PUBLIC_DEBUG_MODE! ? (
+        {process.env.NEXT_PUBLIC_DEBUG_MODE === "true" ? (
           <>
             {mockCharacteristicList.slice(0, mockDataNum).map((v, i) => (
               <CharacteristicLine
