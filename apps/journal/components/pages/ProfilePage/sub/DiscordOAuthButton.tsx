@@ -42,7 +42,7 @@ const DiscordOAuthButton: React.FC = () => {
 
   return (
     <>
-      {process.env.NEXT_PUBLIC_DEBUG_MODE === "true" ? (
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
         <>
           {debugButtonMode === "NONE" && <></>}
           {debugButtonMode === "OAUTH" &&

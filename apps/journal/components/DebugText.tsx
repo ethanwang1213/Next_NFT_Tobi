@@ -8,7 +8,7 @@ const DebugText: React.FC = () => {
 
   return (
     <>
-      {process.env.NEXT_PUBLIC_DEBUG_MODE === "true" && (
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" && (
         <div
           onClick={() => shouldRefresh.set(true)}
           className="absolute top-[3%] w-full flex justify-center"

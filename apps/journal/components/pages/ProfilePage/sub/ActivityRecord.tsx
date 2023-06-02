@@ -26,7 +26,7 @@ const ActivityRecord: React.FC = () => {
 
   return (
     <>
-      {process.env.NEXT_PUBLIC_DEBUG_MODE === "true"
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
         ? mockRecordList
             .slice(0, mockRecordNum)
             .map((v, i) => (

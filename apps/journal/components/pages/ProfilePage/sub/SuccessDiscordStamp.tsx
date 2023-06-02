@@ -39,7 +39,7 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
 
   return (
     <>
-      {process.env.NEXT_PUBLIC_DEBUG_MODE === "true" ? (
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
         <>{debugDiscordButtonMode.current === "STAMP" && <>{stamp}</>}</>
       ) : (
         <>{displayMode.current === "STAMP" && { stamp }}</>
