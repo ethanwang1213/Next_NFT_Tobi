@@ -33,13 +33,9 @@ const App = ({ Component, pageProps }: AppProps) => {
             <EditProfileProvider>
               <BookContextProvider>
                 <DiscordOAuthProvider>
-                  {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
-                    <DebugProvider>
-                      <Component {...pageProps} />
-                    </DebugProvider>
-                  ) : (
+                  <DebugProvider>
                     <Component {...pageProps} />
-                  )}
+                  </DebugProvider>
                 </DiscordOAuthProvider>
               </BookContextProvider>
             </EditProfileProvider>
