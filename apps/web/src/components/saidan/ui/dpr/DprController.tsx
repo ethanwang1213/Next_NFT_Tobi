@@ -4,6 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import SliderIcon from "../../../../../public/menu/resolution/slider_TOBIRAPOLIS.svg";
+import { ShowBurgerContext } from "@/context/showBurger";
 
 const DprController: React.FC = () => {
   const { setDpr, isAutoAdjustMode, setIsAutoAdjustMode, monitorFactor } =
@@ -13,11 +14,13 @@ const DprController: React.FC = () => {
   const [isCheckId, setIsCheckId] = useState(0);
   const dropRef = useRef<HTMLDivElement>(null);
 
+  const { showBurger } = useContext(ShowBurgerContext);
+
   // 初期化
   useEffect(() => {
     // setDpr(1);
     setIsAutoAdjustMode(true);
-    setIsCheckId(4);
+    setIsCheckId(1);
   }, []);
 
   // autoモードでmonitorFactorによる調整値を設定
@@ -56,7 +59,10 @@ const DprController: React.FC = () => {
           <div className="dropdown dropdown-end dropdown-open font-tsukub-400">
             <button
               tabIndex={0}
-              className="btn btn-ghost hover:bg-black/20 min-h-[48px] w-[48px] h-[48px] tab:w-[62px] tab:h-[62px] text-white px-3 tab:px-4 text-[20px]"
+              className={
+                "btn btn-ghost hover:bg-black/20 min-h-[48px] w-[48px] h-[48px] tab:w-[62px] tab:h-[62px] text-white px-3 tab:px-4 text-[20px]" +
+                (showBurger ? "" : " hidden")
+              }
               onClick={(ev) => {
                 ev.stopPropagation();
                 setIsOpen(!isOpen);
