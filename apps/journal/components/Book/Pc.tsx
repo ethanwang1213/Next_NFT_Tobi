@@ -17,6 +17,7 @@ import NFTPage from "../pages/NFTPage/NFTPage";
 import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
+import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
@@ -200,7 +201,10 @@ const Pc = () => {
             }}
           >
             {/* ページによってpaddingを変更する */}
-            <div className={`page ${pagePadding(pageNo)}`}>{pages[pageNo]}</div>
+            <div className={`page ${pagePadding(pageNo)}`}>
+              {pages[pageNo]}
+              <SuccessDiscordStamp isPc={true} />
+            </div>
           </div>
           {/* 右ページ */}
           <div

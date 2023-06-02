@@ -10,6 +10,7 @@ import { EditProfileProvider } from "@/contexts/EditProfileProvider";
 import { HoldNFTsProvider } from "@/contexts/HoldNFTsProvider";
 import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
 import DebugProvider from "@/contexts/DebugProvider";
+import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 
 config.autoAddCss = false;
 
@@ -31,13 +32,15 @@ const App = ({ Component, pageProps }: AppProps) => {
           <RedeemStatusContextProvider>
             <EditProfileProvider>
               <BookContextProvider>
-                {process.env.NEXT_PUBLIC_DEBUG_MODE ? (
-                  <DebugProvider>
+                <DiscordOAuthProvider>
+                  {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
+                    <DebugProvider>
+                      <Component {...pageProps} />
+                    </DebugProvider>
+                  ) : (
                     <Component {...pageProps} />
-                  </DebugProvider>
-                ) : (
-                  <Component {...pageProps} />
-                )}
+                  )}
+                </DiscordOAuthProvider>
               </BookContextProvider>
             </EditProfileProvider>
           </RedeemStatusContextProvider>

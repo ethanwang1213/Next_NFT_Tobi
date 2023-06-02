@@ -14,7 +14,8 @@ const ActivityRecord: React.FC = () => {
   const { formattedFromDate } = useDateFormat();
 
   // DEBUG用
-  const { shouldRefresh } = useDebug();
+  const debug = useDebug();
+  const { current: shouldRefresh } = debug.shouldRefresh;
   // 表示するmockレコードの数をランダムに決定
   const [mockRecordNum, setMockDataNum] = useState(mockRecordList.length);
   useEffect(() => {
@@ -25,7 +26,7 @@ const ActivityRecord: React.FC = () => {
 
   return (
     <>
-      {process.env.NEXT_PUBLIC_DEBUG_MODE!
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
         ? mockRecordList
             .slice(0, mockRecordNum)
             .map((v, i) => (

@@ -12,6 +12,7 @@ import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
 import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
+import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -90,6 +91,7 @@ const Mobile = () => {
             {/* ページによってpaddingを変更する */}
             <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
+              <SuccessDiscordStamp isPc={false} />
             </div>
           </div>
         </div>

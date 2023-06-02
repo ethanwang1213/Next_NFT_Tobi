@@ -4,13 +4,13 @@ import { useDebug } from "@/contexts/DebugProvider";
 // デバッグモードの時のみ表示される
 // クリックするとデバッグ用のmockデータを更新する
 const DebugText: React.FC = () => {
-  const { setShouldRefresh } = useDebug();
+  const { shouldRefresh } = useDebug();
 
   return (
     <>
-      {process.env.NEXT_PUBLIC_DEBUG_MODE! && (
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" && (
         <div
-          onClick={() => setShouldRefresh(true)}
+          onClick={() => shouldRefresh.set(true)}
           className="absolute top-[3%] w-full flex justify-center"
         >
           <p className="text-error font-bold text-3xl">※DEBUG MODE※</p>
