@@ -90,7 +90,9 @@ const Mobile = () => {
             {/* ページによってpaddingを変更する */}
             <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
-              <SuccessDiscordStamp isPc={false} />
+              {pageNo === profilePage.start && (
+                <SuccessDiscordStamp isPc={false} />
+              )}
             </div>
           </div>
         </div>
