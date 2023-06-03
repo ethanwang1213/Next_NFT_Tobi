@@ -1,24 +1,20 @@
 import * as functions from "firebase-functions";
-import {PubSub} from "@google-cloud/pubsub";
-import * as sendgrid from "@sendgrid/mail";
-import * as voucher from "voucher-code-generator";
 import {initializeApp, applicationDefault} from "firebase-admin/app";
 import {firestore} from "firebase-admin";
 import * as cors from "cors";
 import fetch from "node-fetch";
-
-const NEKO_NFT_ID = "A.01ab36aaf654a13e.TobiraNeko";
+import {parseNftByName} from "./lib/nft";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
   credential: applicationDefault(),
 });
 
-const topicNames = {
-  ordersPaid: "shopify-orders-paid",
-  ordersCreate: "shopify-orders-create",
-};
-const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
+exports.shopifyOrders = require("./shopifyOrders");
+
+if (process.env.PUBSUB_EMULATOR_HOST) {
+  exports.devtool = require("./devtool");
+}
 
 export const background = functions.https.onRequest((request, response) => {
   functions.logger.info("Hello logs!", {structuredData: true});
@@ -33,119 +29,6 @@ export const background = functions.https.onRequest((request, response) => {
     };
     response.status(200).json(resData);
   });
-});
-
-const generateRedeemCode = () => {
-  return voucher.generate({
-    pattern: "####-####-####",
-    count: 1,
-    charset: "0123456789123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
-  })[0];
-};
-
-type Item = {
-  id: string;
-  price?: number;
-  quantity?: number;
-  redeem?: string;
-  used_at?: Date;
-}
-
-/**
-  * Shopify Orders Paid PubSub
-  * https://shopify.dev/docs/api/admin-graphql/2023-04/enums/WebhookSubscriptionTopic
-  */
-export const handleOrdersPaid = functions.pubsub.topic(topicNames["ordersPaid"]).onPublish(async (message) => {
-  console.log(JSON.stringify(message.json));
-  console.log(JSON.stringify(message.json.line_items));
-  const order = {
-    email: message.json.email,
-    name: message.json.name,
-  };
-  const items = message.json.line_items.map((item: any): Item => {
-    return {
-      id: item.id,
-      redeem: generateRedeemCode(),
-    };
-  });
-  const orderRef = await firestore().collection("orders").add(order);
-  for (const item of items) {
-    await orderRef.collection("items").add(item);
-  }
-  sendgrid.setApiKey(sgAPIKey);
-  const mailOptions = {
-    from: process.env.SENDGRID_SENDER_EMAIL || "",
-    to: order.email,
-    subject: `Order ${order.name} redeem codes`,
-    html: `<p style="font-size: 16px;">Redeem Codes</p><br />
-${items.map((item: Item) => {
-    return `<p>${item.id}: ${item.redeem}</p>`;
-  }).join("\n").toString()}
-`,
-  };
-  const send = await sendgrid.send(mailOptions);
-  return send.toString();
-});
-
-/**
-  * Shopify Orders Create PubSub
-  * https://shopify.dev/docs/api/admin-graphql/2023-04/enums/WebhookSubscriptionTopic
-  */
-export const handleOrdersCreate = functions.pubsub.topic(topicNames["ordersCreate"]).onPublish(async (message) => {
-  console.log(JSON.stringify(message.json));
-  console.log(JSON.stringify(message.json.line_items));
-  if (message.json.payment_gateway_names != "暗号資産") {
-    return;
-  }
-  const payment = {
-    email: message.json.email,
-    name: message.json.name,
-    total_price: message.json.total_price,
-    items: message.json.line_items.map((item: any): Item => {
-      return {
-        id: item.id,
-        price: item.price,
-        quantity: item.quantity,
-      };
-    }),
-    status: "pending",
-  };
-  await firestore().collection("payments").add(payment);
-  return;
-});
-
-export const pubsubHelper = functions.https.onRequest(async (request, response) => {
-  console.log("pubsubHelper");
-  // 1. make sure the function can't be used in production
-  if (!process.env.PUBSUB_EMULATOR_HOST) {
-    functions.logger
-        .error("This function should only run locally in an emulator.");
-    response.status(400).end();
-  }
-
-  const topicName = request.body.topicName;
-
-  const pubsub = new PubSub();
-
-  // 2. make sure the test topic exists and
-  // if it doesn't then create it.
-  const [topics] = await pubsub.getTopics();
-
-  // topic.name is of format 'projects/PROJECT_ID/topics/test-topic',
-  const testTopic = topics.filter(
-      (topic) => topic.name.includes(topicName)
-  )?.[0];
-  if (!testTopic) await pubsub.createTopic(topicName);
-
-  // 3. publish to test topic and get message ID
-  const messageID = await pubsub.topic(topicName).publishMessage({
-    json: request.body,
-  });
-
-  // 4. send back a helpful message
-  response.status(201).send(
-      {success: `Published to pubsub ${topicName} -- message ID: `, messageID}
-  );
 });
 
 export const discordOAuth = functions.https.onRequest(async (request, response) => {
@@ -218,10 +101,11 @@ export const checkRedeem = functions.https.onCall(async (data, context) => {
     if (!item.used_at) {
       // TODO: get metadata from NFT
       // TODO: make them as a transaction
-      await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(NEKO_NFT_ID).collection("hold").doc(item.id).set({
-        name: `TOBIRA NEKO # ${item.id}`,
+      const nft = parseNftByName(item.name);
+      await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(nft.type).collection("hold").doc(nft.id).set({
+        name: nft.name,
         description: "",
-        thumbnail: `https://storage.googleapis.com/tobiratory-dev_media/nft/tobiraneko/${item.id}.png`,
+        thumbnail: nft.thumbnail,
         acquisition_time: new Date(),
         acquisition_method: "purchase_in_shop",
       });
