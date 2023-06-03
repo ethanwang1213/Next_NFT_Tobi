@@ -35,6 +35,10 @@ const NameInput: React.FC<Props> = ({
             value: MAX_NAME_LENGTH,
             message: `${MAX_NAME_LENGTH}文字以内で入力してください。`,
           },
+          pattern: {
+            value: /^(?!.*(\\|\/|:|\*|\?|"|<|>|\|)).*$/,
+            message: '\\ / : * ? " < > | は使用できません。',
+          },
         })}
       />
       {errors.newName && (
