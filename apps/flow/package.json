@@ -12,8 +12,8 @@
     "mint": "sh ./nft/shell/mint-shopify-data-gen0.csv.sh",
     "mint2": "flow transactions send ./cadence/transactions/mintNFT.cdc --network=emulator --signer emulator-account-2 'TOBIRA NEKO #2' 'G1 eye-colour:#F2E205 eye-type:smile pattern-colour:#F2C46D base-colour:#F2DF80 Figure:A nose-colour:#F2E206' 'https://storage.googleapis.com/tobiratory-dev_media/nft/tobiraneko/2.jpg'",
     "getIds": "sh ./nft/shell/getIds.sh",
-    "getIds2": "flow scripts execute ./cadence/scripts/getIds.cdc --network=testnet 5e9ccdb91ff7ad93",
-    "getMetadata": "flow scripts execute ./cadence/scripts/getMetadata.cdc --network=testnet 5e9ccdb91ff7ad93 2",
+    "getIds-testnet": "flow scripts execute ./cadence/scripts/getIds.cdc --network=testnet 5e9ccdb91ff7ad93",
+    "getMetadata": "flow scripts execute ./cadence/scripts/getMetadata.cdc --network=emulator f8d6e0586b0a20c7 1",
     "transfer": "flow transactions send ./cadence/transactions/transferNFT.cdc --network=emulator 01cf0e2f2f715450 1",
     "deploy-testnet": "flow project deploy --network=testnet",
     "test": "flow project test --network=emulator"

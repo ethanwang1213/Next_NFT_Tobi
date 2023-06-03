@@ -17,11 +17,18 @@ const main = async () => {
     if (row['Title']) {
       const command = `
 flow transactions send ./cadence/transactions/mintNFT.cdc \\
-  --network=testnet --signer testnetAccount3 \\
+  --network=emulator \\
   '${row['Title']}' \\
   '${row['Tags']}' \\
   ${row['Image Src']}
 `
+//       const command = `
+// flow transactions send ./cadence/transactions/mintNFT.cdc \\
+//   --network=testnet --signer testnetAccount3 \\
+//   '${row['Title']}' \\
+//   '${row['Tags']}' \\
+//   ${row['Image Src']}
+// `
       stream.write(command);
     }
   }
