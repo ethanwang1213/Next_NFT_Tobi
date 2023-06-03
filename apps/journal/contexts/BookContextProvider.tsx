@@ -11,7 +11,7 @@ import NekoPage from "../components/pages/NekoPage/NekoPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
-import { bookContext, tagType } from "../types/type";
+import { BookIndex, bookContext, tagType } from "../types/type";
 import { useAuth } from "./AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -33,8 +33,25 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pages, setPages] = useState<ReactNode[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
   const [isMute, setIsMute] = useState<boolean>(false);
-  const [profilePageNo, setProfilePageNo] = useState<number>(0);
-  const [nekoPageNo, setNekoPageNo] = useState<number>(0);
+
+  const [bookIndex, setBookIndex] = useState<BookIndex>({
+    profilePage: {
+      start: 0,
+      end: 0,
+    },
+    nekoPage: {
+      start: 0,
+      end: 0,
+    },
+    nftPage: {
+      start: 0,
+      end: 0,
+    },
+    redeemPage: {
+      start: 0,
+      end: 0,
+    },
+  });
 
   const router = useRouter();
   const logoutModal = useRef<HTMLInputElement>();
@@ -60,16 +77,14 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
         current: isMute,
         set: setIsMute,
       },
-      profilePageNo: profilePageNo,
-      nekoPageNo: nekoPageNo,
+      bookIndex: bookIndex,
     }),
     [
       pageNo,
       pages,
       tags,
       isMute,
-      profilePageNo,
-      nekoPageNo,
+      bookIndex,
       setPageNo,
       setPages,
       setTags,
@@ -114,8 +129,24 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
     const nftPageIndex = nekoPageIndex + nekoPageNum;
     const redeemPageIndex = nftPageIndex + nftPageNum;
 
-    setProfilePageNo(profilePageIndex);
-    setNekoPageNo(nekoPageIndex);
+    setBookIndex({
+      profilePage: {
+        start: profilePageIndex,
+        end: nekoPageIndex - 1,
+      },
+      nekoPage: {
+        start: nekoPageIndex,
+        end: nftPageIndex - 1,
+      },
+      nftPage: {
+        start: nftPageIndex,
+        end: redeemPageIndex - 1,
+      },
+      redeemPage: {
+        start: redeemPageIndex,
+        end: redeemPageIndex + 1,
+      },
+    });
 
     // 各ページを生成し配列に格納する
     // 所有NFTが増加するほど、ページも増加していく。

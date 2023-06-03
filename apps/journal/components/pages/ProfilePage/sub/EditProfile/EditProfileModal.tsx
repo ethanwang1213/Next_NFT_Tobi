@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import CloseModalButton from "./sub/CloseModalButton/CloseModalButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,7 @@ import NameInput from "./sub/NameInput";
 import { useForm } from "react-hook-form";
 import useUpdateProfile from "@/hooks/useUpdateProfile";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
+import { BookContext } from "@/contexts/BookContextProvider";
 
 export type EditProfileValues = {
   iconUrl: string;
@@ -23,6 +24,7 @@ export type EditProfileValues = {
  * @returns
  */
 const EditProfileModal: React.FC = () => {
+  const { pages, pageNo, bookIndex } = useContext(BookContext);
   const { updateProfile } = useUpdateProfile();
   const {
     register,
@@ -43,6 +45,13 @@ const EditProfileModal: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { cropData } = useEditProfile();
 
+  // 保存処理
+  const onSubmit = async () => {
+    updateProfile(getValues());
+    cropData.set(null);
+    setIsModalOpen(false);
+  };
+
   // モーダルが開かれたときにユーザー情報を取得する
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setIsModalOpen(ev.currentTarget.checked);
@@ -51,12 +60,16 @@ const EditProfileModal: React.FC = () => {
     }
   };
 
-  // 保存処理
-  const onSubmit = async () => {
-    updateProfile(getValues());
-    cropData.set(null);
-    setIsModalOpen(false);
-  };
+  const isProfilePage0 = useMemo(
+    () =>
+      pages.current.length > 0 &&
+      pageNo.current === bookIndex.profilePage.start,
+    [pages.current, pageNo.current, bookIndex.profilePage.start]
+  );
+
+  if (!isProfilePage0) {
+    return <></>;
+  }
 
   return (
     <>
