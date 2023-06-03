@@ -99,7 +99,7 @@ const NekoSwiper: React.FC = () => {
           modules={[EffectCards]}
           className="mySwiper"
         >
-          {[...nekoNFTs.current].reverse().map((v, i) => (
+          {[...nekoNFTs.current].map((v, i) => (
             <SwiperSlide key={i}>
               <NekoSwiperContent
                 width={cardPos.width}
