@@ -36,7 +36,7 @@ const RedeemButton: React.FC = () => {
       }, 1000);
     } else {
       const redeem = inputCode.current;
-      const callable = httpsCallable(functions, "checkRedeem");
+      const callable = httpsCallable(functions, "journalNfts-checkRedeem");
       callable({ redeem })
         .then((result) => {
           console.log(result);

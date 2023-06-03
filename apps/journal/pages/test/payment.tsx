@@ -28,7 +28,7 @@ const Payment: NextPage = () => {
 
   useEffect(() => {
     console.log("getPayments")
-    const callable = httpsCallable<{}, PaymentOrder[]>(functions, "getPayments");
+    const callable = httpsCallable<{}, PaymentOrder[]>(functions, "journalNfts-getPayments");
     callable().then((result) => {
       setPayments(result.data.map((payment) => { return payment; }));
     }).catch((error) => {
