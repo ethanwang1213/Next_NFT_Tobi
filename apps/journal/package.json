@@ -13,6 +13,7 @@
     "fs": false
   },
   "dependencies": {
+    "@blocto/fcl": "^0.0.71",
     "@firebase/analytics": "^0.10.0",
     "@firebase/auth": "^0.23.1",
     "@firebase/firestore": "^3.11.0",
@@ -23,6 +24,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "daisyui": "^2.51.5",
+    "ethers": "^5.7.2",
     "firebase": "^9.21.0",
     "gsap": "npm:@gsap/business@^3.11.5",
     "jimp": "^0.16.13",

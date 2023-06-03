@@ -1,5 +1,12 @@
+import { MetaMaskInpageProvider } from "@metamask/providers";
 import { ReactElement } from "react";
 import { Timestamp } from "@firebase/firestore";
+
+export declare global {
+  interface Window {
+    ethereum: MetaMaskInpageProvider;
+  }
+}
 
 export type tagType = {
   page: number | (() => void);
