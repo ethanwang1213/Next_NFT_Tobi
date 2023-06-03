@@ -129,6 +129,21 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
     const nftPageIndex = nekoPageIndex + nekoPageNum;
     const redeemPageIndex = nftPageIndex + nftPageNum;
 
+    // nekoやnftのページ数が増えたとき、それより後ろにいる場合は追加分だけページ番号をずらす
+    const nekoIncreases =
+      nekoPageNum > bookIndex.nekoPage.end - bookIndex.nekoPage.start + 1;
+    const nftIncreases =
+      nftPageNum > bookIndex.nftPage.end - bookIndex.nftPage.start + 1;
+    let offsetNo = 0;
+    if (nekoIncreases && pageNo > bookIndex.nekoPage.end) {
+      offsetNo += 2;
+    }
+    if (nftIncreases && pageNo > bookIndex.nftPage.end) {
+      offsetNo += 2;
+    }
+    setPageNo(pageNo + offsetNo);
+
+    // インデックスを更新
     setBookIndex({
       profilePage: {
         start: profilePageIndex,

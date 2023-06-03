@@ -99,7 +99,7 @@ export type NFTData = {
   name: string;
   description?: string;
   thumbnail: string;
-  acquisition_time: number;
+  acquisition_time: Timestamp;
   acquisition_method?: string;
 };
 

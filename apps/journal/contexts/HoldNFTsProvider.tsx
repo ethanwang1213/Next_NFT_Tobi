@@ -55,6 +55,13 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     if (!user) return;
 
     const nekos = await fetchHoldNFTs(NEKO_NFT_ID);
+    // 最新順にソート
+    nekos.sort((a, b) => {
+      return (
+        b.acquisition_time.toDate().getTime() -
+        a.acquisition_time.toDate().getTime()
+      );
+    });
     setNekoNFTs(nekos);
   };
 
@@ -62,7 +69,7 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
   const loadOtherNFTs = async () => {
     if (!user) return;
     const ids = await fetchNFTCollectionIds();
-    const otherNFTs = [];
+    const otherNFTs: (NFTData | HouseBadgeNFTData)[] = [];
     await Promise.all(
       ids.map(async (id) => {
         if (id === NEKO_NFT_ID) return;
@@ -75,6 +82,13 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
         }
       })
     );
+    // 最新順にソート
+    otherNFTs.sort((a, b) => {
+      return (
+        b.acquisition_time.toDate().getTime() -
+        a.acquisition_time.toDate().getTime()
+      );
+    });
     setOtherNFTs(otherNFTs);
   };
 
@@ -94,6 +108,7 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     if (shouldUpdate) {
       loadNekos();
       loadOtherNFTs();
+      setShouldUpdate(false);
     }
   }, [shouldUpdate]);
 
