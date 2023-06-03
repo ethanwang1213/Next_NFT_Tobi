@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import { HiPlus } from "react-icons/hi";
-import { shallow } from "zustand/shallow";
 import Jimp from "jimp";
 import useSaidanStore from "@/stores/saidanStore";
 import { postSrcImage } from "@/../pages/api/item";

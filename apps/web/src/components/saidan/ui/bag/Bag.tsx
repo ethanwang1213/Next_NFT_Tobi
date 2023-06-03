@@ -1,4 +1,3 @@
-import { shallow } from "zustand/shallow";
 import { animated, useSpring } from "@react-spring/web";
 import useSaidanStore from "@/stores/saidanStore";
 import useWindowSize from "@/hooks/useWindowSize";

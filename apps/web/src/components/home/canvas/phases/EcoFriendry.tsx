@@ -68,7 +68,7 @@ const sourceData: SrcDataType = {
     },
     {
       src: "5",
-      z: -700,
+      z: -720,
       scale: 1.4,
     },
     {

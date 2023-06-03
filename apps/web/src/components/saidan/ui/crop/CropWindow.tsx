@@ -1,6 +1,5 @@
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 import { CropData, CropperParams } from "@/types/PlacedItemData";
 import { doc, setDoc } from "@firebase/firestore";
