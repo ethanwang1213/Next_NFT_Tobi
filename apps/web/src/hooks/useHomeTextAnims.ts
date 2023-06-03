@@ -1,7 +1,6 @@
 import useHomeStore from "@/stores/homeStore";
 import { easings } from "@react-spring/web";
 import { useEffect, useMemo, useState } from "react";
-import { shallow } from "zustand/shallow";
 import useIsForward from "./home/useIsForward";
 import useDigitalGoodsTextAnims from "./homeTextAnims/useDigitalGoodsTextAnims";
 import useEcoFriendlyTextAnims from "./homeTextAnims/useEcoFriendlyTextAnims";

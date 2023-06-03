@@ -1,5 +1,4 @@
 import { a } from "@react-spring/web";
-import { shallow } from "zustand/shallow";
 import useHomeStore from "@/stores/homeStore";
 import useWindowSize from "@/hooks/useWindowSize";
 import ScrollDownGuide from "./ScrollDownGuide";

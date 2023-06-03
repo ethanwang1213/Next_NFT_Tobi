@@ -1,6 +1,5 @@
 import { animated, useSpring } from "@react-spring/web";
 import { RefObject } from "react";
-import { shallow } from "zustand/shallow";
 import useWindowSize from "@/hooks/useWindowSize";
 import isiOS from "@/methods/isiOS";
 import { RESPONSIVE_BORDER } from "@/constants/saidanConstants";

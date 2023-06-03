@@ -1,5 +1,4 @@
 import { a, config, useSpring } from "@react-spring/web";
-import { shallow } from "zustand/shallow";
 import CameraReversal from "@/../public/saidan/saidan-ui/camera_reversal.svg";
 import MoveGoods from "@/../public/saidan/saidan-ui/movegoods.svg";
 import { GRAY_COLOR } from "@/constants/saidanConstants";
@@ -7,7 +6,6 @@ import useSaidanStore from "@/stores/saidanStore";
 import { useEffect, useState } from "react";
 
 const CameraModeButton = () => {
-
   const isCameraMode = useSaidanStore((state) => state.isCameraMode);
   const setCameraMode = useSaidanStore((state) => state.setCameraMode);
   const closeOther = useSaidanStore((state) => state.closeOther);

@@ -11,7 +11,6 @@ import {
   Vector2,
   Vector3,
 } from "three";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 import { PlacedItemData } from "@/types/PlacedItemData";
 import PlacedItemImpl from "./PlacedItemImpl";

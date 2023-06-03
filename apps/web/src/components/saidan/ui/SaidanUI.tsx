@@ -1,6 +1,5 @@
 import useSaidanStore from "@/stores/saidanStore";
 import { RefObject, useEffect, useState } from "react";
-import { shallow } from "zustand/shallow";
 import AcstGeneratingMsg from "./acstModal/AcstGeneratingMsg";
 import SaidanTutorial from "./tutorial/SaidanTutorial";
 import Bag from "./bag/Bag";

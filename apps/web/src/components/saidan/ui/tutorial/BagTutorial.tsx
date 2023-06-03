@@ -1,6 +1,5 @@
 import { useSpring, a, config } from "@react-spring/web";
 import { useState } from "react";
-import { shallow } from "zustand/shallow";
 import useWindowSize from "@/hooks/useWindowSize";
 import useSaidanStore from "@/stores/saidanStore";
 import AddItemTutorial from "./AddItemTutorial";

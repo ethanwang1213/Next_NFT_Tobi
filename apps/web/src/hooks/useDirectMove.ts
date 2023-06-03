@@ -2,7 +2,6 @@ import { ThreeEvent } from "@react-three/fiber";
 import { FullGestureState } from "@use-gesture/react";
 import { RefObject } from "react";
 import { Raycaster, Vector2, Camera, Group } from "three";
-import { shallow } from "zustand/shallow";
 import {
   FLOOR_OFFSET,
   ITEM_TYPE_DATA,

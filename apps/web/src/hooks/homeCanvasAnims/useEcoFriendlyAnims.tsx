@@ -2,7 +2,6 @@ import getTextureLength from "@/methods/home/getTextureLength";
 import useHomeStore from "@/stores/homeStore";
 import { easings, useSprings } from "@react-spring/web";
 import { Dispatch, SetStateAction } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top5 EcoFriendryのアニメーション用変数を管理する

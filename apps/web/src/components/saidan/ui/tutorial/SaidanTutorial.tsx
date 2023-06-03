@@ -1,6 +1,5 @@
 import { ShowBurgerContext } from "@/context/showBurger";
 import { useContext, useEffect } from "react";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 import BagTutorial from "./BagTutorial";
 import OpenBagTutorial from "./OpenBagTutorial";
