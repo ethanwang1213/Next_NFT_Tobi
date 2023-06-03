@@ -1,5 +1,5 @@
 import { MetaMaskInpageProvider } from "@metamask/providers";
-import { ReactElement } from "react";
+import { Dispatch, ReactElement } from "react";
 import { Timestamp } from "@firebase/firestore";
 
 export declare global {
@@ -11,6 +11,25 @@ export declare global {
 export type tagType = {
   page: number | (() => void);
   image: string | ReactElement;
+};
+
+export type BookIndex = {
+  profilePage: {
+    start: number;
+    end: number;
+  };
+  nekoPage: {
+    start: number;
+    end: number;
+  };
+  nftPage: {
+    start: number;
+    end: number;
+  };
+  redeemPage: {
+    start: number;
+    end: number;
+  };
 };
 
 export type bookContext = {
@@ -30,8 +49,7 @@ export type bookContext = {
     current: boolean;
     set: Dispatch<SetStateAction<boolean>>;
   };
-  profilePageNo: number;
-  nekoPageNo: number;
+  bookIndex: BookIndex;
 };
 
 // 本の画像の左上隅座標を表す型

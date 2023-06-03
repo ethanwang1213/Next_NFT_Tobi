@@ -3,6 +3,8 @@ import IconCrop from "./sub/IconCrop";
 import { Area } from "react-easy-crop";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { BookContext } from "@/contexts/BookContextProvider";
+import { useContext, useMemo } from "react";
 
 type Props = {};
 
@@ -15,6 +17,7 @@ type Props = {};
  * @returns
  */
 const CropNewIconModal: React.FC<Props> = ({}) => {
+  const { pages, pageNo, bookIndex } = useContext(BookContext);
   const { isCropModalOpen, iconForCrop, cropData } = useEditProfile();
 
   // クロップ完了時のコールバック関数
@@ -22,6 +25,17 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
     cropData.set(crop);
     isCropModalOpen.set(false);
   };
+
+  const isProfilePage0 = useMemo(
+    () =>
+      pages.current.length > 0 &&
+      pageNo.current === bookIndex.profilePage.start,
+    [pages.current, pageNo.current]
+  );
+
+  if (!isProfilePage0) {
+    return <></>;
+  }
 
   return (
     <>

@@ -1,22 +1,10 @@
 import Image from "next/image";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
 import { BookPos } from "../../types/type";
 import Tag from "../Tag";
 import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
-import NekoPage from "../pages/NekoPage/NekoPage";
-import NFTPage from "../pages/NFTPage/NFTPage";
-import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
-import ProfilePage1 from "../pages/ProfilePage/ProfilePage1";
-import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 
 const Pc = () => {
@@ -45,6 +33,7 @@ const Pc = () => {
   const { current: pages } = bookData.pages;
   const { current: tags } = bookData.tags;
   const [newPageNo, setNewPageNo] = useState<number>(pageNo);
+  const { profilePage, nekoPage, nftPage, redeemPage } = bookData.bookIndex;
 
   // ページめくり領域の幅 (%)
   const flipAreaWRatio = 18;
@@ -157,22 +146,22 @@ const Pc = () => {
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
-    switch (pages[no].type) {
-      case NekoPage:
-      case NFTPage:
-        return " px-0";
-      case ProfilePage0:
+    if (no >= profilePage.start && no <= profilePage.end) {
+      if (no % 2 === 0) {
         return " pb-0 pl-0 pr-4";
-      case ProfilePage1:
+      } else {
         return " pl-4";
-      case RedeemPage:
-        if (no % 2 === 0) {
-          return " pb-8";
-        } else {
-          return "";
-        }
-      default:
+      }
+    } else if (no >= nekoPage.start && no <= nekoPage.end) {
+      return " px-0";
+    } else if (no >= nftPage.start && no <= nftPage.end) {
+      return " px-0";
+    } else if (no >= redeemPage.start && no <= redeemPage.end) {
+      if (no % 2 === 0) {
+        return " pb-8";
+      } else {
         return "";
+      }
     }
   };
 
@@ -203,7 +192,9 @@ const Pc = () => {
             {/* ページによってpaddingを変更する */}
             <div className={`page ${pagePadding(pageNo)}`}>
               {pages[pageNo]}
-              <SuccessDiscordStamp isPc={true} />
+              {pageNo === profilePage.start && (
+                <SuccessDiscordStamp isPc={true} />
+              )}
             </div>
           </div>
           {/* 右ページ */}

@@ -12,11 +12,11 @@ type Props = {
  * @returns
  */
 const CheckNFTButton: React.FC<Props> = ({ className }) => {
-  const { pageNo, nekoPageNo } = useContext(BookContext);
+  const { pageNo, bookIndex } = useContext(BookContext);
 
   const callback = () => {
     // TODO: ゆくゆくはNEKOの場合と他のNFTの場合で遷移先を変える
-    pageNo.set(nekoPageNo);
+    pageNo.set(bookIndex.nekoPage.start);
   };
 
   return (

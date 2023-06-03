@@ -11,7 +11,6 @@ import NFTPage from "../pages/NFTPage/NFTPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
-import ProfilePage0 from "../pages/ProfilePage/ProfilePage0";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 
 const Mobile = () => {
@@ -20,6 +19,7 @@ const Mobile = () => {
   const bookContext = useContext(BookContext);
   const pages = bookContext.pages.current;
   const pageNo = bookContext.pageNo.current;
+  const { profilePage, nftPage } = bookContext.bookIndex;
 
   const [isArrowShown, setIsArrowShown] = useState<Boolean>(true);
   const [isSwiperPage, setIsSwiperPage] = useState<Boolean>(false);
@@ -58,13 +58,12 @@ const Mobile = () => {
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
-    switch (pages[no].type) {
-      case NFTPage:
-        return " px-0";
-      case ProfilePage0:
-        return " pb-2";
-      default:
-        return "";
+    if (no === profilePage.start) {
+      return " pb-2";
+    } else if (no >= nftPage.start && no <= nftPage.end) {
+      return " px-0";
+    } else {
+      return "";
     }
   };
 
@@ -91,7 +90,9 @@ const Mobile = () => {
             {/* ページによってpaddingを変更する */}
             <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
-              <SuccessDiscordStamp isPc={false} />
+              {pageNo === profilePage.start && (
+                <SuccessDiscordStamp isPc={false} />
+              )}
             </div>
           </div>
         </div>
