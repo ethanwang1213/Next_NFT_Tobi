@@ -46,10 +46,13 @@ const RedeemButton: React.FC = () => {
         })
         .catch((error) => {
           console.log(error);
-          redeemStatus.set(
-            "INCORRECT"
-            // "SERVER_ERROR"
-          );
+          if (error.code === "functions/not-found") {
+            redeemStatus.set("INCORRECT");
+          } else {
+            redeemStatus.set("SERVER_ERROR");
+          }
+          // TODO: "The user doesn't have email."の場合は、メールアドレスを登録するように促す
+          // そもそも引き換えボタンが押せないようにしたい
         });
     }
   };
