@@ -66,9 +66,9 @@ const Logout = () => {
             </div>
             <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
           </div>
-          <div className="text-4xl absolute text-accent top-[75%]">
+          <h1 className="text-4xl absolute text-accent top-[75%]">
             Logging out...
-          </div>
+          </h1>
         </div>
       </div>
       <div className="flex justify-center fixed -bottom-32 right-0 left-0 h-72">
