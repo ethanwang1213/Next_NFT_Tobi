@@ -52,8 +52,6 @@ const RedeemButton: React.FC = () => {
           } else {
             redeemStatus.set("SERVER_ERROR");
           }
-          // TODO: "The user doesn't have email."の場合は、メールアドレスを登録するように促す
-          // そもそも引き換えボタンが押せないようにしたい
         });
     }
   };
