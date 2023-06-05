@@ -7,6 +7,7 @@ import { functions } from "@/firebase/client";
 import { httpsCallable } from "firebase/functions";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 import useRecordNewActivity from "@/hooks/useRecordNewActivity";
+import { useAuth } from "@/contexts/AuthProvider";
 
 /**
  * 引き換えボタンのコンポーネント
@@ -14,7 +15,7 @@ import useRecordNewActivity from "@/hooks/useRecordNewActivity";
  * @returns
  */
 const RedeemButton: React.FC = () => {
-  const { redeemStatus, inputCode, modalInputIsChecked } =
+  const { redeemStatus, inputCode, modalInputIsChecked, canRedeem } =
     useContext(RedeemContext);
   const { shouldUpdate } = useHoldNFTs();
   const { recordNewActivity } = useRecordNewActivity();
@@ -60,9 +61,8 @@ const RedeemButton: React.FC = () => {
   return (
     <button
       onClick={onClick}
-      className={`btn btn-accent btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[70%] sm:w-[60%] sm:h-[74px] text-[22px] sm:text-[36px] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)] ${
-        redeemStatus.current === "CHECKING" ? "btn-disabled" : ""
-      }`}
+      className={`btn btn-accent btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[70%] sm:w-[60%] sm:h-[74px] text-[22px] sm:text-[36px] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]`}
+      disabled={canRedeem || redeemStatus.current === "CHECKING"}
     >
       引き換え
     </button>

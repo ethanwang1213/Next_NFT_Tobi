@@ -3,9 +3,11 @@ import {
   ReactNode,
   SetStateAction,
   createContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
+import { useAuth } from "./AuthProvider";
 
 type Props = {
   children: ReactNode;
@@ -48,6 +50,7 @@ type RedeemContextType = {
     current: boolean;
     set: Dispatch<SetStateAction<boolean>>;
   };
+  canRedeem: boolean;
 };
 
 export const RedeemContext = createContext<RedeemContextType>(
@@ -66,6 +69,18 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
   const [selfJournalId, setSelfJournalId] = useState<string>("");
   const [modalInputIsChecked, setModalInputIsChecked] =
     useState<boolean>(false);
+  const { user } = useAuth();
+  const [canRedeem, setCanRedeem] = useState<boolean>(false);
+
+  // 匿名ログインの場合は引き換えできない
+  useEffect(() => {
+    if (!user) return;
+
+    setCanRedeem(
+      (!user || !user.email || user.email === "") &&
+        process.env.NEXT_PUBLIC_DEBUG_MODE !== "true"
+    );
+  }, [user]);
 
   const redeemContextValue = useMemo<RedeemContextType>(
     () => ({
@@ -89,6 +104,7 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
         current: modalInputIsChecked,
         set: setModalInputIsChecked,
       },
+      canRedeem: canRedeem,
     }),
     [
       redeemStatus,
@@ -96,6 +112,7 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
       selfAccount,
       selfJournalId,
       modalInputIsChecked,
+      canRedeem,
       setRedeemStatus,
       setInputCode,
       setSelfAccount,
