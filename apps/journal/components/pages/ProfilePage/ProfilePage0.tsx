@@ -62,7 +62,7 @@ const ProfilePage0: React.FC = () => {
               <PersonalInfo
                 dataType={"Mail"}
                 dataValue={
-                  user.email === ""
+                  !user.email || user.email === ""
                     ? "-"
                     : `${
                         user.email.length < 21
