@@ -232,10 +232,10 @@ const SaidanCanvas = ({ canvasRef }: SaidanCanvasProps) => {
   // グッズの配置に変更があれば、10秒に一回dbへ保存
   useIntervalBySec(() => {
     if (!isSaved) {
-      console.log("saving");
+      // console.log("saving");
       saveStates();
     } else {
-      console.log("not save");
+      // console.log("not save");
     }
   }, 10);
 
@@ -269,7 +269,7 @@ const SaidanCanvas = ({ canvasRef }: SaidanCanvasProps) => {
       >
         <PerformanceMonitor
           onChange={({ factor }) => {
-            console.log("factor: " + factor);
+            // console.log("factor: " + factor);
             setMonitorFactor(factor);
             // round((0.3 + 0.7 * factor) * window.devicePixelRatio, 1)
           }}

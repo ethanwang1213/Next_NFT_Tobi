@@ -20,7 +20,7 @@ const DprController: React.FC = () => {
   useEffect(() => {
     // setDpr(1);
     setIsAutoAdjustMode(true);
-    setIsCheckId(1);
+    setIsCheckId(4);
   }, []);
 
   // autoモードでmonitorFactorによる調整値を設定

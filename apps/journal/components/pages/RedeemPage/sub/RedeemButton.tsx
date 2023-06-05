@@ -39,7 +39,7 @@ const RedeemButton: React.FC = () => {
       const callable = httpsCallable(functions, "journalNfts-checkRedeem");
       callable({ redeem })
         .then((result) => {
-          console.log(result);
+          // console.log(result);
           redeemStatus.set("SUCCESS");
           shouldUpdate.set(true);
           recordNewActivity(`${result.data as string} をJournalに追加した`);

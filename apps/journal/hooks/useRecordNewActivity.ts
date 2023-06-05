@@ -17,7 +17,7 @@ const useRecordActivity = () => {
         collection(db, `users/${user.id}/activity`),
         newRecord
       );
-      console.log(docRef.id);
+      // console.log(docRef.id);
     } catch (error) {
       console.log(error);
     }

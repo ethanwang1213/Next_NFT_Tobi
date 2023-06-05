@@ -26,7 +26,7 @@ const DiscordOAuthContext = createContext<ContextType>({} as ContextType);
 
 /**
  * Discord認証ボタンの表示状態を管理するコンテキストプロバイダー
- * 
+ *
  * Discord参加済みスタンプがDiscordOAuthButtonと別コンポーネント(SuccessDiscordStamp)で表示されるため
  * Contextで管理している
  * @param param0
@@ -38,6 +38,12 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
   const { nekoNFTs } = useHoldNFTs();
 
   useEffect(() => {
+    // コミュニティ参加の実装が完了するまではDiscordOAuthButtonを非表示にする
+    if (process.env.NEXT_PUBLIC_IS_DISCORD_BUTTON_HIDDEN === "true") {
+      setDisplayMode("NONE");
+      return;
+    }
+
     if (!user || !displayMode || nekoNFTs.current.length === 0) {
       // TOBIRA NEKOを持っていない場合
       setDisplayMode("NONE");

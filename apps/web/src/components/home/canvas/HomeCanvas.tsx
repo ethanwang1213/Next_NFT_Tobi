@@ -26,7 +26,7 @@ const HomeCanvas = () => {
         <Canvas shadows={{ type: BasicShadowMap }} dpr={dpr} flat>
           <PerformanceMonitor
             onChange={({ factor }) => {
-              console.log("factor: " + factor);
+              // console.log("factor: " + factor);
               setMonitorFactor(factor);
               // round((0.3 + 0.7 * factor) * window.devicePixelRatio, 1)
             }}
