@@ -15,7 +15,7 @@ const RedeemPC0: React.FC = () => {
           classNames={{
             input:
               "input input-lg input-bordered w-full h-[70px] bg-transparent text-[26px] font-bold border-2 rounded-xl",
-            p: "text-md text-end font-bold mt-1",
+            p: "text-xl text-end font-bold mt-2",
           }}
         />
       </div>
