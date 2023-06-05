@@ -81,7 +81,7 @@ const useUpdateProfile = () => {
       if (day !== auth.user.birthday?.day) {
         obj["birthday"]["day"] = day;
       }
-      console.log(obj);
+      // console.log(obj);
 
       if (isAnyChanged) {
         setDoc(usersSrcRef, obj, { merge: true });

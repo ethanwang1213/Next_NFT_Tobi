@@ -39,7 +39,7 @@ const AddItemButton = () => {
     const img = await scaleImage(imageUrl);
     // 素材として画像を追加
     img.getBase64(Jimp.MIME_PNG, (err, src) => {
-      console.log(srcId);
+      // console.log(srcId);
       addNewSrc(srcId, src);
     });
     // 画像ファイルをアップロード
@@ -51,7 +51,7 @@ const AddItemButton = () => {
       // 画像ファイルアップロード時には、
       // フロントでもbase64のようなurlとして扱えるデータを生成するため、
       // stateに保存する必要はない
-      console.log(uploadedUrl);
+      // console.log(uploadedUrl);
     });
   };
 
