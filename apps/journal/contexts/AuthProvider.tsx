@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: email ? email : "",
       icon: "", // TODO: アイコンの初期値を設定する
       createdAt: Date.now(),
+      discord: "",
       birthday: {
         year: 0,
         month: 0,

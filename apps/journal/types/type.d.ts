@@ -41,6 +41,7 @@ export type User = {
   email: string;
   icon: string;
   createdAt: number;
+  discord: string;
   birthday: Birthday;
 };
 
