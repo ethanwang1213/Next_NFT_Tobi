@@ -4,7 +4,6 @@ import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useEffect, useState } from "react";
 import { HouseBadgeNFTData } from "@/types/type";
-import { HOUSE_BADGE_NFT_ID } from "@/libs/constants";
 
 /**
  * プロフィールのアイコンのコンポーネント
@@ -24,7 +23,8 @@ const PersonalIcon: React.FC = () => {
     // 所属のハウスバッジのNFTのidを探索
     const id = otherNFTs.current.findIndex(
       (nft) =>
-        nft.collectionId === HOUSE_BADGE_NFT_ID &&
+        nft.collectionId ===
+          process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"] &&
         "house_type" in nft &&
         user.community &&
         user.community.house &&
