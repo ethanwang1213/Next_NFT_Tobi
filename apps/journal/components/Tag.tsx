@@ -52,7 +52,7 @@ const Tag: FC<{
             maskSize: "40px 40px",
             WebkitMaskSize: "40px 40px",
           }}
-          className={`mx-4 w-[40px] h-[40px] transition-all ${
+          className={`ml-4 mr-3 w-[40px] h-[40px] transition-all ${
             ((pageNo === page || pageNo + 1 === page) && isNumber) ||
             isHamburger
               ? "bg-white"
@@ -61,7 +61,7 @@ const Tag: FC<{
         ></div>
       ) : (
         <div
-          className={`mx-4 w-[44px] h-[44px] transition-all select-none rounded-full ${
+          className={`ml-4 mr-3 w-[44px] h-[44px] transition-all select-none rounded-full ${
             ((pageNo === page || pageNo + 1 === page) && isNumber) ||
             isHamburger
               ? "text-white"
