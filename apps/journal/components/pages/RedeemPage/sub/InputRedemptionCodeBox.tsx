@@ -38,11 +38,11 @@ const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
         className={`${classNames.input} border-accent text-primary placeholder-primary/50 font-bold h-11 mb-2 sm:mb-0 shadow-[inset_0_5px_14px_0_rgba(0,0,0,0.3)]`}
         onChange={(e) => handleChange(e)}
         value={inputCode.current}
-        disabled={canRedeem || redeemStatus.current === "CHECKING"}
+        disabled={!canRedeem || redeemStatus.current === "CHECKING"}
       />
       <p
         className={`${classNames.p} text-error ${
-          canRedeem ? "block" : "hidden"
+          canRedeem ? "hidden" : "block"
         }`}
       >
         引き換えにはメールアドレス登録が必要です

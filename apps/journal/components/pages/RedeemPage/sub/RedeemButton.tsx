@@ -61,7 +61,7 @@ const RedeemButton: React.FC = () => {
       onClick={onClick}
       className={`btn btn-accent btn-md sm:btn-lg btn-circle sm:rounded-3xl w-[70%] sm:w-[60%] sm:h-[74px] text-[22px] sm:text-[36px] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]`}
       disabled={
-        canRedeem ||
+        !canRedeem ||
         redeemStatus.current === "CHECKING" ||
         inputCode.current === ""
       }

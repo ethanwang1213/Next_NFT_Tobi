@@ -75,11 +75,7 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
   // 匿名ログインの場合は引き換えできない
   useEffect(() => {
     if (!user) return;
-
-    setCanRedeem(
-      (!user || !user.email || user.email === "") &&
-        process.env.NEXT_PUBLIC_DEBUG_MODE !== "true"
-    );
+    setCanRedeem(!user || !user.email || user.email !== "");
   }, [user]);
 
   const redeemContextValue = useMemo<RedeemContextType>(
