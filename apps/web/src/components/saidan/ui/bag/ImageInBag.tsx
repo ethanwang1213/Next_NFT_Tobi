@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 import TypeSelectModal from "../typeSelectModal/TypeSelectModal";
 

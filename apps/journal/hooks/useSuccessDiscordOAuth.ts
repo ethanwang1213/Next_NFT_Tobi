@@ -1,0 +1,79 @@
+import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
+import { useAuth } from "@/contexts/AuthProvider";
+import { db } from "@/firebase/client";
+import { DBActivityRecord } from "@/types/type";
+import { Timestamp, collection, doc, writeBatch } from "@firebase/firestore";
+import { useMemo } from "react";
+
+/**
+ * Discord認証完了時の処理をまとめたカスタムフック
+ * @returns
+ */
+const useSuccessDiscordOAuth = () => {
+  const auth = useAuth();
+  const { addActivityRecord } = useActivityRecord();
+
+  const joinAtExists = useMemo(
+    () =>
+      !!auth.user &&
+      !!auth.user.characteristic &&
+      !!auth.user.characteristic.join_tobiratory_at,
+    [auth.user]
+  );
+
+  // characteristic.join_tobiratory_atと
+  // TOBIRA POLIS参加のactivityレコードをまとめてpost
+  const postOnSuccess = async (joinDate: Date, newRecord: DBActivityRecord) => {
+    const batch = writeBatch(db);
+
+    const usersSrcRef = doc(db, `users/${auth.user.id}`);
+    batch.set(
+      usersSrcRef,
+      {
+        characteristic: {
+          join_tobiratory_at: joinDate,
+        },
+      },
+      { merge: true }
+    );
+
+    const activitySrcRef = doc(
+      collection(db, `users/${auth.user.id}/activity`)
+    );
+    batch.set(activitySrcRef, newRecord);
+
+    try {
+      await batch.commit();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  const updateOnSuccess = () => {
+    // 既に参加日が設定されている場合は何もしない
+    if (joinAtExists) return;
+
+    const joinDate = new Date();
+    const text = "TOBIRAPOLISのメンバーになった";
+
+    // ローカルのTobiratory参加Timestampをセット
+    auth.setJoinTobiratoryAt(joinDate);
+    // ローカルのActivityRecordsにTobiratory参加の記録を追加
+    addActivityRecord({
+      text: text,
+      date: joinDate,
+    });
+
+    // データベース上のTobiratory参加Timestampをセット
+    postOnSuccess(joinDate, {
+      text: text,
+      timestamp: Timestamp.fromDate(joinDate),
+    });
+  };
+
+  return { updateOnSuccess };
+};
+
+export default useSuccessDiscordOAuth;

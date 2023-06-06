@@ -31,7 +31,8 @@ type ContextType = {
 const EditProfileContext = createContext<ContextType>({} as ContextType);
 
 /**
- * プロフィール編集のデータを管理するコンテキスト
+ * プロフィール編集のデータを管理するコンテキストプロバイダー
+ * 画像のクロップに関するデータを管理する
  * @param param0
  * @returns
  */

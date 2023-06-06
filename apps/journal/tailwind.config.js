@@ -2,6 +2,11 @@
 const general = require("../../packages/tailwind-config/tailwind.config.js");
 const config = {
   ...general,
+  content: [
+    "components/**/*.{js,ts,jsx,tsx}",
+    "pages/**/*.{js,ts,jsx,tsx}",
+    "contexts/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     screens: {
       sm: "576px", // landscape phones

@@ -1,6 +1,5 @@
 import { ThreeEvent } from "@react-three/fiber";
 import { ReactNode, useContext } from "react";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 import { PlacedItemData } from "@/types/PlacedItemData";
 import { DirectControlContext } from "@/context/directControl";

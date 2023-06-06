@@ -1,7 +1,6 @@
 import useHomeStore from "@/stores/homeStore";
 import { useSpringRef, useSpring, useChain, config } from "@react-spring/web";
 import { Dispatch, SetStateAction } from "react";
-import { shallow } from "zustand/shallow";
 
 /**
  * top1 DigitalGoodsのアニメーション用変数を管理する

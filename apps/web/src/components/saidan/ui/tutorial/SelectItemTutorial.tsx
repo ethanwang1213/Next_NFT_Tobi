@@ -1,5 +1,4 @@
 import { useSpring, a, config } from "@react-spring/web";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 
 const SelectItemTutorial = () => {

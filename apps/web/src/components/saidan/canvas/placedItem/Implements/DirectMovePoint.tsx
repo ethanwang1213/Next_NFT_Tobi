@@ -1,4 +1,3 @@
-import { shallow } from "zustand/shallow";
 import { FLOOR_OFFSET, ITEM_TYPE_DATA } from "@/constants/saidanConstants";
 import useSaidanStore from "@/stores/saidanStore";
 import { PlacedItemData } from "@/types/PlacedItemData";

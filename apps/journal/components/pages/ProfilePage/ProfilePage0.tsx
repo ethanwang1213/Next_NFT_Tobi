@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
-import { mockRecordList } from "../../../libs/mocks/mockProfile0";
-import ActivityRecordLine from "../../TypeValueLine/ActivityRecordLine";
+import DiscordOAuthButton from "./sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
-import AuthDiscordButton from "./sub/AuthDiscordButton";
+import ActivityRecord from "./sub/ActivityRecord";
+import useDateFormat from "@/hooks/useDateFormat";
+import JournalStampIcon from "@/public/images/icon/stamp_journal.svg";
 
 export type ActivityRecord = {
   id: number;
@@ -20,7 +21,7 @@ export type ActivityRecord = {
 const ProfilePage0: React.FC = () => {
   const { user } = useAuth();
   const [birthday, setBirthday] = useState<string>("");
-  const [recordList, setRecordList] = useState<ActivityRecord[]>([]);
+  const { formattedFromYMD } = useDateFormat();
 
   useEffect(() => {
     if (!user) return;
@@ -33,23 +34,18 @@ const ProfilePage0: React.FC = () => {
       ) {
         setBirthday("-");
       } else {
-        const month = user.birthday.month.toString().padStart(2, "0");
-        const day = user.birthday.day.toString().padStart(2, "0");
-        setBirthday(`${user.birthday.year}/${month}/${day}`);
+        const { year, month, day } = user.birthday;
+        setBirthday(formattedFromYMD(year, month, day));
       }
     }
-    setRecordList(mockRecordList);
   }, [user]);
 
   return (
     <>
       <div className="w-full sm:flex relative">
-        <div className="w-full sm:w-[60%] mb-6 flex justify-center">
+        <div className="w-full sm:w-[50%] mb-6 flex justify-center">
           <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
-            <PersonalIcon
-              profileSrc={user ? user.icon : ""}
-              badgeSrc="/journal/mocks/images/badge.png"
-            />
+            <PersonalIcon />
           </div>
         </div>
         <div className="sm:w-[50%] mt-2 mb-6 sm:ml-10 grid gap-2 sm:gap-4">
@@ -65,13 +61,26 @@ const ProfilePage0: React.FC = () => {
               />
               <PersonalInfo
                 dataType={"Mail"}
-                dataValue={user.email === "" ? "-" : user.email}
+                dataValue={
+                  !user.email || user.email === ""
+                    ? "-"
+                    : `${
+                        user.email.length < 21
+                          ? user.email
+                          : user.email.slice(0, 20) + "..."
+                      }`
+                }
+                hidable={true}
               />
               {/* EditProfileModalに紐づく */}
               <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
                 <label
                   htmlFor="edit-profile-modal"
-                  className="btn btn-outline btn-lg btn-primary rounded-3xl sm:w-[60%] sm:min-h-[10px] h-[40px] text-sm sm:text-[16px] px-0 border-2 rounded-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
+                  className="
+                    btn btn-outline btn-lg btn-primary 
+                    min-h-[40px] h-[45px] 
+                    text-[18px] border-2 rounded-full 
+                    drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
                 >
                   プロフィールを編集
                 </label>
@@ -90,12 +99,17 @@ const ProfilePage0: React.FC = () => {
         Activity Record
       </h3>
       <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">
-        {recordList.map((v) => (
-          <ActivityRecordLine key={v.id} lineType={v.text} lineValue={v.date} />
-        ))}
+        <ActivityRecord />
       </div>
-      <div className="w-full grow min-h-[12%] sm:min-h-[80px] flex justify-center">
-        <AuthDiscordButton />
+      <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
+        <div className="w-full h-full flex justify-center">
+          <DiscordOAuthButton />
+        </div>
+      </div>
+      <div className="sm:hidden absolute top-[-0px] right-[-10%] w-2/5 aspect-square">
+        <div className="relative overflow-hidden w-full h-full  [&>svg_*]:!fill-[#9F5C00]">
+          <JournalStampIcon className="absolute top-[-30%] right-[-20%]" />
+        </div>
       </div>
     </>
   );

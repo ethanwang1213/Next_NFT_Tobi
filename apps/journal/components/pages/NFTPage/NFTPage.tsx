@@ -1,5 +1,4 @@
 import NFTPageTitle from "../../PageTitle/NFTPageTitle";
-import PageTitle from "../../PageTitle/parent/PageTitle";
 import NFTPagePC from "./sub/NFTPagePC";
 import NFTPageSP from "./sub/NFTPageSP";
 

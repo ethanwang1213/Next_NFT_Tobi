@@ -1,78 +1,172 @@
-import { ActivityRecord } from "../../components/pages/ProfilePage/ProfilePage0";
+import { LocalActivityRecord } from "@/types/type";
 
-export const mockName = "KEISUKE";
-export const mockBirthday = "2004/06/21";
-export const mockMail = "aiueo.kakiku.123@gmail.com";
-
-export const mockRecordList: ActivityRecord[] = [
+// 以下のtextからランダムに設定
+// "TOBIRA NEKO #1をJournalに追加した"
+// "TOBIRAPOLISのメンバーになった"
+// "TOBIRAPOLISのハウスバッジを入手した"
+// dateはDate型でランダムな日付に設定
+export const mockRecordList: (LocalActivityRecord & { id: number })[] = [
   {
     id: 0,
-    text: "TOBIRA NEKOを購入した",
-    date: "2023/05/01",
+    text: "TOBIRA NEKO #1をJournalに追加した",
+    date: new Date("2021/06/21"),
   },
   {
     id: 1,
-    text: "TOBIRA NEKOをジャーナルに追加した",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのメンバーになった",
+    date: new Date("2021/06/21"),
   },
   {
     id: 2,
-    text: "TOBIRAPOLISのメンバーになった",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのハウスバッジを入手した",
+    date: new Date("2021/06/21"),
   },
   {
     id: 3,
-    text: "TOBIRAPOLISのハウスバッジを入手した",
-    date: "2023/05/01",
+    text: "TOBIRA NEKO #1をJournalに追加した",
+    date: new Date("2021/06/21"),
   },
   {
     id: 4,
-    text: "メッセージカードがとるとから届きました",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのメンバーになった",
+    date: new Date("2021/06/21"),
   },
   {
     id: 5,
-    text: "TOBIRA NEKOを購入した",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのハウスバッジを入手した",
+    date: new Date("2021/06/22"),
   },
   {
     id: 6,
-    text: "TOBIRA NEKOを購入した",
-    date: "2023/05/01",
+    text: "TOBIRA NEKO #1をJournalに追加した",
+    date: new Date("2021/06/23"),
   },
   {
     id: 7,
-    text: "TOBIRA NEKOを購入した",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのメンバーになった",
+    date: new Date("2021/06/24"),
   },
   {
     id: 8,
-    text: "TOBIRA NEKOをジャーナルに追加した",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのハウスバッジを入手した",
+    date: new Date("2021/06/25"),
   },
   {
     id: 9,
-    text: "TOBIRAPOLISのメンバーになった",
-    date: "2023/05/01",
+    text: "TOBIRA NEKO #1をJournalに追加した",
+    date: new Date("2021/06/26"),
   },
   {
     id: 10,
-    text: "TOBIRAPOLISのハウスバッジを入手した",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのメンバーになった",
+    date: new Date("2021/06/27"),
   },
   {
     id: 11,
-    text: "メッセージカードがとるとから届きました",
-    date: "2023/05/01",
+    text: "TOBIRAPOLISのハウスバッジを入手した",
+    date: new Date("2021/06/28"),
   },
   {
     id: 12,
-    text: "TOBIRA NEKOを購入した",
-    date: "2023/05/01",
+    text: "TOBIRA NEKO #1をJournalに追加した",
+    date: new Date("2021/06/29"),
+  },
+];
+
+export const mockCharacteristicList: { id: number; text: string; value: string }[] = [
+  {
+    id: 0,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 1,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 2,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 3,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 4,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 5,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 6,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 7,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 8,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 9,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 10,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 11,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 12,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
   },
   {
     id: 13,
-    text: "TOBIRA NEKOを購入した",
-    date: "2023/05/01",
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 14,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 15,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 16,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
+  },
+  {
+    id: 17,
+    text: "House Arkhē",
+    value: "Hydor",
+  },
+  {
+    id: 18,
+    text: "Participation date of Tobiratory",
+    value: "2021/06/21",
   },
 ];

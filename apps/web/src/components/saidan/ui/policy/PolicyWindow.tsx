@@ -1,6 +1,5 @@
 import { animated, useSpring } from "@react-spring/web";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { shallow } from "zustand/shallow";
 import { doc, updateDoc } from "@firebase/firestore";
 import useSaidanStore from "@/stores/saidanStore";
 import { db } from "@/../firebase/client";
@@ -10,7 +9,7 @@ import ClosePolicyButton from "./ClosePolicyButton";
 
 const PolicyWindow = () => {
   const auth = useAuth();
-  
+
   const isPolicyAccepted = useSaidanStore((state) => state.isPolicyAccepted);
   const acceptPolicy = useSaidanStore((state) => state.acceptPolicy);
   const isPolicyOpen = useSaidanStore((state) => state.isPolicyOpen);

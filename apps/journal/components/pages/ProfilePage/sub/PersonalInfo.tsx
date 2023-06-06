@@ -1,6 +1,10 @@
+import HidableText from "@/components/HidableWord";
+import { useMemo } from "react";
+
 type Props = {
   dataType: string;
   dataValue: string;
+  hidable?: boolean;
 };
 
 /**
@@ -8,16 +12,30 @@ type Props = {
  * @param param0
  * @returns
  */
-const PersonalInfo: React.FC<Props> = ({ dataType, dataValue }) => {
+const PersonalInfo: React.FC<Props> = ({
+  dataType,
+  dataValue,
+  hidable = false,
+}) => {
+  const value = useMemo(() => {
+    if (dataValue === "-" || !hidable) {
+      return <>{dataValue}</>;
+    } else {
+      return <HidableText text={dataValue} />;
+    }
+  }, [dataValue, hidable]);
+
   return (
     <>
       <div className="relative w-full text-center text-primary">
-        <p className="text-[10px] sm:text-[20px] sm:text-start mb-[-2px] sm:mb-10">
+        <p className="text-[10px] sm:text-[20px] sm:text-start mb-[-2px] sm:mb-2">
           {dataType}
         </p>
-        <p className="text-[14px] sm:text-[28px] font-bold sm:absolute sm:bottom-0 sm:right-0">
-          {dataValue}
-        </p>
+        <div className="w-full">
+          <p className="text-[14px] sm:text-[24px] font-bold  sm:text-end leading-8 break-all">
+            {value}
+          </p>
+        </div>
       </div>
     </>
   );

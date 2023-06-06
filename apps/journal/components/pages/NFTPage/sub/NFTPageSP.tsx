@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { mockNFTSrcList } from "../../../../libs/mocks/mockNFTSrcList";
-import { NFTSrc } from "../../../../types/NFTSrc";
 import NFTImage from "./NFTImage";
+import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 
 type Props = {
   pageNum: number;
@@ -10,26 +8,17 @@ type Props = {
 /**
  * 所有NFTの閲覧用ページのスマホ表示。
  * スクロールでNFTリストが表示される。
+ * TODO: ゆくゆくは無限スクロールにしたい(react-infinite-scrollerなど)
  * @param param0
  * @returns
  */
 const NFTPageSP: React.FC<Props> = ({ pageNum }) => {
-  const [nftSrcList, setNFTSrcList] = useState<NFTSrc[]>([]);
-
-  // TODO:読込の実装
-  // ゆくゆくは無限スクロールにしたい(react-infinite-scrollerなど)
-  const loadNFTSrcList = () => {
-    setNFTSrcList(mockNFTSrcList);
-  };
-
-  useEffect(() => {
-    loadNFTSrcList();
-  }, [pageNum]);
+  const { otherNFTs } = useHoldNFTs();
 
   return (
     <div className="h-full px-2 grid grid-cols-3 gap-y-8 sm:gap-y-4 gap-x-2 content-start place-items-center">
-      {nftSrcList.map((v) => (
-        <NFTImage key={v.id} src={v.src} alt={"nft"} />
+      {otherNFTs.current.map((v, i) => (
+        <NFTImage key={i} src={v.thumbnail} alt={"nft"} />
       ))}
     </div>
   );

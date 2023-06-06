@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 import BagIcon from "@/../public/saidan/saidan-ui/bag2.svg";
 

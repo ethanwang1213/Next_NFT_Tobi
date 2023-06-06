@@ -7,23 +7,27 @@ type Props = {
 };
 
 /**
- * redeemページのデータ 一行を表示するコンポーネント
+ * profileページの特徴データ 一行を表示するコンポーネント
  * @param param0
  * @returns
  */
-const RedeemDataLine: React.FC<Props> = ({ lineType, lineValue, hidable }) => {
+const CharacteristicLine: React.FC<Props> = ({
+  lineType,
+  lineValue,
+  hidable,
+}) => {
   return (
     <TypeValueLine
       lineType={lineType}
       lineValue={lineValue}
       hidable={hidable}
       classNames={{
-        container: `text-[14px] sm:text-[30px] text-accent font-bold`,
-        type: ``,
-        value: ``,
+        container: "text-sm sm:text-xl text-primary font-bold",
+        type: "",
+        value: "",
       }}
     />
   );
 };
 
-export default RedeemDataLine;
+export default CharacteristicLine;

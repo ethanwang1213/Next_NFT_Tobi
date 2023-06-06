@@ -1,6 +1,5 @@
 import { FullGestureState } from "@use-gesture/react";
 import { Vector3 } from "three";
-import { shallow } from "zustand/shallow";
 import {
   MOVE_RATE_X,
   MOVE_RATE_YZ,

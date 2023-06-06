@@ -1,6 +1,13 @@
-import { FormEventHandler, useEffect, useRef } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
+import {
+  getAuth,
+  sendSignInLinkToEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import { useRouter } from "next/router";
 
 const Login = () => {
   const loginRef = useRef<HTMLDivElement>(null);
@@ -10,14 +17,65 @@ const Login = () => {
   const arcRef2 = useRef<HTMLDivElement>(null);
   const arcRef3 = useRef<HTMLDivElement>(null);
   const logoMobileRef = useRef<HTMLDivElement>(null);
+  const auth = getAuth();
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [mailSent, setMailSent] = useState(false);
 
   // sign inボタンが押されたときに実行する関数
   const signIn: FormEventHandler<HTMLFormElement> = (e) => {
+    console.log("sign in");
+    const actionCodeSettings = {
+      // URL you want to redirect back to. The domain (www.example.com) for this
+      // URL must be in the authorized domains list in the Firebase Console.
+      url: `${window.location.origin}/journal/email/verify`,
+      // This must be true.
+      handleCodeInApp: true,
+    };
+
+    sendSignInLinkToEmail(auth, email, actionCodeSettings)
+      .then(() => {
+        // The link was successfully sent. Inform the user.
+        // Save the email locally so you don't need to ask the user for it again
+        // if they open the link on the same device.
+        window.localStorage.setItem("emailForSignIn", email);
+        setMailSent(true);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ...
+      });
     e.preventDefault();
   };
 
   // Googleアカウントでログインする関数
-  const withGoogle = () => {};
+  const withGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+
+    try {
+      await signInWithPopup(auth, provider);
+      router.push("/"); // ログイン後にリダイレクトするURLを指定
+    } catch (error) {
+      console.error("Googleログインに失敗しました。", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log(auth.currentUser);
+    const handleRedirect = async () => {
+      // ログイン状態の変化を監視
+      await auth.onAuthStateChanged((user) => {
+        if (user && user.email) {
+          console.log(`${user.email} としてログイン中です。`);
+          // ログイン済みの場合、リダイレクト処理を実行
+          router.push("/"); // リダイレクト先のURLを指定
+        }
+      });
+    };
+
+    handleRedirect();
+  }, []);
 
   useEffect(() => {
     gsap
@@ -113,7 +171,11 @@ const Login = () => {
           <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
         </div>
         <div className="absolute h-[300px] w-[300px]">
-          <Image src="/journal/images/login/liner_journal.svg" alt="logo" fill />
+          <Image
+            src="/journal/images/login/liner_journal.svg"
+            alt="logo"
+            fill
+          />
         </div>
         <div className="absolute h-[300px] w-[300px]">
           <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
@@ -127,7 +189,11 @@ const Login = () => {
             ref={logoMobileRef}
           >
             <div className="absolute h-[80%] w-[80%] block md:hidden">
-              <Image src="/journal/images/login/liner_journal.svg" alt="logo" fill />
+              <Image
+                src="/journal/images/login/liner_journal.svg"
+                alt="logo"
+                fill
+              />
             </div>
             <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
           </div>
@@ -148,7 +214,11 @@ const Login = () => {
             onClick={withGoogle}
           >
             <div className="relative h-[50%] aspect-square">
-              <Image src="/images/icon/google_journal.svg" alt="google" fill />
+              <Image
+                src="/journal/images/icon/google_journal.svg"
+                alt="google"
+                fill
+              />
             </div>
             Sign in with Google
           </button>
@@ -158,6 +228,7 @@ const Login = () => {
           <input
             type="text"
             placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
             className="input w-full input-bordered"
           />
           <button className="btn btn-block btn-lg btn-outline" type="submit">
@@ -168,6 +239,9 @@ const Login = () => {
             <br />
             受取には購入時に使用したメールアドレスでログインが必要です。
           </p>
+          { mailSent && (
+            <p>メールを送りました</p>
+          ) }
         </form>
       </div>
       <div

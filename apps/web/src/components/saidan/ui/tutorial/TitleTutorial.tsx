@@ -1,6 +1,5 @@
 import { useSpring, a, config } from "@react-spring/web";
 import { useState, useEffect } from "react";
-import { shallow } from "zustand/shallow";
 import useSaidanStore from "@/stores/saidanStore";
 import { useAuth } from "@/context/auth";
 import SkipButton from "./SkipButton";
