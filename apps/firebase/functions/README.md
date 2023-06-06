@@ -21,12 +21,12 @@
 環境変数は、下記コマンドにて .env ファイルを生成し、編集してください。開発用のサンプルデータは keybase の tobiratory.dev/02_tobiratory-web/firebase に保存してあります。
 
 ```sh
-$ cp .env.example .env
+$ cp .env.sample .env
 ```
 
 ## Develop
 
-ローカルで開発、検証を行う場合は、下記コマンドを実行してください。ローカル上にpubsub, firestore, functions emulatorが起動します。
+ローカルで開発、検証を行う場合は、下記コマンドを実行してください。ローカル上にauth, pubsub, firestore, functions emulatorが起動します。
 
 ```sh
 $ npm run serve
@@ -36,22 +36,31 @@ $ npm run serve
 │ i  View Emulator UI at http://127.0.0.1:4000/               │
 └─────────────────────────────────────────────────────────────┘
 
-┌───────────┬────────────────┬─────────────────────────────────┐
-│ Emulator  │ Host:Port      │ View in Emulator UI             │
-├───────────┼────────────────┼─────────────────────────────────┤
-│ Functions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
-├───────────┼────────────────┼─────────────────────────────────┤
-│ Firestore │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore │
-├───────────┼────────────────┼─────────────────────────────────┤
-│ Pub/Sub   │ 127.0.0.1:8085 │ n/a                             │
-└───────────┴────────────────┴─────────────────────────────────┘
+┌────────────────┬────────────────┬─────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI             │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4000/auth      │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Functions      │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Pub/Sub        │ 127.0.0.1:8085 │ n/a                             │
+└────────────────┴────────────────┴─────────────────────────────────┘
 ```
 
 Shopifyの決済完了通知をシミュレーションするには、下記のような curl コマンドを実行してください。
 
 ```sh
-$ curl http://localhost:5001/tobiratory-f6ae1/us-central1/pubsubHelper \
+$ curl http://localhost:5001/tobiratory-f6ae1/us-central1/devtool-pubsubHelper \
     -X POST \
     -H "Content-Type:application/json" \
-    -d '{ "email": "username@gmail.com", "name": "#1001" }'
+    -d '{ "topicName": "shopify-orders-create", "email": "username@gmail.com", "name": "#1001", "payment_gateway_names":"暗号資産", "total_price": 200, "line_items": [{"name":"TOBIRA NEKO #00031", "price":"100", "quantity":1}, {"name":"TOBIRA NEKO #00032", "price":"100", "quantity":1}] }'
+```
+
+```sh
+$ curl http://localhost:5001/tobiratory-f6ae1/us-central1/devtool-pubsubHelper \
+    -X POST \
+    -H "Content-Type:application/json" \
+    -d '{ "topicName": "shopify-orders-paid", "email": "username@gmail.com", "name": "#1001", "line_items": [{"name":"TOBIRA NEKO #00031"}, {"name":"TOBIRA NEKO #00032"}] }'
 ```

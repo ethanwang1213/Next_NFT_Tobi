@@ -9,6 +9,9 @@ module.exports = {
     },
     extend: {
       fontFamily: {},
+      boxShadow: {
+        tag: "-10px 3px 6px rgba(0, 0, 0, 0.16)",
+      },
     },
   },
   plugins: [require("daisyui")],
