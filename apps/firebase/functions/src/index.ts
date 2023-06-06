@@ -11,6 +11,7 @@ exports.shopifyOrders = require("./shopifyOrders");
 exports.journalNfts = require("./journalNfts");
 exports.background = background;
 exports.discordOAuth = discordOAuth;
+exports.discordUserNfts = discordUserNfts;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
