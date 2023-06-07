@@ -39,7 +39,7 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
       >
         <div
           className="opacity-[80%] [&>svg_*]:!fill-[#9F5C00]  
-              w-2/5 sm:w-1/3 aspect-[2/1.1] overflow-hidden"
+              w-[30%] sm:w-1/3 aspect-[2/1.1] overflow-hidden"
           ref={stampRef}
         >
           {isPc ? (

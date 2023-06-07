@@ -60,7 +60,7 @@ const Mobile = () => {
     if (!pages[no]) return "";
 
     if (no === profilePage.start) {
-      return " pb-2";
+      return " pb-[60px] px-2";
     } else if (no >= nftPage.start && no <= nftPage.end) {
       return " px-0";
     } else {
