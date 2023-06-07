@@ -1,6 +1,7 @@
 import {initializeApp, applicationDefault} from "firebase-admin/app";
 import {background} from "./shopifyApi";
 import {discordOAuth} from "./discord";
+import { discordUserNfts } from "./discordUserNfts";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
