@@ -62,7 +62,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    console.log(auth.currentUser);
+    // console.log(auth.currentUser);
     const handleRedirect = async () => {
       // ログイン状態の変化を監視
       await auth.onAuthStateChanged((user) => {
