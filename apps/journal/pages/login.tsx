@@ -19,7 +19,7 @@ const Login = () => {
   const logoMobileRef = useRef<HTMLDivElement>(null);
   const auth = getAuth();
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [mailSent, setMailSent] = useState(false);
 
   // sign inボタンが押されたときに実行する関数
@@ -62,7 +62,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    console.log(auth.currentUser);
+    // console.log(auth.currentUser);
     const handleRedirect = async () => {
       // ログイン状態の変化を監視
       await auth.onAuthStateChanged((user) => {
@@ -239,9 +239,7 @@ const Login = () => {
             <br />
             受取には購入時に使用したメールアドレスでログインが必要です。
           </p>
-          { mailSent && (
-            <p>メールを送りました</p>
-          ) }
+          {mailSent && <p>メールを送りました</p>}
         </form>
       </div>
       <div

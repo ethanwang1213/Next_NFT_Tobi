@@ -51,8 +51,7 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
 
   // TOBIRA NEKOのNFTを取得
   const loadNekos = async () => {
-    if (!user) return;
-
+    if (!user || !user.email) return;
     const nekos = await fetchHoldNFTs(
       process.env["NEXT_PUBLIC_TOBIRANEKO_NFT_ADDRESS"]
     );
@@ -68,8 +67,9 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
 
   // 他のNFTを取得
   const loadOtherNFTs = async () => {
-    if (!user) return;
+    if (!user || !user.email) return;
     const ids = await fetchNFTCollectionIds();
+
     const otherNFTs: (NFTData | HouseBadgeNFTData)[] = [];
     await Promise.all(
       ids.map(async (id) => {
