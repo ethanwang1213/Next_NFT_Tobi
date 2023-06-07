@@ -16,29 +16,24 @@ type Props = {
 const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
   const { nekoNFTs } = useHoldNFTs();
 
+  const createImageContent = (src: string, id: number) => (
+    <div
+      key={id}
+      className="hidden first:block sm:block w-full h-full grid content-center"
+    >
+      <NFTImage src={src} alt={"neko"} />
+    </div>
+  );
+
   return (
     <div className="h-full grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 overflow-hidden gap-y-20 gap-x-4 place-items-center">
       {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
         ? mockNekoSrcList
             .slice(pageNum * nekoLength, (pageNum + 1) * nekoLength)
-            .map((v) => (
-              <div
-                key={v.id}
-                className="hidden first:block sm:block w-full h-full grid content-center"
-              >
-                <NFTImage src={v.src} alt={"neko"} />
-              </div>
-            ))
+            .map((v) => createImageContent(v.src, v.id))
         : nekoNFTs.current
             .slice(pageNum * nekoLength, (pageNum + 1) * nekoLength)
-            .map((v, i) => (
-              <div
-                key={i}
-                className="hidden first:block sm:block w-full h-full grid content-center"
-              >
-                <NFTImage src={v.thumbnail} alt={"neko"} />
-              </div>
-            ))}
+            .map((v, i) => createImageContent(v.thumbnail, i))}
     </div>
   );
 };
