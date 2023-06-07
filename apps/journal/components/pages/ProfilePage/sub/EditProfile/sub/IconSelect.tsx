@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   UseFormRegister,
   UseFormSetValue,
@@ -9,6 +9,7 @@ import {
 } from "react-hook-form";
 import { EditProfileValues } from "../EditProfileModal";
 import DefaultIcon from "../../../../../../public/images/icon/Profiledefault_journal.svg";
+import Image from "next/image";
 
 type Props = {
   register: UseFormRegister<EditProfileValues>;
@@ -34,6 +35,9 @@ const IconSelect: React.FC<Props> = ({
 
   const { isCropModalOpen, iconForCrop, cropData } = useEditProfile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [naturalWidth, setNaturalWidth] = useState<number>(0);
+  const [naturalHeight, setNaturalHeight] = useState<number>(0);
 
   // 初期化処理
   useEffect(() => {
@@ -47,17 +51,10 @@ const IconSelect: React.FC<Props> = ({
   // プロフィール編集モーダルのアイコンプレビューを表示
   // クロップのプレビューを軽量で表示するためにcanvasを使用している
   useEffect(() => {
+    console.log(imageRef.current);
     if (!canvasRef.current) return;
+    if (!imageRef.current) return;
     if (!isModalOpen) return;
-
-    // メソッド定義：画像オブジェクトの生成
-    const createImage = (url: string): Promise<HTMLImageElement> =>
-      new Promise((resolve, reject) => {
-        const image = new Image();
-        image.addEventListener("load", () => resolve(image));
-        image.addEventListener("error", (error) => reject(error));
-        image.src = url;
-      });
 
     // メソッドの定義：アイコンプレビュー用キャンバスの描画
     const displayCanvas = async () => {
@@ -66,7 +63,7 @@ const IconSelect: React.FC<Props> = ({
       canvasRef.current.height = 100;
       if (getValues("iconUrl") === "") return;
       const ctx = canvasRef.current.getContext("2d");
-      const image = await createImage(getValues("iconUrl"));
+      const image = imageRef.current;
       if (cropData.current) {
         ctx.drawImage(
           image,
@@ -81,14 +78,22 @@ const IconSelect: React.FC<Props> = ({
         );
       } else {
         ctx.resetTransform();
-        ctx.scale(100 / image.naturalWidth, 100 / image.naturalHeight);
+        ctx.scale(100 / naturalWidth, 100 / naturalHeight);
         ctx.drawImage(image, 0, 0);
       }
+      ctx.save();
     };
 
     // 実行
     displayCanvas();
-  }, [canvasRef.current, isModalOpen, watch("iconUrl")]);
+  }, [
+    canvasRef.current,
+    imageRef.current,
+    isModalOpen,
+    watch("iconUrl"),
+    naturalWidth,
+    naturalHeight,
+  ]);
 
   // 画像選択時の処理
   const handleIconChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,6 +140,20 @@ const IconSelect: React.FC<Props> = ({
             </div>
           )}
         </label>
+        {getValues("iconUrl") && (
+          <Image
+            onLoadingComplete={(img) => {
+              setNaturalWidth(img.naturalWidth);
+              setNaturalHeight(img.naturalHeight);
+            }}
+            ref={imageRef}
+            src={getValues("iconUrl")}
+            alt="canvas-img"
+            fill
+            style={{ objectFit: "contain" }}
+            className="invisible"
+          />
+        )}
       </div>
     </>
   );
