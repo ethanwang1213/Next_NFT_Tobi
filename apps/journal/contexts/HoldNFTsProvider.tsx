@@ -53,7 +53,7 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
   const loadNekos = async () => {
     if (!user || !user.email) return;
     const nekos = await fetchHoldNFTs(
-      process.env["NEXT_PUBLIC_TOBIRANEKO_NFT_ADDRESS"]
+      process.env["NEXT_PUBLIC_NEKO_NFT_ADDRESS"]
     );
     // 最新順にソート
     nekos.sort((a, b) => {
@@ -73,7 +73,7 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     const otherNFTs: (NFTData | HouseBadgeNFTData)[] = [];
     await Promise.all(
       ids.map(async (id) => {
-        if (id === process.env["NEXT_PUBLIC_TOBIRANEKO_NFT_ADDRESS"]) return;
+        if (id === process.env["NEXT_PUBLIC_NEKO_NFT_ADDRESS"]) return;
         if (id === process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"]) {
           const nfts = (await fetchHoldNFTs(id)) as HouseBadgeNFTData[];
           otherNFTs.push(...nfts);
