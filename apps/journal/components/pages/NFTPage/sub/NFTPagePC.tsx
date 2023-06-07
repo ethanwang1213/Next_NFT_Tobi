@@ -1,3 +1,4 @@
+import { mockNFTSrcList } from "@/libs/mocks/mockNFTSrcList";
 import NFTImage from "./NFTImage";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 
@@ -17,9 +18,13 @@ const NFTPagePC: React.FC<Props> = ({ pageNum }) => {
 
   return (
     <div className="h-full pt-10 px-4 grid grid-cols-3 grid-rows-3 gap-6 content-start place-items-center">
-      {otherNFTs.current.slice(pageNum * 9, (pageNum + 1) * 9).map((v, i) => (
-        <NFTImage key={i} src={v.thumbnail} alt={"nft"} />
-      ))}
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
+        ? mockNFTSrcList
+            .slice(pageNum * 9, (pageNum + 1) * 9)
+            .map((v, i) => <NFTImage key={v.id} src={v.src} alt={"nft"} />)
+        : otherNFTs.current
+            .slice(pageNum * 9, (pageNum + 1) * 9)
+            .map((v, i) => <NFTImage key={i} src={v.thumbnail} alt={"nft"} />)}
     </div>
   );
 };
