@@ -1,5 +1,5 @@
 import { useWindowSize } from "react-use";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper";
 import "swiper/css";
@@ -66,6 +66,21 @@ const NekoSwiper: React.FC = () => {
     });
   }, [innerWidth, innerHeight, cardAspect]);
 
+  const createSwiperSlide = useCallback(
+    (src: string = null, id: number) => (
+      <SwiperSlide key={id}>
+        <NekoSwiperContent
+          width={cardPos.width}
+          height={cardPos.height}
+          cardImgRef={cardImgRef}
+          onCardImgLoad={setAspect}
+          imgSrc={src}
+        />
+      </SwiperSlide>
+    ),
+    [cardPos.width, cardPos.height, cardImgRef, setAspect]
+  );
+
   return (
     <div
       className="fixed"
@@ -83,17 +98,7 @@ const NekoSwiper: React.FC = () => {
           modules={[EffectCards]}
           className="mySwiper"
         >
-          {mockNekoSrcList.map((v) => (
-            <SwiperSlide key={v.id}>
-              <NekoSwiperContent
-                width={cardPos.width}
-                height={cardPos.height}
-                cardImgRef={cardImgRef}
-                onCardImgLoad={setAspect}
-                imgSrc={v.src}
-              />
-            </SwiperSlide>
-          ))}
+          {mockNekoSrcList.map((v) => createSwiperSlide(v.src, v.id))}
         </Swiper>
       ) : (
         <>
@@ -105,14 +110,7 @@ const NekoSwiper: React.FC = () => {
               modules={[]}
               className="mySwiper"
             >
-              <SwiperSlide key={0}>
-                <NekoSwiperContent
-                  width={cardPos.width}
-                  height={cardPos.height}
-                  cardImgRef={cardImgRef}
-                  onCardImgLoad={setAspect}
-                />
-              </SwiperSlide>
+              {createSwiperSlide(null, 0)}
             </Swiper>
           ) : (
             <Swiper
@@ -121,17 +119,9 @@ const NekoSwiper: React.FC = () => {
               modules={[EffectCards]}
               className="mySwiper"
             >
-              {[...nekoNFTs.current].map((v, i) => (
-                <SwiperSlide key={i}>
-                  <NekoSwiperContent
-                    width={cardPos.width}
-                    height={cardPos.height}
-                    cardImgRef={cardImgRef}
-                    onCardImgLoad={setAspect}
-                    imgSrc={v.thumbnail}
-                  />
-                </SwiperSlide>
-              ))}
+              {[...nekoNFTs.current].map((v, i) =>
+                createSwiperSlide(v.thumbnail, i)
+              )}
             </Swiper>
           )}
         </>
