@@ -65,6 +65,7 @@ const NekoSwiper: React.FC = () => {
       height: cardHeight,
     });
   }, [innerWidth, innerHeight, cardAspect]);
+
   return (
     <div
       className="fixed"
@@ -75,42 +76,65 @@ const NekoSwiper: React.FC = () => {
         top: cardPos.top,
       }}
     >
-      {/* TOBIRA NEKOを持っていない場合、空白のカードを一枚表示する */}
-      {nekoNFTs.current.length === 0 ? (
-        <Swiper
-          effect={"cards"}
-          grabCursor={false}
-          modules={[]}
-          className="mySwiper"
-        >
-          <SwiperSlide key={0}>
-            <NekoSwiperContent
-              width={cardPos.width}
-              height={cardPos.height}
-              cardImgRef={cardImgRef}
-              onCardImgLoad={setAspect}
-            />
-          </SwiperSlide>
-        </Swiper>
-      ) : (
+      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
         <Swiper
           effect={"cards"}
           grabCursor={true}
           modules={[EffectCards]}
           className="mySwiper"
         >
-          {[...nekoNFTs.current].map((v, i) => (
-            <SwiperSlide key={i}>
+          {mockNekoSrcList.map((v) => (
+            <SwiperSlide key={v.id}>
               <NekoSwiperContent
                 width={cardPos.width}
                 height={cardPos.height}
                 cardImgRef={cardImgRef}
                 onCardImgLoad={setAspect}
-                imgSrc={v.thumbnail}
+                imgSrc={v.src}
               />
             </SwiperSlide>
           ))}
         </Swiper>
+      ) : (
+        <>
+          {/* TOBIRA NEKOを持っていない場合、空白のカードを一枚表示する */}
+          {nekoNFTs.current.length === 0 ? (
+            <Swiper
+              effect={"cards"}
+              grabCursor={false}
+              modules={[]}
+              className="mySwiper"
+            >
+              <SwiperSlide key={0}>
+                <NekoSwiperContent
+                  width={cardPos.width}
+                  height={cardPos.height}
+                  cardImgRef={cardImgRef}
+                  onCardImgLoad={setAspect}
+                />
+              </SwiperSlide>
+            </Swiper>
+          ) : (
+            <Swiper
+              effect={"cards"}
+              grabCursor={true}
+              modules={[EffectCards]}
+              className="mySwiper"
+            >
+              {[...nekoNFTs.current].map((v, i) => (
+                <SwiperSlide key={i}>
+                  <NekoSwiperContent
+                    width={cardPos.width}
+                    height={cardPos.height}
+                    cardImgRef={cardImgRef}
+                    onCardImgLoad={setAspect}
+                    imgSrc={v.thumbnail}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
+        </>
       )}
     </div>
   );
