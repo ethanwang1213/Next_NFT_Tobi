@@ -1,6 +1,7 @@
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import NFTImage from "../../NFTPage/sub/NFTImage";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useCallback } from "react";
 
 type Props = {
   pageNum: number;
@@ -16,13 +17,16 @@ type Props = {
 const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
   const { nekoNFTs } = useHoldNFTs();
 
-  const createImageContent = (src: string, id: number) => (
-    <div
-      key={id}
-      className="hidden first:block sm:block w-full h-full grid content-center"
-    >
-      <NFTImage src={src} alt={"neko"} />
-    </div>
+  const createImageContent = useCallback(
+    (src: string, id: number) => (
+      <div
+        key={id}
+        className="hidden first:block sm:block w-full h-full grid content-center"
+      >
+        <NFTImage src={src} alt={"neko"} />
+      </div>
+    ),
+    []
   );
 
   return (
