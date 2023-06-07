@@ -21,7 +21,9 @@ const useFetchNftDatas = () => {
 
   const fetchHoldNFTs = async (collectionId: string) => {
     try {
-      if (!collection(db, `users`, user.id, `nft`).converter) return [];
+      const nftSnap = await getDocs(collection(db, `users`, user.id, `nft`));
+      if (nftSnap.empty) return [];
+
       const snapshots = await getDocs(
         collection(db, `users`, user.id, `nft`, collectionId, "hold")
       );
