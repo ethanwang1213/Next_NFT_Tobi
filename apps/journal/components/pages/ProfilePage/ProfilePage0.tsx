@@ -101,7 +101,12 @@ const ProfilePage0: React.FC = () => {
       <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">
         <ActivityRecord />
       </div>
-      <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
+      {/* <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
+        <div className="w-full h-full flex justify-center">
+          <DiscordOAuthButton />
+        </div>
+      </div> */}
+      <div className="hidden sm:block absolute bottom-[1%] w-full grow min-h-[80px]">
         <div className="w-full h-full flex justify-center">
           <DiscordOAuthButton />
         </div>

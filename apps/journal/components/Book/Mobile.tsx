@@ -71,8 +71,8 @@ const Mobile = () => {
     <div className="overflow-hidden">
       <div
         className={`relative ${
-          isLeftPage ? "left-[calc(100vw_-_60vh)]" : "left-[-70vh]"
-        } w-[130vh] h-[100dvh] transition-[left]`}
+          isLeftPage ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
+        } w-[130dvh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
           <Image
@@ -85,21 +85,21 @@ const Mobile = () => {
         )}
         {/* 現在ページの表示 */}
         {/* 左ページ */}
-        <div className="absolute top-4 left-10 bottom-5 right-[70vh] flex justify-end">
-          <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3`}>
+        <div className="absolute top-4 left-10 bottom-5 right-[70dvh] flex justify-end">
+          <div
+            className={`max-w-[calc(100dvw_-_1.5rem)] w-full h-full mr-3 relative`}
+          >
             {/* ページによってpaddingを変更する */}
             <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
-              {pageNo === profilePage.start && (
-                <SuccessDiscordStamp isPc={false} />
-              )}
             </div>
+            <SuccessDiscordStamp isPc={false} />
           </div>
         </div>
         {/* 右ページ */}
         {!isSwiperPage && (
-          <div className="absolute top-4 left-[70vh] bottom-5 right-5 flex justify-start">
-            <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3`}>
+          <div className="absolute top-4 left-[70dvh] bottom-5 right-5 flex justify-start">
+            <div className={`max-w-[calc(100dvw_-_1.5rem)] w-full h-full ml-3`}>
               {/* ページによってpaddingを変更する */}
               <div
                 className={`page ${pagePadding(
