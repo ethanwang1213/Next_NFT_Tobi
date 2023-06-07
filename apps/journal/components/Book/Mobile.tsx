@@ -12,6 +12,7 @@ import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
+import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -112,17 +113,8 @@ const Mobile = () => {
           </div>
         )}
       </div>
-      {/* 矢印アイコンの表示 */}
-      {isArrowShown && (
-        <FontAwesomeIcon
-          icon={isLeftPage ? faCircleRight : faCircleLeft}
-          size="4x"
-          className="absolute bottom-0 right-0 p-5 text-accent/80 scale-[0.875] origin-bottom-right"
-          onClick={() => setIsLeftPage(!isLeftPage)}
-        />
-      )}
       {/* タグの表示 */}
-      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
+      <div className="absolute bottom-0 pb-5 flex flex-col gap-2 left-[-30px]">
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
@@ -145,6 +137,19 @@ const Mobile = () => {
           key={-1}
         />
       </div>
+      {/* Discord認証ボタン */}
+      <div className="absolute bottom-0 mb-[22px] w-full flex justify-center px-[90px]">
+        <DiscordOAuthButton />
+      </div>
+      {/* 矢印アイコンの表示 */}
+      {isArrowShown && (
+        <FontAwesomeIcon
+          icon={isLeftPage ? faCircleRight : faCircleLeft}
+          size="4x"
+          className="absolute bottom-0 right-0 m-5 text-accent/80 scale-[0.84] origin-bottom-right"
+          onClick={() => setIsLeftPage(!isLeftPage)}
+        />
+      )}
     </div>
   );
 };
