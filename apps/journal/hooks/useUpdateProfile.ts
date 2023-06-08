@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import { storage, db } from "@/firebase/client";
 import { doc, setDoc } from "@firebase/firestore";
-import { ref, updateMetadata, uploadBytes } from "@firebase/storage";
+import { deleteObject, ref, uploadBytes } from "@firebase/storage";
 
 import Jimp from "jimp";
 import { Area } from "react-easy-crop";
@@ -43,14 +43,23 @@ const useUpdateProfile = () => {
   const uploadNewIcon = async (icon: File) => {
     try {
       // アイコンpngファイルのアップロード
+      const hash = await generateHash();
       const ext = icon.name.split(".").pop();
-      const name = await generateHash();
-      const storageRef = ref(
-        storage,
-        `users/${auth.user.id}/icon/${name}.${ext}`
-      );
+      const newPath = `users/${auth.user.id}/icon/${hash}.${ext}`;
+      const storageRef = ref(storage, newPath);
       await uploadBytes(storageRef, icon);
-      return `users%2F${auth.user.id}%2Ficon%2F${name}.${ext}`;
+
+      // 古いアイコンの削除
+      if (auth.dbIconUrl !== "") {
+        const oldPath = auth.dbIconUrl
+          .replace(/^\/proxy\/(.*\.png)\?alt=media$/, "$1")
+          .replace(/%2F/g, "/");
+        const oldRef = ref(storage, oldPath);
+        await deleteObject(oldRef);
+      }
+
+      const replacedNewPath = newPath.replaceAll("/", "%2F");
+      return replacedNewPath;
     } catch (error) {
       console.log(error);
       return null;
@@ -136,29 +145,36 @@ const useUpdateProfile = () => {
         const path = await uploadNewIcon(
           new File([buf], "img.png", { type: "image/png" })
         );
-
-        // ローカルのプロフィール情報を更新
-        scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
-          auth.updateProfile(src, newName, {
-            year: year,
-            month: month,
-            day: day,
-          });
-        });
-
         // データベース上のプロフィール情報を更新
         await postProfile(path, newName, year, month, day);
+        // ローカルのプロフィール情報を更新
+        scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
+          auth.updateProfile(
+            src,
+            newName,
+            {
+              year: year,
+              month: month,
+              day: day,
+            },
+            path
+          );
+        });
       });
     } else {
-      // ローカルのプロフィール情報を更新
-      auth.updateProfile(iconUrl, newName, {
-        year: year,
-        month: month,
-        day: day,
-      });
-
       // データベース上のプロフィール情報を更新
       await postProfile(null, newName, year, month, day);
+      // ローカルのプロフィール情報を更新
+      auth.updateProfile(
+        iconUrl,
+        newName,
+        {
+          year: year,
+          month: month,
+          day: day,
+        },
+        null
+      );
     }
   };
 
