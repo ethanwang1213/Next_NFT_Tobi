@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import * as sendgrid from "@sendgrid/mail";
 import {Item, generateRedeemCode} from "./lib/nft";
-import {TOPIC_NAMES} from "./lib/constants";
+import {TOPIC_NAMES, MAIL_HEAD, MAIL_FOOT} from "./lib/constants";
 
 const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
 
@@ -31,11 +31,15 @@ exports.handleOrdersPaid = functions.pubsub.topic(TOPIC_NAMES["ordersPaid"]).onP
   const mailOptions = {
     from: process.env.SENDGRID_SENDER_EMAIL || "",
     to: order.email,
-    subject: `Order ${order.name} redeem codes`,
-    html: `<p style="font-size: 16px;">Redeem Codes</p><br />
+    subject: `【引き換えコード】注文番号：${order.name}`,
+    html: `${MAIL_HEAD}
 ${items.map((item: Item) => {
-    return `<p>${item.name}: ${item.redeem}</p>`;
-  }).join("\n").toString()}
+    return `
+    <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;">${item.name}</span></p>
+    <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;">${item.redeem}</span></p>
+  `;
+  }).join("<p style='margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px;'></p>").toString()}
+${MAIL_FOOT}
 `,
   };
   const send = await sendgrid.send(mailOptions);
