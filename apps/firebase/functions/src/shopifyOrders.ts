@@ -31,7 +31,7 @@ exports.handleOrdersPaid = functions.pubsub.topic(TOPIC_NAMES["ordersPaid"]).onP
   const mailOptions = {
     from: process.env.SENDGRID_SENDER_EMAIL || "",
     to: order.email,
-    subject: `Order ${order.name} redeem codes`,
+    subject: `【引き換えコード】注文番号：${order.name}`,
     html: `${MAIL_HEAD}
 ${items.map((item: Item) => {
     return `
