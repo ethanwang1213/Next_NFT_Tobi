@@ -37,6 +37,7 @@ const EditProfileModal: React.FC = () => {
   } = useForm<EditProfileValues>({
     mode: "onChange",
     defaultValues: {
+      iconUrl: "",
       year: 0,
       month: 0,
       day: 0,

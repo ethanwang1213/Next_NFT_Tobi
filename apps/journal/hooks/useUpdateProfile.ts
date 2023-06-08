@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import { storage, db } from "@/firebase/client";
 import { doc, setDoc } from "@firebase/firestore";
-import { ref, uploadBytes } from "@firebase/storage";
+import { deleteObject, ref, uploadBytes } from "@firebase/storage";
 
 import Jimp from "jimp";
 import { Area } from "react-easy-crop";
@@ -11,6 +11,18 @@ import { Area } from "react-easy-crop";
 const useUpdateProfile = () => {
   const auth = useAuth();
   const { cropData } = useEditProfile();
+
+  // "(timestamp)(uid)"の形式の文字列をハッシュ化した値を得る
+  const generateHash = async () => {
+    const txt = `${Date.now()}${auth.user.id}`;
+    const encoded = new TextEncoder().encode(txt);
+    const hashBuf = await crypto.subtle.digest("SHA-256", encoded);
+    const hashArr = Array.from(new Uint8Array(hashBuf));
+    const hashHex = hashArr
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return hashHex;
+  };
 
   // プロフィール編集画面で、アイコン画像のアップロード時に呼ばれる。
   const processNewIcon = async (imageUrl: string, cropData: Area) => {
@@ -31,17 +43,32 @@ const useUpdateProfile = () => {
   const uploadNewIcon = async (icon: File) => {
     try {
       // アイコンpngファイルのアップロード
+      const hash = await generateHash();
       const ext = icon.name.split(".").pop();
-      const storageRef = ref(storage, `users/${auth.user.id}/icon.${ext}`);
+      const newPath = `users/${auth.user.id}/icon/${hash}.${ext}`;
+      const storageRef = ref(storage, newPath);
       await uploadBytes(storageRef, icon);
+
+      // 古いアイコンの削除
+      if (auth.dbIconUrl !== "") {
+        const oldPath = auth.dbIconUrl
+          .replace(/^\/proxy\/(.*\.png)\?alt=media$/, "$1")
+          .replace(/%2F/g, "/");
+        const oldRef = ref(storage, oldPath);
+        await deleteObject(oldRef);
+      }
+
+      const replacedNewPath = newPath.replaceAll("/", "%2F");
+      return replacedNewPath;
     } catch (error) {
       console.log(error);
+      return null;
     }
   };
 
   // 変更があったプロフィールについて、firestore上の情報を更新する
   const postProfile = async (
-    isNewIcon: boolean,
+    iconPath: string | null,
     name: string,
     year: number,
     month: number,
@@ -54,8 +81,8 @@ const useUpdateProfile = () => {
       let isAnyChanged = false;
       // ユーザーアイコンurl
       // 初めてアイコンを設定するときのみ保存（アイコンに変更があってもurlは同一）
-      if (isNewIcon && auth.user.icon === "") {
-        obj["icon"] = `/proxy/users%2F${auth.user.id}%2Ficon.png?alt=media`;
+      if (iconPath) {
+        obj["icon"] = `/proxy/${iconPath}?alt=media`;
         isAnyChanged = true;
       }
       // ユーザー名
@@ -115,27 +142,40 @@ const useUpdateProfile = () => {
       // アイコン画像に変更があればアップロード
       const scaled = await processNewIcon(iconUrl, cropData.current);
       scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
-        await uploadNewIcon(new File([buf], "img.png", { type: "image/png" }));
-      });
-      // ローカルのプロフィール情報を更新
-      scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
-        auth.updateProfile(src, newName, {
-          year: year,
-          month: month,
-          day: day,
+        const path = await uploadNewIcon(
+          new File([buf], "img.png", { type: "image/png" })
+        );
+        // データベース上のプロフィール情報を更新
+        await postProfile(path, newName, year, month, day);
+        // ローカルのプロフィール情報を更新
+        scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
+          auth.updateProfile(
+            src,
+            newName,
+            {
+              year: year,
+              month: month,
+              day: day,
+            },
+            path
+          );
         });
       });
     } else {
+      // データベース上のプロフィール情報を更新
+      await postProfile(null, newName, year, month, day);
       // ローカルのプロフィール情報を更新
-      auth.updateProfile(iconUrl, newName, {
-        year: year,
-        month: month,
-        day: day,
-      });
+      auth.updateProfile(
+        iconUrl,
+        newName,
+        {
+          year: year,
+          month: month,
+          day: day,
+        },
+        null
+      );
     }
-
-    // データベース上のプロフィール情報を更新
-    postProfile(isNewIcon, newName, year, month, day);
   };
 
   return { updateProfile };
