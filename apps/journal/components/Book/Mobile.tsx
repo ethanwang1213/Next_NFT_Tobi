@@ -146,7 +146,7 @@ const Mobile = () => {
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
           size="4x"
-          className="absolute bottom-0 right-0 m-5 text-accent/80 scale-[0.84] origin-bottom-right"
+          className="absolute bottom-0 right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right"
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
