@@ -1,8 +1,9 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { useDebug } from "@/contexts/DebugProvider";
 import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
+import { BookContext } from "@/contexts/BookContextProvider";
 
 /**
  * Discordコミュニティ参加のための認証ボタン
@@ -12,6 +13,9 @@ import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
  */
 const DiscordOAuthButton: React.FC = () => {
   const { displayMode } = useDiscordOAuth();
+  const bookContext = useContext(BookContext);
+  const pageNo = bookContext.pageNo.current;
+  const { profilePage } = bookContext.bookIndex;
 
   const createButton = useCallback(
     (href: string, text: string) => (
@@ -21,7 +25,8 @@ const DiscordOAuthButton: React.FC = () => {
           btn btn-accent bg-transparent hover:bg-accent/60 
           border-none btn-circle sm:btn-lg 
           w-full max-w-[300px] sm:w-[70%] sm:max-w-[70%] relative
-          overflow-hidden shadow-lg drop-shadow-[0_10px_6px_rgba(117,58,0,0.6)]"
+          overflow-hidden shadow-lg drop-shadow-[0_10px_6px_rgba(117,58,0,0.6)]
+          pointer-events-auto"
       >
         <div className="bg-accent/90 rounded-full blur-[2px] w-full h-full absolute"></div>
         <div className="text-white absolute pointer-events-none flex px-2">
@@ -39,6 +44,8 @@ const DiscordOAuthButton: React.FC = () => {
 
   const debug = useDebug();
   const { current: debugButtonMode } = debug.debugDiscordButtonMode;
+
+  if (pageNo !== profilePage.start) return <></>;
 
   return (
     <>

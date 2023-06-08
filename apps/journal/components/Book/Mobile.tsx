@@ -138,7 +138,7 @@ const Mobile = () => {
         />
       </div>
       {/* Discord認証ボタン */}
-      <div className="absolute bottom-0 mb-[22px] w-full flex justify-center px-[90px]">
+      <div className="absolute bottom-0 mb-[22px] w-full flex justify-center px-[90px] pointer-events-none">
         <DiscordOAuthButton />
       </div>
       {/* 矢印アイコンの表示 */}

@@ -2,8 +2,9 @@ import { useDebug } from "@/contexts/DebugProvider";
 import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 import StampIcon from "@/public/images/icon/stamp_TOBIRAPOLIS.svg";
 import StampIcon2 from "@/public/images/icon/stamp_TOBIRAPOLIS-cp.svg";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
+import { BookContext } from "@/contexts/BookContextProvider";
 
 type Props = {
   isPc: boolean;
@@ -22,6 +23,10 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
   const { width, height } = useWindowSize();
   const stampRef = useRef(null);
   const [stampW, setStampW] = useState(0);
+
+  const bookContext = useContext(BookContext);
+  const pageNo = bookContext.pageNo.current;
+  const { profilePage } = bookContext.bookIndex;
 
   // stampの横幅を取得
   useEffect(() => {
@@ -52,6 +57,8 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
     ),
     [isPc, stampW]
   );
+
+  if (pageNo !== profilePage.start) return <></>;
 
   return (
     <>
