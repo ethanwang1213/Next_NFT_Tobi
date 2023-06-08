@@ -20,7 +20,7 @@ service cloud.firestore {
       allow create: if
         getAfter(
           /databases/$(database)/documents/index/users/discord/$(request.resource.data.discord)
-        ).data.user == userId && isCurrentUser(userId);
+        ).data.userId == userId && isCurrentUser(userId);
       match /src/{srcId} {
         allow read, write: if isCurrentUser(userId);
       }
