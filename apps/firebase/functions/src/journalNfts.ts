@@ -33,6 +33,9 @@ exports.checkRedeem = functions.https.onCall(async (data, context) => {
     if (!item.used_at) {
       // TODO: make them as a transaction
       const nft = parseNftByName(item.name);
+      await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(nft.type).set({
+        updated_at: new Date(),
+      });
       await firestore().collection("users").doc(context.auth.uid).collection("nft").doc(nft.type).collection("hold").doc(nft.id).set({
         name: nft.name,
         description: "",
