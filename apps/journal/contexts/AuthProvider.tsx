@@ -20,6 +20,7 @@ const AuthContext = createContext<UserContextType>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User>();
+  const [dbIconUrl, setDbIconUrl] = useState<string>("");
 
   // ユーザー作成用関数
   function createUser(uid: string, email?: string) {
@@ -59,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const appUser = (await getDoc(ref)).data() as User;
             // console.log(`データ取得: ${appUser?.id}`);
             setUser(appUser);
+            setDbIconUrl(appUser.icon);
           } else {
             // ユーザーが未作成の場合、新規作成して格納
             // console.log(`データ作成: ${firebaseUser.uid}`);
@@ -84,7 +86,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateProfile = (
     newIcon: string,
     newName: string,
-    newBirthday: Birthday
+    newBirthday: Birthday,
+    newDbIconUrl: string | null
   ) => {
     const newUser = {
       ...user,
@@ -93,6 +96,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       birthday: newBirthday,
     };
     setUser(newUser);
+    if (newDbIconUrl) {
+      setDbIconUrl(newDbIconUrl);
+    }
   };
 
   const setJoinTobiratoryAt = (joinDate: Date) => {
@@ -109,7 +115,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, updateProfile, setJoinTobiratoryAt }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        dbIconUrl,
+        updateProfile,
+        setDbIconUrl,
+        setJoinTobiratoryAt,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
