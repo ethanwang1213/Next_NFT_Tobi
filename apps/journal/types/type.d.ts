@@ -129,10 +129,13 @@ export type DBActivityRecord = {
 
 export type UserContextType = {
   user: User | null | undefined;
+  dbIconUrl: string;
   updateProfile: (
     newIcon: string,
     newName: string,
-    newBirthday: Birthday
+    newBirthday: Birthday,
+    newDbIconPath: string
   ) => void;
+  setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryAt: (joinDate: Date) => void;
 };
