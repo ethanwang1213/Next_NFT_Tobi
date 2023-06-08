@@ -12,6 +12,7 @@ import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
+import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -59,7 +60,7 @@ const Mobile = () => {
     if (!pages[no]) return "";
 
     if (no === profilePage.start) {
-      return " pb-2";
+      return " pb-[20%] px-2";
     } else if (no >= nftPage.start && no <= nftPage.end) {
       return " px-0";
     } else {
@@ -71,8 +72,8 @@ const Mobile = () => {
     <div className="overflow-hidden">
       <div
         className={`relative ${
-          isLeftPage ? "left-[calc(100vw_-_60vh)]" : "left-[-70vh]"
-        } w-[130vh] h-[100dvh] transition-[left]`}
+          isLeftPage ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
+        } w-[130dvh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
           <Image
@@ -85,21 +86,21 @@ const Mobile = () => {
         )}
         {/* 現在ページの表示 */}
         {/* 左ページ */}
-        <div className="absolute top-4 left-10 bottom-5 right-[70vh] flex justify-end">
-          <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full mr-3`}>
+        <div className="absolute top-4 left-10 bottom-5 right-[70dvh] flex justify-end">
+          <div
+            className={`max-w-[calc(100dvw_-_1.5rem)] w-full h-full mr-3 relative`}
+          >
             {/* ページによってpaddingを変更する */}
             <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
-              {pageNo === profilePage.start && (
-                <SuccessDiscordStamp isPc={false} />
-              )}
             </div>
+            <SuccessDiscordStamp isPc={false} />
           </div>
         </div>
         {/* 右ページ */}
         {!isSwiperPage && (
-          <div className="absolute top-4 left-[70vh] bottom-5 right-5 flex justify-start">
-            <div className={`max-w-[calc(100vw_-_1.5rem)] w-full h-full ml-3`}>
+          <div className="absolute top-4 left-[70dvh] bottom-5 right-5 flex justify-start">
+            <div className={`max-w-[calc(100dvw_-_1.5rem)] w-full h-full ml-3`}>
               {/* ページによってpaddingを変更する */}
               <div
                 className={`page ${pagePadding(
@@ -112,17 +113,8 @@ const Mobile = () => {
           </div>
         )}
       </div>
-      {/* 矢印アイコンの表示 */}
-      {isArrowShown && (
-        <FontAwesomeIcon
-          icon={isLeftPage ? faCircleRight : faCircleLeft}
-          size="4x"
-          className="absolute bottom-0 right-0 p-5 text-accent/80 scale-[0.875] origin-bottom-right"
-          onClick={() => setIsLeftPage(!isLeftPage)}
-        />
-      )}
       {/* タグの表示 */}
-      <div className="absolute bottom-0 py-5 flex flex-col gap-2 left-[-30px]">
+      <div className="absolute bottom-0 pb-5 flex flex-col gap-2 left-[-30px]">
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
@@ -145,6 +137,19 @@ const Mobile = () => {
           key={-1}
         />
       </div>
+      {/* Discord認証ボタン */}
+      <div className="absolute bottom-0 mb-[22px] w-full flex justify-center px-[90px] pointer-events-none">
+        <DiscordOAuthButton />
+      </div>
+      {/* 矢印アイコンの表示 */}
+      {isArrowShown && (
+        <FontAwesomeIcon
+          icon={isLeftPage ? faCircleRight : faCircleLeft}
+          size="4x"
+          className="absolute bottom-0 right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right"
+          onClick={() => setIsLeftPage(!isLeftPage)}
+        />
+      )}
     </div>
   );
 };

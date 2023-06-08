@@ -44,7 +44,7 @@ const ProfilePage0: React.FC = () => {
     <>
       <div className="w-full sm:flex relative">
         <div className="w-full sm:w-[50%] mb-6 flex justify-center">
-          <div className="w-[60%] sm:w-[60%] min-w-[200px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
+          <div className="w-[60%] sm:w-[60%] min-w-[180px] sm:min-w-[200px] max-w-[300px] sm:w-full aspect-square grid content-center">
             <PersonalIcon />
           </div>
         </div>
@@ -101,13 +101,13 @@ const ProfilePage0: React.FC = () => {
       <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">
         <ActivityRecord />
       </div>
-      <div className="w-full grow min-h-[12%] sm:min-h-[80px] grid content-center">
+      <div className="hidden sm:block absolute bottom-[1%] w-full grow min-h-[80px]">
         <div className="w-full h-full flex justify-center">
           <DiscordOAuthButton />
         </div>
       </div>
-      <div className="sm:hidden absolute top-[-0px] right-[-10%] w-2/5 aspect-square">
-        <div className="relative overflow-hidden w-full h-full  [&>svg_*]:!fill-[#9F5C00]">
+      <div className="absolute top-[-0] right-[0] -mr-4 w-2/5 aspect-square">
+        <div className="sm:hidden relative overflow-hidden w-full h-full [&>svg_*]:!fill-[#9F5C00]">
           <JournalStampIcon className="absolute top-[-30%] right-[-20%]" />
         </div>
       </div>

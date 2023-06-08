@@ -190,12 +190,8 @@ const Pc = () => {
             }}
           >
             {/* ページによってpaddingを変更する */}
-            <div className={`page ${pagePadding(pageNo)}`}>
-              {pages[pageNo]}
-              {pageNo === profilePage.start && (
-                <SuccessDiscordStamp isPc={true} />
-              )}
-            </div>
+            <div className={`page ${pagePadding(pageNo)}`}>{pages[pageNo]}</div>
+            <SuccessDiscordStamp isPc={true} />
           </div>
           {/* 右ページ */}
           <div
