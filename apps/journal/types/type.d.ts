@@ -134,7 +134,7 @@ export type UserContextType = {
     newIcon: string,
     newName: string,
     newBirthday: Birthday,
-    newDiscord: string
+    newDbIconPath: string
   ) => void;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryAt: (joinDate: Date) => void;
