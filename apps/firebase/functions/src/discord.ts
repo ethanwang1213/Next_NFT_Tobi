@@ -22,7 +22,7 @@ export const discordOAuth = functions.https.onRequest(async (request, response) 
     },
   })).json();
   if (tokenResponse.error) {
-    response.status(500).send( "Can't get token").end();
+    response.status(500).send("An error occurred while retrieving the token.").end();
     return;
   }
   const accessToken = tokenResponse.access_token;
@@ -32,7 +32,7 @@ export const discordOAuth = functions.https.onRequest(async (request, response) 
     },
   })).json();
   if (userdata.code == 0) {
-    response.status(500).send("Can't get userdata").end();
+    response.status(500).send("An error occurred while retrieving user data.").end();
     return;
   }
   response.status(200).send(userdata).end();
