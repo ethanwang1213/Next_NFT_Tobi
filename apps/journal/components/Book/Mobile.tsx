@@ -80,7 +80,7 @@ const Mobile = () => {
             src="/journal/images/book/openpage.png"
             fill
             alt="page"
-            className="object-contain select-none"
+            className="object-contain pointer-events-none select-none"
             priority
           />
         )}
@@ -138,7 +138,7 @@ const Mobile = () => {
         />
       </div>
       {/* Discord認証ボタン */}
-      <div className="absolute bottom-0 mb-[22px] w-full flex justify-center px-[90px] pointer-events-none">
+      <div className="absolute bottom-0 mb-[22px] w-full flex justify-center px-[90px] pointer-events-none select-none">
         <DiscordOAuthButton />
       </div>
       {/* 矢印アイコンの表示 */}
@@ -146,7 +146,7 @@ const Mobile = () => {
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
           size="4x"
-          className="absolute bottom-0 right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right"
+          className="absolute bottom-0 right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right cursor-pointer"
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}

@@ -173,7 +173,7 @@ const Pc = () => {
             src="/journal/images/book/openpage.png"
             fill
             alt="page"
-            className="object-contain absolute select-none"
+            className="object-contain absolute pointer-events-none select-none"
             ref={bookImgRef}
             onLoad={setAspect}
             priority

@@ -64,7 +64,7 @@ const Tag: FC<{
         ></div>
       ) : (
         <div
-          className={`ml-4 mr-3 w-[44px] h-[44px] transition-all select-none rounded-full ${
+          className={`ml-4 mr-3 w-[44px] h-[44px] transition-all pointer-events-none select-none rounded-full ${
             ((pageNo === page || pageNo + 1 === page) && isNumber) ||
             isHamburger
               ? "text-white"
