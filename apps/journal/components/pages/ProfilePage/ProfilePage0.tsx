@@ -14,7 +14,7 @@ export type ActivityRecord = {
 };
 
 /**
- * プロフィールページの1ページ目
+ * プロフィールページの1ページ目。
  * @param param0
  * @returns
  */

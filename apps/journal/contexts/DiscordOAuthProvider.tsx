@@ -49,7 +49,7 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
       setDisplayMode("NONE");
       return;
     } else {
-      const discord = user.discord;
+      const discord = user?.discord;
       if (!discord) {
         // Discord連携していない場合
         setDisplayMode("OAUTH");
