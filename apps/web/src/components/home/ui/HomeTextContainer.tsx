@@ -51,7 +51,7 @@ const HomeTextContainer = () => {
                     letterSpacing: "4px",
                   }}
                 >
-                  <div className="text-center font-tachyon-300 ">
+                  <div className="text-center font-tachyon-300 select-none">
                     WELCOME
                     <br />
                     TO

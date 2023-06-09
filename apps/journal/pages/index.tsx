@@ -9,7 +9,12 @@ import DebugText from "@/components/DebugText";
 const Index = () => {
   return (
     <>
-      <Image src="/journal/images/book/bg_journal.png" fill alt="bg_journal" />
+      <Image
+        src="/journal/images/book/bg_journal.png"
+        fill
+        alt="bg_journal"
+        className="pointer-events-none select-none"
+      />
       <div className="hidden sm:block">
         <Pc />
       </div>

@@ -96,7 +96,7 @@ const Verify = () => {
             <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
           </div>
           <h1 className="text-4xl absolute text-accent top-[75%]">
-            Logging in...
+            Connecting...
           </h1>
         </div>
       </div>

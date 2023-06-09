@@ -37,7 +37,7 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
   const stamp = useMemo(
     () => (
       <div
-        className="w-full flex justify-center relative absolute origin-bottom "
+        className="w-full flex justify-center relative absolute origin-bottom pointer-events-none select-none"
         style={{
           bottom: isPc ? stampW * 0.45 : stampW * 0.55,
         }}

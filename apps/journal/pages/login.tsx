@@ -82,7 +82,7 @@ const Login = () => {
       .timeline()
       .fromTo(
         loginRef.current,
-        { top: "-100vh", ease: "power4.inOut" },
+        { top: "-100dvh", ease: "power4.inOut" },
         { top: 0, duration: 1.5 },
         "2"
       )
@@ -98,23 +98,23 @@ const Login = () => {
       )
       .to(
         arcRef1.current,
-        { left: "5vw", top: "5vh", ease: "power4.inOut", duration: 1.5 },
+        { left: "5dvw", top: "5dvh", ease: "power4.inOut", duration: 1.5 },
         "<"
       )
       .to(
         arcRef2.current,
-        { top: "-2vh", ease: "power4.inOut", duration: 1.5 },
+        { top: "-2dvh", ease: "power4.inOut", duration: 1.5 },
         "<"
       )
       .to(
         arcRef3.current,
-        { left: "-5vw", ease: "power4.inOut", duration: 1.5 },
+        { left: "-5dvw", ease: "power4.inOut", duration: 1.5 },
         "<"
       )
       .fromTo(
         logoMobileRef.current,
         { y: 0, maxHeight: "100%" },
-        { y: "-40vh", maxHeight: "15vh" },
+        { y: "-40dvh", maxHeight: "15dvh" },
         "<"
       );
   }, []);
@@ -130,7 +130,7 @@ const Login = () => {
       </div>
 
       <div
-        className="fixed top-[-3vh] left-[20vw] w-[30vw] h-[30vh] scale-75"
+        className="fixed top-[-3dvh] left-[20dvw] w-[30dvw] h-[30dvh] scale-75"
         ref={arcRef1}
       >
         <Image
@@ -141,7 +141,7 @@ const Login = () => {
         />
       </div>
       <div
-        className="fixed top-[30vh] right-[3vw] w-[30vw] h-[30vh] scale-125"
+        className="fixed top-[30dvh] right-[3dvw] w-[30dvw] h-[30dvh] scale-125"
         ref={arcRef2}
       >
         <Image
@@ -152,7 +152,7 @@ const Login = () => {
         />
       </div>
       <div
-        className="fixed bottom-[-3vh] left-[20vw] w-[30vw] h-[30vh] scale-150 rotate-90"
+        className="fixed bottom-[-3dvh] left-[20dvw] w-[30dvw] h-[30dvh] scale-150 rotate-90"
         ref={arcRef3}
       >
         <Image
@@ -201,15 +201,16 @@ const Login = () => {
       </div>
 
       <div
-        className="flex items-center justify-center absolute left-0 w-screen h-screen p-3 sm:p-10"
+        className="flex items-center justify-center absolute left-0 w-screen h-screen p-8 sm:p-10"
         ref={loginRef}
       >
         <form
-          className="bg-white p-7 sm:p-10 rounded-2xl flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
+          className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
           onSubmit={signIn}
         >
           <button
-            className="btn btn-block sm:btn-lg gap-3 flex-row btn-outline text-xs sm:text-xl"
+            className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
+                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
             type="button"
             onClick={withGoogle}
           >
@@ -222,24 +223,32 @@ const Login = () => {
             </div>
             Sign in with Google
           </button>
-          <div className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black flex items-center text-center gap-5">
+          <div
+            className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black 
+                flex items-center text-center gap-5"
+          >
             <p>or</p>
           </div>
           <input
             type="text"
             placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
-            className="input w-full input-bordered"
+            className="input rounded-full bg-slate-100 w-full input-bordered 
+                text-md sm:text-lg placeholder:text-sm sm:placeholder:text-md sm:h-[56px] px-6"
           />
-          <button className="btn btn-block btn-lg btn-outline" type="submit">
-            sign in
+          <button
+            className="btn btn-block rounded-full text-md sm:text-lg sm:h-[56px] 
+                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
+            type="submit"
+          >
+            Sign in
           </button>
-          <p className="-mt-2 w-[96%] text-red-500 text-[11px] text-start">
+          <p className="mt-2 w-full text-red-500 text-[10px] text-center">
             ※TOBIRA NEKO購入済みの方
             <br />
-            受取には購入時に使用したメールアドレスでログインが必要です。
+            受取には購入時に使用したメールアドレスでのログインが必要です。
           </p>
-          {mailSent && <p>メールを送りました</p>}
+          {mailSent && <p className="font-bold">メールを送信しました</p>}
         </form>
       </div>
       <div
