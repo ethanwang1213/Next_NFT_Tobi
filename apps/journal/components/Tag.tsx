@@ -71,7 +71,7 @@ const Tag: FC<{
               : "text-accent"
           } ${
             isHamburger
-              ? ""
+              ? "grid content-center"
               : `border-solid border-[3px] ${
                   !user || user.icon === "" ? "" : " bg-white"
                 } ${pageNo === 0 ? " border-white" : " border-accent"}`
