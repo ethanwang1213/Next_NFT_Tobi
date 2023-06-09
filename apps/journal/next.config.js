@@ -34,6 +34,13 @@ module.exports = {
         "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
         // "https://firebasestorage.googleapis.com/v0/b/tobiratory.appspot.com/o/:path*",
       },
+      {
+        basePath: false,
+        source: "/api/functions/:path*",
+        destination:
+          //"http://localhost:5001/tobiratory-f6ae1/us-central1/:path*"
+        "https://us-central1-tobiratory-f6ae1.cloudfunctions.net/:path*"
+      }
     ];
   },
 };
