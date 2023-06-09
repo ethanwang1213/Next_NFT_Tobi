@@ -80,7 +80,7 @@ const Mobile = () => {
             src="/journal/images/book/openpage.png"
             fill
             alt="page"
-            className="object-contain"
+            className="object-contain select-none"
             priority
           />
         )}
