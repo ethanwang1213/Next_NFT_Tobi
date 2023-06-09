@@ -13,9 +13,12 @@ const Discord = () => {
   useEffect(() => {
     if (!auth.user) return;
 
-    const getUserdata = async () => {
+    const getUserdata = async (code: string) => {
+      const baseUrl = process.env["NEXT_PUBLIC_DISCORD_OAUTH_USERDATA_API_URL"]!;
+      const url = new URL(baseUrl);
+      url.searchParams.append("code", code);
       const response = await fetch(
-        process.env["NEXT_PUBLIC_DISCORD_OAUTH_USERDATA_API_URL"]!
+         url.href
       );
       if (response.status == 200) {
         return await response.json();
@@ -27,12 +30,12 @@ const Discord = () => {
     (async () => {
       if (router.isReady) {
         const code = query.code;
-        if (!code) {
+        if (!code || typeof code !== "string") {
           // not found code error
           router.push("/");
           return;
         }
-        const userdata = await getUserdata();
+        const userdata = await getUserdata(code);
         if (userdata) {
           const result = await createUser(auth.user.id, userdata.id);
           if (result) {
