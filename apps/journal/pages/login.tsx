@@ -201,7 +201,7 @@ const Login = () => {
       </div>
 
       <div
-        className="flex items-center justify-center absolute left-0 w-screen h-screen p-8 sm:p-10 font-sans"
+        className="flex items-center justify-center absolute left-0 w-screen h-screen p-8 sm:p-10"
         ref={loginRef}
       >
         <form
