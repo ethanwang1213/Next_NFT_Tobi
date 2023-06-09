@@ -1,6 +1,7 @@
 import { FC, ReactElement, useContext, useMemo } from "react";
 import useSound from "use-sound";
 import { BookContext } from "../contexts/BookContextProvider";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const Tag: FC<{
   image: string | ReactElement;
@@ -12,6 +13,8 @@ const Tag: FC<{
   const { current: isMute } = bookData.isMute;
 
   const isNumber = useMemo(() => typeof page === "number", [page]);
+
+  const { user } = useAuth();
 
   const [play] = useSound("/journal/sounds/paging_Journal.mp3", {
     volume: 0.1,
@@ -70,8 +73,8 @@ const Tag: FC<{
             isHamburger
               ? ""
               : `border-solid border-[3px] ${
-                  pageNo === 0 ? "border-white" : "border-accent"
-                }`
+                  !user || user.icon === "" ? "" : " bg-white"
+                } ${pageNo === 0 ? " border-white" : " border-accent"}`
           }`}
         >
           {image}
