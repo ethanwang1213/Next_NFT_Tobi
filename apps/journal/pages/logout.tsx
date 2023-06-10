@@ -10,9 +10,10 @@ const Logout = () => {
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        if (auth.currentUser.email) {
-          await auth.signOut();
-        }
+        // TODO: emailでログインしている場合のみログアウトするようにする
+        // if (auth.currentUser.email) {
+        await auth.signOut();
+        // }
         router.push("/login");
       } catch (error) {
         console.error("ログアウトに失敗しました。", error);
