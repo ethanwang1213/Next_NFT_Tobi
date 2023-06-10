@@ -1,5 +1,13 @@
 import { signInAnonymously, onAuthStateChanged } from "@firebase/auth";
-import { Timestamp, doc, getDoc, setDoc } from "@firebase/firestore";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from "@firebase/firestore";
 import {
   createContext,
   ReactNode,
@@ -38,8 +46,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         day: 0,
       },
     };
-    setDoc(ref, appUser).then(() => {
-      setUser(appUser);
+    setDoc(ref, appUser).then(async () => {
+      const nftRef = collection(db, `users/${uid}/nft`);
+      addDoc(nftRef, {}).then(() => {
+        setUser(appUser);
+      });
     });
   }
 
