@@ -51,7 +51,6 @@ const IconSelect: React.FC<Props> = ({
   // プロフィール編集モーダルのアイコンプレビューを表示
   // クロップのプレビューを軽量で表示するためにcanvasを使用している
   useEffect(() => {
-    console.log(imageRef.current);
     if (!canvasRef.current) return;
     if (!imageRef.current) return;
     if (!isModalOpen) return;
