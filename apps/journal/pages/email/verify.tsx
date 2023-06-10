@@ -21,9 +21,12 @@ const Verify = () => {
 
       if (!email) {
         // ローカルストレージにemailキーが存在しない場合、もう１度入力
-        alert(
+        const confirm = window.confirm(
           "申し訳ございませんが、ご入力いただいたメールアドレスを確認できなかったため再度ご入力お願いします。"
         );
+        if (confirm) {
+          router.push("/login");
+        }
       }
       console.log(auth.currentUser);
 
@@ -43,9 +46,12 @@ const Verify = () => {
         });
     } else {
       // リンクが正しくないとき
-      console.log(
+      const confirm = window.confirm(
         "申し訳ございませんが、リンクの有効期限が切れているため再度ご入力お願いします。"
       );
+      if (confirm) {
+        router.push("/login");
+      }
     }
   }, []);
 
