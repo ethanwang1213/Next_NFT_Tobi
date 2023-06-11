@@ -1,5 +1,6 @@
 import "../src/styles/globals.scss";
-import type { AppProps } from "next/app";
+import { default as NextApp} from 'next/app'
+import type { AppProps, AppContext } from "next/app";
 import React, { useState } from "react";
 import Head from "next/head";
 import Script from "next/script";
@@ -14,6 +15,7 @@ import LoadTransition from "@/components/global/Load";
 import useWindowSize from "@/hooks/useWindowSize";
 import CanvasDprProvider from "@/context/canvasDpr";
 import DprController from "@/components/saidan/ui/dpr/DprController";
+import basicAuthCheck from "@/methods/basicAuthCheck";
 
 config.autoAddCss = false;
 
@@ -115,5 +117,15 @@ const App = ({ Component, pageProps }: AppProps) => {
     </AuthProvider>
   );
 };
+
+App.getInitialProps = async (appContext: AppContext) => {
+  const { req, res } = appContext.ctx
+  if (req && res && process.env.ENABLE_BASIC_AUTH === 'true') {
+    await basicAuthCheck(req, res)
+  }
+ 
+  const appProps = await NextApp.getInitialProps(appContext)
+  return { ...appProps }
+}
 
 export default App;

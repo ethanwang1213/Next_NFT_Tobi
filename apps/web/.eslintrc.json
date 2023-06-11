@@ -47,7 +47,8 @@
           "some": ["nesting", "id"]
         }
       }
-    ]
+    ],
+    "turbo/no-undeclared-env-vars": "off"
   },
   "settings": {
     "import/resolver": {

@@ -1,4 +1,5 @@
-import type { AppProps } from "next/app";
+import { default as NextApp} from 'next/app'
+import type { AppProps, AppContext } from "next/app";
 import "../styles/global.scss";
 import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -11,6 +12,7 @@ import { HoldNFTsProvider } from "@/contexts/HoldNFTsProvider";
 import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
 import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
+import basicAuthCheck from "@/methods/basicAuthCheck";
 
 config.autoAddCss = false;
 
@@ -45,5 +47,15 @@ const App = ({ Component, pageProps }: AppProps) => {
     </AuthProvider>
   );
 };
+
+App.getInitialProps = async (appContext: AppContext) => {
+  const { req, res } = appContext.ctx
+  if (req && res && process.env.ENABLE_BASIC_AUTH === 'true') {
+    await basicAuthCheck(req, res)
+  }
+ 
+  const appProps = await NextApp.getInitialProps(appContext)
+  return { ...appProps }
+}
 
 export default App;
