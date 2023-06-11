@@ -4,8 +4,8 @@ export const TOPIC_NAMES = {
   ordersCreate: "shopify-orders-create",
 };
 
-const IMAGE_HOST = process.env.IMAGE_HOST || "https://storage.googleapis.com/tobiratory-dev_media";
-const SITE_HOST = process.env.SITE_HOST || "https://stg.www2.tobiratory.com";
+export const IMAGE_HOST = process.env.IMAGE_HOST || "https://storage.googleapis.com/tobiratory-dev_media";
+export const SITE_HOST = process.env.SITE_HOST || "https://stg.www2.tobiratory.com";
 
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `

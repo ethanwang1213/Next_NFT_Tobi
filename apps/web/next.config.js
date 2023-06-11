@@ -24,12 +24,12 @@ const nextConfig = {
         source: "/proxy/:path*",
         destination:
           // "https://firebasestorage.googleapis.com/v0/b/tobiratory.appspot.com/o/:path*",
-          `${process.env.FIREBASE_API_URL}:path*`,
+          `${process.env.FIREBASE_API_URL}/:path*`,
       },
       {
         source: "/i2m/:path*",
         // destination: "https://image2model-fxkvliun3q-an.a.run.app/:path*",
-        destination: `${process.env.IMAGE2MODEL_URL}:path*`,
+        destination: `${process.env.IMAGE2MODEL_URL}/:path*`,
       },
       {
         source: "/login",
