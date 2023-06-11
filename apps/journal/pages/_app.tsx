@@ -1,4 +1,5 @@
-import type { AppProps } from "next/app";
+import App from 'next/app'
+import type { AppProps, AppContext } from "next/app";
 import "../styles/global.scss";
 import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -11,10 +12,11 @@ import { HoldNFTsProvider } from "@/contexts/HoldNFTsProvider";
 import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
 import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
+import basicAuthCheck from "basic-auth";
 
 config.autoAddCss = false;
 
-const App = ({ Component, pageProps }: AppProps) => {
+const JournalApp = ({ Component, pageProps }: AppProps) => {
   return (
     <AuthProvider>
       <Script id="font">
@@ -46,4 +48,14 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default App;
+JournalApp.getInitialProps = async (appContext: AppContext) => {
+  const { req, res } = appContext.ctx
+  if (req && res && process.env.ENABLE_BASIC_AUTH === 'true') {
+    await basicAuthCheck(req, res)
+  }
+ 
+  const appProps = await App.getInitialProps(appContext)
+  return { ...appProps }
+}
+
+export default JournalApp;

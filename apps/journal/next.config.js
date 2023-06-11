@@ -1,7 +1,7 @@
 module.exports = {
   basePath: "/journal",
   reactStrictMode: true,
-  transpilePackages: ["ui"],
+  transpilePackages: ["ui", "basic-auth"],
   images: {
     domains: ["storage.googleapis.com"],
   },
