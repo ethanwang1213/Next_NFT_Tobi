@@ -31,15 +31,17 @@ module.exports = {
         source: "/proxy/:path*",
         destination:
           // "http://127.0.0.1:7777/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
-          "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
           // "https://firebasestorage.googleapis.com/v0/b/tobiratory.appspot.com/o/:path*",
+          // "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
+          `${process.env.NEXT_PUBLIC_REWRITES_DIST_PROXY}/:path*`,
       },
       {
         basePath: false,
         source: "/api/functions/:path*",
         destination:
-          //"http://localhost:5001/tobiratory-f6ae1/us-central1/:path*"
-        "https://us-central1-tobiratory-f6ae1.cloudfunctions.net/:path*"
+          // "http://localhost:5001/tobiratory-f6ae1/us-central1/:path*",
+          // "https://us-central1-tobiratory-f6ae1.cloudfunctions.net/:path*",
+        `${process.env.NEXT_PUBLIC_REWRITES_DIST_API_FUNCTIONS}/:path*`,
       }
     ];
   },
