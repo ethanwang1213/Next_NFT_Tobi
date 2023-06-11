@@ -2,7 +2,6 @@
 require("dotenv").config();
 const nextConfig = {
   reactStrictMode: false,
-  transpilePackages: ["basic-auth"],
   swcMinify: true,
   webpack: (config) => {
     config.module.rules.push({

@@ -1,5 +1,5 @@
 import "../src/styles/globals.scss";
-import App from 'next/app'
+import { default as NextApp} from 'next/app'
 import type { AppProps, AppContext } from "next/app";
 import React, { useState } from "react";
 import Head from "next/head";
@@ -15,11 +15,11 @@ import LoadTransition from "@/components/global/Load";
 import useWindowSize from "@/hooks/useWindowSize";
 import CanvasDprProvider from "@/context/canvasDpr";
 import DprController from "@/components/saidan/ui/dpr/DprController";
-import basicAuthCheck from "basic-auth";
+import basicAuthCheck from "@/methods/basicAuthCheck";
 
 config.autoAddCss = false;
 
-const WebApp = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps) => {
   const [isLoad, setIsLoad] = useState<boolean>(true);
 
   // const { mediaBorder, pcWidth, pcHeight } = globalData;
@@ -118,14 +118,14 @@ const WebApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-WebApp.getInitialProps = async (appContext: AppContext) => {
+App.getInitialProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx
   if (req && res && process.env.ENABLE_BASIC_AUTH === 'true') {
     await basicAuthCheck(req, res)
   }
  
-  const appProps = await App.getInitialProps(appContext)
+  const appProps = await NextApp.getInitialProps(appContext)
   return { ...appProps }
 }
 
-export default WebApp;
+export default App;

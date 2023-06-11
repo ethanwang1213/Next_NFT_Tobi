@@ -1,4 +1,4 @@
-import App from 'next/app'
+import { default as NextApp} from 'next/app'
 import type { AppProps, AppContext } from "next/app";
 import "../styles/global.scss";
 import Script from "next/script";
@@ -12,11 +12,11 @@ import { HoldNFTsProvider } from "@/contexts/HoldNFTsProvider";
 import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
 import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
-import basicAuthCheck from "basic-auth";
+import basicAuthCheck from "@/methods/basicAuthCheck";
 
 config.autoAddCss = false;
 
-const JournalApp = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <AuthProvider>
       <Script id="font">
@@ -48,14 +48,14 @@ const JournalApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-JournalApp.getInitialProps = async (appContext: AppContext) => {
+App.getInitialProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx
   if (req && res && process.env.ENABLE_BASIC_AUTH === 'true') {
     await basicAuthCheck(req, res)
   }
  
-  const appProps = await App.getInitialProps(appContext)
+  const appProps = await NextApp.getInitialProps(appContext)
   return { ...appProps }
 }
 
-export default JournalApp;
+export default App;
