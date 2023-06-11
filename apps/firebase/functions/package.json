@@ -7,7 +7,8 @@
     "serve": "npm run build && firebase emulators:start --only auth,functions,pubsub,firestore,storage",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy": "firebase deploy --only functions,firestore,storage",
+    "deploy-stg": "firebase deploy -P tobiratory-stg --only functions,firestore,storage",
     "logs": "firebase functions:log",
     "test": "jest"
   },
