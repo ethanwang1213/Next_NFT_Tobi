@@ -1,4 +1,4 @@
-import { default as NextApp} from 'next/app'
+import { default as NextApp } from "next/app";
 import type { AppProps, AppContext } from "next/app";
 import "../styles/global.scss";
 import Script from "next/script";
@@ -13,12 +13,58 @@ import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
 import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
+import Head from "next/head";
 
 config.autoAddCss = false;
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <AuthProvider>
+      <Head>
+        <title>Tobiratory Journal</title>
+        {/* OGP設定 */}
+        <meta property="og:title" content="Tobiratory" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://www.tobiratory.com/journal/login"
+        />
+        <meta
+          property="og:image"
+          content="https://www.tobiratory.com/journal/ogp/ogp.png"
+        />
+        <meta property="og:site_name" content="Tobiratory" />
+        <meta property="og:description" content="Welcome to Tobiratory" />
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/journal/fabicon/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/journal/fabicon/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/journal/fabicon/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/journal/fabicon/site.webmanifest" />
+        <link
+          rel="mask-icon"
+          href="/journal/fabicon/safari-pinned-tab.svg"
+          color="#5bbad5"
+        />
+        <meta name="apple-mobile-web-app-title" content="Tobiratory" />
+        <meta name="application-name" content="Tobiratory" />
+        <meta name="msapplication-TileColor" content="#2b5797" />
+        <meta name="theme-color" content="#ffffff" />
+      </Head>
       <Script id="font">
         {`(function(d) {
           var config = {
@@ -49,13 +95,13 @@ const App = ({ Component, pageProps }: AppProps) => {
 };
 
 App.getInitialProps = async (appContext: AppContext) => {
-  const { req, res } = appContext.ctx
-  if (req && res && process.env.ENABLE_BASIC_AUTH === 'true') {
-    await basicAuthCheck(req, res)
+  const { req, res } = appContext.ctx;
+  if (req && res && process.env.ENABLE_BASIC_AUTH === "true") {
+    await basicAuthCheck(req, res);
   }
- 
-  const appProps = await NextApp.getInitialProps(appContext)
-  return { ...appProps }
-}
+
+  const appProps = await NextApp.getInitialProps(appContext);
+  return { ...appProps };
+};
 
 export default App;

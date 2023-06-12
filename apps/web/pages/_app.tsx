@@ -1,5 +1,5 @@
 import "../src/styles/globals.scss";
-import { default as NextApp} from 'next/app'
+import { default as NextApp } from "next/app";
 import type { AppProps, AppContext } from "next/app";
 import React, { useState } from "react";
 import Head from "next/head";
@@ -119,13 +119,13 @@ const App = ({ Component, pageProps }: AppProps) => {
 };
 
 App.getInitialProps = async (appContext: AppContext) => {
-  const { req, res } = appContext.ctx
-  if (req && res && process.env.ENABLE_BASIC_AUTH === 'true') {
-    await basicAuthCheck(req, res)
+  const { req, res } = appContext.ctx;
+  if (req && res && process.env.ENABLE_BASIC_AUTH === "true") {
+    await basicAuthCheck(req, res);
   }
- 
-  const appProps = await NextApp.getInitialProps(appContext)
-  return { ...appProps }
-}
+
+  const appProps = await NextApp.getInitialProps(appContext);
+  return { ...appProps };
+};
 
 export default App;
