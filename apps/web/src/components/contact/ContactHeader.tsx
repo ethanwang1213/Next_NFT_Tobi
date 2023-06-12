@@ -18,7 +18,7 @@ const ContactHeader: React.FC<Props> = ({ title }) => {
           <div className="contact-header-arrow-container">
             {!isWide && <ArrowBackButton />}
           </div>
-          <h1 className="contact-header-text">{title}</h1>
+          <p className="contact-header-text">{title}</p>
         </div>
       </div>
     </>
