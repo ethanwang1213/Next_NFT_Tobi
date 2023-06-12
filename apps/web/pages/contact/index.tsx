@@ -101,7 +101,7 @@ const Contact: NextPage = () => {
                 />
               </div>
               {errors.name && (
-                <div className="contact-errors-text">{errors.name.message}</div>
+                <p className="contact-errors-text">{errors.name.message}</p>
               )}
             </div>
             <div>
@@ -115,7 +115,7 @@ const Contact: NextPage = () => {
                 />
               </div>
               {errors.email && (
-                <div className="contact-errors-text">{errors.email.message}</div>
+                <p className="contact-errors-text">{errors.email.message}</p>
               )}
             </div>
             <div>
@@ -129,7 +129,7 @@ const Contact: NextPage = () => {
                 />
               </div>
               {errors.topic && (
-                <div className="contact-errors-text">{errors.topic.message}</div>
+                <p className="contact-errors-text">{errors.topic.message}</p>
               )}
             </div>
 
@@ -143,7 +143,7 @@ const Contact: NextPage = () => {
                 />
               </div>
               {errors.message && (
-                <div className="contact-errors-text">{errors.message.message}</div>
+                <p className="contact-errors-text">{errors.message.message}</p>
               )}
             </div>
 
