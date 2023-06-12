@@ -5,7 +5,7 @@ type Props = {
 const AboutSubTitle: React.FC<Props> = ({ texts }) => (
   <div className="about-subtitle-container">
     {texts.map((v, i) => (
-      <div key={i}>{v}</div>
+      <p key={i}>{v}</p>
     ))}
   </div>
 );

@@ -62,18 +62,18 @@ const TitleTutorial = () => {
     >
       <SkipButton onClick={handleSkipClick} />
       <div className="saidan-tutorial-title-container-inner">
-        <div className="saidan-tutorial-title-subtitle">お試し版</div>
-        <div className="saidan-tutorial-title-title">
+        <p className="saidan-tutorial-title-subtitle">お試し版</p>
+        <h1 className="saidan-tutorial-title-title">
           あなただけのSAIDANを作ろう
-        </div>
+        </h1>
         <div>
-          <div className="saidan-tutorial-title-text">
+          <p className="saidan-tutorial-title-text">
             ここで体験・作成するものは
             <br className="saidan-tutorial-title-br" />
             本サービスとは異なる場合がございます。
             <br />
             あらかじめご了承ください。
-          </div>
+          </p>
         </div>
       </div>
     </a.div>

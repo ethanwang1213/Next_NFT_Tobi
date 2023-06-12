@@ -13,11 +13,11 @@ const ReadyTutorial = () => {
         className="saidan-tutorial-ready-container-inner"
         style={{ opacity: textOpacity }}
       >
-        <div className="saidan-tutorial-ready-text">
+        <p className="saidan-tutorial-ready-text">
           実際にグッズを
           <br className="saidan-tutorial-ready-br" />
           作ってみましょう！
-        </div>
+        </p>
       </a.div>
     </div>
   );

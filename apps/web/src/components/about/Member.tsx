@@ -26,12 +26,12 @@ const Member: React.FC<Props> = ({ data }) => (
         }}
       />
     </div>
-    <div className="about-member-name">{data.name}</div>
+    <p className="about-member-name">{data.name}</p>
     <div className="about-member-roll-container">
       {data.roll.map((x, i) => (
-        <div key={i} className="about-member-roll">
+        <p key={i} className="about-member-roll">
           {x}
-        </div>
+        </p>
       ))}
     </div>
     <div className="about-member-tw-container">
