@@ -36,13 +36,13 @@ const SelectItemTutorial = () => {
         className="saidan-tutorial-selectitem-container-inner"
         style={{ opacity: textOpacity }}
       >
-        <div className="saidan-tutorial-selectitem-text">
+        <p className="saidan-tutorial-selectitem-text">
           追加されている
           <br className="saidan-tutorial-selectitem-br" />
           アイテムをタップすると
           <br />
           部屋に配置できます。
-        </div>
+        </p>
       </a.div>
     </div>
   );
