@@ -29,15 +29,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User>();
   const [dbIconUrl, setDbIconUrl] = useState<string>("");
+  const MAX_NAME_LENGTH = 12;
 
   // ユーザー作成用関数
   function createUser(uid: string, email?: string) {
     const ref = doc(db, `users/${uid}`);
     const appUser: User = {
       id: uid,
-      name: email ? email.split("@")[0] : "",
+      name: email ? email.split("@")[0].slice(0, MAX_NAME_LENGTH) : "", // nameには、メールアドレスの@より前でMAX_NAME_LENGTH文字までを格納する
       email: email ? email : "",
-      icon: "", // TODO: アイコンの初期値を設定する
+      icon: "",
       createdAt: Date.now(),
       discord: "",
       birthday: {
@@ -134,6 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateProfile,
         setDbIconUrl,
         setJoinTobiratoryAt,
+  MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >
       {children}

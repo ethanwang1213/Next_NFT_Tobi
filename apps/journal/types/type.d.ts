@@ -130,6 +130,7 @@ export type DBActivityRecord = {
 export type UserContextType = {
   user: User | null | undefined;
   dbIconUrl: string;
+  MAX_NAME_LENGTH: number;
   updateProfile: (
     newIcon: string,
     newName: string,
