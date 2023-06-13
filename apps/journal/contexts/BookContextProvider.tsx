@@ -191,7 +191,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
     ]);
 
     // 各ページの開始ページ番号にタグを設定
-    setTags([
+    const newTags = [
       { image: profileTag, page: 0 },
       {
         image: "/journal/images/icon/TOBIRANEKO_journal.svg",
@@ -211,7 +211,8 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
           logoutModal.current.checked = true;
         },
       },
-    ]);
+    ];
+    setTags(!user || !user.email ? newTags.slice(0, 4) : newTags);
   }, [nekoNFTs.current, otherNFTs.current]);
 
   useEffect(() => {
