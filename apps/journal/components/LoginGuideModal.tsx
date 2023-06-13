@@ -1,6 +1,10 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { useRouter } from "next/router";
 
+/**
+ * メールアドレスでのアカウント登録へ誘導するモーダル
+ * @returns
+ */
 const LoginGuideModal: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
