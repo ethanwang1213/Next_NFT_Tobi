@@ -42,7 +42,12 @@ const PersonalIcon: React.FC = () => {
     <div className="w-full aspect-square mr-4 sm:mr-0">
       <div className="relative h-full">
         <div className="relative h-full rounded-full bg-white border-white border-[10px] overflow-hidden">
-          <label htmlFor="edit-profile-modal" className="cursor-pointer">
+          <label
+            htmlFor={`${
+              !user || !user.email ? "login-guide-modal" : "edit-profile-modal"
+            }`}
+            className="cursor-pointer"
+          >
             {!user || user.icon === "" ? (
               <DefaultIcon />
             ) : (

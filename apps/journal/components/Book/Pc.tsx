@@ -248,12 +248,12 @@ const Pc = () => {
           <div
             className="absolute origin-bottom-left pointer-events-none"
             style={{
+              ...pageStyle,
               left: `${bookPos.left + bookWidth * 0.05}px`,
               bottom: `${bookPos.top + bookHeight * 0.01}px`,
-              ...pageStyle,
               height:
                 pageScale > 0
-                  ? (bookPos.height * 0.55 - bookHeight * 0.05) / pageScale
+                  ? (bookHeight * (1 - 0.05) - tags.length * 44) / pageScale // タグのtopとタグの数を考慮
                   : 1,
             }}
           >
@@ -274,9 +274,9 @@ const Pc = () => {
           <div
             className="absolute origin-top-left pointer-events-none"
             style={{
+              ...pageStyle,
               left: `${bookPos.center + bookWidth * 0.02}px`,
               top: `${bookPos.top + bookHeight * 0.01}px`,
-              ...pageStyle,
               height: pageScale
                 ? (bookPos.height - bookHeight * 0.02) / pageScale
                 : 1,
