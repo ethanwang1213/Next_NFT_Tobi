@@ -5,6 +5,7 @@ import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/Edi
 import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
 import SoundToggle from "@/components/SoundToggle";
 import DebugText from "@/components/DebugText";
+import LoginGuide from "@/components/LoginGuide";
 
 const Index = () => {
   return (
@@ -25,6 +26,7 @@ const Index = () => {
       <CropNewIconModal />
       <SoundToggle />
       <DebugText />
+      <LoginGuide />
     </>
   );
 };

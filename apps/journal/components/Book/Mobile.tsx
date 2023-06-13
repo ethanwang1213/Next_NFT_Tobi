@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -13,6 +13,7 @@ import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -24,6 +25,12 @@ const Mobile = () => {
 
   const [isArrowShown, setIsArrowShown] = useState<Boolean>(true);
   const [isSwiperPage, setIsSwiperPage] = useState<Boolean>(false);
+
+  const { user } = useAuth();
+  const footerBottom = useMemo(
+    () => (!user || !user.email ? " bottom-[50px]" : "bottom-0"),
+    [user]
+  );
 
   useEffect(() => {
     // ページ移動したときに左ページを表示する
@@ -114,7 +121,9 @@ const Mobile = () => {
         )}
       </div>
       {/* タグの表示 */}
-      <div className="absolute bottom-0 pb-5 flex flex-col gap-2 left-[-30px]">
+      <div
+        className={`absolute ${footerBottom} pb-5 flex flex-col gap-2 left-[-30px]`}
+      >
         <div
           className={`flex flex-col gap-2 ${
             isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
@@ -138,7 +147,9 @@ const Mobile = () => {
         />
       </div>
       {/* Discord認証ボタン */}
-      <div className="absolute bottom-0 mb-[22px] w-full flex justify-center px-[90px] pointer-events-none select-none">
+      <div
+        className={`absolute ${footerBottom} mb-[22px] w-full flex justify-center px-[90px] pointer-events-none select-none`}
+      >
         <DiscordOAuthButton />
       </div>
       {/* 矢印アイコンの表示 */}
@@ -146,7 +157,7 @@ const Mobile = () => {
         <FontAwesomeIcon
           icon={isLeftPage ? faCircleRight : faCircleLeft}
           size="4x"
-          className="absolute bottom-0 right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right cursor-pointer"
+          className={`absolute ${footerBottom} right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right cursor-pointer`}
           onClick={() => setIsLeftPage(!isLeftPage)}
         />
       )}
