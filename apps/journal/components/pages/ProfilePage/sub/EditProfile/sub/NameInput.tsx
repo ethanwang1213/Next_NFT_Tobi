@@ -16,8 +16,7 @@ const NameInput: React.FC<Props> = ({
   errors,
   isModalOpen,
 }) => {
-  const { user } = useAuth();
-  const MAX_NAME_LENGTH = 12;
+  const { user, MAX_NAME_LENGTH } = useAuth();
 
   useEffect(() => {
     if (!user) return;
