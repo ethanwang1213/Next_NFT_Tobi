@@ -135,7 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateProfile,
         setDbIconUrl,
         setJoinTobiratoryAt,
-  MAX_NAME_LENGTH: MAX_NAME_LENGTH,
+        MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >
       {children}
