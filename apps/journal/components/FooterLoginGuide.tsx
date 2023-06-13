@@ -5,7 +5,7 @@ import Link from "next/link";
  * メールアドレス未登録の場合にアカウント登録へ誘導する下部のガイド
  * @returns
  */
-const LoginGuide: React.FC = () => {
+const FooterLoginGuide: React.FC = () => {
   const { user } = useAuth();
 
   if (user && user.email) {
@@ -46,4 +46,4 @@ const LoginGuide: React.FC = () => {
   );
 };
 
-export default LoginGuide;
+export default FooterLoginGuide;
