@@ -13,8 +13,8 @@ const LoginGuideModal: React.FC = () => {
     <>
       <input type="checkbox" className="modal-toggle" id="login-guide-modal" />
       <div className="modal">
-        <div className="modal-box p-8">
-          <h3 className="pb-6 font-bold text-sm sm:text-base text-center text-accent">
+        <div className="modal-box p-8 pb-4">
+          <h3 className="pb-8 font-bold text-sm sm:text-base text-center text-accent">
             全ての機能を利用するには、
             <br />
             メールアドレスでのアカウント登録が
@@ -30,7 +30,7 @@ const LoginGuideModal: React.FC = () => {
               アカウント登録ページへ
             </label>
             <label
-              className="btn btn-block btn-ghost btn-accent text-accent"
+              className="btn btn-block btn-ghost text-accent"
               htmlFor="login-guide-modal"
             >
               キャンセル
