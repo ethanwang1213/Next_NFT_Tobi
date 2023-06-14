@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -31,6 +31,8 @@ const Mobile = () => {
     () => (!user || !user.email ? " bottom-[50px]" : "bottom-0"),
     [user]
   );
+  // タグ外部クリックでタグ一覧を閉じるため
+  const tagRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
     // ページ移動したときに左ページを表示する
@@ -74,6 +76,20 @@ const Mobile = () => {
       return "";
     }
   };
+
+  // タグ外部クリックでタグ一覧を閉じる
+  useEffect(() => {
+    if (!tagRef.current) return;
+
+    const handleOuterTagClick = (ev: MouseEvent) => {
+      if (!tagRef.current.contains(ev.target as Node)) {
+        setIsShowTag(false);
+      }
+    };
+
+    document.addEventListener("click", handleOuterTagClick);
+    return () => document.removeEventListener("click", handleOuterTagClick);
+  }, [tagRef.current]);
 
   return (
     <div className="overflow-hidden">
@@ -123,6 +139,7 @@ const Mobile = () => {
       {/* タグの表示 */}
       <div
         className={`absolute ${footerBottom} pb-5 flex flex-col gap-2 left-[-30px]`}
+        ref={tagRef}
       >
         <div
           className={`flex flex-col gap-2 ${
