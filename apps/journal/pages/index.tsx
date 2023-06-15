@@ -7,6 +7,7 @@ import SoundToggle from "@/components/SoundToggle";
 import DebugText from "@/components/DebugText";
 import FooterLoginGuide from "@/components/FooterLoginGuide";
 import LoginGuideModal from "@/components/LoginGuideModal";
+import NFTViewModal from "@/components/NFTViewModal";
 
 const Index = () => {
   return (
@@ -29,6 +30,7 @@ const Index = () => {
       <DebugText />
       <LoginGuideModal />
       <FooterLoginGuide />
+      <NFTViewModal />
     </>
   );
 };
