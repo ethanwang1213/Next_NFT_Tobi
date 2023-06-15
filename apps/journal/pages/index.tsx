@@ -9,7 +9,7 @@ import DebugText from "@/components/DebugText";
 // import LoginGuideModal from "@/components/LoginGuideModal";
 import NFTViewModal from "@/components/NFTViewModal";
 import { useRouter } from "next/router";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
 
 const Index = () => {
@@ -23,10 +23,6 @@ const Index = () => {
       router.push("/login");
     }
   }, [user]);
-
-  if (process.env.NEXT_PUBLIC_DEBUG_MODE === "true") {
-    return <></>;
-  }
 
   return (
     <>
