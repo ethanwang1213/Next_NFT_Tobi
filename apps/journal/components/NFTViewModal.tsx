@@ -42,26 +42,28 @@ const NFTViewModal: React.FC = () => {
           >
             <FontAwesomeIcon icon={faXmark} fontSize={24} />
           </label>
-          <div className="w-full h-[93%]">
-            <div className="relative w-full h-full">
-              {viewingSrc.current && (
-                <Image
-                  src={viewingSrc.current}
-                  alt="nft image"
-                  fill
-                  style={{ objectFit: "contain" }}
-                />
-              )}
+          <div className="w-full h-full flex flex-col">
+            <div className="w-full grow">
+              <div className="relative w-full h-full">
+                {viewingSrc.current && (
+                  <Image
+                    src={viewingSrc.current}
+                    alt="nft image"
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-          <div className="w-full flex justify-end">
-            {/* if there is a button, it will close the modal */}
-            <label
-              className="btn btn-accent btn-outline"
-              htmlFor="nft-view-modal"
-            >
-              閉じる
-            </label>
+            <div className="w-full flex justify-end">
+              {/* if there is a button, it will close the modal */}
+              <label
+                className="btn btn-accent btn-outline"
+                htmlFor="nft-view-modal"
+              >
+                閉じる
+              </label>
+            </div>
           </div>
         </div>
       </div>
