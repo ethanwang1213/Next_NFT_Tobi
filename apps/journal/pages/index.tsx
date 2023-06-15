@@ -5,11 +5,29 @@ import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/Edi
 import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
 import SoundToggle from "@/components/SoundToggle";
 import DebugText from "@/components/DebugText";
-import FooterLoginGuide from "@/components/FooterLoginGuide";
-import LoginGuideModal from "@/components/LoginGuideModal";
+// import FooterLoginGuide from "@/components/FooterLoginGuide";
+// import LoginGuideModal from "@/components/LoginGuideModal";
 import NFTViewModal from "@/components/NFTViewModal";
+import { useRouter } from "next/router";
+import { useEffect, useLayoutEffect } from "react";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const Index = () => {
+  const router = useRouter();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) return;
+
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && !user.email) {
+      router.push("/login");
+    }
+  }, [user]);
+
+  if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false") {
+    return <></>;
+  }
+
   return (
     <>
       <Image
@@ -28,8 +46,8 @@ const Index = () => {
       <CropNewIconModal />
       <SoundToggle />
       <DebugText />
-      <LoginGuideModal />
-      <FooterLoginGuide />
+      {/* <LoginGuideModal />
+      <FooterLoginGuide /> */}
       <NFTViewModal />
     </>
   );
