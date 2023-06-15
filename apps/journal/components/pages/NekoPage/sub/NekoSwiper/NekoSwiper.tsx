@@ -1,5 +1,5 @@
 import { useWindowSize } from "react-use";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper";
 import "swiper/css";
@@ -40,6 +40,47 @@ const NekoSwiper: React.FC = () => {
     );
   };
 
+  // 全てが表示されてから再レンダリングしないと、表示が暗く、スワイプできない
+  const [initNum, setInitNum] = useState<number>(0);
+  const [isInit, setIsInit] = useState<boolean>(false);
+  const [isInit2, setIsInit2] = useState<boolean>(false);
+
+  // 画像の読み込みが完了したらinitNumを増やす
+  const addInitNum = () => {
+    setInitNum((prev) => prev + 1);
+  };
+
+  // 全ての画像が表示されたらisInitをtrueにする
+  useEffect(() => {
+    if (isInit) return;
+
+    if (process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true") {
+      if (initNum === mockNekoSrcList.length) {
+        setIsInit(true);
+      }
+    } else {
+      if (nekoNFTs.current.length === 0) {
+        if (initNum === 1) {
+          setIsInit(true);
+        }
+      } else {
+        if (initNum === nekoNFTs.current.length) {
+          setIsInit(true);
+        }
+      }
+    }
+  }, [initNum]);
+
+  // レンダリングの瞬間の表示がキモくなったので、
+  // 50ms後にinvisibleを解くようにする
+  useEffect(() => {
+    if (isInit) {
+      setTimeout(() => {
+        setIsInit2(true);
+      }, 50);
+    }
+  }, [isInit]);
+
   useEffect(() => {
     if (!cardImgRef.current) return;
     if (innerHeight === 0 || cardAspect === 0) return;
@@ -73,17 +114,20 @@ const NekoSwiper: React.FC = () => {
           width={cardPos.width}
           height={cardPos.height}
           cardImgRef={cardImgRef}
-          onCardImgLoad={setAspect}
+          onCardImgLoad={() => {
+            setAspect();
+            addInitNum();
+          }}
           imgSrc={src}
         />
       </SwiperSlide>
     ),
-    [cardPos.width, cardPos.height, cardImgRef, setAspect]
+    [cardPos.width, cardPos.height, cardImgRef, cardAspect, setAspect]
   );
 
   return (
     <div
-      className="fixed"
+      className={`fixed ${isInit2 ? "" : "invisible"}`}
       style={{
         width: cardPos.width,
         height: cardPos.height,
@@ -97,33 +141,26 @@ const NekoSwiper: React.FC = () => {
           grabCursor={true}
           modules={[EffectCards]}
           className="mySwiper"
+          key={isInit ? "init" : "not-init"} // 再レンダリングのため。しなければ表示が暗く、スワイプができない。
         >
           {mockNekoSrcList.map((v) => createSwiperSlide(v.src, v.id))}
         </Swiper>
       ) : (
         <>
           {/* TOBIRA NEKOを持っていない場合、空白のカードを一枚表示する */}
-          {nekoNFTs.current.length === 0 ? (
-            <Swiper
-              effect={"cards"}
-              grabCursor={false}
-              modules={[]}
-              className="mySwiper"
-            >
-              {createSwiperSlide(null, 0)}
-            </Swiper>
-          ) : (
-            <Swiper
-              effect={"cards"}
-              grabCursor={true}
-              modules={[EffectCards]}
-              className="mySwiper"
-            >
-              {[...nekoNFTs.current].map((v, i) =>
-                createSwiperSlide(v.thumbnail, i)
-              )}
-            </Swiper>
-          )}
+          <Swiper
+            effect={"cards"}
+            grabCursor={true}
+            modules={[EffectCards]}
+            className={`mySwiper`}
+            key={isInit ? "init" : "not-init"} // 再レンダリングのため。しなければ表示が暗く、スワイプができない。
+          >
+            {nekoNFTs.current.length === 0
+              ? createSwiperSlide(null, 0)
+              : [...nekoNFTs.current].map((v, i) =>
+                  createSwiperSlide(v.thumbnail, i)
+                )}
+          </Swiper>
         </>
       )}
     </div>
