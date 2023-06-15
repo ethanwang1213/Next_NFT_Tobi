@@ -2,18 +2,21 @@ import { getAuth } from "firebase/auth";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const Logout = () => {
   const router = useRouter();
   const auth = getAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
+    if (!user) return;
+
     const handleLogout = async () => {
       try {
-        // TODO: emailでログインしている場合のみログアウトするようにする
-        // if (auth.currentUser.email) {
-        await auth.signOut();
-        // }
+        if (user.email) {
+          await auth.signOut();
+        }
         router.push("/login");
       } catch (error) {
         console.error("ログアウトに失敗しました。", error);
@@ -21,7 +24,7 @@ const Logout = () => {
     };
 
     handleLogout();
-  }, []);
+  }, [user]);
 
   return (
     <>
