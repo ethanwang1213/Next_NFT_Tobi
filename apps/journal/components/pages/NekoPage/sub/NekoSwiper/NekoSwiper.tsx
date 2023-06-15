@@ -135,34 +135,25 @@ const NekoSwiper: React.FC = () => {
         top: cardPos.top,
       }}
     >
-      {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
-        <Swiper
-          effect={"cards"}
-          grabCursor={true}
-          modules={[EffectCards]}
-          className="mySwiper"
-          key={isInit ? "init" : "not-init"} // 再レンダリングのため。しなければ表示が暗く、スワイプができない。
-        >
-          {mockNekoSrcList.map((v) => createSwiperSlide(v.src, v.id))}
-        </Swiper>
-      ) : (
-        <>
-          {/* TOBIRA NEKOを持っていない場合、空白のカードを一枚表示する */}
-          <Swiper
-            effect={"cards"}
-            grabCursor={true}
-            modules={[EffectCards]}
-            className={`mySwiper`}
-            key={isInit ? "init" : "not-init"} // 再レンダリングのため。しなければ表示が暗く、スワイプができない。
-          >
+      <Swiper
+        effect={"cards"}
+        grabCursor={true}
+        modules={[EffectCards]}
+        className="mySwiper"
+        key={isInit ? "init" : "not-init"} // 再レンダリングのため。しなければ表示が暗く、スワイプができない。
+      >
+        {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
+          <>{mockNekoSrcList.map((v) => createSwiperSlide(v.src, v.id))}</>
+        ) : (
+          <>
             {nekoNFTs.current.length === 0
               ? createSwiperSlide(null, 0)
               : [...nekoNFTs.current].map((v, i) =>
                   createSwiperSlide(v.thumbnail, i)
                 )}
-          </Swiper>
-        </>
-      )}
+          </>
+        )}
+      </Swiper>
     </div>
   );
 };
