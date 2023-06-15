@@ -24,7 +24,7 @@ const Index = () => {
     }
   }, [user]);
 
-  if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false") {
+  if (process.env.NEXT_PUBLIC_DEBUG_MODE === "true") {
     return <></>;
   }
 
