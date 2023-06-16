@@ -28,7 +28,8 @@ const Mobile = () => {
 
   const { user } = useAuth();
   const footerBottom = useMemo(
-    () => (!user || !user.email ? " bottom-[50px]" : "bottom-0"),
+    // () => (!user || !user.email ? " bottom-[50px]" : "bottom-0"),
+    () => "bottom-0",
     [user]
   );
   // タグ外部クリックでタグ一覧を閉じるため
