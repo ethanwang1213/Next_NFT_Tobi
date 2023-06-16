@@ -55,7 +55,7 @@ const Login = () => {
 
     try {
       await signInWithPopup(auth, provider);
-      router.push("/"); // ログイン後にリダイレクトするURLを指定
+      await router.push("/"); // ログイン後にリダイレクトするURLを指定
     } catch (error) {
       console.error("Googleログインに失敗しました。", error);
     }
@@ -65,11 +65,11 @@ const Login = () => {
     // console.log(auth.currentUser);
     const handleRedirect = async () => {
       // ログイン状態の変化を監視
-      await auth.onAuthStateChanged((user) => {
+      auth.onAuthStateChanged(async (user) => {
         if (user && user.email) {
           console.log(`${user.email} としてログイン中です。`);
           // ログイン済みの場合、リダイレクト処理を実行
-          router.push("/"); // リダイレクト先のURLを指定
+          await router.push("/"); // リダイレクト先のURLを指定
         }
       });
     };

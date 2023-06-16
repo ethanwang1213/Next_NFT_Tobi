@@ -11,21 +11,26 @@ import NFTViewModal from "@/components/NFTViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
+import { getAuth } from "@firebase/auth";
 
 const Index = () => {
   const router = useRouter();
+  const auth = getAuth();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) return;
+    if (!auth.currentUser) return;
 
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && !user.email) {
+    if (
+      process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
+      !auth.currentUser.email
+    ) {
       router.push("/login");
     }
-  }, [user]);
+  }, [auth.currentUser]);
 
   return (
-    <>
+    <div className={!user || !user.email ? "invisible" : ""}>
       <Image
         src="/journal/images/book/bg_journal.png"
         fill
@@ -45,7 +50,7 @@ const Index = () => {
       {/* <LoginGuideModal />
       <FooterLoginGuide /> */}
       <NFTViewModal />
-    </>
+    </div>
   );
 };
 
