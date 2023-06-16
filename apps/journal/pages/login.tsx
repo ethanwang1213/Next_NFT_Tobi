@@ -20,7 +20,7 @@ const Login = () => {
   const auth = getAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [mailSent, setMailSent] = useState(false);
+  const emailModalRef = useRef<HTMLDialogElement>(null);
 
   // sign inボタンが押されたときに実行する関数
   const signIn: FormEventHandler<HTMLFormElement> = (e) => {
@@ -39,7 +39,7 @@ const Login = () => {
         // Save the email locally so you don't need to ask the user for it again
         // if they open the link on the same device.
         window.localStorage.setItem("emailForSignIn", email);
-        setMailSent(true);
+        emailModalRef.current.showModal();
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -248,7 +248,6 @@ const Login = () => {
             <br />
             受取には購入時に使用したメールアドレスでのログインが必要です。
           </p>
-          {mailSent && <p className="font-bold">メールを送信しました</p>}
         </form>
       </div>
       <div
@@ -261,6 +260,16 @@ const Login = () => {
           fill
         />
       </div>
+      <dialog id="loginModal" className="modal" ref={emailModalRef}>
+        <form method="dialog" className="modal-box">
+          <h3 className="font-bold text-lg">メールを送信しました</h3>
+          <p className="py-4">ログイン認証に必要なメールを送信しましたのでメール内のリンクをクリックしログインをしてください。<br />数分たっても届かない場合は再度お試しください。</p>
+          <div className="modal-action">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn">閉じる</button>
+          </div>
+        </form>
+      </dialog>
     </>
   );
 };

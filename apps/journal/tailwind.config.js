@@ -23,7 +23,7 @@ const config = {
     themes: [
       {
         mytheme: {
-          ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+          ...require("daisyui/src/theming/themes")["[data-theme=light]"],
           primary: "#BE6105",
           secondary: "#FDFAF1",
           "secondary-focus": "#dbd3ba",
