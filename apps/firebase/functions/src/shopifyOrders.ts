@@ -83,20 +83,21 @@ ${payment.items.map((item: Item, index: number) => {
     return ` ${index + 1}. ${item.name}: ${item.price} USD x ${item.quantity}`;
   }).join("\n").toString()}
 `;
-  console.log(slackMessage);
   try {
-    const slack = await fetch(SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE, {
-      method: "POST",
-      body: JSON.stringify({
-        username: "shopify",
-        text: slackMessage,
-        icon_emoji: ":shopping_trolley:",
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    console.log(slack);
+    if (SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE) {
+      const slack = await fetch(SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE, {
+        method: "POST",
+        body: JSON.stringify({
+          username: "shopify",
+          text: slackMessage,
+          icon_emoji: ":shopping_trolley:",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(slack);
+    }
   } catch (error) {
     console.error(error);
   }
