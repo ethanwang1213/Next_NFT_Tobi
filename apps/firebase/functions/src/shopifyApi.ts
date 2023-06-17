@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import * as cors from "cors";
+import {REGION} from "./lib/constants";
 
-export const background = functions.https.onRequest((request, response) => {
+export const background = functions.region(REGION).https.onRequest((request, response) => {
   // functions.logger.info("Hello logs!", {structuredData: true});
   const corsHandler = cors({origin: true});
   corsHandler(request, response, () => {
