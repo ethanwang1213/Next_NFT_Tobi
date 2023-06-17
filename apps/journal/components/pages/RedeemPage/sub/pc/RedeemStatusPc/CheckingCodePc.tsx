@@ -12,6 +12,7 @@ const CheckingCodePc: React.FC = () => {
       icon={<FeatherIcon className={"w-full h-full text-accent drop-shadow-lg"} />}
       title={"Checking code..."}
       titleSize={72}
+      isFade
     />
   );
 };
