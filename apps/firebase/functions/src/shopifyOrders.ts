@@ -1,8 +1,9 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import * as sendgrid from "@sendgrid/mail";
+import fetch from "node-fetch";
 import {Item, generateRedeemCode} from "./lib/nft";
-import {REGION, TOPIC_NAMES, MAIL_HEAD, MAIL_FOOT} from "./lib/constants";
+import {REGION, TOPIC_NAMES, MAIL_HEAD, MAIL_FOOT, SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE} from "./lib/constants";
 
 const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
 
@@ -53,9 +54,8 @@ ${MAIL_FOOT}
 exports.handleOrdersCreate = functions.region(REGION).pubsub.topic(TOPIC_NAMES["ordersCreate"]).onPublish(async (message) => {
   console.log(JSON.stringify(message.json));
   console.log(JSON.stringify(message.json.line_items));
-  if (message.json.payment_gateway_names != "暗号資産") {
-    return;
-  }
+
+  const isCrypto = message.json.payment_gateway_names == "暗号資産";
   const payment = {
     email: message.json.email,
     name: message.json.name,
@@ -67,8 +67,41 @@ exports.handleOrdersCreate = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         quantity: item.quantity,
       };
     }),
-    status: "pending",
+    payment_gateway_names: message.json.payment_gateway_names,
+    status: isCrypto ? "pending" : "paid",
   };
-  await firestore().collection("payments").add(payment);
+  const slackMessage = `
+以下の注文を確認しました。
+
+注文番号：${payment.name}
+注文者メールアドレス：${payment.email}
+合計金額：${payment.total_price} USD
+購入方法：${payment.payment_gateway_names}
+
+購入アイテム:
+${payment.items.map((item: Item, index: number) => {
+    return ` ${index + 1}. ${item.name}: ${item.price} USD x ${item.quantity}`;
+  }).join("\n").toString()}
+`;
+  console.log(slackMessage);
+  try {
+    const slack = await fetch(SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE, {
+      method: "POST",
+      body: JSON.stringify({
+        username: "shopify",
+        text: slackMessage,
+        icon_emoji: ":shopping_trolley:",
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(slack);
+  } catch (error) {
+    console.error(error);
+  }
+  if (isCrypto) {
+    await firestore().collection("payments").add(payment);
+  }
   return;
 });
