@@ -57,17 +57,21 @@ exports.handleOrdersCreate = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
 
   const isCrypto = message.json.payment_gateway_names == "暗号資産";
   const payment = {
-    email: message.json.email,
-    name: message.json.name,
-    total_price: message.json.total_price,
+    email: message.json.email || "",
+    name: message.json.name || "",
+    total_price: message.json.total_price || "",
+    currency: message.json.currency || "",
+    billing_address: {
+      name: message.json.billing_address?.name || "",
+    },
     items: message.json.line_items.map((item: any): Item => {
       return {
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
+        name: item.name || "",
+        price: item.price || "",
+        quantity: item.quantity || "",
       };
     }),
-    payment_gateway_names: message.json.payment_gateway_names,
+    payment_gateway_names: message.json.payment_gateway_names || "",
     status: isCrypto ? "pending" : "paid",
   };
   const slackMessage = `
@@ -75,14 +79,16 @@ exports.handleOrdersCreate = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
 
 注文番号：${payment.name}
 注文者メールアドレス：${payment.email}
-合計金額：${payment.total_price} USD
+注文者名：${payment.billing_address.name}
+合計金額：${payment.total_price} ${payment.currency}
 購入方法：${payment.payment_gateway_names}
 
 購入アイテム:
 ${payment.items.map((item: Item, index: number) => {
-    return ` ${index + 1}. ${item.name}: ${item.price} USD x ${item.quantity}`;
+    return ` ${index + 1}. ${item.name}: ${item.price} ${payment.currency} x ${item.quantity}`;
   }).join("\n").toString()}
 `;
+  // console.log(slackMessage);
   try {
     if (SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE) {
       const slack = await fetch(SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE, {
