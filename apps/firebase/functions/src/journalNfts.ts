@@ -1,8 +1,9 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {parseNftByName} from "./lib/nft";
+import {REGION} from "./lib/constants";
 
-exports.checkRedeem = functions.https.onCall(async (data, context) => {
+exports.checkRedeem = functions.region(REGION).https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
@@ -54,7 +55,7 @@ exports.checkRedeem = functions.https.onCall(async (data, context) => {
   throw new functions.https.HttpsError("not-found", "The redeem code is not found.");
 });
 
-exports.getPayments = functions.https.onCall(async (data, context) => {
+exports.getPayments = functions.region(REGION).https.onCall(async (data, context) => {
   console.log("getPayments");
   console.log(data);
   if (!context.auth) {

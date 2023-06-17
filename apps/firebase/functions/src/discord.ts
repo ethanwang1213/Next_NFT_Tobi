@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import fetch from "node-fetch";
+import {REGION} from "./lib/constants";
 
-export const discordOAuth = functions.https.onRequest(async (request, response) => {
+export const discordOAuth = functions.region(REGION).https.onRequest(async (request, response) => {
   const code = request.query.code;
   if (!code || typeof code !== "string") {
     response.status(500).send("Invalid parameter of code").end();

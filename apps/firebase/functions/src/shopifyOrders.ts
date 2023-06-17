@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import * as sendgrid from "@sendgrid/mail";
 import {Item, generateRedeemCode} from "./lib/nft";
-import {TOPIC_NAMES, MAIL_HEAD, MAIL_FOOT} from "./lib/constants";
+import {REGION, TOPIC_NAMES, MAIL_HEAD, MAIL_FOOT} from "./lib/constants";
 
 const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
 
@@ -10,7 +10,7 @@ const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
   * Shopify Orders Paid PubSub
   * https://shopify.dev/docs/api/admin-graphql/2023-04/enums/WebhookSubscriptionTopic
   */
-exports.handleOrdersPaid = functions.pubsub.topic(TOPIC_NAMES["ordersPaid"]).onPublish(async (message) => {
+exports.handleOrdersPaid = functions.region(REGION).pubsub.topic(TOPIC_NAMES["ordersPaid"]).onPublish(async (message) => {
   console.log(JSON.stringify(message.json));
   console.log(JSON.stringify(message.json.line_items));
   const order = {
@@ -50,7 +50,7 @@ ${MAIL_FOOT}
   * Shopify Orders Create PubSub
   * https://shopify.dev/docs/api/admin-graphql/2023-04/enums/WebhookSubscriptionTopic
   */
-exports.handleOrdersCreate = functions.pubsub.topic(TOPIC_NAMES["ordersCreate"]).onPublish(async (message) => {
+exports.handleOrdersCreate = functions.region(REGION).pubsub.topic(TOPIC_NAMES["ordersCreate"]).onPublish(async (message) => {
   console.log(JSON.stringify(message.json));
   console.log(JSON.stringify(message.json.line_items));
   if (message.json.payment_gateway_names != "暗号資産") {

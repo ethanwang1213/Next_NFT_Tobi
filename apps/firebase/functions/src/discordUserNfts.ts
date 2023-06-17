@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
+import {REGION} from "./lib/constants";
 
-export const discordUserNfts = functions.https.onRequest(async (request, response) => {
+export const discordUserNfts = functions.region(REGION).https.onRequest(async (request, response) => {
   const discordId = request.query.discordId;
   if (discordId == null || !discordId || typeof discordId !== "string") {
     const errorResponse = {

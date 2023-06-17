@@ -39,8 +39,8 @@ module.exports = {
         basePath: false,
         source: "/api/functions/:path*",
         destination:
-          // "http://localhost:5001/tobiratory-f6ae1/us-central1/:path*",
-          // "https://us-central1-tobiratory-f6ae1.cloudfunctions.net/:path*",
+          // "http://localhost:5001/tobiratory-f6ae1/asia-northeast1/:path*",
+          // "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/:path*",
         `${process.env.CLOUD_FUNCTIONS_API_URL}/:path*`,
       },
     ];
