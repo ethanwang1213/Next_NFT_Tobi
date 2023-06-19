@@ -30,7 +30,13 @@ const Index = () => {
   }, [auth.currentUser]);
 
   return (
-    <div className={!user || !user.email ? "invisible" : ""}>
+    <div
+      className={
+        process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && (!user || !user.email)
+          ? "invisible"
+          : ""
+      }
+    >
       <Image
         src="/journal/images/book/bg_journal.png"
         fill
