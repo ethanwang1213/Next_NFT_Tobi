@@ -8,6 +8,11 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+
+type LoginFormType = {
+  email: string;
+};
 
 const Login = () => {
   const loginRef = useRef<HTMLDivElement>(null);
@@ -19,8 +24,19 @@ const Login = () => {
   const logoMobileRef = useRef<HTMLDivElement>(null);
   const auth = getAuth();
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const emailModalRef = useRef<HTMLDialogElement>(null);
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormType>({
+    defaultValues: {
+      email: "",
+    },
+  });
 
   // sign inボタンが押されたときに実行する関数
   const signIn: FormEventHandler<HTMLFormElement> = (e) => {
@@ -33,20 +49,22 @@ const Login = () => {
       handleCodeInApp: true,
     };
 
-    sendSignInLinkToEmail(auth, email, actionCodeSettings)
+    setIsEmailLoading(true);
+    sendSignInLinkToEmail(auth, getValues("email"), actionCodeSettings)
       .then(() => {
         // The link was successfully sent. Inform the user.
         // Save the email locally so you don't need to ask the user for it again
         // if they open the link on the same device.
-        window.localStorage.setItem("emailForSignIn", email);
+        window.localStorage.setItem("emailForSignIn", getValues("email"));
         emailModalRef.current.showModal();
+        setIsEmailLoading(false);
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         // ...
+        setIsEmailLoading(false);
       });
-    e.preventDefault();
   };
 
   // Googleアカウントでログインする関数
@@ -206,7 +224,7 @@ const Login = () => {
       >
         <form
           className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
-          onSubmit={signIn}
+          onSubmit={handleSubmit(signIn)}
         >
           <button
             className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
@@ -229,13 +247,27 @@ const Login = () => {
           >
             <p>or</p>
           </div>
-          <input
-            type="text"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-            className="input rounded-full bg-slate-100 w-full input-bordered 
+          <div className="w-full">
+            <input
+              type="text"
+              placeholder="Email"
+              {...register("email", {
+                required: {
+                  value: true,
+                  message: "*メールアドレスを入力してください。",
+                },
+                pattern: {
+                  value: /^[\w\-._]+@[\w\-._]+\.[A-Za-z]+/,
+                  message: "*メールアドレスの形式で入力してください",
+                },
+              })}
+              className="input rounded-full bg-slate-100 w-full input-bordered 
                 text-md sm:text-lg placeholder:text-sm sm:placeholder:text-md sm:h-[56px] px-6"
-          />
+            />
+            <p className="pl-2 pt-1 text-[10px] text-error">
+              {errors.email && `${errors.email.message}`}
+            </p>
+          </div>
           <button
             className="btn btn-block rounded-full text-md sm:text-lg sm:h-[56px] 
                 drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
@@ -248,6 +280,11 @@ const Login = () => {
             <br />
             受取には購入時に使用したメールアドレスでのログインが必要です。
           </p>
+          <div>
+            {isEmailLoading && (
+              <span className="loading loading-spinner text-info loading-md"></span>
+            )}
+          </div>
         </form>
       </div>
       <div
