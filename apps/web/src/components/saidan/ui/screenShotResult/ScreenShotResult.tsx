@@ -16,7 +16,6 @@ const ScreenShotResult = ({ canvasRef }: Props) => {
   const closeScreenShotResult = useSaidanStore(
     (state) => state.closeScreenShotResult
   );
-
   const [imageSrc, setImageSrc] = useState("");
 
   const { isWide } = useWindowSize();
@@ -24,7 +23,16 @@ const ScreenShotResult = ({ canvasRef }: Props) => {
   // キャンバスのスクショを設定
   useEffect(() => {
     if (!canvasRef.current) return;
-    setImageSrc(canvasRef.current.toDataURL("image/jpeg"));
+    if (!isiOS()) {
+      const saveA = document.createElement("a");
+      saveA.href = canvasRef.current.toDataURL();
+      saveA.download = "tobiratory_saidan.png";
+      saveA.click();
+    }
+    canvasRef.current.toBlob((blob) => {
+      const url = URL.createObjectURL(blob!);
+      setImageSrc(url);
+    }, "image/jpeg");
   }, [canvasRef.current]);
 
   const handleShareClick = () => {
@@ -43,34 +51,39 @@ const ScreenShotResult = ({ canvasRef }: Props) => {
       heightRate={0.9}
       closeMethod={closeScreenShotResult}
     >
-      <div className="saidan-screenshot-content-container">
-        <div className="saidan-screenshot-image">
+      <div className="card h-full bg-base-100">
+        <figure className="relative aspect-square bg-white">
+          <div
+            className="saturate-50 bg-center blur-md drop-shadow-lg bg-cover bg-no-repeat absolute top-0 left-0 w-full h-full"
+            style={{ backgroundImage: `url(${imageSrc})` }}
+          ></div>
           {imageSrc && (
             <Image
               src={imageSrc}
               alt="result"
               fill
-              style={{ objectFit: "contain" }}
+              className="object-contain"
             />
           )}
-        </div>
-        <div className="saidan-screenshot-ios-msg">
-          {isiOS() && <>上の画像を長押しすることで保存できます</>}
-        </div>
-        <div className="saidan-screenshot-share-container">
-          <button
-            type="button"
-            className="screenshot-share-btn"
-            onClick={handleShareClick}
-          >
-            <FontAwesomeIcon
-              color="white"
-              icon={faTwitter}
-              className={`${
-                isWide ? "fa-2xl" : "fa-xl"
-              } fa-xl screenshot-share-icon`}
-            />
-          </button>
+        </figure>
+        <div className="card-body">
+          <div>{isiOS() && <>上の画像を長押しすることで保存できます</>}</div>
+          <div className="card-actions items-center gap-5 flex-col">
+            <p className="text-3xl font-tsukub-400">SAIDANを共有</p>
+            <button
+              type="button"
+              className="screenshot-share-btn"
+              onClick={handleShareClick}
+            >
+              <FontAwesomeIcon
+                color="white"
+                icon={faTwitter}
+                className={`${
+                  isWide ? "fa-2xl" : "fa-xl"
+                } screenshot-share-icon`}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </SlideUpCenteredContainer>

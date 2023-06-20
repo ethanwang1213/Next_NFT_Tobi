@@ -1,8 +1,7 @@
-import { a, SpringValue, to } from "@react-spring/three";
+import { a, SpringValue, to, useSpring } from "@react-spring/three";
 import { useMemo, useState } from "react";
 import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
-import { useSpring } from "@react-spring/web";
 import useWindowSize from "@/hooks/useWindowSize";
 import ImageModel from "../imageModel/ImageModel";
 
@@ -240,7 +239,7 @@ const EcoPhase = ({ starts, ends }: Props) => {
               [ev, sv],
               (v1, v2) => -100 + srcData.z + v1 * v1 * i * 100 + (-60 + v2 * 60)
             )}
-            rotZ={rotZ as any}
+            rotZ={rotZ}
             opacity={sv.to([0, 0.1, 1], [0, 1, 1]).to((v) => v)}
             useLambertMaterial
           />

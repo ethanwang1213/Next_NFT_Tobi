@@ -1,6 +1,6 @@
 import getTextureLength from "@/methods/home/getTextureLength";
 import useHomeStore from "@/stores/homeStore";
-import { easings, useSprings } from "@react-spring/web";
+import { easings, useSprings } from "@react-spring/three";
 import { Dispatch, SetStateAction } from "react";
 import { shallow } from "zustand/shallow";
 
