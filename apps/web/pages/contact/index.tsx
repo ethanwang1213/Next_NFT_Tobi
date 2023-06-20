@@ -9,6 +9,7 @@ import SubmitModal from "@/components/contact/SubmitModal";
 import RecaptchaVisibleStyle from "@/components/styled-components/RecaptchaVisibleStyle";
 import BgPattern from "@/components/contact/BgPattern";
 import ContactHeader from "@/components/contact/ContactHeader";
+import dayjs from "dayjs";
 
 const schema = z.object({
   name: z.string().min(1, { message: "必須項目です" }),
@@ -60,6 +61,7 @@ const Contact: NextPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        timestamp: dayjs().format("YYYY/MM/DD HH:mm"),
         name: data.name,
         email: data.email,
         title: data.topic,
@@ -73,99 +75,99 @@ const Contact: NextPage = () => {
     }
   });
 
-  return (<>
-    <RecaptchaVisibleStyle />
-    <div
-      className="contact-container-outer"
-      style={{
-        backgroundImage: isWide
-          ? "url(/contact/pc/bg.svg)"
-          : "url(/contact/sp/bg.svg)",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <BgPattern />
-      <div className="contact-container-inner">
-        <ContactHeader title="CONTACT" />
-        <form className="contact-form-container-outer" onSubmit={onSubmit}>
-          <div className="contact-form-container-inner">
-            <div>
-              <div className="contact-input-container">
-                <input
-                  {...register("name")}
-                  id="name"
-                  type="text"
-                  className="contact-input"
-                  placeholder="Your name*"
-                />
+  return (
+    <>
+      <RecaptchaVisibleStyle />
+      <div
+        className="contact-container-outer"
+        style={{
+          backgroundImage: isWide
+            ? "url(/contact/pc/bg.svg)"
+            : "url(/contact/sp/bg.svg)",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <BgPattern />
+        <div className="contact-container-inner">
+          <ContactHeader title="CONTACT" />
+          <form className="contact-form-container-outer" onSubmit={onSubmit}>
+            <div className="contact-form-container-inner">
+              <div>
+                <div className="contact-input-container">
+                  <input
+                    {...register("name")}
+                    id="name"
+                    type="text"
+                    className="contact-input"
+                    placeholder="Your name*"
+                  />
+                </div>
+                {errors.name && (
+                  <p className="contact-errors-text">{errors.name.message}</p>
+                )}
               </div>
-              {errors.name && (
-                <p className="contact-errors-text">{errors.name.message}</p>
-              )}
-            </div>
-            <div>
-              <div className="contact-input-container">
-                <input
-                  {...register("email")}
-                  id="email"
-                  type="email"
-                  className="contact-input"
-                  placeholder="E-Mail address*"
-                />
+              <div>
+                <div className="contact-input-container">
+                  <input
+                    {...register("email")}
+                    id="email"
+                    type="email"
+                    className="contact-input"
+                    placeholder="E-Mail address*"
+                  />
+                </div>
+                {errors.email && (
+                  <p className="contact-errors-text">{errors.email.message}</p>
+                )}
               </div>
-              {errors.email && (
-                <p className="contact-errors-text">{errors.email.message}</p>
-              )}
-            </div>
-            <div>
-              <div className="contact-input-container">
-                <input
-                  {...register("topic")}
-                  id="topic"
-                  type="text"
-                  className="contact-input"
-                  placeholder="Topic*"
-                />
+              <div>
+                <div className="contact-input-container">
+                  <input
+                    {...register("topic")}
+                    id="topic"
+                    type="text"
+                    className="contact-input"
+                    placeholder="Topic*"
+                  />
+                </div>
+                {errors.topic && (
+                  <p className="contact-errors-text">{errors.topic.message}</p>
+                )}
               </div>
-              {errors.topic && (
-                <p className="contact-errors-text">{errors.topic.message}</p>
-              )}
-            </div>
 
-            <div>
-              <div className="contact-area-container">
-                <textarea
-                  {...register("message")}
-                  id="message"
-                  className="contact-area"
-                  placeholder="Message*"
-                />
+              <div>
+                <div className="contact-area-container">
+                  <textarea
+                    {...register("message")}
+                    id="message"
+                    className="contact-area"
+                    placeholder="Message*"
+                  />
+                </div>
+                {errors.message && (
+                  <p className="contact-errors-text">
+                    {errors.message.message}
+                  </p>
+                )}
               </div>
-              {errors.message && (
-                <p className="contact-errors-text">{errors.message.message}</p>
-              )}
-            </div>
 
-            <button
-              className="contact-submit"
-              type="submit"
-            >
-              SUBMIT NOW
-            </button>
-          </div>
-        </form>
+              <button className="contact-submit" type="submit">
+                SUBMIT NOW
+              </button>
+            </div>
+          </form>
+        </div>
+        <input
+          type="checkbox"
+          id="contact-submit-modal"
+          className="modal-toggle"
+          ref={modalInputRef}
+          onChange={handleModalInputChange}
+        />
+        <SubmitModal isSuccess={isSuccess} />
       </div>
-      <input
-        type="checkbox"
-        id="contact-submit-modal"
-        className="modal-toggle"
-        ref={modalInputRef}
-        onChange={handleModalInputChange}
-      />
-      <SubmitModal isSuccess={isSuccess} />
-    </div>
-  </>
+    </>
   );
 };
 
