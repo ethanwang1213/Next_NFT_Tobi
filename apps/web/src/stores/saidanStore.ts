@@ -175,6 +175,7 @@ type SaidanState = {
   isScreenShotVisible: boolean;
   openScreenShotResult: () => void;
   closeScreenShotResult: () => void;
+
   // init at logout
   isSaved: boolean;
   setIsSaved: (b: boolean) => void;

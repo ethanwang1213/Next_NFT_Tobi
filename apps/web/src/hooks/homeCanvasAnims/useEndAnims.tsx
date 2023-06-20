@@ -1,15 +1,13 @@
-import { useSpringRef, useSpring, useChain } from "@react-spring/web";
+import { useSpringRef, useSpring, useChain } from "@react-spring/three";
 import { useState } from "react";
 
 /**
  * topEnd Endのアニメーション用変数を管理する
  * useHomeCanvasAnimsからのみ呼ばれることを想定
- * @param activeTEnd 
- * @returns 
+ * @param activeTEnd
+ * @returns
  */
-const useEndAnims = (
-  activeTEnd: boolean,
-) => {
+const useEndAnims = (activeTEnd: boolean) => {
   const [isVideoStarted, setIsVideoStarted] = useState(false);
   const apiTEndStart = useSpringRef();
   const { tEndStart } = useSpring({

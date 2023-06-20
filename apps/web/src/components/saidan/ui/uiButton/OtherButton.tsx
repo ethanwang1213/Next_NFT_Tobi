@@ -1,7 +1,6 @@
 import { animated, useSpring } from "@react-spring/web";
 import { RefObject } from "react";
 import useWindowSize from "@/hooks/useWindowSize";
-import isiOS from "@/methods/isiOS";
 import { RESPONSIVE_BORDER } from "@/constants/saidanConstants";
 import useSaidanStore from "@/stores/saidanStore";
 import Tutorial from "@/../public/saidan/saidan-ui/tutorial.svg";
@@ -22,6 +21,7 @@ const OtherButton = ({ canvasRef }: Props) => {
     (state) => state.openScreenShotResult
   );
   const saveStates = useSaidanStore((state) => state.saveStates);
+  const selectItem = useSaidanStore((state) => state.selectItem);
 
   const { displayWidth } = useWindowSize();
 
@@ -54,22 +54,13 @@ const OtherButton = ({ canvasRef }: Props) => {
       <animated.div style={{ translateY: y0, scale }}>
         <FunctionButton
           onClick={() => {
-            // ios以外
-            // スクショ完了
-            if (!canvasRef.current) {
-              // スクショに失敗しました
-              return;
-            }
-            if (!isiOS()) {
-              const saveA = document.createElement("a");
-              saveA.href = canvasRef.current.toDataURL();
-              saveA.download = "tobiratory_saidan.png";
-              saveA.click();
-            }
-
-            openScreenShotResult();
-            saveStates();
-            closeOther();
+            if (!canvasRef.current) return;
+            selectItem("");
+            setTimeout(() => {
+              openScreenShotResult();
+              saveStates();
+              closeOther();
+            }, 50);
           }}
         >
           <Download className="w-full h-full" />

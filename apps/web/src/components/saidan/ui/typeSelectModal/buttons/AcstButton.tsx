@@ -53,13 +53,25 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
   > = async () => {
     try {
       if (!auth.currentUser) {
-        return ["", { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          "",
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
       const srcDoc = await getDoc(
         doc(db, "users", auth.currentUser.uid, "src", imageId)
       );
       if (!srcDoc.exists()) {
-        return ["", { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          "",
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
       // 正常値 データが存在しない場合。
       if (!srcDoc.data().modelSrc) {
@@ -69,7 +81,13 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
       return [acstSrc, null];
     } catch (error) {
       // console.log(error);
-      return ["", { title: "何らかのエラーが発生しました。", text: "" }];
+      return [
+        "",
+        {
+          title: "エラーが発生しました。",
+          text: "何度も失敗する場合は、お問い合わせください。",
+        },
+      ];
     }
   };
 
@@ -82,13 +100,25 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
   > = async () => {
     try {
       if (!auth.currentUser) {
-        return [false, { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          false,
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
 
       const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
       if (!userDoc.exists()) {
         // docが存在しなければfalse
-        return [false, { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          false,
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
 
       const { failedAcstRequestAt } = userDoc.data();
@@ -100,13 +130,22 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
       if (restTime > 0) {
         return [
           false,
-          { title: "", text: `時間を置いて、もう一度お試しください` },
+          {
+            title: "エラーが発生しました",
+            text: `時間を置いて、もう一度お試しください`,
+          },
         ];
       }
 
       return [true, null];
     } catch (error) {
-      return [false, { title: "何らかのエラーが発生しました。", text: "" }];
+      return [
+        false,
+        {
+          title: "エラーが発生しました。",
+          text: "何度も失敗する場合は、お問い合わせください。",
+        },
+      ];
     }
   };
 
@@ -155,6 +194,9 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
 
       // アクスタ生成中モーダルを表示する
       openAcstGeneratingMsg();
+
+      // バッグを閉じる
+      closeBag();
 
       // この画像素材をリクエスト済みにする
       setIsAcstAlreadyRequested(imageId, true);

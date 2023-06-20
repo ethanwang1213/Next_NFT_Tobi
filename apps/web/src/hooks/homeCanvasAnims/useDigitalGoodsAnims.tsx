@@ -1,5 +1,5 @@
 import useHomeStore from "@/stores/homeStore";
-import { useSpringRef, useSpring, useChain, config } from "@react-spring/web";
+import { useSpringRef, useSpring, useChain, config } from "@react-spring/three";
 import { Dispatch, SetStateAction } from "react";
 
 /**
