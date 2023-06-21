@@ -23,7 +23,7 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore();
 export const storage = getStorage();
 export const auth = getAuth();
-export const functions = getFunctions(app);
+export const functions = getFunctions(app, "asia-northeast1");
 export const analytics =
   app.name && typeof window !== "undefined" ? getAnalytics(app) : null;
 if (process.env.NEXT_PUBLIC_FIREBASE_USING_EMULATOR === "true") {

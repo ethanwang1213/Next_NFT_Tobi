@@ -41,7 +41,7 @@
     "firebase": "^9.17.1",
     "google-spreadsheet": "^3.3.0",
     "gsap": "npm:@gsap/business",
-    "jimp": "^0.22.0",
+    "jimp": "0.22.8",
     "lodash": "^4.17.21",
     "microcms-js-sdk": "^2.3.2",
     "next": "^13.0.6",
