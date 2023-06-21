@@ -47,7 +47,7 @@ const Discord = () => {
           if (result) {
             // success
             router.push("/");
-            updateOnSuccess();
+            updateOnSuccess(userdata.id);
           } else {
             // firestore error
             router.push("/");
