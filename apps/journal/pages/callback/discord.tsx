@@ -19,11 +19,6 @@ const Discord = () => {
     const getUserdata = async (code: string) => {
       if (!auth.currentUser) return;
 
-      // const baseUrl =
-      //   process.env["NEXT_PUBLIC_DISCORD_OAUTH_USERDATA_API_URL"]!;
-      // const baseUrl = "/api/functions/discordOAuth";
-      // const url = new URL(baseUrl);
-      // url.searchParams.append("code", code);
       const token = await auth.currentUser.getIdToken();
       const response = await fetch(`/api/functions/discordOAuth?code=${code}`, {
         headers: {
