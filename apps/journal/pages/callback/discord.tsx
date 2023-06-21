@@ -14,12 +14,12 @@ const Discord = () => {
     if (!auth.user) return;
 
     const getUserdata = async (code: string) => {
-      const baseUrl = process.env["NEXT_PUBLIC_DISCORD_OAUTH_USERDATA_API_URL"]!;
-      const url = new URL(baseUrl);
-      url.searchParams.append("code", code);
-      const response = await fetch(
-         url.href
-      );
+      // const baseUrl =
+      //   process.env["NEXT_PUBLIC_DISCORD_OAUTH_USERDATA_API_URL"]!;
+      // const baseUrl = "/api/functions/discordOAuth";
+      // const url = new URL(baseUrl);
+      // url.searchParams.append("code", code);
+      const response = await fetch(`/api/functions/discordOAuth?code=${code}`);
       if (response.status == 200) {
         return await response.json();
       } else {
