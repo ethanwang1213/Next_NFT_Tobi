@@ -3,23 +3,34 @@ import { useRouter } from "next/router";
 import { createUser } from "@/firebase/firestore";
 import { useAuth } from "@/contexts/AuthProvider";
 import useSuccessDiscordOAuth from "@/hooks/useSuccessDiscordOAuth";
+import { getAuth } from "@firebase/auth";
+import { headers } from "next/dist/client/components/headers";
 
 const Discord = () => {
-  const auth = useAuth();
+  const auth = getAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const query = router.query;
   const { updateOnSuccess } = useSuccessDiscordOAuth();
 
   useEffect(() => {
-    if (!auth.user) return;
+    if (!user) return;
 
     const getUserdata = async (code: string) => {
+      if (!auth.currentUser) return;
+
       // const baseUrl =
       //   process.env["NEXT_PUBLIC_DISCORD_OAUTH_USERDATA_API_URL"]!;
       // const baseUrl = "/api/functions/discordOAuth";
       // const url = new URL(baseUrl);
       // url.searchParams.append("code", code);
-      const response = await fetch(`/api/functions/discordOAuth?code=${code}`);
+      const token = await auth.currentUser.getIdToken();
+      const response = await fetch(`/api/functions/discordOAuth?code=${code}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
       if (response.status == 200) {
         return await response.json();
       } else {
@@ -37,7 +48,7 @@ const Discord = () => {
         }
         const userdata = await getUserdata(code);
         if (userdata) {
-          const result = await createUser(auth.user.id, userdata.id);
+          const result = await createUser(user.id, userdata.id);
           if (result) {
             // success
             router.push("/");
@@ -52,7 +63,7 @@ const Discord = () => {
         }
       }
     })();
-  }, [auth, query, router]);
+  }, [user, query, router]);
 
   return (
     <div className={"flex justify-center items-center"}>

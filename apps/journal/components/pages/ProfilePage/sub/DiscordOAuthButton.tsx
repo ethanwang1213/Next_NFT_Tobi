@@ -23,9 +23,9 @@ const DiscordOAuthButton: React.FC = () => {
         href={href}
         className="
           btn btn-accent bg-transparent hover:bg-accent/60 
-          border-none btn-circle h-[56px] sm:btn-lg
-          w-full max-w-[300px] sm:w-[70%] sm:max-w-[70%] relative
-          overflow-hidden shadow-lg drop-shadow-[0_10px_6px_rgba(117,58,0,0.6)]
+          border-none btn-circle h-[56px] sm:btn-lg 
+          w-full max-w-[300px] sm:w-[70%] sm:max-w-[70%] relative 
+          overflow-hidden shadow-lg drop-shadow-[0_10px_6px_rgba(117,58,0,0.6)] 
           pointer-events-auto"
       >
         <div className="bg-accent/90 rounded-full blur-[2px] w-full h-full absolute"></div>
