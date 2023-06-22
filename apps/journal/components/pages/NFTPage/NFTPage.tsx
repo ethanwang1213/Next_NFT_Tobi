@@ -14,7 +14,9 @@ type Props = {
 const NFTPage: React.FC<Props> = ({ pageNum }) => {
   const debugMode = process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true";
   const { otherNFTs } = useHoldNFTs();
-  const NFTlength = debugMode ? mockNFTSrcList.length : otherNFTs.current.length;
+  const NFTlength = debugMode
+    ? mockNFTSrcList.length
+    : otherNFTs.current.length;
 
   return (
     <>
@@ -29,16 +31,21 @@ const NFTPage: React.FC<Props> = ({ pageNum }) => {
         }
       />
       {NFTlength === 0 && pageNum === 0 ? (
-        <div className="text-center p-5 text-4xl">まだ何もありません</div>): (
-          <>
-            <div className="hidden sm:block grow overflow-y-hidden">
-              <NFTPagePC pageNum={pageNum} />
-            </div>
-            <div className="block sm:hidden grow overflow-y-auto pt-4 mb-[4%]">
-                <NFTPageSP pageNum={pageNum} />
-              </div>
-          </>
-        )}
+        <div className="p-5 grow grid content-center">
+          <p className="text-center text-lg sm:text-4xl text-accent/50 font-bold">
+            No content
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="hidden sm:block grow overflow-y-hidden">
+            <NFTPagePC pageNum={pageNum} />
+          </div>
+          <div className="block sm:hidden grow overflow-y-auto pt-4 mb-[4%]">
+            <NFTPageSP pageNum={pageNum} />
+          </div>
+        </>
+      )}
     </>
   );
 };
