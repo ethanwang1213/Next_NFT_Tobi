@@ -43,7 +43,13 @@ const NekoSwiperContent: React.FC<Props> = ({
       />
       <NFTPageTitle isShown={true} title="TOBIRA NEKO" />
       <div className="w-full h-full grow pt-10 pb-[30%] ">
-        {!!imgSrc && (
+        {!imgSrc ? (
+          <div className="relative w-full h-full grid content-center">
+            <p className="text-center text-lg sm:text-4xl text-accent/50 font-bold">
+              Nobody is here
+            </p>
+          </div>
+        ) : (
           <div className="relative w-full h-full">
             <label
               htmlFor="nft-view-modal"
