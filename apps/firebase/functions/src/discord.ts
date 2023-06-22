@@ -1,8 +1,20 @@
 import * as functions from "firebase-functions";
 import fetch from "node-fetch";
 import {REGION} from "./lib/constants";
+import {auth} from "firebase-admin";
 
 export const discordOAuth = functions.region(REGION).https.onRequest(async (request, response) => {
+  // check authorization
+  if (!request.headers.authorization) {
+    response.status(401).send("Unauthorized request").end();
+    return;
+  }
+  const decodedToken = await auth().verifyIdToken(request.headers.authorization);
+  if (!decodedToken) {
+    response.status(401).send("Unauthorized request").end();
+    return;
+  }
+
   const code = request.query.code;
   if (!code || typeof code !== "string") {
     response.status(500).send("Invalid parameter of code").end();

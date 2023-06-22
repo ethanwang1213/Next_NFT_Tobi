@@ -5,10 +5,12 @@ import { storage, db } from "@/firebase/client";
 import { doc, setDoc } from "@firebase/firestore";
 import { deleteObject, ref, uploadBytes } from "@firebase/storage";
 
-import Jimp from "jimp";
+import * as _Jimp from "jimp";
 import { Area } from "react-easy-crop";
 
 const useUpdateProfile = () => {
+  const Jimp =
+    typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const auth = useAuth();
   const { cropData } = useEditProfile();
 

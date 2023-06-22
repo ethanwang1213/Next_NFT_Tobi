@@ -51,26 +51,29 @@ const useSuccessDiscordOAuth = () => {
     }
   };
 
-  const updateOnSuccess = () => {
-    // 既に参加日が設定されている場合は何もしない
-    if (joinAtExists) return;
+  const updateOnSuccess = (discordId: string) => {
+    if (joinAtExists) {
+      // ローカルのTobiratory参加Timestampをセット
+      auth.setJoinTobiratoryInfo(discordId, null);
+      return;
+    } else {
+      const joinDate = new Date();
+      const text = "TOBIRAPOLISのメンバーになった";
 
-    const joinDate = new Date();
-    const text = "TOBIRAPOLISのメンバーになった";
+      // ローカルのTobiratory参加Timestampをセット
+      auth.setJoinTobiratoryInfo(discordId, joinDate);
+      // ローカルのActivityRecordsにTobiratory参加の記録を追加
+      addActivityRecord({
+        text: text,
+        date: joinDate,
+      });
 
-    // ローカルのTobiratory参加Timestampをセット
-    auth.setJoinTobiratoryAt(joinDate);
-    // ローカルのActivityRecordsにTobiratory参加の記録を追加
-    addActivityRecord({
-      text: text,
-      date: joinDate,
-    });
-
-    // データベース上のTobiratory参加Timestampをセット
-    postOnSuccess(joinDate, {
-      text: text,
-      timestamp: Timestamp.fromDate(joinDate),
-    });
+      // データベース上のTobiratory参加Timestampをセット
+      postOnSuccess(joinDate, {
+        text: text,
+        timestamp: Timestamp.fromDate(joinDate),
+      });
+    }
   };
 
   return { updateOnSuccess };

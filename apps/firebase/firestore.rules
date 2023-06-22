@@ -16,11 +16,21 @@ service cloud.firestore {
 
     // users以下のデータは、基本的にログイン中のユーザーのみ読み書き可能
     match /users/{userId} {
-      allow read, write: if isCurrentUser(userId);
-      allow write: if
-        getAfter(
-          /databases/$(database)/documents/index/users/discord/$(request.resource.data.discord)
-        ).data.userId == userId && isCurrentUser(userId);
+      allow read: if isCurrentUser(userId);
+      allow write: if isCurrentUser(userId) && (
+        (
+          request.resource.data.discord == ''
+        ) || (
+          request.resource.data.discord != '' && (
+            !exists(
+              /databases/$(database)/documents/index/users/discord/$(request.resource.data.discord)
+            ) || get(
+              /databases/$(database)/documents/index/users/discord/$(request.resource.data.discord)
+            ).data.userId == userId
+          )
+        )
+      )
+        
       match /src/{srcId} {
         allow read, write: if isCurrentUser(userId);
       }
@@ -44,10 +54,10 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
     match /index/users/discord/{discord} {
-      allow write: if
-      getAfter(
+      allow write: if isCurrentUser(request.resource.data.userId) && 
+      get(
         /databases/$(database)/documents/users/$(request.resource.data.userId)
-      ).data.discord == discord && request.auth != null && request.resource.data.userId == request.auth.uid;
+      ).data.discord == "";
     }
 
   }

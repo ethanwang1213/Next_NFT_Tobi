@@ -114,16 +114,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const setJoinTobiratoryAt = (joinDate: Date) => {
-    // 既に参加日が設定されている場合は何もしない
-    if (!!user.characteristic && !!user.characteristic.join_tobiratory_at)
-      return;
+  const setJoinTobiratoryInfo = (discordId: string, joinDate: Date) => {
     const newUser = { ...user };
-    const joinAt = Timestamp.fromDate(joinDate);
-
-    newUser.characteristic
-      ? (newUser.characteristic.join_tobiratory_at = joinAt)
-      : (newUser.characteristic = { join_tobiratory_at: joinAt });
+    newUser.discord = discordId;
+    if (!user.characteristic || !user.characteristic.join_tobiratory_at) {
+      // 初めて参加日する場合に設定
+      const joinAt = Timestamp.fromDate(joinDate);
+      newUser.characteristic
+        ? (newUser.characteristic.join_tobiratory_at = joinAt)
+        : (newUser.characteristic = { join_tobiratory_at: joinAt });
+    }
     setUser(newUser);
   };
 
@@ -134,7 +134,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         dbIconUrl,
         updateProfile,
         setDbIconUrl,
-        setJoinTobiratoryAt,
+        setJoinTobiratoryInfo,
         MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >
