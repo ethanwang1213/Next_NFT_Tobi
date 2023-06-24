@@ -122,11 +122,11 @@
     &-logout {
       &-btn {
         &-container {
-          @apply absolute left-[14px] top-8 pointer-events-none tab:left-[24px] h-[48px] min-h-[48px];
+          @apply absolute left-[14px] top-5 pointer-events-none tab:left-[24px] h-[48px] min-h-[48px];
         }
 
         & {
-          @apply btn btn-square btn-lg w-[48px] min-h-[48px] h-[48px] tab:w-[64px] tab:h-[64px] btn-ghost pointer-events-auto p-2;
+          @apply btn btn-square btn-lg w-[48px] min-h-[48px] h-[48px] tab:w-[58px] tab:h-[58px] btn-ghost pointer-events-auto p-2;
         }
       }
 
@@ -694,7 +694,7 @@
   .ui {
     &-btn {
       &-bottom {
-        @apply absolute bottom-[28px] tab:bottom-[40px];
+        @apply absolute bottom-[32px] tab:bottom-[40px];
       }
 
       // バッグボタン
