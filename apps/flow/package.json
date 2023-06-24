@@ -6,6 +6,7 @@
   "scripts": {
     "emulator": "flow emulator",
     "deploy": "flow project deploy --network=emulator",
+    "update": "flow project deploy --network=emulator --update",
     "createAccount": "flow accounts create --key 2b4befc2504c1c89e53ef15d743abde0bf2c6aafad57aad27f30a321f88bd17a93737f0beb04b7650fee0c9242a3110b62631bbb7607e210673a0cceb8d59c77",
     "createCollection2": "flow transactions send ./cadence/transactions/createCollection.cdc --network=emulator --signer emulator-account-2",
     "mint": "flow transactions send ./cadence/transactions/mintNFT.cdc --network=emulator --gas-limit=9999 350",
@@ -19,5 +20,8 @@
   },
   "dependencies": {
     "@onflow/fcl": "^1.3.2"
+  },
+  "devDependencies": {
+    "csv-parse": "^5.4.0"
   }
 }

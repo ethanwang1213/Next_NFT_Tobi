@@ -160,13 +160,16 @@ pub contract TobiraNeko: NonFungibleToken {
         // self.minterPublicPath = /public/TobiraNekoMinter001
         self.minterStoragePath = /storage/TobiraNekoMinter001
 
-        let minter <- create Minter()
-        self.account.save(<- minter, to: self.minterStoragePath)
-        // self.account.link<&Minter>(self.minterPublicPath, target: self.minterStoragePath)
+        if self.account.borrow<&Minter>(from: self.minterStoragePath) == nil {
+            let minter <- create Minter()
+            self.account.save(<- minter, to: self.minterStoragePath)
+        }
 
-        let collection <- self.createEmptyCollection()
-        self.account.save(<- collection, to: self.collectionStoragePath)
-        self.account.link<&{NonFungibleToken.CollectionPublic,TobiraNeko.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
+        if self.account.borrow<&TobiraNeko.Collection>(from: TobiraNeko.collectionStoragePath) == nil {
+            let collection <- self.createEmptyCollection()
+            self.account.save(<- collection, to: self.collectionStoragePath)
+            self.account.link<&{NonFungibleToken.CollectionPublic,TobiraNeko.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
+        }
 
         emit ContractInitialized()
     }
