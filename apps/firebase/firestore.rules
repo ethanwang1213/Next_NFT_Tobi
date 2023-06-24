@@ -53,6 +53,11 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow read, write: if isAdmin();
     }
+
+    match /tobiraneko/{nftId} {
+      allow read, write: if isAdmin();
+    }
+
     match /index/users/discord/{discord} {
       allow write: if isCurrentUser(request.resource.data.userId) && 
       get(

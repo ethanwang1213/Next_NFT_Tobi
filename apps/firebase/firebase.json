@@ -3,6 +3,21 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/metadata/**",
+        "function": "tobiraneko",
+        "region": "asia-northeast1"
+      }
+    ]
+  },
   "functions": [
     {
       "source": "functions",
