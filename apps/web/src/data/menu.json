@@ -75,9 +75,9 @@
     "name": "TOBIRA NEKO",
     "keyImage": "",
     "loadImage": "",
-    "link": "/shop",
+    "link": "https://tbrnk.tobiratory.com/",
     "show": false,
-    "click": false,
+    "click": true,
     "menu": true
   },
   {
@@ -86,16 +86,7 @@
     "loadImage": "",
     "link": "/journal/login",
     "show": false,
-    "click": false,
-    "menu": true
-  },
-  {
-    "name": "ROADMAP",
-    "keyImage": "",
-    "loadImage": "",
-    "link": "/roadmap",
-    "show": false,
-    "click": false,
+    "click": true,
     "menu": true
   },
   {
