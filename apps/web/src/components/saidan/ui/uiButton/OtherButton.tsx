@@ -1,5 +1,5 @@
 import { animated, useSpring } from "@react-spring/web";
-import { RefObject } from "react";
+import { RefObject, useMemo } from "react";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RESPONSIVE_BORDER } from "@/constants/saidanConstants";
 import useSaidanStore from "@/stores/saidanStore";
@@ -32,8 +32,8 @@ const OtherButton = ({ canvasRef }: Props) => {
       friction: 40,
     },
   });
-  const gap = 10;
-  const btnSize = () => (displayWidth > RESPONSIVE_BORDER ? 90 : 65);
+  const gap = useMemo(() => displayWidth > RESPONSIVE_BORDER ? 10 : 4, [displayWidth]);
+  const btnSize = () => displayWidth > RESPONSIVE_BORDER ? 90 : 45;
   const y0 = otherSpring.to([0, 1], [btnSize(), -gap]);
   const y1 = otherSpring.to([0, 1], [btnSize() * 2, -gap * 2]);
   // const y2 = otherSpring.to([0, 1], [btnSize() * 3, -gap * 3]);
@@ -70,7 +70,7 @@ const OtherButton = ({ canvasRef }: Props) => {
         <FunctionButton
           onClick={() => (isOtherOpen ? closeOther() : openOther())}
         >
-          <Other className="w-full h-full" />
+          <Other className="w-full h-[45px] min-h-[45px] tab:h-full" />
         </FunctionButton>
       </div>
     </div>

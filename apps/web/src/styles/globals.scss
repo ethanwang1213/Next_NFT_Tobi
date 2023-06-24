@@ -694,7 +694,7 @@
   .ui {
     &-btn {
       &-bottom {
-        @apply absolute bottom-[10px] tab:bottom-[40px];
+        @apply absolute bottom-[28px] tab:bottom-[40px];
       }
 
       // バッグボタン
@@ -707,7 +707,7 @@
         & {
           @apply btn btn-circle border-none rounded-full  pointer-events-auto;
           @apply select-none bg-white;
-          @apply w-[96px] h-[96px] tab:w-[112px] tab:h-[112px];
+          @apply w-[70px] h-[70px] tab:w-[112px] tab:h-[112px];
         }
       }
 
@@ -718,7 +718,7 @@
         }
 
         @apply border-none rounded-full select-none;
-        @apply w-[65px] aspect-square tab:w-[90px];
+        @apply w-[45px] aspect-square tab:w-[90px];
       }
 
       &-other-container {
@@ -729,7 +729,7 @@
         @apply btn btn-circle btn-lg;
         @apply border-none bg-[#414142] hover:bg-[#353535];
         @apply pointer-events-auto select-none;
-        @apply w-[65px] h-[65px] p-0 tab:w-[90px] tab:h-[90px];
+        @apply w-[45px] h-[45px] min-h-[45px] p-0 tab:w-[90px] tab:h-[90px] tab:min-h-[90px];
       }
 
       &-skip-tutorial {
