@@ -122,11 +122,11 @@
     &-logout {
       &-btn {
         &-container {
-          @apply absolute left-[10px] top-8 pointer-events-none tab:left-[24px];
+          @apply absolute left-[14px] top-5 pointer-events-none tab:left-[24px] h-[48px] min-h-[48px];
         }
 
         & {
-          @apply btn btn-square btn-lg w-[64px] btn-ghost pointer-events-auto p-2;
+          @apply btn btn-square btn-lg w-[48px] min-h-[48px] h-[48px] tab:w-[58px] tab:h-[58px] btn-ghost pointer-events-auto p-2;
         }
       }
 
@@ -162,11 +162,11 @@
           }
 
           &-cancel {
-            @apply btn btn-sm btn-ghost tab:btn-md;
+            @apply btn btn-sm btn-outline tab:btn-md;
           }
 
           &-ok {
-            @apply w-24 btn btn-sm text-white tab:btn-md;
+            @apply w-24 btn btn-sm btn-neutral text-white tab:btn-md;
           }
         }
       }
@@ -302,21 +302,21 @@
       &-title {
         &-container {
           &-outer {
-            @apply absolute w-full h-full top-0 bg-black/80;
+            @apply absolute w-full h-full top-0 bg-black/90;
           }
 
           &-inner {
-            @apply h-full w-full grid gap-2 content-center text-white select-none;
+            @apply h-full w-full grid gap-6 content-center text-white select-none;
           }
         }
 
         &-subtitle {
           @apply flex justify-center text-[30px]  font-tsukub-400;
-          @apply text-[20px] mt-[80px] tab:text-[25px] tab:mt-[0px];
+          @apply text-[20px] mt-[40px] tab:text-[25px] tab:mt-[0px];
         }
 
         &-title {
-          @apply flex justify-center text-[30px] font-bold mb-6 font-tsukua-700;
+          @apply flex justify-center text-[30px] font-bold mb-10 font-tsukua-700;
           @apply text-[25px] tab:text-[30px];
         }
 
@@ -326,6 +326,21 @@
 
         &-br {
           @apply block tab:hidden;
+        }
+      }
+
+      &-terms {
+        &-title {
+          @apply saidan-tutorial-title-title;
+          @apply mb-2 tab:mb-4 text-xl tab:text-[30px] tracking-widest tab:tracking-[1.0rem];
+        }
+
+        &-text-container {
+          @apply grid gap-6 tab:gap-8;
+        }
+        
+        &-text {
+          @apply text-center font-tsukub-400 text-sm tab:text-lg;
         }
       }
 
@@ -572,7 +587,7 @@
   .menu {
     &-burger-btn {
       @apply absolute top-4 right-4;
-      @apply btn btn-circle btn-ghost hover:bg-black/20;
+      @apply btn btn-circle btn-ghost bg-black;
       @apply min-h-[48px] w-[48px] h-[48px];
       @apply text-[26px] text-white;
       @apply tab:w-[62px] tab:h-[62px];
@@ -679,7 +694,7 @@
   .ui {
     &-btn {
       &-bottom {
-        @apply absolute bottom-[10px] tab:bottom-[40px];
+        @apply absolute bottom-[32px] tab:bottom-[40px];
       }
 
       // バッグボタン
@@ -692,7 +707,7 @@
         & {
           @apply btn btn-circle border-none rounded-full  pointer-events-auto;
           @apply select-none bg-white;
-          @apply w-[96px] h-[96px] tab:w-[112px] tab:h-[112px];
+          @apply w-[70px] h-[70px] tab:w-[112px] tab:h-[112px];
         }
       }
 
@@ -703,7 +718,7 @@
         }
 
         @apply border-none rounded-full select-none;
-        @apply w-[65px] aspect-square tab:w-[90px];
+        @apply w-[45px] aspect-square tab:w-[90px];
       }
 
       &-other-container {
@@ -714,7 +729,7 @@
         @apply btn btn-circle btn-lg;
         @apply border-none bg-[#414142] hover:bg-[#353535];
         @apply pointer-events-auto select-none;
-        @apply w-[65px] h-[65px] p-0 tab:w-[90px] tab:h-[90px];
+        @apply w-[45px] h-[45px] min-h-[45px] p-0 tab:w-[90px] tab:h-[90px] tab:min-h-[90px];
       }
 
       &-skip-tutorial {

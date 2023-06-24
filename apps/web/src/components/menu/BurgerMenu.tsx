@@ -58,11 +58,14 @@ const BurgerMenu = () => {
       >
         {createLoadingImage}
       </div>
-      <div className="menu-burger-btn mix-blend-difference">
-        {showBurger && !isVisible && (
-          <FontAwesomeIcon icon={faBars} onClick={toggle} />
-        )}
-      </div>
+      {showBurger && !isVisible && (
+        <button className="menu-burger-btn mix-blend-difference" onClick={toggle}>
+          <FontAwesomeIcon 
+            icon={faBars} 
+            className="w-full max-h-full h-[100px] w-[32px] h-[32px]" 
+            />
+        </button>
+      )}
       <Menu
         isOpen={isOpen}
         setOpen={setIsOpen}
