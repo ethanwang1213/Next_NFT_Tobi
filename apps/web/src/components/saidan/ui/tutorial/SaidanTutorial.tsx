@@ -5,6 +5,7 @@ import BagTutorial from "./BagTutorial";
 import OpenBagTutorial from "./OpenBagTutorial";
 import TitleTutorial from "./TitleTutorial";
 import ZoomUpTutorial from "./ZoomUpTutorial";
+import TermsTutorial from "./TermsTutorial";
 
 /**
  * saidanページのチュートリアルを表示するコンポーネント
@@ -33,6 +34,7 @@ const SaidanTutorial = () => {
     <>
       {(() => {
         if (tutorialPhase === "TITLE") return <TitleTutorial />;
+        if (tutorialPhase === "TERMS") return <TermsTutorial />;
         if (tutorialPhase === "ZOOM_UP") return <ZoomUpTutorial />;
         if (tutorialPhase === "OPEN_BAG") return <OpenBagTutorial />;
         if (

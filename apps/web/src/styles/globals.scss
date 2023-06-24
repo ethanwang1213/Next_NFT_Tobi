@@ -302,21 +302,21 @@
       &-title {
         &-container {
           &-outer {
-            @apply absolute w-full h-full top-0 bg-black/80;
+            @apply absolute w-full h-full top-0 bg-black/90;
           }
 
           &-inner {
-            @apply h-full w-full grid gap-2 content-center text-white select-none;
+            @apply h-full w-full grid gap-6 content-center text-white select-none;
           }
         }
 
         &-subtitle {
           @apply flex justify-center text-[30px]  font-tsukub-400;
-          @apply text-[20px] mt-[80px] tab:text-[25px] tab:mt-[0px];
+          @apply text-[20px] mt-[40px] tab:text-[25px] tab:mt-[0px];
         }
 
         &-title {
-          @apply flex justify-center text-[30px] font-bold mb-6 font-tsukua-700;
+          @apply flex justify-center text-[30px] font-bold mb-10 font-tsukua-700;
           @apply text-[25px] tab:text-[30px];
         }
 
@@ -326,6 +326,21 @@
 
         &-br {
           @apply block tab:hidden;
+        }
+      }
+
+      &-terms {
+        &-title {
+          @apply saidan-tutorial-title-title;
+          @apply mb-2 tab:mb-4 text-xl tab:text-[30px] tracking-widest tab:tracking-[1.0rem];
+        }
+
+        &-text-container {
+          @apply grid gap-6 tab:gap-8;
+        }
+        
+        &-text {
+          @apply text-center font-tsukub-400 text-sm tab:text-lg;
         }
       }
 
