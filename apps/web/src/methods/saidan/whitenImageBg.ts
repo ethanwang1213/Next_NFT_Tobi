@@ -1,4 +1,4 @@
-import Jimp from 'jimp';
+import * as _Jimp from "jimp";
 
 /**
  * 透過背景を白背景にした画像のソースを取得する。
@@ -6,6 +6,7 @@ import Jimp from 'jimp';
  * @returns 
  */
 const getWhitedImageSrc = async (imageUrl: string) => {
+  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const img = await Jimp.read(imageUrl);
   const srcW = img.getWidth();
   const srcH = img.getHeight();

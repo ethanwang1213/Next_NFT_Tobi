@@ -2,7 +2,6 @@ import makeImageSquare from "@/methods/saidan/makeImageSquare";
 import useSaidanStore from "@/stores/saidanStore";
 import { getDoc, doc } from "@firebase/firestore";
 import axios from "axios";
-import Jimp from "jimp";
 import { auth, db } from "@/../firebase/client";
 import {
   updateFailedAcstRequestAt,
@@ -11,6 +10,7 @@ import {
 import Acst from "@/../public/saidan/saidan-ui/acst.svg";
 import ItemTypeButton from "./ItemTypeButton";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import * as _Jimp from "jimp";
 
 type Props = {
   imageId: string;
@@ -22,6 +22,7 @@ type Props = {
  * @returns
  */
 const AcstButton: React.FC<Props> = ({ imageId }) => {
+  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const closeBag = useSaidanStore((state) => state.closeBag);
   const allSrcs = useSaidanStore((state) => state.allSrcs);
   const setAcstModelSrc = useSaidanStore((state) => state.setAcstModelSrc);
@@ -206,7 +207,7 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
       // console.log(sqImage.getWidth(), sqImage.getHeight());
 
       // 画像のバッファーデータを取得する
-      sqImage.getBuffer(Jimp.MIME_PNG, async (_, data) => {
+      sqImage.getBuffer(Jimp.MIME_PNG, async (_: any, data: any) => {
         // リクエスト用データを作成する
         const form = new FormData();
         const blob = new Blob([data], { type: "image/png" });
