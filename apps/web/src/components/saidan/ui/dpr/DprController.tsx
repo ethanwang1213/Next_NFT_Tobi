@@ -60,7 +60,7 @@ const DprController: React.FC = () => {
             <button
               tabIndex={0}
               className={
-                "btn btn-ghost hover:bg-black/20 min-h-[48px] w-[48px] h-[48px] tab:w-[62px] tab:h-[62px] text-white px-3 tab:px-4 text-[20px] mix-blend-difference" +
+                "btn btn-ghost btn-circle min-h-[48px] w-[48px] h-[48px] tab:w-[62px] tab:h-[62px] text-white px-3 tab:px-4 text-[20px] mix-blend-difference" +
                 (showBurger ? "" : " hidden")
               }
               onClick={(ev) => {

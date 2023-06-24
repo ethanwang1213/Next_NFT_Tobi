@@ -162,11 +162,11 @@
           }
 
           &-cancel {
-            @apply btn btn-sm btn-ghost tab:btn-md;
+            @apply btn btn-sm btn-outline tab:btn-md;
           }
 
           &-ok {
-            @apply w-24 btn btn-sm text-white tab:btn-md;
+            @apply w-24 btn btn-sm btn-neutral text-white tab:btn-md;
           }
         }
       }
@@ -587,7 +587,7 @@
   .menu {
     &-burger-btn {
       @apply absolute top-4 right-4;
-      @apply btn btn-circle btn-ghost hover:bg-black/20;
+      @apply btn btn-circle btn-ghost bg-black;
       @apply min-h-[48px] w-[48px] h-[48px];
       @apply text-[26px] text-white;
       @apply tab:w-[62px] tab:h-[62px];
