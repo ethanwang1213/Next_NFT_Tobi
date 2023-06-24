@@ -4,14 +4,15 @@ import useSaidanStore from "@/stores/saidanStore";
 import { postSrcImage } from "@/../pages/api/item";
 import scaleImage from "@/methods/saidan/scaleImage";
 import generateHash from "@/methods/saidan/generateHash";
-import * as _Jimp from "jimp";
+// import * as _Jimp from "jimp";
+import { FixedJimp as Jimp } from "constant-values"
 
 /**
  * 新しい画像を投稿するボタンのコンポーネント
  * @returns
  */
 const AddItemButton = () => {
-  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
+  // const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const tutorialPhase = useSaidanStore((state) => state.tutorialPhase);
   const isSpotted = useSaidanStore((state) => state.isSpotted);
   const addNewSrc = useSaidanStore((state) => state.addNewSrc);

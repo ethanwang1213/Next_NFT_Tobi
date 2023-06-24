@@ -62,7 +62,8 @@
     "typescript": "4.9.3",
     "ua-parser-js": "^1.0.33",
     "zod": "^3.20.6",
-    "zustand": "^4.3.2"
+    "zustand": "^4.3.2",
+    "constant-values": "*"
   },
   "devDependencies": {
     "@svgr/cli": "^6.5.1",
