@@ -1,16 +1,17 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import { HiPlus } from "react-icons/hi";
-import Jimp from "jimp";
 import useSaidanStore from "@/stores/saidanStore";
 import { postSrcImage } from "@/../pages/api/item";
 import scaleImage from "@/methods/saidan/scaleImage";
 import generateHash from "@/methods/saidan/generateHash";
+import * as _Jimp from "jimp";
 
 /**
  * 新しい画像を投稿するボタンのコンポーネント
  * @returns
  */
 const AddItemButton = () => {
+  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const tutorialPhase = useSaidanStore((state) => state.tutorialPhase);
   const isSpotted = useSaidanStore((state) => state.isSpotted);
   const addNewSrc = useSaidanStore((state) => state.addNewSrc);
@@ -38,12 +39,12 @@ const AddItemButton = () => {
     // 大きすぎる画像は縮小する
     const img = await scaleImage(imageUrl);
     // 素材として画像を追加
-    img.getBase64(Jimp.MIME_PNG, (err, src) => {
+    img.getBase64(Jimp.MIME_PNG, (err: any, src: string) => {
       // console.log(srcId);
       addNewSrc(srcId, src);
     });
     // 画像ファイルをアップロード
-    img.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
+    img.getBuffer(Jimp.MIME_PNG, async (err: any, buf: Buffer) => {
       const uploadedUrl = await postSrcImage(
         srcId,
         new File([buf], "img.png", { type: "image/png" })
