@@ -44,7 +44,7 @@ pub contract TobiraNeko: NonFungibleToken {
                     return MetadataViews.Display(
                         name: self.metadata["name"] ?? "",
                         description: self.metadata["description"] ?? "",
-                        thumbnail: MetadataViews.HTTPFile(url: self.metadata["metaURI"] ?? ""),
+                        thumbnail: MetadataViews.HTTPFile(url: self.metadata["thumbnail"] ?? ""),
                     )
             }
             return nil
@@ -81,7 +81,7 @@ pub contract TobiraNeko: NonFungibleToken {
             let id: UInt64 = token.id
             let dummy <- self.ownedNFTs[id] <- token
             destroy dummy
-            emit Deposit(id: id, to: self.owner?.address)
+            // emit Deposit(id: id, to: self.owner?.address)
         }
 
         pub fun getIDs(): [UInt64] {
@@ -126,9 +126,26 @@ pub contract TobiraNeko: NonFungibleToken {
             )
             TobiraNeko.totalSupply = TobiraNeko.totalSupply + 1
             let tokenRef = &token as &NonFungibleToken.NFT
-            emit Mint(id: token.id, creator: creator.address, metadata: metadata)
+            // emit Mint(id: token.id, creator: creator.address, metadata: metadata)
             creator.borrow()!.deposit(token: <- token)
             return tokenRef
+        }
+
+        pub fun batchMintTo(creator: Capability<&{NonFungibleToken.Receiver}>, quantity: UInt64): UInt64 {
+            var i: UInt64 = 0
+            while i < quantity {
+                let id = TobiraNeko.totalSupply.toString()
+                let idLength = id.length
+                let formattedId = "00000".concat(id).slice(from: idLength, upTo: idLength + 5)
+                self.mintTo(creator: creator, metadata: {
+                    "name": "TOBIRA NEKO #".concat(formattedId),
+                    "description": "",
+                    "thumbnail": "https://storage.googleapis.com/tobiratory-media/nft/tobiraneko/".concat(id).concat(".png"),
+                    "metaURI": "https://nft.tobiratory.com/metadata/".concat(id)
+                })
+                i = i + UInt64(1)
+            }
+            return quantity
         }
     }
 
