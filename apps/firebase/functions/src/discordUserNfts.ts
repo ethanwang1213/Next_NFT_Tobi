@@ -12,6 +12,15 @@ export const discordUserNfts = functions.region(REGION).https.onRequest(async (r
     response.status(400).json(JSON.stringify(errorResponse));
     return;
   }
+  const nftAddress = request.query.nftAddress;
+  if (nftAddress == null || !nftAddress || typeof nftAddress !== "string") {
+    const errorResponse = {
+      status: 400,
+      content: "query parameter 'nftAddress' does not exist",
+    };
+    response.status(400).json(JSON.stringify(errorResponse));
+    return;
+  }
   const encodeDiscordId = encodeURIComponent(discordId);
   const indexUser = await firestore().collection("index").doc("users").collection("discord").doc(encodeDiscordId).get();
   if (indexUser.exists) {
@@ -25,9 +34,12 @@ export const discordUserNfts = functions.region(REGION).https.onRequest(async (r
       return;
     }
     const tobiratoryUserId = user.userId;
-    const userData = await firestore().collection("users").doc(tobiratoryUserId).get();
-    if (userData.exists) {
-      const nftData = userData.data()?.nft;
+    const userNftData = await firestore().collection("users").doc(tobiratoryUserId).collection("nft").doc(nftAddress).collection("hold").get();
+    if (!userNftData.empty) {
+      const nftData: { [key: string]: unknown } = {};
+      userNftData.forEach((doc) => {
+        nftData[doc.id] = doc.data();
+      });
       const successResponse = {
         status: 200,
         nft: nftData,
@@ -37,14 +49,14 @@ export const discordUserNfts = functions.region(REGION).https.onRequest(async (r
     } else {
       const errorResponse = {
         status: 404,
-        content: "Unable to see the Tobiratory account associated with your Discord account2",
+        content: "Unable to see the Tobiratory account associated with your Discord account.",
       };
       response.status(404).json(JSON.stringify(errorResponse));
     }
   } else {
     const errorResponse = {
       status: 404,
-      content: "Unable to see the Tobiratory account associated with your Discord account3",
+      content: "Unable to see the Tobiratory account associated with your Discord account.",
     };
     response.status(404).json(JSON.stringify(errorResponse));
   }
