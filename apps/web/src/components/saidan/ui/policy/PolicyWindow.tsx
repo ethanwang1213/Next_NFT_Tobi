@@ -17,13 +17,21 @@ const PolicyWindow = () => {
   const hidePolicy = useSaidanStore((state) => state.hidePolicy);
   const imageInputRef = useSaidanStore((state) => state.imageInputRef);
 
+  // iOSにおいて、iframeが一度高さを変更しないとスクロールできない謎バグ
+  // が発生したので、高さを変更するためのstateを用意
+  const [height, setHeight] = useState<string>("90%");  
+
   const { y, opacity } = useSpring({
     from: { y: "100vh", opacity: 0 },
     to: { y: isPolicyOpen ? "0" : "100vh", opacity: isPolicyOpen ? 1 : 0 },
     config: { tension: 500, friction: 50 },
     onResolve: () => {
-      if (isPolicyOpen) return;
+      if (isPolicyOpen) {
+        setHeight("100%");
+        return;
+      }
       hidePolicy();
+      setHeight("90%");
       if (isPolicyAccepted) {
         imageInputRef?.current?.click();
       }
@@ -76,11 +84,23 @@ const PolicyWindow = () => {
           <p className="policy-message">
             サービスのご利用には利用規約への同意が必要です。
           </p>
-          <iframe
-            id="policy-iframe"
-            src="/saidan/policy/policy.html"
-            className="policy-document"
-          />
+          <div 
+            className="grow "
+            style={{
+              WebkitOverflowScrolling: "touch",
+              overflowY: "auto",
+            }}
+            >
+            <iframe
+              id="policy-iframe"
+              src="/saidan/policy/policy.html"
+              className="policy-document" 
+              data-allowscroll="true"
+              style={{
+                display: "block",
+              }}
+              />
+          </div>
         </div>
         <div className="policy-accept-container">
           <div className="policy-accept-inner-container">

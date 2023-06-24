@@ -808,7 +808,7 @@
     }
 
     &-document-container {
-      @apply h-[80%] flex-grow mt-2;
+      @apply h-[80%] flex flex-col mt-2;
     }
 
     &-message {
@@ -942,6 +942,11 @@
 #policy-iframe.body {
   font-size: 10px;
 }
+
+#policy-modal-iframe.body {
+  font-size: 10px;
+}
+
 
 .grecaptcha-badge {
   visibility: hidden;
