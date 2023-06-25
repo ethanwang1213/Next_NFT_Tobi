@@ -43,6 +43,10 @@ const nextConfig = {
         source: "/journal/:path*",
         destination: `${process.env.JOURNAL_URL}/journal/:path*`,
       },
+      {
+        source: "/backend/:path*",
+        destination: `${process.env.JOURNAL_URL}/backend/:path*`,
+      },
     ];
   },
   images: {
