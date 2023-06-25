@@ -24,7 +24,7 @@ const TermsModal: React.FC = () => {
       <a target="_blank" href="https://tbrnk.tobiratory.com/pages/contact">お問い合わせ</a>
     </div>
     <dialog id="terms-modal" className="modal" ref={termsModalRef} onClose={() => setHeight("90%")}>
-      <form method="dialog" className="modal-box max-w-[800px] w-full max-h-full h-full flex flex-col">
+      <form method="dialog" className="modal-box max-w-[800px] w-full max-h-full h-full flex flex-col px-3 tab:px-8">
         <div 
           className="grow"
           style={{
