@@ -8,7 +8,6 @@ import BagButton from "./uiButton/BagButton";
 import CameraModeButton from "./uiButton/CameraModeButton";
 import LogoutButton from "./uiButton/LogoutButton";
 import OtherButton from "./uiButton/OtherButton";
-import PolicyWindow from "./policy/PolicyWindow";
 import CropWindow from "./crop/CropWindow";
 import AcstFailedModal from "./acstModal/AcstFailedModal";
 import AcstAlreadyRequestedModal from "./acstModal/AcstAlreadyRequestedModal";
@@ -61,7 +60,6 @@ const SaidanUI: React.FC<Props> = ({ canvasRef }) => {
           <BagButton />
           <TermsModal />
           <Bag />
-          {isPolicyVisible && <PolicyWindow />}
           {isCropWindowVisible && <CropWindow />}
           {/* アクスタ関連 */}
           <AcstGeneratingMsg isShow={isAcstGeneratingMsgShowing} />

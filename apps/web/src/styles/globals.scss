@@ -619,18 +619,18 @@
 
     &-bottom {
       &-container {
-        @apply top-[100px] h-0 w-full relative flex px-4 pb-3 flex-col justify-end text-white text-[20px] tab:text-3xl tab:gap-1;
+        @apply top-0 h-0 w-full relative flex px-4 pb-3 flex-col justify-end text-white text-[20px] tab:text-3xl tab:gap-1;
       }
 
       &-link {
         @apply btn btn-ghost hover:bg-black/20 justify-start px-4;
-        @apply font-['tachyon'] text-[20px] font-normal;
-        @apply min-h-[2px] h-[36px] tab:text-2xl;
+        @apply font-['tachyon'] text-[16px] tab:text-2xl font-normal;
+        @apply min-h-[2px] h-[30px] tab:h-[36px];
 
         &-disabled {
           @apply btn btn-ghost btn-disabled bg-transparent justify-start px-4;
-          @apply font-['tachyon'] text-[20px] font-normal text-slate-500;
-          @apply min-h-[2px] h-[36px] tab:text-2xl;
+          @apply font-['tachyon'] text-[16px] tab:text-2xl font-normal text-slate-500;
+          @apply min-h-[2px] h-[36px];
         }
       }
     }
@@ -808,7 +808,7 @@
     }
 
     &-document-container {
-      @apply h-[80%] flex-grow mt-2;
+      @apply h-[80%] flex flex-col mt-2;
     }
 
     &-message {
@@ -942,6 +942,11 @@
 #policy-iframe.body {
   font-size: 10px;
 }
+
+#policy-modal-iframe.body {
+  font-size: 10px;
+}
+
 
 .grecaptcha-badge {
   visibility: hidden;
