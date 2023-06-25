@@ -37,7 +37,7 @@ module.exports = {
       },
       {
         basePath: false,
-        source: "/journal/api/functions/:path*",
+        source: "/backend/api/functions/:path*",
         destination:
           // "http://localhost:5001/tobiratory-f6ae1/asia-northeast1/:path*",
           // "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/:path*",
