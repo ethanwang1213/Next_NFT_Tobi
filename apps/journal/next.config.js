@@ -2,6 +2,9 @@ module.exports = {
   basePath: "/journal",
   reactStrictMode: true,
   transpilePackages: ["ui"],
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   images: {
     domains: ["storage.googleapis.com"],
   },

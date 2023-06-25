@@ -2,7 +2,10 @@
 require("dotenv").config();
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
+  swcMinify: true,  
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
