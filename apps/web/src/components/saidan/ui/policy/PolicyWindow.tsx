@@ -70,13 +70,18 @@ const PolicyWindow = () => {
   }, []);
 
   return (
-    <animated.div className="policy-outer-container" style={{ opacity }}>
-      <animated.div
-        className="policy-inner-container"
-        style={{
-          y,
-        }}
-      >
+    // <animated.div className="policy-outer-container" style={{ opacity }}>
+    //   <animated.div
+    //     className="policy-inner-container"
+    //     style={{
+    //       y,
+    //     }}
+    //   >
+    <>
+    
+    {/* <div>
+      <div>
+
         <div className="policy-close-btn">
           <ClosePolicyButton onClick={handleClose} />
         </div>
@@ -90,14 +95,15 @@ const PolicyWindow = () => {
               WebkitOverflowScrolling: "touch",
               overflowY: "auto",
             }}
+            data-allowscroll="true"
             >
             <iframe
               id="policy-iframe"
               src="/saidan/policy/policy.html"
               className="policy-document" 
-              data-allowscroll="true"
               style={{
                 display: "block",
+                height: height
               }}
               />
           </div>
@@ -111,7 +117,7 @@ const PolicyWindow = () => {
                   type="checkbox"
                   name="accept"
                   onChange={(ev) => handleCheckChange(ev)}
-                />
+                  />
               </div>
               <label htmlFor="accept" className="policy-accept-check-text">
                 利用規約に同意する
@@ -122,13 +128,16 @@ const PolicyWindow = () => {
               disabled={disabled}
               className="policy-accept-btn"
               onClick={handleSubmit}
-            >
+              >
               送信
             </button>
           </div>
         </div>
-      </animated.div>
-    </animated.div>
+      </div>
+    </div> */}
+      {/* </animated.div>
+    </animated.div> */}
+    </>
   );
 };
 
