@@ -93,6 +93,23 @@ const Contact: NextPage = () => {
           <ContactHeader title="CONTACT" />
           <form className="contact-form-container-outer" onSubmit={onSubmit}>
             <div className="contact-form-container-inner">
+              <div className="text-center mb-4">
+                <p className="text-white text-sm leading-6 tab:text-xl tab:leading-10">
+                  こちらのフォームは
+                  <br className="tab:hidden" />
+                  企業様用お問い合わせフォームです。
+                  <br />
+                  サービスに関するお問い合わせは
+                  <a 
+                    target="_blank" 
+                    href="https://tbrnk.tobiratory.com/pages/contact/"
+                    className="link link-info"
+                  >
+                    こちら
+                  </a>
+                  。
+                </p>
+              </div>
               <div>
                 <div className="contact-input-container">
                   <input
