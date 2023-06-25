@@ -20,7 +20,7 @@ const Discord = () => {
       if (!auth.currentUser) return;
 
       const token = await auth.currentUser.getIdToken();
-      const response = await fetch(`/api/functions/discordOAuth?code=${code}`, {
+      const response = await fetch(`/backend/api/functions/discordOAuth?code=${code}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
