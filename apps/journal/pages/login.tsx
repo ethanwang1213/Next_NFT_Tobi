@@ -39,7 +39,7 @@ const Login = () => {
   });
 
   // sign inボタンが押されたときに実行する関数
-  const signIn: FormEventHandler<HTMLFormElement> = (e) => {
+  const signIn = handleSubmit(async (data) => {
     console.log("sign in");
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain (www.example.com) for this
@@ -48,14 +48,13 @@ const Login = () => {
       // This must be true.
       handleCodeInApp: true,
     };
-
     setIsEmailLoading(true);
-    sendSignInLinkToEmail(auth, getValues("email"), actionCodeSettings)
+    sendSignInLinkToEmail(auth, data.email, actionCodeSettings)
       .then(() => {
         // The link was successfully sent. Inform the user.
         // Save the email locally so you don't need to ask the user for it again
         // if they open the link on the same device.
-        window.localStorage.setItem("emailForSignIn", getValues("email"));
+        window.localStorage.setItem("emailForSignIn", data.email);
         emailModalRef.current.showModal();
         setIsEmailLoading(false);
       })
@@ -65,7 +64,7 @@ const Login = () => {
         // ...
         setIsEmailLoading(false);
       });
-  };
+  });
 
   // Googleアカウントでログインする関数
   const withGoogle = async () => {
@@ -224,7 +223,7 @@ const Login = () => {
       >
         <form
           className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
-          onSubmit={handleSubmit(signIn)}
+          onSubmit={signIn}
         >
           <button
             className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
