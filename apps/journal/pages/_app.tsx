@@ -40,24 +40,24 @@ const App = ({ Component, pageProps }: AppProps) => {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/journal/fabicon/apple-touch-icon.png"
+          href="/journal/favicon/apple-touch-icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/journal/fabicon/favicon-32x32.png"
+          href="/journal/favicon/favicon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/journal/fabicon/favicon-16x16.png"
+          href="/journal/favicon/favicon-16x16.png"
         />
-        <link rel="manifest" href="/journal/fabicon/site.webmanifest" />
+        <link rel="manifest" href="/journal/favicon/site.webmanifest" />
         <link
           rel="mask-icon"
-          href="/journal/fabicon/safari-pinned-tab.svg"
+          href="/journal/favicon/safari-pinned-tab.svg"
           color="#5bbad5"
         />
         <meta name="apple-mobile-web-app-title" content="Tobiratory" />
