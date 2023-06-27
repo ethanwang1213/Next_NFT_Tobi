@@ -28,7 +28,10 @@ const Login = () => {
   const auth = getAuth();
   const router = useRouter();
   const emailModalRef = useRef<HTMLDialogElement>(null);
+  const appleModalRef = useRef<HTMLDialogElement>(null);
+  const [isAppleModalChecked, setAppleModalChecked] = useState(false)
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+
 
   const {
     register,
@@ -256,9 +259,9 @@ const Login = () => {
           </button>
           <button
             className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
-                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
+            drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
             type="button"
-            onClick={withApple}
+            onClick={() => {appleModalRef.current.showModal();}}
           >
             <FontAwesomeIcon icon={faApple} size="xl" />
             Sign in with Apple
@@ -340,6 +343,43 @@ const Login = () => {
             {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">
               閉じる
+            </button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog id="appleModal" className="modal" ref={appleModalRef}>
+        <form method="dialog" className="modal-box bg-secondary">
+
+          <h3 className="font-bold text-base sm:text-xl text-accent text-center">
+            「Appleでサインイン」での注意
+          </h3>
+          <div className="text-xs sm:text-sm text-accent grid gap-4 py-8">
+            <p>
+              メールアドレスは【共有】状態でログインをお願いします。
+            </p>
+            <p>
+              TOBIRA NEKO購入時のメールアドレスとジャーナルアカウントのメールアドレスが同一でなければTOBIRA NEKOを受け取ることができません。
+            </p>
+            <p>
+              非公開状態にするとメールアドレスの@以降が（privaterelay.appleid.com）となり受取ができなくなります。
+            </p>
+            <p>
+              Apple Account認証でログインする場合は、【メールを共有】を選択して、ログインをお願いします。
+            </p>
+          </div>
+            <div className="flex justify-center mb-4 text-accent">
+              <label className="flex">
+                <input type="checkbox" checked={isAppleModalChecked} className="checkbox checkbox-accent" onClick={() => setAppleModalChecked(!isAppleModalChecked)} />
+                <div className="grid content-center ml-2">
+                  <span className="select-none text-xs sm:text-sm">確認しました</span>
+                </div>
+              </label>
+            </div>
+            <div className="flex justify-center">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm sm:btn-md w-[30%] text-xs sm:text-base btn-outline btn-accent" onClick={withApple} disabled={!isAppleModalChecked}>
+              進む
             </button>
           </div>
         </form>
