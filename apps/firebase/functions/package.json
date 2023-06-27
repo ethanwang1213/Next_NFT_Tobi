@@ -10,7 +10,7 @@
     "deploy": "npm run deploy-dev",
     "deploy-dev": "firebase deploy -P tobiratory-f6ae1 --only hosting,functions,firestore,storage",
     "deploy-stg": "firebase deploy -P tobiratory-stg --only hosting,functions,firestore,storage",
-    "deploy-prd": "firebase deploy -P tobiratory --only hosting,functions,firestore,storage",
+    "deploy-prd": "firebase deploy -P tobiratory --only functions:shopifyOrders-handleOrdersPaid",
     "logs": "firebase functions:log",
     "test": "jest"
   },
