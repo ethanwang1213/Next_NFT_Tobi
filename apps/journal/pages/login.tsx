@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faApple } from "@fortawesome/free-brands-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 type LoginFormType = {
   email: string;
@@ -350,6 +351,13 @@ const Login = () => {
 
       <dialog id="appleModal" className="modal" ref={appleModalRef}>
         <form method="dialog" className="modal-box bg-secondary">
+          <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2">
+            <FontAwesomeIcon
+              icon={faXmark}
+              fontSize={24}
+              className="text-accent"
+            />
+          </button>
 
           <h3 className="font-bold text-base sm:text-xl text-accent text-center">
             「Appleでサインイン」での注意
@@ -370,7 +378,7 @@ const Login = () => {
           </div>
             <div className="flex justify-center mb-4 text-accent">
               <label className="flex">
-                <input type="checkbox" checked={isAppleModalChecked} className="checkbox checkbox-accent" onClick={() => setAppleModalChecked(!isAppleModalChecked)} />
+                <input type="checkbox" checked={isAppleModalChecked} className="checkbox checkbox-accent" onClick={() => setAppleModalChecked(!isAppleModalChecked)} onChange={()=>{}}/>
                 <div className="grid content-center ml-2">
                   <span className="select-none text-xs sm:text-sm">確認しました</span>
                 </div>
