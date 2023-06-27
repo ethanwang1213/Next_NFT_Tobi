@@ -6,9 +6,12 @@ import {
   sendSignInLinkToEmail,
   GoogleAuthProvider,
   signInWithPopup,
+  OAuthProvider,
 } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faApple } from "@fortawesome/free-brands-svg-icons";
 
 type LoginFormType = {
   email: string;
@@ -75,6 +78,17 @@ const Login = () => {
       await router.push("/"); // ログイン後にリダイレクトするURLを指定
     } catch (error) {
       console.error("Googleログインに失敗しました。", error);
+    }
+  };
+
+  const withApple = async () => {
+    var provider = new OAuthProvider("apple.com");
+
+    try {
+      await signInWithPopup(auth, provider);
+      await router.push("/"); // ログイン後にリダイレクトするURLを指定
+    } catch (error) {
+      console.error("Appleログインに失敗しました。", error);
     }
   };
 
@@ -240,6 +254,15 @@ const Login = () => {
             </div>
             Sign in with Google
           </button>
+          <button
+            className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
+                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
+            type="button"
+            onClick={withApple}
+          >
+            <FontAwesomeIcon icon={faApple} size="xl" />
+            Sign in with Apple
+          </button>
           <div
             className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black 
                 flex items-center text-center gap-5"
@@ -315,7 +338,9 @@ const Login = () => {
           </div>
           <div className="modal-action">
             {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">閉じる</button>
+            <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">
+              閉じる
+            </button>
           </div>
         </form>
       </dialog>
