@@ -8,6 +8,7 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import { useHoldNFTs } from "./HoldNFTsProvider";
+import useCommunityData from "@/hooks/useCommunityData";
 
 type Props = {
   children: React.ReactNode;
@@ -36,6 +37,16 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
   const { user } = useAuth();
   const { nekoNFTs } = useHoldNFTs();
+  const { checkJoinedCommunity } = useCommunityData();  
+
+  const checkJoined = async () => {
+    const joined = await checkJoinedCommunity();
+    if (joined) {
+      setDisplayMode("STAMP")
+    } else {
+      setDisplayMode("JOIN");
+    }
+  }
 
   useEffect(() => {
     // コミュニティ参加の実装が完了するまではDiscordOAuthButtonを非表示にする
@@ -56,18 +67,10 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
         return;
       } else {
         // Discord連携済みの場合
-        setDisplayMode("JOIN");
-        if (user.community) {
-          const joined = user.community.joined;
-          if (joined) {
-            // さらにサーバー参加済みの場合
-            setDisplayMode("STAMP");
-            return;
-          }
-        }
+        checkJoined();
       }
     }
-  }, [user, displayMode, nekoNFTs.current]);
+  }, [user, nekoNFTs.current]);
 
   return (
     <DiscordOAuthContext.Provider
