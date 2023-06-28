@@ -362,25 +362,29 @@ const Login = () => {
           <h3 className="font-bold text-base sm:text-xl text-accent text-center">
             「Appleでサインイン」での注意
           </h3>
-          <div className="text-xs sm:text-sm text-accent grid gap-4 py-8">
+          <div className="text-sm sm:text-base text-accent grid gap-4 py-8">
             <p>
-              メールアドレスは【共有】状態でログインをお願いします。
+              初めて「Appleでサインイン」する場合、
+              <br />
+              メールアドレスを登録先サービス（今回の場合はJournal）へ共有するかどうかの選択が表示されます。
             </p>
             <p>
-              TOBIRA NEKO購入時のメールアドレスとジャーナルアカウントのメールアドレスが同一でなければTOBIRA NEKOを受け取ることができません。
+              TOBIRA NEKOの受け取りのため、<span className="inline-block">【メールを共有】</span> を選択して、ログインをお願いします。
             </p>
-            <p>
-              非公開状態にするとメールアドレスの@以降が（privaterelay.appleid.com）となり受取ができなくなります。
-            </p>
-            <p>
-              Apple Account認証でログインする場合は、【メールを共有】を選択して、ログインをお願いします。
-            </p>
+            <div className="grid gap-2 leading-[13px] sm:leading-4 pl-4 text-[10px] sm:text-[12px]">
+              <p>
+                TOBIRA NEKO購入時のメールアドレスとJournalアカウントのメールアドレスが同一でなければ、TOBIRA NEKOを受け取ることができません。
+              </p>
+              <p>
+                非公開状態にすると、メールアドレスの@以降が（privaterelay.appleid.com）となり、受け取りができなくなります。
+              </p>
+            </div>
           </div>
             <div className="flex justify-center mb-4 text-accent">
               <label className="flex">
                 <input type="checkbox" checked={isAppleModalChecked} className="checkbox checkbox-accent" onClick={() => setAppleModalChecked(!isAppleModalChecked)} onChange={()=>{}}/>
                 <div className="grid content-center ml-2">
-                  <span className="select-none text-xs sm:text-sm">確認しました</span>
+                  <span className="select-none sm:text-sm">確認しました</span>
                 </div>
               </label>
             </div>
