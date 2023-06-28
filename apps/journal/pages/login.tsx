@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faApple } from "@fortawesome/free-brands-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 type LoginFormType = {
   email: string;
@@ -28,7 +29,10 @@ const Login = () => {
   const auth = getAuth();
   const router = useRouter();
   const emailModalRef = useRef<HTMLDialogElement>(null);
+  const appleModalRef = useRef<HTMLDialogElement>(null);
+  const [isAppleModalChecked, setAppleModalChecked] = useState(false)
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+
 
   const {
     register,
@@ -256,9 +260,9 @@ const Login = () => {
           </button>
           <button
             className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
-                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
+            drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
             type="button"
-            onClick={withApple}
+            onClick={() => {appleModalRef.current.showModal();}}
           >
             <FontAwesomeIcon icon={faApple} size="xl" />
             Sign in with Apple
@@ -340,6 +344,54 @@ const Login = () => {
             {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">
               閉じる
+            </button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog id="appleModal" className="modal" ref={appleModalRef}>
+        <form method="dialog" className="modal-box bg-secondary">
+          <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2">
+            <FontAwesomeIcon
+              icon={faXmark}
+              fontSize={24}
+              className="text-accent"
+            />
+          </button>
+
+          <h3 className="font-bold text-base sm:text-xl text-accent text-center">
+            「Appleでサインイン」での注意
+          </h3>
+          <div className="text-sm sm:text-base text-accent grid gap-4 py-8">
+            <p>
+              初めて「Appleでサインイン」する場合、
+              <br />
+              メールアドレスを登録先サービス（今回の場合はJournal）へ共有するかどうかの選択が表示されます。
+            </p>
+            <p>
+              TOBIRA NEKOの受け取りのため、<span className="inline-block">【メールを共有】</span> を選択して、ログインをお願いします。
+            </p>
+            <div className="grid gap-2 leading-[13px] sm:leading-4 pl-4 text-[10px] sm:text-[12px]">
+              <p>
+                TOBIRA NEKO購入時のメールアドレスとJournalアカウントのメールアドレスが同一でなければ、TOBIRA NEKOを受け取ることができません。
+              </p>
+              <p>
+                非公開状態にすると、メールアドレスの@以降が（privaterelay.appleid.com）となり、受け取りができなくなります。
+              </p>
+            </div>
+          </div>
+            <div className="flex justify-center mb-4 text-accent">
+              <label className="flex">
+                <input type="checkbox" checked={isAppleModalChecked} className="checkbox checkbox-accent" onClick={() => setAppleModalChecked(!isAppleModalChecked)} onChange={()=>{}}/>
+                <div className="grid content-center ml-2">
+                  <span className="select-none sm:text-sm">確認しました</span>
+                </div>
+              </label>
+            </div>
+            <div className="flex justify-center">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm sm:btn-md w-[30%] text-xs sm:text-base btn-outline btn-accent" onClick={withApple} disabled={!isAppleModalChecked}>
+              進む
             </button>
           </div>
         </form>
