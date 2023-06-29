@@ -84,12 +84,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } else {
         // ログインしていない場合、匿名ログイン
-        signInAnonymously(auth).then(async (e) => {
-          // console.log(`匿名ログイン: ${e.user.uid}`);
-          if (e.user) {
-            createUser(e.user.uid);
-          }
-        });
+        if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false") {
+          signInAnonymously(auth).then(async (e) => {
+            // console.log(`匿名ログイン: ${e.user.uid}`);
+            if (e.user) {
+              createUser(e.user.uid);
+            }
+          });
+        }
       }
 
       return unsubscribe;
