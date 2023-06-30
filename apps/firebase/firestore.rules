@@ -14,14 +14,21 @@ service cloud.firestore {
       return false;
     }
 
+		function isUndefined(data, field) {
+  		return !data.keys().hasAll([field]);
+		}
+
     // users以下のデータは、基本的にログイン中のユーザーのみ読み書き可能
     match /users/{userId} {
       allow read: if isCurrentUser(userId);
       allow write: if isCurrentUser(userId) && (
         (
-          request.resource.data.discord == ''
+          request.resource.data.discord == '' ||
+          isUndefined(request.resource.data, "discord")
         ) || (
-          request.resource.data.discord != '' && (
+          (request.resource.data.discord != '' &&
+          !isUndefined(request.resource.data, "discord")
+          ) && (
             !exists(
               /databases/$(database)/documents/index/users/discord/$(request.resource.data.discord)
             ) || get(
@@ -46,6 +53,9 @@ service cloud.firestore {
       match /activity/{activytyId} {
         allow read, write: if isCurrentUser(userId);
       }
+      match /community/{communityId} {
+      	allow read;
+      }
     }
 
     // Shopサイトでの注文情報を格納するコレクション
@@ -53,11 +63,6 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow read, write: if isAdmin();
     }
-
-    match /tobiraneko/{nftId} {
-      allow read, write: if isAdmin();
-    }
-
     match /index/users/discord/{discord} {
       allow write: if isCurrentUser(request.resource.data.userId) && 
       get(
