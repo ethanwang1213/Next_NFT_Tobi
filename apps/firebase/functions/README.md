@@ -49,6 +49,15 @@ $ npm run serve
 └────────────────┴────────────────┴─────────────────────────────────┘
 ```
 
+<br />
+
+`Error: No project active, but project aliases are available.`  
+のように表示されてエミュレーターが起動できない場合は、下記コマンドを実行してください。  
+
+`$ firebase use default`
+
+<br />
+
 Shopifyの決済完了通知をシミュレーションするには、下記のような curl コマンドを実行してください。
 
 ```sh
