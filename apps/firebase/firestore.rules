@@ -13,11 +13,11 @@ service cloud.firestore {
       // return request.auth != null && request.auth.token.admin == true;
       return false;
     }
-
-		function isUndefined(data, field) {
-  		return !data.keys().hasAll([field]);
-		}
-
+    
+    function isUndefined(data, field) {
+      return !data.keys().hasAll([field]);
+    }
+    
     // users以下のデータは、基本的にログイン中のユーザーのみ読み書き可能
     match /users/{userId} {
       allow read: if isCurrentUser(userId);
