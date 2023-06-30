@@ -17,7 +17,7 @@ service cloud.firestore {
     function isUndefined(data, field) {
       return !data.keys().hasAll([field]);
     }
-    
+
     // users以下のデータは、基本的にログイン中のユーザーのみ読み書き可能
     match /users/{userId} {
       allow read: if isCurrentUser(userId);
@@ -26,8 +26,9 @@ service cloud.firestore {
           request.resource.data.discord == '' ||
           isUndefined(request.resource.data, "discord")
         ) || (
-          (request.resource.data.discord != '' &&
-          !isUndefined(request.resource.data, "discord")
+          (
+            request.resource.data.discord != '' &&
+            !isUndefined(request.resource.data, "discord")
           ) && (
             !exists(
               /databases/$(database)/documents/index/users/discord/$(request.resource.data.discord)
@@ -63,6 +64,11 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow read, write: if isAdmin();
     }
+
+    match /tobiraneko/{nftId} {
+      allow read, write: if isAdmin();
+    }
+
     match /index/users/discord/{discord} {
       allow write: if isCurrentUser(request.resource.data.userId) && 
       get(
