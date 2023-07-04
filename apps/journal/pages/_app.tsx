@@ -14,6 +14,7 @@ import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";
+import { BurgerMenu } from "ui";
 
 config.autoAddCss = false;
 
@@ -83,6 +84,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <DiscordOAuthProvider>
                   <DebugProvider>
                     <Component {...pageProps} />
+                    <BurgerMenu />
                   </DebugProvider>
                 </DiscordOAuthProvider>
               </BookContextProvider>

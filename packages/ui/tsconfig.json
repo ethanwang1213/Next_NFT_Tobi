@@ -1,5 +1,10 @@
 {
-  "extends": "tsconfig/react-library.json",
-  "include": ["."],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "extends": "tsconfig/nextjs.json",
+  "include": [".", "**/*.ts", "**/*.tsx"],
   "exclude": ["dist", "build", "node_modules"]
 }

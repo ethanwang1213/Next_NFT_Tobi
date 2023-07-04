@@ -1,0 +1,101 @@
+[
+  {
+    "name": "HOME",
+    "keyImage": "/menu/key/home-squared.webp",
+    "loadImage": "/menu/load/home.png",
+    "link": "/#top0",
+    "show": true,
+    "click": true,
+    "menu": true
+  },
+  {
+    "name": "TOP1",
+    "keyImage": "",
+    "loadImage": "/menu/load/top1.webp",
+    "link": "/#top1",
+    "show": false,
+    "click": true,
+    "menu": false
+  },
+  {
+    "name": "TOP2",
+    "keyImage": "",
+    "loadImage": "/menu/load/top2.webp",
+    "link": "/#top2",
+    "show": false,
+    "click": true,
+    "menu": false
+  },
+  {
+    "name": "TOP3",
+    "keyImage": "",
+    "loadImage": "/menu/load/top3.webp",
+    "link": "/#top3",
+    "show": false,
+    "click": true,
+    "menu": false
+  },
+  {
+    "name": "TOP4",
+    "keyImage": "",
+    "loadImage": "/menu/load/top4.webp",
+    "link": "/#top4",
+    "show": false,
+    "click": true,
+    "menu": false
+  },
+  {
+    "name": "TOP5",
+    "keyImage": "",
+    "loadImage": "/menu/load/top5.webp",
+    "link": "/#top5",
+    "show": false,
+    "click": true,
+    "menu": false
+  },
+  {
+    "name": "ABOUT US",
+    "keyImage": "/menu/key/about-squared.webp",
+    "loadImage": "/menu/load/about.webp",
+    "link": "/about",
+    "show": true,
+    "click": true,
+    "menu": true
+  },
+  {
+    "name": "SAIDAN",
+    "keyImage": "/menu/key/saidan-squared.webp",
+    "loadImage": "/menu/load/saidan.webp",
+    "link": "/saidan",
+    "show": true,
+    "click": true,
+    "menu": true
+  },
+  {
+    "name": "TOBIRA NEKO",
+    "keyImage": "",
+    "loadImage": "",
+    "link": "https://tbrnk.tobiratory.com/",
+    "show": false,
+    "click": true,
+    "menu": true
+  },
+  {
+    "name": "JOURNAL",
+    "keyImage": "",
+    "loadImage": "",
+    "link": "/journal/login",
+    "show": false,
+    "click": true,
+    "menu": true
+  },
+  {
+    "name": "CONTACT",
+    "keyImage": "",
+    "loadImage": "",
+    "link": "/contact",
+    "show": false,
+    "click": true,
+    "menu": true
+  }
+]
