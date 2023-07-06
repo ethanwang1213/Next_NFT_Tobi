@@ -1,6 +1,7 @@
-import "../src/styles/globals.scss";
 import { default as NextApp } from "next/app";
 import type { AppProps, AppContext } from "next/app";
+import "react-easy-crop/react-easy-crop.css";
+import "../src/styles/globals.scss";
 import React, { useState } from "react";
 import Head from "next/head";
 import Script from "next/script";
@@ -8,11 +9,13 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { AuthProvider } from "@/context/auth";
-import ShowBurgerProvider from "@/context/showBurger";
-import MenuAnimationProvider from "@/context/menuAnimation";
-import BurgerMenu from "@/components/menu/BurgerMenu";
+import {
+  ShowBurgerProvider,
+  MenuAnimationProvider,
+  BurgerMenu,
+  useWindowSize,
+} from "ui";
 import LoadTransition from "@/components/global/Load";
-import useWindowSize from "@/hooks/useWindowSize";
 import CanvasDprProvider from "@/context/canvasDpr";
 import DprController from "@/components/saidan/ui/dpr/DprController";
 import basicAuthCheck from "@/methods/basicAuthCheck";
@@ -23,7 +26,6 @@ config.autoAddCss = false;
 const App = ({ Component, pageProps }: AppProps) => {
   const [isLoad, setIsLoad] = useState<boolean>(true);
 
-  // const { mediaBorder, pcWidth, pcHeight } = globalData;
   const { displayWidth, displayHeight } = useWindowSize();
 
   const initHomeStates = useHomeStore((state) => state.initStates);

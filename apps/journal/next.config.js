@@ -1,4 +1,4 @@
-module.exports = {
+const nextConfig = {
   basePath: "/journal",
   reactStrictMode: true,
   transpilePackages: ["ui"],
@@ -49,3 +49,7 @@ module.exports = {
     ];
   },
 };
+
+const withTM = require("next-transpile-modules")(["ui"]);
+
+module.exports = withTM(nextConfig);

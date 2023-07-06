@@ -1,6 +1,12 @@
 import { default as NextApp } from "next/app";
 import type { AppProps, AppContext } from "next/app";
+
 import "../styles/global.scss";
+import "react-easy-crop/react-easy-crop.css";
+import "swiper/css";
+import "swiper/css/effect-cards";
+
+
 import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -14,10 +20,7 @@ import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";
-import BurgerMenu from "@/components/Menu/BurgerMenu";
-import ShowBurgerProvider from "@/contexts/menu/showBurger";
-import MenuAnimationProvider from "@/contexts/menu/menuAnimation";
-import { useWindowSize } from "react-use";
+import { BurgerMenu, ShowBurgerProvider, MenuAnimationProvider } from "ui";
 
 config.autoAddCss = false;
 

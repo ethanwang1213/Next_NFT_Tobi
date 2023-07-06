@@ -1,7 +1,7 @@
 [
   {
     "name": "HOME",
-    "keyImage": "/menu/key/home-squared.webp",
+    "keyImage": "/journal/menu/key/home-squared.webp",
     "loadImage": "/menu/load/home.png",
     "link": "/#top0",
     "show": true,
@@ -55,7 +55,7 @@
   },
   {
     "name": "ABOUT US",
-    "keyImage": "/menu/key/about-squared.webp",
+    "keyImage": "/journal/menu/key/about-squared.webp",
     "loadImage": "/menu/load/about.webp",
     "link": "/about",
     "show": true,
@@ -64,7 +64,7 @@
   },
   {
     "name": "SAIDAN",
-    "keyImage": "/menu/key/saidan-squared.webp",
+    "keyImage": "/journal/menu/key/saidan-squared.webp",
     "loadImage": "/menu/load/saidan.webp",
     "link": "/saidan",
     "show": true,

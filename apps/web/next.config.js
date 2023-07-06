@@ -2,7 +2,7 @@
 require("dotenv").config();
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,  
+  swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
@@ -61,6 +61,6 @@ const nextConfig = {
   },
 };
 
-const withTM = require("next-transpile-modules")(["three"]);
+const withTM = require("next-transpile-modules")(["three", "ui"]);
 
 module.exports = withTM(nextConfig);

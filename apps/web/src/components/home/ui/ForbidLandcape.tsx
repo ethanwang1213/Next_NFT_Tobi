@@ -1,15 +1,13 @@
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import isSpLandscape from "@/methods/home/isSpLandscape";
 import { useEffect, useState } from "react";
 
-type Props = {};
-
 /**
  * スマホでの横向き表示禁止のメッセージを表示するコンポーネント
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-const ForbidLandcape: React.FC<Props> = ({ }) => {
+const ForbidLandcape: React.FC = () => {
   const { displayWidth, displayHeight } = useWindowSize();
   const [isForbiddenDeviceRot, setIsForbiddenDeviceRot] = useState(false);
 

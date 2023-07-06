@@ -1,6 +1,5 @@
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
-import "react-easy-crop/react-easy-crop.css";
 
 type Props = {
   url: string;

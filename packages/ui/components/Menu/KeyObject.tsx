@@ -1,9 +1,9 @@
 import { Html, useGLTF, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, FC, useState, useContext } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
-import { MenuAnimationContext } from "@/contexts/menu/menuAnimation";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useMenuAnimation } from "../../contexts/menu/menuAnimation";
+import { useWindowSize } from "../../hooks/useWindowSize";
 
 type KeyObjectProps = {
   item: {
@@ -25,7 +25,7 @@ type KeyObjectProps = {
  * @param param0
  * @returns
  */
-const KeyObject: FC<KeyObjectProps> = ({
+const KeyObject: React.FC<KeyObjectProps> = ({
   item,
   index,
   length,
@@ -37,8 +37,7 @@ const KeyObject: FC<KeyObjectProps> = ({
   const { name, keyImage, loadImage, link } = item;
   const texture = useTexture(`${keyImage}`);
   const [posZ, setPosZ] = useState<number>(0);
-  const { setImageUrl, imageRef, setRequireFadeOut } =
-    useContext(MenuAnimationContext);
+  const { setImageUrl, imageRef, setRequireFadeOut } = useMenuAnimation();
   const { nodes }: any = useGLTF("/journal/loading/key.glb");
   const router = useRouter();
   const [isClicking, setIsClicking] = useState<boolean>(false);

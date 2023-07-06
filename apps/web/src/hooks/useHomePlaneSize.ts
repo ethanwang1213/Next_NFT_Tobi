@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useWindowSize from "./useWindowSize";
+import { useWindowSize } from "ui";
 
 type PlaneSize = {
   innerWidth: number;

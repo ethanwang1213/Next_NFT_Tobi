@@ -1,6 +1,6 @@
 import { a } from "@react-spring/web";
 import useHomeStore from "@/stores/homeStore";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import ScrollDownGuide from "./ScrollDownGuide";
 import useHomeTextAnims from "@/hooks/useHomeTextAnims";
 import SectionContainer from "./SectionText/SectionContainer";

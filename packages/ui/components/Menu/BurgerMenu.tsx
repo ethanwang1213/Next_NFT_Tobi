@@ -1,13 +1,13 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 
-import { ShowBurgerContext } from "@/contexts/menu/showBurger";
-import { MenuAnimationContext } from "@/contexts/menu/menuAnimation";
+import { useShowBurger } from "../../contexts/menu/showBurger";
+import { useMenuAnimation } from "../../contexts/menu/menuAnimation";
 import Menu from "./Menu";
-import menuItem from "@/data/menu.json";
+import menuItem from "../../data/menu.json";
 
 type Props = {
   initHomeStates?: () => void;
@@ -17,9 +17,9 @@ type Props = {
  * ハンバーガーメニューを表示するコンポーネント
  * @returns
  */
-const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
-  const { imageUrl, imageRef } = useContext(MenuAnimationContext);
-  const { showBurger } = useContext(ShowBurgerContext);
+export const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
+  const { imageUrl, imageRef } = useMenuAnimation();
+  const { showBurger } = useShowBurger();
 
   useEffect(() => {
     if (imageRef.current) {
@@ -88,5 +88,3 @@ const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
     </>
   );
 };
-
-export default BurgerMenu;

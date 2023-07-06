@@ -1,25 +1,23 @@
 /* eslint-disable react/no-unknown-property */
-import React, {
+import {
   Dispatch,
-  FC,
   ReactNode,
   SetStateAction,
-  useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { gsap } from "gsap";
 import { useRouter } from "next/router";
-import menuItem from "@/data/menu.json";
-import useWindowSize from "@/hooks/useWindowSize";
+import menuItem from "../../data/menu.json";
+import { useWindowSize } from "../../hooks/useWindowSize";
 import KeyObject from "./KeyObject";
 import CameraController from "./CameraController";
 import MenuFooter from "./MenuFooter";
 import CloseButton from "./CloseButton";
-import { CanvasDprContext } from "@/context/canvasDpr";
 
 type menuProps = {
   isOpen: boolean;
@@ -29,7 +27,7 @@ type menuProps = {
   initHomeStates?: () => void;
 };
 
-const Menu: FC<menuProps> = ({
+const Menu: React.FC<menuProps> = ({
   isOpen,
   setOpen,
   isVisible,
@@ -38,8 +36,8 @@ const Menu: FC<menuProps> = ({
 }) => {
   const [rotate, setRotate] = useState<number>(0);
   const [downX, setDownX] = useState<number | null>(null);
-  const canvasRef = React.useRef<HTMLDivElement>(null);
-  const menuRef = React.useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const { isWide } = useWindowSize();
@@ -150,12 +148,20 @@ const Menu: FC<menuProps> = ({
                       initHomeStates();
                     }
                   }}
-                  className="menu-bottom-link"
+                  className="btn btn-ghost hover:bg-black/20 justify-start px-4 
+                    font-['tachyon'] text-[16px] sm:text-2xl font-normal 
+                    min-h-[2px] h-[30px] sm:h-[36px] "
                 >
                   {item.name}
                 </button>
               ) : (
-                <p className="menu-bottom-link-disabled">{item.name}</p>
+                <p
+                  className="btn btn-ghost btn-disabled bg-transparent justify-start px-4 
+                    font-['tachyon'] text-[16px] sm:text-2xl font-normal text-slate-500 
+                    min-h-[2px] h-[36px] "
+                >
+                  {item.name}
+                </p>
               )}
             </div>
           );
@@ -184,6 +190,7 @@ const Menu: FC<menuProps> = ({
               setRotate={setRotate}
               setIsOpen={setOpen}
               key={item.name}
+              initHomeStates={initHomeStates}
             />
           )
       );
@@ -200,25 +207,26 @@ const Menu: FC<menuProps> = ({
     return res;
   };
 
-  const { dpr } = useContext(CanvasDprContext);
-
   return (
     <>
       <CloseButton isOpen={isOpen} setOpen={setOpen} />
       <div
-        className={`menu-container ${isVisible ? "" : "invisible"}`}
+        className={`absolute inset-0 bg-slate-800 overflow-y-auto overflow-x-hidden 
+          scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 ${
+            isVisible ? "" : "invisible"
+          }`}
         ref={menuRef}
         style={{ transform: `translate(${displayWidth}px, 0px)` }}
         data-allowscroll="true"
       >
-        <div className="menu-canvas-container" ref={canvasRef}>
+        <div className="w-full h-full" ref={canvasRef}>
           <Canvas
             className="z-0"
             camera={{
               fov: 100,
               position: [0, isWide ? 0 : 1, isWide ? 17 : 13],
             }}
-            dpr={dpr}
+            dpr={0.5}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleUp}
@@ -238,10 +246,8 @@ const Menu: FC<menuProps> = ({
           </Canvas>
         </div>
         <div
-          className="menu-bottom-container"
-          // style={{
-          //   height: displayHeight * 0.4,
-          // }}
+          className="top-0 h-0 w-full relative flex px-4 pb-3 flex-col justify-end 
+            text-white text-[20px] tab:text-3xl tab:gap-1"
         >
           {menu}
           <MenuFooter />
@@ -252,7 +258,7 @@ const Menu: FC<menuProps> = ({
 };
 
 // モデルとテクスチャのpreload
-useGLTF.preload("/loading/key.glb");
+useGLTF.preload("/journal/loading/key.glb");
 menuItem.forEach((item) => {
   if (item.show) {
     useTexture.preload(item.keyImage);
