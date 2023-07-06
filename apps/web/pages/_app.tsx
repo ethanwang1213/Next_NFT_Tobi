@@ -16,6 +16,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import CanvasDprProvider from "@/context/canvasDpr";
 import DprController from "@/components/saidan/ui/dpr/DprController";
 import basicAuthCheck from "@/methods/basicAuthCheck";
+import useHomeStore from "@/stores/homeStore";
 
 config.autoAddCss = false;
 
@@ -24,6 +25,8 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   // const { mediaBorder, pcWidth, pcHeight } = globalData;
   const { displayWidth, displayHeight } = useWindowSize();
+
+  const initHomeStates = useHomeStore((state) => state.initStates);
 
   return (
     <AuthProvider>
@@ -59,11 +62,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           href="/favicon-16x16.png"
         />
         <link rel="manifest" href="/site.webmanifest" />
-        <link
-          rel="mask-icon"
-          href="/safari-pinned-tab.svg"
-          color="#5bbad5"
-        />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="apple-mobile-web-app-title" content="Tobiratory" />
         <meta name="application-name" content="Tobiratory" />
         <meta name="msapplication-TileColor" content="#2b5797" />
@@ -103,7 +102,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <div className="relative w-full h-full">
                   <Component {...pageProps} />
                   <DprController />
-                  <BurgerMenu />
+                  <BurgerMenu initHomeStates={initHomeStates} />
                   {/* ローディング */}
                   <LoadTransition isOpen={isLoad} setOpen={setIsLoad} />
                 </div>

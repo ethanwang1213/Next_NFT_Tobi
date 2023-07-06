@@ -1,18 +1,22 @@
 import { ShowBurgerContext } from "@/context/showBurger";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { MenuAnimationContext } from "@/context/menuAnimation";
 import { gsap } from "gsap";
 import Menu from "./Menu";
 import menuItem from "@/data/menu.json";
 
+type Props = {
+  initHomeStates?: () => void;
+};
+
 /**
  * ハンバーガーメニューを表示するコンポーネント
  * @returns
  */
-const BurgerMenu = () => {
+const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
   const { imageUrl, imageRef } = useContext(MenuAnimationContext);
   const { showBurger } = useContext(ShowBurgerContext);
 
@@ -59,11 +63,14 @@ const BurgerMenu = () => {
         {createLoadingImage}
       </div>
       {showBurger && !isVisible && (
-        <button className="menu-burger-btn mix-blend-difference" onClick={toggle}>
-          <FontAwesomeIcon 
-            icon={faBars} 
-            className="w-full max-h-full h-[100px] w-[32px] h-[32px]" 
-            />
+        <button
+          className="menu-burger-btn mix-blend-difference"
+          onClick={toggle}
+        >
+          <FontAwesomeIcon
+            icon={faBars}
+            className="w-full max-h-full h-[100px] w-[32px] h-[32px]"
+          />
         </button>
       )}
       <Menu
@@ -71,6 +78,7 @@ const BurgerMenu = () => {
         setOpen={setIsOpen}
         isVisible={isVisible}
         setIsVisible={setIsVisible}
+        initHomeStates={initHomeStates}
       />
     </>
   );

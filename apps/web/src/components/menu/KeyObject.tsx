@@ -18,6 +18,7 @@ type KeyObjectProps = {
   rotate: number;
   setRotate: Dispatch<SetStateAction<number>>;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  initHomeStates?: () => void;
 };
 
 /**
@@ -32,6 +33,7 @@ const KeyObject: FC<KeyObjectProps> = ({
   rotate,
   setRotate,
   setIsOpen,
+  initHomeStates,
 }) => {
   const { name, keyImage, loadImage, link } = item;
   const texture = useTexture(keyImage);
@@ -42,7 +44,7 @@ const KeyObject: FC<KeyObjectProps> = ({
   const router = useRouter();
   const [isClicking, setIsClicking] = useState<boolean>(false);
   const [isDraged, setIsDraged] = useState<boolean>(false);
-  const initHomeStates = useHomeStore((state) => state.initStates);
+  // const initHomeStates = useHomeStore((state) => state.initStates);
   const { innerWidth, displayWidth, isWide, isVeryWide } = useWindowSize();
 
   const radian = ((360 / length) * index + rotate) * (Math.PI / 180) * 1.0;
@@ -106,7 +108,7 @@ const KeyObject: FC<KeyObjectProps> = ({
                 .add(() => {
                   setIsOpen(false);
 
-                  if (router.pathname === "/") {
+                  if (router.pathname === "/" && !!initHomeStates) {
                     initHomeStates();
                   }
                   setRequireFadeOut(name);

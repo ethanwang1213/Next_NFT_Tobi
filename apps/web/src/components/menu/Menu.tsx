@@ -19,7 +19,6 @@ import KeyObject from "./KeyObject";
 import CameraController from "./CameraController";
 import MenuFooter from "./MenuFooter";
 import CloseButton from "./CloseButton";
-import useHomeStore from "@/stores/homeStore";
 import { CanvasDprContext } from "@/context/canvasDpr";
 
 type menuProps = {
@@ -27,11 +26,16 @@ type menuProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
+  initHomeStates?: () => void;
 };
 
-const Menu: FC<menuProps> = ({ isOpen, setOpen, isVisible, setIsVisible }) => {
-  const homeInitStates = useHomeStore((state) => state.initStates);
-
+const Menu: FC<menuProps> = ({
+  isOpen,
+  setOpen,
+  isVisible,
+  setIsVisible,
+  initHomeStates,
+}) => {
   const [rotate, setRotate] = useState<number>(0);
   const [downX, setDownX] = useState<number | null>(null);
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -142,8 +146,8 @@ const Menu: FC<menuProps> = ({ isOpen, setOpen, isVisible, setIsVisible }) => {
                   onClick={async () => {
                     await router.push(item.link);
                     setOpen(false);
-                    if (item.name !== "HOME") {
-                      homeInitStates();
+                    if (item.name !== "HOME" && !!initHomeStates) {
+                      initHomeStates();
                     }
                   }}
                   className="menu-bottom-link"
