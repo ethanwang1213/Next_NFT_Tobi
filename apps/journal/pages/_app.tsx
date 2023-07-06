@@ -14,13 +14,16 @@ import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";
-import { BurgerMenu } from "ui";
+import BurgerMenu from "@/components/Menu/BurgerMenu";
+import ShowBurgerProvider from "@/contexts/menu/showBurger";
+import MenuAnimationProvider from "@/contexts/menu/menuAnimation";
+import { useWindowSize } from "react-use";
 
 config.autoAddCss = false;
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <AuthProvider>
+    <>
       <Head>
         <title>Tobiratory Journal</title>
         {/* OGP設定 */}
@@ -76,23 +79,31 @@ const App = ({ Component, pageProps }: AppProps) => {
           h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
         })(document);`}
       </Script>
-      <ActivityRecordProvider>
-        <HoldNFTsProvider>
-          <RedeemStatusContextProvider>
-            <EditProfileProvider>
-              <BookContextProvider>
-                <DiscordOAuthProvider>
-                  <DebugProvider>
-                    <Component {...pageProps} />
-                    <BurgerMenu />
-                  </DebugProvider>
-                </DiscordOAuthProvider>
-              </BookContextProvider>
-            </EditProfileProvider>
-          </RedeemStatusContextProvider>
-        </HoldNFTsProvider>
-      </ActivityRecordProvider>
-    </AuthProvider>
+      <AuthProvider>
+        <ActivityRecordProvider>
+          <HoldNFTsProvider>
+            <RedeemStatusContextProvider>
+              <EditProfileProvider>
+                <BookContextProvider>
+                  <DiscordOAuthProvider>
+                    <ShowBurgerProvider>
+                      <MenuAnimationProvider>
+                        <DebugProvider>
+                          <div className="overflow-hidden relative">
+                            <Component {...pageProps} />
+                            <BurgerMenu />
+                          </div>
+                        </DebugProvider>
+                      </MenuAnimationProvider>
+                    </ShowBurgerProvider>
+                  </DiscordOAuthProvider>
+                </BookContextProvider>
+              </EditProfileProvider>
+            </RedeemStatusContextProvider>
+          </HoldNFTsProvider>
+        </ActivityRecordProvider>
+      </AuthProvider>
+    </>
   );
 };
 

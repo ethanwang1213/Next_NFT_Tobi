@@ -2,8 +2,7 @@ import { Html, useGLTF, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, FC, useState, useContext } from "react";
 import { gsap } from "gsap";
-import useHomeStore from "@/stores/homeStore";
-import { MenuAnimationContext } from "@/context/menuAnimation";
+import { MenuAnimationContext } from "@/contexts/menu/menuAnimation";
 import useWindowSize from "@/hooks/useWindowSize";
 
 type KeyObjectProps = {
@@ -34,15 +33,14 @@ const KeyObject: FC<KeyObjectProps> = ({
   setIsOpen,
 }) => {
   const { name, keyImage, loadImage, link } = item;
-  const texture = useTexture(keyImage);
+  const texture = useTexture(`${keyImage}`);
   const [posZ, setPosZ] = useState<number>(0);
   const { setImageUrl, imageRef, setRequireFadeOut } =
     useContext(MenuAnimationContext);
-  const { nodes }: any = useGLTF("/loading/key.glb");
+  const { nodes }: any = useGLTF("/journal/loading/key.glb");
   const router = useRouter();
   const [isClicking, setIsClicking] = useState<boolean>(false);
   const [isDraged, setIsDraged] = useState<boolean>(false);
-  const initHomeStates = useHomeStore((state) => state.initStates);
   const { innerWidth, displayWidth, isWide, isVeryWide } = useWindowSize();
 
   const radian = ((360 / length) * index + rotate) * (Math.PI / 180) * 1.0;
@@ -77,7 +75,7 @@ const KeyObject: FC<KeyObjectProps> = ({
           if (!isDraged && isClicking) {
             if (Math.cos(radian) === 1) {
               e.stopPropagation();
-              setImageUrl(loadImage);
+              setImageUrl(`/journal/${loadImage}`);
               const value = { value: posZ };
               gsap
                 .timeline()
@@ -107,7 +105,6 @@ const KeyObject: FC<KeyObjectProps> = ({
                   setIsOpen(false);
 
                   if (router.pathname === "/") {
-                    initHomeStates();
                   }
                   setRequireFadeOut(name);
                   router.push(link);
@@ -142,7 +139,7 @@ const KeyObject: FC<KeyObjectProps> = ({
       >
         <div className="relative w-56 h-10">
           <p
-            className="menu-key-text"
+            className="w-56 text-white text-[20px] sm:text-2xl font-['tachyon'] text-center select-none"
             style={{
               // Htmlのテキストはfogの影響を受けないので、別途薄くする
               opacity: isVeryWide

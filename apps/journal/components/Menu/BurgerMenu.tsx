@@ -1,10 +1,11 @@
-import { ShowBurgerContext } from "@/contexts/showBurger";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { MenuAnimationContext } from "@/contexts/menuAnimation";
 import { gsap } from "gsap";
+
+import { ShowBurgerContext } from "@/contexts/menu/showBurger";
+import { MenuAnimationContext } from "@/contexts/menu/menuAnimation";
 import Menu from "./Menu";
 import menuItem from "@/data/menu.json";
 
@@ -60,7 +61,11 @@ const BurgerMenu = () => {
       </div>
       {showBurger && !isVisible && (
         <button
-          className="menu-burger-btn mix-blend-difference"
+          className="absolute top-4 right-4 
+            min-h-[48px] w-[48px] sm:w-[62px] h-[48px] sm:h-[62px] 
+            btn btn-circle btn-ghost bg-black 
+            text-[26px] text-white sm:text-[32px] 
+            mix-blend-difference"
           onClick={toggle}
         >
           <FontAwesomeIcon
