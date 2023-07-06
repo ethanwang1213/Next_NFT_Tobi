@@ -17,6 +17,7 @@ type KeyObjectProps = {
   rotate: number;
   setRotate: Dispatch<SetStateAction<number>>;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  initHomeStates?: () => void;
 };
 
 /**
@@ -31,6 +32,7 @@ const KeyObject: FC<KeyObjectProps> = ({
   rotate,
   setRotate,
   setIsOpen,
+  initHomeStates,
 }) => {
   const { name, keyImage, loadImage, link } = item;
   const texture = useTexture(`${keyImage}`);
@@ -104,7 +106,8 @@ const KeyObject: FC<KeyObjectProps> = ({
                 .add(() => {
                   setIsOpen(false);
 
-                  if (router.pathname === "/") {
+                  if (router.pathname === "/" && !!initHomeStates) {
+                    initHomeStates();
                   }
                   setRequireFadeOut(name);
                   router.push(link);

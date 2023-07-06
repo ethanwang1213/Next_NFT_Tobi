@@ -1,6 +1,6 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 
@@ -9,11 +9,15 @@ import { MenuAnimationContext } from "@/contexts/menu/menuAnimation";
 import Menu from "./Menu";
 import menuItem from "@/data/menu.json";
 
+type Props = {
+  initHomeStates?: () => void;
+};
+
 /**
  * ハンバーガーメニューを表示するコンポーネント
  * @returns
  */
-const BurgerMenu = () => {
+const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
   const { imageUrl, imageRef } = useContext(MenuAnimationContext);
   const { showBurger } = useContext(ShowBurgerContext);
 
@@ -79,6 +83,7 @@ const BurgerMenu = () => {
         setOpen={setIsOpen}
         isVisible={isVisible}
         setIsVisible={setIsVisible}
+        initHomeStates={initHomeStates}
       />
     </>
   );

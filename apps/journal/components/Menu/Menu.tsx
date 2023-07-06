@@ -25,9 +25,16 @@ type menuProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
+  initHomeStates?: () => void;
 };
 
-const Menu: FC<menuProps> = ({ isOpen, setOpen, isVisible, setIsVisible }) => {
+const Menu: FC<menuProps> = ({
+  isOpen,
+  setOpen,
+  isVisible,
+  setIsVisible,
+  initHomeStates,
+}) => {
   const [rotate, setRotate] = useState<number>(0);
   const [downX, setDownX] = useState<number | null>(null);
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -138,7 +145,8 @@ const Menu: FC<menuProps> = ({ isOpen, setOpen, isVisible, setIsVisible }) => {
                   onClick={async () => {
                     await router.push(item.link);
                     setOpen(false);
-                    if (item.name !== "HOME") {
+                    if (item.name !== "HOME" && !!initHomeStates) {
+                      initHomeStates();
                     }
                   }}
                   className="btn btn-ghost hover:bg-black/20 justify-start px-4 
@@ -183,6 +191,7 @@ const Menu: FC<menuProps> = ({ isOpen, setOpen, isVisible, setIsVisible }) => {
               setRotate={setRotate}
               setIsOpen={setOpen}
               key={item.name}
+              initHomeStates={initHomeStates}
             />
           )
       );
