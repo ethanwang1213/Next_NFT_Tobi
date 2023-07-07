@@ -80,7 +80,7 @@ const HomeTextContainer = () => {
                       )
                     }
                     textChildren={
-                      <p className="pb-2 text-center leading-9 tab:leading-10">
+                      <p className="pb-2 text-center leading-9 sm:leading-10">
                         デジタルグッズはなぜ少ないのだろう？
                         <br />
                         所有している証明ができないから？

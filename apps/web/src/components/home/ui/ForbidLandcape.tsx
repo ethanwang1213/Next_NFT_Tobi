@@ -25,7 +25,7 @@ const ForbidLandcape: React.FC = () => {
             className="modal-toggle"
             defaultChecked={isForbiddenDeviceRot}
           />
-          <div className="modal modal-bottom tab:modal-middle">
+          <div className="modal modal-bottom sm:modal-middle">
             <div className="modal-box flex justify-center bg-[#414142]">
               <h3 className="font-bold text-lg text-white m-4">
                 画面を縦向きにしてご覧ください

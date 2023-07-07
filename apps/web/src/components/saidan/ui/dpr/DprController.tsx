@@ -55,12 +55,12 @@ const DprController: React.FC = () => {
       }}
     >
       <div className="relative w-full h-full">
-        <div className="absolute top-16 tab:top-20 right-4 pointer-events-auto">
+        <div className="absolute top-16 sm:top-20 right-4 pointer-events-auto">
           <div className="dropdown dropdown-end dropdown-open font-tsukub-400">
             <button
               tabIndex={0}
               className={
-                "btn btn-ghost btn-circle min-h-[48px] w-[48px] h-[48px] tab:w-[62px] tab:h-[62px] text-white px-3 tab:px-4 text-[20px] mix-blend-difference" +
+                "btn btn-ghost btn-circle min-h-[48px] w-[48px] h-[48px] sm:w-[62px] sm:h-[62px] text-white px-3 sm:px-4 text-[20px] mix-blend-difference" +
                 (showBurger ? "" : " hidden")
               }
               onClick={(ev) => {

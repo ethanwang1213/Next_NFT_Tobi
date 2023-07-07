@@ -94,9 +94,9 @@ const Contact: NextPage = () => {
           <form className="contact-form-container-outer" onSubmit={onSubmit}>
             <div className="contact-form-container-inner">
               <div className="text-center mb-4">
-                <p className="text-white text-sm leading-6 tab:text-xl tab:leading-10">
+                <p className="text-white text-sm leading-6 sm:text-xl sm:leading-10">
                   こちらのフォームは
-                  <br className="tab:hidden" />
+                  <br className="sm:hidden" />
                   企業様用お問い合わせフォームです。
                   <br />
                   サービスに関するお問い合わせは

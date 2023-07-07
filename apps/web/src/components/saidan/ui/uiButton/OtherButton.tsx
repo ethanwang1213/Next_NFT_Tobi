@@ -73,7 +73,7 @@ const OtherButton = ({ canvasRef }: Props) => {
         <FunctionButton
           onClick={() => (isOtherOpen ? closeOther() : openOther())}
         >
-          <Other className="w-full h-[45px] min-h-[45px] tab:h-full" />
+          <Other className="w-full h-[45px] min-h-[45px] sm:h-full" />
         </FunctionButton>
       </div>
     </div>
