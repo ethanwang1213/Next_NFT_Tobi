@@ -6,6 +6,7 @@ const config = {
     "components/**/*.{js,ts,jsx,tsx}",
     "pages/**/*.{js,ts,jsx,tsx}",
     "contexts/**/*.{js,ts,jsx,tsx}",
+    "../../packages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     screens: {

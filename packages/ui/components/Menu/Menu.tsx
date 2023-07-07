@@ -226,7 +226,7 @@ const Menu: React.FC<menuProps> = ({
               fov: 100,
               position: [0, isWide ? 0 : 1, isWide ? 17 : 13],
             }}
-            dpr={0.5}
+            dpr={1}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleUp}
