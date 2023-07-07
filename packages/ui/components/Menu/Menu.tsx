@@ -138,7 +138,7 @@ const Menu: React.FC<menuProps> = ({
       menuItem.map((item) => {
         if (item.menu) {
           return (
-            <div key={item.name}>
+            <div key={item.name} className="pointer-events-none">
               {item.click ? (
                 <button
                   onClick={async () => {
@@ -150,7 +150,7 @@ const Menu: React.FC<menuProps> = ({
                   }}
                   className="btn btn-ghost hover:bg-black/20 justify-start px-4 
                     font-['tachyon'] text-[16px] sm:text-2xl font-normal 
-                    min-h-[2px] h-[30px] sm:h-[36px] "
+                    min-h-[2px] h-[30px] sm:h-[48px] pointer-events-auto"
                 >
                   {item.name}
                 </button>
@@ -158,7 +158,7 @@ const Menu: React.FC<menuProps> = ({
                 <p
                   className="btn btn-ghost btn-disabled bg-transparent justify-start px-4 
                     font-['tachyon'] text-[16px] sm:text-2xl font-normal text-slate-500 
-                    min-h-[2px] h-[36px] "
+                    min-h-[2px] h-[30px] sm:h-[48px] pointer-events-auto "
                 >
                   {item.name}
                 </p>
@@ -247,7 +247,7 @@ const Menu: React.FC<menuProps> = ({
         </div>
         <div
           className="top-0 h-0 w-full relative flex px-4 pb-3 flex-col justify-end 
-            text-white text-[20px] tab:text-3xl tab:gap-1"
+            text-white text-[20px] sm:text-3xl sm:gap-1"
         >
           {menu}
           <MenuFooter />
