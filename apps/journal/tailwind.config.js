@@ -13,7 +13,6 @@ const config = {
       sm: "576px", // landscape phones
       md: "992px", // desktops
     },
-
     extend: {
       fontFamily: {
         body: ["fot-tsukubrdgothic-std", "sans-serif"],

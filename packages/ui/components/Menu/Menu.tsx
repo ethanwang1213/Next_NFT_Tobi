@@ -12,7 +12,7 @@ import { Canvas } from "@react-three/fiber";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { gsap } from "gsap";
 import { useRouter } from "next/router";
-import menuItem from "../../data/menu.json";
+import { menuItem } from "./assets/menuItems";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import KeyObject from "./KeyObject";
 import CameraController from "./CameraController";

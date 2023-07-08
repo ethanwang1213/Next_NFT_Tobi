@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
-require("dotenv").config();
-const nextConfig = {
+module.exports = {
   reactStrictMode: false,
   swcMinify: true,
   compiler: {
@@ -59,8 +58,5 @@ const nextConfig = {
       2048, 3840,
     ],
   },
+  transpilePackages: ["three", "ui"],
 };
-
-const withTM = require("next-transpile-modules")(["three", "ui"]);
-
-module.exports = withTM(nextConfig);
