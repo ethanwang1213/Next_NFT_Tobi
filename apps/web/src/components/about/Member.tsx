@@ -36,7 +36,7 @@ const Member: React.FC<Props> = ({ data }) => (
     </div>
     <div className="about-member-tw-container">
       <button>
-        <a href={`${data.twitter}`} target="_blank" rel="noreferrer">
+        <a href={`${data.twitter}`} target="_blank" rel="noopener noreferrer">
           <AiFillTwitterCircle size={40} color="white" />
         </a>
       </button>

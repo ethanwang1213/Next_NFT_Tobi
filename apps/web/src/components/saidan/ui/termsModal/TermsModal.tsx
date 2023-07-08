@@ -22,7 +22,11 @@ const TermsModal: React.FC = () => {
       <div className="absolute text-xs sm:text-sm text-black/60 font-bold right-6 bottom-1 sm:bottom-2 divide-solid flex">
         <button onClick={handleClick}>利用規約</button>
         <hr className="w-[1px] h-[18px] mx-[10px] bg-black/40 border-none" />
-        <a target="_blank" href="https://tbrnk.tobiratory.com/pages/contact">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://tbrnk.tobiratory.com/pages/contact"
+        >
           お問い合わせ
         </a>
       </div>

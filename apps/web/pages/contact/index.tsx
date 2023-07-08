@@ -102,6 +102,7 @@ const Contact: NextPage = () => {
                   サービスに関するお問い合わせは
                   <a
                     target="_blank"
+                    rel="noopener noreferrer"
                     href="https://tbrnk.tobiratory.com/pages/contact/"
                     className="link link-info"
                   >
