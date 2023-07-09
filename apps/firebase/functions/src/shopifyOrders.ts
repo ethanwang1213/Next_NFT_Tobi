@@ -32,6 +32,7 @@ exports.handleOrdersPaid = functions.region(REGION).pubsub.topic(TOPIC_NAMES["or
   const mailOptions = {
     from: process.env.SENDGRID_SENDER_EMAIL || "",
     to: order.email,
+    bcc: process.env.SENDGRID_SENDER_EMAIL || "",
     subject: `【引き換えコード】注文番号：${order.name}`,
     html: `${MAIL_HEAD}
 ${items.map((item: Item) => {
@@ -44,6 +45,9 @@ ${MAIL_FOOT}
 `,
   };
   const send = await sendgrid.send(mailOptions);
+  await orderRef.update({
+    mail_sent: "done",
+  });
   return send.toString();
 });
 
