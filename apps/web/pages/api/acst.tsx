@@ -28,9 +28,9 @@ export const updateFailedAcstRequestAt = async () => {
     const timestamp = Date.now();
 
     const ref = doc(db, `users/${uid}`);
-    updateDoc(ref, { failedAcstRequestAt: timestamp })
+    updateDoc(ref, { failedAcstRequestAt: timestamp });
   } catch (error) {
     console.log(error);
   }
   return null;
-}
+};
