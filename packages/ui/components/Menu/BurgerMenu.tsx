@@ -7,7 +7,7 @@ import { gsap } from "gsap";
 import { useShowBurger } from "../../contexts/menu/showBurger";
 import { useMenuAnimation } from "../../contexts/menu/menuAnimation";
 import Menu from "./Menu";
-import menuItem from "../../data/menu.json";
+import { menuItem } from "./assets/menuItems";
 
 type Props = {
   initHomeStates?: () => void;
