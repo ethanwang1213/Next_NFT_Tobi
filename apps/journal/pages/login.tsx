@@ -47,7 +47,8 @@ const Login = () => {
   });
 
   // sign inボタンが押されたときに実行する関数
-  const signIn = handleSubmit(async (data) => {
+  const signIn = handleSubmit(async (data: LoginFormType) => {
+    if (!data) return;
     console.log("sign in");
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain (www.example.com) for this
