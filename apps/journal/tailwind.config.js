@@ -17,6 +17,9 @@ const config = {
       fontFamily: {
         body: ["fot-tsukubrdgothic-std", "sans-serif"],
       },
+      colors: {
+        brown: "#894400",
+      },
     },
   },
   daisyui: {

@@ -19,7 +19,6 @@ const PersonalIcon: React.FC = () => {
 
   const [badgeSrc, setBadgeSrc] = useState<string>("");
 
-
   useEffect(() => {
     if (!houseData || !otherNFTs) return;
     if (otherNFTs.current.length === 0) return;
@@ -59,7 +58,7 @@ const PersonalIcon: React.FC = () => {
           </label>
         </div>
         {badgeSrc !== "" && (
-          <div className="absolute -bottom-1 right-0 w-[30%] aspect-square rounded-full bg-white border-white">
+          <div className="absolute -bottom-1 right-0 w-1/3 aspect-square rounded-full bg-white border-white">
             <Image src={badgeSrc} alt="badge" fill />
           </div>
         )}
