@@ -13,7 +13,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const NFTPageSP: React.FC<Props> = ({ pageNum }) => {
+const NFTPageSp: React.FC<Props> = ({ pageNum }) => {
   const { otherNFTs } = useHoldNFTs();
 
   return (
@@ -29,4 +29,4 @@ const NFTPageSP: React.FC<Props> = ({ pageNum }) => {
   );
 };
 
-export default NFTPageSP;
+export default NFTPageSp;

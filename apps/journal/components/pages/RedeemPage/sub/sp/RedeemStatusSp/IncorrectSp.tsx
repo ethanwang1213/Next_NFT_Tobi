@@ -1,5 +1,5 @@
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
-import RedeemStatusSP from "./parent/RedeemStatusSp";
+import RedeemStatusSp from "./parent/RedeemStatusSp";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 
 /**
@@ -9,7 +9,7 @@ import TryAgainButton from "../../CloseModalButton/TryAgainButton";
  */
 const IncorrectSp: React.FC = () => {
   return (
-    <RedeemStatusSP
+    <RedeemStatusSp
       icon={<CautionIcon className={"w-[54%] h-full"} />}
       title={"Error"}
       titleSize={34}

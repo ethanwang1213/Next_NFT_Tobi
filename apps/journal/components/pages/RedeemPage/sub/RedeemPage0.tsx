@@ -1,6 +1,6 @@
 import RedeemPageTitle from "../../../PageTitle/RedeemPageTitle";
 import RedeemPc0 from "./pc/RedeemPc0";
-import RedeemSP0 from "./sp/RedeemSp0";
+import RedeemSp0 from "./sp/RedeemSp0";
 
 /**
  * redeemページの左ページを表示するコンポーネント
@@ -15,7 +15,7 @@ const RedeemPage0: React.FC = () => {
           <RedeemPc0 />
         </div>
         <div className={`block sm:hidden grow`}>
-          <RedeemSP0 />
+          <RedeemSp0 />
         </div>
       </>
     </>

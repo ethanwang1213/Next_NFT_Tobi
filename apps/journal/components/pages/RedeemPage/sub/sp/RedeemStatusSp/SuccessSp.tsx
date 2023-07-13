@@ -1,4 +1,4 @@
-import RedeemStatusSP from "./parent/RedeemStatusSp";
+import RedeemStatusSp from "./parent/RedeemStatusSp";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 
@@ -9,7 +9,7 @@ import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
  */
 const SuccessSp: React.FC = () => {
   return (
-    <RedeemStatusSP
+    <RedeemStatusSp
       icon={
         <div className="w-full flex justify-center">
           <FeatherCheckIcon className={"w-[60%] h-full"} />

@@ -1,6 +1,6 @@
 import NFTPageTitle from "../../PageTitle/NFTPageTitle";
 import NFTPagePc from "./sub/NFTPagePc";
-import NFTPageSP from "./sub/NFTPageSP";
+import NFTPageSp from "./sub/NFTPageSp";
 import { mockNFTSrcList } from "@/libs/mocks/mockNFTSrcList";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 
@@ -42,7 +42,7 @@ const NFTPage: React.FC<Props> = ({ pageNum }) => {
             <NFTPagePc pageNum={pageNum} />
           </div>
           <div className="block sm:hidden grow overflow-y-auto pt-4 mb-[4%]">
-            <NFTPageSP pageNum={pageNum} />
+            <NFTPageSp pageNum={pageNum} />
           </div>
         </>
       )}
