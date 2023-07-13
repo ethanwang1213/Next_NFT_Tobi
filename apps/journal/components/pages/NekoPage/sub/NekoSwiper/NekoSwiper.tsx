@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 import NekoSwiperContent from "./NekoSwiperContent";
 import { mockNekoSrcList } from "../../../../../libs/mocks/mockNekoSrcList";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 
 type CardPos = {
   left: number;
@@ -21,7 +21,7 @@ type CardPos = {
  * @returns
  */
 const NekoSwiper: React.FC = () => {
-  const { nekoNFTs } = useHoldNFTs();
+  const { nekoNfts } = useHoldNfts();
 
   const { width: innerWidth, height: innerHeight } = useWindowSize();
   const cardImgRef = useRef<HTMLImageElement>(null);
@@ -59,12 +59,12 @@ const NekoSwiper: React.FC = () => {
         setIsInit(true);
       }
     } else {
-      if (nekoNFTs.current.length === 0) {
+      if (nekoNfts.current.length === 0) {
         if (initNum === 1) {
           setIsInit(true);
         }
       } else {
-        if (initNum === nekoNFTs.current.length) {
+        if (initNum === nekoNfts.current.length) {
           setIsInit(true);
         }
       }
@@ -146,9 +146,9 @@ const NekoSwiper: React.FC = () => {
           <>{mockNekoSrcList.map((v) => createSwiperSlide(v.src, v.id))}</>
         ) : (
           <>
-            {nekoNFTs.current.length === 0
+            {nekoNfts.current.length === 0
               ? createSwiperSlide(null, 0)
-              : [...nekoNFTs.current].map((v, i) =>
+              : [...nekoNfts.current].map((v, i) =>
                   createSwiperSlide(v.thumbnail, i)
                 )}
           </>

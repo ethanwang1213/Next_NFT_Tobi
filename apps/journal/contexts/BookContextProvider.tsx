@@ -6,7 +6,7 @@ import {
   useState,
   useRef,
 } from "react";
-import NFTPage from "../components/pages/NFTPage/NFTPage";
+import NftPage from "../components/pages/NftPage/NftPage";
 import NekoPage from "../components/pages/NekoPage/NekoPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
@@ -15,9 +15,9 @@ import { BookIndex, bookContext, tagType } from "../types/type";
 import { useAuth } from "./AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useHoldNFTs } from "./HoldNFTsProvider";
+import { useHoldNfts } from "./HoldNftsProvider";
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
-import { mockNFTSrcList } from "@/libs/mocks/mockNFTSrcList";
+import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
 
 type Props = {
   children: ReactNode;
@@ -59,7 +59,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const logoutModal = useRef<HTMLInputElement>();
 
   const { user } = useAuth();
-  const { nekoNFTs, otherNFTs } = useHoldNFTs();
+  const { nekoNfts, otherNfts } = useHoldNfts();
 
   const pageContextValue = useMemo(
     () => ({
@@ -118,18 +118,18 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
     const nekoLength =
       process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
         ? mockNekoSrcList.length
-        : nekoNFTs.current.length;
+        : nekoNfts.current.length;
     let nekoPageNum = Math.trunc(nekoLength / 4);
     if (nekoLength % 4 !== 0) nekoPageNum++; // 余りがある場合はページ数を+1
     if (nekoPageNum === 0) nekoPageNum = 1; // ページ数0の場合は1ページとする
     if (nekoPageNum % 2 === 1) nekoPageNum++; // 奇数ページならページ数+1
 
-    const otherNFTLength =
+    const otherNftLength =
       process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
-        ? mockNFTSrcList.length
-        : otherNFTs.current.length;
-    let nftPageNum = Math.trunc(otherNFTLength / 9);
-    if (otherNFTLength % 9 !== 0) nftPageNum++; // 余りがある場合はページ数を+1
+        ? mockNftSrcList.length
+        : otherNfts.current.length;
+    let nftPageNum = Math.trunc(otherNftLength / 9);
+    if (otherNftLength % 9 !== 0) nftPageNum++; // 余りがある場合はページ数を+1
     if (nftPageNum === 0) nftPageNum = 1; // ページ数0の場合は1ページとする
     if (nftPageNum % 2 === 1) nftPageNum++; // 奇数ページならページ数+1
 
@@ -184,7 +184,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
         <NekoPage pageNum={i} key={nekoPageIndex + i} />
       )),
       ...[...Array(nftPageNum)].map((_, i) => (
-        <NFTPage pageNum={i} key={nftPageIndex + i} />
+        <NftPage pageNum={i} key={nftPageIndex + i} />
       )),
       <RedeemPage pageNum={0} key={redeemPageIndex + 0} />,
       <RedeemPage pageNum={1} key={redeemPageIndex + 1} />,
@@ -198,7 +198,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
         page: nekoPageIndex,
       },
       {
-        image: "/journal/images/icon/NFTs_journal.svg",
+        image: "/journal/images/icon/Nfts_journal.svg",
         page: nftPageIndex,
       },
       {
@@ -213,7 +213,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       },
     ];
     setTags(!user || !user.email ? newTags.slice(0, 4) : newTags);
-  }, [nekoNFTs.current, otherNFTs.current]);
+  }, [nekoNfts.current, otherNfts.current]);
 
   useEffect(() => {
     if (!user) return;

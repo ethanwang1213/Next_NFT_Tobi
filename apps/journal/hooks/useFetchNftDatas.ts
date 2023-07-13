@@ -5,7 +5,7 @@ import { getDocs, collection } from "@firebase/firestore";
 const useFetchNftDatas = () => {
   const { user } = useAuth();
 
-  const fetchNFTCollectionIds = async () => {
+  const fetchNftCollectionIds = async () => {
     try {
       const snapshots = await getDocs(collection(db, `users`, user.id, `nft`));
       const ids = [];
@@ -19,7 +19,7 @@ const useFetchNftDatas = () => {
     }
   };
 
-  const fetchHoldNFTs = async (collectionId: string) => {
+  const fetchHoldNfts = async (collectionId: string) => {
     try {
       const nftSnap = await getDocs(collection(db, `users`, user.id, `nft`));
       if (nftSnap.empty) return [];
@@ -40,7 +40,10 @@ const useFetchNftDatas = () => {
     }
   };
 
-  return { fetchNFTCollectionIds, fetchHoldNFTs };
+  return {
+    fetchNftCollectionIds,
+    fetchHoldNfts,
+  };
 };
 
 export default useFetchNftDatas;

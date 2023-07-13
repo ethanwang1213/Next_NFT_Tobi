@@ -1,6 +1,6 @@
-import { mockNFTSrcList } from "@/libs/mocks/mockNFTSrcList";
-import NFTImage from "./NFTImage";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
+import NftImage from "./NftImage";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 
 type Props = {
   pageNum: number;
@@ -13,20 +13,20 @@ type Props = {
  * @param param0
  * @returns
  */
-const NFTPageSp: React.FC<Props> = ({ pageNum }) => {
-  const { otherNFTs } = useHoldNFTs();
+const NftPageSp: React.FC<Props> = ({ pageNum }) => {
+  const { otherNfts } = useHoldNfts();
 
   return (
     <div className="h-full px-2 grid grid-cols-3 gap-y-8 sm:gap-y-4 gap-x-2 content-start place-items-center">
       {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
-        ? mockNFTSrcList.map((v, i) => (
-            <NFTImage key={v.id} src={v.src} alt={"nft"} />
+        ? mockNftSrcList.map((v, i) => (
+            <NftImage key={v.id} src={v.src} alt={"nft"} />
           ))
-        : otherNFTs.current.map((v, i) => (
-            <NFTImage key={i} src={v.thumbnail} alt={"nft"} />
+        : otherNfts.current.map((v, i) => (
+            <NftImage key={i} src={v.thumbnail} alt={"nft"} />
           ))}
     </div>
   );
 };
 
-export default NFTPageSp;
+export default NftPageSp;

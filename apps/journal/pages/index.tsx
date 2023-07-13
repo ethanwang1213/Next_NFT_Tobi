@@ -7,7 +7,7 @@ import SoundToggle from "@/components/SoundToggle";
 import DebugText from "@/components/DebugText";
 // import FooterLoginGuide from "@/components/FooterLoginGuide";
 // import LoginGuideModal from "@/components/LoginGuideModal";
-import NFTViewModal from "@/components/NFTViewModal";
+import NftViewModal from "@/components/NftViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
@@ -50,7 +50,7 @@ const Index = () => {
       <DebugText />
       {/* <LoginGuideModal />
       <FooterLoginGuide /> */}
-      <NFTViewModal />
+      <NftViewModal />
     </div>
   );
 };

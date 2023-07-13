@@ -8,7 +8,7 @@ import { AuthProvider } from "@/contexts/AuthProvider";
 import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
 import BookContextProvider from "@/contexts/BookContextProvider";
 import { EditProfileProvider } from "@/contexts/EditProfileProvider";
-import { HoldNFTsProvider } from "@/contexts/HoldNFTsProvider";
+import { HoldNftsProvider } from "@/contexts/HoldNftsProvider";
 import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
 import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
@@ -76,7 +76,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         })(document);`}
       </Script>
       <ActivityRecordProvider>
-        <HoldNFTsProvider>
+        <HoldNftsProvider>
           <RedeemStatusContextProvider>
             <EditProfileProvider>
               <BookContextProvider>
@@ -88,7 +88,7 @@ const App = ({ Component, pageProps }: AppProps) => {
               </BookContextProvider>
             </EditProfileProvider>
           </RedeemStatusContextProvider>
-        </HoldNFTsProvider>
+        </HoldNftsProvider>
       </ActivityRecordProvider>
     </AuthProvider>
   );
