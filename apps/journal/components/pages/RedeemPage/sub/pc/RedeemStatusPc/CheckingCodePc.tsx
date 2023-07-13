@@ -1,4 +1,4 @@
-import RedeemStatusPC from "./parent/RedeemStatusPc";
+import RedeemStatusPc from "./parent/RedeemStatusPc";
 import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
 
 /**
@@ -8,7 +8,7 @@ import FeatherIcon from "../../../../../../public/images/icon/feather_journal.sv
  */
 const CheckingCodePc: React.FC = () => {
   return (
-    <RedeemStatusPC
+    <RedeemStatusPc
       icon={<FeatherIcon className={"w-full h-full text-accent drop-shadow-lg"} />}
       title={"Checking code..."}
       titleSize={72}

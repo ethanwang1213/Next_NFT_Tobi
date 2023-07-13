@@ -249,7 +249,7 @@ const FamiliarityPhase = ({ starts, ends }: Props) => {
         return (
           <AImageModel
             key={srcData.src}
-            src={getImgSrc(2, `${srcData.src}`, true)} // 素材が変わらないので第三引数isPCはtrue
+            src={getImgSrc(2, `${srcData.src}`, true)} // 素材が変わらないので第三引数isPcはtrue
             width={to(
               [ev, sv.to([0, 1], [0.8, 1])],
               (v1, v2) =>

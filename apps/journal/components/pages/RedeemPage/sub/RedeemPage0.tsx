@@ -1,5 +1,5 @@
 import RedeemPageTitle from "../../../PageTitle/RedeemPageTitle";
-import RedeemPC0 from "./pc/RedeemPc0";
+import RedeemPc0 from "./pc/RedeemPc0";
 import RedeemSP0 from "./sp/RedeemSp0";
 
 /**
@@ -12,7 +12,7 @@ const RedeemPage0: React.FC = () => {
       <RedeemPageTitle isShown={true} />
       <>
         <div className={`hidden sm:block grow`}>
-          <RedeemPC0 />
+          <RedeemPc0 />
         </div>
         <div className={`block sm:hidden grow`}>
           <RedeemSP0 />

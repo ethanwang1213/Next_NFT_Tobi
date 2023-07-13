@@ -1,4 +1,4 @@
-import RedeemStatusPC from "./parent/RedeemStatusPc";
+import RedeemStatusPc from "./parent/RedeemStatusPc";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 
@@ -9,7 +9,7 @@ import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
  */
 const SuccessPc: React.FC = () => {
   return (
-    <RedeemStatusPC
+    <RedeemStatusPc
       icon={<FeatherCheckIcon className={"w-full h-full "} />}
       title={"Success!!"}
       titleSize={84}

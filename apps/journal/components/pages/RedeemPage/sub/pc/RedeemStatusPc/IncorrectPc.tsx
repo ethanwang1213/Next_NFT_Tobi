@@ -1,4 +1,4 @@
-import RedeemStatusPC from "./parent/RedeemStatusPc";
+import RedeemStatusPc from "./parent/RedeemStatusPc";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 
 /**
@@ -8,7 +8,7 @@ import CautionIcon from "../../../../../../public/images/icon/caution_journal.sv
  */
 const IncorrectPc: React.FC = () => {
   return (
-    <RedeemStatusPC
+    <RedeemStatusPc
       icon={<CautionIcon className={"w-[40%] h-full"} />}
       title={"Error"}
       titleSize={84}

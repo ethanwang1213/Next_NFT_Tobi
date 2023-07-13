@@ -15,30 +15,37 @@ type Props = {
  * @param param0
  * @returns
  */
-const RedeemStatusPC: React.FC<Props> = ({
+const RedeemStatusPc: React.FC<Props> = ({
   icon,
   title,
   titleSize,
   description,
-  isFade
+  isFade,
 }) => {
   const iconRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if(isFade && iconRef.current){
-    gsap.fromTo(iconRef.current, {
-      opacity: 0,
-    }, {
-      opacity: 1,
-      duration: 1,
-      repeat: -1,
-      yoyo: true,
-    });
-  }
-  }, [isFade,iconRef])
+    if (isFade && iconRef.current) {
+      gsap.fromTo(
+        iconRef.current,
+        {
+          opacity: 0,
+        },
+        {
+          opacity: 1,
+          duration: 1,
+          repeat: -1,
+          yoyo: true,
+        }
+      );
+    }
+  }, [isFade, iconRef]);
 
   return (
     <>
-      <div className="[&>svg_*]:!fill-accent w-full h-[55%] flex justify-center" ref={iconRef}>
+      <div
+        className="[&>svg_*]:!fill-accent w-full h-[55%] flex justify-center"
+        ref={iconRef}
+      >
         {icon}
       </div>
       <h3
@@ -56,8 +63,8 @@ const RedeemStatusPC: React.FC<Props> = ({
   );
 };
 
-RedeemStatusPC.defaultProps = {
+RedeemStatusPc.defaultProps = {
   isFade: false,
 };
 
-export default RedeemStatusPC;
+export default RedeemStatusPc;
