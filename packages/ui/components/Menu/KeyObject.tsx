@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { useMenuAnimation } from "../../contexts/menu/menuAnimation";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { useLocatingAcrossBasePath } from "../../hooks/useLocatingAcrossBasePath";
+import keyModel from "./assets/menu/key/keyhole.glb";
 
 type KeyObjectProps = {
   item: {
@@ -39,7 +40,7 @@ const KeyObject: React.FC<KeyObjectProps> = ({
   const texture = useTexture(`${keyImage}`);
   const [posZ, setPosZ] = useState<number>(0);
   const { setImageUrl, imageRef, setRequireFadeOut } = useMenuAnimation();
-  const { nodes }: any = useGLTF("/journal/loading/key.glb");
+  const { nodes }: any = useGLTF(keyModel);
   const router = useRouter();
   const { pushLocation } = useLocatingAcrossBasePath();
   const [isClicking, setIsClicking] = useState<boolean>(false);
@@ -78,7 +79,7 @@ const KeyObject: React.FC<KeyObjectProps> = ({
           if (!isDraged && isClicking) {
             if (Math.cos(radian) === 1) {
               e.stopPropagation();
-              setImageUrl(`/journal/${loadImage}`);
+              setImageUrl(loadImage);
               const value = { value: posZ };
               gsap
                 .timeline()

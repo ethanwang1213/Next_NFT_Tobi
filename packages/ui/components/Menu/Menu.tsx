@@ -18,6 +18,7 @@ import CameraController from "./CameraController";
 import MenuFooter from "./MenuFooter";
 import CloseButton from "./CloseButton";
 import { useLocatingAcrossBasePath } from "../../hooks/useLocatingAcrossBasePath";
+import keyModel from "./assets/menu/key/keyhole.glb";
 
 type menuProps = {
   isOpen: boolean;
@@ -259,7 +260,7 @@ const Menu: React.FC<menuProps> = ({
 };
 
 // モデルとテクスチャのpreload
-useGLTF.preload("/journal/loading/key.glb");
+useGLTF.preload(keyModel);
 menuItem.forEach((item) => {
   if (item.show) {
     useTexture.preload(item.keyImage);
