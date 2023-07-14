@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
 import { useMenuAnimation } from "../../contexts/menu/menuAnimation";
 import { useWindowSize } from "../../hooks/useWindowSize";
+import { useLocatingAcrossBasePath } from "../../hooks/useLocatingAcrossBasePath";
 
 type KeyObjectProps = {
   item: {
@@ -40,6 +41,7 @@ const KeyObject: React.FC<KeyObjectProps> = ({
   const { setImageUrl, imageRef, setRequireFadeOut } = useMenuAnimation();
   const { nodes }: any = useGLTF("/journal/loading/key.glb");
   const router = useRouter();
+  const { pushLocation } = useLocatingAcrossBasePath();
   const [isClicking, setIsClicking] = useState<boolean>(false);
   const [isDraged, setIsDraged] = useState<boolean>(false);
   const { innerWidth, displayWidth, isWide, isVeryWide } = useWindowSize();
@@ -109,7 +111,7 @@ const KeyObject: React.FC<KeyObjectProps> = ({
                     initHomeStates();
                   }
                   setRequireFadeOut(name);
-                  router.push(link);
+                  pushLocation(link);
                   setPosZ(0);
                 });
               // .to(imageRef.current, { opacity: 0, duration: 0.5 }, "+=1")

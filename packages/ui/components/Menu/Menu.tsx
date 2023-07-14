@@ -11,13 +11,13 @@ import {
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { gsap } from "gsap";
-import { useRouter } from "next/router";
 import { menuItem } from "./assets/menuItems";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import KeyObject from "./KeyObject";
 import CameraController from "./CameraController";
 import MenuFooter from "./MenuFooter";
 import CloseButton from "./CloseButton";
+import { useLocatingAcrossBasePath } from "../../hooks/useLocatingAcrossBasePath";
 
 type menuProps = {
   isOpen: boolean;
@@ -38,7 +38,6 @@ const Menu: React.FC<menuProps> = ({
   const [downX, setDownX] = useState<number | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   const { isWide } = useWindowSize();
 
@@ -49,6 +48,8 @@ const Menu: React.FC<menuProps> = ({
   const { displayWidth } = useWindowSize();
 
   const [isAnimatedOpen, setIsAnimatedOpen] = useState(false);
+
+  const { pushLocation } = useLocatingAcrossBasePath();
 
   useEffect(() => {
     if (isOpen) {
@@ -142,7 +143,7 @@ const Menu: React.FC<menuProps> = ({
               {item.click ? (
                 <button
                   onClick={async () => {
-                    await router.push(item.link);
+                    await pushLocation(item.link);
                     setOpen(false);
                     if (item.name !== "HOME" && !!initHomeStates) {
                       initHomeStates();
