@@ -20,7 +20,7 @@ pub contract HouseBadge: NonFungibleToken {
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
 
-    pub event Mint(id: UInt64, creator: Address, metadata: {String:String})
+    pub event Mint(id: UInt64, creator: Address, metadata: {String:String}, totalSupply: UInt64)
     pub event Destroy(id: UInt64)
 
     pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
@@ -126,7 +126,7 @@ pub contract HouseBadge: NonFungibleToken {
             )
             HouseBadge.totalSupply = HouseBadge.totalSupply + 1
             let tokenRef = &token as &NonFungibleToken.NFT
-            emit Mint(id: token.id, creator: creator.address, metadata: metadata)
+            emit Mint(id: token.id, creator: creator.address, metadata: metadata, totalSupply: HouseBadge.totalSupply)
             creator.borrow()!.deposit(token: <- token)
             return tokenRef
         }
