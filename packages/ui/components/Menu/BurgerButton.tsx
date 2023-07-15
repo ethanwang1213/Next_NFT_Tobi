@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 /**
- * メニューのバーガーボタンを表示するコンポーネント
+ * バーガーボタンを表示するコンポーネント
  * @returns
  */
-export const BurgerButton: React.FC = () => {
+const BurgerButton: React.FC = () => {
   const { isMenuOpen, setIsMenuOpen } = useShowBurger();
+
   const toggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -27,3 +28,5 @@ export const BurgerButton: React.FC = () => {
     </button>
   );
 };
+
+export default BurgerButton;

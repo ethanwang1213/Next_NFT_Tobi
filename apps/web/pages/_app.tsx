@@ -12,10 +12,9 @@ import { AuthProvider } from "@/context/auth";
 import {
   ShowBurgerProvider,
   MenuAnimationProvider,
-  Menu,
   useWindowSize,
   MenuButtonLayout,
-  BurgerButton,
+  BurgerMenu,
 } from "ui";
 import LoadTransition from "@/components/global/Load";
 import CanvasDprProvider from "@/context/canvasDpr";
@@ -106,10 +105,9 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <div className="relative w-full h-full">
                   <Component {...pageProps} />
                   <MenuButtonLayout>
-                    <BurgerButton />
+                    <BurgerMenu initHomeStates={initHomeStates} />
                     <DprController />
                   </MenuButtonLayout>
-                  <Menu initHomeStates={initHomeStates} />
                   {/* ローディング */}
                   <LoadTransition isOpen={isLoad} setOpen={setIsLoad} />
                 </div>

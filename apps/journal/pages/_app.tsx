@@ -20,11 +20,10 @@ import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";
 import {
-  Menu,
+  BurgerMenu,
   ShowBurgerProvider,
   MenuAnimationProvider,
   MenuButtonLayout,
-  BurgerButton,
 } from "ui";
 import SoundToggle from "@/components/SoundToggle";
 
@@ -102,11 +101,9 @@ const App = ({ Component, pageProps }: AppProps) => {
                             <Component {...pageProps} />
                             {/* 右上メニューボタン配置 */}
                             <MenuButtonLayout>
-                              <BurgerButton />
+                              <BurgerMenu />
                               <SoundToggle />
                             </MenuButtonLayout>
-                            {/* メニュー内容 */}
-                            <Menu />
                           </div>
                         </DebugProvider>
                       </MenuAnimationProvider>

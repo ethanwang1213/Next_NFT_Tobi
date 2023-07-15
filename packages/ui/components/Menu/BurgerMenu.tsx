@@ -11,6 +11,7 @@ import { useWindowSize } from "../../hooks/useWindowSize";
 import TextMenuItems from "./TextMenuItems";
 import CloseButton from "./CloseButton";
 import LoadingImage from "./LoadingImage";
+import BurgerButton from "./BurgerButton";
 
 type Props = {
   initHomeStates?: () => void;
@@ -21,7 +22,7 @@ type Props = {
  * @param param0
  * @returns
  */
-export const Menu: React.FC<Props> = ({ initHomeStates }) => {
+export const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
   const { isMenuOpen } = useShowBurger();
   // メニューを閉じているときにリサイズすると
   // ちらりとメニューが見えてしまう挙動への対策に必要
@@ -70,8 +71,10 @@ export const Menu: React.FC<Props> = ({ initHomeStates }) => {
 
   return (
     <>
-      <LoadingImage />
+      <BurgerButton />
       <CloseButton />
+      <LoadingImage />
+      {/* メニュー内容 */}
       <div
         className={`z-40 fixed inset-0 bg-slate-800 overflow-y-auto overflow-x-hidden 
           scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 ${
