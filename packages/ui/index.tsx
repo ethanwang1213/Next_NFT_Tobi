@@ -1,4 +1,6 @@
-export { BurgerMenu } from "./components/Menu/BurgerMenu";
+export { MenuButtonLayout } from "./components/MenuButtonLayout/MenuButtonLayout";
+export { BurgerButton } from "./components/BurgerButton/BurgerButton";
+export { Menu } from "./components/Menu/Menu";
 export {
   MenuAnimationProvider,
   useMenuAnimation,

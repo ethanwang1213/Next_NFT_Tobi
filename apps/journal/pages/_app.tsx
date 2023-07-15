@@ -19,7 +19,14 @@ import DebugProvider from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";
-import { BurgerMenu, ShowBurgerProvider, MenuAnimationProvider } from "ui";
+import {
+  Menu,
+  ShowBurgerProvider,
+  MenuAnimationProvider,
+  MenuButtonLayout,
+  BurgerButton,
+} from "ui";
+import SoundToggle from "@/components/SoundToggle";
 
 config.autoAddCss = false;
 
@@ -93,7 +100,13 @@ const App = ({ Component, pageProps }: AppProps) => {
                         <DebugProvider>
                           <div className="overflow-hidden relative">
                             <Component {...pageProps} />
-                            <BurgerMenu />
+                            {/* 右上メニューボタン配置 */}
+                            <MenuButtonLayout>
+                              <BurgerButton />
+                              <SoundToggle />
+                            </MenuButtonLayout>
+                            {/* メニュー内容 */}
+                            <Menu />
                           </div>
                         </DebugProvider>
                       </MenuAnimationProvider>

@@ -1,21 +1,24 @@
-import { Dispatch, SetStateAction } from "react";
+import { useShowBurger } from "../../contexts/menu/showBurger";
 
-type Props = {
-  isOpen: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+/**
+ * メニューを閉じるボタン
+ * @returns
+ */
+const CloseButton: React.FC = () => {
+  const { isMenuOpen, setIsMenuOpen } = useShowBurger();
+
+  return (
+    <button
+      className={`fixed top-6 right-4 z-50 
+        btn btn-ghost hover:bg-black/20 
+        text-[20px] font-['tachyon'] font-normal text-white sm:text-2xl 
+        ${isMenuOpen ? "" : `opacity-0 transition pointer-events-none`}`}
+      onClick={() => setIsMenuOpen(false)}
+      type="button"
+    >
+      CLOSE
+    </button>
+  );
 };
-
-const CloseButton: React.FC<Props> = ({ isOpen, setOpen }) => (
-  <button
-    className={`absolute top-6 right-4 z-50 
-      btn btn-ghost hover:bg-black/20 
-      text-[20px] font-['tachyon'] font-normal text-white sm:text-2xl 
-      ${isOpen ? "" : `opacity-0 transition pointer-events-none`}`}
-    onClick={() => setOpen(false)}
-    type="button"
-  >
-    CLOSE
-  </button>
-);
 
 export default CloseButton;

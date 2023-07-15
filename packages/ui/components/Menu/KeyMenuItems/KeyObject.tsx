@@ -2,12 +2,13 @@ import { Html, useGLTF, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
-import { useMenuAnimation } from "../../contexts/menu/menuAnimation";
-import { useWindowSize } from "../../hooks/useWindowSize";
-import { useLocatingAcrossBasePath } from "../../hooks/useLocatingAcrossBasePath";
-import keyModel from "./assets/menu/key/keyhole.glb";
+import { useMenuAnimation } from "../../../contexts/menu/menuAnimation";
+import { useWindowSize } from "../../../hooks/useWindowSize";
+import { useLocatingAcrossBasePath } from "../../../hooks/useLocatingAcrossBasePath";
+import keyModel from "../assets/menu/key/keyhole.glb";
+import { useShowBurger } from "../../../contexts/menu/showBurger";
 
-type KeyObjectProps = {
+type Props = {
   item: {
     name: string;
     keyImage: string;
@@ -18,7 +19,6 @@ type KeyObjectProps = {
   length: number;
   rotate: number;
   setRotate: Dispatch<SetStateAction<number>>;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
   initHomeStates?: () => void;
 };
 
@@ -27,15 +27,16 @@ type KeyObjectProps = {
  * @param param0
  * @returns
  */
-const KeyObject: React.FC<KeyObjectProps> = ({
+const KeyObject: React.FC<Props> = ({
   item,
   index,
   length,
   rotate,
   setRotate,
-  setIsOpen,
   initHomeStates,
 }) => {
+  const { setIsMenuOpen } = useShowBurger();
+
   const { name, keyImage, loadImage, link } = item;
   const texture = useTexture(`${keyImage}`);
   const [posZ, setPosZ] = useState<number>(0);
@@ -106,7 +107,7 @@ const KeyObject: React.FC<KeyObjectProps> = ({
                 )
                 // 拡大終了後
                 .add(() => {
-                  setIsOpen(false);
+                  setIsMenuOpen(false);
 
                   if (router.pathname === "/" && !!initHomeStates) {
                     initHomeStates();
