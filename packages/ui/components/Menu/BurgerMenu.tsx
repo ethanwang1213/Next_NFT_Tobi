@@ -1,10 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useRef, useState } from "react";
-import { useGLTF, useTexture } from "@react-three/drei";
 import { gsap } from "gsap";
-import { menuItem } from "./assets/menuItems";
 import MenuFooter from "./MenuFooter";
-import keyModel from "./assets/menu/key/keyhole.glb";
 import { useShowBurger } from "../../contexts/menu/showBurger";
 import KeyMenuItems from "./KeyMenuItems/KeyMenuItems";
 import { useWindowSize } from "../../hooks/useWindowSize";
@@ -96,11 +93,3 @@ export const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
     </>
   );
 };
-
-// モデルとテクスチャのpreload
-useGLTF.preload(keyModel);
-menuItem.forEach((item) => {
-  if (item.show) {
-    useTexture.preload(item.keyImage);
-  }
-});

@@ -3,8 +3,10 @@ import { useWindowSize } from "../../../hooks/useWindowSize";
 import { Canvas } from "@react-three/fiber";
 import CameraController from "./CameraController";
 import KeyObject from "./KeyObject";
-import { menuItem } from "../assets/menuItems";
 import { gsap } from "gsap";
+import { useGLTF, useTexture } from "@react-three/drei";
+import { menuItem } from "../assets/menuItems";
+import keyhole from "../assets/menu/key/keyhole.glb";
 
 type Props = {
   initHomeStates?: () => void;
@@ -141,5 +143,13 @@ const KeyMenuItems: React.FC<Props> = ({ initHomeStates }) => {
     </div>
   );
 };
+
+// モデルとテクスチャのpreload
+useGLTF.preload(keyhole);
+menuItem.forEach((item) => {
+  if (item.show) {
+    useTexture.preload(item.keyImage);
+  }
+});
 
 export default KeyMenuItems;
