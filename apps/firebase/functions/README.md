@@ -49,17 +49,26 @@ $ npm run serve
 └────────────────┴────────────────┴─────────────────────────────────┘
 ```
 
+<br />
+
+`Error: No project active, but project aliases are available.`  
+のように表示されてエミュレーターが起動できない場合は、下記コマンドを実行してください。  
+
+`$ firebase use default`
+
+<br />
+
 Shopifyの決済完了通知をシミュレーションするには、下記のような curl コマンドを実行してください。
 
 ```sh
-$ curl http://localhost:5001/tobiratory-f6ae1/us-central1/devtool-pubsubHelper \
+$ curl http://localhost:5001/tobiratory-f6ae1/asia-northeast1/devtool-pubsubHelper \
     -X POST \
     -H "Content-Type:application/json" \
-    -d '{ "topicName": "shopify-orders-create", "email": "username@gmail.com", "name": "#1001", "payment_gateway_names":"暗号資産", "total_price": 200, "line_items": [{"name":"TOBIRA NEKO #00031", "price":"100", "quantity":1}, {"name":"TOBIRA NEKO #00032", "price":"100", "quantity":1}] }'
+    -d '{ "topicName": "shopify-orders-create", "email": "username@gmail.com", "name": "#1001", "payment_gateway_names":"暗号資産", "total_price": 300, "currency": "USD", "line_items": [{"name":"TOBIRA NEKO #00031", "price":"150", "quantity":1}, {"name":"TOBIRA NEKO #00032", "price":"150", "quantity":1}], "billing_address": {"name": "username"}}'
 ```
 
 ```sh
-$ curl http://localhost:5001/tobiratory-f6ae1/us-central1/devtool-pubsubHelper \
+$ curl http://localhost:5001/tobiratory-f6ae1/asia-northeast1/devtool-pubsubHelper \
     -X POST \
     -H "Content-Type:application/json" \
     -d '{ "topicName": "shopify-orders-paid", "email": "username@gmail.com", "name": "#1001", "line_items": [{"name":"TOBIRA NEKO #00031"}, {"name":"TOBIRA NEKO #00032"}] }'

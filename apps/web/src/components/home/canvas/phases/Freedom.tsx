@@ -1,4 +1,4 @@
-import { a, SpringValue, to } from "@react-spring/web";
+import { a, SpringValue, to } from "@react-spring/three";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useState } from "react";
 import useHomePlaneSize from "@/hooks/useHomePlaneSize";

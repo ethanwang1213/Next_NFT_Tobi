@@ -25,9 +25,11 @@ import { CanvasDprContext } from "@/context/canvasDpr";
 type menuProps = {
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  isVisible: boolean;
+  setIsVisible: Dispatch<SetStateAction<boolean>>;
 };
 
-const Menu: FC<menuProps> = ({ isOpen, setOpen }) => {
+const Menu: FC<menuProps> = ({ isOpen, setOpen, isVisible, setIsVisible }) => {
   const homeInitStates = useHomeStore((state) => state.initStates);
 
   const [rotate, setRotate] = useState<number>(0);
@@ -42,7 +44,15 @@ const Menu: FC<menuProps> = ({ isOpen, setOpen }) => {
   const loop = isWide ? 4 : 2;
   const rotSpeed = isWide ? 0.13 : 0.4;
 
-  const { displayWidth, displayHeight } = useWindowSize();
+  const { displayWidth } = useWindowSize();
+
+  const [isAnimatedOpen, setIsAnimatedOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+    }
+  }, [isOpen]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = e;
@@ -94,21 +104,30 @@ const Menu: FC<menuProps> = ({ isOpen, setOpen }) => {
 
   useEffect(() => {
     if (isOpen) {
-      gsap.fromTo(
-        menuRef.current,
-        {
-          x: `${displayWidth}px`,
-        },
-        {
-          x: "0px",
-          duration: 0.5,
-        }
-      );
+      gsap
+        .fromTo(
+          menuRef.current,
+          {
+            x: `${displayWidth}px`,
+          },
+          {
+            x: "0px",
+            duration: isAnimatedOpen ? 0 : 0.5,
+          }
+        )
+        .then(() => {
+          setIsAnimatedOpen(true);
+        });
     } else {
-      gsap.to(menuRef.current, {
-        x: `${displayWidth}px`,
-        duration: 0.5,
-      });
+      gsap
+        .to(menuRef.current, {
+          x: `${displayWidth}px`,
+          duration: 0.5,
+        })
+        .then(() => {
+          setIsVisible(false);
+          setIsAnimatedOpen(false);
+        });
     }
   }, [isOpen, displayWidth]);
 
@@ -183,7 +202,7 @@ const Menu: FC<menuProps> = ({ isOpen, setOpen }) => {
     <>
       <CloseButton isOpen={isOpen} setOpen={setOpen} />
       <div
-        className="menu-container"
+        className={`menu-container ${isVisible ? "" : "invisible"}`}
         ref={menuRef}
         style={{ transform: `translate(${displayWidth}px, 0px)` }}
         data-allowscroll="true"

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import NFTPageTitle from "../../../../PageTitle/NFTPageTitle";
+import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 
 type Props = {
   width: number;
@@ -22,6 +23,8 @@ const NekoSwiperContent: React.FC<Props> = ({
   onCardImgLoad,
   imgSrc = null,
 }) => {
+  const { viewingSrc: viewingNFT } = useHoldNFTs();
+
   return (
     <div
       className="flex flex-col p-[40px]"
@@ -40,15 +43,27 @@ const NekoSwiperContent: React.FC<Props> = ({
       />
       <NFTPageTitle isShown={true} title="TOBIRA NEKO" />
       <div className="w-full h-full grow pt-10 pb-[30%] ">
-        {!!imgSrc && (
-          <div className="relative w-full h-full ">
-            <Image
-              src={imgSrc}
-              alt={"neko"}
-              fill
-              style={{ objectFit: "contain" }}
-              className="overflow-visible drop-shadow-[-8px_0px_8px_rgba(0,0,0,0.2)]"
-            />
+        {!imgSrc ? (
+          <div className="relative w-full h-full grid content-center">
+            <p className="text-center text-lg sm:text-4xl text-accent/50 font-bold">
+              Nobody is here
+            </p>
+          </div>
+        ) : (
+          <div className="relative w-full h-full">
+            <label
+              htmlFor="nft-view-modal"
+              className="relative block w-full h-full"
+              onClick={() => viewingNFT.set(imgSrc)}
+            >
+              <Image
+                src={imgSrc}
+                alt={"neko"}
+                fill
+                style={{ objectFit: "contain" }}
+                className="overflow-visible drop-shadow-[-8px_0px_8px_rgba(0,0,0,0.2)]"
+              />
+            </label>
           </div>
         )}
       </div>

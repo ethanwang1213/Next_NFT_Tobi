@@ -29,6 +29,7 @@ const ImageInBag = ({ imageId, imageSrc }: Props) => {
           fill
           sizes="(min-width: 520px) 25vw, 33vw"
           style={{ objectFit: "contain" }}
+          className=" select-none pointer-events-none"
         />
       </label>
 

@@ -75,12 +75,16 @@ const ProfilePage0: React.FC = () => {
               {/* EditProfileModalに紐づく */}
               <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
                 <label
-                  htmlFor="edit-profile-modal"
+                  htmlFor={`${
+                    !user || !user.email
+                      ? "login-guide-modal"
+                      : "edit-profile-modal"
+                  }`}
                   className="
-                    btn btn-outline btn-lg btn-primary 
-                    min-h-[40px] h-[45px] 
-                    text-[18px] border-2 rounded-full 
-                    drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
+                  btn btn-outline btn-lg btn-primary 
+                  min-h-[40px] h-[45px] 
+                  text-[18px] border-2 rounded-full 
+                  drop-shadow-[0px_4px_2px_rgba(0,0,0,0.1)]"
                 >
                   プロフィールを編集
                 </label>
@@ -108,7 +112,7 @@ const ProfilePage0: React.FC = () => {
       </div>
       <div className="absolute top-[-0] right-[0] -mr-4 w-2/5 aspect-square">
         <div className="sm:hidden relative overflow-hidden w-full h-full [&>svg_*]:!fill-[#9F5C00]">
-          <JournalStampIcon className="absolute top-[-30%] right-[-20%]" />
+          <JournalStampIcon className="absolute top-[-30%] right-[-20%] pointer-events-none select-none" />
         </div>
       </div>
     </>

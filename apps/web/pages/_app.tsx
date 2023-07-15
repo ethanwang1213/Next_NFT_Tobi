@@ -1,5 +1,6 @@
 import "../src/styles/globals.scss";
-import type { AppProps } from "next/app";
+import { default as NextApp } from "next/app";
+import type { AppProps, AppContext } from "next/app";
 import React, { useState } from "react";
 import Head from "next/head";
 import Script from "next/script";
@@ -14,6 +15,7 @@ import LoadTransition from "@/components/global/Load";
 import useWindowSize from "@/hooks/useWindowSize";
 import CanvasDprProvider from "@/context/canvasDpr";
 import DprController from "@/components/saidan/ui/dpr/DprController";
+import basicAuthCheck from "@/methods/basicAuthCheck";
 
 config.autoAddCss = false;
 
@@ -42,24 +44,24 @@ const App = ({ Component, pageProps }: AppProps) => {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/fabicon/apple-touch-icon.png"
+          href="/apple-touch-icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/fabicon/favicon-32x32.png"
+          href="/favicon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/fabicon/favicon-16x16.png"
+          href="/favicon-16x16.png"
         />
-        <link rel="manifest" href="/fabicon/site.webmanifest" />
+        <link rel="manifest" href="/site.webmanifest" />
         <link
           rel="mask-icon"
-          href="/fabicon/safari-pinned-tab.svg"
+          href="/safari-pinned-tab.svg"
           color="#5bbad5"
         />
         <meta name="apple-mobile-web-app-title" content="Tobiratory" />
@@ -114,6 +116,16 @@ const App = ({ Component, pageProps }: AppProps) => {
       </ShowBurgerProvider>
     </AuthProvider>
   );
+};
+
+App.getInitialProps = async (appContext: AppContext) => {
+  const { req, res } = appContext.ctx;
+  if (req && res && process.env.ENABLE_BASIC_AUTH === "true") {
+    await basicAuthCheck(req, res);
+  }
+
+  const appProps = await NextApp.getInitialProps(appContext);
+  return { ...appProps };
 };
 
 export default App;

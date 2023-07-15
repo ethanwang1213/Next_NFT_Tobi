@@ -3,7 +3,6 @@ import { useGesture } from "@use-gesture/react";
 import HomeCanvas from "./canvas/HomeCanvas";
 import ForbidLandcape from "./ui/ForbidLandcape";
 import HomeTextContainer from "./ui/HomeTextContainer";
-import { useEffect } from "react";
 
 type Props = {};
 
@@ -11,8 +10,6 @@ const HomeWindow: React.FC<Props> = ({}) => {
   const backPhase = useHomeStore((state) => state.backPhase);
   const progressPhase = useHomeStore((state) => state.progressPhase);
   const canInteract = useHomeStore((state) => state.canInteract);
-  const homePhase = useHomeStore((state) => state.homePhase);
-  const canProgress = useHomeStore((state) => state.canProgress);
 
   // スクロールジェスチャーの実装
   const bind = useGesture(

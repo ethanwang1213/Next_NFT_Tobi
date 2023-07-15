@@ -11,9 +11,11 @@ const DebugText: React.FC = () => {
       {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" && (
         <div
           onClick={() => shouldRefresh.set(true)}
-          className="absolute top-[3%] w-full flex justify-center"
+          className="absolute top-[3%] w-full flex justify-center pointer-events-none"
         >
-          <p className="text-error font-bold text-3xl">※DEBUG MODE※</p>
+          <p className="text-error font-bold text-3xl pointer-events-auto">
+            ※DEBUG MODE※
+          </p>
         </div>
       )}
     </>

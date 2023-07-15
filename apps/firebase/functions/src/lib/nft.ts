@@ -1,5 +1,5 @@
 import * as voucher from "voucher-code-generator";
-import {NEKO_NFT_ID} from "./constants";
+import {NEKO_NFT_ID, IMAGE_HOST} from "./constants";
 
 export type Item = {
   name: string;
@@ -35,13 +35,13 @@ export const parseNftByName = (name: string): Nft => {
       id: id,
       type: NEKO_NFT_ID,
       name: name,
-      thumbnail: `https://storage.googleapis.com/tobiratory-dev_media/nft/tobiraneko/${id}.png`,
+      thumbnail: `${IMAGE_HOST}/nft/tobiraneko/${id}.png`,
     };
   }
   return {
     id: name,
     type: "UNDENTIFIED",
     name: name,
-    thumbnail: "https://storage.googleapis.com/tobiratory-dev_media/nft/dummy.png",
+    thumbnail: `${IMAGE_HOST}/nft/dummy.png`,
   };
 };

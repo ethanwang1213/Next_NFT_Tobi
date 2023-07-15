@@ -44,14 +44,13 @@ const AddItemTutorial = () => {
         className="saidan-tutorial-additem-container-inner"
         style={{ opacity: textOpacity }}
       >
-        <div className="saidan-tutorial-additem-text">
+        <p className="saidan-tutorial-additem-text">
           追加したい場合は
           <br />
           こちらのアイコンから
           <br className="saidan-tutorial-additem-br" />
-          <span className="saidan-tutorial-additem-span"> </span>
           簡単に作成できます。
-        </div>
+        </p>
       </a.div>
     </div>
   );

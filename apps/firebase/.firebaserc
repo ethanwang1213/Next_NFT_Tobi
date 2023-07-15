@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "tobiratory-f6ae1"
+    "default": "tobiratory-f6ae1",
+    "development": "tobiratory-f6ae1",
+    "staging": "tobiratory-stg",
+    "production": "tobiratory"
   }
 }

@@ -33,6 +33,7 @@ import { MovePointerTargetName } from "@/types/PointerTargetName";
 
 type TutorialPhase =
   | "TITLE"
+  | "TERMS"
   | "ZOOM_UP"
   | "OPEN_BAG"
   | "SELECT_ITEM"
@@ -44,7 +45,8 @@ type TutorialDataType = {
   [phase in TutorialPhase]: TutorialPhase; // eslint-disable-line no-unused-vars
 };
 const TUTORIAL_NEXT_DATA: TutorialDataType = {
-  TITLE: "ZOOM_UP",
+  TITLE: "TERMS",
+  TERMS: "ZOOM_UP",
   ZOOM_UP: "OPEN_BAG",
   OPEN_BAG: "SELECT_ITEM",
   SELECT_ITEM: "ADD_ITEM",
@@ -175,6 +177,7 @@ type SaidanState = {
   isScreenShotVisible: boolean;
   openScreenShotResult: () => void;
   closeScreenShotResult: () => void;
+
   // init at logout
   isSaved: boolean;
   setIsSaved: (b: boolean) => void;

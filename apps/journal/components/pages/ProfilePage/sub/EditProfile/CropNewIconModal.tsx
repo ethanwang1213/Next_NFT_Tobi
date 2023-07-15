@@ -49,7 +49,7 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
         onChange={() => {}}
       />
       <div className="modal">
-        <div className="modal-box max-w-full h-[60dvh] pt-10 pb-8">
+        <div className="modal-box max-w-full max-h-full w-full h-full pt-10 pb-8">
           <button
             className="btn btn-ghost btn-sm btn-circle absolute right-2 top-2 text-accent z-10"
             onClick={() => isCropModalOpen.set(false)}

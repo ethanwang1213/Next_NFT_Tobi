@@ -1,5 +1,4 @@
-import { SpringValue, to } from "@react-spring/core";
-import { a } from "@react-spring/three";
+import { a, SpringValue, to } from "@react-spring/three";
 import { useMemo } from "react";
 import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
@@ -86,27 +85,27 @@ const EnjoymentPhase = ({ starts, ends }: Props) => {
               to(
                 [ev, sv.to([0, 1], [0.8, 1])],
                 (v1, v2) => w * (1 + v1 * v1 * 20) * imgData.scale * (v2 * v2)
-              ) as any
+              )
             }
             height={
               to(
                 [ev, sv.to([0, 1], [0.8, 1])],
                 (v1, v2) => h * (1 + v1 * v1 * 20) * imgData.scale * (v2 * v2)
-              ) as any
+              )
             }
-            x={ev.to((v) => 20 * srcData.x * v * v + srcData.x) as any}
-            y={ev.to((v) => v + srcData.y) as any}
+            x={ev.to((v) => 20 * srcData.x * v * v + srcData.x)}
+            y={ev.to((v) => v + srcData.y)}
             z={
               to(
                 [ev, sv],
                 (v1, v2) => -100 + srcData.z + v1 * i * 500 + (-100 + v2 * 100)
-              ) as any
+              )
             }
             opacity={
               to(
                 [sv.to([0, 0.3, 1], [0, 1, 1]), ev],
                 (v1, v2) => v1 * v1 * (1 - v2) * (1 - v2)
-              ) as any
+              )
             }
           />
         );

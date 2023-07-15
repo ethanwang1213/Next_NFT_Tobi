@@ -13,7 +13,7 @@ const AboutSection = ({ title, texts }: Props) => {
     <div className="w-full">
       <div className="py-4">
         <div>
-          <div
+          <h2
             className="text-white font-bold"
             style={{
               fontSize: isWide ? "40px" : "24px",
@@ -21,7 +21,7 @@ const AboutSection = ({ title, texts }: Props) => {
             }}
           >
             {title}
-          </div>
+          </h2>
         </div>
       </div>
       <hr />
@@ -32,7 +32,7 @@ const AboutSection = ({ title, texts }: Props) => {
         }}
       >
         {texts.map((v, i) => (
-          <div key={i}>{v === "" ? <br /> : v}</div>
+          <p key={i}>{v === "" ? <br /> : v}</p>
         ))}
       </div>
     </div>

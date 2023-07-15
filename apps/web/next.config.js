@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
-require('dotenv').config()
+require("dotenv").config();
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
+  swcMinify: true,  
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
@@ -23,11 +26,13 @@ const nextConfig = {
       {
         source: "/proxy/:path*",
         destination:
-          "https://firebasestorage.googleapis.com/v0/b/tobiratory.appspot.com/o/:path*",
+          // "https://firebasestorage.googleapis.com/v0/b/tobiratory.appspot.com/o/:path*",
+          `${process.env.FIREBASE_API_URL}/:path*`,
       },
       {
         source: "/i2m/:path*",
-        destination: "https://image2model-fxkvliun3q-an.a.run.app/:path*",
+        // destination: "https://image2model-fxkvliun3q-an.a.run.app/:path*",
+        destination: `${process.env.IMAGE2MODEL_URL}/:path*`,
       },
       {
         source: "/login",
@@ -40,6 +45,10 @@ const nextConfig = {
       {
         source: "/journal/:path*",
         destination: `${process.env.JOURNAL_URL}/journal/:path*`,
+      },
+      {
+        source: "/backend/:path*",
+        destination: `${process.env.JOURNAL_URL}/backend/:path*`,
       },
     ];
   },

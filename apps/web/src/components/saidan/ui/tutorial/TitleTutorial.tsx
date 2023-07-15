@@ -2,7 +2,6 @@ import { useSpring, a, config } from "@react-spring/web";
 import { useState, useEffect } from "react";
 import useSaidanStore from "@/stores/saidanStore";
 import { useAuth } from "@/context/auth";
-import SkipButton from "./SkipButton";
 
 let isSkipWhenLoad = false;
 
@@ -22,27 +21,34 @@ const TitleTutorial = () => {
   const [active, setActive] = useState(true);
   const { opacity } = useSpring({
     from: { opacity: 0 },
-    to: { opacity: active ? 1 : 0 },
-    delay: active ? 500 : 0,
+    to: { opacity: !active && isSkip ?  0 : 1  },
+    delay: !active && isSkip ? 0 : 500,
     config: config.stiff,
     onResolve: () => {
       if (active) {
         setCanTutorialProceed(true);
       } else if (isSkip) {
         skipTutorial();
-      } else {
+      }
+    },
+  });
+
+  const { textOpacity } = useSpring({
+    from: { textOpacity: 1 },
+    to: { textOpacity: active ? 1 : 0 },
+    delay: active ? 500 : 0,
+    config: config.stiff,
+    onResolve: () => {
+      if (!active) {
         proceedTutorial();
       }
     },
   });
+
   const handleClick = () => {
     if (canTutorialProceed) {
       setActive(false);
     }
-  };
-  const handleSkipClick = () => {
-    setIsSkip(true);
-    setActive(false);
   };
 
   function skipTutorialWhenLoad() {
@@ -60,22 +66,15 @@ const TitleTutorial = () => {
       style={{ opacity }}
       onClick={handleClick}
     >
-      <SkipButton onClick={handleSkipClick} />
-      <div className="saidan-tutorial-title-container-inner">
-        <div className="saidan-tutorial-title-subtitle">お試し版</div>
-        <div className="saidan-tutorial-title-title">
+      <a.div 
+        className="saidan-tutorial-title-container-inner" 
+        style={{ opacity: textOpacity }}
+      >
+        <p className="saidan-tutorial-title-subtitle">お試し版</p>
+        <h1 className="saidan-tutorial-title-title">
           あなただけのSAIDANを作ろう
-        </div>
-        <div>
-          <div className="saidan-tutorial-title-text">
-            ここで体験・作成するものは
-            <br className="saidan-tutorial-title-br" />
-            本サービスとは異なる場合がございます。
-            <br />
-            あらかじめご了承ください。
-          </div>
-        </div>
-      </div>
+        </h1>
+      </a.div>
     </a.div>
   );
 };

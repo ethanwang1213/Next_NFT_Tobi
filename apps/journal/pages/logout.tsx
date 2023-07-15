@@ -2,15 +2,21 @@ import { getAuth } from "firebase/auth";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const Logout = () => {
   const router = useRouter();
   const auth = getAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
+    if (!user) return;
+
     const handleLogout = async () => {
       try {
-        await auth.signOut();
+        if (user.email) {
+          await auth.signOut();
+        }
         router.push("/login");
       } catch (error) {
         console.error("ログアウトに失敗しました。", error);
@@ -18,7 +24,7 @@ const Logout = () => {
     };
 
     handleLogout();
-  }, []);
+  }, [user]);
 
   return (
     <>
@@ -66,9 +72,7 @@ const Logout = () => {
             </div>
             <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
           </div>
-          <h1 className="text-4xl absolute text-accent top-[75%]">
-            Logging out...
-          </h1>
+          <h1 className="text-4xl absolute text-accent top-[75%]">Logout...</h1>
         </div>
       </div>
       <div className="flex justify-center fixed -bottom-32 right-0 left-0 h-72">

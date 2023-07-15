@@ -1,4 +1,4 @@
-import { SpringValue } from "@react-spring/web";
+import { SpringValue } from "@react-spring/three";
 import { useEffect, useState } from "react";
 import { VideoTexture } from "three";
 import useHomeStore from "@/stores/homeStore";

@@ -57,16 +57,16 @@ const AboutUs: NextPage = () => {
             </div>
 
             <div className="about-team-container">
-              <div className="about-team-title">Our Team</div>
+              <h2 className="about-team-title">Our Team</h2>
               <div className="about-member-container">
                 {about["our-team"].map((v, i) => (
                   <Member key={i} data={v} />
                 ))}
               </div>
             </div>
-            <div className="about-end-text">
+            <h3 className="about-end-text">
               AND NOW WE ARE STILL BUILDING THE TOBIRA
-            </div>
+            </h3>
           </div>
         </div>
       </div>

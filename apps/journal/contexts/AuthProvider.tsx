@@ -1,5 +1,13 @@
 import { signInAnonymously, onAuthStateChanged } from "@firebase/auth";
-import { Timestamp, doc, getDoc, setDoc } from "@firebase/firestore";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from "@firebase/firestore";
 import {
   createContext,
   ReactNode,
@@ -21,15 +29,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User>();
   const [dbIconUrl, setDbIconUrl] = useState<string>("");
+  const MAX_NAME_LENGTH = 12;
 
   // ユーザー作成用関数
   function createUser(uid: string, email?: string) {
     const ref = doc(db, `users/${uid}`);
     const appUser: User = {
       id: uid,
-      name: email ? email.split("@")[0] : "",
+      name: email ? email.split("@")[0].slice(0, MAX_NAME_LENGTH) : "", // nameには、メールアドレスの@より前でMAX_NAME_LENGTH文字までを格納する
       email: email ? email : "",
-      icon: "", // TODO: アイコンの初期値を設定する
+      icon: "",
       createdAt: Date.now(),
       discord: "",
       birthday: {
@@ -38,8 +47,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         day: 0,
       },
     };
-    setDoc(ref, appUser).then(() => {
-      setUser(appUser);
+    setDoc(ref, appUser).then(async () => {
+      const nftRef = collection(db, `users/${uid}/nft`);
+      addDoc(nftRef, {}).then(() => {
+        setUser(appUser);
+      });
     });
   }
 
@@ -72,12 +84,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } else {
         // ログインしていない場合、匿名ログイン
-        signInAnonymously(auth).then(async (e) => {
-          // console.log(`匿名ログイン: ${e.user.uid}`);
-          if (e.user) {
-            createUser(e.user.uid);
-          }
-        });
+        if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false") {
+          signInAnonymously(auth).then(async (e) => {
+            // console.log(`匿名ログイン: ${e.user.uid}`);
+            if (e.user) {
+              createUser(e.user.uid);
+            }
+          });
+        }
       }
 
       return unsubscribe;
@@ -102,16 +116,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const setJoinTobiratoryAt = (joinDate: Date) => {
-    // 既に参加日が設定されている場合は何もしない
-    if (!!user.characteristic && !!user.characteristic.join_tobiratory_at)
-      return;
+  const setJoinTobiratoryInfo = (discordId: string, joinDate: Date) => {
     const newUser = { ...user };
-    const joinAt = Timestamp.fromDate(joinDate);
-
-    newUser.characteristic
-      ? (newUser.characteristic.join_tobiratory_at = joinAt)
-      : (newUser.characteristic = { join_tobiratory_at: joinAt });
+    newUser.discord = discordId;
+    if (!user.characteristic || !user.characteristic.join_tobiratory_at) {
+      // 初めて参加日する場合に設定
+      const joinAt = Timestamp.fromDate(joinDate);
+      newUser.characteristic
+        ? (newUser.characteristic.join_tobiratory_at = joinAt)
+        : (newUser.characteristic = { join_tobiratory_at: joinAt });
+    }
     setUser(newUser);
   };
 
@@ -122,7 +136,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         dbIconUrl,
         updateProfile,
         setDbIconUrl,
-        setJoinTobiratoryAt,
+        setJoinTobiratoryInfo,
+        MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >
       {children}

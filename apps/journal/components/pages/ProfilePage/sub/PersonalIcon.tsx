@@ -4,6 +4,7 @@ import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useEffect, useState } from "react";
 import { HouseBadgeNFTData } from "@/types/type";
+import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 
 /**
  * プロフィールのアイコンのコンポーネント
@@ -13,11 +14,14 @@ import { HouseBadgeNFTData } from "@/types/type";
  */
 const PersonalIcon: React.FC = () => {
   const { user } = useAuth();
+  const { houseData } = useDiscordOAuth();
   const { otherNFTs } = useHoldNFTs();
+
   const [badgeSrc, setBadgeSrc] = useState<string>("");
 
+
   useEffect(() => {
-    if (!user || !otherNFTs) return;
+    if (!houseData || !otherNFTs) return;
     if (otherNFTs.current.length === 0) return;
 
     // 所属のハウスバッジのNFTのidを探索
@@ -26,9 +30,8 @@ const PersonalIcon: React.FC = () => {
         nft.collectionId ===
           process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"] &&
         "house_type" in nft &&
-        user.community &&
-        user.community.house &&
-        nft.house_type === user.community.house.type
+        houseData &&
+        nft.house_type === houseData.type
     );
 
     // 所属のハウスバッジが存在すればurlをセット
@@ -36,13 +39,18 @@ const PersonalIcon: React.FC = () => {
       const houseBadge = otherNFTs.current[id] as HouseBadgeNFTData;
       setBadgeSrc(houseBadge.thumbnail);
     }
-  }, [user, otherNFTs]);
+  }, [houseData, otherNFTs]);
 
   return (
     <div className="w-full aspect-square mr-4 sm:mr-0">
       <div className="relative h-full">
         <div className="relative h-full rounded-full bg-white border-white border-[10px] overflow-hidden">
-          <label htmlFor="edit-profile-modal" className="cursor-pointer">
+          <label
+            htmlFor={`${
+              !user || !user.email ? "login-guide-modal" : "edit-profile-modal"
+            }`}
+            className="cursor-pointer"
+          >
             {!user || user.icon === "" ? (
               <DefaultIcon />
             ) : (

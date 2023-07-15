@@ -12,6 +12,11 @@
     ],
     "rewrites": [
       {
+        "source": "/metadata/**",
+        "function": "tobiraneko",
+        "region": "asia-northeast1"
+      },
+      {
         "source": "/housebadge/metadata/**",
         "function": "housebadge",
         "region": "asia-northeast1"

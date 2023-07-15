@@ -51,7 +51,6 @@ const IconSelect: React.FC<Props> = ({
   // プロフィール編集モーダルのアイコンプレビューを表示
   // クロップのプレビューを軽量で表示するためにcanvasを使用している
   useEffect(() => {
-    console.log(imageRef.current);
     if (!canvasRef.current) return;
     if (!imageRef.current) return;
     if (!isModalOpen) return;
@@ -64,7 +63,10 @@ const IconSelect: React.FC<Props> = ({
       if (getValues("iconUrl") === "") return;
       const ctx = canvasRef.current.getContext("2d");
       const image = imageRef.current;
+      ctx.resetTransform();
       if (cropData.current) {
+        ctx.fillStyle = "rgb(255, 255, 255)";
+        ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         ctx.drawImage(
           image,
           cropData.current.x,
@@ -77,7 +79,8 @@ const IconSelect: React.FC<Props> = ({
           100
         );
       } else {
-        ctx.resetTransform();
+        ctx.fillStyle = "rgb(255, 255, 255)";
+        ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         ctx.scale(100 / naturalWidth, 100 / naturalHeight);
         ctx.drawImage(image, 0, 0);
       }

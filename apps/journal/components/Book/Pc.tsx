@@ -80,11 +80,11 @@ const Pc = () => {
       .set(pageRef[1].current, { pointerEvents: "auto", opacity: 1 })
       .set(pageRef[2].current, { pointerEvents: "none", opacity: 0 })
       .set(pageRef[3].current, { pointerEvents: "none", opacity: 0 })
-      .add(() => setNewPageNo(pageNo))
       .to(pageRef[0].current, { opacity: 0 })
       .to(pageRef[1].current, { opacity: 0 }, "<")
       .to(pageRef[2].current, { opacity: 1 }, "<")
       .to(pageRef[3].current, { opacity: 1 }, "<")
+      .add(() => setNewPageNo(pageNo))
       .set(pageRef[0].current, { pointerEvents: "none" })
       .set(pageRef[1].current, { pointerEvents: "none" })
       .set(pageRef[2].current, { pointerEvents: "auto" })
@@ -173,7 +173,7 @@ const Pc = () => {
             src="/journal/images/book/openpage.png"
             fill
             alt="page"
-            className="object-contain absolute"
+            className="object-contain absolute pointer-events-none select-none"
             ref={bookImgRef}
             onLoad={setAspect}
             priority
@@ -248,12 +248,12 @@ const Pc = () => {
           <div
             className="absolute origin-bottom-left pointer-events-none"
             style={{
+              ...pageStyle,
               left: `${bookPos.left + bookWidth * 0.05}px`,
               bottom: `${bookPos.top + bookHeight * 0.01}px`,
-              ...pageStyle,
               height:
                 pageScale > 0
-                  ? (bookPos.height * 0.55 - bookHeight * 0.05) / pageScale
+                  ? (bookHeight * (1 - 0.05) - tags.length * 44) / pageScale // タグのtopとタグの数を考慮
                   : 1,
             }}
           >
@@ -274,9 +274,9 @@ const Pc = () => {
           <div
             className="absolute origin-top-left pointer-events-none"
             style={{
+              ...pageStyle,
               left: `${bookPos.center + bookWidth * 0.02}px`,
               top: `${bookPos.top + bookHeight * 0.01}px`,
-              ...pageStyle,
               height: pageScale
                 ? (bookPos.height - bookHeight * 0.02) / pageScale
                 : 1,

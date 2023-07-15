@@ -4,8 +4,12 @@ export const TOPIC_NAMES = {
   ordersCreate: "shopify-orders-create",
 };
 
-const IMAGE_HOST = process.env.IMAGE_HOST || "https://storage.googleapis.com/tobiratory-dev_media";
-const SITE_HOST = process.env.SITE_HOST || "https://stg.www2.tobiratory.com";
+export const REGION = process.env.REGION || "asia-northeast1";
+
+export const IMAGE_HOST = process.env.IMAGE_HOST || "https://storage.googleapis.com/tobiratory-media";
+export const SITE_HOST = process.env.SITE_HOST || "https://www.tobiratory.com";
+
+export const SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE = process.env.SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE || "";
 
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `

@@ -8,6 +8,8 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import { useHoldNFTs } from "./HoldNFTsProvider";
+import useCommunityData from "@/hooks/useCommunityData";
+import { HouseData } from "@/types/type";
 
 type Props = {
   children: React.ReactNode;
@@ -20,6 +22,7 @@ type ContextType = {
     current: DisplayMode;
     set: Dispatch<SetStateAction<DisplayMode>>;
   };
+  houseData: HouseData;
 };
 
 const DiscordOAuthContext = createContext<ContextType>({} as ContextType);
@@ -36,6 +39,19 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
   const { user } = useAuth();
   const { nekoNFTs } = useHoldNFTs();
+  const { fetchHouseData } = useCommunityData();
+  const [houseData, setHouseData] = useState<HouseData>(null);
+
+  const loadHouseData = async () => {
+    if (!user || !user.email) return;
+    const houseData = await fetchHouseData();
+    setHouseData(houseData);
+  }
+
+  useEffect(() => {
+    if (!user) return;
+    loadHouseData()
+  }, [user])
 
   useEffect(() => {
     // コミュニティ参加の実装が完了するまではDiscordOAuthButtonを非表示にする
@@ -56,22 +72,18 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
         return;
       } else {
         // Discord連携済みの場合
-        setDisplayMode("JOIN");
-        if (user.community) {
-          const joined = user.community.joined;
-          if (joined) {
-            // さらにサーバー参加済みの場合
-            setDisplayMode("STAMP");
-            return;
-          }
+        if (!!houseData && houseData.joined) {
+          setDisplayMode("STAMP");
+        } else {
+          setDisplayMode("JOIN");
         }
       }
     }
-  }, [user, displayMode, nekoNFTs.current]);
+  }, [user, houseData, nekoNFTs.current]);
 
   return (
     <DiscordOAuthContext.Provider
-      value={{ displayMode: { current: displayMode, set: setDisplayMode } }}
+      value={{ displayMode: { current: displayMode, set: setDisplayMode }, houseData: houseData }}
     >
       {children}
     </DiscordOAuthContext.Provider>

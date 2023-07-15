@@ -16,6 +16,7 @@ const CheckingCodeSp: React.FC = () => {
       }
       title={"Checking Code..."}
       titleSize={26}
+      isFade
     />
   );
 };

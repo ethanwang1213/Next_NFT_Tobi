@@ -1,10 +1,12 @@
-import { ReactNode, memo } from "react";
+import { ReactNode, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 type Props = {
   icon: ReactNode;
   title: string;
   titleSize: number;
   description?: ReactNode;
+  isFade?: boolean;
 };
 
 /**
@@ -18,10 +20,25 @@ const RedeemStatusPC: React.FC<Props> = ({
   title,
   titleSize,
   description,
+  isFade
 }) => {
+  const iconRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if(isFade && iconRef.current){
+    gsap.fromTo(iconRef.current, {
+      opacity: 0,
+    }, {
+      opacity: 1,
+      duration: 1,
+      repeat: -1,
+      yoyo: true,
+    });
+  }
+  }, [isFade,iconRef])
+
   return (
     <>
-      <div className="[&>svg_*]:!fill-accent w-full h-[55%] flex justify-center">
+      <div className="[&>svg_*]:!fill-accent w-full h-[55%] flex justify-center" ref={iconRef}>
         {icon}
       </div>
       <h3
@@ -37,6 +54,10 @@ const RedeemStatusPC: React.FC<Props> = ({
       </div>
     </>
   );
+};
+
+RedeemStatusPC.defaultProps = {
+  isFade: false,
 };
 
 export default RedeemStatusPC;

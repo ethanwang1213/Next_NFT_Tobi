@@ -4,11 +4,14 @@ type Props = {
 
 const AboutTitle: React.FC<Props> = ({ texts }) => (
   <div className="about-title-container">
-    {texts.map((v, i) => (
-      <div key={i} className="about-title">
-        {v}
-      </div>
-    ))}
+    <h1 className="about-title">
+      {texts.map((v, i) => (
+        <>
+          {v}
+          {i < texts.length - 1 && <br />}
+        </>
+      ))}
+    </h1>
   </div>
 );
 

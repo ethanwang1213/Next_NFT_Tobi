@@ -1,8 +1,8 @@
-import Jimp from "jimp";
 import { FC, ReactNode, useCallback, useEffect, useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
 import "react-easy-crop/react-easy-crop.css";
 import { CropData, CropperParams } from "@/types/PlacedItemData";
+import * as _Jimp from "jimp";
 
 const BadgeCrop: FC<{
   // src: File;
@@ -14,6 +14,7 @@ const BadgeCrop: FC<{
   pCrop: { x: number; y: number };
   pZoom: number;
 }> = ({ url, func, className, children, pCrop, pZoom }) => {
+  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const [crop, setCrop] = useState(pCrop);
   const [zoom, setZoom] = useState(pZoom);
   // const [url] = useState(URL.createObjectURL(src));

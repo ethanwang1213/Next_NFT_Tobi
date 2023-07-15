@@ -8,13 +8,12 @@ import BagButton from "./uiButton/BagButton";
 import CameraModeButton from "./uiButton/CameraModeButton";
 import LogoutButton from "./uiButton/LogoutButton";
 import OtherButton from "./uiButton/OtherButton";
-import PolicyWindow from "./policy/PolicyWindow";
 import CropWindow from "./crop/CropWindow";
 import AcstFailedModal from "./acstModal/AcstFailedModal";
 import AcstAlreadyRequestedModal from "./acstModal/AcstAlreadyRequestedModal";
 import useWindowSize from "@/hooks/useWindowSize";
 import isSpLandscape from "@/methods/home/isSpLandscape";
-import DprController from "./dpr/DprController";
+import TermsModal from "./termsModal/TermsModal";
 
 type Props = {
   canvasRef: RefObject<HTMLCanvasElement>;
@@ -59,8 +58,8 @@ const SaidanUI: React.FC<Props> = ({ canvasRef }) => {
           <OtherButton canvasRef={canvasRef} />
           <CameraModeButton />
           <BagButton />
+          <TermsModal />
           <Bag />
-          {isPolicyVisible && <PolicyWindow />}
           {isCropWindowVisible && <CropWindow />}
           {/* アクスタ関連 */}
           <AcstGeneratingMsg isShow={isAcstGeneratingMsgShowing} />

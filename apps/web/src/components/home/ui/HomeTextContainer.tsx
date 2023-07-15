@@ -51,13 +51,13 @@ const HomeTextContainer = () => {
                     letterSpacing: "4px",
                   }}
                 >
-                  <div className="text-center font-tachyon-300 ">
+                  <h1 className="text-center font-tachyon-300 select-none">
                     WELCOME
                     <br />
                     TO
                     <br />
                     TOBIRATORY
-                  </div>
+                  </h1>
                 </SectionContainer>
                 <ScrollDownGuide t={t0_1} />
               </>
@@ -70,26 +70,23 @@ const HomeTextContainer = () => {
                   <TextContainer
                     titleChildren={
                       isWide ? (
-                        <div>グッズをデジタルに</div>
+                        <h2>グッズをデジタルに</h2>
                       ) : (
-                        <>
-                          <div className="mb-[-10px]">グッズを</div>
-                          <div>デジタルに</div>
-                        </>
+                        <h2 className="mb-[-10px] text-center leading-[52px] pb-3">
+                          グッズを
+                          <br />
+                          デジタルに
+                        </h2>
                       )
                     }
                     textChildren={
-                      <>
-                        <div className="pb-2">
-                          デジタルグッズはなぜ少ないのだろう？
-                        </div>
-                        <div className="pb-2">
-                          所有している証明ができないから？
-                        </div>
-                        <div className="pb-2">
-                          いや、可能かもしれない。NFTなら。
-                        </div>
-                      </>
+                      <p className="pb-2 text-center leading-9 tab:leading-10">
+                        デジタルグッズはなぜ少ないのだろう？
+                        <br />
+                        所有している証明ができないから？
+                        <br />
+                        いや、可能かもしれない。NFTなら。
+                      </p>
                     }
                   />
                 </SectionContainer>
@@ -107,21 +104,25 @@ const HomeTextContainer = () => {
                     <TextContainer
                       titleChildren={
                         isWide ? (
-                          <div>いつでも身近に</div>
+                          <h2>いつでも身近に</h2>
                         ) : (
-                          <>
-                            <div className="mb-[-10px]">いつでも</div>
-                            <div>身近に</div>
-                          </>
+                          <h2 className="text-center leading-[52px]">
+                            いつでも
+                            <br />
+                            身近に
+                          </h2>
                         )
                       }
                       textChildren={
-                        <>
-                          <div>自分の「好き」を</div>
-                          <div>集めて飾って楽しむ。</div>
-                          <div>共有すれば楽しさ無限大。</div>
-                          <div>さぁ、何を飾ろう。</div>
-                        </>
+                        <p className="text-center">
+                          自分の「好き」を
+                          <br />
+                          集めて飾って楽しむ。
+                          <br />
+                          共有すれば楽しさ無限大。
+                          <br />
+                          さぁ、何を飾ろう。
+                        </p>
                       }
                     />
                   </GrassFrame>
@@ -140,20 +141,23 @@ const HomeTextContainer = () => {
                     <TextContainer
                       titleChildren={
                         isWide ? (
-                          <div>さらなる楽しみ</div>
+                          <h2>さらなる楽しみ</h2>
                         ) : (
-                          <>
-                            <div className="mb-[-10px]">さらなる</div>
-                            <div>楽しみ</div>
-                          </>
+                          <h2 className="text-center leading-[52px]">
+                            さらなる
+                            <br />
+                            楽しみ
+                          </h2>
                         )
                       }
                       textChildren={
-                        <>
-                          <div>ARやAI技術を駆使して、</div>
-                          <div>デジタルグッズにしかできない</div>
-                          <div>楽しみを実現。</div>
-                        </>
+                        <p className="text-center">
+                          ARやAI技術を駆使して、
+                          <br />
+                          デジタルグッズにしかできない
+                          <br />
+                          楽しみを実現。
+                        </p>
                       }
                     />
                   </GrassFrame>
@@ -170,20 +174,23 @@ const HomeTextContainer = () => {
                     <TextContainer
                       titleChildren={
                         isWide ? (
-                          <div>クリエイターのために</div>
+                          <h2>クリエイターのために</h2>
                         ) : (
-                          <>
-                            <div className="mb-[-10px]">クリエイターの</div>
-                            <div>ために</div>
-                          </>
+                          <h2 className="text-center leading-[52px]">
+                            クリエイターの
+                            <br />
+                            ために
+                          </h2>
                         )
                       }
                       textChildren={
-                        <>
-                          <div>気軽に作って販売を可能に。</div>
-                          <div>デジタルグッズ販売による</div>
-                          <div>在庫リスクや送料などからの解放。</div>
-                        </>
+                        <p className="text-center">
+                          気軽に作って販売を可能に。
+                          <br />
+                          デジタルグッズ販売による
+                          <br />
+                          在庫リスクや送料などからの解放。
+                        </p>
                       }
                     />
                   </GrassFrame>
@@ -202,13 +209,20 @@ const HomeTextContainer = () => {
                     }}
                   >
                     <TextContainer
-                      titleChildren={<div>環境への配慮</div>}
+                      titleChildren={
+                        <h2 className="text-center">環境への配慮</h2>
+                      }
                       textChildren={
                         <>
-                          <div>Flowブロックチェーンを使うことで</div>
-                          <div>環境にも配慮しつつ</div>
-                          <div>大量の取引に耐えることができる。</div>
-                          <div>もちろんガス代もかかりません。</div>
+                          <p className="text-center">
+                            Flowブロックチェーンを使うことで
+                            <br />
+                            環境にも配慮しつつ
+                            <br />
+                            大量の取引に耐えることができる。
+                            <br />
+                            もちろんガス代もかかりません。
+                          </p>
                         </>
                       }
                     />

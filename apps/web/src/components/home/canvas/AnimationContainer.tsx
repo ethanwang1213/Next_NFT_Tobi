@@ -123,7 +123,7 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
                           ? ["white", "black", "black"]
                           : ["black", "white", "white"]
                       )
-                      .to((v) => v) as any
+                      .to((v) => v)
                   }
                 />
                 <AAmbientLight
@@ -174,7 +174,7 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
           color={
             t3Ends[t3Ends.length - 1].ev
               .to([0, 1], ["black", "white"])
-              .to((v) => v) as any
+              .to((v) => v)
           }
         />
       )}
@@ -198,7 +198,7 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
           color={
             t4Ends[t4Ends.length - 1].ev
               .to([0, 0.6, 1], ["white", "#65BF5E", "#65BF5E"])
-              .to((v) => v) as any
+              .to((v) => v)
           }
         />
       )}
@@ -208,7 +208,7 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
           color={
             tEndStart
               .to([0, 0.8, 1], ["#65BF5E", "black", "black"])
-              .to((v) => v) as any
+              .to((v) => v)
           }
         />
       )}
@@ -234,9 +234,9 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
             <Suspense fallback={null}>
               <GoodsPhase
                 activeT1Start={activeT1Start}
-                t1_1={t1_1 as any}
-                t1_2={t1_2 as any}
-                t1_4={t1_4 as any}
+                t1_1={t1_1}
+                t1_2={t1_2}
+                t1_4={t1_4}
               />
             </Suspense>
           )}
@@ -245,7 +245,7 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
             homePhase === "FAMI" ||
             homePhase === "FAMI_TO_ENJOY") && (
             <Suspense fallback={null}>
-              <FamiliarityPhase starts={t2Starts as any} ends={t2Ends as any} />
+              <FamiliarityPhase starts={t2Starts} ends={t2Ends} />
             </Suspense>
           )}
           {(homePhase === "FAMI" ||
@@ -270,8 +270,8 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
             homePhase === "ECO_TO_END") && (
             <Suspense fallback={null}>
               <EcoPhase
-                starts={t5Starts as any}
-                ends={t5Ends as any}
+                starts={t5Starts}
+                ends={t5Ends}
                 // t5_2={t5_2}
               />
             </Suspense>

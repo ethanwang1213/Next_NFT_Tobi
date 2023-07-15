@@ -37,7 +37,7 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
   const stamp = useMemo(
     () => (
       <div
-        className="w-full flex justify-center relative absolute origin-bottom "
+        className="w-full flex justify-center relative absolute origin-bottom pointer-events-none select-none"
         style={{
           bottom: isPc ? stampW * 0.45 : stampW * 0.55,
         }}
@@ -63,9 +63,9 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
   return (
     <>
       {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
-        <>{debugDiscordButtonMode.current === "STAMP" && <>{stamp}</>}</>
+        <>{debugDiscordButtonMode.current === "STAMP" && <>{ stamp }</>}</>
       ) : (
-        <>{displayMode.current === "STAMP" && { stamp }}</>
+        <>{displayMode.current === "STAMP" && <>{ stamp }</>}</>
       )}
     </>
   );

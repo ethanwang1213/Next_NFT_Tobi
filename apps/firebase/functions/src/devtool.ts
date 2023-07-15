@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import {PubSub} from "@google-cloud/pubsub";
+import {REGION} from "./lib/constants";
 
-export const pubsubHelper = functions.https.onRequest(async (request, response) => {
+export const pubsubHelper = functions.region(REGION).https.onRequest(async (request, response) => {
   console.log("pubsubHelper");
   // 1. make sure the function can't be used in production
   if (!process.env.PUBSUB_EMULATOR_HOST) {

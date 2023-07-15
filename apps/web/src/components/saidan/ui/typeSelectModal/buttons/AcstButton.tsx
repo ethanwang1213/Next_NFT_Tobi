@@ -2,7 +2,6 @@ import makeImageSquare from "@/methods/saidan/makeImageSquare";
 import useSaidanStore from "@/stores/saidanStore";
 import { getDoc, doc } from "@firebase/firestore";
 import axios from "axios";
-import Jimp from "jimp";
 import { auth, db } from "@/../firebase/client";
 import {
   updateFailedAcstRequestAt,
@@ -11,6 +10,7 @@ import {
 import Acst from "@/../public/saidan/saidan-ui/acst.svg";
 import ItemTypeButton from "./ItemTypeButton";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import * as _Jimp from "jimp";
 
 type Props = {
   imageId: string;
@@ -22,6 +22,7 @@ type Props = {
  * @returns
  */
 const AcstButton: React.FC<Props> = ({ imageId }) => {
+  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const closeBag = useSaidanStore((state) => state.closeBag);
   const allSrcs = useSaidanStore((state) => state.allSrcs);
   const setAcstModelSrc = useSaidanStore((state) => state.setAcstModelSrc);
@@ -53,13 +54,25 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
   > = async () => {
     try {
       if (!auth.currentUser) {
-        return ["", { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          "",
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
       const srcDoc = await getDoc(
         doc(db, "users", auth.currentUser.uid, "src", imageId)
       );
       if (!srcDoc.exists()) {
-        return ["", { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          "",
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
       // 正常値 データが存在しない場合。
       if (!srcDoc.data().modelSrc) {
@@ -69,7 +82,13 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
       return [acstSrc, null];
     } catch (error) {
       // console.log(error);
-      return ["", { title: "何らかのエラーが発生しました。", text: "" }];
+      return [
+        "",
+        {
+          title: "エラーが発生しました。",
+          text: "何度も失敗する場合は、お問い合わせください。",
+        },
+      ];
     }
   };
 
@@ -82,13 +101,25 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
   > = async () => {
     try {
       if (!auth.currentUser) {
-        return [false, { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          false,
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
 
       const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
       if (!userDoc.exists()) {
         // docが存在しなければfalse
-        return [false, { title: "何らかのエラーが発生しました。", text: "" }];
+        return [
+          false,
+          {
+            title: "エラーが発生しました。",
+            text: "何度も失敗する場合は、お問い合わせください。",
+          },
+        ];
       }
 
       const { failedAcstRequestAt } = userDoc.data();
@@ -100,13 +131,22 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
       if (restTime > 0) {
         return [
           false,
-          { title: "", text: `時間を置いて、もう一度お試しください` },
+          {
+            title: "エラーが発生しました",
+            text: `時間を置いて、もう一度お試しください`,
+          },
         ];
       }
 
       return [true, null];
     } catch (error) {
-      return [false, { title: "何らかのエラーが発生しました。", text: "" }];
+      return [
+        false,
+        {
+          title: "エラーが発生しました。",
+          text: "何度も失敗する場合は、お問い合わせください。",
+        },
+      ];
     }
   };
 
@@ -156,6 +196,9 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
       // アクスタ生成中モーダルを表示する
       openAcstGeneratingMsg();
 
+      // バッグを閉じる
+      closeBag();
+
       // この画像素材をリクエスト済みにする
       setIsAcstAlreadyRequested(imageId, true);
 
@@ -164,7 +207,7 @@ const AcstButton: React.FC<Props> = ({ imageId }) => {
       // console.log(sqImage.getWidth(), sqImage.getHeight());
 
       // 画像のバッファーデータを取得する
-      sqImage.getBuffer(Jimp.MIME_PNG, async (_, data) => {
+      sqImage.getBuffer(Jimp.MIME_PNG, async (_: any, data: any) => {
         // リクエスト用データを作成する
         const form = new FormData();
         const blob = new Blob([data], { type: "image/png" });

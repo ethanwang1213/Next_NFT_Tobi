@@ -23,14 +23,16 @@ const config = {
     themes: [
       {
         mytheme: {
-          ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+          ...require("daisyui/src/theming/themes")["[data-theme=light]"],
           primary: "#BE6105",
           secondary: "#FDFAF1",
           "secondary-focus": "#dbd3ba",
           "secondary-content": "#7D5337",
           accent: "#7D5337",
           "accent-content": "#FDFAF1",
-          neutral: "#000000",
+          neutral: "#FFFFFF",
+          "neutral-focus": "#F0F0F0",
+          "neutral-content": "#8C8C8C",
           "base-100": "#FBEED0",
           info: "#137BB1",
           success: "#36D399",
