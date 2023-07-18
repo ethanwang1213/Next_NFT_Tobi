@@ -13,11 +13,12 @@ type Props = {
  */
 const NFTPageTitle: React.FC<Props> = ({ isShown, title }) => {
   return (
-    <PageTitle
-      isShown={isShown}
-      className="h-[100px] min-h-[130px]"
-      title={title}
-    />
+    <div
+      className="grid content-center leading-[48px] sm:leading-[84px] 
+        mb-0 sm:mb-8 h-[100px] min-h-[130px]"
+    >
+      <PageTitle isShown={isShown} title={title} />
+    </div>
   );
 };
 
