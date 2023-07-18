@@ -21,14 +21,11 @@ const HidableText: React.FC<Props> = ({ text }) => {
       // 隠すボタンが押されている場合、値を隠した状態で更新
       hideText();
     }
-  }, [text]);
+  }, []);
 
   // hidableTextに、Textを*で隠した文字列をセットする
   const hideText = () => {
-    let hiddenText = "";
-    for (let i = 0; i < text.length; i++) {
-      hiddenText += "*";
-    }
+    let hiddenText = "*".repeat(text.length);
     setHideableText(hiddenText);
     setIsHidden(true);
   };
