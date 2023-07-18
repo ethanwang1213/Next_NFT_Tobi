@@ -1,16 +1,6 @@
-import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-
 type Props = {
   lineType: string;
   lineValue: string;
-  hidable?: boolean;
-  classNames: {
-    container: string;
-    type: string;
-    value: string;
-  };
 };
 
 /**
@@ -19,61 +9,11 @@ type Props = {
  * @param param0
  * @returns
  */
-const TypeValueLine: React.FC<Props> = ({
-  lineType,
-  lineValue,
-  hidable = false,
-  classNames,
-}) => {
-  const [hidableValue, setHideableValue] = useState<string>(lineValue);
-  const [isHidden, setIsHidden] = useState<boolean>(true);
-
-  // 表示データの更新処理
-  useEffect(() => {
-    if (isHidden) {
-      // 隠すボタンが押されている場合、値を隠した状態で更新
-      hideValue();
-    } else {
-      setHideableValue(lineValue);
-    }
-  }, [lineValue]);
-
-  // hidableValueに、lineValueを*で隠した文字列をセットする
-  const hideValue = () => {
-    let hiddenValue = "";
-    for (let i = 0; i < lineValue.length; i++) {
-      hiddenValue += "*";
-    }
-    setHideableValue(hiddenValue);
-    setIsHidden(true);
-  };
-
-  // hidableValueに、lineValueをセットする
-  const showValue = () => {
-    setHideableValue(lineValue);
-    setIsHidden(false);
-  };
-
+const TypeValueLine: React.FC<Props> = ({ lineType, lineValue }) => {
   return (
-    <div className={`w-full flex ${classNames.container}`}>
-      <p className={`grow min-w-[60%] ${classNames.type}`}>{lineType}</p>
-      {hidable ? (
-        <div className={`grow max-w-[40%] text-end ${classNames.value}`}>
-          <div className="flex justify-end gap-1">
-            <p>{hidableValue}</p>
-            <button onClick={isHidden ? showValue : hideValue}>
-              <FontAwesomeIcon
-                icon={isHidden ? faEyeSlash : faEye}
-                className="sm:w-8"
-              />
-            </button>
-          </div>
-        </div>
-      ) : (
-        <p className={`grow max-w-[40%] text-end ${classNames.value}`}>
-          {lineValue}
-        </p>
-      )}
+    <div className={`w-full flex`}>
+      <p className={`grow min-w-[60%]`}>{lineType}</p>
+      <p className={`grow max-w-[40%] text-end`}>{lineValue}</p>
     </div>
   );
 };
