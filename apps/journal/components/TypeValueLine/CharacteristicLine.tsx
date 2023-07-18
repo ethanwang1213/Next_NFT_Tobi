@@ -1,4 +1,4 @@
-import TypeValueLine from "./parent/TypeValueLine";
+import TypeValueLine from "./index";
 
 type Props = {
   lineType: string;
