@@ -9,7 +9,7 @@ type Props = {
 /**
  * ページのタイトルを表示するコンポーネント
  * @param param0
- * @returns
+ * @returns {ReactElement} The 'PageTitle' component
  */
 const PageTitle: React.FC<Props> = ({ isShown, className, title }) => {
   return (
