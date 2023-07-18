@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import PageTitle from "./parent/PageTitle";
+import PageTitle from ".";
 
 type Props = {
   isShown: boolean;

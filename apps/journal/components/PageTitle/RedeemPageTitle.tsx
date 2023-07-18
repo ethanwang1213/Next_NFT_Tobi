@@ -1,4 +1,4 @@
-import PageTitle from "./parent/PageTitle";
+import PageTitle from ".";
 
 type Props = {
   isShown: boolean;

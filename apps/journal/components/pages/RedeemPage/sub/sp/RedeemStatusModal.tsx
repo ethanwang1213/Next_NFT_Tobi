@@ -6,7 +6,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext } from "react";
 import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
-import CloseModalButton from "../CloseModalButton/parent/CloseModalButton";
+import CloseModalButton from "../CloseModalButton";
 
 /**
  * redeem codeチェックの状態を表示するモーダルのコンポーネント

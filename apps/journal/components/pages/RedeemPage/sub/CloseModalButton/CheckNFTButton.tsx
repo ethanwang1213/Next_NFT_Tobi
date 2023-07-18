@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import CloseModalButton from "./parent/CloseModalButton";
+import CloseModalButton from ".";
 import { BookContext } from "@/contexts/BookContextProvider";
 
 type Props = {
