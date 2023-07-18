@@ -1,11 +1,15 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { gsap } from "gsap";
+import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
+import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
+
+type IconType = "feather" | "feather-check" | "caution";
 
 type Props = {
-  icon: ReactNode;
+  iconType: IconType;
   title: string;
   titleSize: number;
-  description?: ReactNode;
+  children?: ReactNode;
   isFade?: boolean;
 };
 
@@ -16,29 +20,50 @@ type Props = {
  * @returns
  */
 const RedeemStatusSP: React.FC<Props> = ({
-  icon,
+  iconType,
   title,
   titleSize,
-  description,
-  isFade
+  children,
+  isFade,
 }) => {
   const iconRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if(isFade && iconRef.current){
-    gsap.fromTo(iconRef.current, {
-      opacity: 0,
-    }, {
-      opacity: 1,
-      duration: 1,
-      repeat: -1,
-      yoyo: true,
-    });
-  }
-  }, [isFade,iconRef])
+    if (isFade && iconRef.current) {
+      gsap.fromTo(
+        iconRef.current,
+        {
+          opacity: 0,
+        },
+        {
+          opacity: 1,
+          duration: 1,
+          repeat: -1,
+          yoyo: true,
+        }
+      );
+    }
+  }, [isFade, iconRef]);
+
+  const icon = useMemo(
+    () => (
+      <>
+        {iconType === "feather" && <FeatherIcon className={"w-[68%] h-full"} />}
+        {iconType === "feather-check" && (
+          <FeatherCheckIcon className={"w-[60%] h-full"} />
+        )}
+        {iconType === "caution" && (
+          )}
+      </>
+    ),
+    []
+  );
 
   return (
     <>
-      <div className="[&>svg_*]:!fill-accent w-full h-[50%] flex justify-center" ref={iconRef}>
+      <div
+        className="[&>svg_*]:!fill-accent w-full h-[50%] flex justify-center"
+        ref={iconRef}
+      >
         {icon}
       </div>
       <h3
@@ -48,7 +73,7 @@ const RedeemStatusSP: React.FC<Props> = ({
         {title}
       </h3>
       <div className="w-full grow min-h-[8px] flex justify-center">
-        {description}
+        {children || <></>}
       </div>
     </>
   );

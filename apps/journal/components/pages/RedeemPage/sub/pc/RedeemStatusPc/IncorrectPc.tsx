@@ -12,12 +12,11 @@ const IncorrectPc: React.FC = () => {
       icon={<CautionIcon className={"w-[40%] h-full"} />}
       title={"Error"}
       titleSize={84}
-      description={
-        <p className="sm:text-[35px] font-bold text-error mt-2 text-warning">
-          シリアルコードが正しくありません。
-        </p>
-      }
-    />
+    >
+      <p className="sm:text-[35px] font-bold text-error mt-2 text-warning">
+        シリアルコードが正しくありません。
+      </p>
+    </RedeemStatusPC>
   );
 };
 

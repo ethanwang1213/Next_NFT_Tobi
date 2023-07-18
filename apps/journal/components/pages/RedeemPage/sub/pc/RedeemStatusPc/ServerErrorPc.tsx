@@ -13,19 +13,18 @@ const ServerErrorPc: React.FC = () => {
       icon={<CautionIcon className={"w-[40%] h-full"} />}
       title={"Error"}
       titleSize={84}
-      description={
-        <div className="text-[28px] font-bold text-warning mt-2">
-          <p className="mb-4">{"予期せぬエラーが発生しました。"}</p>
-          <p>
-            <CustomerSupportButton
-              className="link link-warning"
-              text="カスタマーサポート"
-            />
-            {"にお問い合わせください。"}
-          </p>
-        </div>
-      }
-    />
+    >
+      <div className="text-[28px] font-bold text-warning mt-2">
+        <p className="mb-4">{"予期せぬエラーが発生しました。"}</p>
+        <p>
+          <CustomerSupportButton
+            className="link link-warning"
+            text="カスタマーサポート"
+          />
+          {"にお問い合わせください。"}
+        </p>
+      </div>
+    </RedeemStatusPC>
   );
 };
 

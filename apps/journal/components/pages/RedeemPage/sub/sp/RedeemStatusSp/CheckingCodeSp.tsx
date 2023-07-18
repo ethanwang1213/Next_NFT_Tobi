@@ -9,11 +9,7 @@ import RedeemStatusSP from "./parent/RedeemStatusSp";
 const CheckingCodeSp: React.FC = () => {
   return (
     <RedeemStatusSP
-      icon={
-        <div className="w-full flex justify-center">
-          <FeatherIcon className={"w-[68%] h-full"} />
-        </div>
-      }
+      iconType={}
       title={"Checking Code..."}
       titleSize={26}
       isFade
