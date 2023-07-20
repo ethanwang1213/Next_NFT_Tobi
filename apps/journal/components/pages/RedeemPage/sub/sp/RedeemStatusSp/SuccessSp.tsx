@@ -1,4 +1,4 @@
-import RedeemStatusSP from "./parent/RedeemStatusSp";
+import { DescriptionContainer, IconContainer, TitleContainer } from ".";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
 
@@ -9,13 +9,15 @@ import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
  */
 const SuccessSp: React.FC = () => {
   return (
-    <RedeemStatusSP
-      iconType={}
-      title={"Success!!"}
-      titleSize={36}
-    >
-      <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
-    </RedeemStatusSP>
+    <>
+      <IconContainer>
+        <FeatherCheckIcon className={"w-[60%] h-full"} />
+      </IconContainer>
+      <TitleContainer title={"Success!!"} titleSize={36} />
+      <DescriptionContainer>
+        <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
+      </DescriptionContainer>
+    </>
   );
 };
 

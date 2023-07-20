@@ -1,5 +1,5 @@
 import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
-import RedeemStatusSP from "./parent/RedeemStatusSp";
+import { IconContainer, TitleContainer } from ".";
 
 /**
  * スマホ表示モーダル内の
@@ -8,12 +8,12 @@ import RedeemStatusSP from "./parent/RedeemStatusSp";
  */
 const CheckingCodeSp: React.FC = () => {
   return (
-    <RedeemStatusSP
-      iconType={}
-      title={"Checking Code..."}
-      titleSize={26}
-      isFade
-    />
+    <>
+      <IconContainer isFade>
+        <FeatherIcon className={"w-[68%] h-full"} />
+      </IconContainer>
+      <TitleContainer title={"Checking Code..."} titleSize={26} />
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import RedeemStatusPC from "./parent/RedeemStatusPc";
+import { IconContainer, TitleContainer, DescriptionContainer } from ".";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import CustomerSupportButton from "../../CustomerSupportButton";
 
@@ -9,22 +9,24 @@ import CustomerSupportButton from "../../CustomerSupportButton";
  */
 const ServerErrorPc: React.FC = () => {
   return (
-    <RedeemStatusPC
-      icon={<CautionIcon className={"w-[40%] h-full"} />}
-      title={"Error"}
-      titleSize={84}
-    >
-      <div className="text-[28px] font-bold text-warning mt-2">
-        <p className="mb-4">{"予期せぬエラーが発生しました。"}</p>
-        <p>
-          <CustomerSupportButton
-            className="link link-warning"
-            text="カスタマーサポート"
-          />
-          {"にお問い合わせください。"}
-        </p>
-      </div>
-    </RedeemStatusPC>
+    <>
+      <IconContainer>
+        <CautionIcon className={"w-[40%] h-full"} />
+      </IconContainer>
+      <TitleContainer title={"Error"} titleSize={84} />
+      <DescriptionContainer>
+        <div className="text-[28px] font-bold text-warning mt-2">
+          <p className="mb-4">{"予期せぬエラーが発生しました。"}</p>
+          <p>
+            <CustomerSupportButton
+              className="link link-warning"
+              text="カスタマーサポート"
+            />
+            {"にお問い合わせください。"}
+          </p>
+        </div>
+      </DescriptionContainer>
+    </>
   );
 };
 
