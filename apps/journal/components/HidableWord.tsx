@@ -1,45 +1,25 @@
-import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import { useToggle } from "react-use";
 
 type Props = {
   text: string;
 };
 
 /**
- * 隠ぺい可能な文字列を表示するコンポーネント
+ * 隠ぺい可能なテキストを生成するコンポーネント
+ * 隠ぺい時はテキストは「*」になる。
+ * 右側には隠ぺいを切り替えるアイコンが表示される。
  * @param param0
  * @returns
  */
 const HidableText: React.FC<Props> = ({ text }) => {
-  const [hidableText, setHideableText] = useState<string>();
-  const [isHidden, setIsHidden] = useState<boolean>(true);
-
-  // 表示データの更新処理
-  useEffect(() => {
-    if (isHidden) {
-      // 隠すボタンが押されている場合、値を隠した状態で更新
-      hideText();
-    }
-  }, []);
-
-  // hidableTextに、Textを*で隠した文字列をセットする
-  const hideText = () => {
-    let hiddenText = "*".repeat(text.length);
-    setHideableText(hiddenText);
-    setIsHidden(true);
-  };
-
-  // hidableTextに、textをセットする
-  const showText = () => {
-    setHideableText(text);
-    setIsHidden(false);
-  };
+  const [isHidden, toggleHidden] = useToggle(true);
 
   return (
     <>
-      {hidableText}
-      <button onClick={isHidden ? showText : hideText} className="ml-1">
+      {isHidden ? "*".repeat(text.length) : text}
+      <button onClick={toggleHidden} className="ml-1">
         <FontAwesomeIcon
           icon={isHidden ? faEyeSlash : faEye}
           className="sm:w-8"
