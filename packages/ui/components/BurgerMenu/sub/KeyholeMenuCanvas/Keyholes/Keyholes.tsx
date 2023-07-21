@@ -4,9 +4,9 @@ import { KeyholeObject } from "./KeyholeObject";
 import { gsap } from "gsap";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { useWindowSize } from "../../../../../hooks/useWindowSize";
+import { useRouter } from "next/router";
 
 type Props = {
-  basePath: string;
   rotate: number;
   downX: number | null;
   setRotate: Dispatch<SetStateAction<number>>;
@@ -22,17 +22,19 @@ type Props = {
  * @returns
  */
 export const Keyholes: React.FC<Props> = ({
-  basePath,
   rotate,
   downX,
   setRotate,
   initHomeStates,
 }) => {
+  const router = useRouter();
   const { length } = menuItem.map((item) => item.show).filter((item) => item);
   const { isWide } = useWindowSize();
   const loop = isWide ? 4 : 2;
 
-  const { nodes }: any = useGLTF(`${basePath}/menu/keyhole.glb`);
+  const { nodes }: any = useGLTF(
+    `${router.basePath ? router.basePath : ""}/menu/keyhole.glb`
+  );
 
   // 自動で定位置まで移動
   useEffect(() => {

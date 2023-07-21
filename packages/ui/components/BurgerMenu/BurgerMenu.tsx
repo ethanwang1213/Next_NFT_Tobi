@@ -11,7 +11,6 @@ import { LoadingImage } from "./sub/LoadingImage";
 import { BurgerButton } from "./sub/BurgerButton";
 
 type Props = {
-  basePath: string;
   initHomeStates?: () => void;
 };
 
@@ -20,7 +19,7 @@ type Props = {
  * @param param0
  * @returns
  */
-export const BurgerMenu: React.FC<Props> = ({ basePath, initHomeStates }) => {
+export const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
   const { isMenuOpen } = useShowBurger();
   // メニューを閉じているときにリサイズすると
   // ちらりとメニューが見えてしまう挙動への対策に必要
@@ -82,10 +81,7 @@ export const BurgerMenu: React.FC<Props> = ({ basePath, initHomeStates }) => {
         style={{ transform: `translate(${displayWidth}px, 0px)` }}
         data-allowscroll="true"
       >
-        <KeyMenuCanvas
-          basePath={basePath}
-          initHomeStates={initHomeStates}
-        />
+        <KeyholeMenuCanvas initHomeStates={initHomeStates} />
         <div
           className="top-0 h-0 w-full relative flex px-4 pb-3 flex-col justify-end 
             text-white text-[20px] sm:text-3xl sm:gap-1"

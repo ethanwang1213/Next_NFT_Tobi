@@ -81,7 +81,6 @@ export const KeyholeMenuCanvas: React.FC<Props> = ({ initHomeStates }) => {
         <ambientLight />
         <CameraController />
         <Keyholes
-          basePath={basePath}
           rotate={rotate}
           downX={downX}
           setRotate={setRotate}

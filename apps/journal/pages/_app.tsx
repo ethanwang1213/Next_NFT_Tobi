@@ -101,7 +101,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                             <Component {...pageProps} />
                             {/* 右上メニューボタン配置 */}
                             <MenuButtonLayout>
-                              <BurgerMenu basePath="/journal" />
+                              <BurgerMenu />
                               <SoundToggle />
                             </MenuButtonLayout>
                           </div>
