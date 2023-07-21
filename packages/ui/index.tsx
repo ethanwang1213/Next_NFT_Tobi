@@ -1,5 +1,5 @@
 export { MenuButtonLayout } from "./components/MenuButtonLayout/MenuButtonLayout";
-export { BurgerMenu } from "./components/Menu/BurgerMenu";
+export { BurgerMenu } from "./components/BurgerMenu/BurgerMenu";
 export {
   MenuAnimationProvider,
   useMenuAnimation,

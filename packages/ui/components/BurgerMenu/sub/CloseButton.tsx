@@ -1,4 +1,4 @@
-import { useShowBurger } from "../../contexts/menu/showBurger";
+import { useShowBurger } from "../../../contexts/menu/showBurger";
 
 /**
  * メニューを閉じるボタン

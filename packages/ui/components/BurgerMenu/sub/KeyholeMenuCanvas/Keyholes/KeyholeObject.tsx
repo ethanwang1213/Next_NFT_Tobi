@@ -2,10 +2,10 @@ import { Html, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
-import { useMenuAnimation } from "../../../contexts/menu/menuAnimation";
-import { useWindowSize } from "../../../hooks/useWindowSize";
-import { useLocatingAcrossBasePath } from "../../../hooks/useLocatingAcrossBasePath";
-import { useShowBurger } from "../../../contexts/menu/showBurger";
+import { useMenuAnimation } from "../../../../../contexts/menu/menuAnimation";
+import { useWindowSize } from "../../../../../hooks/useWindowSize";
+import { useLocatingAcrossBasePath } from "../../../../../hooks/useLocatingAcrossBasePath";
+import { useShowBurger } from "../../../../../contexts/menu/showBurger";
 
 type Props = {
   keyholeNodes: any;
@@ -27,7 +27,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const KeyObject: React.FC<Props> = ({
+const KeyholeObject: React.FC<Props> = ({
   keyholeNodes,
   item,
   index,
@@ -163,4 +163,4 @@ const KeyObject: React.FC<Props> = ({
   );
 };
 
-export default KeyObject;
+export default KeyholeObject;

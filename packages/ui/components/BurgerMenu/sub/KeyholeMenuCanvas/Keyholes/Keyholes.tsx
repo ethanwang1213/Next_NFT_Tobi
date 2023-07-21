@@ -1,14 +1,14 @@
 import { useEffect, ReactNode, Dispatch, SetStateAction } from "react";
-import { menuItem } from "../assets/menuItems";
-import KeyObject from "./KeyObject";
+import { menuItem } from "../../../assets/menuItems";
+import KeyholeObject from "./KeyholeObject";
 import { gsap } from "gsap";
 import { useGLTF, useTexture } from "@react-three/drei";
-import { useWindowSize } from "../../../hooks/useWindowSize";
+import { useWindowSize } from "../../../../../hooks/useWindowSize";
 
 type Props = {
   basePath: string;
   rotate: number;
-  downX: number;
+  downX: number | null;
   setRotate: Dispatch<SetStateAction<number>>;
   initHomeStates?: () => void;
 };
@@ -58,7 +58,7 @@ const Keyholes: React.FC<Props> = ({
       .map(
         (item, index) =>
           item.show && (
-            <KeyObject
+            <KeyholeObject
               keyholeNodes={nodes}
               item={{
                 name: item.name,
