@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import MenuFooter from "./sub/MenuFooter";
 import { useShowBurger } from "../../contexts/menu/showBurger";
-import KeyMenuItems from "./sub/KeyholeMenuCanvas/KeyholeMenuCanvas";
+import KeyMenuCanvas from "./sub/KeyholeMenuCanvas/KeyholeMenuCanvas";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import TextMenuItems from "./sub/TextMenuItems";
 import CloseButton from "./sub/CloseButton";
@@ -82,7 +82,10 @@ export const BurgerMenu: React.FC<Props> = ({ basePath, initHomeStates }) => {
         style={{ transform: `translate(${displayWidth}px, 0px)` }}
         data-allowscroll="true"
       >
-        <KeyMenuItems basePath={basePath} initHomeStates={initHomeStates} />
+        <KeyMenuCanvas
+          basePath={basePath}
+          initHomeStates={initHomeStates}
+        />
         <div
           className="top-0 h-0 w-full relative flex px-4 pb-3 flex-col justify-end 
             text-white text-[20px] sm:text-3xl sm:gap-1"

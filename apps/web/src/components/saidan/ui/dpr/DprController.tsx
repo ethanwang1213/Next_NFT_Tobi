@@ -1,6 +1,6 @@
-import { CanvasDprContext } from "@/context/canvasDpr";
+import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
 import { round } from "lodash";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import SliderIcon from "../../../../../public/menu/resolution/slider_TOBIRAPOLIS.svg";
@@ -12,7 +12,7 @@ import { useShowBurger } from "ui/contexts/menu/showBurger";
  */
 const DprController: React.FC = () => {
   const { setDpr, isAutoAdjustMode, setIsAutoAdjustMode, monitorFactor } =
-    useContext(CanvasDprContext);
+    useCanvasDprContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isCheckId, setIsCheckId] = useState(0);

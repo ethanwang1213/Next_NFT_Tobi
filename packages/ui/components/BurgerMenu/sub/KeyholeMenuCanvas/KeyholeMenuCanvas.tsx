@@ -3,6 +3,7 @@ import { useWindowSize } from "../../../../hooks/useWindowSize";
 import { Canvas } from "@react-three/fiber";
 import CameraController from "./CameraController";
 import Keyholes from "./Keyholes/Keyholes";
+import { useCanvasDprContext } from "../../../../contexts/canvasDprContext";
 
 type Props = {
   basePath: string;
@@ -15,6 +16,7 @@ type Props = {
  * @returns
  */
 const KeyholeMenuCanvas: React.FC<Props> = ({ basePath, initHomeStates }) => {
+  const { dpr } = useCanvasDprContext();
   const canvasRef = useRef<HTMLDivElement>(null);
   const [rotate, setRotate] = useState<number>(0);
   const [downX, setDownX] = useState<number | null>(null);
@@ -62,7 +64,7 @@ const KeyholeMenuCanvas: React.FC<Props> = ({ basePath, initHomeStates }) => {
           fov: 100,
           position: [0, isWide ? 0 : 1, isWide ? 17 : 13],
         }}
-        dpr={0.5}
+        dpr={dpr ? dpr : 0.5}
         frameloop="demand"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}

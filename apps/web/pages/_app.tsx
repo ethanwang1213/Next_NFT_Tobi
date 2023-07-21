@@ -17,7 +17,7 @@ import {
   BurgerMenu,
 } from "ui";
 import LoadTransition from "@/components/global/Load";
-import CanvasDprProvider from "@/context/canvasDpr";
+import { CanvasDprProvider } from "ui/contexts/canvasDprContext";
 import DprController from "@/components/saidan/ui/dpr/DprController";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import useHomeStore from "@/stores/homeStore";
