@@ -5,6 +5,7 @@ import {
   ReactNode,
   useState,
   useMemo,
+  useContext,
 } from "react";
 
 type CanvasDprContextType = {
@@ -17,7 +18,7 @@ type CanvasDprContextType = {
 };
 
 // CanvasのDPRを管理するContext
-export const CanvasDprContext = createContext<CanvasDprContextType>(
+const CanvasDprContext = createContext<CanvasDprContextType>(
   {} as CanvasDprContextType
 );
 
@@ -26,7 +27,7 @@ type Props = {
 };
 
 // CanvasのDPRを管理するContext Provider
-const CanvasDprProvider: React.FC<Props> = ({ children }) => {
+export const CanvasDprProvider: React.FC<Props> = ({ children }) => {
   const [dpr, setDpr] = useState<number>(1);
   const [isAutoAdjustMode, setIsAutoAdjustMode] = useState<boolean>(false);
   const [monitorFactor, setMonitorFactor] = useState<number>(1);
@@ -57,4 +58,4 @@ const CanvasDprProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-export default CanvasDprProvider;
+export const useCanvasDprContext = () => useContext(CanvasDprContext);
