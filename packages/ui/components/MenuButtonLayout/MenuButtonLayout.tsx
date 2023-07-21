@@ -8,9 +8,5 @@ type Props = {
  * @returns
  */
 export const MenuButtonLayout: React.FC<Props> = ({ children }) => {
-  return (
-    <div className={`absolute top-3 right-1`}>
-      {children}
-    </div>
-  );
+  return <div className="absolute top-3 right-1">{children}</div>;
 };
