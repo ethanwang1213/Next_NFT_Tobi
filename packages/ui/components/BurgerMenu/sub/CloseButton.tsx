@@ -4,7 +4,7 @@ import { useShowBurger } from "../../../contexts/menu/showBurger";
  * メニューを閉じるボタン
  * @returns
  */
-const CloseButton: React.FC = () => {
+export const CloseButton: React.FC = () => {
   const { isMenuOpen, setIsMenuOpen } = useShowBurger();
 
   return (
@@ -20,5 +20,3 @@ const CloseButton: React.FC = () => {
     </button>
   );
 };
-
-export default CloseButton;

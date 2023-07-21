@@ -6,7 +6,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
  * バーガーボタンを表示するコンポーネント
  * @returns
  */
-const BurgerButton: React.FC = () => {
+export const BurgerButton: React.FC = () => {
   const { isMenuOpen, setIsMenuOpen } = useShowBurger();
 
   const toggle = () => {
@@ -28,5 +28,3 @@ const BurgerButton: React.FC = () => {
     </button>
   );
 };
-
-export default BurgerButton;

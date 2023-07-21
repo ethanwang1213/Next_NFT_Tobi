@@ -27,7 +27,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const KeyholeObject: React.FC<Props> = ({
+export const KeyholeObject: React.FC<Props> = ({
   keyholeNodes,
   item,
   index,
@@ -162,5 +162,3 @@ const KeyholeObject: React.FC<Props> = ({
     </>
   );
 };
-
-export default KeyholeObject;

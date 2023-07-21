@@ -1,6 +1,6 @@
 import { useEffect, ReactNode, Dispatch, SetStateAction } from "react";
 import { menuItem } from "../../../assets/menuItems";
-import KeyholeObject from "./KeyholeObject";
+import { KeyholeObject } from "./KeyholeObject";
 import { gsap } from "gsap";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { useWindowSize } from "../../../../../hooks/useWindowSize";
@@ -21,7 +21,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const Keyholes: React.FC<Props> = ({
+export const Keyholes: React.FC<Props> = ({
   basePath,
   rotate,
   downX,
@@ -99,5 +99,3 @@ menuItem.forEach((item) => {
     useTexture.preload(item.keyImage);
   }
 });
-
-export default Keyholes;

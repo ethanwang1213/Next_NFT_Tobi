@@ -12,7 +12,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const TextMenuItems: React.FC<Props> = ({ initHomeStates }) => {
+export const TextMenuItems: React.FC<Props> = ({ initHomeStates }) => {
   const { setIsMenuOpen } = useShowBurger();
   const { pushLocation } = useLocatingAcrossBasePath();
 
@@ -56,5 +56,3 @@ const TextMenuItems: React.FC<Props> = ({ initHomeStates }) => {
 
   return <>{menu}</>;
 };
-
-export default TextMenuItems;

@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import MenuFooter from "./sub/MenuFooter";
+import { MenuFooter } from "./sub/MenuFooter";
 import { useShowBurger } from "../../contexts/menu/showBurger";
-import KeyMenuCanvas from "./sub/KeyholeMenuCanvas/KeyholeMenuCanvas";
+import { KeyholeMenuCanvas } from "./sub/KeyholeMenuCanvas/KeyholeMenuCanvas";
 import { useWindowSize } from "../../hooks/useWindowSize";
-import TextMenuItems from "./sub/TextMenuItems";
-import CloseButton from "./sub/CloseButton";
-import LoadingImage from "./sub/LoadingImage";
-import BurgerButton from "./sub/BurgerButton";
+import { TextMenuItems } from "./sub/TextMenuItems";
+import { CloseButton } from "./sub/CloseButton";
+import { LoadingImage } from "./sub/LoadingImage";
+import { BurgerButton } from "./sub/BurgerButton";
 
 type Props = {
   basePath: string;

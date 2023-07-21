@@ -8,7 +8,7 @@ import { useMenuAnimation } from "../../../contexts/menu/menuAnimation";
  * 鍵穴クリック後のローディング画像を表示するコンポーネント
  * @returns
  */
-const LoadingImage: React.FC = () => {
+export const LoadingImage: React.FC = () => {
   const { imageUrl, imageRef } = useMenuAnimation();
   useEffect(() => {
     if (imageRef.current) {
@@ -44,5 +44,3 @@ const LoadingImage: React.FC = () => {
     </div>
   );
 };
-
-export default LoadingImage;

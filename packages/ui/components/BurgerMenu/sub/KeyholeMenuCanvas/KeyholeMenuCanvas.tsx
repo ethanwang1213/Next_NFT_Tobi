@@ -1,12 +1,11 @@
 import { useRef, useState } from "react";
 import { useWindowSize } from "../../../../hooks/useWindowSize";
 import { Canvas } from "@react-three/fiber";
-import CameraController from "./CameraController";
-import Keyholes from "./Keyholes/Keyholes";
+import { CameraController } from "./CameraController";
+import { Keyholes } from "./Keyholes/Keyholes";
 import { useCanvasDprContext } from "../../../../contexts/canvasDprContext";
 
 type Props = {
-  basePath: string;
   initHomeStates?: () => void;
 };
 
@@ -15,7 +14,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const KeyholeMenuCanvas: React.FC<Props> = ({ basePath, initHomeStates }) => {
+export const KeyholeMenuCanvas: React.FC<Props> = ({ initHomeStates }) => {
   const { dpr } = useCanvasDprContext();
   const canvasRef = useRef<HTMLDivElement>(null);
   const [rotate, setRotate] = useState<number>(0);
@@ -92,5 +91,3 @@ const KeyholeMenuCanvas: React.FC<Props> = ({ basePath, initHomeStates }) => {
     </div>
   );
 };
-
-export default KeyholeMenuCanvas;
