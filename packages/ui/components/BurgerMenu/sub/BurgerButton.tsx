@@ -20,9 +20,8 @@ export const BurgerButton: React.FC<Props> = ({ serviceName }) => {
   const textColor = () => {
     switch (serviceName) {
       case "journal":
-        return " text-amber-950";
+        return " text-yellow-950";
       case "web":
-      default:
         return " mix-blend-difference";
     }
   };

@@ -9,7 +9,7 @@ const SoundToggle: React.FC = () => {
   const { isMute } = useContext(BookContext);
 
   return (
-    <div className="text-amber-950 text-center">
+    <div className="text-yellow-950 text-center">
       <label className="swap">
         <input
           type="checkbox"
