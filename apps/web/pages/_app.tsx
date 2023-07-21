@@ -105,7 +105,10 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <div className="relative w-full h-full">
                   <Component {...pageProps} />
                   <MenuButtonLayout>
-                    <BurgerMenu initHomeStates={initHomeStates} />
+                    <BurgerMenu
+                      serviceName="web"
+                      initHomeStates={initHomeStates}
+                    />
                     <DprController />
                   </MenuButtonLayout>
                   {/* ローディング */}

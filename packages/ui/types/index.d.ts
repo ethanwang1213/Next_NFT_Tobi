@@ -14,3 +14,5 @@ declare module "*.glb" {
   const src: string;
   export default src;
 }
+
+export type ServiceName = "web" | "journal";

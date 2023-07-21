@@ -9,8 +9,10 @@ import { TextMenuItems } from "./sub/TextMenuItems";
 import { CloseButton } from "./sub/CloseButton";
 import { LoadingImage } from "./sub/LoadingImage";
 import { BurgerButton } from "./sub/BurgerButton";
+import { ServiceName } from "../../types";
 
 type Props = {
+  serviceName: ServiceName;
   initHomeStates?: () => void;
 };
 
@@ -19,7 +21,10 @@ type Props = {
  * @param param0
  * @returns
  */
-export const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
+export const BurgerMenu: React.FC<Props> = ({
+  serviceName,
+  initHomeStates,
+}) => {
   const { isMenuOpen } = useShowBurger();
   // メニューを閉じているときにリサイズすると
   // ちらりとメニューが見えてしまう挙動への対策に必要
@@ -68,7 +73,7 @@ export const BurgerMenu: React.FC<Props> = ({ initHomeStates }) => {
 
   return (
     <>
-      <BurgerButton />
+      <BurgerButton serviceName={serviceName} />
       <CloseButton />
       <LoadingImage />
       {/* メニュー内容 */}
