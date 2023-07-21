@@ -9,3 +9,10 @@ declare module "*.webp" {
   const src: StaticImageData;
   export default src;
 }
+
+declare module "*.glb" {
+  const src: string;
+  export default src;
+}
+
+export type ServiceName = "web" | "journal";

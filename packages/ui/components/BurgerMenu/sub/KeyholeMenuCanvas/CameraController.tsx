@@ -1,12 +1,12 @@
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
-import { useWindowSize } from "../../hooks/useWindowSize";
+import { useWindowSize } from "../../../../hooks/useWindowSize";
 
 /**
  * カメラのポジションを制御するコンポーネント
  * レスポンシブ表示のために利用
  */
-const CameraController: React.FC = () => {
+export const CameraController: React.FC = () => {
   const { isWide } = useWindowSize();
   const { camera } = useThree();
 
@@ -16,5 +16,3 @@ const CameraController: React.FC = () => {
 
   return null;
 };
-
-export default CameraController;

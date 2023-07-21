@@ -46,7 +46,6 @@ const Index = () => {
       </div>
       <EditProfileModal />
       <CropNewIconModal />
-      <SoundToggle />
       <DebugText />
       {/* <LoginGuideModal />
       <FooterLoginGuide /> */}

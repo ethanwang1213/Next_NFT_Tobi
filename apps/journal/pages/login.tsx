@@ -2,13 +2,13 @@ import { FormEventHandler, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
 import {
-  getAuth,
   sendSignInLinkToEmail,
   GoogleAuthProvider,
   signInWithPopup,
   OAuthProvider,
   signOut,
 } from "firebase/auth";
+import { auth } from "@/firebase/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,7 +27,6 @@ const Login = () => {
   const arcRef2 = useRef<HTMLDivElement>(null);
   const arcRef3 = useRef<HTMLDivElement>(null);
   const logoMobileRef = useRef<HTMLDivElement>(null);
-  const auth = getAuth();
   const router = useRouter();
   const emailModalRef = useRef<HTMLDialogElement>(null);
   const appleModalRef = useRef<HTMLDialogElement>(null);
@@ -47,7 +46,8 @@ const Login = () => {
   });
 
   // sign inボタンが押されたときに実行する関数
-  const signIn = handleSubmit(async (data) => {
+  const signIn = handleSubmit(async (data: LoginFormType) => {
+    if (!data) return;
     console.log("sign in");
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain (www.example.com) for this

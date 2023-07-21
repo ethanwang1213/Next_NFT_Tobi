@@ -12,11 +12,12 @@ import { AuthProvider } from "@/context/auth";
 import {
   ShowBurgerProvider,
   MenuAnimationProvider,
-  BurgerMenu,
   useWindowSize,
+  MenuButtonLayout,
+  BurgerMenu,
 } from "ui";
 import LoadTransition from "@/components/global/Load";
-import CanvasDprProvider from "@/context/canvasDpr";
+import { CanvasDprProvider } from "ui/contexts/canvasDprContext";
 import DprController from "@/components/saidan/ui/dpr/DprController";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import useHomeStore from "@/stores/homeStore";
@@ -103,8 +104,13 @@ const App = ({ Component, pageProps }: AppProps) => {
               >
                 <div className="relative w-full h-full">
                   <Component {...pageProps} />
-                  <DprController />
-                  <BurgerMenu initHomeStates={initHomeStates} />
+                  <MenuButtonLayout>
+                    <BurgerMenu
+                      serviceName="web"
+                      initHomeStates={initHomeStates}
+                    />
+                    <DprController />
+                  </MenuButtonLayout>
                   {/* ローディング */}
                   <LoadTransition isOpen={isLoad} setOpen={setIsLoad} />
                 </div>

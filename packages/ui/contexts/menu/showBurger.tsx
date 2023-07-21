@@ -10,7 +10,9 @@ import {
 
 type showBurgerContextType = {
   showBurger: boolean;
+  isMenuOpen: boolean;
   setShowBurger: Dispatch<SetStateAction<boolean>>;
+  setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 // バーガーメニュー表示/非表示 設定用のContext
@@ -29,10 +31,11 @@ type Props = {
  */
 export const ShowBurgerProvider: React.FC<Props> = ({ children }) => {
   const [showBurger, setShowBurger] = useState<boolean>(true);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const showBurgerContextValue = useMemo(
-    () => ({ showBurger, setShowBurger }),
-    [showBurger, setShowBurger]
+    () => ({ showBurger, isMenuOpen, setShowBurger, setIsMenuOpen }),
+    [showBurger, isMenuOpen, setShowBurger, setIsMenuOpen]
   );
 
   return (

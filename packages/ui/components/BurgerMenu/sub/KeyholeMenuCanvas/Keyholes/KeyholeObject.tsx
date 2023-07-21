@@ -1,11 +1,14 @@
-import { Html, useGLTF, useTexture } from "@react-three/drei";
+import { Html, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
-import { useMenuAnimation } from "../../contexts/menu/menuAnimation";
-import { useWindowSize } from "../../hooks/useWindowSize";
+import { useMenuAnimation } from "../../../../../contexts/menu/menuAnimation";
+import { useWindowSize } from "../../../../../hooks/useWindowSize";
+import { useLocatingAcrossBasePath } from "../../../../../hooks/useLocatingAcrossBasePath";
+import { useShowBurger } from "../../../../../contexts/menu/showBurger";
 
-type KeyObjectProps = {
+type Props = {
+  keyholeNodes: any;
   item: {
     name: string;
     keyImage: string;
@@ -16,7 +19,6 @@ type KeyObjectProps = {
   length: number;
   rotate: number;
   setRotate: Dispatch<SetStateAction<number>>;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
   initHomeStates?: () => void;
 };
 
@@ -25,21 +27,23 @@ type KeyObjectProps = {
  * @param param0
  * @returns
  */
-const KeyObject: React.FC<KeyObjectProps> = ({
+export const KeyholeObject: React.FC<Props> = ({
+  keyholeNodes,
   item,
   index,
   length,
   rotate,
   setRotate,
-  setIsOpen,
   initHomeStates,
 }) => {
+  const { setIsMenuOpen } = useShowBurger();
+
   const { name, keyImage, loadImage, link } = item;
   const texture = useTexture(`${keyImage}`);
   const [posZ, setPosZ] = useState<number>(0);
   const { setImageUrl, imageRef, setRequireFadeOut } = useMenuAnimation();
-  const { nodes }: any = useGLTF("/journal/loading/key.glb");
   const router = useRouter();
+  const { pushLocation } = useLocatingAcrossBasePath();
   const [isClicking, setIsClicking] = useState<boolean>(false);
   const [isDraged, setIsDraged] = useState<boolean>(false);
   const { innerWidth, displayWidth, isWide, isVeryWide } = useWindowSize();
@@ -54,7 +58,7 @@ const KeyObject: React.FC<KeyObjectProps> = ({
   return (
     <>
       <mesh
-        geometry={(nodes.Trace as any).geometry}
+        geometry={(keyholeNodes.Trace as any).geometry}
         rotation={[Math.PI / 2, 0, Math.PI]}
         position={[
           Math.sin(radian) * sizeX,
@@ -76,7 +80,7 @@ const KeyObject: React.FC<KeyObjectProps> = ({
           if (!isDraged && isClicking) {
             if (Math.cos(radian) === 1) {
               e.stopPropagation();
-              setImageUrl(`/journal/${loadImage}`);
+              setImageUrl(loadImage);
               const value = { value: posZ };
               gsap
                 .timeline()
@@ -103,13 +107,13 @@ const KeyObject: React.FC<KeyObjectProps> = ({
                 )
                 // 拡大終了後
                 .add(() => {
-                  setIsOpen(false);
+                  setIsMenuOpen(false);
 
                   if (router.pathname === "/" && !!initHomeStates) {
                     initHomeStates();
                   }
                   setRequireFadeOut(name);
-                  router.push(link);
+                  pushLocation(link);
                   setPosZ(0);
                 });
               // .to(imageRef.current, { opacity: 0, duration: 0.5 }, "+=1")
@@ -158,5 +162,3 @@ const KeyObject: React.FC<KeyObjectProps> = ({
     </>
   );
 };
-
-export default KeyObject;

@@ -47,7 +47,10 @@ const RedeemButton: React.FC = () => {
         })
         .catch((error) => {
           console.log(error);
-          if (error.code === "functions/not-found" || error.code === "functions/unavailable") {
+          if (
+            error.code === "functions/not-found" ||
+            error.code === "functions/unavailable"
+          ) {
             redeemStatus.set("INCORRECT");
           } else {
             redeemStatus.set("SERVER_ERROR");

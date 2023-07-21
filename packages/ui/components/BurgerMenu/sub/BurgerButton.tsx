@@ -1,0 +1,42 @@
+import { useShowBurger } from "../../../contexts/menu/showBurger";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { ServiceName } from "../../../types";
+
+type Props = {
+  serviceName: ServiceName;
+};
+
+/**
+ * バーガーボタンを表示するコンポーネント
+ * @returns
+ */
+export const BurgerButton: React.FC<Props> = ({ serviceName }) => {
+  const { isMenuOpen, setIsMenuOpen } = useShowBurger();
+  const toggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const textColor = () => {
+    switch (serviceName) {
+      case "journal":
+        return " text-amber-950";
+      case "web":
+        return " text-white mix-blend-difference";
+    }
+  };
+
+  return (
+    <button
+      className={`min-h-[48px] w-[48px] sm:w-[62px] h-[48px] sm:h-[62px] 
+        btn btn-circle btn-ghost 
+        text-[26px] sm:text-[32px] ${textColor()}`}
+      onClick={toggle}
+    >
+      <FontAwesomeIcon
+        icon={faBars}
+        className="w-full max-h-full h-[100px] w-[32px] h-[32px]"
+      />
+    </button>
+  );
+};

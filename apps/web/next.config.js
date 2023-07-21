@@ -18,6 +18,10 @@ module.exports = {
         },
       ],
     });
+    config.module.rules.push({
+      test: /\.glb$/i,
+      type: "asset/resource",
+    });
     return config;
   },
   async rewrites() {

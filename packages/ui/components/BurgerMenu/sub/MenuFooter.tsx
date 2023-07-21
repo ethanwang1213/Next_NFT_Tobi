@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * @param param0
  * @returns
  */
-const MenuFooter: React.FC = () => (
+export const MenuFooter: React.FC = () => (
   <div
     className="flex flex-col gap-2 sm:gap-3 sm:absolute bottom-0 right-0 
       pl-4 mt-2 sm:p-5 sm:items-end "
@@ -23,5 +23,3 @@ const MenuFooter: React.FC = () => (
     <small className="text-sm">©Tobiratory</small>
   </div>
 );
-
-export default MenuFooter;
