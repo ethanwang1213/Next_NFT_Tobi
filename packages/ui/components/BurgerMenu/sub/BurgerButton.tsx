@@ -12,7 +12,7 @@ type Props = {
  * @returns
  */
 export const BurgerButton: React.FC<Props> = ({ serviceName }) => {
-  const { isMenuOpen, setIsMenuOpen } = useShowBurger();
+  const { showBurger, isMenuOpen, setIsMenuOpen } = useShowBurger();
   const toggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -27,16 +27,20 @@ export const BurgerButton: React.FC<Props> = ({ serviceName }) => {
   };
 
   return (
-    <button
-      className={`min-h-[48px] w-[48px] sm:w-[62px] h-[48px] sm:h-[62px] 
-        btn btn-circle btn-ghost 
-        text-[26px] sm:text-[32px] ${textColor()}`}
-      onClick={toggle}
-    >
-      <FontAwesomeIcon
-        icon={faBars}
-        className="w-full max-h-full h-[100px] w-[32px] h-[32px]"
-      />
-    </button>
+    <>
+      {showBurger && !isMenuOpen && (
+        <button
+          className={`min-h-[48px] w-[48px] sm:w-[62px] h-[48px] sm:h-[62px] 
+            btn btn-circle btn-ghost 
+            text-[26px] sm:text-[32px] ${textColor()}`}
+          onClick={toggle}
+        >
+          <FontAwesomeIcon
+            icon={faBars}
+            className="w-full max-h-full h-[100px] w-[32px] h-[32px]"
+          />
+        </button>
+      )}
+    </>
   );
 };
