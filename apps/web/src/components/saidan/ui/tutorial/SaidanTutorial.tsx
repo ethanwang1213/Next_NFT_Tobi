@@ -1,11 +1,11 @@
-import { ShowBurgerContext } from "@/context/showBurger";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import useSaidanStore from "@/stores/saidanStore";
 import BagTutorial from "./BagTutorial";
 import OpenBagTutorial from "./OpenBagTutorial";
 import TitleTutorial from "./TitleTutorial";
 import ZoomUpTutorial from "./ZoomUpTutorial";
 import TermsTutorial from "./TermsTutorial";
+import { useShowBurger } from "ui/contexts/menu/showBurger";
 
 /**
  * saidanページのチュートリアルを表示するコンポーネント
@@ -22,11 +22,11 @@ const SaidanTutorial = () => {
     setCanTutorialProceed(false);
   }, [tutorialPhase]);
 
-  const burgerContext = useContext(ShowBurgerContext);
+  const { setShowBurger } = useShowBurger();
   useEffect(() => {
-    burgerContext.setShowBurger(tutorialPhase === "END");
+    setShowBurger(tutorialPhase === "END");
     return () => {
-      burgerContext.setShowBurger(true);
+      setShowBurger(true);
     };
   }, [tutorialPhase]);
 

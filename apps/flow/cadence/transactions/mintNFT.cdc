@@ -2,7 +2,7 @@ import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import MetadataViews from "../contracts/core/MetadataViews.cdc"
 import TobiraNeko from "../contracts/TobiraNeko.cdc"
 
-transaction(name: String, description: String, metaURI: String) {
+transaction(quantity: UInt64) {
     let minter: &TobiraNeko.Minter
     let receiver: Capability<&{NonFungibleToken.Receiver}>
     prepare(acct: AuthAccount) {
@@ -18,6 +18,6 @@ transaction(name: String, description: String, metaURI: String) {
     }
     execute {
         // let minter = self.minter.borrow() ?? panic("Could not borrow receiver capability (maybe receiver not configured?)")
-        self.minter.mintTo(creator: self.receiver, metadata: {"name": name, "description": description, "metaURI": metaURI})
+        self.minter.batchMintTo(creator: self.receiver, quantity: quantity)
     }
 }

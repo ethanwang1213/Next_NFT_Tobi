@@ -14,6 +14,7 @@ const CustomerSupportButton: React.FC<Props> = ({ className, text }) => {
   return (
     <Link
       target="_blank"
+      rel="noopener noreferrer"
       href={"https://tobiratory.myshopify.com/pages/faq"}
       className={className}
     >

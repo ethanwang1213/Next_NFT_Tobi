@@ -2,13 +2,18 @@ import { FormEventHandler, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
 import {
-  getAuth,
   sendSignInLinkToEmail,
   GoogleAuthProvider,
   signInWithPopup,
+  OAuthProvider,
+  signOut,
 } from "firebase/auth";
+import { auth } from "@/firebase/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faApple } from "@fortawesome/free-brands-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 type LoginFormType = {
   email: string;
@@ -22,10 +27,12 @@ const Login = () => {
   const arcRef2 = useRef<HTMLDivElement>(null);
   const arcRef3 = useRef<HTMLDivElement>(null);
   const logoMobileRef = useRef<HTMLDivElement>(null);
-  const auth = getAuth();
   const router = useRouter();
   const emailModalRef = useRef<HTMLDialogElement>(null);
+  const appleModalRef = useRef<HTMLDialogElement>(null);
+  const [isAppleModalChecked, setAppleModalChecked] = useState(false);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const appleErrModalRef = useRef<HTMLDialogElement>(null);
 
   const {
     register,
@@ -39,7 +46,8 @@ const Login = () => {
   });
 
   // sign inボタンが押されたときに実行する関数
-  const signIn: FormEventHandler<HTMLFormElement> = (e) => {
+  const signIn = handleSubmit(async (data: LoginFormType) => {
+    if (!data) return;
     console.log("sign in");
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain (www.example.com) for this
@@ -48,14 +56,13 @@ const Login = () => {
       // This must be true.
       handleCodeInApp: true,
     };
-
     setIsEmailLoading(true);
-    sendSignInLinkToEmail(auth, getValues("email"), actionCodeSettings)
+    sendSignInLinkToEmail(auth, data.email, actionCodeSettings)
       .then(() => {
         // The link was successfully sent. Inform the user.
         // Save the email locally so you don't need to ask the user for it again
         // if they open the link on the same device.
-        window.localStorage.setItem("emailForSignIn", getValues("email"));
+        window.localStorage.setItem("emailForSignIn", data.email);
         emailModalRef.current.showModal();
         setIsEmailLoading(false);
       })
@@ -65,7 +72,7 @@ const Login = () => {
         // ...
         setIsEmailLoading(false);
       });
-  };
+  });
 
   // Googleアカウントでログインする関数
   const withGoogle = async () => {
@@ -79,15 +86,31 @@ const Login = () => {
     }
   };
 
+  const withApple = async () => {
+    var provider = new OAuthProvider("apple.com");
+
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Appleログインに失敗しました。", error);
+    }
+  };
+
   useEffect(() => {
     // console.log(auth.currentUser);
     const handleRedirect = async () => {
       // ログイン状態の変化を監視
       auth.onAuthStateChanged(async (user) => {
         if (user && user.email) {
-          console.log(`${user.email} としてログイン中です。`);
-          // ログイン済みの場合、リダイレクト処理を実行
-          await router.push("/"); // リダイレクト先のURLを指定
+          // 非公開ドメインの場合はアカウント削除をし登録できないようにする
+          if (user.email.indexOf("privaterelay.appleid.com") !== -1) {
+            await user.delete();
+            appleErrModalRef.current.showModal();
+          } else {
+            console.log(`${user.email} としてログイン中です。`);
+            // ログイン済みの場合、リダイレクト処理を実行
+            await router.push("/"); // リダイレクト先のURLを指定
+          }
         }
       });
     };
@@ -182,7 +205,7 @@ const Login = () => {
       </div>
 
       <div
-        className="md:flex items-center justify-center relative top-0 left-0 w-screen h-screen hidden"
+        className="md:flex items-center justify-center relative top-0 left-0 w-[100dvw] h-[100dvh] hidden"
         ref={logoRef}
       >
         <div className="absolute h-[400px] w-[400px]">
@@ -199,7 +222,7 @@ const Login = () => {
           <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
         </div>
       </div>
-      <div className="flex items-center justify-center p-5 w-screen h-screen md:hidden">
+      <div className="flex items-center justify-center p-5 w-[100dvw] h-[100dvh] md:hidden">
         <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center">
           <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
           <div
@@ -219,12 +242,12 @@ const Login = () => {
       </div>
 
       <div
-        className="flex items-center justify-center absolute left-0 w-screen h-screen p-8 sm:p-10"
+        className="flex items-center justify-center absolute left-0 w-[100dvw] h-[100dvh] p-8 sm:p-10"
         ref={loginRef}
       >
         <form
           className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
-          onSubmit={handleSubmit(signIn)}
+          onSubmit={signIn}
         >
           <button
             className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
@@ -240,6 +263,17 @@ const Login = () => {
               />
             </div>
             Sign in with Google
+          </button>
+          <button
+            className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
+            drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
+            type="button"
+            onClick={() => {
+              appleModalRef.current.showModal();
+            }}
+          >
+            <FontAwesomeIcon icon={faApple} size="xl" />
+            Sign in with Apple
           </button>
           <div
             className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black 
@@ -257,7 +291,7 @@ const Login = () => {
                   message: "*メールアドレスを入力してください。",
                 },
                 pattern: {
-                  value: /^[\w\-._]+@[\w\-._]+\.[A-Za-z]+/,
+                  value: /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/,
                   message: "*メールアドレスの形式で入力してください",
                 },
               })}
@@ -315,8 +349,105 @@ const Login = () => {
             </ul>
           </div>
           <div className="modal-action">
+            <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">
+              閉じる
+            </button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog id="appleModal" className="modal" ref={appleModalRef}>
+        <form method="dialog" className="modal-box bg-secondary">
+          <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2">
+            <FontAwesomeIcon
+              icon={faXmark}
+              fontSize={24}
+              className="text-accent"
+            />
+          </button>
+
+          <h3 className="font-bold text-base sm:text-xl text-accent text-center">
+            「Appleでサインイン」での注意
+          </h3>
+          <div className="text-sm sm:text-base text-accent grid gap-4 py-8">
+            <p>
+              初めて「Appleでサインイン」する場合、
+              <br />
+              メールアドレスを登録先サービス（今回の場合はJournal）へ共有するかどうかの選択が表示されます。
+            </p>
+            <p>
+              TOBIRA NEKOの受け取りのため、
+              <span className="inline-block">【メールを共有】</span>{" "}
+              を選択して、ログインをお願いします。
+            </p>
+            <div className="grid gap-2 leading-[13px] sm:leading-4 pl-4 text-[10px] sm:text-[12px]">
+              <p>
+                TOBIRA
+                NEKO購入時のメールアドレスとJournalアカウントのメールアドレスが同一でなければ、TOBIRA
+                NEKOを受け取ることができません。
+              </p>
+              <p>
+                非公開状態にすると、メールアドレスの@以降が（privaterelay.appleid.com）となり、受け取りができなくなります。
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-center mb-4 text-accent">
+            <label className="flex">
+              <input
+                type="checkbox"
+                checked={isAppleModalChecked}
+                className="checkbox checkbox-accent"
+                onClick={() => setAppleModalChecked(!isAppleModalChecked)}
+                onChange={() => {}}
+              />
+              <div className="grid content-center ml-2">
+                <span className="select-none sm:text-sm">確認しました</span>
+              </div>
+            </label>
+          </div>
+          <div className="flex justify-center">
             {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">閉じる</button>
+            <button
+              className="btn btn-sm sm:btn-md w-[30%] text-xs sm:text-base btn-outline btn-accent"
+              onClick={withApple}
+              disabled={!isAppleModalChecked}
+            >
+              進む
+            </button>
+          </div>
+        </form>
+      </dialog>
+      <dialog id="appleErrModal" className="modal" ref={appleErrModalRef}>
+        <form method="dialog" className="modal-box bg-secondary">
+          <h3 className="font-bold text-lg pb-5">
+            【メールを非公開】の設定でログインしようとしているようです
+          </h3>
+          <p>
+            Apple
+            IDでメールアドレスの非公開設定を有効にしていると、メールアドレスが@privaterelay.appleid.comというドメインで登録されてしまいTOBIRA
+            NEKOが受け取れないため、メールの非公開の設定でアカウント作成はできません。
+          </p>
+          <p className="py-3">
+            apple
+            IDとTobiratoryの紐づけを解除し、&ldquo;メールを共有&rdquo;を選択して、ログインをお願いします。
+          </p>
+          <a
+            href="https://support.apple.com/ja-jp/HT210426"
+            className="btn btn-link"
+          >
+            紐づけの解除方法はこちら
+          </a>
+          <a
+            href="https://support.apple.com/ja-jp/HT210425"
+            className="btn btn-link"
+          >
+            メールの非公開について詳しくはこちら
+          </a>
+
+          <div className="modal-action">
+            <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">
+              閉じる
+            </button>
           </div>
         </form>
       </dialog>

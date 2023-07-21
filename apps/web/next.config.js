@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
-require("dotenv").config();
-const nextConfig = {
+module.exports = {
   reactStrictMode: false,
   swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
@@ -15,6 +17,10 @@ const nextConfig = {
           },
         },
       ],
+    });
+    config.module.rules.push({
+      test: /\.glb$/i,
+      type: "asset/resource",
     });
     return config;
   },
@@ -43,6 +49,10 @@ const nextConfig = {
         source: "/journal/:path*",
         destination: `${process.env.JOURNAL_URL}/journal/:path*`,
       },
+      {
+        source: "/backend/:path*",
+        destination: `${process.env.JOURNAL_URL}/backend/:path*`,
+      },
     ];
   },
   images: {
@@ -52,8 +62,5 @@ const nextConfig = {
       2048, 3840,
     ],
   },
+  transpilePackages: ["three", "ui"],
 };
-
-const withTM = require("next-transpile-modules")(["three"]);
-
-module.exports = withTM(nextConfig);

@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import useDateFormat from "@/hooks/useDateFormat";
 import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
 import { useDebug } from "@/contexts/DebugProvider";
+import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 
 /**
  * プロフィールページの2ページ目
@@ -12,6 +13,7 @@ import { useDebug } from "@/contexts/DebugProvider";
  */
 const ProfilePage1: React.FC = () => {
   const { user } = useAuth();
+  const { houseData } = useDiscordOAuth();
   const { formattedFromDate } = useDateFormat();
 
   const joinAtExists = useMemo(
@@ -20,12 +22,8 @@ const ProfilePage1: React.FC = () => {
   );
 
   const houseDataExists = useMemo(
-    () =>
-      user &&
-      user.community &&
-      user.community.house &&
-      user.community.house.name,
-    [user]
+    () => houseData && houseData.name,
+    [houseData]
   );
 
   // Debug用
@@ -65,7 +63,7 @@ const ProfilePage1: React.FC = () => {
             {houseDataExists && (
               <CharacteristicLine
                 lineType={"House Arkhē"}
-                lineValue={user.community.house.name}
+                lineValue={houseData.name}
               />
             )}
           </>

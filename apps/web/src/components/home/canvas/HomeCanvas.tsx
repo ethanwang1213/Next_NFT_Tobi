@@ -9,8 +9,7 @@ import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import useHomeStore from "@/stores/homeStore";
 import AnimationContainer from "./AnimationContainer";
 import EndPhaseVideo from "./phases/EndPhaseVideo";
-import { CanvasDprContext } from "@/context/canvasDpr";
-import { useContext } from "react";
+import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
 
 const HomeCanvas = () => {
   const debugMode = useHomeStore((state) => state.debugMode);
@@ -18,7 +17,7 @@ const HomeCanvas = () => {
   const { planeWidth, planeHeight } = useHomePlaneSize();
 
   // dprの取得
-  const { dpr, setMonitorFactor } = useContext(CanvasDprContext);
+  const { dpr, setMonitorFactor } = useCanvasDprContext();
 
   return (
     <>

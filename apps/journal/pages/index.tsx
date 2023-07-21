@@ -19,12 +19,7 @@ const Index = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!auth.currentUser) return;
-
-    if (
-      process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
-      !auth.currentUser.email
-    ) {
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && !auth.currentUser) {
       router.push("/login");
     }
   }, [auth.currentUser]);
@@ -51,7 +46,6 @@ const Index = () => {
       </div>
       <EditProfileModal />
       <CropNewIconModal />
-      <SoundToggle />
       <DebugText />
       {/* <LoginGuideModal />
       <FooterLoginGuide /> */}
