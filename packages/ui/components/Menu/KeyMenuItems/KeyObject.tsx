@@ -1,14 +1,14 @@
-import { Html, useGLTF, useTexture } from "@react-three/drei";
+import { Html, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
 import { useMenuAnimation } from "../../../contexts/menu/menuAnimation";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { useLocatingAcrossBasePath } from "../../../hooks/useLocatingAcrossBasePath";
-import keyModel from "../assets/menu/key/keyhole.glb";
 import { useShowBurger } from "../../../contexts/menu/showBurger";
 
 type Props = {
+  keyholeNodes: any;
   item: {
     name: string;
     keyImage: string;
@@ -28,6 +28,7 @@ type Props = {
  * @returns
  */
 const KeyObject: React.FC<Props> = ({
+  keyholeNodes,
   item,
   index,
   length,
@@ -41,7 +42,6 @@ const KeyObject: React.FC<Props> = ({
   const texture = useTexture(`${keyImage}`);
   const [posZ, setPosZ] = useState<number>(0);
   const { setImageUrl, imageRef, setRequireFadeOut } = useMenuAnimation();
-  const { nodes }: any = useGLTF(keyModel);
   const router = useRouter();
   const { pushLocation } = useLocatingAcrossBasePath();
   const [isClicking, setIsClicking] = useState<boolean>(false);
@@ -58,7 +58,7 @@ const KeyObject: React.FC<Props> = ({
   return (
     <>
       <mesh
-        geometry={(nodes.Trace as any).geometry}
+        geometry={(keyholeNodes.Trace as any).geometry}
         rotation={[Math.PI / 2, 0, Math.PI]}
         position={[
           Math.sin(radian) * sizeX,
