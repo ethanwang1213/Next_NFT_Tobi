@@ -13,7 +13,10 @@ export const useLocatingAcrossBasePath = () => {
       await router.push(link);
     } else {
       // basePathが""以外の場合
-      if (link.startsWith(router.basePath)) {
+      if (link.startsWith("https://")) {
+        // 遷移先が外部またはサブドメインの場合
+        window.location.href = link;
+      } else if (link.startsWith(router.basePath)) {
         // 遷移先がbasePath以下の階層の場合
         // basePathを除去して遷移
         await router.push(link.replace(router.basePath, ""));
