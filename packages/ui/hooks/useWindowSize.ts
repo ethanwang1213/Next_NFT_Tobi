@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import globalData from "@/data/globalData.json";
+import { useEffect, useState } from "react";
+import windowSizeData from "../data/windowSizeData.json";
 
 type HookType = () => {
   innerWidth: number;
@@ -15,7 +15,7 @@ type HookType = () => {
   isVeryWide: boolean;
 };
 
-const useWindowSize: HookType = () => {
+export const useWindowSize: HookType = () => {
   const [windowSize, setWindowSize] = useState({
     innerWidth: 0,
     innerHeight: 0,
@@ -30,12 +30,12 @@ const useWindowSize: HookType = () => {
     isVeryWide: false,
   });
 
-  const { mediaBorder, pcWidth, pcHeight } = globalData;
+  const { mediaBorder, pcWidth, pcHeight } = windowSizeData;
 
   // useLayoutEffect(() => {
   useEffect(() => {
     if (typeof window === "undefined") {
-      return () => { };
+      return () => {};
     }
     const handleResize = () => {
       const isVeryWide = window.innerWidth > mediaBorder;
@@ -67,10 +67,6 @@ const useWindowSize: HookType = () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("orientationchange", handleResize);
     };
-
-
   }, []);
   return windowSize;
 };
-
-export default useWindowSize;

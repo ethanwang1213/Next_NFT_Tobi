@@ -1,4 +1,4 @@
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import { ReactNode } from "react";
 
 type Props = {
@@ -8,18 +8,20 @@ type Props = {
 
 /**
  * home セクションテキストのガラス風背景の表示コンポーネント
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const GrassFrame: React.FC<Props> = ({ style = {}, children }) => {
   const { isWide } = useWindowSize();
 
-  return <div
-    className={`${isWide ? "original-card" : "original-card-sp"}`}
-    style={style}
-  >
-    {children}
-  </div>;
+  return (
+    <div
+      className={`${isWide ? "original-card" : "original-card-sp"}`}
+      style={style}
+    >
+      {children}
+    </div>
+  );
 };
 
-export default GrassFrame;;
+export default GrassFrame;

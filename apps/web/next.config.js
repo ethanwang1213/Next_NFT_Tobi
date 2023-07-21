@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
-require("dotenv").config();
-const nextConfig = {
+module.exports = {
   reactStrictMode: false,
-  swcMinify: true,  
+  swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
@@ -18,6 +17,10 @@ const nextConfig = {
           },
         },
       ],
+    });
+    config.module.rules.push({
+      test: /\.glb$/i,
+      type: "asset/resource",
     });
     return config;
   },
@@ -59,8 +62,5 @@ const nextConfig = {
       2048, 3840,
     ],
   },
+  transpilePackages: ["three", "ui"],
 };
-
-const withTM = require("next-transpile-modules")(["three"]);
-
-module.exports = withTM(nextConfig);

@@ -3,6 +3,7 @@ import {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useContext,
   useMemo,
   useRef,
   useState,
@@ -18,7 +19,7 @@ type MenuAnimationContextType = {
 };
 
 // メニューからの画面遷移時の画像設定用のContext
-export const MenuAnimationContext = createContext<MenuAnimationContextType>(
+const MenuAnimationContext = createContext<MenuAnimationContextType>(
   {} as MenuAnimationContextType
 );
 
@@ -27,16 +28,21 @@ type Props = {
 };
 
 // メニューからの画面遷移時の画像設定用のContext Provider
-const MenuAnimationProvider: React.FC<Props> = ({ children }) => {
+export const MenuAnimationProvider: React.FC<Props> = ({ children }) => {
   const imageRef = useRef<HTMLDivElement>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [requireFadeOut, setRequireFadeOut] = useState<string>('');
+  const [requireFadeOut, setRequireFadeOut] = useState<string>("");
 
   const menuAnimationContextValue = useMemo(
-    () => ({ imageUrl, setImageUrl, imageRef, requireFadeOut, setRequireFadeOut }),
+    () => ({
+      imageUrl,
+      setImageUrl,
+      imageRef,
+      requireFadeOut,
+      setRequireFadeOut,
+    }),
     [imageUrl, setImageUrl, imageRef, requireFadeOut, setRequireFadeOut]
   );
-
 
   return (
     <MenuAnimationContext.Provider value={menuAnimationContextValue}>
@@ -45,4 +51,4 @@ const MenuAnimationProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-export default MenuAnimationProvider;
+export const useMenuAnimation = () => useContext(MenuAnimationContext);

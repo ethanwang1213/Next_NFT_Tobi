@@ -34,9 +34,9 @@ import CameraContainer from "./CameraContainer";
 import Shelf from "./Shelf";
 import PlacedItems from "./placedItem/PlacedItems";
 import MovePointerTarget from "./placedItem/pointerTarget/MovePointerTarget";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import isSpLandscape from "@/methods/home/isSpLandscape";
-import { CanvasDprContext } from "@/context/canvasDpr";
+import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
 import { PerformanceMonitor } from "@react-three/drei";
 
 type SaidanCanvasProps = {
@@ -245,7 +245,7 @@ const SaidanCanvas = ({ canvasRef }: SaidanCanvasProps) => {
   }, []);
 
   // dprの取得
-  const { dpr, setDpr, setMonitorFactor } = useContext(CanvasDprContext);
+  const { dpr, setMonitorFactor } = useCanvasDprContext();
 
   return (
     /* eslint-disable react/no-unknown-property */

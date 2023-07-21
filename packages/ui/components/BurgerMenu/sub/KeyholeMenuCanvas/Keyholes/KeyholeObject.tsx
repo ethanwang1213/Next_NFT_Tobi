@@ -1,12 +1,14 @@
-import { Html, useGLTF, useTexture } from "@react-three/drei";
+import { Html, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, FC, useState, useContext } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
-import useHomeStore from "@/stores/homeStore";
-import { MenuAnimationContext } from "@/context/menuAnimation";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useMenuAnimation } from "../../../../../contexts/menu/menuAnimation";
+import { useWindowSize } from "../../../../../hooks/useWindowSize";
+import { useLocatingAcrossBasePath } from "../../../../../hooks/useLocatingAcrossBasePath";
+import { useShowBurger } from "../../../../../contexts/menu/showBurger";
 
-type KeyObjectProps = {
+type Props = {
+  keyholeNodes: any;
   item: {
     name: string;
     keyImage: string;
@@ -17,7 +19,7 @@ type KeyObjectProps = {
   length: number;
   rotate: number;
   setRotate: Dispatch<SetStateAction<number>>;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  initHomeStates?: () => void;
 };
 
 /**
@@ -25,24 +27,25 @@ type KeyObjectProps = {
  * @param param0
  * @returns
  */
-const KeyObject: FC<KeyObjectProps> = ({
+export const KeyholeObject: React.FC<Props> = ({
+  keyholeNodes,
   item,
   index,
   length,
   rotate,
   setRotate,
-  setIsOpen,
+  initHomeStates,
 }) => {
+  const { setIsMenuOpen } = useShowBurger();
+
   const { name, keyImage, loadImage, link } = item;
-  const texture = useTexture(keyImage);
+  const texture = useTexture(`${keyImage}`);
   const [posZ, setPosZ] = useState<number>(0);
-  const { setImageUrl, imageRef, setRequireFadeOut } =
-    useContext(MenuAnimationContext);
-  const { nodes }: any = useGLTF("/loading/key.glb");
+  const { setImageUrl, imageRef, setRequireFadeOut } = useMenuAnimation();
   const router = useRouter();
+  const { pushLocation } = useLocatingAcrossBasePath();
   const [isClicking, setIsClicking] = useState<boolean>(false);
   const [isDraged, setIsDraged] = useState<boolean>(false);
-  const initHomeStates = useHomeStore((state) => state.initStates);
   const { innerWidth, displayWidth, isWide, isVeryWide } = useWindowSize();
 
   const radian = ((360 / length) * index + rotate) * (Math.PI / 180) * 1.0;
@@ -55,7 +58,7 @@ const KeyObject: FC<KeyObjectProps> = ({
   return (
     <>
       <mesh
-        geometry={(nodes.Trace as any).geometry}
+        geometry={(keyholeNodes.Trace as any).geometry}
         rotation={[Math.PI / 2, 0, Math.PI]}
         position={[
           Math.sin(radian) * sizeX,
@@ -104,13 +107,13 @@ const KeyObject: FC<KeyObjectProps> = ({
                 )
                 // 拡大終了後
                 .add(() => {
-                  setIsOpen(false);
+                  setIsMenuOpen(false);
 
-                  if (router.pathname === "/") {
+                  if (router.pathname === "/" && !!initHomeStates) {
                     initHomeStates();
                   }
                   setRequireFadeOut(name);
-                  router.push(link);
+                  pushLocation(link);
                   setPosZ(0);
                 });
               // .to(imageRef.current, { opacity: 0, duration: 0.5 }, "+=1")
@@ -142,7 +145,7 @@ const KeyObject: FC<KeyObjectProps> = ({
       >
         <div className="relative w-56 h-10">
           <p
-            className="menu-key-text"
+            className="w-56 text-white text-[20px] sm:text-2xl font-['tachyon'] text-center select-none"
             style={{
               // Htmlのテキストはfogの影響を受けないので、別途薄くする
               opacity: isVeryWide
@@ -159,5 +162,3 @@ const KeyObject: FC<KeyObjectProps> = ({
     </>
   );
 };
-
-export default KeyObject;

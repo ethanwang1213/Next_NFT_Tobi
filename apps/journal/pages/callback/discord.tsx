@@ -20,12 +20,15 @@ const Discord = () => {
       if (!auth.currentUser) return;
 
       const token = await auth.currentUser.getIdToken();
-      const response = await fetch(`/backend/api/functions/discordOAuth?code=${code}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
+      const response = await fetch(
+        `/backend/api/functions/discordOAuth?code=${code}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        }
+      );
       if (response.status == 200) {
         return await response.json();
       } else {

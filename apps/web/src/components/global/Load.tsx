@@ -77,8 +77,11 @@ const LoadTransition: FC<props> = ({ isOpen, setOpen }) => {
   }, [isOpen]);
 
   return (
-    <div className="absolute top-0 bottom-0 left-0 right-0 overflow-hidden" ref={loadingRef}>
-      <Image src="/menu/load/home.png" fill alt="背景画像" priority />
+    <div
+      className="absolute top-0 bottom-0 left-0 right-0 overflow-hidden"
+      ref={loadingRef}
+    >
+      <Image src="/loading/home.png" fill alt="背景画像" priority />
       <div className="w-full h-full absolute flex items-center justify-center flex-col gap-8">
         <div className="h-[256px] w-24 rotate-[30deg]" ref={keyParentRef}>
           <div

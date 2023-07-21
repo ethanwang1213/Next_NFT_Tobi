@@ -1,10 +1,9 @@
 import { NextPage } from "next";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize, useMenuAnimation } from "ui";
 import isWideMode from "@/methods/isWideMode";
 import AboutSection from "@/components/about/AboutSection";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import about from "@/data/about.json";
-import { MenuAnimationContext } from "@/context/menuAnimation";
 import { gsap } from "gsap";
 import ContactHeader from "@/components/contact/ContactHeader";
 import AboutTitle from "@/components/about/AboutTitle";
@@ -15,8 +14,7 @@ const AboutUs: NextPage = () => {
   const { innerWidth, innerHeight } = useWindowSize();
 
   // メニュー鍵穴から来た時の、ページが開いたら画像をフェードアウトさせる処理
-  const { imageRef, requireFadeOut, setRequireFadeOut } =
-    useContext(MenuAnimationContext);
+  const { imageRef, requireFadeOut, setRequireFadeOut } = useMenuAnimation();
   useEffect(() => {
     if (!imageRef.current) return;
     if (requireFadeOut !== "ABOUT US") return;
