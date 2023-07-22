@@ -20,12 +20,12 @@ export const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-export const auth = getAuth(app);
+export const db = getFirestore();
+export const storage = getStorage();
+export const auth = getAuth();
 export const functions = getFunctions(app, "asia-northeast1");
 export const analytics =
-  app.name && typeof window !== "undefined" ? getAnalytics(app) : null;
+  app.name && typeof window !== "undefined" ? getAnalytics() : null;
 if (process.env.NEXT_PUBLIC_FIREBASE_USING_EMULATOR === "true") {
   connectAuthEmulator(auth, "http://localhost:9099");
   connectFirestoreEmulator(db, "localhost", 8080);
