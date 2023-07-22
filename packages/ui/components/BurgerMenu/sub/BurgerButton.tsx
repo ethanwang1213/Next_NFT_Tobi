@@ -5,16 +5,23 @@ import { ServiceName } from "../../../types";
 
 type Props = {
   serviceName: ServiceName;
+  isMenuVisible: boolean;
 };
 
 /**
  * バーガーボタンを表示するコンポーネント
  * @returns
  */
-export const BurgerButton: React.FC<Props> = ({ serviceName }) => {
-  const { isMenuOpen, setIsMenuOpen } = useShowBurger();
-  const toggle = () => {
-    setIsMenuOpen(!isMenuOpen);
+export const BurgerButton: React.FC<Props> = ({
+  serviceName,
+  isMenuVisible,
+}) => {
+  const { showBurger, isMenuOpen, setIsMenuOpen } = useShowBurger();
+
+  const handleClick = () => {
+    if (!isMenuVisible) {
+      setIsMenuOpen(true);
+    }
   };
 
   const textColor = () => {
@@ -27,16 +34,20 @@ export const BurgerButton: React.FC<Props> = ({ serviceName }) => {
   };
 
   return (
-    <button
-      className={`min-h-[48px] w-[48px] sm:w-[62px] h-[48px] sm:h-[62px] 
-        btn btn-circle btn-ghost 
-        text-[26px] sm:text-[32px] ${textColor()}`}
-      onClick={toggle}
-    >
-      <FontAwesomeIcon
-        icon={faBars}
-        className="w-full max-h-full h-[100px] w-[32px] h-[32px]"
-      />
-    </button>
+    <>
+      {showBurger && !isMenuOpen && (
+        <button
+          className={`min-h-[48px] w-[48px] sm:w-[62px] h-[48px] sm:h-[62px] 
+            btn btn-circle btn-ghost 
+            text-[26px] sm:text-[32px] ${textColor()}`}
+          onClick={handleClick}
+        >
+          <FontAwesomeIcon
+            icon={faBars}
+            className="w-full max-h-full h-[100px] w-[32px] h-[32px]"
+          />
+        </button>
+      )}
+    </>
   );
 };

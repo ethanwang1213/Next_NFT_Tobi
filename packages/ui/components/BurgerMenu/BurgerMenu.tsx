@@ -73,7 +73,7 @@ export const BurgerMenu: React.FC<Props> = ({
 
   return (
     <>
-      <BurgerButton serviceName={serviceName} />
+      <BurgerButton serviceName={serviceName} isMenuVisible={isVisible} />
       <CloseButton />
       <LoadingImage />
       {/* メニュー内容 */}
