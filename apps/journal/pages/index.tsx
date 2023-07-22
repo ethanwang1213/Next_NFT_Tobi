@@ -3,19 +3,15 @@ import Pc from "../components/Book/Pc";
 import Image from "next/image";
 import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
 import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
-import SoundToggle from "@/components/SoundToggle";
 import DebugText from "@/components/DebugText";
-// import FooterLoginGuide from "@/components/FooterLoginGuide";
-// import LoginGuideModal from "@/components/LoginGuideModal";
 import NFTViewModal from "@/components/NFTViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
-import { getAuth } from "@firebase/auth";
+import { auth } from "@/firebase/client";
 
 const Index = () => {
   const router = useRouter();
-  const auth = getAuth();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -47,8 +43,6 @@ const Index = () => {
       <EditProfileModal />
       <CropNewIconModal />
       <DebugText />
-      {/* <LoginGuideModal />
-      <FooterLoginGuide /> */}
       <NFTViewModal />
     </div>
   );
