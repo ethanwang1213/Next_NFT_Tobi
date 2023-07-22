@@ -4,10 +4,9 @@ import {
   RedeemStatus,
 } from "../../../../contexts/RedeemContextProvider";
 import { functions } from "@/firebase/client";
-import { httpsCallable } from "firebase/functions";
+import { httpsCallable } from "@firebase/functions";
 import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
 import useRecordNewActivity from "@/hooks/useRecordNewActivity";
-import { useAuth } from "@/contexts/AuthProvider";
 
 /**
  * 引き換えボタンのコンポーネント

@@ -1,5 +1,5 @@
 import { doc, setDoc } from "@firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes } from "@firebase/storage";
 import { auth, db, storage } from "@/../firebase/client";
 
 /**

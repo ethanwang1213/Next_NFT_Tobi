@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
+import { isSignInWithEmailLink, signInWithEmailLink } from "@firebase/auth";
 import { useEffect } from "react";
 import Image from "next/image";
 import { auth } from "@/firebase/client";
