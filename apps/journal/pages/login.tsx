@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
 import {
@@ -6,8 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   OAuthProvider,
-  signOut,
-} from "firebase/auth";
+} from "@firebase/auth";
 import { auth } from "@/firebase/client";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -36,7 +35,6 @@ const Login = () => {
 
   const {
     register,
-    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormType>({
