@@ -72,73 +72,71 @@ const DprController: React.FC = () => {
 
     document.addEventListener("click", handleOuterTagClick);
     return () => document.removeEventListener("click", handleOuterTagClick);
-  }, [containerRef.current]);
+  }, [containerRef.current, isOpen]);
 
   return (
     <>
-      {showBurger && !isMenuOpen && (
-        <>
-          {/** このdivは必要。無いとレイアウトが崩れる */}
-          <div ref={containerRef}>
-            <div className="dropdown dropdown-end dropdown-open font-tsukub-400">
-              <button
-                tabIndex={0}
-                className="btn btn-ghost btn-circle 
+      {/** このdivは必要。無いとレイアウトが崩れる */}
+      <div ref={containerRef}>
+        {showBurger && !isMenuOpen && (
+          <div className="dropdown dropdown-end dropdown-open font-tsukub-400">
+            <button
+              tabIndex={0}
+              className="btn btn-ghost btn-circle 
                   min-h-[48px] w-[48px] h-[48px] sm:w-[62px] sm:h-[62px] 
                   text-white px-3 sm:px-4 text-[20px] mix-blend-difference"
-                onClick={(ev) => {
-                  ev.stopPropagation();
-                  setIsOpen(!isOpen);
-                }}
-              >
-                <SliderIcon className="w-full h-full" />
-              </button>
-              <div
-                ref={dropRef}
-                tabIndex={0}
-                className={
-                  "dropdown-content  p-2 shadow bg-base-100 rounded-box w-52 z-10" +
-                  (isOpen ? "" : " hidden")
-                }
-              >
-                <p className="pl-2 text-sm">画質設定：</p>
-                <ul className="menu">
-                  <li onClick={() => setManual(0, 0.5)}>
-                    <div>
-                      {isCheckId === 0 && <FontAwesomeIcon icon={faCheck} />}
-                      <a>{"低"}</a>
-                    </div>
-                  </li>
-                  <li onClick={() => setManual(1, 1.0)}>
-                    <div>
-                      {isCheckId === 1 && <FontAwesomeIcon icon={faCheck} />}
-                      <a>{"中"}</a>
-                    </div>
-                  </li>
-                  <li onClick={() => setManual(2, 1.5)}>
-                    <div>
-                      {isCheckId === 2 && <FontAwesomeIcon icon={faCheck} />}
-                      <a>{"高"}</a>
-                    </div>
-                  </li>
-                  <li onClick={() => setManual(3, 2.0)}>
-                    <div>
-                      {isCheckId === 3 && <FontAwesomeIcon icon={faCheck} />}
-                      <a>{"最高"}</a>
-                    </div>
-                  </li>
-                  <li onClick={() => setAuto()} className="flex">
-                    <div>
-                      {isCheckId === 4 && <FontAwesomeIcon icon={faCheck} />}
-                      <a>{"自動調整"}</a>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+              onClick={(ev) => {
+                ev.stopPropagation();
+                setIsOpen(!isOpen);
+              }}
+            >
+              <SliderIcon className="w-full h-full" />
+            </button>
+            <div
+              ref={dropRef}
+              tabIndex={0}
+              className={
+                "dropdown-content  p-2 shadow bg-base-100 rounded-box w-52 z-10" +
+                (isOpen ? "" : " hidden")
+              }
+            >
+              <p className="pl-2 text-sm">画質設定：</p>
+              <ul className="menu">
+                <li onClick={() => setManual(0, 0.5)}>
+                  <div>
+                    {isCheckId === 0 && <FontAwesomeIcon icon={faCheck} />}
+                    <a>{"低"}</a>
+                  </div>
+                </li>
+                <li onClick={() => setManual(1, 1.0)}>
+                  <div>
+                    {isCheckId === 1 && <FontAwesomeIcon icon={faCheck} />}
+                    <a>{"中"}</a>
+                  </div>
+                </li>
+                <li onClick={() => setManual(2, 1.5)}>
+                  <div>
+                    {isCheckId === 2 && <FontAwesomeIcon icon={faCheck} />}
+                    <a>{"高"}</a>
+                  </div>
+                </li>
+                <li onClick={() => setManual(3, 2.0)}>
+                  <div>
+                    {isCheckId === 3 && <FontAwesomeIcon icon={faCheck} />}
+                    <a>{"最高"}</a>
+                  </div>
+                </li>
+                <li onClick={() => setAuto()} className="flex">
+                  <div>
+                    {isCheckId === 4 && <FontAwesomeIcon icon={faCheck} />}
+                    <a>{"自動調整"}</a>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
-        </>
-      )}
+        )}
+      </div>
     </>
   );
 };
