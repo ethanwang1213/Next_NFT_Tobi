@@ -9,7 +9,9 @@ import {
 } from "react";
 
 type showBurgerContextType = {
+  // メニュー開閉以外でのバーガーボタン表示/非表示の制御用
   showBurger: boolean;
+  // メニュー開閉状態の保存
   isMenuOpen: boolean;
   setShowBurger: Dispatch<SetStateAction<boolean>>;
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
