@@ -1,3 +1,4 @@
+import { auth } from "@/firebase/client";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
@@ -6,8 +7,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   OAuthProvider,
-} from "@firebase/auth";
-import { auth } from "@/firebase/client";
+} from "firebase/auth";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

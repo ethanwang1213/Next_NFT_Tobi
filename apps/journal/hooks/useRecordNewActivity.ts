@@ -2,7 +2,7 @@ import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/firebase/client";
 import { DBActivityRecord } from "@/types/type";
-import { Timestamp, addDoc, collection } from "@firebase/firestore";
+import { Timestamp, addDoc, collection } from "firebase/firestore/lite";
 
 /**
  * Activity Recordに新しいActivityを追加する処理を行うためのカスタムフック

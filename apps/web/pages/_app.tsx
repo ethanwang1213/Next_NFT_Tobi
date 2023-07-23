@@ -21,6 +21,7 @@ import { CanvasDprProvider } from "ui/contexts/canvasDprContext";
 import DprController from "@/components/saidan/ui/dpr/DprController";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import useHomeStore from "@/stores/homeStore";
+import Layout from "@/components/global/Layout";
 
 config.autoAddCss = false;
 
@@ -103,7 +104,9 @@ const App = ({ Component, pageProps }: AppProps) => {
                 }}
               >
                 <div className="relative w-full h-full">
-                  <Component {...pageProps} />
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
                   <MenuButtonLayout>
                     <BurgerMenu
                       serviceName="web"

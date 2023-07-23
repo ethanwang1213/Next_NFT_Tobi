@@ -1,3 +1,4 @@
+import { auth } from "@/firebase/client";
 import Mobile from "../components/Book/Mobile";
 import Pc from "../components/Book/Pc";
 import Image from "next/image";
@@ -8,17 +9,17 @@ import NFTViewModal from "@/components/NFTViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
-import { auth } from "@/firebase/client";
 
 const Index = () => {
   const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
+    if (!auth) return;
     if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && !auth.currentUser) {
       router.push("/login");
     }
-  }, [auth.currentUser]);
+  }, [auth]);
 
   return (
     <div

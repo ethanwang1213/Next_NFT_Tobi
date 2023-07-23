@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/firebase/client";
 import { HouseData } from "@/types/type";
-import { getDocs, collection, doc, getDoc } from "@firebase/firestore";
+import { getDocs, collection, doc, getDoc } from "firebase/firestore/lite";
 
 /**
  * communityのデータを扱うカスタムフック
