@@ -1,9 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
-import { Firestore, getFirestore } from "firebase/firestore/lite";
-import { FirebaseStorage, getStorage } from "firebase/storage";
-import { Auth, getAuth } from "firebase/auth";
-import { Analytics, getAnalytics } from "firebase/analytics";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore/lite";
+import { getStorage } from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -17,21 +17,10 @@ export const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-let app: FirebaseApp;
-let db: Firestore;
-let storage: FirebaseStorage;
-let auth: Auth;
-let analytics: Analytics;
-
-if (typeof window !== "undefined") {
-  // Initialize Firebase
-  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-  db = getFirestore(app);
-  storage = getStorage(app);
-  auth = getAuth(app);
-  if (app.name) {
-    analytics = getAnalytics(app);
-  }
-}
-
-export { app, db, storage, auth, analytics };
+// Initialize Firebase
+export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+export const analytics =
+  app.name && typeof window !== "undefined" ? getAnalytics(app) : null;
