@@ -7,7 +7,7 @@ import generateHash from "@/methods/saidan/generateHash";
 import * as _Jimp from "jimp";
 import ClosePolicyButton from "../policy/ClosePolicyButton";
 import { useAuth } from "@/context/auth";
-import { doc, updateDoc } from "@firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore/lite";
 import { db } from "../../../../../firebase/client";
 
 /**

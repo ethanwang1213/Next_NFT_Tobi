@@ -3,7 +3,7 @@ import {
   DocumentData,
   getDocs,
   QueryDocumentSnapshot,
-} from "@firebase/firestore";
+} from "firebase/firestore/lite";
 import { Canvas } from "@react-three/fiber";
 import {
   RefObject,

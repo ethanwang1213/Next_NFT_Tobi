@@ -1,4 +1,4 @@
-import { doc, setDoc } from "@firebase/firestore";
+import { doc, setDoc } from "firebase/firestore/lite";
 import { ref, uploadBytes } from "firebase/storage";
 import { auth, db, storage } from "@/../firebase/client";
 

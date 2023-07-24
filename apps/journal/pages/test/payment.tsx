@@ -1,9 +1,9 @@
+import { functions } from "@/firebase/client";
 import { NextPage } from "next";
 import { ethers } from "ethers";
 import * as fcl from "@blocto/fcl";
 import * as t from "@onflow/types";
 import { useEffect, useState } from "react";
-import { functions } from "@/firebase/client";
 import { httpsCallable } from "firebase/functions";
 
 type Item = {

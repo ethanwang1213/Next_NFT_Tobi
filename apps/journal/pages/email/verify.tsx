@@ -1,15 +1,11 @@
+import { auth } from "@/firebase/client";
 import { useRouter } from "next/router";
-import {
-  getAuth,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from "firebase/auth";
+import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { useEffect } from "react";
 import Image from "next/image";
 
 const Verify = () => {
   const router = useRouter();
-  const auth = getAuth();
 
   useEffect(() => {
     const email = window.localStorage.getItem("emailForSignIn");

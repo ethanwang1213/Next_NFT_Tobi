@@ -1,6 +1,6 @@
 import makeImageSquare from "@/methods/saidan/makeImageSquare";
 import useSaidanStore from "@/stores/saidanStore";
-import { getDoc, doc } from "@firebase/firestore";
+import { getDoc, doc } from "firebase/firestore/lite";
 import axios from "axios";
 import { auth, db } from "@/../firebase/client";
 import {
@@ -22,7 +22,8 @@ type Props = {
  * @returns
  */
 const AcstButton: React.FC<Props> = ({ imageId }) => {
-  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
+  const Jimp =
+    typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const closeBag = useSaidanStore((state) => state.closeBag);
   const allSrcs = useSaidanStore((state) => state.allSrcs);
   const setAcstModelSrc = useSaidanStore((state) => state.setAcstModelSrc);
