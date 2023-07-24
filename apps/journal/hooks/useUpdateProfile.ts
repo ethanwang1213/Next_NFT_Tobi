@@ -2,8 +2,8 @@ import { EditProfileValues } from "@/components/pages/ProfilePage/sub/EditProfil
 import { useAuth } from "@/contexts/AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import { storage, db } from "@/firebase/client";
-import { doc, setDoc } from "@firebase/firestore";
-import { deleteObject, ref, uploadBytes } from "@firebase/storage";
+import { doc, setDoc } from "firebase/firestore/lite";
+import { deleteObject, ref, uploadBytes } from "firebase/storage";
 import { Area } from "react-easy-crop";
 import * as _Jimp from "jimp";
 

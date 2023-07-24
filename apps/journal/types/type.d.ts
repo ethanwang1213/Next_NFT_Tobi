@@ -1,6 +1,6 @@
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Dispatch, ReactElement } from "react";
-import { Timestamp } from "@firebase/firestore";
+import { Timestamp } from "firebase/firestore/lite";
 
 export declare global {
   interface Window {

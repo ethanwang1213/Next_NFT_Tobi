@@ -12,9 +12,6 @@
     "fs": false
   },
   "dependencies": {
-    "@firebase/analytics": "^0.9.4",
-    "@firebase/auth": "^0.21.3",
-    "@firebase/firestore": "^3.8.3",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
@@ -38,7 +35,7 @@
     "eslint-import-resolver-typescript": "3.5.2",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-react": "7.31.10",
-    "firebase": "^9.17.1",
+    "firebase": "^10.1.0",
     "google-spreadsheet": "^3.3.0",
     "gsap": "npm:@gsap/business",
     "jimp": "0.22.8",

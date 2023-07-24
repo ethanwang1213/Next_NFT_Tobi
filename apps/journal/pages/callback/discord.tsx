@@ -1,13 +1,11 @@
+import { auth } from "@/firebase/client";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { createUser } from "@/firebase/firestore";
 import { useAuth } from "@/contexts/AuthProvider";
 import useSuccessDiscordOAuth from "@/hooks/useSuccessDiscordOAuth";
-import { getAuth } from "@firebase/auth";
-import { headers } from "next/dist/client/components/headers";
 
 const Discord = () => {
-  const auth = getAuth();
   const { user } = useAuth();
   const router = useRouter();
   const query = router.query;
