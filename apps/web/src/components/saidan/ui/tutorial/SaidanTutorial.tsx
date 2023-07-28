@@ -24,7 +24,7 @@ const SaidanTutorial = () => {
 
   const { setShowBurger } = useShowBurger();
   useEffect(() => {
-    setShowBurger(tutorialPhase === "END");
+    setShowBurger(tutorialPhase === "TITLE" || tutorialPhase === "END");
     return () => {
       setShowBurger(true);
     };
