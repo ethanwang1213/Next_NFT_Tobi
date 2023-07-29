@@ -10,7 +10,10 @@ const SoundToggle: React.FC = () => {
 
   return (
     <div className="text-amber-950 text-center">
-      <label className="swap">
+      <label
+        className="swap btn btn-ghost btn-circle 
+          min-h-[48px] w-[48px] h-[48px] sm:w-[62px] sm:h-[62px] "
+      >
         <input
           type="checkbox"
           checked={!isMute.current}
