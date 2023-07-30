@@ -2,7 +2,7 @@ import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import MetadataViews from "../../contracts/core/MetadataViews.cdc"
 import HouseBadge from "../../contracts/HouseBadge.cdc"
 
-transaction(name: String, description: String, metaURI: String) {
+transaction(name: String, description: String) {
     let minter: &HouseBadge.Minter
     let receiver: Capability<&{NonFungibleToken.Receiver}>
     prepare(acct: AuthAccount) {
@@ -17,6 +17,6 @@ transaction(name: String, description: String, metaURI: String) {
     }
     execute {
         // let minter = self.minter.borrow() ?? panic("Could not borrow receiver capability (maybe receiver not configured?)")
-        self.minter.mintTo(creator: self.receiver, metadata: {"name": name, "description": description, "metaURI": metaURI})
+        self.minter.mintTo(creator: self.receiver, metadata: {"name": name, "description": description})
     }
 }

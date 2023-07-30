@@ -119,14 +119,20 @@ pub contract HouseBadge: NonFungibleToken {
 
     pub resource Minter {
         pub fun mintTo(creator: Capability<&{NonFungibleToken.Receiver}>, metadata: {String:String}): &NonFungibleToken.NFT {
+            let id = HouseBadge.totalSupply.toString()
+            let meta = {
+                "name": metadata["name"] ?? "",
+                "description": metadata["description"] ?? "",
+                "metaURI": "https://nft.tobiratory.com/housebadge/metadata/".concat(id)
+            };
             let token <- create NFT(
                 id: HouseBadge.totalSupply,
                 creator: creator.address,
-                metadata: metadata
+                metadata: meta
             )
             HouseBadge.totalSupply = HouseBadge.totalSupply + 1
             let tokenRef = &token as &NonFungibleToken.NFT
-            emit Mint(id: token.id, creator: creator.address, metadata: metadata, totalSupply: HouseBadge.totalSupply)
+            emit Mint(id: token.id, creator: creator.address, metadata: meta, totalSupply: HouseBadge.totalSupply)
             creator.borrow()!.deposit(token: <- token)
             return tokenRef
         }
