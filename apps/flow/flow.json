@@ -100,7 +100,7 @@
 	},
 	"deployments": {
 		"emulator": {
-			"emulator-account": ["FungibleToken", "NonFungibleToken", "MetadataViews", "TobiraNeko", "HouseBadge"],
+			"emulator-account": ["FungibleToken", "NonFungibleToken", "MetadataViews", "TobiraNeko", "HouseBadge"]
 		},
 		"testnet": {
 			"testnetAccount3": ["TobiraNeko", "HouseBadge"]
