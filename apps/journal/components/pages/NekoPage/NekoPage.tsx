@@ -22,8 +22,8 @@ const NekoPage: React.FC<Props> = ({ pageNum }) => {
 
   return (
     <>
-      <div className={`hidden sm:block h-full sm:flex sm:flex-col`}>
-        <NFTPageTitle isShown={pageNum % 2 === 0} title={"TOBIRA NEKO"} />
+      <div className="hidden sm:block h-full sm:flex sm:flex-col">
+        <NFTPageTitle isShown={pageNum % 2 === 0} title="TOBIRA NEKO" />
         {nekoLength === 0 && pageNum === 0 ? (
           <div className="p-5 grow grid content-center">
             <p className="text-center text-4xl text-accent/50 font-bold">
@@ -36,7 +36,7 @@ const NekoPage: React.FC<Props> = ({ pageNum }) => {
           </div>
         )}
       </div>
-      <div className={`block sm:hidden h-full`}>
+      <div className="block sm:hidden h-full">
         <NekoSwiper />
       </div>
     </>

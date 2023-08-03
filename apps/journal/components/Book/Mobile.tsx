@@ -115,7 +115,7 @@ const Mobile = () => {
             className={`max-w-[calc(100dvw_-_1.5rem)] w-full h-full mr-3 relative`}
           >
             {/* ページによってpaddingを変更する */}
-            <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
+            <div className={`page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
             </div>
             <SuccessDiscordStamp isPc={false} />
