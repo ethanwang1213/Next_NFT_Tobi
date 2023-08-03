@@ -1,15 +1,5 @@
-import { Html, Head, Main, NextScript } from "next/document";
+import { CustomDocument } from "ui";
 
-const Document = () => {
-  return (
-    <Html>
-      <Head />
-      <body className="font-body">
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  );
-};
+const Document = () => <CustomDocument />;
 
 export default Document;
