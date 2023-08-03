@@ -13,14 +13,14 @@ const HowToLink: React.FC<Props> = ({ className }) => {
   return (
     <div className={className}>
       <div className="h-full align-bottom align-text-bottom ">
-        <Link
+        <a
           target="_blank"
           rel="noopener noreferrer"
           href="https://tobiratory.myshopify.com/pages/faq"
           className="link link-info w-full absolute bottom-0 right-0"
         >
           NFTを引き換えるには？
-        </Link>
+        </a>
       </div>
     </div>
   );
