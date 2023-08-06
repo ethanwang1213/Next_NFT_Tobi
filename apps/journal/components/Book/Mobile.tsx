@@ -14,6 +14,7 @@ import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
+import { isInPage } from "@/methods/isInPage";
 
 const Mobile = () => {
   const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
@@ -66,12 +67,13 @@ const Mobile = () => {
     setIsShowTag(false);
   }, [pages, pageNo]);
 
+  // ページによってpaddingを調節する
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
     if (no === profilePage.start) {
       return " pb-[20%] px-2";
-    } else if (no >= nftPage.start && no <= nftPage.end) {
+    } else if (isInPage(no, nftPage)) {
       return " px-0";
     } else {
       return "";

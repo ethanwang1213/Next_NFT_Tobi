@@ -13,23 +13,16 @@ export type tagType = {
   image: string | ReactElement;
 };
 
+export type PageIndexData = {
+  start: number;
+  end: number;
+};
+
 export type BookIndex = {
-  profilePage: {
-    start: number;
-    end: number;
-  };
-  nekoPage: {
-    start: number;
-    end: number;
-  };
-  nftPage: {
-    start: number;
-    end: number;
-  };
-  redeemPage: {
-    start: number;
-    end: number;
-  };
+  profilePage: PageIndexData;
+  nekoPage: PageIndexData;
+  nftPage: PageIndexData;
+  redeemPage: PageIndexData;
 };
 
 export type bookContext = {

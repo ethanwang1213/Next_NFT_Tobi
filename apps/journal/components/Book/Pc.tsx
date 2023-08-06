@@ -6,6 +6,7 @@ import Tag from "../Tag";
 import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
+import { isInPage } from "@/methods/isInPage";
 
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
@@ -143,20 +144,21 @@ const Pc = () => {
     transform: `scale(${pageScale})`,
   };
 
+  // ページによってpaddingを調節する
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
-    if (no >= profilePage.start && no <= profilePage.end) {
+    if (isInPage(no, profilePage)) {
       if (no % 2 === 0) {
         return " pb-0 pl-0 pr-4";
       } else {
         return " pl-4";
       }
-    } else if (no >= nekoPage.start && no <= nekoPage.end) {
+    } else if (isInPage(no, nekoPage)) {
       return " px-0";
-    } else if (no >= nftPage.start && no <= nftPage.end) {
+    } else if (isInPage(no, nftPage)) {
       return " px-0";
-    } else if (no >= redeemPage.start && no <= redeemPage.end) {
+    } else if (isInPage(no, redeemPage)) {
       if (no % 2 === 0) {
         return " pb-8";
       } else {
