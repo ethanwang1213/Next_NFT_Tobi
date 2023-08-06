@@ -11,7 +11,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const CheckNFTButton: React.FC<Props> = ({ className }) => {
+const CheckNftButton: React.FC<Props> = ({ className }) => {
   const { pageNo, bookIndex } = useContext(BookContext);
 
   const callback = () => {
@@ -26,4 +26,4 @@ const CheckNFTButton: React.FC<Props> = ({ className }) => {
   );
 };
 
-export default CheckNFTButton;
+export default CheckNftButton;

@@ -1,4 +1,4 @@
-import RedeemStatusSP from "./parent/RedeemStatusSp";
+import RedeemStatusSp from "./parent/RedeemStatusSp";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 import CustomerSupportButton from "../../CustomerSupportButton";
@@ -10,7 +10,7 @@ import CustomerSupportButton from "../../CustomerSupportButton";
  */
 const ServerErrorSp: React.FC = () => {
   return (
-    <RedeemStatusSP
+    <RedeemStatusSp
       icon={<CautionIcon className={"w-[54%] h-full"} />}
       title={"Error"}
       titleSize={34}

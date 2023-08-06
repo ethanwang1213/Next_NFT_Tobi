@@ -9,7 +9,7 @@ import { useContext } from "react";
  * redeemページの右ページのPC表示用コンポーネント
  * @returns 
  */
-const RedeemPC1: React.FC = () => {
+const RedeemPc1: React.FC = () => {
   const { redeemStatus } = useContext(RedeemContext);
 
   return (
@@ -23,4 +23,4 @@ const RedeemPC1: React.FC = () => {
   );
 };
 
-export default RedeemPC1;
+export default RedeemPc1;

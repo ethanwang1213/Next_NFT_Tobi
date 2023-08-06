@@ -1,6 +1,6 @@
-import RedeemStatusSP from "./parent/RedeemStatusSp";
+import RedeemStatusSp from "./parent/RedeemStatusSp";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
-import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
+import CheckNftButton from "../../CloseModalButton/CheckNftButton";
 
 /**
  * スマホ表示モーダル内の
@@ -9,7 +9,7 @@ import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
  */
 const SuccessSp: React.FC = () => {
   return (
-    <RedeemStatusSP
+    <RedeemStatusSp
       icon={
         <div className="w-full flex justify-center">
           <FeatherCheckIcon className={"w-[60%] h-full"} />
@@ -18,7 +18,7 @@ const SuccessSp: React.FC = () => {
       title={"Success!!"}
       titleSize={36}
       description={
-        <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
+        <CheckNftButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
       }
     />
   );

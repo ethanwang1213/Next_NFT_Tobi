@@ -5,7 +5,7 @@ import Image from "next/image";
 import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
 import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
 import DebugText from "@/components/DebugText";
-import NFTViewModal from "@/components/NFTViewModal";
+import NftViewModal from "@/components/NftViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
@@ -44,7 +44,7 @@ const Index = () => {
       <EditProfileModal />
       <CropNewIconModal />
       <DebugText />
-      <NFTViewModal />
+      <NftViewModal />
     </div>
   );
 };

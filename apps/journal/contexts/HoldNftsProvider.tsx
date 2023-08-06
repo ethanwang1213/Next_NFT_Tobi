@@ -1,4 +1,7 @@
-import { HouseBadgeNFTData, NFTData } from "@/types/type";
+import {
+  HouseBadgeNftData as HouseBadgeNftData,
+  NftData as NftData,
+} from "@/types/type";
 import React, {
   ReactNode,
   createContext,
@@ -14,14 +17,14 @@ type Props = {
   children: ReactNode;
 };
 
-type HoldNFTsContextType = {
-  nekoNFTs: {
-    current: NFTData[];
-    set: React.Dispatch<React.SetStateAction<NFTData[]>>;
+type HoldNftsContextType = {
+  nekoNfts: {
+    current: NftData[];
+    set: React.Dispatch<React.SetStateAction<NftData[]>>;
   };
-  otherNFTs: {
-    current: (NFTData | HouseBadgeNFTData)[];
-    set: React.Dispatch<React.SetStateAction<(NFTData | HouseBadgeNFTData)[]>>;
+  otherNfts: {
+    current: (NftData | HouseBadgeNftData)[];
+    set: React.Dispatch<React.SetStateAction<(NftData | HouseBadgeNftData)[]>>;
   };
   shouldUpdate: {
     current: boolean;
@@ -33,8 +36,8 @@ type HoldNFTsContextType = {
   };
 };
 
-const HoldNFTsContext = createContext<HoldNFTsContextType>(
-  {} as HoldNFTsContextType
+const HoldNftsContext = createContext<HoldNftsContextType>(
+  {} as HoldNftsContextType
 );
 
 /**
@@ -42,23 +45,23 @@ const HoldNFTsContext = createContext<HoldNFTsContextType>(
  * @param param0
  * @returns
  */
-export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
-  const [nekoNFTs, setNekoNFTs] = useState<NFTData[]>([]);
-  const [otherNFTs, setOtherNFTs] = useState<(NFTData | HouseBadgeNFTData)[]>(
+export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
+  const [nekoNfts, setNekoNfts] = useState<NftData[]>([]);
+  const [otherNfts, setOtherNfts] = useState<(NftData | HouseBadgeNftData)[]>(
     []
   );
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const { user } = useAuth();
-  const { fetchNFTCollectionIds, fetchHoldNFTs } = useFetchNftDatas();
+  const { fetchNftCollectionIds, fetchHoldNfts } = useFetchNftDatas();
 
   const [viewingSrc, setViewingSrc] = useState<string>("");
 
   // TOBIRA NEKOのNFTを取得
   const loadNekos = async () => {
     if (!user || !user.email) return;
-    const nekos = await fetchHoldNFTs(
+    const nekos = await fetchHoldNfts(
       process.env["NEXT_PUBLIC_NEKO_NFT_ADDRESS"]
     );
     // 最新順にソート
@@ -68,35 +71,35 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
         a.acquisition_time.toDate().getTime()
       );
     });
-    setNekoNFTs(nekos);
+    setNekoNfts(nekos);
   };
 
   // 他のNFTを取得
-  const loadOtherNFTs = async () => {
+  const loadOtherNfts = async () => {
     if (!user || !user.email) return;
-    const ids = await fetchNFTCollectionIds();
+    const ids = await fetchNftCollectionIds();
 
-    const otherNFTs: (NFTData | HouseBadgeNFTData)[] = [];
+    const otherNfts: (NftData | HouseBadgeNftData)[] = [];
     await Promise.all(
       ids.map(async (id) => {
         if (id === process.env["NEXT_PUBLIC_NEKO_NFT_ADDRESS"]) return;
         if (id === process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"]) {
-          const nfts = (await fetchHoldNFTs(id)) as HouseBadgeNFTData[];
-          otherNFTs.push(...nfts);
+          const nfts = (await fetchHoldNfts(id)) as HouseBadgeNftData[];
+          otherNfts.push(...nfts);
         } else {
-          const nfts = (await fetchHoldNFTs(id)) as NFTData[];
-          otherNFTs.push(...nfts);
+          const nfts = (await fetchHoldNfts(id)) as NftData[];
+          otherNfts.push(...nfts);
         }
       })
     );
     // 最新順にソート
-    otherNFTs.sort((a, b) => {
+    otherNfts.sort((a, b) => {
       return (
         b.acquisition_time.toDate().getTime() -
         a.acquisition_time.toDate().getTime()
       );
     });
-    setOtherNFTs(otherNFTs);
+    setOtherNfts(otherNfts);
   };
 
   // 初期化処理。NFTのデータを取得
@@ -104,7 +107,7 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
     if (!user) return;
 
     loadNekos();
-    loadOtherNFTs();
+    loadOtherNfts();
   }, [user]);
 
   // NFTのデータを更新
@@ -114,20 +117,20 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
 
     if (shouldUpdate) {
       loadNekos();
-      loadOtherNFTs();
+      loadOtherNfts();
       setShouldUpdate(false);
     }
   }, [shouldUpdate]);
 
-  const holdNFTContextValue = useMemo<HoldNFTsContextType>(
+  const holdNftContextValue = useMemo<HoldNftsContextType>(
     () => ({
-      nekoNFTs: {
-        current: nekoNFTs,
-        set: setNekoNFTs,
+      nekoNfts: {
+        current: nekoNfts,
+        set: setNekoNfts,
       },
-      otherNFTs: {
-        current: otherNFTs,
-        set: setOtherNFTs,
+      otherNfts: {
+        current: otherNfts,
+        set: setOtherNfts,
       },
       shouldUpdate: {
         current: shouldUpdate,
@@ -139,22 +142,22 @@ export const HoldNFTsProvider: React.FC<Props> = ({ children }) => {
       },
     }),
     [
-      nekoNFTs,
-      otherNFTs,
+      nekoNfts,
+      otherNfts,
       shouldUpdate,
       viewingSrc,
-      setNekoNFTs,
-      setOtherNFTs,
+      setNekoNfts,
+      setOtherNfts,
       setShouldUpdate,
       setViewingSrc,
     ]
   );
 
   return (
-    <HoldNFTsContext.Provider value={holdNFTContextValue}>
+    <HoldNftsContext.Provider value={holdNftContextValue}>
       {children}
-    </HoldNFTsContext.Provider>
+    </HoldNftsContext.Provider>
   );
 };
 
-export const useHoldNFTs = () => useContext(HoldNFTsContext);
+export const useHoldNfts = () => useContext(HoldNftsContext);

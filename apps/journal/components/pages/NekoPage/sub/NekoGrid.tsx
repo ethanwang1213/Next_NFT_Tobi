@@ -1,6 +1,6 @@
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
-import NFTImage from "../../NFTPage/sub/NFTImage";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import NftImage from "../../NftPage/sub/NftImage";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 import { useCallback } from "react";
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
  * @returns
  */
 const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
-  const { nekoNFTs } = useHoldNFTs();
+  const { nekoNfts: nekoNfts } = useHoldNfts();
 
   const createImageContent = useCallback(
     (src: string, id: number) => (
@@ -23,7 +23,7 @@ const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
         key={id}
         className="hidden first:block sm:block w-full h-full grid content-center"
       >
-        <NFTImage src={src} alt={"TOBIRA NEKO"} />
+        <NftImage src={src} alt={"TOBIRA NEKO"} />
       </div>
     ),
     []
@@ -36,7 +36,7 @@ const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
         ? mockNekoSrcList
             .slice(pageNum * nekoLength, (pageNum + 1) * nekoLength)
             .map((v) => createImageContent(v.src, v.id))
-        : nekoNFTs.current
+        : nekoNfts.current
             .slice(pageNum * nekoLength, (pageNum + 1) * nekoLength)
             .map((v, i) => createImageContent(v.thumbnail, i))}
     </div>

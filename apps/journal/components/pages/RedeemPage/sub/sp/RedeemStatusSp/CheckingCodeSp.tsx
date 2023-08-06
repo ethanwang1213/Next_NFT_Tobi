@@ -1,5 +1,5 @@
 import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
-import RedeemStatusSP from "./parent/RedeemStatusSp";
+import RedeemStatusSp from "./parent/RedeemStatusSp";
 
 /**
  * スマホ表示モーダル内の
@@ -8,7 +8,7 @@ import RedeemStatusSP from "./parent/RedeemStatusSp";
  */
 const CheckingCodeSp: React.FC = () => {
   return (
-    <RedeemStatusSP
+    <RedeemStatusSp
       icon={
         <div className="w-full flex justify-center">
           <FeatherIcon className={"w-[68%] h-full"} />

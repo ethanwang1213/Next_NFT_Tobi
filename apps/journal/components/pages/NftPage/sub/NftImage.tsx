@@ -1,4 +1,4 @@
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 import Image from "next/image";
 
 type Props = {
@@ -12,15 +12,15 @@ type Props = {
  * @param param0
  * @returns {ReactElement} The `NFTImage` component
  */
-const NFTImage: React.FC<Props> = ({ src, alt }) => {
-  const { viewingSrc: viewingNFT } = useHoldNFTs();
+const NftImage: React.FC<Props> = ({ src, alt }) => {
+  const { viewingSrc } = useHoldNfts();
 
   return (
     <div className="w-full aspect-square sm:h-full">
       <label
         htmlFor="nft-view-modal"
         className="relative block w-full h-full"
-        onClick={() => viewingNFT.set(src)}
+        onClick={() => viewingSrc.set(src)}
       >
         <Image
           src={src}
@@ -34,4 +34,4 @@ const NFTImage: React.FC<Props> = ({ src, alt }) => {
   );
 };
 
-export default NFTImage;
+export default NftImage;

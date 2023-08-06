@@ -11,7 +11,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const NFTPageTitle: React.FC<Props> = ({ isShown, title }) => {
+const NftPageTitle: React.FC<Props> = ({ isShown, title }) => {
   return (
     <PageTitle
       isShown={isShown}
@@ -21,4 +21,4 @@ const NFTPageTitle: React.FC<Props> = ({ isShown, title }) => {
   );
 };
 
-export default NFTPageTitle;
+export default NftPageTitle;

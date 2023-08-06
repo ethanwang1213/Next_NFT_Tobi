@@ -15,7 +15,7 @@ type Props = {
  * @param param0
  * @returns
  */
-const RedeemStatusSP: React.FC<Props> = ({
+const RedeemStatusSp: React.FC<Props> = ({
   icon,
   title,
   titleSize,
@@ -53,8 +53,8 @@ const RedeemStatusSP: React.FC<Props> = ({
     </>
   );
 };
-RedeemStatusSP.defaultProps = {
+RedeemStatusSp.defaultProps = {
   isFade: false,
 };
 
-export default RedeemStatusSP;
+export default RedeemStatusSp;

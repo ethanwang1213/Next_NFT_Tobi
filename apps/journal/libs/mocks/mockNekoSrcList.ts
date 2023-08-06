@@ -1,6 +1,6 @@
-import { NFTSrc } from "../../types/NFTSrc";
+import { NftSrc } from "../../types/NftSrc";
 
-export const mockNekoSrcList: NFTSrc[] = [
+export const mockNekoSrcList: NftSrc[] = [
   {
     id: 0,
     src: "/journal/mocks/images/neko.png",

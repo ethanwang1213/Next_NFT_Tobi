@@ -5,7 +5,7 @@ import {
 } from "../../../../contexts/RedeemContextProvider";
 import { functions } from "@/firebase/client";
 import { httpsCallable } from "firebase/functions";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 import useRecordNewActivity from "@/hooks/useRecordNewActivity";
 
 /**
@@ -16,7 +16,7 @@ import useRecordNewActivity from "@/hooks/useRecordNewActivity";
 const RedeemButton: React.FC = () => {
   const { redeemStatus, inputCode, modalInputIsChecked, canRedeem } =
     useContext(RedeemContext);
-  const { shouldUpdate } = useHoldNFTs();
+  const { shouldUpdate } = useHoldNfts();
   const { recordNewActivity } = useRecordNewActivity();
 
   const onClick = () => {
