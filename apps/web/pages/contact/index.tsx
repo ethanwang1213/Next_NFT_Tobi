@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import SubmitModal from "@/components/contact/SubmitModal";
 import RecaptchaVisibleStyle from "@/components/styled-components/RecaptchaVisibleStyle";
 import BgPattern from "@/components/contact/BgPattern";
@@ -94,14 +94,15 @@ const Contact: NextPage = () => {
           <form className="contact-form-container-outer" onSubmit={onSubmit}>
             <div className="contact-form-container-inner">
               <div className="text-center mb-4">
-                <p className="text-white text-sm leading-6 tab:text-xl tab:leading-10">
+                <p className="text-white text-sm leading-6 sm:text-xl sm:leading-10">
                   こちらのフォームは
-                  <br className="tab:hidden" />
+                  <br className="sm:hidden" />
                   企業様用お問い合わせフォームです。
                   <br />
                   サービスに関するお問い合わせは
-                  <a 
-                    target="_blank" 
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
                     href="https://tbrnk.tobiratory.com/pages/contact/"
                     className="link link-info"
                   >

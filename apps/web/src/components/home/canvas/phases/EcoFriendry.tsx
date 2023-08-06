@@ -2,7 +2,7 @@ import { a, SpringValue, to, useSpring } from "@react-spring/three";
 import { useMemo, useState } from "react";
 import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import ImageModel from "../imageModel/ImageModel";
 
 type Props = {
@@ -222,7 +222,7 @@ const EcoPhase = ({ starts, ends }: Props) => {
         return (
           <AImageModel
             key={srcData.src}
-            src={getImgSrc(5, `${srcData.src}`, true)} // 素材が変わらないので第三引数isPCはtrue
+            src={getImgSrc(5, `${srcData.src}`, true)} // 素材が変わらないので第三引数isPcはtrue
             width={to(
               [ev, sv.to([0, 1], [0.8, 1])],
               (v1, v2) =>

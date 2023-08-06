@@ -6,16 +6,19 @@ const config = {
     "components/**/*.{js,ts,jsx,tsx}",
     "pages/**/*.{js,ts,jsx,tsx}",
     "contexts/**/*.{js,ts,jsx,tsx}",
+    "../../packages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     screens: {
       sm: "576px", // landscape phones
       md: "992px", // desktops
     },
-
     extend: {
       fontFamily: {
         body: ["fot-tsukubrdgothic-std", "sans-serif"],
+      },
+      colors: {
+        brown: "#894400",
       },
     },
   },

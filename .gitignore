@@ -35,3 +35,5 @@ yarn-error.log*
 
 .npmrc
 apps/journal/.env
+
+.idea/

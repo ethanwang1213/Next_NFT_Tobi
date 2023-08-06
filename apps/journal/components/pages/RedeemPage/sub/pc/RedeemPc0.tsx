@@ -7,7 +7,7 @@ import SelfData from "../SelfData";
  * redeemページの左ページのPC表示用コンポーネント
  * @returns
  */
-const RedeemPC0: React.FC = () => {
+const RedeemPc0: React.FC = () => {
   return (
     <div className="relative h-full pt-6 flex flex-col">
       <div className="mb-[76px]">
@@ -32,4 +32,4 @@ const RedeemPC0: React.FC = () => {
   );
 };
 
-export default RedeemPC0;
+export default RedeemPc0;

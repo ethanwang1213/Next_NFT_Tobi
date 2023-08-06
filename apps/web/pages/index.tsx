@@ -1,12 +1,11 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import allowScrollRule from "@/methods/global/allowScrollRule";
 import HomeWindow from "@/components/home/HomeWindow";
-import { MenuAnimationContext } from "@/context/menuAnimation";
+import { useMenuAnimation } from "ui";
 import { gsap } from "gsap";
 
 const Home = () => {
-
   // 特定の要素以外のスマホでのスクロールをロック
   const pageRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -20,27 +19,28 @@ const Home = () => {
   }, [pageRef.current]);
 
   // メニュー鍵穴から来た時の、ページが開いたら画像をフェードアウトさせる処理
-  const { imageRef, requireFadeOut, setRequireFadeOut } = useContext(MenuAnimationContext);
+  const { imageRef, requireFadeOut, setRequireFadeOut } = useMenuAnimation();
   useEffect(() => {
     if (!imageRef.current) return;
     if (requireFadeOut !== "HOME") return;
 
-    gsap.timeline()
+    gsap
+      .timeline()
       .to(imageRef.current, { opacity: 0, duration: 0.5 }, "+=1")
       .set(imageRef.current, { display: "none", pointerEvents: "none" })
       .add(() => {
         setRequireFadeOut("");
-      })
+      });
   }, [imageRef.current, requireFadeOut]);
-
 
   useEffect(() => {
     // !isLandscape && innerWidth < 520
   }, []);
 
-  return (<div className="w-full h-full overflow-y-hidden" ref={pageRef}>
-    <HomeWindow />
-  </div>
+  return (
+    <div className="w-full h-full overflow-y-hidden" ref={pageRef}>
+      <HomeWindow />
+    </div>
   );
 };
 

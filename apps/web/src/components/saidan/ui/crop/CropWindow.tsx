@@ -2,7 +2,7 @@ import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import useSaidanStore from "@/stores/saidanStore";
 import { CropData, CropperParams } from "@/types/PlacedItemData";
-import { doc, setDoc } from "@firebase/firestore";
+import { doc, setDoc } from "firebase/firestore/lite";
 import BadgeCrop from "./BadgeCrop";
 import PosterCrop from "./PosterCrop";
 import { auth, db } from "../../../../../firebase/client";

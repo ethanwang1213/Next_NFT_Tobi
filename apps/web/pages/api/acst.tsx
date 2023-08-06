@@ -1,4 +1,4 @@
-import { doc, setDoc, updateDoc } from "@firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore/lite";
 import { auth, db } from "@/../firebase/client";
 
 /**
@@ -28,9 +28,9 @@ export const updateFailedAcstRequestAt = async () => {
     const timestamp = Date.now();
 
     const ref = doc(db, `users/${uid}`);
-    updateDoc(ref, { failedAcstRequestAt: timestamp })
+    updateDoc(ref, { failedAcstRequestAt: timestamp });
   } catch (error) {
     console.log(error);
   }
   return null;
-}
+};

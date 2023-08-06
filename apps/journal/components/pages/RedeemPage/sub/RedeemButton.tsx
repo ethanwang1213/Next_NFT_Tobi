@@ -5,9 +5,8 @@ import {
 } from "../../../../contexts/RedeemContextProvider";
 import { functions } from "@/firebase/client";
 import { httpsCallable } from "firebase/functions";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 import useRecordNewActivity from "@/hooks/useRecordNewActivity";
-import { useAuth } from "@/contexts/AuthProvider";
 
 /**
  * 引き換えボタンのコンポーネント
@@ -17,7 +16,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 const RedeemButton: React.FC = () => {
   const { redeemStatus, inputCode, modalInputIsChecked, canRedeem } =
     useContext(RedeemContext);
-  const { shouldUpdate } = useHoldNFTs();
+  const { shouldUpdate } = useHoldNfts();
   const { recordNewActivity } = useRecordNewActivity();
 
   const onClick = () => {
@@ -47,7 +46,10 @@ const RedeemButton: React.FC = () => {
         })
         .catch((error) => {
           console.log(error);
-          if (error.code === "functions/not-found" || error.code === "functions/unavailable") {
+          if (
+            error.code === "functions/not-found" ||
+            error.code === "functions/unavailable"
+          ) {
             redeemStatus.set("INCORRECT");
           } else {
             redeemStatus.set("SERVER_ERROR");

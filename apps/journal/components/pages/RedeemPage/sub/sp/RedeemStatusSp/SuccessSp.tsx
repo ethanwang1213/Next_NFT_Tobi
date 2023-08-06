@@ -1,6 +1,6 @@
 import { DescriptionContainer, IconContainer, TitleContainer } from ".";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
-import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
+import CheckNftButton from "../../CloseModalButton/CheckNftButton";
 
 /**
  * スマホ表示モーダル内の
@@ -15,7 +15,7 @@ const SuccessSp: React.FC = () => {
       </IconContainer>
       <TitleContainer title={"Success!!"} titleSize={36} />
       <DescriptionContainer>
-        <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
+        <CheckNftButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
       </DescriptionContainer>
     </>
   );

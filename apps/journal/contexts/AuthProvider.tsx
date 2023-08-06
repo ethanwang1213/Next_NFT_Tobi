@@ -1,4 +1,4 @@
-import { signInAnonymously, onAuthStateChanged } from "@firebase/auth";
+import { signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import {
   Timestamp,
   addDoc,
@@ -7,7 +7,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
-} from "@firebase/firestore";
+} from "firebase/firestore/lite";
 import {
   createContext,
   ReactNode,

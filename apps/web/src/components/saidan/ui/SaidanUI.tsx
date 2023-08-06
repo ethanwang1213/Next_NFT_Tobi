@@ -11,7 +11,7 @@ import OtherButton from "./uiButton/OtherButton";
 import CropWindow from "./crop/CropWindow";
 import AcstFailedModal from "./acstModal/AcstFailedModal";
 import AcstAlreadyRequestedModal from "./acstModal/AcstAlreadyRequestedModal";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import isSpLandscape from "@/methods/home/isSpLandscape";
 import TermsModal from "./termsModal/TermsModal";
 

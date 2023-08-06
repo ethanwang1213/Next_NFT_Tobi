@@ -1,6 +1,6 @@
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Dispatch, ReactElement } from "react";
-import { Timestamp } from "@firebase/firestore";
+import { Timestamp } from "firebase/firestore/lite";
 
 export declare global {
   interface Window {
@@ -91,7 +91,7 @@ export type User = {
   characteristic?: Characteristic;
 };
 
-export type NFTData = {
+export type NftData = {
   collectionId: string;
   name: string;
   description?: string;
@@ -100,18 +100,18 @@ export type NFTData = {
   acquisition_method?: string;
 };
 
-export type HouseBadgeNFTData = NFTData & {
+export type HouseBadgeNftData = NftData & {
   house_type: string;
 };
 
-export type NFTCollection = {
+export type NftCollection = {
   hold: {
-    [tokenId: string]: NFTData;
+    [tokenId: string]: NftData;
   };
 };
 
-export type HoldingNFTs = {
-  [collection: string]: NFTCollection;
+export type HoldingNfts = {
+  [collection: string]: NftCollection;
 };
 
 export type LocalActivityRecord = {

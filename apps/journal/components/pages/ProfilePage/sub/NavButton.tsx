@@ -12,10 +12,8 @@ type Props = {
 const NavButton: React.FC<Props> = ({ label }) => {
   return (
     <div className="text-center">
-      <button className="w-12 aspect-square rounded-xl bg-[#894400]">
-        ボタン
-      </button>
-      <p className="flex justify-center pt-0 text-xs font-bold text-[#894400]">
+      <button className="w-12 aspect-square rounded-xl bg-brown">ボタン</button>
+      <p className="flex justify-center text-xs font-bold text-brown">
         {label}
       </p>
     </div>
