@@ -1,5 +1,5 @@
-import { signInAnonymously, onAuthStateChanged } from "@firebase/auth";
-import { doc, getDoc, setDoc } from "@firebase/firestore";
+import { signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore/lite";
 import {
   createContext,
   ReactNode,

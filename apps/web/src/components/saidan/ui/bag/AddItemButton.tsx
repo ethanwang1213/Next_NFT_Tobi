@@ -7,7 +7,7 @@ import generateHash from "@/methods/saidan/generateHash";
 import * as _Jimp from "jimp";
 import ClosePolicyButton from "../policy/ClosePolicyButton";
 import { useAuth } from "@/context/auth";
-import { doc, updateDoc } from "@firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore/lite";
 import { db } from "../../../../../firebase/client";
 
 /**
@@ -15,7 +15,8 @@ import { db } from "../../../../../firebase/client";
  * @returns
  */
 const AddItemButton = () => {
-  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
+  const Jimp =
+    typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const tutorialPhase = useSaidanStore((state) => state.tutorialPhase);
   const isSpotted = useSaidanStore((state) => state.isSpotted);
   const addNewSrc = useSaidanStore((state) => state.addNewSrc);
@@ -65,7 +66,7 @@ const AddItemButton = () => {
   const imageInputRef = useSaidanStore((state) => state.imageInputRef);
 
   const termsModalRef = useRef<HTMLDialogElement>(null);
-  const [height, setHeight] = useState<string>("90%");  
+  const [height, setHeight] = useState<string>("90%");
   const [disabled, setDisabled] = useState(true);
   const handleCheckChange = (ev: ChangeEvent<HTMLInputElement>) => {
     setDisabled(!ev.currentTarget.checked);
@@ -91,8 +92,8 @@ const AddItemButton = () => {
         className={`saidan-add-btn-container-outer
         ${
           tutorialPhase === "ADD_ITEM" && isSpotted
-          ? "saidan-add-btn-container-spotted"
-          : ""
+            ? "saidan-add-btn-container-spotted"
+            : ""
         }`}
       >
         <div className="saidan-add-btn-container-inner">
@@ -102,7 +103,7 @@ const AddItemButton = () => {
                 color="#515152"
                 className=" aspect-square w-full h-full"
                 viewBox="0 0 20 20"
-                />
+              />
               <input
                 className="hidden"
                 id="add-item"
@@ -113,53 +114,60 @@ const AddItemButton = () => {
                 onClick={() => {
                   if (isPolicyAccepted) return;
                   // openPolicy();
-                  console.log("open")
+                  console.log("open");
                   termsModalRef.current?.showModal();
-                  setHeight("100%")
+                  setHeight("100%");
                 }}
                 ref={inputRef}
-                />
+              />
             </div>
           </label>
         </div>
       </div>
       {/* Open the modal using ID.showModal() method */}
-      <dialog id="terms-modal" className="modal" ref={termsModalRef} 
+      <dialog
+        id="terms-modal"
+        className="modal"
+        ref={termsModalRef}
         onClose={() => {
           setHeight("90%");
-          if (isPolicyAccepted){
+          if (isPolicyAccepted) {
             imageInputRef?.current?.click();
           }
         }}
       >
-        <form 
-          method="dialog" 
-          className="modal-box w-full max-w-[800px] max-h-full h-full flex flex-col p-3 tab:py-4 tab:px-6 rounded-lg"
+        <form
+          method="dialog"
+          className="modal-box w-full max-w-[800px] max-h-full h-full flex flex-col p-3 sm:py-4 sm:px-6 rounded-lg"
         >
           <div className="policy-close-btn">
-            <ClosePolicyButton onClick={()=>{termsModalRef.current?.close()}}/>
+            <ClosePolicyButton
+              onClick={() => {
+                termsModalRef.current?.close();
+              }}
+            />
           </div>
           <div className="policy-document-container">
             <p className="policy-message">
               サービスのご利用には利用規約への同意が必要です。
             </p>
-            <div 
+            <div
               className="grow "
               style={{
                 WebkitOverflowScrolling: "touch",
                 overflowY: "auto",
               }}
               data-allowscroll="true"
-              >
+            >
               <iframe
                 id="policy-iframe"
                 src="/saidan/policy/policy.html"
-                className="policy-document" 
+                className="policy-document"
                 style={{
                   display: "block",
-                  height: height
+                  height: height,
                 }}
-                />
+              />
             </div>
           </div>
           <div className="policy-accept-container">
@@ -171,7 +179,7 @@ const AddItemButton = () => {
                     type="checkbox"
                     name="accept"
                     onChange={(ev) => handleCheckChange(ev)}
-                    />
+                  />
                 </div>
                 <label htmlFor="accept" className="policy-accept-check-text">
                   利用規約に同意する
@@ -181,7 +189,7 @@ const AddItemButton = () => {
                 disabled={disabled}
                 className="policy-accept-btn"
                 onClick={handleSubmit}
-                >
+              >
                 送信
               </button>
             </div>

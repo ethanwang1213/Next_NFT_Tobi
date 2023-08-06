@@ -2,7 +2,7 @@ import { RefObject, useEffect, useState } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import useSaidanStore from "@/stores/saidanStore";
 import isiOS from "@/methods/isiOS";
 import { TWEET_URL, TWEET_HASH_TAG } from "@/constants/saidanConstants";

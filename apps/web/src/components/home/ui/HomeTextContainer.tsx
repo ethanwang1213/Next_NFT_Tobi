@@ -1,6 +1,6 @@
 import { a } from "@react-spring/web";
 import useHomeStore from "@/stores/homeStore";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import ScrollDownGuide from "./ScrollDownGuide";
 import useHomeTextAnims from "@/hooks/useHomeTextAnims";
 import SectionContainer from "./SectionText/SectionContainer";
@@ -80,7 +80,7 @@ const HomeTextContainer = () => {
                       )
                     }
                     textChildren={
-                      <p className="pb-2 text-center leading-9 tab:leading-10">
+                      <p className="pb-2 text-center leading-9 sm:leading-10">
                         デジタルグッズはなぜ少ないのだろう？
                         <br />
                         所有している証明ができないから？

@@ -1,13 +1,12 @@
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { auth } from "@/firebase/client";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
 import {
-  getAuth,
   sendSignInLinkToEmail,
   GoogleAuthProvider,
   signInWithPopup,
   OAuthProvider,
-  signOut,
 } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -27,7 +26,6 @@ const Login = () => {
   const arcRef2 = useRef<HTMLDivElement>(null);
   const arcRef3 = useRef<HTMLDivElement>(null);
   const logoMobileRef = useRef<HTMLDivElement>(null);
-  const auth = getAuth();
   const router = useRouter();
   const emailModalRef = useRef<HTMLDialogElement>(null);
   const appleModalRef = useRef<HTMLDialogElement>(null);
@@ -37,7 +35,6 @@ const Login = () => {
 
   const {
     register,
-    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormType>({
@@ -47,7 +44,8 @@ const Login = () => {
   });
 
   // sign inボタンが押されたときに実行する関数
-  const signIn = handleSubmit(async (data) => {
+  const signIn = handleSubmit(async (data: LoginFormType) => {
+    if (!data) return;
     console.log("sign in");
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain (www.example.com) for this
@@ -205,7 +203,7 @@ const Login = () => {
       </div>
 
       <div
-        className="md:flex items-center justify-center relative top-0 left-0 w-screen h-screen hidden"
+        className="md:flex items-center justify-center relative top-0 left-0 w-[100dvw] h-[100dvh] hidden"
         ref={logoRef}
       >
         <div className="absolute h-[400px] w-[400px]">
@@ -222,7 +220,7 @@ const Login = () => {
           <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
         </div>
       </div>
-      <div className="flex items-center justify-center p-5 w-screen h-screen md:hidden">
+      <div className="flex items-center justify-center p-5 w-[100dvw] h-[100dvh] md:hidden">
         <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center">
           <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
           <div
@@ -242,7 +240,7 @@ const Login = () => {
       </div>
 
       <div
-        className="flex items-center justify-center absolute left-0 w-screen h-screen p-8 sm:p-10"
+        className="flex items-center justify-center absolute left-0 w-[100dvw] h-[100dvh] p-8 sm:p-10"
         ref={loginRef}
       >
         <form
@@ -431,18 +429,18 @@ const Login = () => {
             apple
             IDとTobiratoryの紐づけを解除し、&ldquo;メールを共有&rdquo;を選択して、ログインをお願いします。
           </p>
-            <a
-              href="https://support.apple.com/ja-jp/HT210426"
-              className="btn btn-link"
-            >
-              紐づけの解除方法はこちら
-            </a>
-            <a
-              href="https://support.apple.com/ja-jp/HT210425"
-              className="btn btn-link"
-            >
-              メールの非公開について詳しくはこちら
-            </a>
+          <a
+            href="https://support.apple.com/ja-jp/HT210426"
+            className="btn btn-link"
+          >
+            紐づけの解除方法はこちら
+          </a>
+          <a
+            href="https://support.apple.com/ja-jp/HT210425"
+            className="btn btn-link"
+          >
+            メールの非公開について詳しくはこちら
+          </a>
 
           <div className="modal-action">
             <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">

@@ -58,7 +58,7 @@ const PersonalIcon: React.FC = () => {
           </label>
         </div>
         {badgeSrc !== "" && (
-          <div className="absolute -bottom-1 right-0 w-[30%] aspect-square rounded-full bg-white border-white">
+          <div className="absolute -bottom-2 -right-2 w-1/3 aspect-square">
             <Image src={badgeSrc} alt="badge" fill />
           </div>
         )}

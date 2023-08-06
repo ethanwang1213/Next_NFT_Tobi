@@ -1,15 +1,13 @@
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import isSpLandscape from "@/methods/home/isSpLandscape";
 import { useEffect, useState } from "react";
 
-type Props = {};
-
 /**
  * スマホでの横向き表示禁止のメッセージを表示するコンポーネント
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-const ForbidLandcape: React.FC<Props> = ({ }) => {
+const ForbidLandcape: React.FC = () => {
   const { displayWidth, displayHeight } = useWindowSize();
   const [isForbiddenDeviceRot, setIsForbiddenDeviceRot] = useState(false);
 
@@ -27,7 +25,7 @@ const ForbidLandcape: React.FC<Props> = ({ }) => {
             className="modal-toggle"
             defaultChecked={isForbiddenDeviceRot}
           />
-          <div className="modal modal-bottom tab:modal-middle">
+          <div className="modal modal-bottom sm:modal-middle">
             <div className="modal-box flex justify-center bg-[#414142]">
               <h3 className="font-bold text-lg text-white m-4">
                 画面を縦向きにしてご覧ください

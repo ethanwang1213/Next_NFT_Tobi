@@ -17,7 +17,7 @@ import EndPhase from "./phases/EndPhase";
 import SkyBox from "./SkyBox";
 import useHomeCanvasAnims from "@/hooks/useHomeCanvasAnims";
 import useIsForward from "@/hooks/home/useIsForward";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import isSpLandscape from "@/methods/home/isSpLandscape";
 
 type Props = {
@@ -115,16 +115,14 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
             return (
               <>
                 <ASkyBox
-                  color={
-                    sv
-                      .to(
-                        [0, 0.3, 1],
-                        activeT1End
-                          ? ["white", "black", "black"]
-                          : ["black", "white", "white"]
-                      )
-                      .to((v) => v)
-                  }
+                  color={sv
+                    .to(
+                      [0, 0.3, 1],
+                      activeT1End
+                        ? ["white", "black", "black"]
+                        : ["black", "white", "white"]
+                    )
+                    .to((v) => v)}
                 />
                 <AAmbientLight
                   intensity={
@@ -171,11 +169,9 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
 
       {homePhase === "FREEDOM" && (
         <ASkyBox
-          color={
-            t3Ends[t3Ends.length - 1].ev
-              .to([0, 1], ["black", "white"])
-              .to((v) => v)
-          }
+          color={t3Ends[t3Ends.length - 1].ev
+            .to([0, 1], ["black", "white"])
+            .to((v) => v)}
         />
       )}
       {(homePhase === "FREEDOM" || homePhase === "FREE_TO_ECO") && (
@@ -195,21 +191,17 @@ const AnimationContainer = ({ planeWidth, planeHeight }: Props) => {
         homePhase === "ECO_FRIENDRY" ||
         homePhase === "ECO_TO_END") && (
         <ASkyBox
-          color={
-            t4Ends[t4Ends.length - 1].ev
-              .to([0, 0.6, 1], ["white", "#65BF5E", "#65BF5E"])
-              .to((v) => v)
-          }
+          color={t4Ends[t4Ends.length - 1].ev
+            .to([0, 0.6, 1], ["white", "#65BF5E", "#65BF5E"])
+            .to((v) => v)}
         />
       )}
 
       {homePhase === "END" && (
         <ASkyBox
-          color={
-            tEndStart
-              .to([0, 0.8, 1], ["#65BF5E", "black", "black"])
-              .to((v) => v)
-          }
+          color={tEndStart
+            .to([0, 0.8, 1], ["#65BF5E", "black", "black"])
+            .to((v) => v)}
         />
       )}
 

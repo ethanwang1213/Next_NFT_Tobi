@@ -1,10 +1,13 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp } from "@firebase/app";
-import { getFirestore, connectFirestoreEmulator } from "@firebase/firestore";
-import { connectStorageEmulator, getStorage } from "@firebase/storage";
-import { getAuth, connectAuthEmulator } from "@firebase/auth";
-import { getAnalytics } from "@firebase/analytics";
-import { getFunctions, connectFunctionsEmulator } from "@firebase/functions";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import {
+  getFirestore,
+  connectFirestoreEmulator,
+} from "firebase/firestore/lite";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getAnalytics } from "firebase/analytics";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -19,11 +22,11 @@ export const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-export const db = getFirestore();
-export const storage = getStorage();
-export const auth = getAuth();
+export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 export const functions = getFunctions(app, "asia-northeast1");
+export const storage = getStorage(app);
 export const analytics =
   app.name && typeof window !== "undefined" ? getAnalytics(app) : null;
 if (process.env.NEXT_PUBLIC_FIREBASE_USING_EMULATOR === "true") {

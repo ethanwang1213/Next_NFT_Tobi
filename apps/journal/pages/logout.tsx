@@ -1,4 +1,4 @@
-import { getAuth } from "firebase/auth";
+import { auth } from "@/firebase/client";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -6,7 +6,6 @@ import { useAuth } from "@/contexts/AuthProvider";
 
 const Logout = () => {
   const router = useRouter();
-  const auth = getAuth();
   const { user } = useAuth();
 
   useEffect(() => {

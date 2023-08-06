@@ -15,7 +15,7 @@ exports.handleOrdersPaid = functions.region(REGION).pubsub.topic(TOPIC_NAMES["or
   console.log(JSON.stringify(message.json));
   console.log(JSON.stringify(message.json.line_items));
   const order = {
-    email: message.json.email,
+    email: message.json.email.toLowerCase(),
     name: message.json.name,
   };
   const items = message.json.line_items.map((item: any): Item => {

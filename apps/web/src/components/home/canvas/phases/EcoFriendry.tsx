@@ -2,7 +2,7 @@ import { a, SpringValue, to, useSpring } from "@react-spring/three";
 import { useMemo, useState } from "react";
 import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import ImageModel from "../imageModel/ImageModel";
 
 type Props = {
