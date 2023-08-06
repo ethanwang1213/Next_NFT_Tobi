@@ -1,9 +1,8 @@
-import TypeValueLine from "./parent/TypeValueLine";
+import TypeValueLine from ".";
 
 type Props = {
   lineType: string;
   lineValue: string;
-  hidable?: boolean;
 };
 
 /**
@@ -11,22 +10,11 @@ type Props = {
  * @param param0
  * @returns
  */
-const ActivityRecordLine: React.FC<Props> = ({
-  lineType,
-  lineValue,
-  hidable,
-}) => {
+const ActivityRecordLine: React.FC<Props> = ({ lineType, lineValue }) => {
   return (
-    <TypeValueLine
-      lineType={lineType}
-      lineValue={lineValue}
-      hidable={hidable}
-      classNames={{
-        container: "text-xs sm:text-xl text-primary font-normal sm:font-bold",
-        type: "",
-        value: "",
-      }}
-    />
+    <div className="text-xs sm:text-xl text-primary font-normal sm:font-bold">
+      <TypeValueLine lineType={lineType} lineValue={lineValue} />
+    </div>
   );
 };
 

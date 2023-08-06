@@ -1,4 +1,4 @@
-import RedeemStatusSp from "./parent/RedeemStatusSp";
+import { DescriptionContainer, IconContainer, TitleContainer } from ".";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 import CustomerSupportButton from "../../CustomerSupportButton";
@@ -10,23 +10,23 @@ import CustomerSupportButton from "../../CustomerSupportButton";
  */
 const ServerErrorSp: React.FC = () => {
   return (
-    <RedeemStatusSp
-      icon={<CautionIcon className={"w-[54%] h-full"} />}
-      title={"Error"}
-      titleSize={34}
-      description={
+    <>
+      <IconContainer>
+        <CautionIcon className={"w-[54%] h-full"} />
+      </IconContainer>
+      <TitleContainer title={"Error"} titleSize={34} />
+      <DescriptionContainer>
         <div>
-          <p className="font-bold text-error grid content-center mt-1 mb-6 text-[17px]">
-            <span>
-              {"予期せぬエラーが発生しました。"}
-              <br />
+          <div className="font-bold text-error grid content-center mt-1 mb-6 text-[17px]">
+            <p>{"予期せぬエラーが発生しました。"}</p>
+            <p>
               <CustomerSupportButton
                 className="link link-error"
                 text="カスタマーサポート"
               />
               {"にお問い合わせください。"}
-            </span>
-          </p>
+            </p>
+          </div>
           <CustomerSupportButton
             className="btn btn-secondary btn-md btn-circle text-lg w-[88%] mb-6 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]"
             text="お問い合わせ"
@@ -36,8 +36,8 @@ const ServerErrorSp: React.FC = () => {
             text="もう一度試す"
           />
         </div>
-      }
-    />
+      </DescriptionContainer>
+    </>
   );
 };
 

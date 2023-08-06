@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import HidableText from "../../../HidableWord";
+import HidableText from "../../../HidableText";
 
 type Props = {
   dataType: string;

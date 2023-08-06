@@ -1,5 +1,5 @@
-import RedeemStatusPc from "./parent/RedeemStatusPc";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
+import { IconContainer, TitleContainer, DescriptionContainer } from ".";
 
 /**
  * PC表示右ページの
@@ -8,16 +8,17 @@ import CautionIcon from "../../../../../../public/images/icon/caution_journal.sv
  */
 const IncorrectPc: React.FC = () => {
   return (
-    <RedeemStatusPc
-      icon={<CautionIcon className={"w-[40%] h-full"} />}
-      title={"Error"}
-      titleSize={84}
-      description={
+    <>
+      <IconContainer>
+        <CautionIcon className={"w-[40%] h-full"} />
+      </IconContainer>
+      <TitleContainer title={"Error"} titleSize={84} />
+      <DescriptionContainer>
         <p className="sm:text-[35px] font-bold text-error mt-2 text-warning">
           シリアルコードが正しくありません。
         </p>
-      }
-    />
+      </DescriptionContainer>
+    </>
   );
 };
 

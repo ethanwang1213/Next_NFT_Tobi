@@ -1,5 +1,5 @@
+import { DescriptionContainer, IconContainer, TitleContainer } from ".";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
-import RedeemStatusSp from "./parent/RedeemStatusSp";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 
 /**
@@ -9,11 +9,12 @@ import TryAgainButton from "../../CloseModalButton/TryAgainButton";
  */
 const IncorrectSp: React.FC = () => {
   return (
-    <RedeemStatusSp
-      icon={<CautionIcon className={"w-[54%] h-full"} />}
-      title={"Error"}
-      titleSize={34}
-      description={
+    <>
+      <IconContainer>
+        <CautionIcon className={"w-[54%] h-full"} />
+      </IconContainer>
+      <TitleContainer title={"Error"} titleSize={34} />
+      <DescriptionContainer>
         <div>
           <p className="font-bold text-error text-[17px] grid content-center mb-8">
             シリアルコードが正しくありません。
@@ -23,8 +24,8 @@ const IncorrectSp: React.FC = () => {
             text="戻る"
           />
         </div>
-      }
-    />
+      </DescriptionContainer>
+    </>
   );
 };
 

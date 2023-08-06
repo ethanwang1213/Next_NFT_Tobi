@@ -1,5 +1,5 @@
-import RedeemStatusPc from "./parent/RedeemStatusPc";
 import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
+import { IconContainer, TitleContainer } from ".";
 
 /**
  * PC表示右ページの
@@ -8,12 +8,12 @@ import FeatherIcon from "../../../../../../public/images/icon/feather_journal.sv
  */
 const CheckingCodePc: React.FC = () => {
   return (
-    <RedeemStatusPc
-      icon={<FeatherIcon className={"w-full h-full text-accent drop-shadow-lg"} />}
-      title={"Checking code..."}
-      titleSize={72}
-      isFade
-    />
+    <>
+      <IconContainer isFade>
+        <FeatherIcon className={"w-full h-full text-accent drop-shadow-lg"} />
+      </IconContainer>
+      <TitleContainer title={"Checking code..."} titleSize={72} />
+    </>
   );
 };
 
