@@ -2,13 +2,14 @@ import { EditProfileValues } from "@/components/pages/ProfilePage/sub/EditProfil
 import { useAuth } from "@/contexts/AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import { storage, db } from "@/firebase/client";
-import { doc, setDoc } from "@firebase/firestore";
-import { deleteObject, ref, uploadBytes } from "@firebase/storage";
+import { doc, setDoc } from "firebase/firestore/lite";
+import { deleteObject, ref, uploadBytes } from "firebase/storage";
 import { Area } from "react-easy-crop";
 import * as _Jimp from "jimp";
 
 const useUpdateProfile = () => {
-  const Jimp = typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
+  const Jimp =
+    typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
   const auth = useAuth();
   const { cropData } = useEditProfile();
 
@@ -118,6 +119,7 @@ const useUpdateProfile = () => {
     }
   };
 
+  // このhookのエントリポイント
   const updateProfile = async (formValues: EditProfileValues) => {
     const { iconUrl, newName } = formValues;
     // 誕生日のフォームをクリアしたときに、string型になってしまったりするので、

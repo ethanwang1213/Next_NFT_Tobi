@@ -2,7 +2,12 @@ import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/firebase/client";
 import { DBActivityRecord } from "@/types/type";
-import { Timestamp, collection, doc, writeBatch } from "@firebase/firestore";
+import {
+  Timestamp,
+  collection,
+  doc,
+  writeBatch,
+} from "firebase/firestore/lite";
 import { useMemo } from "react";
 
 /**

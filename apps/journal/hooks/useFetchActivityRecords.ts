@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/firebase/client";
 import { DBActivityRecord, LocalActivityRecord } from "@/types/type";
-import { getDocs, collection } from "@firebase/firestore";
+import { getDocs, collection } from "firebase/firestore/lite";
 
 /**
  * Activity Recordのデータをロードするためのカスタムフック

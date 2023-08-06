@@ -1,6 +1,7 @@
-import "../src/styles/globals.scss";
 import { default as NextApp } from "next/app";
 import type { AppProps, AppContext } from "next/app";
+import "react-easy-crop/react-easy-crop.css";
+import "../src/styles/globals.scss";
 import React, { useState } from "react";
 import Head from "next/head";
 import Script from "next/script";
@@ -8,25 +9,30 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { AuthProvider } from "@/context/auth";
-import ShowBurgerProvider from "@/context/showBurger";
-import MenuAnimationProvider from "@/context/menuAnimation";
-import BurgerMenu from "@/components/menu/BurgerMenu";
+import {
+  ShowBurgerProvider,
+  MenuAnimationProvider,
+  useWindowSize,
+  MenuButtonLayout,
+  BurgerMenu,
+} from "ui";
 import LoadTransition from "@/components/global/Load";
-import useWindowSize from "@/hooks/useWindowSize";
-import CanvasDprProvider from "@/context/canvasDpr";
+import { CanvasDprProvider } from "ui/contexts/canvasDprContext";
 import DprController from "@/components/saidan/ui/dpr/DprController";
 import basicAuthCheck from "@/methods/basicAuthCheck";
+import useHomeStore from "@/stores/homeStore";
 
 config.autoAddCss = false;
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [isLoad, setIsLoad] = useState<boolean>(true);
 
-  // const { mediaBorder, pcWidth, pcHeight } = globalData;
   const { displayWidth, displayHeight } = useWindowSize();
 
+  const initHomeStates = useHomeStore((state) => state.initStates);
+
   return (
-    <AuthProvider>
+    <>
       <Head>
         <title>Tobiratory</title>
         {/* OGP設定 */}
@@ -59,11 +65,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           href="/favicon-16x16.png"
         />
         <link rel="manifest" href="/site.webmanifest" />
-        <link
-          rel="mask-icon"
-          href="/safari-pinned-tab.svg"
-          color="#5bbad5"
-        />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="apple-mobile-web-app-title" content="Tobiratory" />
         <meta name="application-name" content="Tobiratory" />
         <meta name="msapplication-TileColor" content="#2b5797" />
@@ -81,40 +83,47 @@ const App = ({ Component, pageProps }: AppProps) => {
           h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
         })(document);`}
       </Script>
-      <ShowBurgerProvider>
-        <MenuAnimationProvider>
-          {/* メイン */}
-          <GoogleReCaptchaProvider
-            reCaptchaKey={process.env["NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY"]!}
-            language="ja"
-          >
-            <CanvasDprProvider>
-              {/* <div className="absolute inset-0 z-[-100] bg-black/40"> */}
-              <div
-                // className="app-tab-display"
-                className="overflow-x-hidden overflow-y-auto"
-                style={{
-                  // left: isVeryWide ? (innerWidth - pcWidth) / 2.0 : 0,
-                  // top: isVeryWide ? (innerHeight - pcHeight) / 2.0 : 0,
-                  width: displayWidth,
-                  height: displayHeight,
-                }}
-              >
-                <div className="relative w-full h-full">
-                  <Component {...pageProps} />
-                  <DprController />
-                  <BurgerMenu />
-                  {/* ローディング */}
-                  <LoadTransition isOpen={isLoad} setOpen={setIsLoad} />
+      <AuthProvider>
+        <ShowBurgerProvider>
+          <MenuAnimationProvider>
+            {/* メイン */}
+            <GoogleReCaptchaProvider
+              reCaptchaKey={process.env["NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY"]!}
+              language="ja"
+            >
+              <CanvasDprProvider>
+                {/* <div className="absolute inset-0 z-[-100] bg-black/40"> */}
+                <div
+                  // className="app-tab-display"
+                  className="overflow-x-hidden overflow-y-auto"
+                  style={{
+                    // left: isVeryWide ? (innerWidth - pcWidth) / 2.0 : 0,
+                    // top: isVeryWide ? (innerHeight - pcHeight) / 2.0 : 0,
+                    width: displayWidth,
+                    height: displayHeight,
+                  }}
+                >
+                  <div className="relative w-full h-full">
+                    <Component {...pageProps} />
+                    <MenuButtonLayout>
+                      <BurgerMenu
+                        serviceName="web"
+                        initHomeStates={initHomeStates}
+                      />
+                      <DprController />
+                    </MenuButtonLayout>
+                    {/* ローディング */}
+                    <LoadTransition isOpen={isLoad} setOpen={setIsLoad} />
+                  </div>
                 </div>
-              </div>
-              {/* </div> */}
-            </CanvasDprProvider>
-          </GoogleReCaptchaProvider>
-          {/* バーガーメニュー */}
-        </MenuAnimationProvider>
-      </ShowBurgerProvider>
-    </AuthProvider>
+                {/* </div> */}
+              </CanvasDprProvider>
+            </GoogleReCaptchaProvider>
+            {/* バーガーメニュー */}
+          </MenuAnimationProvider>
+        </ShowBurgerProvider>
+      </AuthProvider>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { doc, setDoc } from "@firebase/firestore";
+import { doc, setDoc } from "firebase/firestore/lite";
 import { ref, uploadBytes } from "firebase/storage";
 import { auth, db, storage } from "@/../firebase/client";
 
@@ -15,12 +15,14 @@ export const postSrcImage = async (srcId: string, image: File) => {
     await uploadBytes(storageRef, image);
     const url = `/proxy/users%2F${uid}%2Fitem%2F${srcId}%2Fimage.${ext}?alt=media`;
     const usersSrcRef = doc(db, `users/${uid}/src/${srcId}`);
-    setDoc(usersSrcRef, { imageSrc: url, createdAt: Date.now() }, { merge: true });
+    setDoc(
+      usersSrcRef,
+      { imageSrc: url, createdAt: Date.now() },
+      { merge: true }
+    );
     return url;
   } catch (error) {
     console.log(error);
   }
   return null;
 };
-
-// export const getItems = async () => { };

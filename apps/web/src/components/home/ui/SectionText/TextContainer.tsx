@@ -1,4 +1,4 @@
-import useWindowSize from "@/hooks/useWindowSize";
+import { useWindowSize } from "ui";
 import { ReactNode } from "react";
 
 type Props = {
@@ -8,30 +8,34 @@ type Props = {
 
 /**
  * home セクションのテキストのコンテナ
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const TextContainer: React.FC<Props> = ({ titleChildren, textChildren }) => {
   const { isWide } = useWindowSize();
 
-  return <>
-    <div
-      className={`${isWide
-        ? `home-section-title-container`
-        : `home-section-title-container-sp`
+  return (
+    <>
+      <div
+        className={`${
+          isWide
+            ? `home-section-title-container`
+            : `home-section-title-container-sp`
         }`}
-    >
-      {titleChildren}
-    </div>
-    <div
-      className={`${isWide
-        ? `home-section-text-container`
-        : `home-section-text-container-sp`
+      >
+        {titleChildren}
+      </div>
+      <div
+        className={`${
+          isWide
+            ? `home-section-text-container`
+            : `home-section-text-container-sp`
         }`}
-    >
-      {textChildren}
-    </div>
-  </>;
+      >
+        {textChildren}
+      </div>
+    </>
+  );
 };
 
 export default TextContainer;

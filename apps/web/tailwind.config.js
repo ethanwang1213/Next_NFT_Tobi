@@ -4,12 +4,12 @@ module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
+    "../../packages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     screens: {
-      tab: "520px",
-      pc: "960px",
-      hd: "1921px",
+      sm: "520px",
+      md: "960px",
     },
     extend: {
       fontFamily: {

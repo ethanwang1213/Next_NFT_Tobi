@@ -1,20 +1,24 @@
-import { CanvasDprContext } from "@/context/canvasDpr";
+import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
 import { round } from "lodash";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import SliderIcon from "../../../../../public/menu/resolution/slider_TOBIRAPOLIS.svg";
-import { ShowBurgerContext } from "@/context/showBurger";
+import { useShowBurger } from "ui/contexts/menu/showBurger";
 
+/**
+ * WebGLのdpr設定を表示するコンポーネント
+ * @returns
+ */
 const DprController: React.FC = () => {
   const { setDpr, isAutoAdjustMode, setIsAutoAdjustMode, monitorFactor } =
-    useContext(CanvasDprContext);
-
+    useCanvasDprContext();
   const [isOpen, setIsOpen] = useState(false);
   const [isCheckId, setIsCheckId] = useState(0);
   const dropRef = useRef<HTMLDivElement>(null);
-
-  const { showBurger } = useContext(ShowBurgerContext);
+  const { showBurger, isMenuOpen } = useShowBurger();
+  // 外部クリックでdpr設定を閉じるためのref
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // 初期化
   useEffect(() => {
@@ -31,6 +35,13 @@ const DprController: React.FC = () => {
     setDpr(round(minDpr + (maxDpr - minDpr) * monitorFactor, 1));
   }, [monitorFactor, isAutoAdjustMode]);
 
+  useEffect(() => {
+    if (!showBurger) {
+      setIsOpen(false);
+    }
+  }, [showBurger]);
+
+  // 固定値でdprを設定
   const setManual = (id: number, newDpr: number) => {
     setIsCheckId(id);
     setDpr(newDpr);
@@ -38,31 +49,42 @@ const DprController: React.FC = () => {
     setIsOpen(false);
   };
 
+  // パフォーマンスに応じて自動でdprを設定
   const setAuto = () => {
     setIsCheckId(4);
     setIsAutoAdjustMode(true);
     setIsOpen(false);
   };
 
-  return (
-    <div
-      className={
-        "absolute top-0 right-0 w-full h-full" +
-        (isOpen ? "" : " pointer-events-none")
-      }
-      onClick={(ev) => {
+  // 外部クリックでdpr設定を閉じる
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const handleOuterTagClick = (ev: MouseEvent) => {
+      if (
+        isOpen &&
+        containerRef.current &&
+        !containerRef.current.contains(ev.target as Node)
+      ) {
         setIsOpen(false);
-      }}
-    >
-      <div className="relative w-full h-full">
-        <div className="absolute top-16 tab:top-20 right-4 pointer-events-auto">
+      }
+    };
+
+    document.addEventListener("click", handleOuterTagClick);
+    return () => document.removeEventListener("click", handleOuterTagClick);
+  }, [containerRef.current, isOpen]);
+
+  return (
+    <>
+      {/** このdivは必要。無いとレイアウトが崩れる */}
+      <div ref={containerRef}>
+        {showBurger && !isMenuOpen && (
           <div className="dropdown dropdown-end dropdown-open font-tsukub-400">
             <button
               tabIndex={0}
-              className={
-                "btn btn-ghost btn-circle min-h-[48px] w-[48px] h-[48px] tab:w-[62px] tab:h-[62px] text-white px-3 tab:px-4 text-[20px] mix-blend-difference" +
-                (showBurger ? "" : " hidden")
-              }
+              className="btn btn-ghost btn-circle 
+                  min-h-[48px] w-[48px] h-[48px] sm:w-[62px] sm:h-[62px] 
+                  text-white px-3 sm:px-4 text-[20px] mix-blend-difference"
               onClick={(ev) => {
                 ev.stopPropagation();
                 setIsOpen(!isOpen);
@@ -74,7 +96,7 @@ const DprController: React.FC = () => {
               ref={dropRef}
               tabIndex={0}
               className={
-                "dropdown-content  p-2 shadow bg-base-100 rounded-box w-52" +
+                "dropdown-content  p-2 shadow bg-base-100 rounded-box w-52 z-10" +
                 (isOpen ? "" : " hidden")
               }
             >
@@ -113,9 +135,9 @@ const DprController: React.FC = () => {
               </ul>
             </div>
           </div>
-        </div>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 
