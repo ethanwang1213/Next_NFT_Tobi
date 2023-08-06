@@ -23,7 +23,7 @@ const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
         key={id}
         className="hidden first:block sm:block w-full h-full grid content-center"
       >
-        <NFTImage src={src} alt={"neko"} />
+        <NFTImage src={src} alt={"TOBIRA NEKO"} />
       </div>
     ),
     []
@@ -31,6 +31,7 @@ const NekoGrid: React.FC<Props> = ({ pageNum, nekoLength }) => {
 
   return (
     <div className="h-full grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 overflow-hidden gap-y-20 gap-x-4 place-items-center">
+      {/* pageNumで指定されたページのTOBIRA NEKO画像をリストから抽出して表示 */}
       {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
         ? mockNekoSrcList
             .slice(pageNum * nekoLength, (pageNum + 1) * nekoLength)

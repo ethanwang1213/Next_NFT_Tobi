@@ -10,7 +10,7 @@ type Props = {
  * NFT画像の表示用コンポーネント
  * TOBIRA NEKOの表示にも利用している
  * @param param0
- * @returns
+ * @returns {ReactElement} The `NFTImage` component
  */
 const NFTImage: React.FC<Props> = ({ src, alt }) => {
   const { viewingSrc: viewingNFT } = useHoldNFTs();
@@ -25,8 +25,8 @@ const NFTImage: React.FC<Props> = ({ src, alt }) => {
         <Image
           src={src}
           alt={alt}
-          fill
-          style={{ objectFit: "contain" }}
+          width={320}
+          height={320}
           className="drop-shadow-[-1px_0px_6px_rgba(0,0,0,0.4)] sm:drop-shadow-[-6px_0px_8px_rgba(0,0,0,0.4)]"
         />
       </label>
