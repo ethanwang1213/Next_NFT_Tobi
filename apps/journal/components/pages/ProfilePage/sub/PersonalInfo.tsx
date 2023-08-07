@@ -1,4 +1,4 @@
-import HidableText from "@/components/HidableWord";
+import HidableText from "@/components/HidableText";
 import { useMemo } from "react";
 
 type Props = {

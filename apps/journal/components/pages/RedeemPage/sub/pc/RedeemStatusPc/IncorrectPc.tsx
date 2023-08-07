@@ -1,5 +1,5 @@
-import RedeemStatusPC from "./parent/RedeemStatusPc";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
+import { IconContainer, TitleContainer, DescriptionContainer } from ".";
 import tailwindConfig from "@/tailwind.config.js";
 
 /**
@@ -11,16 +11,20 @@ const IncorrectPc: React.FC = () => {
   const { theme } = tailwindConfig;
 
   return (
-    <RedeemStatusPC
-      icon={<CautionIcon className={"w-[40%] h-full"} />}
-      title={"Error"}
-      titleSize={theme.extend.fontSize.redeemStatus.pc.error}
-      description={
+    <>
+      <IconContainer>
+        <CautionIcon className="w-[40%] h-full" />
+      </IconContainer>
+      <TitleContainer
+        title="Error"
+        titleSize={theme.extend.fontSize.redeemStatus.pc.error}
+      />
+      <DescriptionContainer>
         <p className="sm:text-[35px] font-bold text-error mt-2 text-warning">
           シリアルコードが正しくありません。
         </p>
-      }
-    />
+      </DescriptionContainer>
+    </>
   );
 };
 

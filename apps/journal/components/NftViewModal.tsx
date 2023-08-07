@@ -3,15 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useMemo, useState } from "react";
 import { BookContext } from "@/contexts/BookContextProvider";
 import Image from "next/image";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 
 /**
  * NFTを全画面表示で閲覧するためのモーダル
  * @returns
  */
-const NFTViewModal: React.FC = () => {
+const NftViewModal: React.FC = () => {
   const { pageNo, bookIndex } = useContext(BookContext);
-  const { viewingSrc } = useHoldNFTs();
+  const { viewingSrc } = useHoldNfts();
 
   const isNekoPage = useMemo(
     () =>
@@ -71,4 +71,4 @@ const NFTViewModal: React.FC = () => {
   );
 };
 
-export default NFTViewModal;
+export default NftViewModal;

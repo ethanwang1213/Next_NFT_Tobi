@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import Tag from "../Tag";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import NFTPage from "../pages/NFTPage/NFTPage";
+import NftPage from "../pages/NftPage/NftPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
@@ -59,7 +59,7 @@ const Mobile = () => {
 
     // スマホ表示が1ページで十分な場合、左右移動の矢印を非表示にする
     if (
-      pages[pageNo].type === NFTPage ||
+      pages[pageNo].type === NftPage ||
       pages[pageNo].type === NekoPage ||
       pages[pageNo].type === RedeemPage
     ) {

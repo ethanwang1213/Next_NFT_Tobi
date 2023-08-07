@@ -1,4 +1,4 @@
-import TypeValueLine from "./parent/TypeValueLine";
+import TypeValueLine from ".";
 
 type Props = {
   lineType: string;
@@ -11,22 +11,11 @@ type Props = {
  * @param param0
  * @returns
  */
-const CharacteristicLine: React.FC<Props> = ({
-  lineType,
-  lineValue,
-  hidable,
-}) => {
+const CharacteristicLine: React.FC<Props> = ({ lineType, lineValue }) => {
   return (
-    <TypeValueLine
-      lineType={lineType}
-      lineValue={lineValue}
-      hidable={hidable}
-      classNames={{
-        container: "text-sm sm:text-xl text-primary font-bold",
-        type: "",
-        value: "",
-      }}
-    />
+    <div className="text-sm sm:text-xl text-primary font-bold">
+      <TypeValueLine lineType={lineType} lineValue={lineValue} />
+    </div>
   );
 };
 

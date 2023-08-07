@@ -7,3 +7,5 @@ export {
 export { ShowBurgerProvider } from "./contexts/menu/showBurger";
 
 export { useWindowSize } from "./hooks/useWindowSize";
+
+export { CustomDocument } from "./organisms/CustomDocument";

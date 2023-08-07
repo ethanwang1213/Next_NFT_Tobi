@@ -1,5 +1,5 @@
+import { DescriptionContainer, IconContainer, TitleContainer } from ".";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
-import RedeemStatusSP from "./parent/RedeemStatusSp";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 import tailwindConfig from "@/tailwind.config.js";
 
@@ -12,11 +12,15 @@ const IncorrectSp: React.FC = () => {
   const { theme } = tailwindConfig;
 
   return (
-    <RedeemStatusSP
-      icon={<CautionIcon className={"w-[54%] h-full"} />}
-      title={"Error"}
-      titleSize={theme.extend.fontSize.redeemStatus.sp.error}
-      description={
+    <>
+      <IconContainer>
+        <CautionIcon className={"w-[54%] h-full"} />
+      </IconContainer>
+      <TitleContainer
+        title={"Error"}
+        titleSize={theme.extend.fontSize.redeemStatus.sp.error}
+      />
+      <DescriptionContainer>
         <div>
           <p className="font-bold text-error text-[17px] grid content-center mb-8">
             シリアルコードが正しくありません。
@@ -26,8 +30,8 @@ const IncorrectSp: React.FC = () => {
             text="戻る"
           />
         </div>
-      }
-    />
+      </DescriptionContainer>
+    </>
   );
 };
 

@@ -1,0 +1,19 @@
+type Props = {
+  children: React.ReactNode;
+};
+
+/**
+ * spでの引き換え処理のステータス表示の
+ * 説明部分のコンポーネント
+ * @param param0 
+ * @returns 
+ */
+const DescriptionContainer: React.FC<Props> = ({ children }) => {
+  return (
+    <div className="w-full grow min-h-[8px] flex justify-center">
+      {children}
+    </div>
+  );
+};
+
+export default DescriptionContainer;
