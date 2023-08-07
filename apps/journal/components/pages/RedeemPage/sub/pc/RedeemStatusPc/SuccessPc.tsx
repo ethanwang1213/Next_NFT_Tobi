@@ -1,6 +1,7 @@
 import { IconContainer, TitleContainer, DescriptionContainer } from ".";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNftButton from "../../CloseModalButton/CheckNftButton";
+import tailwindConfig from "@/tailwind.config.js";
 
 /**
  * PC表示右ページの
@@ -8,12 +9,17 @@ import CheckNftButton from "../../CloseModalButton/CheckNftButton";
  * @returns
  */
 const SuccessPc: React.FC = () => {
+  const { theme } = tailwindConfig;
+
   return (
     <>
       <IconContainer>
         <FeatherCheckIcon className={"w-full h-full "} />
       </IconContainer>
-      <TitleContainer title={"Success!!"} titleSize={84} />
+      <TitleContainer
+        title={"Success!!"}
+        titleSize={theme.extend.fontSize.redeemStatus.pc.success}
+      />
       <DescriptionContainer>
         <CheckNftButton
           className="btn btn-outline btn-lg btn-accent rounded-3xl text-3xl w-[60%] sm:h-[74px] sm:text-[32px] border-4 
