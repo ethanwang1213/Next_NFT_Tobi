@@ -1,6 +1,7 @@
 import RedeemStatusSP from "./parent/RedeemStatusSp";
 import FeatherCheckIcon from "../../../../../../public/images/icon/feathercheck_journal.svg";
 import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
+import tailwindConfig from "@/tailwind.config.js";
 
 /**
  * スマホ表示モーダル内の
@@ -8,6 +9,8 @@ import CheckNFTButton from "../../CloseModalButton/CheckNFTButton";
  * @returns
  */
 const SuccessSp: React.FC = () => {
+  const { theme } = tailwindConfig;
+
   return (
     <RedeemStatusSP
       icon={
@@ -16,7 +19,7 @@ const SuccessSp: React.FC = () => {
         </div>
       }
       title={"Success!!"}
-      titleSize={36}
+      titleSize={theme.extend.fontSize.redeemStatus.sp.success}
       description={
         <CheckNFTButton className="btn btn-secondary btn-md btn-circle text-lg w-[80%] mt-6 mb-2 drop-shadow-[0px_4px_4px_rgba(0,0,0,0.6)]" />
       }

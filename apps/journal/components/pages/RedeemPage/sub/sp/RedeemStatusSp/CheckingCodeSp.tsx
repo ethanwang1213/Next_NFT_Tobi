@@ -1,5 +1,6 @@
 import FeatherIcon from "../../../../../../public/images/icon/feather_journal.svg";
 import RedeemStatusSP from "./parent/RedeemStatusSp";
+import tailwindConfig from "@/tailwind.config.js";
 
 /**
  * スマホ表示モーダル内の
@@ -7,6 +8,8 @@ import RedeemStatusSP from "./parent/RedeemStatusSp";
  * @returns
  */
 const CheckingCodeSp: React.FC = () => {
+  const { theme } = tailwindConfig;
+
   return (
     <RedeemStatusSP
       icon={
@@ -15,7 +18,7 @@ const CheckingCodeSp: React.FC = () => {
         </div>
       }
       title={"Checking Code..."}
-      titleSize={26}
+      titleSize={theme.extend.fontSize.redeemStatus.sp.checking}
       isFade
     />
   );

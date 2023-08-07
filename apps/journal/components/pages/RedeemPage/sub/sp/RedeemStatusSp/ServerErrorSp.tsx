@@ -2,6 +2,7 @@ import RedeemStatusSP from "./parent/RedeemStatusSp";
 import CautionIcon from "../../../../../../public/images/icon/caution_journal.svg";
 import TryAgainButton from "../../CloseModalButton/TryAgainButton";
 import CustomerSupportButton from "../../CustomerSupportButton";
+import tailwindConfig from "@/tailwind.config.js";
 
 /**
  * スマホ表示モーダル内の
@@ -9,11 +10,13 @@ import CustomerSupportButton from "../../CustomerSupportButton";
  * @returns
  */
 const ServerErrorSp: React.FC = () => {
+  const { theme } = tailwindConfig;
+
   return (
     <RedeemStatusSP
       icon={<CautionIcon className={"w-[54%] h-full"} />}
       title={"Error"}
-      titleSize={34}
+      titleSize={theme.extend.fontSize.redeemStatus.sp.error}
       description={
         <div>
           <p className="font-bold text-error grid content-center mt-1 mb-6 text-[17px]">

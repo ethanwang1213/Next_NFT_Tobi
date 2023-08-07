@@ -17,6 +17,20 @@ const config = {
       fontFamily: {
         body: ["fot-tsukubrdgothic-std", "sans-serif"],
       },
+      fontSize: {
+        redeemStatus: {
+          pc: {
+            checking: 72,
+            success: 84,
+            error: 84,
+          },
+          sp: {
+            checking: 26,
+            success: 36,
+            error: 34,
+          },
+        },
+      },
     },
   },
   daisyui: {
