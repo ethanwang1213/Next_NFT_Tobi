@@ -1,5 +1,12 @@
 import Image from "next/image";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ReactElement,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -14,10 +21,14 @@ import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
-import { isInPage } from "@/methods/isInPage";
+import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 
+/**
+ * スマホでの本の表示用コンポーネント
+ * @returns {ReactElement} The `Mobile` component
+ */
 const Mobile = () => {
-  const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
+  const [isDisplayLeft, setIsDisplayLeft] = useState<Boolean>(true);
   const [isShowTag, setIsShowTag] = useState<Boolean>(false);
   const bookContext = useContext(BookContext);
   const pages = bookContext.pages.current;
@@ -38,8 +49,8 @@ const Mobile = () => {
 
   useEffect(() => {
     // ページ移動したときに左ページを表示する
-    if (!isLeftPage) {
-      setIsLeftPage(true);
+    if (!isDisplayLeft) {
+      setIsDisplayLeft(true);
     }
   }, [pageNo]);
 
@@ -71,7 +82,7 @@ const Mobile = () => {
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
-    if (no === profilePage.start) {
+    if (isInPage(no, profilePage) && isLeftPage(no)) {
       return " pb-[20%] px-2";
     } else if (isInPage(no, nftPage)) {
       return " px-0";
@@ -98,7 +109,7 @@ const Mobile = () => {
     <div className="overflow-hidden">
       <div
         className={`relative ${
-          isLeftPage ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
+          isDisplayLeft ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
         } w-[130dvh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
@@ -175,10 +186,10 @@ const Mobile = () => {
       {/* 矢印アイコンの表示 */}
       {isArrowShown && (
         <FontAwesomeIcon
-          icon={isLeftPage ? faCircleRight : faCircleLeft}
+          icon={isDisplayLeft ? faCircleRight : faCircleLeft}
           size="4x"
           className={`absolute ${footerBottom} right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right cursor-pointer`}
-          onClick={() => setIsLeftPage(!isLeftPage)}
+          onClick={() => setIsDisplayLeft(!isDisplayLeft)}
         />
       )}
     </div>

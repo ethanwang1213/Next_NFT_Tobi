@@ -6,8 +6,12 @@ import Tag from "../Tag";
 import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
-import { isInPage } from "@/methods/isInPage";
+import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 
+/**
+ * PCでの本の表示用コンポーネント
+ * @returns {ReactElement} The `Pc` component
+ */
 const Pc = () => {
   const bookImgRef = useRef<HTMLImageElement>(null);
   const { width: innerWidth, height: innerHeight } = useWindowSize();
@@ -149,7 +153,7 @@ const Pc = () => {
     if (!pages[no]) return "";
 
     if (isInPage(no, profilePage)) {
-      if (no % 2 === 0) {
+      if (isLeftPage(no)) {
         return " pb-0 pl-0 pr-4";
       } else {
         return " pl-4";
@@ -159,7 +163,7 @@ const Pc = () => {
     } else if (isInPage(no, nftPage)) {
       return " px-0";
     } else if (isInPage(no, redeemPage)) {
-      if (no % 2 === 0) {
+      if (isLeftPage(no)) {
         return " pb-8";
       } else {
         return "";
