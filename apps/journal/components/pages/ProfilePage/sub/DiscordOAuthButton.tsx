@@ -17,29 +17,22 @@ const DiscordOAuthButton: React.FC = () => {
   const pageNo = bookContext.pageNo.current;
   const { profilePage } = bookContext.bookIndex;
 
-  const createButton = useCallback(
-    (href: string, text: string) => (
-      <a
-        href={href}
-        className="
+  const createButton = (href: string, text: string) => (
+    <a
+      href={href}
+      className="
           btn btn-accent bg-transparent hover:bg-accent/60 
           border-none btn-circle h-[56px] sm:btn-lg 
           w-full max-w-[300px] sm:w-[70%] sm:max-w-[70%] relative 
           overflow-hidden shadow-lg drop-shadow-[0_10px_6px_rgba(117,58,0,0.6)] 
           pointer-events-auto"
-      >
-        <div className="bg-accent/90 rounded-full blur-[2px] w-full h-full absolute"></div>
-        <div className="text-white absolute pointer-events-none flex px-2">
-          <FontAwesomeIcon
-            icon={faDiscord}
-            size="2x"
-            className="mr-2 h-[40px]"
-          />
-          <p className="grid content-center sm:text-[20px]">{text}</p>
-        </div>
-      </a>
-    ),
-    []
+    >
+      <div className="bg-accent/90 rounded-full blur-[2px] w-full h-full absolute"></div>
+      <div className="text-white absolute pointer-events-none flex px-2">
+        <FontAwesomeIcon icon={faDiscord} size="2x" className="mr-2 h-[40px]" />
+        <p className="grid content-center sm:text-[20px]">{text}</p>
+      </div>
+    </a>
   );
 
   const debug = useDebug();
