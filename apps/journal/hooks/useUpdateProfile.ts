@@ -7,6 +7,16 @@ import { deleteObject, ref, uploadBytes } from "firebase/storage";
 import { Area } from "react-easy-crop";
 import * as _Jimp from "jimp";
 
+type PostingData = {
+  icon?: string;
+  name?: string;
+  birthday?: {
+    year?: number;
+    month?: number;
+    day?: number;
+  };
+};
+
 const useUpdateProfile = () => {
   const Jimp =
     typeof self !== "undefined" ? (self as any).Jimp || _Jimp : _Jimp;
@@ -40,6 +50,49 @@ const useUpdateProfile = () => {
     return img;
   };
 
+  const createPostingData = (
+    iconPath: string | null,
+    name: string,
+    year: number,
+    month: number,
+    day: number
+  ) => {
+    const postingData: PostingData = {};
+    let isAnyChanged = false;
+    // ユーザーアイコンurl
+    // 初めてアイコンを設定するときのみ保存（アイコンに変更があってもurlは同一）
+    if (iconPath) {
+      postingData["icon"] = `/proxy/${iconPath}?alt=media`;
+      isAnyChanged = true;
+    }
+    // ユーザー名
+    if (name !== auth.user.name) {
+      postingData["name"] = name;
+      isAnyChanged = true;
+    }
+    // 誕生日
+    if (
+      year !== auth.user.birthday?.year ||
+      month !== auth.user.birthday?.month ||
+      day !== auth.user.birthday?.day
+    ) {
+      postingData["birthday"] = {};
+      isAnyChanged = true;
+    }
+    if (year !== auth.user.birthday?.year) {
+      postingData["birthday"]["year"] = year;
+    }
+    if (month !== auth.user.birthday?.month) {
+      postingData["birthday"]["month"] = month;
+    }
+    if (day !== auth.user.birthday?.day) {
+      postingData["birthday"]["day"] = day;
+    }
+    // console.log(obj);
+
+    return { postingData, isAnyChanged };
+  };
+
   // 新しいアイコンをfirebase storageにアップロード
   const uploadNewIcon = async (icon: File) => {
     try {
@@ -50,6 +103,15 @@ const useUpdateProfile = () => {
       const storageRef = ref(storage, newPath);
       await uploadBytes(storageRef, icon);
 
+      return newPath.replaceAll("/", "%2F");
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+
+  const deleteOldIcon = async () => {
+    try {
       // 古いアイコンの削除
       if (auth.dbIconUrl !== "") {
         const oldPath = auth.dbIconUrl
@@ -58,64 +120,29 @@ const useUpdateProfile = () => {
         const oldRef = ref(storage, oldPath);
         await deleteObject(oldRef);
       }
-
-      const replacedNewPath = newPath.replaceAll("/", "%2F");
-      return replacedNewPath;
+      return true;
     } catch (error) {
       console.log(error);
-      return null;
+      return false;
     }
   };
 
   // 変更があったプロフィールについて、firestore上の情報を更新する
   const postProfile = async (
-    iconPath: string | null,
-    name: string,
-    year: number,
-    month: number,
-    day: number
+    postingData: PostingData,
+    isAnyChanged: boolean
   ) => {
     try {
       // プロフィール情報の更新
       const usersSrcRef = doc(db, `users/${auth.user.id}`);
-      const obj = {};
-      let isAnyChanged = false;
-      // ユーザーアイコンurl
-      // 初めてアイコンを設定するときのみ保存（アイコンに変更があってもurlは同一）
-      if (iconPath) {
-        obj["icon"] = `/proxy/${iconPath}?alt=media`;
-        isAnyChanged = true;
-      }
-      // ユーザー名
-      if (name !== auth.user.name) {
-        obj["name"] = name;
-        isAnyChanged = true;
-      }
-      // 誕生日
-      if (
-        year !== auth.user.birthday?.year ||
-        month !== auth.user.birthday?.month ||
-        day !== auth.user.birthday?.day
-      ) {
-        obj["birthday"] = {};
-        isAnyChanged = true;
-      }
-      if (year !== auth.user.birthday?.year) {
-        obj["birthday"]["year"] = year;
-      }
-      if (month !== auth.user.birthday?.month) {
-        obj["birthday"]["month"] = month;
-      }
-      if (day !== auth.user.birthday?.day) {
-        obj["birthday"]["day"] = day;
-      }
-      // console.log(obj);
-
       if (isAnyChanged) {
-        setDoc(usersSrcRef, obj, { merge: true });
+        setDoc(usersSrcRef, postingData, { merge: true });
+        return true;
       }
+      return false;
     } catch (error) {
       console.log(error);
+      return false;
     }
   };
 
@@ -138,45 +165,77 @@ const useUpdateProfile = () => {
       else day = parseInt(day);
     }
 
-    const isNewIcon = !!cropData.current;
+    const { postingData, isAnyChanged } = createPostingData(
+      null,
+      newName,
+      year,
+      month,
+      day
+    );
+    if (!isAnyChanged) return;
 
-    if (isNewIcon) {
-      // アイコン画像に変更があればアップロード
-      const scaled = await processNewIcon(iconUrl, cropData.current);
-      scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
-        const path = await uploadNewIcon(
-          new File([buf], "img.png", { type: "image/png" })
-        );
-        // データベース上のプロフィール情報を更新
-        await postProfile(path, newName, year, month, day);
-        // ローカルのプロフィール情報を更新
-        scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
-          auth.updateProfile(
-            src,
-            newName,
-            {
-              year: year,
-              month: month,
-              day: day,
-            },
-            path
+    try {
+      const isNewIcon = !!cropData.current;
+
+      if (isNewIcon) {
+        // アイコン画像に変更があればアップロード
+        // TODO: storageとdbの整合性は保っているが、storage上で古い画像削除がエラーになると、storageに無駄な画像が残ってしまう
+
+        const scaled = await processNewIcon(iconUrl, cropData.current);
+        scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
+          // storageに新しいアイコン画像データをアップロード
+          const path = await uploadNewIcon(
+            new File([buf], "img.png", { type: "image/png" })
           );
+          if (!path) {
+            throw new Error("failed to upload new icon");
+          }
+
+          // db上のプロフィール情報を更新(バッチ書き込みのため保留状態)
+          const posted = await postProfile(postingData, isAnyChanged);
+          if (!posted) {
+            throw new Error("failed to post profile, or there are no changes");
+          }
+
+          // storageから古いアイコン画像データを削除
+          // storageとdbの整合性を保つため、アイコンアップロードと情報更新が成功した後に削除をする
+          await deleteOldIcon();
+
+          // ローカルのプロフィール情報を更新
+          scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
+            auth.updateProfile(
+              src,
+              newName,
+              {
+                year: year,
+                month: month,
+                day: day,
+              },
+              path
+            );
+          });
         });
-      });
-    } else {
-      // データベース上のプロフィール情報を更新
-      await postProfile(null, newName, year, month, day);
-      // ローカルのプロフィール情報を更新
-      auth.updateProfile(
-        iconUrl,
-        newName,
-        {
-          year: year,
-          month: month,
-          day: day,
-        },
-        null
-      );
+      } else {
+        // db上のプロフィール情報を更新
+        const posted = await postProfile(postingData, isAnyChanged);
+        if (!posted) {
+          throw new Error("failed to post profile, or there are no changes");
+        }
+
+        // ローカルのプロフィール情報を更新
+        auth.updateProfile(
+          iconUrl,
+          newName,
+          {
+            year: year,
+            month: month,
+            day: day,
+          },
+          null
+        );
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

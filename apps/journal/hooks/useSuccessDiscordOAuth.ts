@@ -56,7 +56,9 @@ const useSuccessDiscordOAuth = () => {
     }
   };
 
+  // このhooksのエントリ－ポイント
   const updateOnSuccess = (discordId: string) => {
+    // TODO: なんか要らない気がするコレ
     if (joinAtExists) {
       // ローカルのTobiratory参加Timestampをセット
       auth.setJoinTobiratoryInfo(discordId, null);
@@ -65,19 +67,21 @@ const useSuccessDiscordOAuth = () => {
       const joinDate = new Date();
       const text = "TOBIRAPOLISのメンバーになった";
 
-      // ローカルのTobiratory参加Timestampをセット
-      auth.setJoinTobiratoryInfo(discordId, joinDate);
-      // ローカルのActivityRecordsにTobiratory参加の記録を追加
-      addActivityRecord({
-        text: text,
-        date: joinDate,
-      });
-
       // データベース上のTobiratory参加Timestampをセット
-      postOnSuccess(joinDate, {
+      const posted = postOnSuccess(joinDate, {
         text: text,
         timestamp: Timestamp.fromDate(joinDate),
       });
+
+      if (posted) {
+        // ローカルのTobiratory参加Timestampをセット
+        auth.setJoinTobiratoryInfo(discordId, joinDate);
+        // ローカルのActivityRecordsにTobiratory参加の記録を追加
+        addActivityRecord({
+          text: text,
+          date: joinDate,
+        });
+      }
     }
   };
 
