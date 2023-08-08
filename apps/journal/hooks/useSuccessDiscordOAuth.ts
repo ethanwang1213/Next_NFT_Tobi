@@ -58,7 +58,6 @@ const useSuccessDiscordOAuth = () => {
 
   // このhooksのエントリ－ポイント
   const updateOnSuccess = (discordId: string) => {
-    // TODO: なんか要らない気がするコレ
     if (joinAtExists) {
       // ローカルのTobiratory参加Timestampをセット
       auth.setJoinTobiratoryInfo(discordId, null);
