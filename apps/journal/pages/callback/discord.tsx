@@ -12,6 +12,22 @@ const Discord = () => {
   const { updateOnSuccess } = useSuccessDiscordOAuth();
 
   useEffect(() => {
+    if (process.env["NEXT_PUBLIC_DEBUG_MODE"] === "false") return;
+    if (!user || !router.isReady) return;
+
+    // データベースへの書き込みテスト
+    (async () => {
+      const mockId = "xxxxxxxxxxxxxxxxxxxxxxxxxx";
+      const result = await createUser(user.id, mockId);
+      if (result) {
+        updateOnSuccess(mockId);
+      }
+      router.push("/");
+    })();
+  }, [user, router]);
+
+  useEffect(() => {
+    if (process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true") return;
     if (!user) return;
 
     const getUserdata = async (code: string) => {
