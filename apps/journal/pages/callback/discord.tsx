@@ -5,17 +5,83 @@ import { createUser } from "@/firebase/firestore";
 import { useAuth } from "@/contexts/AuthProvider";
 import useSuccessDiscordOAuth from "@/hooks/useSuccessDiscordOAuth";
 
+/**
+ * Discord認証のcallback用ページ
+ * @returns
+ */
 const Discord = () => {
   const { user } = useAuth();
   const router = useRouter();
   const query = router.query;
   const { updateOnSuccess } = useSuccessDiscordOAuth();
 
+  // Discordのユーザーデータを取得
+  const getDiscordUserId: (code: string) => Promise<string> = async (
+    code: string
+  ) => {
+    if (!auth.currentUser) return;
+
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `/backend/api/functions/discordOAuth?code=${code}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      }
+    );
+    if (response.status == 200) {
+      const json = await response.json();
+      return json.id;
+    } else {
+      return null;
+    }
+  };
+
+  // callbackのqueryのcodeをもとにDiscordのユーザーidを取得し、dbに認証情報を書き込む
+  useEffect(() => {
+    if (process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true") return;
+    if (!user) return;
+
+    // 非同期に処理を実行
+    (async () => {
+      if (!router.isReady) return;
+
+      // queryよりcode取得
+      const code = query.code;
+      if (!code || typeof code !== "string") {
+        // not found code error
+        router.push("/");
+        return;
+      }
+
+      // Discordのユーザーid取得
+      const discordId = await getDiscordUserId(code);
+
+      // dbへ書き込み
+      if (discordId) {
+        const result = await createUser(user.id, discordId);
+        if (result) {
+          // success
+          updateOnSuccess(discordId);
+        } else {
+          // firestore error
+        }
+      } else {
+        // cant get discord user data error
+      }
+
+      // topへリダイレクト
+      router.push("/");
+    })();
+  }, [user, query, router]);
+
+  // テスト：dbへの書き込み
   useEffect(() => {
     if (process.env["NEXT_PUBLIC_DEBUG_MODE"] === "false") return;
     if (!user || !router.isReady) return;
 
-    // データベースへの書き込みテスト
     (async () => {
       const mockId = "xxxxxxxxxxxxxxxxxxxxxxxxxx";
       const result = await createUser(user.id, mockId);
@@ -25,57 +91,6 @@ const Discord = () => {
       router.push("/");
     })();
   }, [user, router]);
-
-  useEffect(() => {
-    if (process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true") return;
-    if (!user) return;
-
-    const getUserdata = async (code: string) => {
-      if (!auth.currentUser) return;
-
-      const token = await auth.currentUser.getIdToken();
-      const response = await fetch(
-        `/backend/api/functions/discordOAuth?code=${code}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        }
-      );
-      if (response.status == 200) {
-        return await response.json();
-      } else {
-        return null;
-      }
-    };
-
-    (async () => {
-      if (router.isReady) {
-        const code = query.code;
-        if (!code || typeof code !== "string") {
-          // not found code error
-          router.push("/");
-          return;
-        }
-        const userdata = await getUserdata(code);
-        if (userdata) {
-          const result = await createUser(user.id, userdata.id);
-          if (result) {
-            // success
-            router.push("/");
-            updateOnSuccess(userdata.id);
-          } else {
-            // firestore error
-            router.push("/");
-          }
-        } else {
-          // cant get discord user data error
-          router.push("/");
-        }
-      }
-    })();
-  }, [user, query, router]);
 
   return (
     <div className={"flex justify-center items-center"}>
