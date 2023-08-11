@@ -116,6 +116,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // 初めてのdiscord認証時のみに書き込む仕様なので
+  // 条件分岐は冗長かもとも思うが、予期しないデータの修正しても、
+  // 最初の参加日を保証するという意味では、この実装でいいのかもしれない
   const setJoinTobiratoryInfo = (discordId: string, joinDate: Date) => {
     const newUser = { ...user };
     newUser.discord = discordId;

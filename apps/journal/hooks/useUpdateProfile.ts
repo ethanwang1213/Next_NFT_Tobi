@@ -171,7 +171,6 @@ const useUpdateProfile = () => {
 
       if (isNewIcon) {
         // アイコン画像に変更があればアップロード
-        // TODO: storageとdbの整合性は保っているが、storage上で古い画像削除がエラーになると、storageに無駄な画像が残ってしまう
 
         const scaled = await processNewIcon(iconUrl, cropData.current);
         scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
@@ -196,6 +195,7 @@ const useUpdateProfile = () => {
           // storageとdbの整合性を保つため、アイコンアップロードと情報更新が成功した後に削除をする
           await deleteOldIcon();
           // deleteが失敗しても整合性は保たれるので、そのままローカルの更新を行う
+          // TODO: storageとdbの整合性は保っているが、storage上の古い画像削除がエラーになると、storageに無駄な画像が残ってしまう
 
           // ローカルのプロフィール情報を更新
           scaled.getBase64(Jimp.MIME_PNG, async (err, src) => {
