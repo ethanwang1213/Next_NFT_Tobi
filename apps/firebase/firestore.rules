@@ -19,6 +19,10 @@ service cloud.firestore {
     }
 
     // users以下のデータは、基本的にログイン中のユーザーのみ読み書き可能
+    // discordのidデータを書き込む場合は、
+    //   そのidがindexに存在しない、
+    //   または、自らに紐づくidがindexに存在することが必要
+    //   (indexへの書き込みと併用)
     match /users/{userId} {
       allow read: if isCurrentUser(userId);
       allow write: if isCurrentUser(userId) && (
@@ -59,6 +63,16 @@ service cloud.firestore {
       }
     }
 
+    // ユニーク制約用。書き込みは、
+    // ログイン中のユーザーかつ、userのdiscordのデータが空である場合のみ可能
+    // (ユーザーデータのdiscordへの書き込みと併用)
+    match /index/users/discord/{discord} {
+      allow write: if isCurrentUser(request.resource.data.userId) && 
+      get(
+        /databases/$(database)/documents/users/$(request.resource.data.userId)
+      ).data.discord == "";
+    }
+
     // Shopサイトでの注文情報を格納するコレクション
     // 注文情報は、管理者のみが読み書き可能
     match /orders/{orderId} {
@@ -69,12 +83,6 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
-    match /index/users/discord/{discord} {
-      allow write: if isCurrentUser(request.resource.data.userId) && 
-      get(
-        /databases/$(database)/documents/users/$(request.resource.data.userId)
-      ).data.discord == "";
-    }
 
   }
 }
