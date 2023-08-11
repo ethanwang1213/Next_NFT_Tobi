@@ -151,5 +151,4 @@ export const BANNER = {
 export const RESPONSIVE_BORDER = 520;
 
 export const TWEET_URL = "tobiratory.com";
-export const TWEET_HASH_TAG = "Tobiratory";
-// export const TWEET_TEXT = ''
+export const TWEET_HASH_TAG = "Tobiratory,SAIDAN";
