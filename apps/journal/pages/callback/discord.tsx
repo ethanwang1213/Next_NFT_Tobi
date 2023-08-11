@@ -74,7 +74,7 @@ const Discord = () => {
     if (!user || !router.isReady) return;
 
     (async () => {
-      const mockId = "zzz";
+      const mockId = "mockidxxxxxxxxxxxxxxxxxxxx";
       await updateDiscordOAuthData(mockId);
       router.push("/");
     })();
