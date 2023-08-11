@@ -1,9 +1,8 @@
 import { auth } from "@/firebase/client";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { createUser } from "@/firebase/firestore";
 import { useAuth } from "@/contexts/AuthProvider";
-import useSuccessDiscordOAuth from "@/hooks/useSuccessDiscordOAuth";
+import useUpdateDiscordOAuthData from "@/hooks/useUpdateDiscordOAuthData";
 
 /**
  * Discord認証のcallback用ページ
@@ -13,7 +12,7 @@ const Discord = () => {
   const { user } = useAuth();
   const router = useRouter();
   const query = router.query;
-  const { updateOnSuccess } = useSuccessDiscordOAuth();
+  const { updateDiscordOAuthData } = useUpdateDiscordOAuthData();
 
   // Discordのユーザーデータを取得
   const getDiscordUserId: (code: string) => Promise<string> = async (
@@ -61,15 +60,7 @@ const Discord = () => {
 
       // dbへ書き込み
       if (discordId) {
-        const result = await createUser(user.id, discordId);
-        if (result) {
-          // success
-          updateOnSuccess(discordId);
-        } else {
-          // firestore error
-        }
-      } else {
-        // cant get discord user data error
+        await updateDiscordOAuthData(discordId);
       }
 
       // topへリダイレクト
@@ -83,11 +74,8 @@ const Discord = () => {
     if (!user || !router.isReady) return;
 
     (async () => {
-      const mockId = "xxxxxxxxxxxxxxxxxxxxxxxxxx";
-      const result = await createUser(user.id, mockId);
-      if (result) {
-        updateOnSuccess(mockId);
-      }
+      const mockId = "zzz";
+      await updateDiscordOAuthData(mockId);
       router.push("/");
     })();
   }, [user, router]);
