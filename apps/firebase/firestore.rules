@@ -42,7 +42,7 @@ service cloud.firestore {
           )
         )
       )
-        
+      
       match /src/{srcId} {
         allow read, write: if isCurrentUser(userId);
       }
@@ -59,7 +59,13 @@ service cloud.firestore {
         allow read, write: if isCurrentUser(userId);
       }
       match /community/{communityId} {
-      	allow read;
+      	allow read: if isCurrentUser(userId);
+        // houseTypeのタイポ修正のために書き込み許可
+        allow write: if isCurrentUser(userId) && 
+        communityId == "house" && (
+        	request.resource.data.type == "hudor" || 
+          request.resource.data.type == "arismos"
+        );
       }
     }
 

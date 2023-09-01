@@ -1,7 +1,13 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/firebase/client";
 import { HouseData } from "@/types/type";
-import { getDocs, collection, doc, getDoc } from "firebase/firestore/lite";
+import {
+  getDocs,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore/lite";
 
 /**
  * communityのデータを扱うカスタムフック
@@ -29,7 +35,56 @@ const useCommunityData = () => {
     }
   };
 
-  return { fetchHouseData };
+  // firestoreに修正データを送信する
+  const postHouseType = async (fixedType: string) => {
+    try {
+      const ref = doc(db, "users", user.id, "community", "house");
+      await setDoc(ref, { type: fixedType }, { merge: true });
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  };
+
+  // タイポを修正する。修正されない場合はnullを返す
+  const fixHouseTypo = async (houseData: HouseData) => {
+    if (!houseData) {
+      return null;
+    }
+
+    let fixedHouseType = "";
+    // 修正するタイポはここで指定している
+    if (houseData.type === "hydor") {
+      fixedHouseType = "hudor";
+    } else if (houseData.type === "arithmos") {
+      fixedHouseType = "arismos";
+    }
+
+    if (fixedHouseType === "") return null;
+    // 修正を実行
+    const res = await postHouseType(fixedHouseType);
+    if (!res) return null;
+
+    return fixedHouseType;
+  };
+
+  // エントリーポイント
+  // HouseDataを取得し、必要であればHouseTypeのタイポを修正する
+  const loadHouseData = async () => {
+    // HouseDataのロード
+    const houseData = await fetchHouseData();
+    if (!houseData) return houseData;
+
+    // タイポを修正する
+    const fixedHouseType = await fixHouseTypo(houseData);
+    if (!!fixedHouseType) {
+      houseData.type = fixedHouseType;
+    }
+    return houseData;
+  };
+
+  return { loadHouseData };
 };
 
 export default useCommunityData;
