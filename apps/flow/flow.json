@@ -1,14 +1,20 @@
 {
 	"contracts": {
-		"NonFungibleToken": {
-			"source": "./cadence/contracts/core/NonFungibleToken.cdc",
+		"AchievementBadge": {
+			"source": "./cadence/contracts/AchievementBadge.cdc",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
-				"testnet": "631e88ae7f1d7c20",
-				"mainnet": "1d7e57aa55817448"
+				"testnet": "5e9ccdb91ff7ad93"
+			}
+		},
+		"FUSD": {
+			"source": "",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
 		"FlowToken": {
+			"source": "",
 			"aliases": {
 				"emulator": "0ae53cb6e3f42a79"
 			}
@@ -17,42 +23,47 @@
 			"source": "./cadence/contracts/core/FungibleToken.cdc",
 			"aliases": {
 				"emulator": "ee82856bf20e2aa6",
-				"testnet": "9a0766d93b6608b7",
-				"mainnet": "f233dcee88fe0abe"
+				"mainnet": "f233dcee88fe0abe",
+				"testnet": "9a0766d93b6608b7"
 			}
 		},
-		"FUSD": {
+		"HouseBadge": {
+			"source": "./cadence/contracts/HouseBadge.cdc",
 			"aliases": {
-				"emulator": "f8d6e0586b0a20c7"
+				"emulator": "f8d6e0586b0a20c7",
+				"testnet": "5e9ccdb91ff7ad93"
 			}
 		},
 		"MetadataViews": {
 			"source": "./cadence/contracts/core/MetadataViews.cdc",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
-				"testnet": "631e88ae7f1d7c20",
-				"mainnet": "1d7e57aa55817448"
-			}
-		},
-		"NFTStorefrontV2": {
-			"aliases": {
-				"emulator": "f8d6e0586b0a20c7"
+				"mainnet": "1d7e57aa55817448",
+				"testnet": "631e88ae7f1d7c20"
 			}
 		},
 		"NFTStorefront": {
+			"source": "",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"NFTStorefrontV2": {
+			"source": "",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"NonFungibleToken": {
+			"source": "./cadence/contracts/core/NonFungibleToken.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1d7e57aa55817448",
+				"testnet": "631e88ae7f1d7c20"
 			}
 		},
 		"TobiraNeko": {
 			"source": "./cadence/contracts/TobiraNeko.cdc",
-			"aliases": {
-				"emulator": "f8d6e0586b0a20c7",
-				"testnet": "5e9ccdb91ff7ad93"
-			}
-		},
-		"HouseBadge": {
-			"source": "./cadence/contracts/HouseBadge.cdc",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
 				"testnet": "5e9ccdb91ff7ad93"
@@ -73,40 +84,53 @@
 			"address": "01cf0e2f2f715450",
 			"key": "af81d22fdec3fa17e283255e8de1d78db0070ef17d461fd065efbeab5349f7ef"
 		},
-		"testnetAccount1": {
-			"address": "ba1d680383821b26",
-			"keys": "aab44332c5c035e01b503bb25d89691b59cd42910a4582ab7f6e78b8d8f0b1d4"
-		},
-		"testnetAccount2": {
-			"address": "8c361b0c76d7a2f3",
-			"keys": "6d18d80e7267a99621cda99a1c94bdcb882b13f171d161ac8f61a1f75bcce181"
-		},
-		"testnetAccount3": {
-			"address": "5e9ccdb91ff7ad93",
-			"keys": "7adf7c83a3eb630f3eb2e162172d9f0dda8516f6ce446e8d4a4108fc9d406e38"
-		},
 		"mainnetAccount1": {
 			"address": "e217638793f1e461",
-			"keys": [{
+			"key": {
 				"type": "hex",
 				"index": 3,
 				"signatureAlgorithm": "ECDSA_P256",
 				"hashAlgorithm": "SHA2_256",
-				"context": {
-					"privateKey": ""
-				}
-			}]
+				"privateKey": ""
+			}
+		},
+		"testnetAccount1": {
+			"address": "ba1d680383821b26",
+			"key": "aab44332c5c035e01b503bb25d89691b59cd42910a4582ab7f6e78b8d8f0b1d4"
+		},
+		"testnetAccount2": {
+			"address": "8c361b0c76d7a2f3",
+			"key": "6d18d80e7267a99621cda99a1c94bdcb882b13f171d161ac8f61a1f75bcce181"
+		},
+		"testnetAccount3": {
+			"address": "5e9ccdb91ff7ad93",
+			"key": "7adf7c83a3eb630f3eb2e162172d9f0dda8516f6ce446e8d4a4108fc9d406e38"
 		}
 	},
 	"deployments": {
 		"emulator": {
-			"emulator-account": ["FungibleToken", "NonFungibleToken", "MetadataViews", "TobiraNeko", "HouseBadge"]
-		},
-		"testnet": {
-			"testnetAccount3": ["TobiraNeko", "HouseBadge"]
+			"emulator-account": [
+				"FungibleToken",
+				"NonFungibleToken",
+				"MetadataViews",
+				"TobiraNeko",
+				"HouseBadge",
+				"AchievementBadge"
+			]
 		},
 		"mainnet": {
-			"mainnetAccount1": ["TobiraNeko", "HouseBadge"]
+			"mainnetAccount1": [
+				"TobiraNeko",
+				"HouseBadge",
+				"AchievementBadge"
+			]
+		},
+		"testnet": {
+			"testnetAccount3": [
+				"TobiraNeko",
+				"HouseBadge",
+				"AchievementBadge"
+			]
 		}
 	}
 }
