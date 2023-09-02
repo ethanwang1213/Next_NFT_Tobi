@@ -39,22 +39,22 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
   const { user } = useAuth();
   const { nekoNfts } = useHoldNfts();
-  const { fetchHouseData } = useCommunityData();
+  const { loadHouseData } = useCommunityData();
   const [houseData, setHouseData] = useState<HouseData>(null);
 
-  const loadHouseData = async () => {
+  const execLoadHouseData = async () => {
     if (!user || !user.email) return;
-    const houseData = await fetchHouseData();
+    const houseData = await loadHouseData();
     setHouseData(houseData);
   };
 
   useEffect(() => {
     if (!user) return;
-    loadHouseData();
+    execLoadHouseData();
   }, [user]);
 
   useEffect(() => {
-    // コミュニティ参加の実装が完了するまではDiscordOAuthButtonを非表示にする
+    // コミュニティ参加の実装が動作しなかったとき用
     if (process.env.NEXT_PUBLIC_IS_DISCORD_BUTTON_HIDDEN === "true") {
       setDisplayMode("NONE");
       return;

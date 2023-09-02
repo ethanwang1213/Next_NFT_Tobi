@@ -30,7 +30,10 @@ const PersonalIcon: React.FC = () => {
           process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"] &&
         "house_type" in nft &&
         houseData &&
-        nft.house_type === houseData.type
+        (nft.house_type === houseData.type ||
+          // NFTのスペルミスへの対応用
+          // TODO:NFTのスペルが修正されたら削除する
+          (nft.house_type === "arismos" && houseData.type === "arithmos"))
     );
 
     // 所属のハウスバッジが存在すればurlをセット
