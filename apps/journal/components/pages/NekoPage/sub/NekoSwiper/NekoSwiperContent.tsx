@@ -1,6 +1,6 @@
 import Image from "next/image";
-import NFTPageTitle from "../../../../PageTitle/NFTPageTitle";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import NftPageTitle from "../../../../PageTitle/NftPageTitle";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 
 type Props = {
   width: number;
@@ -23,7 +23,7 @@ const NekoSwiperContent: React.FC<Props> = ({
   onCardImgLoad,
   imgSrc = null,
 }) => {
-  const { viewingSrc: viewingNFT } = useHoldNFTs();
+  const { viewingSrc } = useHoldNfts();
 
   return (
     <div
@@ -41,7 +41,7 @@ const NekoSwiperContent: React.FC<Props> = ({
         ref={cardImgRef}
         onLoad={onCardImgLoad}
       />
-      <NFTPageTitle isShown={true} title="TOBIRA NEKO" />
+      <NftPageTitle isShown={true} title="TOBIRA NEKO" />
       <div className="w-full h-full grow pt-10 pb-[30%] ">
         {!imgSrc ? (
           <div className="relative w-full h-full grid content-center">
@@ -54,7 +54,7 @@ const NekoSwiperContent: React.FC<Props> = ({
             <label
               htmlFor="nft-view-modal"
               className="relative block w-full h-full"
-              onClick={() => viewingNFT.set(imgSrc)}
+              onClick={() => viewingSrc.set(imgSrc)}
             >
               <Image
                 src={imgSrc}

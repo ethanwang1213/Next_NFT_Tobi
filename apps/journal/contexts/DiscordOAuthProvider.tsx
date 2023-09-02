@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { useAuth } from "./AuthProvider";
-import { useHoldNFTs } from "./HoldNFTsProvider";
+import { useHoldNfts } from "./HoldNftsProvider";
 import useCommunityData from "@/hooks/useCommunityData";
 import { HouseData } from "@/types/type";
 
@@ -38,29 +38,29 @@ const DiscordOAuthContext = createContext<ContextType>({} as ContextType);
 export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("NONE");
   const { user } = useAuth();
-  const { nekoNFTs } = useHoldNFTs();
-  const { fetchHouseData } = useCommunityData();
+  const { nekoNfts } = useHoldNfts();
+  const { loadHouseData } = useCommunityData();
   const [houseData, setHouseData] = useState<HouseData>(null);
 
-  const loadHouseData = async () => {
+  const execLoadHouseData = async () => {
     if (!user || !user.email) return;
-    const houseData = await fetchHouseData();
+    const houseData = await loadHouseData();
     setHouseData(houseData);
-  }
+  };
 
   useEffect(() => {
     if (!user) return;
-    loadHouseData()
-  }, [user])
+    execLoadHouseData();
+  }, [user]);
 
   useEffect(() => {
-    // コミュニティ参加の実装が完了するまではDiscordOAuthButtonを非表示にする
+    // コミュニティ参加の実装が動作しなかったとき用
     if (process.env.NEXT_PUBLIC_IS_DISCORD_BUTTON_HIDDEN === "true") {
       setDisplayMode("NONE");
       return;
     }
 
-    if (!user || !displayMode || nekoNFTs.current.length === 0) {
+    if (!user || !displayMode || nekoNfts.current.length === 0) {
       // TOBIRA NEKOを持っていない場合
       setDisplayMode("NONE");
       return;
@@ -79,11 +79,14 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
         }
       }
     }
-  }, [user, houseData, nekoNFTs.current]);
+  }, [user, houseData, nekoNfts.current]);
 
   return (
     <DiscordOAuthContext.Provider
-      value={{ displayMode: { current: displayMode, set: setDisplayMode }, houseData: houseData }}
+      value={{
+        displayMode: { current: displayMode, set: setDisplayMode },
+        houseData: houseData,
+      }}
     >
       {children}
     </DiscordOAuthContext.Provider>

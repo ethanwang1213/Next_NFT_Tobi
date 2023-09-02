@@ -1,4 +1,4 @@
-export type NFTSrc = {
+export type NftSrc = {
   id: number;
   src: string;
 };

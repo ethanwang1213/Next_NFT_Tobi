@@ -80,33 +80,25 @@ const EnjoymentPhase = ({ starts, ends }: Props) => {
         return (
           <AImageModel
             key={srcData.src}
-            src={getImgSrc(3, `${srcData.src}`, true)} // 素材が変わらないので第三引数isPCはtrue
-            width={
-              to(
-                [ev, sv.to([0, 1], [0.8, 1])],
-                (v1, v2) => w * (1 + v1 * v1 * 20) * imgData.scale * (v2 * v2)
-              )
-            }
-            height={
-              to(
-                [ev, sv.to([0, 1], [0.8, 1])],
-                (v1, v2) => h * (1 + v1 * v1 * 20) * imgData.scale * (v2 * v2)
-              )
-            }
+            src={getImgSrc(3, `${srcData.src}`, true)} // 素材が変わらないので第三引数isPcはtrue
+            width={to(
+              [ev, sv.to([0, 1], [0.8, 1])],
+              (v1, v2) => w * (1 + v1 * v1 * 20) * imgData.scale * (v2 * v2)
+            )}
+            height={to(
+              [ev, sv.to([0, 1], [0.8, 1])],
+              (v1, v2) => h * (1 + v1 * v1 * 20) * imgData.scale * (v2 * v2)
+            )}
             x={ev.to((v) => 20 * srcData.x * v * v + srcData.x)}
             y={ev.to((v) => v + srcData.y)}
-            z={
-              to(
-                [ev, sv],
-                (v1, v2) => -100 + srcData.z + v1 * i * 500 + (-100 + v2 * 100)
-              )
-            }
-            opacity={
-              to(
-                [sv.to([0, 0.3, 1], [0, 1, 1]), ev],
-                (v1, v2) => v1 * v1 * (1 - v2) * (1 - v2)
-              )
-            }
+            z={to(
+              [ev, sv],
+              (v1, v2) => -100 + srcData.z + v1 * i * 500 + (-100 + v2 * 100)
+            )}
+            opacity={to(
+              [sv.to([0, 0.3, 1], [0, 1, 1]), ev],
+              (v1, v2) => v1 * v1 * (1 - v2) * (1 - v2)
+            )}
           />
         );
       })}

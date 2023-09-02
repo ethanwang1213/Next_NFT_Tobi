@@ -9,7 +9,7 @@ import BookIcon from "../../../../../public/images/icon/Journalbook_journal.svg"
  * redeemページの左ページのスマホ表示用コンポーネント
  * @returns
  */
-const RedeemSP0: React.FC = () => {
+const RedeemSp0: React.FC = () => {
   return (
     <div className="h-full pt-4 flex flex-col">
       <div>
@@ -39,4 +39,4 @@ const RedeemSP0: React.FC = () => {
   );
 };
 
-export default RedeemSP0;
+export default RedeemSp0;

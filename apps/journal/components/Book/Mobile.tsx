@@ -1,5 +1,12 @@
 import Image from "next/image";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ReactElement,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleLeft,
@@ -7,16 +14,21 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import Tag from "../Tag";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import NFTPage from "../pages/NFTPage/NFTPage";
+import NftPage from "../pages/NftPage/NftPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
 import { BookContext } from "../../contexts/BookContextProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import { useAuth } from "@/contexts/AuthProvider";
+import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 
+/**
+ * スマホでの本の表示用コンポーネント
+ * @returns {ReactElement} The `Mobile` component
+ */
 const Mobile = () => {
-  const [isLeftPage, setIsLeftPage] = useState<Boolean>(true);
+  const [isDisplayLeft, setIsDisplayLeft] = useState<Boolean>(true);
   const [isShowTag, setIsShowTag] = useState<Boolean>(false);
   const bookContext = useContext(BookContext);
   const pages = bookContext.pages.current;
@@ -37,8 +49,8 @@ const Mobile = () => {
 
   useEffect(() => {
     // ページ移動したときに左ページを表示する
-    if (!isLeftPage) {
-      setIsLeftPage(true);
+    if (!isDisplayLeft) {
+      setIsDisplayLeft(true);
     }
   }, [pageNo]);
 
@@ -47,7 +59,7 @@ const Mobile = () => {
 
     // スマホ表示が1ページで十分な場合、左右移動の矢印を非表示にする
     if (
-      pages[pageNo].type === NFTPage ||
+      pages[pageNo].type === NftPage ||
       pages[pageNo].type === NekoPage ||
       pages[pageNo].type === RedeemPage
     ) {
@@ -66,12 +78,13 @@ const Mobile = () => {
     setIsShowTag(false);
   }, [pages, pageNo]);
 
+  // ページによってpaddingを調節する
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
-    if (no === profilePage.start) {
+    if (isInPage(no, profilePage) && isLeftPage(no)) {
       return " pb-[20%] px-2";
-    } else if (no >= nftPage.start && no <= nftPage.end) {
+    } else if (isInPage(no, nftPage)) {
       return " px-0";
     } else {
       return "";
@@ -96,7 +109,7 @@ const Mobile = () => {
     <div className="overflow-hidden">
       <div
         className={`relative ${
-          isLeftPage ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
+          isDisplayLeft ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
         } w-[130dvh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
@@ -115,7 +128,7 @@ const Mobile = () => {
             className={`max-w-[calc(100dvw_-_1.5rem)] w-full h-full mr-3 relative`}
           >
             {/* ページによってpaddingを変更する */}
-            <div className={` page ${pagePadding(bookContext.pageNo.current)}`}>
+            <div className={`page ${pagePadding(bookContext.pageNo.current)}`}>
               {bookContext.pages.current[bookContext.pageNo.current]}
             </div>
             <SuccessDiscordStamp isPc={false} />
@@ -173,10 +186,10 @@ const Mobile = () => {
       {/* 矢印アイコンの表示 */}
       {isArrowShown && (
         <FontAwesomeIcon
-          icon={isLeftPage ? faCircleRight : faCircleLeft}
+          icon={isDisplayLeft ? faCircleRight : faCircleLeft}
           size="4x"
           className={`absolute ${footerBottom} right-0 m-5 text-accent/80 scale-[0.88] origin-bottom-right cursor-pointer`}
-          onClick={() => setIsLeftPage(!isLeftPage)}
+          onClick={() => setIsDisplayLeft(!isDisplayLeft)}
         />
       )}
     </div>

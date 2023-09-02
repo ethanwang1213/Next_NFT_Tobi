@@ -13,23 +13,16 @@ export type tagType = {
   image: string | ReactElement;
 };
 
+export type PageIndexData = {
+  start: number;
+  end: number;
+};
+
 export type BookIndex = {
-  profilePage: {
-    start: number;
-    end: number;
-  };
-  nekoPage: {
-    start: number;
-    end: number;
-  };
-  nftPage: {
-    start: number;
-    end: number;
-  };
-  redeemPage: {
-    start: number;
-    end: number;
-  };
+  profilePage: PageIndexData;
+  nekoPage: PageIndexData;
+  nftPage: PageIndexData;
+  redeemPage: PageIndexData;
 };
 
 export type bookContext = {
@@ -91,7 +84,7 @@ export type User = {
   characteristic?: Characteristic;
 };
 
-export type NFTData = {
+export type NftData = {
   collectionId: string;
   name: string;
   description?: string;
@@ -100,18 +93,18 @@ export type NFTData = {
   acquisition_method?: string;
 };
 
-export type HouseBadgeNFTData = NFTData & {
+export type HouseBadgeNftData = NftData & {
   house_type: string;
 };
 
-export type NFTCollection = {
+export type NftCollection = {
   hold: {
-    [tokenId: string]: NFTData;
+    [tokenId: string]: NftData;
   };
 };
 
-export type HoldingNFTs = {
-  [collection: string]: NFTCollection;
+export type HoldingNfts = {
+  [collection: string]: NftCollection;
 };
 
 export type LocalActivityRecord = {

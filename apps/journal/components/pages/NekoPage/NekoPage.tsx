@@ -1,8 +1,8 @@
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
-import NFTPageTitle from "../../PageTitle/NFTPageTitle";
+import NftPageTitle from "../../PageTitle/NftPageTitle";
 import NekoGrid from "./sub/NekoGrid";
 import NekoSwiper from "./sub/NekoSwiper/NekoSwiper";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 
 type Props = {
   pageNum: number;
@@ -15,15 +15,15 @@ type Props = {
  */
 const NekoPage: React.FC<Props> = ({ pageNum }) => {
   const debugMode = process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true";
-  const { nekoNFTs } = useHoldNFTs();
+  const { nekoNfts } = useHoldNfts();
   const nekoLength = debugMode
     ? mockNekoSrcList.length
-    : nekoNFTs.current.length;
+    : nekoNfts.current.length;
 
   return (
     <>
-      <div className={`hidden sm:block h-full sm:flex sm:flex-col`}>
-        <NFTPageTitle isShown={pageNum % 2 === 0} title={"TOBIRA NEKO"} />
+      <div className="hidden sm:block h-full sm:flex sm:flex-col">
+        <NftPageTitle isShown={pageNum % 2 === 0} title="TOBIRA NEKO" />
         {nekoLength === 0 && pageNum === 0 ? (
           <div className="p-5 grow grid content-center">
             <p className="text-center text-4xl text-accent/50 font-bold">
@@ -36,7 +36,7 @@ const NekoPage: React.FC<Props> = ({ pageNum }) => {
           </div>
         )}
       </div>
-      <div className={`block sm:hidden h-full`}>
+      <div className="block sm:hidden h-full">
         <NekoSwiper />
       </div>
     </>

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import DefaultIcon from "../../../../public/images/icon/Profiledefault_journal.svg";
-import { useHoldNFTs } from "@/contexts/HoldNFTsProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useEffect, useState } from "react";
-import { HouseBadgeNFTData } from "@/types/type";
+import { HouseBadgeNftData } from "@/types/type";
 import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 
 /**
@@ -15,31 +15,33 @@ import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 const PersonalIcon: React.FC = () => {
   const { user } = useAuth();
   const { houseData } = useDiscordOAuth();
-  const { otherNFTs } = useHoldNFTs();
+  const { otherNfts } = useHoldNfts();
 
   const [badgeSrc, setBadgeSrc] = useState<string>("");
 
-
   useEffect(() => {
-    if (!houseData || !otherNFTs) return;
-    if (otherNFTs.current.length === 0) return;
+    if (!houseData || !otherNfts) return;
+    if (otherNfts.current.length === 0) return;
 
     // 所属のハウスバッジのNFTのidを探索
-    const id = otherNFTs.current.findIndex(
+    const id = otherNfts.current.findIndex(
       (nft) =>
         nft.collectionId ===
           process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"] &&
         "house_type" in nft &&
         houseData &&
-        nft.house_type === houseData.type
+        (nft.house_type === houseData.type ||
+          // NFTのスペルミスへの対応用
+          // TODO:NFTのスペルが修正されたら削除する
+          (nft.house_type === "arismos" && houseData.type === "arithmos"))
     );
 
     // 所属のハウスバッジが存在すればurlをセット
     if (id > -1) {
-      const houseBadge = otherNFTs.current[id] as HouseBadgeNFTData;
+      const houseBadge = otherNfts.current[id] as HouseBadgeNftData;
       setBadgeSrc(houseBadge.thumbnail);
     }
-  }, [houseData, otherNFTs]);
+  }, [houseData, otherNfts]);
 
   return (
     <div className="w-full aspect-square mr-4 sm:mr-0">
@@ -59,7 +61,7 @@ const PersonalIcon: React.FC = () => {
           </label>
         </div>
         {badgeSrc !== "" && (
-          <div className="absolute -bottom-1 right-0 w-[30%] aspect-square rounded-full bg-white border-white">
+          <div className="absolute -bottom-2 -right-2 w-1/3 aspect-square">
             <Image src={badgeSrc} alt="badge" fill />
           </div>
         )}

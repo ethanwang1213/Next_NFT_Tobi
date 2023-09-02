@@ -18,19 +18,23 @@ const useRecordActivity = () => {
         newRecord
       );
       // console.log(docRef.id);
+      return true;
     } catch (error) {
       console.log(error);
+      return false;
     }
   };
 
   const recordNewActivity = async (activityText: string) => {
     const newDate = new Date();
 
-    await postActivityRecord({
+    const posted = await postActivityRecord({
       text: activityText,
       timestamp: Timestamp.fromDate(newDate),
     });
-    addActivityRecord({ text: activityText, date: newDate });
+    if (posted) {
+      addActivityRecord({ text: activityText, date: newDate });
+    }
   };
 
   return { recordNewActivity };
