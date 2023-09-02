@@ -61,7 +61,7 @@ service cloud.firestore {
       match /community/{communityId} {
       	allow read: if isCurrentUser(userId);
         // houseTypeのタイポ修正のために書き込み許可
-        allow write: if isCurrentUser(userId) && 
+        allow update: if isCurrentUser(userId) && 
           communityId == "house" && 
           request.resource.data.type == "hudor" &&
           request.resource.data.size() == 1;
