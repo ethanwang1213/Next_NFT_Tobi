@@ -41,7 +41,7 @@ service cloud.firestore {
             ).data.userId == userId
           )
         )
-      )
+      );
       
       match /src/{srcId} {
         allow read, write: if isCurrentUser(userId);
@@ -55,7 +55,7 @@ service cloud.firestore {
       match /nft/{nftId}/hold/{holdId} {
         allow read, write: if isCurrentUser(userId);
       }
-      match /activity/{activytyId} {
+      match /activity/{activityId} {
         allow read, write: if isCurrentUser(userId);
       }
       match /community/{communityId} {
@@ -63,8 +63,7 @@ service cloud.firestore {
         // houseTypeのタイポ修正のために書き込み許可
         allow update: if isCurrentUser(userId) && 
           communityId == "house" && 
-          request.resource.data.type == "hudor" &&
-          request.resource.data.size() == 1;
+          request.resource.data.type == "hudor";
       }
     }
 
@@ -87,7 +86,5 @@ service cloud.firestore {
     match /tobiraneko/{nftId} {
       allow read, write: if isAdmin();
     }
-
-
   }
 }
