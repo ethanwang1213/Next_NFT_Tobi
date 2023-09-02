@@ -57,8 +57,6 @@ const useCommunityData = () => {
     // 修正するタイポはここで指定している
     if (houseData.type === "hydor") {
       fixedHouseType = "hudor";
-    } else if (houseData.type === "arithmos") {
-      fixedHouseType = "arismos";
     }
 
     if (fixedHouseType === "") return null;
