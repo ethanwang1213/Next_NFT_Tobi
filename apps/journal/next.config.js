@@ -3,7 +3,7 @@ module.exports = {
   reactStrictMode: true,
   transpilePackages: ["ui"],
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
+    removeConsole: process.env.DEPLOY_ENV === "production",
   },
   images: {
     domains: ["storage.googleapis.com"],
