@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { MenuFooter } from "./sub/MenuFooter";
-import { useShowBurger } from "../../contexts/menu/showBurger";
+import { useShowBurger } from "contexts/menu/ShowBurger";
 import { KeyholeMenuCanvas } from "./sub/KeyholeMenuCanvas/KeyholeMenuCanvas";
 import { useWindowSize } from "hooks";
 import { TextMenuItems } from "./sub/TextMenuItems";

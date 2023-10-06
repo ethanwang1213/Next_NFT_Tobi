@@ -1,5 +1,5 @@
 import { EditProfileValues } from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import { useEditProfile } from "@/contexts/EditProfileProvider";
 import { storage, db } from "fetchers/firebase/journal-client";
 import { doc, setDoc } from "firebase/firestore/lite";

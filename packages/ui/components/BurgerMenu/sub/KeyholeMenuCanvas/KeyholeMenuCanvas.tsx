@@ -3,7 +3,7 @@ import { useWindowSize } from "hooks";
 import { Canvas } from "@react-three/fiber";
 import { CameraController } from "./CameraController";
 import { Keyholes } from "./Keyholes/Keyholes";
-import { useCanvasDprContext } from "../../../../contexts/canvasDprContext";
+import { useCanvasDprContext } from "contexts/CanvasDprContext";
 
 type Props = {
   initHomeStates?: () => void;

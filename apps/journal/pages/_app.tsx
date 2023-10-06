@@ -9,7 +9,7 @@ import "swiper/css/effect-cards";
 import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { AuthProvider } from "@/contexts/AuthProvider";
+import { AuthProvider } from "contexts/journal-AuthProvider";
 import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
 import BookContextProvider from "@/contexts/BookContextProvider";
 import { EditProfileProvider } from "@/contexts/EditProfileProvider";

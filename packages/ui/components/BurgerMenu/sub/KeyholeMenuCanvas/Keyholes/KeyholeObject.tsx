@@ -2,9 +2,9 @@ import { Html, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
-import { useMenuAnimation } from "../../../../../contexts/menu/menuAnimation";
+import { useMenuAnimation } from "contexts/menu/MenuAnimation";
 import { useWindowSize, useLocatingAcrossBasePath } from "hooks";
-import { useShowBurger } from "../../../../../contexts/menu/showBurger";
+import { useShowBurger } from "contexts/menu/ShowBurger";
 
 type Props = {
   keyholeNodes: any;

@@ -1,7 +1,7 @@
 import {
   HouseBadgeNftData as HouseBadgeNftData,
   NftData as NftData,
-} from "@/types/type";
+} from "types/journal-types";
 import React, {
   ReactNode,
   createContext,
@@ -10,7 +10,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import useFetchNftDatas from "@/hooks/useFetchNftDatas";
 
 type Props = {

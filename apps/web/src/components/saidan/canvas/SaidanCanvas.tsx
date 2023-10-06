@@ -36,7 +36,7 @@ import PlacedItems from "./placedItem/PlacedItems";
 import MovePointerTarget from "./placedItem/pointerTarget/MovePointerTarget";
 import { useWindowSize } from "hooks";
 import isSpLandscape from "@/methods/home/isSpLandscape";
-import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
+import { useCanvasDprContext } from "contexts/CanvasDprContext";
 import { PerformanceMonitor } from "@react-three/drei";
 
 type SaidanCanvasProps = {

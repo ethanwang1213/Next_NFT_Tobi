@@ -1,5 +1,5 @@
 {
-  "name": "types",
+  "name": "contexts",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
@@ -7,10 +7,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/react": "^18.2.25",
-    "@types/react-dom": "^18.2.10",
-    "firebase": "^10.4.0"
-  }
+  "license": "ISC"
 }

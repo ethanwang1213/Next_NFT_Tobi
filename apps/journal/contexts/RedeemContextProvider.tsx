@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 
 type Props = {
   children: ReactNode;
