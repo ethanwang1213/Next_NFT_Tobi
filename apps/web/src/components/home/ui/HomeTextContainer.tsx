@@ -1,6 +1,6 @@
 import { a } from "@react-spring/web";
 import useHomeStore from "@/stores/homeStore";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import ScrollDownGuide from "./ScrollDownGuide";
 import useHomeTextAnims from "@/hooks/useHomeTextAnims";
 import SectionContainer from "./SectionText/SectionContainer";
@@ -65,34 +65,34 @@ const HomeTextContainer = () => {
             {(homePhase === "TITLE_TO_GOODS" ||
               homePhase === "DIGITAL_GOODS" ||
               homePhase === "GOODS_TO_FAMI") && (
-              <>
-                <SectionContainer style={{ opacity: t1 }}>
-                  <TextContainer
-                    titleChildren={
-                      isWide ? (
-                        <h2>グッズをデジタルに</h2>
-                      ) : (
-                        <h2 className="mb-[-10px] text-center leading-[52px] pb-3">
-                          グッズを
+                <>
+                  <SectionContainer style={{ opacity: t1 }}>
+                    <TextContainer
+                      titleChildren={
+                        isWide ? (
+                          <h2>グッズをデジタルに</h2>
+                        ) : (
+                          <h2 className="mb-[-10px] text-center leading-[52px] pb-3">
+                            グッズを
+                            <br />
+                            デジタルに
+                          </h2>
+                        )
+                      }
+                      textChildren={
+                        <p className="pb-2 text-center leading-9 sm:leading-10">
+                          デジタルグッズはなぜ少ないのだろう？
                           <br />
-                          デジタルに
-                        </h2>
-                      )
-                    }
-                    textChildren={
-                      <p className="pb-2 text-center leading-9 sm:leading-10">
-                        デジタルグッズはなぜ少ないのだろう？
-                        <br />
-                        所有している証明ができないから？
-                        <br />
-                        いや、可能かもしれない。NFTなら。
-                      </p>
-                    }
-                  />
-                </SectionContainer>
-                <ScrollDownGuide t={t1_1} />
-              </>
-            )}
+                          所有している証明ができないから？
+                          <br />
+                          いや、可能かもしれない。NFTなら。
+                        </p>
+                      }
+                    />
+                  </SectionContainer>
+                  <ScrollDownGuide t={t1_1} />
+                </>
+              )}
             {(homePhase === "FAMI" || homePhase === "FAMI_TO_ENJOY") && (
               <>
                 <SectionContainer style={{ opacity: t2 }}>
@@ -168,69 +168,69 @@ const HomeTextContainer = () => {
             {(homePhase === "ENJOY_TO_FREE" ||
               homePhase === "FREEDOM" ||
               homePhase === "FREE_TO_ECO") && (
-              <>
-                <SectionContainer style={{ opacity: t4 }}>
-                  <GrassFrame>
-                    <TextContainer
-                      titleChildren={
-                        isWide ? (
-                          <h2>クリエイターのために</h2>
-                        ) : (
-                          <h2 className="text-center leading-[52px]">
-                            クリエイターの
+                <>
+                  <SectionContainer style={{ opacity: t4 }}>
+                    <GrassFrame>
+                      <TextContainer
+                        titleChildren={
+                          isWide ? (
+                            <h2>クリエイターのために</h2>
+                          ) : (
+                            <h2 className="text-center leading-[52px]">
+                              クリエイターの
+                              <br />
+                              ために
+                            </h2>
+                          )
+                        }
+                        textChildren={
+                          <p className="text-center">
+                            気軽に作って販売を可能に。
                             <br />
-                            ために
-                          </h2>
-                        )
-                      }
-                      textChildren={
-                        <p className="text-center">
-                          気軽に作って販売を可能に。
-                          <br />
-                          デジタルグッズ販売による
-                          <br />
-                          在庫リスクや送料などからの解放。
-                        </p>
-                      }
-                    />
-                  </GrassFrame>
-                </SectionContainer>
-                <ScrollDownGuide t={t4_1} />
-              </>
-            )}
+                            デジタルグッズ販売による
+                            <br />
+                            在庫リスクや送料などからの解放。
+                          </p>
+                        }
+                      />
+                    </GrassFrame>
+                  </SectionContainer>
+                  <ScrollDownGuide t={t4_1} />
+                </>
+              )}
             {(homePhase === "FREE_TO_ECO" ||
               homePhase === "ECO_FRIENDRY" ||
               homePhase === "ECO_TO_END") && (
-              <>
-                <SectionContainer style={{ opacity: t5 }}>
-                  <GrassFrame
-                    style={{
-                      backgroundColor: `rgba(17, 25, 40, 0.3)`,
-                    }}
-                  >
-                    <TextContainer
-                      titleChildren={
-                        <h2 className="text-center">環境への配慮</h2>
-                      }
-                      textChildren={
-                        <>
-                          <p className="text-center">
-                            Flowブロックチェーンを使うことで
-                            <br />
-                            環境にも配慮しつつ
-                            <br />
-                            大量の取引に耐えることができる。
-                            <br />
-                            もちろんガス代もかかりません。
-                          </p>
-                        </>
-                      }
-                    />
-                  </GrassFrame>
-                </SectionContainer>
-                <ScrollDownGuide t={t5_1} />
-              </>
-            )}
+                <>
+                  <SectionContainer style={{ opacity: t5 }}>
+                    <GrassFrame
+                      style={{
+                        backgroundColor: `rgba(17, 25, 40, 0.3)`,
+                      }}
+                    >
+                      <TextContainer
+                        titleChildren={
+                          <h2 className="text-center">環境への配慮</h2>
+                        }
+                        textChildren={
+                          <>
+                            <p className="text-center">
+                              Flowブロックチェーンを使うことで
+                              <br />
+                              環境にも配慮しつつ
+                              <br />
+                              大量の取引に耐えることができる。
+                              <br />
+                              もちろんガス代もかかりません。
+                            </p>
+                          </>
+                        }
+                      />
+                    </GrassFrame>
+                  </SectionContainer>
+                  <ScrollDownGuide t={t5_1} />
+                </>
+              )}
           </div>
           <div className="home-phasedot-outer">
             <div className="home-phasedot-inner">
@@ -239,11 +239,10 @@ const HomeTextContainer = () => {
                   key={index}
                   className={`home-phasedot
                 ${dot ? " home-phasedot-active" : " home-phasedot-others"} 
-                ${
-                  homePhase !== "ECO_TO_END" && homePhase !== "END"
-                    ? " "
-                    : " duration-[1000ms] opacity-0"
-                }
+                ${homePhase !== "ECO_TO_END" && homePhase !== "END"
+                      ? " "
+                      : " duration-[1000ms] opacity-0"
+                    }
               `}
                 />
               ))}

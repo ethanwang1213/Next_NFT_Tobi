@@ -1,4 +1,4 @@
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import isSpLandscape from "@/methods/home/isSpLandscape";
 import { useEffect, useState } from "react";
 

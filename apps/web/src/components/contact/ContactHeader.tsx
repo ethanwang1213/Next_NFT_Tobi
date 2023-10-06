@@ -1,4 +1,4 @@
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import { ReactNode } from "react";
 import ArrowBackButton from "../global/ArrowBackButton";
 import LogoHeader from "../global/LogoHeader";

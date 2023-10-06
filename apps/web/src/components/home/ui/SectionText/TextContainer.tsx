@@ -1,4 +1,4 @@
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import { ReactNode } from "react";
 
 type Props = {

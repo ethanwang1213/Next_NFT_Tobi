@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import windowSizeData from "../data/windowSizeData.json";
+import windowSizeData from "./data/windowSizeData.json";
 
 type HookType = () => {
   innerWidth: number;
@@ -35,7 +35,7 @@ export const useWindowSize: HookType = () => {
   // useLayoutEffect(() => {
   useEffect(() => {
     if (typeof window === "undefined") {
-      return () => {};
+      return () => { };
     }
     const handleResize = () => {
       const isVeryWide = window.innerWidth > mediaBorder;

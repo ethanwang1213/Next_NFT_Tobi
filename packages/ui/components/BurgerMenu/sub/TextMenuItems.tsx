@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { menuItem } from "./../assets/menuItems";
-import { useLocatingAcrossBasePath } from "../../../hooks/useLocatingAcrossBasePath";
+import { useLocatingAcrossBasePath } from "hooks";
 import { useShowBurger } from "../../../contexts/menu/showBurger";
 
 type Props = {

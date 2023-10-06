@@ -3,7 +3,7 @@ import { a, config, useSpring } from "@react-spring/three";
 import { useReducer, useEffect, useMemo, useState, RefObject } from "react";
 import { Camera } from "three";
 import useSaidanStore from "@/stores/saidanStore";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 
 type Props = {
   cameraRef: RefObject<Camera>;

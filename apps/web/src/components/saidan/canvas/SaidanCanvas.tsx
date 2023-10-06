@@ -34,7 +34,7 @@ import CameraContainer from "./CameraContainer";
 import Shelf from "./Shelf";
 import PlacedItems from "./placedItem/PlacedItems";
 import MovePointerTarget from "./placedItem/pointerTarget/MovePointerTarget";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import isSpLandscape from "@/methods/home/isSpLandscape";
 import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
 import { PerformanceMonitor } from "@react-three/drei";
