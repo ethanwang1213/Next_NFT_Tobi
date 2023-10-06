@@ -16,3 +16,8 @@ declare module "*.glb" {
 }
 
 export type ServiceName = "web" | "journal";
+
+// スタンプラリーの記念品のフォームのタイプ
+export type StampRallyRewardFormType = {
+  keyword: string;
+}

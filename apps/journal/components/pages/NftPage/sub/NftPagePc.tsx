@@ -20,11 +20,11 @@ const NftPagePc: React.FC<Props> = ({ pageNum }) => {
     <div className="h-full pt-10 px-4 grid grid-cols-3 grid-rows-3 gap-6 content-start place-items-center">
       {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
         ? mockNftSrcList
-            .slice(pageNum * 9, (pageNum + 1) * 9)
-            .map((v, i) => <NftImage key={v.id} src={v.src} alt={"nft"} />)
+          .slice(pageNum * 9, (pageNum + 1) * 9)
+          .map((v, i) => <NftImage key={v.id} src={v.src} alt={"nft"} />)
         : otherNfts.current
-            .slice(pageNum * 9, (pageNum + 1) * 9)
-            .map((v, i) => <NftImage key={i} src={v.thumbnail} alt={"nft"} />)}
+          .slice(pageNum * 9, (pageNum + 1) * 9)
+          .map((v, i) => <NftImage key={i} src={v.thumbnail} alt={"nft"} />)}
     </div>
   );
 };
