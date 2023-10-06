@@ -13,7 +13,6 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faApple } from "@fortawesome/free-brands-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { StampRallyRewardForm } from "ui";
 
 type LoginFormType = {
   email: string;
@@ -450,10 +449,6 @@ const Login = () => {
           </div>
         </form>
       </dialog>
-      <div className="absolute left-0 top-0 z-100">
-
-        <StampRallyRewardForm />
-      </div>
     </>
   );
 };
