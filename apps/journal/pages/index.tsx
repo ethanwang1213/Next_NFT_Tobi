@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/client";
+import { auth } from "fetchers/firebase/journal-client";
 import Mobile from "../components/Book/Mobile";
 import Pc from "../components/Book/Pc";
 import Image from "next/image";

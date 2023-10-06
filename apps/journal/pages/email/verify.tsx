@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/client";
+import { auth } from "fetchers/firebase/journal-client";
 import { useRouter } from "next/router";
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { useEffect } from "react";

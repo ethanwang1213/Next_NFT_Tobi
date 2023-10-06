@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/client";
+import { auth } from "fetchers/firebase/journal-client";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";

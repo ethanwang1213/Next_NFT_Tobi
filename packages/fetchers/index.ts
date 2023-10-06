@@ -1,1 +1,1 @@
-export { useStampRally } from "./useStampRally"
+export { useStampRally } from "./journal-useStampRally"
