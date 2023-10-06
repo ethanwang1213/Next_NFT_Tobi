@@ -1,4 +1,4 @@
-import { StampRallyRewardFormType } from "ui/types";
+import { StampRallyRewardFormType } from "types";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "./firebase/journal-client";
 
