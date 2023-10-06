@@ -47,7 +47,7 @@ const NftPage: React.FC<Props> = ({ pageNum }) => {
           </div>
         </>
       )}
-      <div className="absolute bottom-0 left-0">
+      <div className="absolute bottom-4 sm:bottom-0 right-0">
         <div className="hidden sm:block">
           {pageNum % 2 === 0 &&
             <StampRallyRewardForm />
