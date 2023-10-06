@@ -8,7 +8,7 @@ import * as _Jimp from "jimp";
 import ClosePolicyButton from "../policy/ClosePolicyButton";
 import { useAuth } from "@/context/auth";
 import { doc, updateDoc } from "firebase/firestore/lite";
-import { db } from "../../../../../firebase/client";
+import { db } from "fetchers/firebase/clientWeb";
 
 /**
  * 新しい画像を投稿するボタンのコンポーネント
@@ -90,11 +90,10 @@ const AddItemButton = () => {
     <>
       <div
         className={`saidan-add-btn-container-outer
-        ${
-          tutorialPhase === "ADD_ITEM" && isSpotted
+        ${tutorialPhase === "ADD_ITEM" && isSpotted
             ? "saidan-add-btn-container-spotted"
             : ""
-        }`}
+          }`}
       >
         <div className="saidan-add-btn-container-inner">
           <label htmlFor="add-item" className="saidan-add-btn">

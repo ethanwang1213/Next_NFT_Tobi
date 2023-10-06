@@ -1,6 +1,6 @@
 import { doc, setDoc } from "firebase/firestore/lite";
 import { ref, uploadBytes } from "firebase/storage";
-import { auth, db, storage } from "@/../firebase/client";
+import { auth, db, storage } from "fetchers/firebase/clientWeb";
 
 /**
  * ストレージに画像データを追加し、そのurlをデータベースに保存する
