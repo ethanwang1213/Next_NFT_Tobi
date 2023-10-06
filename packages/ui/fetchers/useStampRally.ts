@@ -1,4 +1,6 @@
-import { StampRallyRewardFormType } from "../types";
+import { StampRallyRewardFormType } from "ui/types";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../../apps/journal/firebase/client";
 
 /**
  * スタンプラリーの受け取るための外部通信を行うhook
@@ -7,6 +9,14 @@ import { StampRallyRewardFormType } from "../types";
 export const useStampRally = () => {
   const requestReward = (data: StampRallyRewardFormType) => {
     console.log(data);
+    const callable = httpsCallable(functions, "stampRallyBadge-checkReward");
+    callable({ keyword: data.keyword })
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return { requestReward }

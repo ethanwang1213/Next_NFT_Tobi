@@ -11,6 +11,8 @@ export const SITE_HOST = process.env.SITE_HOST || "https://www.tobiratory.com";
 
 export const SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE = process.env.SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE || "";
 
+export const STAMP_RALLY_KEYWORD = "toRuTo";
+
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `
 <!DOCTYPE html>

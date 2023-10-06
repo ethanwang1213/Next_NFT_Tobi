@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faApple } from "@fortawesome/free-brands-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { StampRallyRewardForm } from "ui";
 
 type LoginFormType = {
   email: string;
@@ -396,7 +397,7 @@ const Login = () => {
                 checked={isAppleModalChecked}
                 className="checkbox checkbox-accent"
                 onClick={() => setAppleModalChecked(!isAppleModalChecked)}
-                onChange={() => {}}
+                onChange={() => { }}
               />
               <div className="grid content-center ml-2">
                 <span className="select-none sm:text-sm">確認しました</span>
@@ -449,6 +450,10 @@ const Login = () => {
           </div>
         </form>
       </dialog>
+      <div className="absolute left-0 top-0 z-100">
+
+        <StampRallyRewardForm />
+      </div>
     </>
   );
 };
