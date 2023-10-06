@@ -1,6 +1,6 @@
 import { useAuth } from "contexts/journal-AuthProvider";
 import { db } from "fetchers/firebase/journal-client";
-import { HouseData } from "@/types/type";
+import { HouseData } from "types/journal-types";
 import {
   getDocs,
   collection,

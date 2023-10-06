@@ -1,4 +1,4 @@
-import { LocalActivityRecord } from "@/types/type";
+import { LocalActivityRecord } from "types/journal-types";
 
 // 以下のtextからランダムに設定
 // "TOBIRA NEKO #1をJournalに追加した"

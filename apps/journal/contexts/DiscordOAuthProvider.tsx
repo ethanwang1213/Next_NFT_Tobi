@@ -9,7 +9,7 @@ import {
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useHoldNfts } from "./HoldNftsProvider";
 import useCommunityData from "@/hooks/useCommunityData";
-import { HouseData } from "@/types/type";
+import { HouseData } from "types/journal-types";
 
 type Props = {
   children: React.ReactNode;

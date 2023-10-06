@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
 import useFetchActivityRecords from "@/hooks/useFetchActivityRecords";
-import { LocalActivityRecord } from "@/types/type";
+import { LocalActivityRecord } from "types/journal-types";
 
 type Props = {
   children: ReactNode;

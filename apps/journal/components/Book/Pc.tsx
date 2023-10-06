@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
-import { BookPos } from "../../types/type";
+import { BookPos } from "types/journal-types";
 import Tag from "../Tag";
 import gsap from "gsap";
 import { BookContext } from "../../contexts/BookContextProvider";
@@ -139,12 +139,10 @@ const Pc = () => {
 
   // TODO: メモ化
   const pageStyle = {
-    width: `calc(calc(${bookPos.width}px - ${
-      bookWidth * 0.07
-    }px ) / ${pageScale})`,
-    height: `calc(calc(${bookPos.height}px - ${
-      bookHeight * 0.05
-    }px) / ${pageScale})`,
+    width: `calc(calc(${bookPos.width}px - ${bookWidth * 0.07
+      }px ) / ${pageScale})`,
+    height: `calc(calc(${bookPos.height}px - ${bookHeight * 0.05
+      }px) / ${pageScale})`,
     transform: `scale(${pageScale})`,
   };
 
