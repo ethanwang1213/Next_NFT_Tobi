@@ -1,4 +1,4 @@
-import { auth } from "fetchers/firebase/clientWeb";
+import { auth } from "fetchers/firebase/web-client";
 import { DEBUG_MODE } from "@/constants/saidanConstants";
 
 /**
