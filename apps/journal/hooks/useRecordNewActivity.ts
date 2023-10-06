@@ -1,7 +1,7 @@
 import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { db } from "fetchers/firebase/journal-client";
-import { DBActivityRecord } from "@/types/type";
+import { DBActivityRecord } from "types/journal-types";
 import { Timestamp, addDoc, collection } from "firebase/firestore/lite";
 
 /**

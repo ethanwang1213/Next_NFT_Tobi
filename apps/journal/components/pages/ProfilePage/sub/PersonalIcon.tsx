@@ -3,7 +3,7 @@ import DefaultIcon from "../../../../public/images/icon/Profiledefault_journal.s
 import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useEffect, useState } from "react";
-import { HouseBadgeNftData } from "@/types/type";
+import { HouseBadgeNftData } from "types/journal-types";
 import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 
 /**

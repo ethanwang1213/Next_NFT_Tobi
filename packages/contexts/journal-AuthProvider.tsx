@@ -16,7 +16,7 @@ import {
   useState,
 } from "react";
 import { auth, db } from "fetchers/firebase/journal-client";
-import { Birthday, User, UserContextType } from "@/types/type";
+import { Birthday, User, UserContextType } from "types/journal-types";
 
 const AuthContext = createContext<UserContextType>(undefined);
 

@@ -5,7 +5,7 @@ import { useAuth } from "contexts/journal-AuthProvider";
 
 const Tag: FC<{
   image: string | ReactElement;
-  page: Number | (() => void);
+  page: number | (() => void);
   isHamburger?: boolean;
 }> = ({ image, page, isHamburger = false }) => {
   const bookData = useContext(BookContext);
@@ -22,7 +22,7 @@ const Tag: FC<{
 
   const handleClick = () => {
     if (isNumber) {
-      setPageNo(page);
+      setPageNo(page as number);
     } else {
       (page as () => void)();
     }
@@ -36,8 +36,8 @@ const Tag: FC<{
     <div
       onClick={handleClick}
       className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 cursor-pointer ${((pageNo === page || pageNo + 1 === page) && isNumber) || isHamburger
-          ? "bg-red-700 w-24"
-          : "bg-[#F0E8E1] w-24 md:w-20"
+        ? "bg-red-700 w-24"
+        : "bg-[#F0E8E1] w-24 md:w-20"
         }`}
     >
       {typeof image === "string" ? (
@@ -55,17 +55,17 @@ const Tag: FC<{
             WebkitMaskSize: "40px 40px",
           }}
           className={`ml-4 mr-3 w-[40px] h-[40px] transition-all ${((pageNo === page || pageNo + 1 === page) && isNumber) ||
-              isHamburger
-              ? "bg-white"
-              : "bg-accent"
+            isHamburger
+            ? "bg-white"
+            : "bg-accent"
             }`}
         ></div>
       ) : (
         <div
           className={`ml-4 mr-3 w-[44px] h-[44px] transition-all pointer-events-none select-none rounded-full ${((pageNo === page || pageNo + 1 === page) && isNumber) ||
-              isHamburger
-              ? "text-white"
-              : "text-accent"
+            isHamburger
+            ? "text-white"
+            : "text-accent"
             } ${isHamburger
               ? "grid content-center"
               : `border-solid border-[3px] ${!user || user.icon === "" ? "" : " bg-white"

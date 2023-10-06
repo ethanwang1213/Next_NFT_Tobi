@@ -1,4 +1,4 @@
-import { PageIndexData } from "@/types/type";
+import { PageIndexData } from "types/journal-types";
 
 /**
  * 現在表示ページが、

@@ -1,7 +1,7 @@
 import {
   HouseBadgeNftData as HouseBadgeNftData,
   NftData as NftData,
-} from "@/types/type";
+} from "types/journal-types";
 import React, {
   ReactNode,
   createContext,
