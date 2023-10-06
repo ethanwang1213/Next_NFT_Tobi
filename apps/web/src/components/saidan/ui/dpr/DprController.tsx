@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import SliderIcon from "../../../../../public/menu/resolution/slider_TOBIRAPOLIS.svg";
-import { useShowBurger } from "ui/contexts/menu/showBurger";
+import { useShowBurger } from "contexts/menu/ShowBurger";
 
 /**
  * WebGLのdpr設定を表示するコンポーネント
