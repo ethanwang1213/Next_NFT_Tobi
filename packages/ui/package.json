@@ -17,6 +17,7 @@
     "typescript": "^4.5.2",
     "fetchers": "*",
     "hooks": "*",
-    "types": "*"
+    "types": "*",
+    "contexts": "*"
   }
 }

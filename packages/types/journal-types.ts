@@ -126,6 +126,7 @@ export type UserContextType = {
   ) => void;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
+  setStampRallyMintStatus: (status: StampRallyMintStatusType) => void;
 };
 
 // スタンプラリーの記念品のフォームのタイプ
