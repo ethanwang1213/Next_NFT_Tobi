@@ -17,6 +17,7 @@ export const StampRallyRewardForm: React.FC = () => {
   });
 
   const { requestReward } = useStampRally();
+  // const { user } = useAuth
 
   return <form onSubmit={handleSubmit(requestReward)} className="flex">
     <div>

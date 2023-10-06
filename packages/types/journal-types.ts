@@ -4,3 +4,5 @@
 export type StampRallyRewardFormType = {
   keyword: string;
 }
+
+export type StampRallyMintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
