@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { StampRallyRewardFormType } from "ui/types";
+import { StampRallyRewardFormType } from "types";
 import { useStampRally } from "fetchers";
 
 /**

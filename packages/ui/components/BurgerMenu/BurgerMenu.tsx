@@ -9,7 +9,7 @@ import { TextMenuItems } from "./sub/TextMenuItems";
 import { CloseButton } from "./sub/CloseButton";
 import { LoadingImage } from "./sub/LoadingImage";
 import { BurgerButton } from "./sub/BurgerButton";
-import { ServiceName } from "../../types";
+import { ServiceName } from "types";
 
 type Props = {
   serviceName: ServiceName;
