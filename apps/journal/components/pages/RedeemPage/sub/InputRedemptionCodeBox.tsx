@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 
 type Props = {
   classNames: {
@@ -41,9 +41,8 @@ const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
         disabled={!canRedeem || redeemStatus.current === "CHECKING"}
       />
       <p
-        className={`${classNames.p} text-error ${
-          canRedeem ? "hidden" : "block"
-        }`}
+        className={`${classNames.p} text-error ${canRedeem ? "hidden" : "block"
+          }`}
       >
         引き換えにはメールアドレス登録が必要です
       </p>

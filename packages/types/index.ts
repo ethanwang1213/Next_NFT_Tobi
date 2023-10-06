@@ -1,4 +1,4 @@
-export type * from "./journal-types"
+export type { StampRallyRewardFormType } from "./journal-types"
 
 // サービスを判別するための型
 // サービスを跨いで表示されるバーガーメニューで使用

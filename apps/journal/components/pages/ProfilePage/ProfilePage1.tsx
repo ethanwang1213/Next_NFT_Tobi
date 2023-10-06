@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import useDateFormat from "@/hooks/useDateFormat";
 import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
 import { useDebug } from "@/contexts/DebugProvider";

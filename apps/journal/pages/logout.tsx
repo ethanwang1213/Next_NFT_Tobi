@@ -2,7 +2,7 @@ import { auth } from "fetchers/firebase/journal-client";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 
 const Logout = () => {
   const router = useRouter();

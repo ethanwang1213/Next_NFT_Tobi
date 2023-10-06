@@ -8,7 +8,7 @@ import DebugText from "@/components/DebugText";
 import NftViewModal from "@/components/NftViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 
 const Index = () => {
   const router = useRouter();

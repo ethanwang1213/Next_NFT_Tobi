@@ -10,7 +10,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import useFetchNftDatas from "@/hooks/useFetchNftDatas";
 
 type Props = {

@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import { useHoldNfts } from "./HoldNftsProvider";
 import useCommunityData from "@/hooks/useCommunityData";
 import { HouseData } from "@/types/type";

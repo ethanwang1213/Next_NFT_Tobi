@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import { db } from "fetchers/firebase/journal-client";
 import { DBActivityRecord, LocalActivityRecord } from "@/types/type";
 import { getDocs, collection } from "firebase/firestore/lite";

@@ -12,7 +12,7 @@ import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
 import { BookIndex, bookContext, tagType } from "../types/type";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useHoldNfts } from "./HoldNftsProvider";

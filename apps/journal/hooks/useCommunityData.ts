@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import { db } from "fetchers/firebase/journal-client";
 import { HouseData } from "@/types/type";
 import {
