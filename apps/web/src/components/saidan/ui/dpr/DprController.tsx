@@ -1,4 +1,4 @@
-import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
+import { useCanvasDprContext } from "contexts/CanvasDprContext";
 import { round } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

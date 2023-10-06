@@ -4,7 +4,8 @@
     ".",
     "**/*.ts",
     "**/*.tsx",
-    "../contexts/journal-AuthProvider.tsx"
+    "../contexts/journal-AuthProvider.tsx",
+    "../contexts/CanvasDprContext.tsx"
   ],
   "exclude": [
     "dist",
