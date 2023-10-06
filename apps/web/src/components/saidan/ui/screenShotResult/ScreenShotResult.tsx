@@ -2,7 +2,7 @@ import { RefObject, useEffect, useState } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import useSaidanStore from "@/stores/saidanStore";
 import isiOS from "@/methods/isiOS";
 import { TWEET_URL, TWEET_HASH_TAG } from "@/constants/saidanConstants";
@@ -78,9 +78,8 @@ const ScreenShotResult = ({ canvasRef }: Props) => {
               <FontAwesomeIcon
                 color="white"
                 icon={faTwitter}
-                className={`${
-                  isWide ? "fa-2xl" : "fa-xl"
-                } screenshot-share-icon`}
+                className={`${isWide ? "fa-2xl" : "fa-xl"
+                  } screenshot-share-icon`}
               />
             </button>
           </div>

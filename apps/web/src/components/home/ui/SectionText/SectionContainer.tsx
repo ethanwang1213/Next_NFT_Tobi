@@ -1,4 +1,4 @@
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import { a } from "@react-spring/web";
 import { ReactNode } from "react";
 

@@ -1,6 +1,6 @@
 import { animated, useSpring } from "@react-spring/web";
 import { RefObject, useMemo } from "react";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import { RESPONSIVE_BORDER } from "@/constants/saidanConstants";
 import useSaidanStore from "@/stores/saidanStore";
 import Tutorial from "@/../public/saidan/saidan-ui/tutorial.svg";

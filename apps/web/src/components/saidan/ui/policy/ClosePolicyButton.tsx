@@ -1,4 +1,4 @@
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import { RESPONSIVE_BORDER } from "@/constants/saidanConstants";
 
 type Props = {

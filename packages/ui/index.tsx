@@ -6,8 +6,6 @@ export {
 } from "./contexts/menu/menuAnimation";
 export { ShowBurgerProvider } from "./contexts/menu/showBurger";
 
-export { useWindowSize } from "./hooks/useWindowSize";
-
 export { CustomDocument } from "./organisms/CustomDocument";
 
 export { StampRallyRewardForm } from "./molecules/journal-StampRallyRewardForm"

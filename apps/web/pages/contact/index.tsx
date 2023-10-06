@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import SubmitModal from "@/components/contact/SubmitModal";
 import RecaptchaVisibleStyle from "@/components/styled-components/RecaptchaVisibleStyle";
 import BgPattern from "@/components/contact/BgPattern";

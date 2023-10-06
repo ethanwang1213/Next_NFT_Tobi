@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { StampRallyRewardFormType } from "ui/types";
-import { useStampRally } from "../fetchers/useStampRally";
+import { useStampRally } from "fetchers";
 
 /**
  * TOBIRA POLIS祭の出し物 G0のスタンプラリーの記念品受け取り用フォーム

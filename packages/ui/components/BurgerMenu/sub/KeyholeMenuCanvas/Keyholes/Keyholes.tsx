@@ -3,7 +3,7 @@ import { menuItem } from "../../../assets/menuItems";
 import { KeyholeObject } from "./KeyholeObject";
 import { gsap } from "gsap";
 import { useGLTF, useTexture } from "@react-three/drei";
-import { useWindowSize } from "../../../../../hooks/useWindowSize";
+import { useWindowSize } from "hooks";
 import { useRouter } from "next/router";
 
 type Props = {

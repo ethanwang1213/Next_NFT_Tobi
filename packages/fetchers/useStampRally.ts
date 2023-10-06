@@ -1,6 +1,6 @@
 import { StampRallyRewardFormType } from "ui/types";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../../apps/journal/firebase/client";
+import { functions } from "../../apps/journal/firebase/client";
 
 /**
  * スタンプラリーの受け取るための外部通信を行うhook

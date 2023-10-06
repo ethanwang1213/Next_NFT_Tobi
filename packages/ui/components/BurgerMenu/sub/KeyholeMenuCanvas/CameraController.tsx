@@ -1,6 +1,6 @@
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
-import { useWindowSize } from "../../../../hooks/useWindowSize";
+import { useWindowSize } from "hooks";
 
 /**
  * カメラのポジションを制御するコンポーネント

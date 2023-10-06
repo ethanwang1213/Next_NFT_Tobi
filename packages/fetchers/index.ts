@@ -1,0 +1,1 @@
+export { useStampRally } from "./useStampRally"

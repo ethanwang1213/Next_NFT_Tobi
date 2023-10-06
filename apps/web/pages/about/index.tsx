@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { useWindowSize, useMenuAnimation } from "ui";
+import { useMenuAnimation } from "ui";
 import isWideMode from "@/methods/isWideMode";
 import AboutSection from "@/components/about/AboutSection";
 import { useEffect } from "react";
@@ -9,6 +9,7 @@ import ContactHeader from "@/components/contact/ContactHeader";
 import AboutTitle from "@/components/about/AboutTitle";
 import AboutSubTitle from "@/components/about/AboutSubTitle";
 import Member from "@/components/about/Member";
+import { useWindowSize } from "hooks";
 
 const AboutUs: NextPage = () => {
   const { innerWidth, innerHeight } = useWindowSize();
