@@ -23,6 +23,7 @@ type ContextType = {
     set: Dispatch<SetStateAction<DisplayMode>>;
   };
   houseData: HouseData;
+  initContext: () => void;
 };
 
 const DiscordOAuthContext = createContext<ContextType>({} as ContextType);
@@ -41,6 +42,11 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
   const { nekoNfts } = useHoldNfts();
   const { loadHouseData } = useCommunityData();
   const [houseData, setHouseData] = useState<HouseData>(null);
+
+  const initContext = () => {
+    setDisplayMode("NONE");
+    setHouseData(null);
+  };
 
   const execLoadHouseData = async () => {
     if (!user || !user.email) return;
@@ -86,6 +92,7 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
       value={{
         displayMode: { current: displayMode, set: setDisplayMode },
         houseData: houseData,
+        initContext: initContext,
       }}
     >
       {children}

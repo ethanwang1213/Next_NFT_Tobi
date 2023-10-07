@@ -42,6 +42,7 @@ export type bookContext = {
     set: Dispatch<SetStateAction<boolean>>;
   };
   bookIndex: BookIndex;
+  initContext: () => void;
 };
 
 // journal 本の画像の左上隅座標を表す型

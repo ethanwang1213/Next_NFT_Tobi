@@ -34,6 +34,7 @@ type HoldNftsContextType = {
     current: string;
     set: React.Dispatch<React.SetStateAction<string>>;
   };
+  initContext: () => void;
 };
 
 const HoldNftsContext = createContext<HoldNftsContextType>(
@@ -57,6 +58,13 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
   const { fetchNftCollectionIds, fetchHoldNfts } = useFetchNftDatas();
 
   const [viewingSrc, setViewingSrc] = useState<string>("");
+
+  const initContext = () => {
+    setNekoNfts([]);
+    setOtherNfts([]);
+    setShouldUpdate(false);
+    setViewingSrc("");
+  };
 
   // TOBIRA NEKOのNFTを取得
   const loadNekos = async () => {
@@ -140,6 +148,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
         current: viewingSrc,
         set: setViewingSrc,
       },
+      initContext: initContext,
     }),
     [
       nekoNfts,
@@ -150,6 +159,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
       setOtherNfts,
       setShouldUpdate,
       setViewingSrc,
+      initContext,
     ]
   );
 

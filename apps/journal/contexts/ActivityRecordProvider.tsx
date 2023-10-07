@@ -16,6 +16,7 @@ type Props = {
 type ActivityRecordContextType = {
   activityRecords: LocalActivityRecord[];
   addActivityRecord: (newRecord: LocalActivityRecord) => void;
+  initContext: () => void;
 };
 
 const ActivityRecordContext = createContext<ActivityRecordContextType>(
@@ -34,6 +35,10 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
 
   const { user } = useAuth();
   const { fetchActivityRecords } = useFetchActivityRecords();
+
+  const initContext = () => {
+    setActivityRecords([]);
+  };
 
   const loadActivityRecords = async () => {
     if (!user || !user.email) return;
@@ -58,6 +63,7 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
       value={{
         activityRecords,
         addActivityRecord,
+        initContext,
       }}
     >
       {children}

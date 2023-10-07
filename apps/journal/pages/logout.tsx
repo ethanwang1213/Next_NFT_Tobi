@@ -1,12 +1,24 @@
 import { auth } from "fetchers/firebase/journal-client";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useAuth } from "contexts/journal-AuthProvider";
+import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
+import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { RedeemContext } from "@/contexts/RedeemContextProvider";
+import { useEditProfile } from "@/contexts/EditProfileProvider";
+import { BookContext } from "@/contexts/BookContextProvider";
+import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
 
 const Logout = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { initContext: initActivityContext } = useActivityRecord();
+  const { initContext: initNftsContext } = useHoldNfts();
+  const { initContext: initRedeemContext } = useContext(RedeemContext);
+  const { initContext: initProfileContext } = useEditProfile();
+  const { initContext: initBookContext } = useContext(BookContext);
+  const { initContext: initDiscordContext } = useDiscordOAuth();
 
   useEffect(() => {
     if (!user) return;
@@ -14,6 +26,12 @@ const Logout = () => {
     const handleLogout = async () => {
       try {
         if (user.email) {
+          initActivityContext();
+          initNftsContext();
+          initRedeemContext();
+          initProfileContext();
+          initBookContext();
+          initDiscordContext();
           await auth.signOut();
         }
         router.push("/login");

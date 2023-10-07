@@ -37,7 +37,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [tags, setTags] = useState<tagType[]>([]);
   const [isMute, setIsMute] = useState<boolean>(false);
 
-  const [bookIndex, setBookIndex] = useState<BookIndex>({
+  const initialIndex: BookIndex = {
     profilePage: {
       start: 0,
       end: 0,
@@ -54,46 +54,22 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       start: 0,
       end: 0,
     },
-  });
+  };
+  const [bookIndex, setBookIndex] = useState<BookIndex>(initialIndex);
+
+  const initContext = () => {
+    setPageNo(0);
+    setPages([]);
+    setTags([]);
+    setIsMute(false);
+    setBookIndex(initialIndex);
+  };
 
   const router = useRouter();
   const logoutModal = useRef<HTMLInputElement>();
 
   const { user } = useAuth();
   const { nekoNfts, otherNfts } = useHoldNfts();
-
-  const pageContextValue = useMemo(
-    () => ({
-      pageNo: {
-        current: pageNo,
-        set: setPageNo,
-      },
-      pages: {
-        current: pages,
-        set: setPages,
-      },
-      tags: {
-        current: tags,
-        set: setTags,
-      },
-      isMute: {
-        current: isMute,
-        set: setIsMute,
-      },
-      bookIndex: bookIndex,
-    }),
-    [
-      pageNo,
-      pages,
-      tags,
-      isMute,
-      bookIndex,
-      setPageNo,
-      setPages,
-      setTags,
-      setIsMute,
-    ]
-  );
 
   // プロフィールタグ
   // アイコンが設定されている場合はタグにもアイコンを表示する
@@ -227,6 +203,41 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       ...tags.slice(1),
     ]);
   }, [user]);
+
+  const pageContextValue = useMemo(
+    () => ({
+      pageNo: {
+        current: pageNo,
+        set: setPageNo,
+      },
+      pages: {
+        current: pages,
+        set: setPages,
+      },
+      tags: {
+        current: tags,
+        set: setTags,
+      },
+      isMute: {
+        current: isMute,
+        set: setIsMute,
+      },
+      bookIndex: bookIndex,
+      initContext,
+    }),
+    [
+      pageNo,
+      pages,
+      tags,
+      isMute,
+      bookIndex,
+      setPageNo,
+      setPages,
+      setTags,
+      setIsMute,
+      initContext,
+    ]
+  );
 
   return (
     <BookContext.Provider value={pageContextValue}>
