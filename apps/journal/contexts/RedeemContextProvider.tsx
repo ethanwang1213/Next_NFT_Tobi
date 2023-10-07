@@ -51,6 +51,7 @@ type RedeemContextType = {
     set: Dispatch<SetStateAction<boolean>>;
   };
   canRedeem: boolean;
+  initContext: () => void;
 };
 
 export const RedeemContext = createContext<RedeemContextType>(
@@ -71,6 +72,15 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
     useState<boolean>(false);
   const { user } = useAuth();
   const [canRedeem, setCanRedeem] = useState<boolean>(false);
+
+  const initContext = () => {
+    setRedeemStatus("NONE");
+    setInputCode("");
+    setSelfAccount("");
+    setSelfJournalId("");
+    setModalInputIsChecked(false);
+    setCanRedeem(false);
+  };
 
   // 匿名ログインの場合は引き換えできない
   useEffect(() => {
@@ -101,6 +111,7 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
         set: setModalInputIsChecked,
       },
       canRedeem: canRedeem,
+      initContext,
     }),
     [
       redeemStatus,
@@ -114,6 +125,7 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
       setSelfAccount,
       setSelfJournalId,
       setModalInputIsChecked,
+      initContext,
     ]
   );
 
