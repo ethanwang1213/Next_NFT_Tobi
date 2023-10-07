@@ -1,3 +1,5 @@
+// アンビエント宣言はここで。それ以外の型宣言はtypesパッケージにまとめる。
+
 declare module "*.png" {
   import { StaticImageData } from "next/image";
   const src: StaticImageData;
@@ -15,9 +17,3 @@ declare module "*.glb" {
   export default src;
 }
 
-export type ServiceName = "web" | "journal";
-
-// スタンプラリーの記念品のフォームのタイプ
-export type StampRallyRewardFormType = {
-  keyword: string;
-}

@@ -1,5 +1,5 @@
 import { doc, setDoc, updateDoc } from "firebase/firestore/lite";
-import { auth, db } from "@/../firebase/client";
+import { auth, db } from "fetchers/firebase/web-client";
 
 /**
  * アクスタ3dモデルのurlをdbに保存する

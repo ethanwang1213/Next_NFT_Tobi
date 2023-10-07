@@ -9,7 +9,7 @@ import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import useHomeStore from "@/stores/homeStore";
 import AnimationContainer from "./AnimationContainer";
 import EndPhaseVideo from "./phases/EndPhaseVideo";
-import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
+import { useCanvasDprContext } from "contexts/CanvasDprContext";
 
 const HomeCanvas = () => {
   const debugMode = useHomeStore((state) => state.debugMode);

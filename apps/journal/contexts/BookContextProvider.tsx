@@ -5,14 +5,15 @@ import {
   useMemo,
   useState,
   useRef,
+  ReactElement,
 } from "react";
 import NftPage from "../components/pages/NftPage/NftPage";
 import NekoPage from "../components/pages/NekoPage/NekoPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
-import { BookIndex, bookContext, tagType } from "../types/type";
-import { useAuth } from "./AuthProvider";
+import { BookIndex, bookContext, tagType } from "types/journal-types";
+import { useAuth } from "contexts/journal-AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useHoldNfts } from "./HoldNftsProvider";
@@ -32,7 +33,7 @@ export const BookContext = createContext<bookContext>(null);
  */
 const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pageNo, setPageNo] = useState<number>(0);
-  const [pages, setPages] = useState<ReactNode[]>([]);
+  const [pages, setPages] = useState<ReactElement[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
   const [isMute, setIsMute] = useState<boolean>(false);
 

@@ -15,8 +15,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { auth, db } from "@/firebase/client";
-import { Birthday, User, UserContextType } from "@/types/type";
+import { auth, db } from "fetchers/firebase/journal-client";
+import { Birthday, StampRallyMintStatusType, User, UserContextType } from "types/journal-types";
 
 const AuthContext = createContext<UserContextType>(undefined);
 
@@ -132,6 +132,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(newUser);
   };
 
+  // スタンプラリーのmint状態を更新する
+  const setStampRallyMintStatus = (status: StampRallyMintStatusType) => {
+    const newUse = { ...user, stampRallyMintStatus: status };
+    setUser(newUse);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -140,6 +146,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateProfile,
         setDbIconUrl,
         setJoinTobiratoryInfo,
+        setStampRallyMintStatus,
         MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >

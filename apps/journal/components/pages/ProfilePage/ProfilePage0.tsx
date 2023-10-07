@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import ActivityRecord from "./sub/ActivityRecord";
 import useDateFormat from "@/hooks/useDateFormat";
 import JournalStampIcon from "@/public/images/icon/stamp_journal.svg";
@@ -64,22 +64,20 @@ const ProfilePage0: React.FC = () => {
                 dataValue={
                   !user.email || user.email === ""
                     ? "-"
-                    : `${
-                        user.email.length < 21
-                          ? user.email
-                          : user.email.slice(0, 20) + "..."
-                      }`
+                    : `${user.email.length < 21
+                      ? user.email
+                      : user.email.slice(0, 20) + "..."
+                    }`
                 }
                 hidable={true}
               />
               {/* EditProfileModalに紐づく */}
               <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
                 <label
-                  htmlFor={`${
-                    !user || !user.email
+                  htmlFor={`${!user || !user.email
                       ? "login-guide-modal"
                       : "edit-profile-modal"
-                  }`}
+                    }`}
                   className="
                   btn btn-outline btn-lg btn-primary 
                   min-h-[40px] h-[45px] 

@@ -16,6 +16,8 @@
     "tsconfig": "*",
     "typescript": "^4.5.2",
     "fetchers": "*",
-    "hooks": "*"
+    "hooks": "*",
+    "types": "*",
+    "contexts": "*"
   }
 }

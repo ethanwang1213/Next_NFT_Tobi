@@ -5,7 +5,7 @@ import OpenBagTutorial from "./OpenBagTutorial";
 import TitleTutorial from "./TitleTutorial";
 import ZoomUpTutorial from "./ZoomUpTutorial";
 import TermsTutorial from "./TermsTutorial";
-import { useShowBurger } from "ui/contexts/menu/showBurger";
+import { useShowBurger } from "contexts/menu/ShowBurger";
 
 /**
  * saidanページのチュートリアルを表示するコンポーネント

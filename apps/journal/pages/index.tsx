@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/client";
+import { auth } from "fetchers/firebase/journal-client";
 import Mobile from "../components/Book/Mobile";
 import Pc from "../components/Book/Pc";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import DebugText from "@/components/DebugText";
 import NftViewModal from "@/components/NftViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 
 const Index = () => {
   const router = useRouter();

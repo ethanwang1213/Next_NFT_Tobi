@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
 import RedeemDataLine from "./RedeemDataLine";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 
 const SelfData: React.FC = () => {
   const { user } = useAuth();

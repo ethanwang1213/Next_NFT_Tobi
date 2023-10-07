@@ -1,4 +1,4 @@
-import { functions } from "@/firebase/client";
+import { functions } from "fetchers/firebase/journal-client";
 import { NextPage } from "next";
 import { ethers } from "ethers";
 import * as fcl from "@blocto/fcl";

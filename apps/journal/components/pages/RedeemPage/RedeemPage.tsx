@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { RedeemContext } from "../../../contexts/RedeemContextProvider";
 import RedeemPage0 from "./sub/RedeemPage0";
 import RedeemPage1 from "./sub/RedeemPage1";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 
 type Props = {
   pageNum: number;

@@ -3,7 +3,7 @@ import {
   RedeemContext,
   RedeemStatus,
 } from "../../../../contexts/RedeemContextProvider";
-import { functions } from "@/firebase/client";
+import { functions } from "fetchers/firebase/journal-client";
 import { httpsCallable } from "firebase/functions";
 import { useHoldNfts } from "@/contexts/HoldNftsProvider";
 import useRecordNewActivity from "@/hooks/useRecordNewActivity";
