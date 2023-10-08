@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import { firestore } from "firebase-admin";
 import { REGION, TPF2023_STAMP_RALLY_KEYWORDS } from "./lib/constants";
-import { MintStatusData } from "types/journal-types"
+import { MintStatusData, StampRallyResultType } from "types/journal-types"
 
 /**
  * ログイン状態で、正しいスタンプラリーの合言葉が渡されていれば、
@@ -10,7 +10,7 @@ import { MintStatusData } from "types/journal-types"
  * また、mintのtransaction発行に成功した場合、
  * db上のmintStatusにおける、そのNFTのmint状態を"IN_PROGRESS"に設定する。
  */
-exports.checkReward = functions.region(REGION).https.onCall(async (data, context) => {
+exports.checkReward = functions.region(REGION).https.onCall(async (data, context): Promise<StampRallyResultType> => {
   // ユーザー認証周りのチェック
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -75,10 +75,14 @@ exports.checkReward = functions.region(REGION).https.onCall(async (data, context
     }
   }
   if (isStampCompleted) {
-    setData.tpf2023StampRally.complete = "IN_PROGRESS";
+    setData.tpf2023StampRally!.complete = "IN_PROGRESS";
   }
   await firestore().collection("users").doc(context.auth.uid).set(setData, {
     merge: true,
   })
-  return "正解！";
+  return {
+    stamp: correctStampEntry[0], 
+    status: "IN_PROGRESS", 
+    isComplete: isStampCompleted
+  };
 });

@@ -17,7 +17,12 @@ import React, {
   useState,
 } from "react";
 import { auth, db } from "fetchers/firebase/journal-client";
-import { Birthday, StampRallyMintStatusType, User } from "types/journal-types";
+import {
+  Birthday,
+  MintStatusDataForSetMethod,
+  MintStatusType,
+  User,
+} from "types/journal-types";
 
 type Props = {
   children: ReactNode;
@@ -36,7 +41,11 @@ type ContextType = {
   ) => void;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
-  setStampRallyMintStatus: (status: StampRallyMintStatusType) => void;
+  setMintStatus: <T extends keyof MintStatusDataForSetMethod>(
+    event: T,
+    type: keyof MintStatusDataForSetMethod[T],
+    status: MintStatusType
+  ) => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -156,9 +165,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   // スタンプラリーのmint状態を更新する
-  const setStampRallyMintStatus = (status: StampRallyMintStatusType) => {
+  const setMintStatus: ContextType["setMintStatus"] = (event, type, status) => {
     if (!user) return;
-    const newUser = { ...user, stampRallyMintStatus: status };
+    const newUser: User = {
+      ...user,
+      mintStatusData: {
+        [event]: {
+          [type]: status,
+        },
+      },
+    };
     setUser(newUser);
   };
 
@@ -170,7 +186,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         updateProfile,
         setDbIconUrl,
         setJoinTobiratoryInfo,
-        setStampRallyMintStatus,
+        setMintStatus,
         MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >
