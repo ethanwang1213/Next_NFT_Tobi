@@ -3,7 +3,6 @@ import NftPagePc from "./sub/NftPagePc";
 import NftPageSp from "./sub/NftPageSp";
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
 import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
-import { StampRallyRewardForm } from "ui";
 
 type Props = {
   pageNum: number;
@@ -47,14 +46,6 @@ const NftPage: React.FC<Props> = ({ pageNum }) => {
           </div>
         </>
       )}
-      <div className="absolute bottom-4 sm:bottom-0 right-0">
-        <div className="hidden sm:block">
-          {pageNum % 2 === 0 && <StampRallyRewardForm />}
-        </div>
-        <div className="block sm:hidden">
-          <StampRallyRewardForm />
-        </div>
-      </div>
     </>
   );
 };
