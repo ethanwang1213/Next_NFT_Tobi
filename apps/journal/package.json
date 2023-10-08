@@ -45,6 +45,7 @@
     "tsconfig": "*",
     "typescript": "^5.0.0",
     "ui": "*",
-    "utils": "*"
+    "utils": "*",
+    "contexts": "*"
   }
 }
