@@ -35,9 +35,8 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [pages, setPages] = useState<ReactElement[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
-  const [isMute, setIsMute] = useState<boolean>(false);
 
-  const initialIndex: BookIndex = {
+  const [bookIndex, setBookIndex] = useState<BookIndex>({
     profilePage: {
       start: 0,
       end: 0,
@@ -54,16 +53,7 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
       start: 0,
       end: 0,
     },
-  };
-  const [bookIndex, setBookIndex] = useState<BookIndex>(initialIndex);
-
-  const initContext = () => {
-    setPageNo(0);
-    setPages([]);
-    setTags([]);
-    setIsMute(false);
-    setBookIndex(initialIndex);
-  };
+  });
 
   const router = useRouter();
   const logoutModal = useRef<HTMLInputElement>();
@@ -218,24 +208,16 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
         current: tags,
         set: setTags,
       },
-      isMute: {
-        current: isMute,
-        set: setIsMute,
-      },
       bookIndex: bookIndex,
-      initContext,
     }),
     [
       pageNo,
       pages,
       tags,
-      isMute,
       bookIndex,
       setPageNo,
       setPages,
       setTags,
-      setIsMute,
-      initContext,
     ]
   );
 

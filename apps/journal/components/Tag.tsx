@@ -2,6 +2,7 @@ import { FC, ReactElement, useContext, useMemo } from "react";
 import useSound from "use-sound";
 import { BookContext } from "../contexts/BookContextProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
+import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
 
 const Tag: FC<{
   image: string | ReactElement;
@@ -10,7 +11,7 @@ const Tag: FC<{
 }> = ({ image, page, isHamburger = false }) => {
   const bookData = useContext(BookContext);
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
-  const { current: isMute } = bookData.isMute;
+  const { current: isMute } = useSoundConfig().isMute;
 
   const isNumber = useMemo(() => typeof page === "number", [page]);
 
@@ -35,10 +36,11 @@ const Tag: FC<{
   return (
     <div
       onClick={handleClick}
-      className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 cursor-pointer ${((pageNo === page || pageNo + 1 === page) && isNumber) || isHamburger
-        ? "bg-red-700 w-24"
-        : "bg-[#F0E8E1] w-24 md:w-20"
-        }`}
+      className={`flex items-center justify-end sm:justify-start rounded-r-md sm:rounded-l-md sm:rounded-r-none w-24 h-14 cursor-pointer ${
+        ((pageNo === page || pageNo + 1 === page) && isNumber) || isHamburger
+          ? "bg-red-700 w-24"
+          : "bg-[#F0E8E1] w-24 md:w-20"
+      }`}
     >
       {typeof image === "string" ? (
         <div
@@ -54,23 +56,27 @@ const Tag: FC<{
             maskSize: "40px 40px",
             WebkitMaskSize: "40px 40px",
           }}
-          className={`ml-4 mr-3 w-[40px] h-[40px] transition-all ${((pageNo === page || pageNo + 1 === page) && isNumber) ||
+          className={`ml-4 mr-3 w-[40px] h-[40px] transition-all ${
+            ((pageNo === page || pageNo + 1 === page) && isNumber) ||
             isHamburger
-            ? "bg-white"
-            : "bg-accent"
-            }`}
+              ? "bg-white"
+              : "bg-accent"
+          }`}
         ></div>
       ) : (
         <div
-          className={`ml-4 mr-3 w-[44px] h-[44px] transition-all pointer-events-none select-none rounded-full ${((pageNo === page || pageNo + 1 === page) && isNumber) ||
+          className={`ml-4 mr-3 w-[44px] h-[44px] transition-all pointer-events-none select-none rounded-full ${
+            ((pageNo === page || pageNo + 1 === page) && isNumber) ||
             isHamburger
-            ? "text-white"
-            : "text-accent"
-            } ${isHamburger
+              ? "text-white"
+              : "text-accent"
+          } ${
+            isHamburger
               ? "grid content-center"
-              : `border-solid border-[3px] ${!user || user.icon === "" ? "" : " bg-white"
-              } ${pageNo === 0 ? " border-white" : " border-accent"}`
-            }`}
+              : `border-solid border-[3px] ${
+                  !user || user.icon === "" ? "" : " bg-white"
+                } ${pageNo === 0 ? " border-white" : " border-accent"}`
+          }`}
         >
           {image}
         </div>

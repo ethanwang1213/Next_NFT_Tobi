@@ -9,6 +9,9 @@ import NftViewModal from "@/components/NftViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
+import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
+import BookContextProvider from "@/contexts/BookContextProvider";
+import { EditProfileProvider } from "@/contexts/EditProfileProvider";
 
 const Index = () => {
   const router = useRouter();
@@ -22,30 +25,37 @@ const Index = () => {
   }, [auth]);
 
   return (
-    <div
-      className={
-        process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && (!user || !user.email)
-          ? "invisible"
-          : ""
-      }
-    >
-      <Image
-        src="/journal/images/book/bg_journal.png"
-        fill
-        alt="bg_journal"
-        className="pointer-events-none select-none"
-      />
-      <div className="hidden sm:block">
-        <Pc />
-      </div>
-      <div className="block sm:hidden">
-        <Mobile />
-      </div>
-      <EditProfileModal />
-      <CropNewIconModal />
-      <DebugText />
-      <NftViewModal />
-    </div>
+    <RedeemStatusContextProvider>
+      <EditProfileProvider>
+        <BookContextProvider>
+          <div
+            className={
+              process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
+              (!user || !user.email)
+                ? "invisible"
+                : ""
+            }
+          >
+            <Image
+              src="/journal/images/book/bg_journal.png"
+              fill
+              alt="bg_journal"
+              className="pointer-events-none select-none"
+            />
+            <div className="hidden sm:block">
+              <Pc />
+            </div>
+            <div className="block sm:hidden">
+              <Mobile />
+            </div>
+            <EditProfileModal />
+            <CropNewIconModal />
+            <DebugText />
+            <NftViewModal />
+          </div>
+        </BookContextProvider>
+      </EditProfileProvider>
+    </RedeemStatusContextProvider>
   );
 };
 

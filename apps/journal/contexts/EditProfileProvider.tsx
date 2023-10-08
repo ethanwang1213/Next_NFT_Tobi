@@ -26,7 +26,6 @@ type ContextType = {
     current: Area | null;
     set: Dispatch<SetStateAction<Area | null>>;
   };
-  initContext: () => void;
 };
 
 const EditProfileContext = createContext<ContextType>({} as ContextType);
@@ -43,12 +42,6 @@ export const EditProfileProvider: React.FC<Props> = ({ children }) => {
   const [iconForCrop, setIconForCrop] = useState<string>("");
   const [cropData, setCropData] = useState<Area>(null);
 
-  const initContext = () => {
-    setIsCropWindowOpen(false);
-    setIconForCrop("");
-    setCropData(null);
-  };
-
   const contextValue = useMemo<ContextType>(
     () => ({
       isCropModalOpen: {
@@ -63,7 +56,6 @@ export const EditProfileProvider: React.FC<Props> = ({ children }) => {
         current: cropData,
         set: setCropData,
       },
-      initContext,
     }),
     [
       isCropModalOpen,
@@ -72,7 +64,6 @@ export const EditProfileProvider: React.FC<Props> = ({ children }) => {
       setIconForCrop,
       cropData,
       setCropData,
-      initContext,
     ]
   );
 
