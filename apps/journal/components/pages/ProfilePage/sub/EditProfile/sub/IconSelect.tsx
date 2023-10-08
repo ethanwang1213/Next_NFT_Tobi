@@ -1,5 +1,5 @@
 import { useAuth } from "contexts/journal-AuthProvider";
-import { useEditProfile } from "@/contexts/EditProfileProvider";
+import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
 import { useEffect, useRef, useState } from "react";
 import {
   UseFormRegister,

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import CloseModalButton from ".";
-import { BookContext } from "@/contexts/BookContextProvider";
+import { useBookContext } from "@/contexts/journal-BookProvider";
 
 type Props = {
   className: string;
@@ -12,7 +12,7 @@ type Props = {
  * @returns
  */
 const CheckNftButton: React.FC<Props> = ({ className }) => {
-  const { pageNo, bookIndex } = useContext(BookContext);
+  const { pageNo, bookIndex } = useBookContext();
 
   const callback = () => {
     // TODO: ゆくゆくはNEKOの場合と他のNFTの場合で遷移先を変える

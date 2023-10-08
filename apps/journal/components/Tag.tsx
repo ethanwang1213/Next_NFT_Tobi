@@ -1,6 +1,6 @@
 import { FC, ReactElement, useMemo } from "react";
 import useSound from "use-sound";
-import { useBookContext } from "../contexts/BookProvider";
+import { useBookContext } from "../contexts/journal-BookProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
 

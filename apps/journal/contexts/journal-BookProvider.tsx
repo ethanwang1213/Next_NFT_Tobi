@@ -19,7 +19,7 @@ import { BookIndex, tagType } from "types/journal-types";
 import { useAuth } from "contexts/journal-AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useHoldNfts } from "./HoldNftsProvider";
+import { useHoldNfts } from "./journal-HoldNftsProvider";
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
 

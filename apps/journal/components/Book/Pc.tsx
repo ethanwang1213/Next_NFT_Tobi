@@ -4,7 +4,7 @@ import { useWindowSize } from "react-use";
 import { BookPos } from "types/journal-types";
 import Tag from "../Tag";
 import gsap from "gsap";
-import { BookContext } from "../../contexts/BookProvider";
+import { useBookContext } from "../../contexts/journal-BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 
@@ -27,7 +27,7 @@ const Pc = () => {
   const [pageScale, setPageScale] = useState<number>(1);
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
-  const bookData = useContext(BookContext);
+  const bookData = useBookContext();
   const pageRef = [
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),

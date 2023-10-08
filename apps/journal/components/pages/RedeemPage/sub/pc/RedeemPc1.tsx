@@ -2,7 +2,7 @@ import CheckingCodePc from "./RedeemStatusPc/CheckingCodePc";
 import SuccessPc from "./RedeemStatusPc/SuccessPc";
 import IncorrectPc from "./RedeemStatusPc/IncorrectPc";
 import ServerErrorPc from "./RedeemStatusPc/ServerErrorPc";
-import { useRedeemStatus } from "../../../../../contexts/RedeemStatusProvider";
+import { useRedeemStatus } from "../../../../../contexts/journal-RedeemStatusProvider";
 
 /**
  * redeemページの右ページのPC表示用コンポーネント

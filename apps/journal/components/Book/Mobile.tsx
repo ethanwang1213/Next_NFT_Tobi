@@ -17,7 +17,7 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import NftPage from "../pages/NftPage/NftPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
-import { useBookContext } from "../../contexts/BookProvider";
+import { useBookContext } from "../../contexts/journal-BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import { useAuth } from "contexts/journal-AuthProvider";

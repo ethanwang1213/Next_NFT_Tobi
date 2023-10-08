@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
-import { useHoldNfts } from "./HoldNftsProvider";
+import { useHoldNfts } from "./journal-HoldNftsProvider";
 import useCommunityData from "@/hooks/useCommunityData";
 import { HouseData } from "types/journal-types";
 

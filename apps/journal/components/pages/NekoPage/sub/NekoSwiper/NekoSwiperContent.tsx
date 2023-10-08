@@ -1,6 +1,6 @@
 import Image from "next/image";
 import NftPageTitle from "../../../../PageTitle/NftPageTitle";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 
 type Props = {
   width: number;

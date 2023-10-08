@@ -1,4 +1,4 @@
-import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
+import { useActivityRecord } from "@/contexts/journal-ActivityRecordProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { db } from "fetchers/firebase/journal-client";
 import { DBActivityRecord } from "types/journal-types";

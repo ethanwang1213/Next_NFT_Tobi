@@ -1,4 +1,4 @@
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 import Image from "next/image";
 
 type Props = {

@@ -3,8 +3,8 @@ import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
 import { useAuth } from "contexts/journal-AuthProvider";
 import useDateFormat from "@/hooks/useDateFormat";
 import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
-import { useDebug } from "@/contexts/DebugProvider";
-import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
+import { useDebug } from "@/contexts/journal-DebugProvider";
+import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 
 /**
  * プロフィールページの2ページ目

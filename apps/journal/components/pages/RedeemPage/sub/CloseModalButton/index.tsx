@@ -1,4 +1,4 @@
-import { useRedeemStatus } from "../../../../../contexts/RedeemStatusProvider";
+import { useRedeemStatus } from "../../../../../contexts/journal-RedeemStatusProvider";
 
 type Props = {
   className: string;

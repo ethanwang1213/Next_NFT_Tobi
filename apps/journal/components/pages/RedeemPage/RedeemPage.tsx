@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useRedeemStatus } from "../../../contexts/RedeemStatusProvider";
+import { useRedeemStatus } from "../../../contexts/journal-RedeemStatusProvider";
 import RedeemPage0 from "./sub/RedeemPage0";
 import RedeemPage1 from "./sub/RedeemPage1";
 import { useAuth } from "contexts/journal-AuthProvider";

@@ -4,7 +4,7 @@ import IncorrectSp from "./RedeemStatusSp/IncorrectSp";
 import ServerErrorSp from "./RedeemStatusSp/ServerErrorSp";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRedeemStatus } from "../../../../../contexts/RedeemStatusProvider";
+import { useRedeemStatus } from "../../../../../contexts/journal-RedeemStatusProvider";
 import CloseModalButton from "../CloseModalButton";
 
 /**

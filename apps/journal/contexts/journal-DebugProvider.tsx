@@ -8,7 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { DisplayMode } from "./DiscordOAuthProvider";
+import { DisplayMode } from "./journal-DiscordOAuthProvider";
 
 type Props = {
   children: ReactNode;

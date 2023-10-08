@@ -1,16 +1,16 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useMemo, useState } from "react";
-import { BookContext } from "@/contexts/BookContextProvider";
 import Image from "next/image";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
+import { useBookContext } from "@/contexts/journal-BookProvider";
 
 /**
  * NFTを全画面表示で閲覧するためのモーダル
  * @returns
  */
 const NftViewModal: React.FC = () => {
-  const { pageNo, bookIndex } = useContext(BookContext);
+  const { pageNo, bookIndex } = useBookContext();
   const { viewingSrc } = useHoldNfts();
 
   const isNekoPage = useMemo(
