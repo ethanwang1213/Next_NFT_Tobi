@@ -156,7 +156,7 @@ const Pc = () => {
       if (isLeftPage(no)) {
         return " pb-0 pl-0 pr-4";
       } else {
-        return " pl-4";
+        return " pb-12 pl-4";
       }
     } else if (isInPage(no, nekoPage)) {
       return " px-0";
