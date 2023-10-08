@@ -5,7 +5,7 @@ import useDateFormat from "@/hooks/useDateFormat";
 import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
 import { useDebug } from "@/contexts/journal-DebugProvider";
 import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
-import { StampRallyRewardForm, RoundedImage } from "ui";
+import { StampRally } from "ui";
 
 /**
  * プロフィールページの2ページ目
@@ -72,47 +72,8 @@ const ProfilePage1: React.FC = () => {
           )}
         </div>
       </div>
-      <div className="mt-6 sm:mt-12 pb-12 text-center text-primary">
-        <div>
-          <hr className="mx-8 border-primary" />
-          <div className="mt-2 sm:mt-4 mb-3 sm:mb-6">
-            <p className="text-xs sm:text-xl font-bold">11.3 ~ 12.3</p>
-            <h2
-              className="text-[26px] sm:text-[48px] font-bold 
-                drop-shadow-[0_4px_2px_rgba(117,58,0,0.4)]
-                sm:drop-shadow-[0_6px_2px_rgba(117,58,0,0.4)]"
-            >
-              TOBIRAPOLIS FESTIVAL
-            </h2>
-            <p className="mt-0 sm:mt-0 text-[0.65rem] sm:text-xs sm:text-base font-bold">
-              TOBIRAPOLIS祭の各出展に参加して合言葉を集めよう
-            </p>
-          </div>
-          <hr className="mx-8 border-primary" />
-        </div>
-        <div className="mt-6 sm:mt-12">
-          <p className="text-xs sm:text-lg font-bold">
-            すべて集めるとスペシャルスタンプNFTをプレゼント！
-          </p>
-          <div className="mt-3 sm:mt-6 flex justify-center gap-4 sm:gap-6 h-[56px] sm:h-[104px]">
-            <RoundedImage src="" alt="fes stamp" />
-            <RoundedImage src="" alt="fes stamp" />
-            <RoundedImage src="" alt="fes stamp" />
-            <RoundedImage src="" alt="fes stamp" />
-            <RoundedImage src="" alt="fes stamp" />
-          </div>
-        </div>
-        <div className="w-full mt-6 sm:mt-12 flex justify-center">
-          <StampRallyRewardForm />
-        </div>
-        <p className="mt-2 text-[10px] sm:text-xs font-bold">
-          {"スタンプ押印(NFT mint)には時間がかかります。"}
-          {/* <br className="block sm:hidden" /> */}
-          {"予めご了承ください。"}
-        </p>
-        <div className="mt-8 sm:mt-20 text-xs sm:text-base font-bold">
-          <a>TOBIRAPOLIS祭詳細はこちら</a>
-        </div>
+      <div className="mt-6 sm:mt-12 pb-12 sm:pb-0">
+        <StampRally />
       </div>
     </div>
   );

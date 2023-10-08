@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { StampRallyRewardFormType } from "types/journal-types";
 import { useStampRally } from "fetchers";
-import { useAuth } from "contexts/journal-AuthProvider";
 
 /**
  * TOBIRA POLIS祭の出し物 G0のスタンプラリーの記念品受け取り用フォーム
@@ -10,7 +9,7 @@ export const StampRallyRewardForm: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<StampRallyRewardFormType>({
     defaultValues: {
       keyword: "",
@@ -18,7 +17,6 @@ export const StampRallyRewardForm: React.FC = () => {
   });
 
   const { requestReward } = useStampRally();
-  const { user } = useAuth();
 
   return (
     <form

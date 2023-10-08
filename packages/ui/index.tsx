@@ -6,5 +6,5 @@ export {
 } from "contexts/menu/MenuAnimation";
 export { ShowBurgerProvider } from "contexts/menu/ShowBurger";
 export { CustomDocument } from "./organisms/CustomDocument";
-export { StampRallyRewardForm } from "./molecules/journal-StampRallyRewardForm";
-export { RoundedImage } from "./atoms/journal-RoundedImage";
+
+export { StampRally } from "./molecules/journal-StampRally";
