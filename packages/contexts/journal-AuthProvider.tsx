@@ -48,12 +48,12 @@ const AuthContext = createContext<ContextType>({} as ContextType);
  */
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | null>(null);
   const [dbIconUrl, setDbIconUrl] = useState<string>("");
   const MAX_NAME_LENGTH = 12;
 
   // ユーザー作成用関数
-  function createUser(uid: string, email?: string) {
+  function createUser(uid: string, email?: string | null) {
     const ref = doc(db, `users/${uid}`);
     const appUser: User = {
       id: uid,
@@ -125,6 +125,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     newBirthday: Birthday,
     newDbIconUrl: string | null
   ) => {
+    if (!user) return;
     const newUser = {
       ...user,
       icon: newIcon,
@@ -141,6 +142,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   // 条件分岐は冗長かもとも思うが、予期しないデータの修正しても、
   // 最初の参加日を保証するという意味では、この実装でいいのかもしれない
   const setJoinTobiratoryInfo = (discordId: string, joinDate: Date) => {
+    if (!user) return;
     const newUser = { ...user };
     newUser.discord = discordId;
     if (!user.characteristic || !user.characteristic.join_tobiratory_at) {
@@ -155,8 +157,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   // スタンプラリーのmint状態を更新する
   const setStampRallyMintStatus = (status: StampRallyMintStatusType) => {
-    const newUse = { ...user, stampRallyMintStatus: status };
-    setUser(newUse);
+    if (!user) return;
+    const newUser = { ...user, stampRallyMintStatus: status };
+    setUser(newUser);
   };
 
   return (
