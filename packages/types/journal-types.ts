@@ -54,7 +54,7 @@ export type HouseData = {
 
 
 // mint状態のタイプ
-export type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
+type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
 
 // TOBIRAPOLIS祭2023スタンプラリーのスタンプタイプ
 export type Tpf2023StampType = "g0" | "g1Alpha" | "g1Beta" | "g1Gamma" | "g1Delta";
