@@ -1,6 +1,7 @@
-import { RoundedImage } from "../atoms/journal-RoundedImage";
-import { StampRallyTitle } from "../atoms/journal-StampRallyTitle";
-import { StampRallyRewardForm } from "./journal-StampRallyRewardForm";
+import { RoundedImage } from "../../atoms/journal-RoundedImage";
+import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
+import { StampRallyRewardForm } from "../journal-StampRallyRewardForm";
+import stamp from "./assets/stamp.png";
 
 export const StampRally = () => {
   return (
@@ -13,11 +14,11 @@ export const StampRally = () => {
           すべて集めるとスペシャルスタンプNFTをプレゼント！
         </p>
         <div className="mt-3 sm:mt-6 flex justify-center gap-3 sm:gap-6 h-[56px] sm:h-[104px]">
-          <RoundedImage src="" alt="fes stamp" />
-          <RoundedImage src="" alt="fes stamp" />
-          <RoundedImage src="" alt="fes stamp" />
-          <RoundedImage src="" alt="fes stamp" />
-          <RoundedImage src="" alt="fes stamp" />
+          <RoundedImage src={stamp.src} alt="fes stamp" />
+          <RoundedImage src={stamp.src} alt="fes stamp" />
+          <RoundedImage src={stamp.src} alt="fes stamp" />
+          <RoundedImage src={stamp.src} alt="fes stamp" />
+          <RoundedImage src={stamp.src} alt="fes stamp" />
         </div>
       </div>
       <div className="w-full mt-6 sm:mt-12">

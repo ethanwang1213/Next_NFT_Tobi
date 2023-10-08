@@ -11,7 +11,7 @@ export const RoundedImage: React.FC<Props> = ({ src, alt }) => {
       className="h-full aspect-square relative rounded-full 
         bg-white text-xs sm:text-base"
     >
-      <Image src={src} alt={alt} />
+      <Image src={src} alt={alt} width={105} height={105} />
     </div>
   );
 };
