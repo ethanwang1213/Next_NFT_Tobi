@@ -3,7 +3,13 @@ import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
 import { StampRallyRewardForm } from "../journal-StampRallyRewardForm";
 import stamp from "./assets/stamp.png";
 
+/**
+ * スタンプラリー特設表示のコンポーネント
+ * @returns {ReactElement} The `StampRally` component
+ */
 export const StampRally = () => {
+  const stamps = [stamp.src, stamp.src, stamp.src, stamp.src, stamp.src];
+
   return (
     <div className="text-center text-primary">
       <div>
@@ -14,11 +20,9 @@ export const StampRally = () => {
           すべて集めるとスペシャルスタンプNFTをプレゼント！
         </p>
         <div className="mt-3 sm:mt-6 flex justify-center gap-3 sm:gap-6 h-[56px] sm:h-[104px]">
-          <RoundedImage src={stamp.src} alt="fes stamp" />
-          <RoundedImage src={stamp.src} alt="fes stamp" />
-          <RoundedImage src={stamp.src} alt="fes stamp" />
-          <RoundedImage src={stamp.src} alt="fes stamp" />
-          <RoundedImage src={stamp.src} alt="fes stamp" />
+          {stamps.map((v) => (
+            <RoundedImage src={v} alt="fes stamp" width={105} height={105} />
+          ))}
         </div>
       </div>
       <div className="w-full mt-6 sm:mt-12">

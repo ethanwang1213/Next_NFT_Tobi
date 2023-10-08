@@ -4,6 +4,7 @@ import { useStampRally } from "fetchers";
 
 /**
  * TOBIRA POLIS祭の出し物 G0のスタンプラリーの記念品受け取り用フォーム
+ * @returns {ReactElement} The `StampRallyRewardForm` component
  */
 export const StampRallyRewardForm: React.FC = () => {
   const {

@@ -1,5 +1,9 @@
-import { TitleHr } from "./TitleHr";
+import { TitleHr } from "./journal-TitleHr";
 
+/**
+ * スタンプラリーのタイトルを表示するコンポーネント
+ * @returns {ReactElement} The `StampRallyTitle` component
+ */
 export const StampRallyTitle: React.FC = () => {
   return (
     <>
