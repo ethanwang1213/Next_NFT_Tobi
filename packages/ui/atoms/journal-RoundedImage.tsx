@@ -7,7 +7,10 @@ type Props = {
 
 export const RoundedImage: React.FC<Props> = ({ src, alt }) => {
   return (
-    <div className="h-full aspect-square relative rounded-full bg-white">
+    <div
+      className="h-full aspect-square relative rounded-full 
+        bg-white text-xs sm:text-base"
+    >
       <Image src={src} alt={alt} />
     </div>
   );

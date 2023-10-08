@@ -21,17 +21,20 @@ export const StampRallyRewardForm: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <form onSubmit={handleSubmit(requestReward)} className="h-12 w-full flex">
+    <form
+      onSubmit={handleSubmit(requestReward)}
+      className="h-8 sm:h-12 w-full flex"
+    >
       <div className="grow">
         <input
           type="text"
           placeholder="合言葉を入力"
           className="
             h-full w-full 
-            input input-bordered border-2 border-primary rounded-2xl
+            input input-bordered border-1 sm:border-2 border-primary rounded-2xl
             bg-transparent 
             text-primary placeholder-primary/50 
-            text-lg font-bold 
+            text-sm sm:text-lg font-bold 
             shadow-lg drop-shadow-[0_4px_2px_rgba(117,58,0,0.3)]"
           {...register("keyword", {
             required: {
@@ -41,15 +44,15 @@ export const StampRallyRewardForm: React.FC = () => {
           })}
         />
       </div>
-      <div className="relative h-full ml-4 py-2">
+      <div className="relative h-full ml-4 py-1 sm:py-2">
         <button
           type="submit"
-          className="h-full min-h-0 w-20 
+          className="h-full min-h-0 w-16 sm:w-20 
             btn btn-outline btn-primary btn-circle bg-transparent border-none
-            text-lg shadow-lg drop-shadow-[0_4px_2px_rgba(117,58,0,0.4)]"
+            text-sm sm:text-lg shadow-lg drop-shadow-[0_4px_2px_rgba(117,58,0,0.4)]"
         >
           <div
-            className="w-full h-full rounded-full outline outline-2 -outline-offset-2 
+            className="w-full h-full rounded-full outline outline-1 sm:outline-2 -outline-offset-1 sm:-outline-offset-2 
               outline-primary hover:outline-[#9A4F04] 
               transition-[outline-color, color] duration-200
               text-primary hover:text-white
