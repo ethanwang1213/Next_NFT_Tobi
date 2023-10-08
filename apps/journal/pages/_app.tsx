@@ -12,7 +12,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { AuthProvider } from "contexts/journal-AuthProvider";
 import { HoldNftsProvider } from "@/contexts/HoldNftsProvider";
 import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
-import DebugProvider from "@/contexts/DebugProvider";
+import { DebugProvider } from "@/contexts/DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";

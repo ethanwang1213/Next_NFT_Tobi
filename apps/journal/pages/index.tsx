@@ -9,8 +9,8 @@ import NftViewModal from "@/components/NftViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
-import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
-import BookContextProvider from "@/contexts/BookContextProvider";
+import { RedeemStatusProvider } from "@/contexts/RedeemStatusProvider";
+import { BookProvider } from "@/contexts/BookProvider";
 import { EditProfileProvider } from "@/contexts/EditProfileProvider";
 
 const Index = () => {
@@ -25,9 +25,9 @@ const Index = () => {
   }, [auth]);
 
   return (
-    <RedeemStatusContextProvider>
+    <RedeemStatusProvider>
       <EditProfileProvider>
-        <BookContextProvider>
+        <BookProvider>
           <div
             className={
               process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
@@ -53,9 +53,9 @@ const Index = () => {
             <DebugText />
             <NftViewModal />
           </div>
-        </BookContextProvider>
+        </BookProvider>
       </EditProfileProvider>
-    </RedeemStatusContextProvider>
+    </RedeemStatusProvider>
   );
 };
 

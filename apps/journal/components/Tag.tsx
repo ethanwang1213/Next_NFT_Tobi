@@ -1,6 +1,6 @@
-import { FC, ReactElement, useContext, useMemo } from "react";
+import { FC, ReactElement, useMemo } from "react";
 import useSound from "use-sound";
-import { BookContext } from "../contexts/BookContextProvider";
+import { useBookContext } from "../contexts/BookProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
 
@@ -9,7 +9,7 @@ const Tag: FC<{
   page: number | (() => void);
   isHamburger?: boolean;
 }> = ({ image, page, isHamburger = false }) => {
-  const bookData = useContext(BookContext);
+  const bookData = useBookContext();
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
   const { current: isMute } = useSoundConfig().isMute;
 

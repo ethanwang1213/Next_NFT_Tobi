@@ -1,6 +1,4 @@
-import { BookContext } from "@/contexts/BookContextProvider";
 import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
-import { useContext } from "react";
 
 /**
  * サウンドのオンオフを切り替えるトグルボタン

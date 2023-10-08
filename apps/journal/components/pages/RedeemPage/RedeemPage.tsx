@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { RedeemContext } from "../../../contexts/RedeemContextProvider";
+import { useEffect } from "react";
+import { useRedeemStatus } from "../../../contexts/RedeemStatusProvider";
 import RedeemPage0 from "./sub/RedeemPage0";
 import RedeemPage1 from "./sub/RedeemPage1";
 import { useAuth } from "contexts/journal-AuthProvider";
@@ -14,7 +14,7 @@ type Props = {
  * @returns
  */
 const RedeemPage: React.FC<Props> = ({ pageNum }) => {
-  const { selfAccount, selfJournalId } = useContext(RedeemContext);
+  const { selfAccount, selfJournalId } = useRedeemStatus();
   const { user } = useAuth();
 
   // TODO: アカウント情報の読み込み

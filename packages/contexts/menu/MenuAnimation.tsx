@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   Dispatch,
   ReactNode,
@@ -9,7 +9,11 @@ import {
   useState,
 } from "react";
 
-type MenuAnimationContextType = {
+type Props = {
+  children: ReactNode;
+};
+
+type ContextType = {
   imageUrl: string;
   setImageUrl: Dispatch<SetStateAction<string>>;
   imageRef: React.RefObject<HTMLDivElement>;
@@ -19,13 +23,7 @@ type MenuAnimationContextType = {
 };
 
 // メニューからの画面遷移時の画像設定用のContext
-const MenuAnimationContext = createContext<MenuAnimationContextType>(
-  {} as MenuAnimationContextType
-);
-
-type Props = {
-  children: ReactNode;
-};
+const MenuAnimationContext = createContext<ContextType>({} as ContextType);
 
 // メニューからの画面遷移時の画像設定用のContext Provider
 export const MenuAnimationProvider: React.FC<Props> = ({ children }) => {

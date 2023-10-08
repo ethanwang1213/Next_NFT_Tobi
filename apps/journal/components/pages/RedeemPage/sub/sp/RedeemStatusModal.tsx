@@ -4,8 +4,7 @@ import IncorrectSp from "./RedeemStatusSp/IncorrectSp";
 import ServerErrorSp from "./RedeemStatusSp/ServerErrorSp";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
-import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
+import { useRedeemStatus } from "../../../../../contexts/RedeemStatusProvider";
 import CloseModalButton from "../CloseModalButton";
 
 /**
@@ -13,7 +12,7 @@ import CloseModalButton from "../CloseModalButton";
  * @returns
  */
 const RedeemStatusModal: React.FC = () => {
-  const { redeemStatus, modalInputIsChecked } = useContext(RedeemContext);
+  const { redeemStatus, modalInputIsChecked } = useRedeemStatus();
 
   return (
     <>

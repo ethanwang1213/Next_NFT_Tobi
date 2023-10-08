@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
@@ -87,14 +88,17 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
     }
   }, [user, houseData, nekoNfts.current]);
 
+  const contextValue = useMemo(
+    () => ({
+      displayMode: { current: displayMode, set: setDisplayMode },
+      houseData: houseData,
+      initContext: initContext,
+    }),
+    [displayMode, setDisplayMode, houseData, initContext]
+  );
+
   return (
-    <DiscordOAuthContext.Provider
-      value={{
-        displayMode: { current: displayMode, set: setDisplayMode },
-        houseData: houseData,
-        initContext: initContext,
-      }}
-    >
+    <DiscordOAuthContext.Provider value={contextValue}>
       {children}
     </DiscordOAuthContext.Provider>
   );

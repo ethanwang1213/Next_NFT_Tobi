@@ -5,27 +5,48 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
   setDoc,
 } from "firebase/firestore/lite";
-import {
+import React, {
   createContext,
+  Dispatch,
   ReactNode,
+  SetStateAction,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { auth, db } from "fetchers/firebase/journal-client";
-import { Birthday, StampRallyMintStatusType, User, UserContextType } from "types/journal-types";
+import { Birthday, StampRallyMintStatusType, User } from "types/journal-types";
 
-const AuthContext = createContext<UserContextType>(undefined);
+type Props = {
+  children: ReactNode;
+};
+
+// AuthContextのデータ型
+type ContextType = {
+  user: User | null | undefined;
+  dbIconUrl: string;
+  MAX_NAME_LENGTH: number;
+  updateProfile: (
+    newIcon: string,
+    newName: string,
+    newBirthday: Birthday,
+    newDbIconPath: string
+  ) => void;
+  setDbIconUrl: Dispatch<SetStateAction<string>>;
+  setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
+  setStampRallyMintStatus: (status: StampRallyMintStatusType) => void;
+};
+
+const AuthContext = createContext<ContextType>({} as ContextType);
 
 /**
  * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー
  * @param param0
  * @returns
  */
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User>();
   const [dbIconUrl, setDbIconUrl] = useState<string>("");
@@ -136,7 +157,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const setStampRallyMintStatus = (status: StampRallyMintStatusType) => {
     const newUse = { ...user, stampRallyMintStatus: status };
     setUser(newUse);
-  }
+  };
 
   return (
     <AuthContext.Provider

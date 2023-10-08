@@ -4,7 +4,7 @@ import { useWindowSize } from "react-use";
 import { BookPos } from "types/journal-types";
 import Tag from "../Tag";
 import gsap from "gsap";
-import { BookContext } from "../../contexts/BookContextProvider";
+import { BookContext } from "../../contexts/BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 
@@ -139,10 +139,12 @@ const Pc = () => {
 
   // TODO: メモ化
   const pageStyle = {
-    width: `calc(calc(${bookPos.width}px - ${bookWidth * 0.07
-      }px ) / ${pageScale})`,
-    height: `calc(calc(${bookPos.height}px - ${bookHeight * 0.05
-      }px) / ${pageScale})`,
+    width: `calc(calc(${bookPos.width}px - ${
+      bookWidth * 0.07
+    }px ) / ${pageScale})`,
+    height: `calc(calc(${bookPos.height}px - ${
+      bookHeight * 0.05
+    }px) / ${pageScale})`,
     transform: `scale(${pageScale})`,
   };
 

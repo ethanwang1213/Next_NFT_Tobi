@@ -3,6 +3,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
@@ -13,15 +14,13 @@ type Props = {
   children: ReactNode;
 };
 
-type ActivityRecordContextType = {
+type ContextType = {
   activityRecords: LocalActivityRecord[];
   addActivityRecord: (newRecord: LocalActivityRecord) => void;
   initContext: () => void;
 };
 
-const ActivityRecordContext = createContext<ActivityRecordContextType>(
-  {} as ActivityRecordContextType
-);
+const ActivityRecordContext = createContext<ContextType>({} as ContextType);
 
 /**
  * Activity Recordのデータを管理するコンテキストプロバイダー
@@ -58,14 +57,17 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
     setActivityRecords((prev) => [newRecord, ...prev]);
   };
 
+  const contextValue = useMemo(
+    () => ({
+      activityRecords,
+      addActivityRecord,
+      initContext,
+    }),
+    [activityRecords, addActivityRecord, initContext]
+  );
+
   return (
-    <ActivityRecordContext.Provider
-      value={{
-        activityRecords,
-        addActivityRecord,
-        initContext,
-      }}
-    >
+    <ActivityRecordContext.Provider value={contextValue}>
       {children}
     </ActivityRecordContext.Provider>
   );

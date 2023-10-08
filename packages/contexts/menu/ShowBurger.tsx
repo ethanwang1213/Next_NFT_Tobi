@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   Dispatch,
   ReactNode,
@@ -8,7 +8,11 @@ import {
   useState,
 } from "react";
 
-type showBurgerContextType = {
+type Props = {
+  children: ReactNode;
+};
+
+type ContextType = {
   // メニュー開閉以外でのバーガーボタン表示/非表示の制御用
   showBurger: boolean;
   // メニュー開閉状態の保存
@@ -18,13 +22,7 @@ type showBurgerContextType = {
 };
 
 // バーガーメニュー表示/非表示 設定用のContext
-const ShowBurgerContext = createContext<showBurgerContextType>(
-  {} as showBurgerContextType
-);
-
-type Props = {
-  children: ReactNode;
-};
+const ShowBurgerContext = createContext<ContextType>({} as ContextType);
 
 /**
  * バーガーメニュー表示/非表示 設定用のContext Provider

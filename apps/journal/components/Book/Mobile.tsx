@@ -17,7 +17,7 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import NftPage from "../pages/NftPage/NftPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
-import { BookContext } from "../../contexts/BookContextProvider";
+import { BookContext } from "../../contexts/BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import { useAuth } from "contexts/journal-AuthProvider";
@@ -108,8 +108,9 @@ const Mobile = () => {
   return (
     <div className="overflow-hidden">
       <div
-        className={`relative ${isDisplayLeft ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
-          } w-[130dvh] h-[100dvh] transition-[left]`}
+        className={`relative ${
+          isDisplayLeft ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
+        } w-[130dvh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
           <Image
@@ -155,8 +156,9 @@ const Mobile = () => {
         ref={tagRef}
       >
         <div
-          className={`flex flex-col gap-2 ${isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
-            } transition-opacity`}
+          className={`flex flex-col gap-2 ${
+            isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
+          } transition-opacity`}
         >
           {bookContext.tags.current.map((tag, i) => (
             <Tag image={tag.image} page={tag.page} key={i} />

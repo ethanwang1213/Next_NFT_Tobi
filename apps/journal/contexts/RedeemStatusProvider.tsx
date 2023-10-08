@@ -3,24 +3,19 @@ import {
   ReactNode,
   SetStateAction,
   createContext,
+  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
+import { RedeemStatus } from "types/journal-types";
 
 type Props = {
   children: ReactNode;
 };
 
-export type RedeemStatus =
-  | "NONE"
-  | "CHECKING"
-  | "SUCCESS"
-  | "INCORRECT"
-  | "SERVER_ERROR";
-
-type RedeemContextType = {
+type ContextType = {
   // 引き換えコードのチェックの状態
   redeemStatus: {
     current: RedeemStatus;
@@ -53,16 +48,14 @@ type RedeemContextType = {
   canRedeem: boolean;
 };
 
-export const RedeemContext = createContext<RedeemContextType>(
-  {} as RedeemContextType
-);
+const RedeemStatusContext = createContext<ContextType>({} as ContextType);
 
 /**
  * redeemページのデータを管理するコンテキスト
  * @param param0
  * @returns
  */
-const RedeemContextProvider: React.FC<Props> = ({ children }) => {
+export const RedeemStatusProvider: React.FC<Props> = ({ children }) => {
   const [redeemStatus, setRedeemStatus] = useState<RedeemStatus>("NONE");
   const [inputCode, setInputCode] = useState<string>("");
   const [selfAccount, setSelfAccount] = useState<string>("");
@@ -78,7 +71,7 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
     setCanRedeem(user && user.email && user.email !== "");
   }, [user]);
 
-  const redeemContextValue = useMemo<RedeemContextType>(
+  const contextValue = useMemo<ContextType>(
     () => ({
       redeemStatus: {
         current: redeemStatus,
@@ -118,10 +111,10 @@ const RedeemContextProvider: React.FC<Props> = ({ children }) => {
   );
 
   return (
-    <RedeemContext.Provider value={redeemContextValue}>
+    <RedeemStatusContext.Provider value={contextValue}>
       {children}
-    </RedeemContext.Provider>
+    </RedeemStatusContext.Provider>
   );
 };
 
-export default RedeemContextProvider;
+export const useRedeemStatus = () => useContext(RedeemStatusContext);

@@ -23,23 +23,6 @@ export type BookIndex = {
   redeemPage: PageIndexData;
 };
 
-// journal 本のUIを構成するデータの型
-export type bookContext = {
-  pageNo: {
-    current: number;
-    set: Dispatch<SetStateAction<number>>;
-  };
-  pages: {
-    current: ReactElement[];
-    set: Dispatch<SetStateAction<ReactElement[]>>;
-  };
-  tags: {
-    current: tagType[];
-    set: Dispatch<SetStateAction<tagType[]>>;
-  };
-  bookIndex: BookIndex;
-};
-
 // journal 本の画像の左上隅座標を表す型
 export type BookPos = {
   left: number;
@@ -123,21 +106,12 @@ export type DBActivityRecord = {
   timestamp: Timestamp;
 };
 
-// AuthContextのデータ型
-export type UserContextType = {
-  user: User | null | undefined;
-  dbIconUrl: string;
-  MAX_NAME_LENGTH: number;
-  updateProfile: (
-    newIcon: string,
-    newName: string,
-    newBirthday: Birthday,
-    newDbIconPath: string
-  ) => void;
-  setDbIconUrl: Dispatch<SetStateAction<string>>;
-  setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
-  setStampRallyMintStatus: (status: StampRallyMintStatusType) => void;
-};
+export type RedeemStatus =
+  | "NONE"
+  | "CHECKING"
+  | "SUCCESS"
+  | "INCORRECT"
+  | "SERVER_ERROR";
 
 // スタンプラリーの記念品受け取り用フォームのデータ型
 export type StampRallyRewardFormType = {
