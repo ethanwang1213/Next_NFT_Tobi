@@ -17,7 +17,7 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import NftPage from "../pages/NftPage/NftPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
-import { BookContext } from "../../contexts/BookProvider";
+import { useBookContext } from "../../contexts/BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import { useAuth } from "contexts/journal-AuthProvider";
@@ -30,7 +30,7 @@ import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 const Mobile = () => {
   const [isDisplayLeft, setIsDisplayLeft] = useState<Boolean>(true);
   const [isShowTag, setIsShowTag] = useState<Boolean>(false);
-  const bookContext = useContext(BookContext);
+  const bookContext = useBookContext();
   const pages = bookContext.pages.current;
   const pageNo = bookContext.pageNo.current;
   const { profilePage, nftPage } = bookContext.bookIndex;
