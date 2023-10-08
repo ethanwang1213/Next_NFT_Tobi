@@ -4,10 +4,11 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useAuth } from "contexts/journal-AuthProvider";
-import { useHoldNfts } from "./HoldNftsProvider";
+import { useHoldNfts } from "./journal-HoldNftsProvider";
 import useCommunityData from "@/hooks/useCommunityData";
 import { HouseData } from "types/journal-types";
 
@@ -87,14 +88,17 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
     }
   }, [user, houseData, nekoNfts.current]);
 
+  const contextValue = useMemo(
+    () => ({
+      displayMode: { current: displayMode, set: setDisplayMode },
+      houseData: houseData,
+      initContext: initContext,
+    }),
+    [displayMode, setDisplayMode, houseData, initContext]
+  );
+
   return (
-    <DiscordOAuthContext.Provider
-      value={{
-        displayMode: { current: displayMode, set: setDisplayMode },
-        houseData: houseData,
-        initContext: initContext,
-      }}
-    >
+    <DiscordOAuthContext.Provider value={contextValue}>
       {children}
     </DiscordOAuthContext.Provider>
   );

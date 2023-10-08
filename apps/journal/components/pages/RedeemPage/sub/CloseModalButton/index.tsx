@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
+import { useRedeemStatus } from "../../../../../contexts/journal-RedeemStatusProvider";
 
 type Props = {
   className: string;
@@ -17,7 +16,7 @@ const CloseModalButton: React.FC<Props> = ({
   callback,
   children,
 }) => {
-  const { redeemStatus, modalInputIsChecked } = useContext(RedeemContext);
+  const { redeemStatus, modalInputIsChecked } = useRedeemStatus();
 
   const onClick = () => {
     modalInputIsChecked.set(false);

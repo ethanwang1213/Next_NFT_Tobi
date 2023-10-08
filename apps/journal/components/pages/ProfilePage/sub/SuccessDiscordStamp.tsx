@@ -1,10 +1,10 @@
-import { useDebug } from "@/contexts/DebugProvider";
-import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
+import { useDebug } from "@/contexts/journal-DebugProvider";
+import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 import StampIcon from "@/public/images/icon/stamp_TOBIRAPOLIS.svg";
 import StampIcon2 from "@/public/images/icon/stamp_TOBIRAPOLIS-cp.svg";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
-import { BookContext } from "@/contexts/BookContextProvider";
+import { useBookContext } from "@/contexts/journal-BookProvider";
 
 type Props = {
   isPc: boolean;
@@ -24,7 +24,7 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
   const stampRef = useRef(null);
   const [stampW, setStampW] = useState(0);
 
-  const bookContext = useContext(BookContext);
+  const bookContext = useBookContext();
   const pageNo = bookContext.pageNo.current;
   const { profilePage } = bookContext.bookIndex;
 
@@ -63,9 +63,9 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
   return (
     <>
       {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
-        <>{debugDiscordButtonMode.current === "STAMP" && <>{ stamp }</>}</>
+        <>{debugDiscordButtonMode.current === "STAMP" && <>{stamp}</>}</>
       ) : (
-        <>{displayMode.current === "STAMP" && <>{ stamp }</>}</>
+        <>{displayMode.current === "STAMP" && <>{stamp}</>}</>
       )}
     </>
   );

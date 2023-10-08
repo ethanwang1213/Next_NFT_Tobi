@@ -8,13 +8,13 @@ import {
   useMemo,
   useState,
 } from "react";
-import { DisplayMode } from "./DiscordOAuthProvider";
+import { DisplayMode } from "./journal-DiscordOAuthProvider";
 
 type Props = {
   children: ReactNode;
 };
 
-type DebugContextType = {
+type ContextType = {
   shouldRefresh: {
     current: boolean;
     set: Dispatch<SetStateAction<boolean>>;
@@ -25,14 +25,14 @@ type DebugContextType = {
   };
 };
 
-const DebugContext = createContext<DebugContextType>({} as DebugContextType);
+const DebugContext = createContext<ContextType>({} as ContextType);
 
 /**
  * デバッグモードのデータを管理するコンテキストプロバイダー
  * @param param0
  * @returns
  */
-const DebugProvider: React.FC<Props> = ({ children }) => {
+export const DebugProvider: React.FC<Props> = ({ children }) => {
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(false);
   const [debugDiscordButtonMode, setDebugDiscordButtonMode] =
     useState<DisplayMode>("NONE");
@@ -77,7 +77,5 @@ const DebugProvider: React.FC<Props> = ({ children }) => {
     </DebugContext.Provider>
   );
 };
-
-export default DebugProvider;
 
 export const useDebug = () => useContext(DebugContext);

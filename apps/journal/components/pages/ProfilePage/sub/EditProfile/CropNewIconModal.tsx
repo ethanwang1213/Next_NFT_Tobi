@@ -1,10 +1,10 @@
-import { useEditProfile } from "@/contexts/EditProfileProvider";
+import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
 import IconCrop from "./sub/IconCrop";
 import { Area } from "react-easy-crop";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { BookContext } from "@/contexts/BookContextProvider";
 import { useContext, useMemo } from "react";
+import { useBookContext } from "@/contexts/journal-BookProvider";
 
 type Props = {};
 
@@ -17,7 +17,7 @@ type Props = {};
  * @returns
  */
 const CropNewIconModal: React.FC<Props> = ({}) => {
-  const { pages, pageNo, bookIndex } = useContext(BookContext);
+  const { pages, pageNo, bookIndex } = useBookContext();
   const { isCropModalOpen, iconForCrop, cropData } = useEditProfile();
 
   // クロップ完了時のコールバック関数

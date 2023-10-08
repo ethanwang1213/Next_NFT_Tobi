@@ -1,12 +1,9 @@
-import { useContext } from "react";
-import {
-  RedeemContext,
-  RedeemStatus,
-} from "../../../../contexts/RedeemContextProvider";
+import { useRedeemStatus } from "../../../../contexts/journal-RedeemStatusProvider";
 import { functions } from "fetchers/firebase/journal-client";
 import { httpsCallable } from "firebase/functions";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 import useRecordNewActivity from "@/hooks/useRecordNewActivity";
+import { RedeemStatus } from "types/journal-types";
 
 /**
  * 引き換えボタンのコンポーネント
@@ -15,7 +12,7 @@ import useRecordNewActivity from "@/hooks/useRecordNewActivity";
  */
 const RedeemButton: React.FC = () => {
   const { redeemStatus, inputCode, modalInputIsChecked, canRedeem } =
-    useContext(RedeemContext);
+    useRedeemStatus();
   const { shouldUpdate } = useHoldNfts();
   const { recordNewActivity } = useRecordNewActivity();
 

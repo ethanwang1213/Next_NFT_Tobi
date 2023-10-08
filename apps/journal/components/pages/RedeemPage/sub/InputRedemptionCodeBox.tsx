@@ -1,6 +1,4 @@
-import { useContext } from "react";
-import { RedeemContext } from "../../../../contexts/RedeemContextProvider";
-import { useAuth } from "contexts/journal-AuthProvider";
+import { useRedeemStatus } from "../../../../contexts/journal-RedeemStatusProvider";
 
 type Props = {
   classNames: {
@@ -17,7 +15,7 @@ type Props = {
  */
 const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
   const { redeemStatus, inputCode, modalInputIsChecked, canRedeem } =
-    useContext(RedeemContext);
+    useRedeemStatus();
 
   const handleChange = (e) => {
     // テキストボックスを操作し始めたらモーダルを閉じる
@@ -41,8 +39,9 @@ const InputRedemptionCodeBox: React.FC<Props> = ({ classNames }) => {
         disabled={!canRedeem || redeemStatus.current === "CHECKING"}
       />
       <p
-        className={`${classNames.p} text-error ${canRedeem ? "hidden" : "block"
-          }`}
+        className={`${classNames.p} text-error ${
+          canRedeem ? "hidden" : "block"
+        }`}
       >
         引き換えにはメールアドレス登録が必要です
       </p>

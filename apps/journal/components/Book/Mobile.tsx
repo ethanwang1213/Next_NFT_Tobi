@@ -17,7 +17,7 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import NftPage from "../pages/NftPage/NftPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
-import { BookContext } from "../../contexts/BookContextProvider";
+import { useBookContext } from "../../contexts/journal-BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import { useAuth } from "contexts/journal-AuthProvider";
@@ -30,7 +30,7 @@ import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 const Mobile = () => {
   const [isDisplayLeft, setIsDisplayLeft] = useState<Boolean>(true);
   const [isShowTag, setIsShowTag] = useState<Boolean>(false);
-  const bookContext = useContext(BookContext);
+  const bookContext = useBookContext();
   const pages = bookContext.pages.current;
   const pageNo = bookContext.pageNo.current;
   const { profilePage, nftPage } = bookContext.bookIndex;
@@ -82,8 +82,12 @@ const Mobile = () => {
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
-    if (isInPage(no, profilePage) && isLeftPage(no)) {
-      return " pb-[20%] px-2";
+    if (isInPage(no, profilePage)) {
+      if (isLeftPage(no)) {
+        return " pb-[20%] px-2";
+      } else {
+        return " px-2";
+      }
     } else if (isInPage(no, nftPage)) {
       return " px-0";
     } else {
@@ -108,8 +112,9 @@ const Mobile = () => {
   return (
     <div className="overflow-hidden">
       <div
-        className={`relative ${isDisplayLeft ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
-          } w-[130dvh] h-[100dvh] transition-[left]`}
+        className={`relative ${
+          isDisplayLeft ? "left-[calc(100dvw_-_60dvh)]" : "left-[-70dvh]"
+        } w-[130dvh] h-[100dvh] transition-[left]`}
       >
         {!isSwiperPage && (
           <Image
@@ -155,8 +160,9 @@ const Mobile = () => {
         ref={tagRef}
       >
         <div
-          className={`flex flex-col gap-2 ${isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
-            } transition-opacity`}
+          className={`flex flex-col gap-2 ${
+            isShowTag ? "opcaity-100" : "opacity-0 pointer-events-none"
+          } transition-opacity`}
         >
           {bookContext.tags.current.map((tag, i) => (
             <Tag image={tag.image} page={tag.page} key={i} />

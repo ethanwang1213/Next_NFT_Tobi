@@ -1,4 +1,4 @@
-import {
+import React, {
   Dispatch,
   SetStateAction,
   createContext,
@@ -26,7 +26,11 @@ type Props = {
   children: ReactNode;
 };
 
-// CanvasのDPRを管理するContext Provider
+/**
+ * CanvasのDPRを管理するContext Provider
+ * @param param0
+ * @returns
+ */
 export const CanvasDprProvider: React.FC<Props> = ({ children }) => {
   const [dpr, setDpr] = useState<number>(1);
   const [isAutoAdjustMode, setIsAutoAdjustMode] = useState<boolean>(false);

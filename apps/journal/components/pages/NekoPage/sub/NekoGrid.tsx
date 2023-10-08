@@ -1,6 +1,6 @@
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import NftImage from "../../NftPage/sub/NftImage";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 import { useCallback } from "react";
 
 type Props = {

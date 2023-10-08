@@ -1,4 +1,4 @@
-import { useDebug } from "@/contexts/DebugProvider";
+import { useDebug } from "@/contexts/journal-DebugProvider";
 
 // Debug用：画面上部に表示するテキスト
 // デバッグモードの時のみ表示される

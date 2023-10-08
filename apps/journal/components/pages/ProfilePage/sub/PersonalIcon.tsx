@@ -1,10 +1,10 @@
 import Image from "next/image";
 import DefaultIcon from "../../../../public/images/icon/Profiledefault_journal.svg";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useEffect, useState } from "react";
 import { HouseBadgeNftData } from "types/journal-types";
-import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
+import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 
 /**
  * プロフィールのアイコンのコンポーネント
@@ -27,7 +27,7 @@ const PersonalIcon: React.FC = () => {
     const id = otherNfts.current.findIndex(
       (nft) =>
         nft.collectionId ===
-        process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"] &&
+          process.env["NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS"] &&
         "house_type" in nft &&
         houseData &&
         (nft.house_type === houseData.type ||
@@ -48,8 +48,9 @@ const PersonalIcon: React.FC = () => {
       <div className="relative h-full">
         <div className="relative h-full rounded-full bg-white border-white border-[10px] overflow-hidden">
           <label
-            htmlFor={`${!user || !user.email ? "login-guide-modal" : "edit-profile-modal"
-              }`}
+            htmlFor={`${
+              !user || !user.email ? "login-guide-modal" : "edit-profile-modal"
+            }`}
             className="cursor-pointer"
           >
             {!user || user.icon === "" ? (

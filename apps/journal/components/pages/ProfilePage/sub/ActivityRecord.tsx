@@ -1,6 +1,6 @@
 import ActivityRecordLine from "@/components/TypeValueLine/ActivityRecordLine";
-import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
-import { useDebug } from "@/contexts/DebugProvider";
+import { useActivityRecord } from "@/contexts/journal-ActivityRecordProvider";
+import { useDebug } from "@/contexts/journal-DebugProvider";
 import useDateFormat from "@/hooks/useDateFormat";
 import { mockRecordList } from "@/libs/mocks/mockProfile0";
 import { useEffect, useMemo, useState } from "react";

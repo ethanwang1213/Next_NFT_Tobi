@@ -10,10 +10,10 @@ import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { AuthProvider } from "contexts/journal-AuthProvider";
-import { HoldNftsProvider } from "@/contexts/HoldNftsProvider";
-import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
-import DebugProvider from "@/contexts/DebugProvider";
-import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
+import { HoldNftsProvider } from "@/contexts/journal-HoldNftsProvider";
+import { ActivityRecordProvider } from "@/contexts/journal-ActivityRecordProvider";
+import { DebugProvider } from "@/contexts/journal-DebugProvider";
+import { DiscordOAuthProvider } from "@/contexts/journal-DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";
 import {

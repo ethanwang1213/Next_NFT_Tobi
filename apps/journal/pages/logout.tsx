@@ -3,9 +3,9 @@ import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useAuth } from "contexts/journal-AuthProvider";
-import { useActivityRecord } from "@/contexts/ActivityRecordProvider";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
-import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
+import { useActivityRecord } from "@/contexts/journal-ActivityRecordProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
+import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 
 const Logout = () => {
   const router = useRouter();

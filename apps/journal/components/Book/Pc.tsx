@@ -4,7 +4,7 @@ import { useWindowSize } from "react-use";
 import { BookPos } from "types/journal-types";
 import Tag from "../Tag";
 import gsap from "gsap";
-import { BookContext } from "../../contexts/BookContextProvider";
+import { useBookContext } from "../../contexts/journal-BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 
@@ -27,7 +27,7 @@ const Pc = () => {
   const [pageScale, setPageScale] = useState<number>(1);
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
-  const bookData = useContext(BookContext);
+  const bookData = useBookContext();
   const pageRef = [
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
@@ -139,10 +139,12 @@ const Pc = () => {
 
   // TODO: メモ化
   const pageStyle = {
-    width: `calc(calc(${bookPos.width}px - ${bookWidth * 0.07
-      }px ) / ${pageScale})`,
-    height: `calc(calc(${bookPos.height}px - ${bookHeight * 0.05
-      }px) / ${pageScale})`,
+    width: `calc(calc(${bookPos.width}px - ${
+      bookWidth * 0.07
+    }px ) / ${pageScale})`,
+    height: `calc(calc(${bookPos.height}px - ${
+      bookHeight * 0.05
+    }px) / ${pageScale})`,
     transform: `scale(${pageScale})`,
   };
 
@@ -154,7 +156,7 @@ const Pc = () => {
       if (isLeftPage(no)) {
         return " pb-0 pl-0 pr-4";
       } else {
-        return " pl-4";
+        return " pb-12 pl-4";
       }
     } else if (isInPage(no, nekoPage)) {
       return " px-0";

@@ -17,7 +17,7 @@ type Props = {
   children: ReactNode;
 };
 
-type HoldNftsContextType = {
+type ContextType = {
   nekoNfts: {
     current: NftData[];
     set: React.Dispatch<React.SetStateAction<NftData[]>>;
@@ -37,8 +37,8 @@ type HoldNftsContextType = {
   initContext: () => void;
 };
 
-const HoldNftsContext = createContext<HoldNftsContextType>(
-  {} as HoldNftsContextType
+const HoldNftsContext = createContext<ContextType>(
+  {} as ContextType
 );
 
 /**
@@ -130,7 +130,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
     }
   }, [shouldUpdate]);
 
-  const holdNftContextValue = useMemo<HoldNftsContextType>(
+  const contextValue = useMemo<ContextType>(
     () => ({
       nekoNfts: {
         current: nekoNfts,
@@ -164,7 +164,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
   );
 
   return (
-    <HoldNftsContext.Provider value={holdNftContextValue}>
+    <HoldNftsContext.Provider value={contextValue}>
       {children}
     </HoldNftsContext.Provider>
   );
