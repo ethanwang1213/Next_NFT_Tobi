@@ -26,7 +26,7 @@ export const useStampRally = () => {
     callable({ keyword: data.keyword })
       .then((result) => {
         console.log(result);
-        setMintStatus("tpf2023StampRally", "g0", "IN_PROGRESS");
+        setMintStatus("tpf2023StampRally", result.data.stamp, "IN_PROGRESS");
       })
       .catch((error) => {
         console.log(error);

@@ -171,6 +171,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       ...user,
       mintStatusData: {
         [event]: {
+          ...(user.mintStatusData && user.mintStatusData[event]
+            ? user.mintStatusData[event]
+            : {}),
           [type]: status,
         },
       },
