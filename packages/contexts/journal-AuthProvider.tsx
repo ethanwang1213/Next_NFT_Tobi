@@ -17,7 +17,12 @@ import React, {
   useState,
 } from "react";
 import { auth, db } from "fetchers/firebase/journal-client";
-import { Birthday, StampRallyMintStatusType, User } from "types/journal-types";
+import {
+  Birthday,
+  MintStatusDataForSetMethod,
+  MintStatusType,
+  User,
+} from "types/journal-types";
 
 type Props = {
   children: ReactNode;
@@ -36,7 +41,12 @@ type ContextType = {
   ) => void;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
-  setStampRallyMintStatus: (status: StampRallyMintStatusType) => void;
+  setMintStatus: <T extends keyof MintStatusDataForSetMethod>(
+    event: T,
+    type: keyof MintStatusDataForSetMethod[T],
+    status: MintStatusType,
+    isComplete: boolean
+  ) => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -156,9 +166,33 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   // スタンプラリーのmint状態を更新する
-  const setStampRallyMintStatus = (status: StampRallyMintStatusType) => {
+  const setMintStatus: ContextType["setMintStatus"] = (
+    event,
+    type,
+    status,
+    isComplete
+  ) => {
     if (!user) return;
-    const newUser = { ...user, stampRallyMintStatus: status };
+
+    // 現状のuserデータに存在するmint状態データを取得
+    const currentDataOrEmpty =
+      user.mintStatusData && user.mintStatusData[event]
+        ? user.mintStatusData[event]
+        : {};
+
+    // これでスタンプコンプリートだったらcompleteも"IN_PROGRESS"に設定
+    const completeOrEmpty = isComplete ? { complete: "IN_PROGRESS" } : {};
+
+    const newUser: User = {
+      ...user,
+      mintStatusData: {
+        [event]: {
+          ...currentDataOrEmpty, // 現状のuserのmint状態データの展開
+          [type]: status, // 新規mint状態データ
+          ...completeOrEmpty, // completeを設定
+        },
+      },
+    };
     setUser(newUser);
   };
 
@@ -170,7 +204,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         updateProfile,
         setDbIconUrl,
         setJoinTobiratoryInfo,
-        setStampRallyMintStatus,
+        setMintStatus,
         MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >

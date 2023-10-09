@@ -7,4 +7,4 @@ export {
 export { ShowBurgerProvider } from "contexts/menu/ShowBurger";
 export { CustomDocument } from "./organisms/CustomDocument";
 
-export { StampRally } from "./molecules/journal-StampRally";
+export { StampRally } from "./organisms/journal-StampRally";

@@ -1,3 +1,5 @@
+import {Tpf2023StampType} from "types/journal-types"
+
 export const NEKO_NFT_ID = process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
 export const TOPIC_NAMES = {
   ordersPaid: "shopify-orders-paid",
@@ -11,7 +13,15 @@ export const SITE_HOST = process.env.SITE_HOST || "https://www.tobiratory.com";
 
 export const SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE = process.env.SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE || "";
 
-export const STAMP_RALLY_KEYWORD = "toRuTo";
+export const TPF2023_STAMP_RALLY_KEYWORDS: {
+  [key in Tpf2023StampType]: string
+} = {
+  g0: "toRuTo",
+  g1Alpha: "aIUEO",
+  g1Beta: "KKK",
+  g1Gamma: "あいことば",
+  g1Delta: "みかん"
+}
 
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `

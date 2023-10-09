@@ -12,6 +12,7 @@ import { useAuth } from "contexts/journal-AuthProvider";
 import { RedeemStatusProvider } from "@/contexts/journal-RedeemStatusProvider";
 import { BookProvider } from "@/contexts/journal-BookProvider";
 import { EditProfileProvider } from "@/contexts/journal-EditProfileProvider";
+import { StampRallyFormProvider } from "contexts/journal-StampRallyFormProvider";
 
 const Index = () => {
   const router = useRouter();
@@ -28,31 +29,33 @@ const Index = () => {
     <RedeemStatusProvider>
       <EditProfileProvider>
         <BookProvider>
-          <div
-            className={
-              process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
-              (!user || !user.email)
-                ? "invisible"
-                : ""
-            }
-          >
-            <Image
-              src="/journal/images/book/bg_journal.png"
-              fill
-              alt="bg_journal"
-              className="pointer-events-none select-none"
-            />
-            <div className="hidden sm:block">
-              <Pc />
+          <StampRallyFormProvider>
+            <div
+              className={
+                process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
+                (!user || !user.email)
+                  ? "invisible"
+                  : ""
+              }
+            >
+              <Image
+                src="/journal/images/book/bg_journal.png"
+                fill
+                alt="bg_journal"
+                className="pointer-events-none select-none"
+              />
+              <div className="hidden sm:block">
+                <Pc />
+              </div>
+              <div className="block sm:hidden">
+                <Mobile />
+              </div>
+              <EditProfileModal />
+              <CropNewIconModal />
+              <DebugText />
+              <NftViewModal />
             </div>
-            <div className="block sm:hidden">
-              <Mobile />
-            </div>
-            <EditProfileModal />
-            <CropNewIconModal />
-            <DebugText />
-            <NftViewModal />
-          </div>
+          </StampRallyFormProvider>
         </BookProvider>
       </EditProfileProvider>
     </RedeemStatusProvider>

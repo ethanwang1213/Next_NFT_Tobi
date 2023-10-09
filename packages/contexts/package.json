@@ -8,8 +8,10 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@types/react": "^18.2.25",
+  "dependencies": {
     "firebase": "^9.21.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.25"
   }
 }
