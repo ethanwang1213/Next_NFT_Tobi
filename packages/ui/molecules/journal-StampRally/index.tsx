@@ -56,7 +56,12 @@ export const StampRally = () => {
         </div>
       </div>
       <div className="w-full mt-6 sm:mt-12">
-        <StampRallyRewardForm />
+        {stampRally?.complete === "IN_PROGRESS" ||
+        stampRally?.complete === "DONE" ? (
+          <p className="h-8 sm:h-12">Complete!!</p>
+        ) : (
+          <StampRallyRewardForm />
+        )}
       </div>
       <p className="mt-2 text-[10px] sm:text-xs font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}

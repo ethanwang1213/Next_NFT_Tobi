@@ -44,7 +44,8 @@ type ContextType = {
   setMintStatus: <T extends keyof MintStatusDataForSetMethod>(
     event: T,
     type: keyof MintStatusDataForSetMethod[T],
-    status: MintStatusType
+    status: MintStatusType,
+    isComplete: boolean
   ) => void;
 };
 
@@ -165,16 +166,30 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   // スタンプラリーのmint状態を更新する
-  const setMintStatus: ContextType["setMintStatus"] = (event, type, status) => {
+  const setMintStatus: ContextType["setMintStatus"] = (
+    event,
+    type,
+    status,
+    isComplete
+  ) => {
     if (!user) return;
+
+    // 現状のuserデータに存在するmint状態データを取得
+    const currentDataOrEmpty =
+      user.mintStatusData && user.mintStatusData[event]
+        ? user.mintStatusData[event]
+        : {};
+
+    // これでスタンプコンプリートだったらcompleteも"IN_PROGRESS"に設定
+    const completeOrEmpty = isComplete ? { complete: "IN_PROGRESS" } : {};
+
     const newUser: User = {
       ...user,
       mintStatusData: {
         [event]: {
-          ...(user.mintStatusData && user.mintStatusData[event]
-            ? user.mintStatusData[event]
-            : {}),
-          [type]: status,
+          ...currentDataOrEmpty, // 現状のuserのmint状態データの展開
+          [type]: status, // 新規mint状態データ
+          ...completeOrEmpty, // completeを設定
         },
       },
     };
