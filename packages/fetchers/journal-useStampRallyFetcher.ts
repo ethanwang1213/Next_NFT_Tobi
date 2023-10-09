@@ -15,7 +15,7 @@ type BodyType = {
  * スタンプラリーの受け取るための外部通信を行うhook
  * @returns
  */
-export const useStampRally = () => {
+export const useStampRallyFetcher = () => {
   const { setMintStatus } = useAuth();
   const { isSubmitting } = useStampRallyForm();
 
@@ -30,7 +30,12 @@ export const useStampRally = () => {
     callable({ keyword: data.keyword })
       .then((result) => {
         console.log(result);
-        setMintStatus("tpf2023StampRally", result.data.stamp, "IN_PROGRESS", result.data.isComplete);
+        setMintStatus(
+          "tpf2023StampRally",
+          result.data.stamp,
+          "IN_PROGRESS",
+          result.data.isComplete
+        );
         isSubmitting.set(false);
       })
       .catch((error) => {

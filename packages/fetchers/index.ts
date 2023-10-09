@@ -1,1 +1,1 @@
-export { useStampRally } from "./journal-useStampRally"
+export { useStampRallyFetcher } from "./journal-useStampRallyFetcher";

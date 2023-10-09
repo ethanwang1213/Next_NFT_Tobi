@@ -4,6 +4,7 @@ import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
 import { StampRallyRewardForm } from "../journal-StampRallyRewardForm";
 import stamp from "./assets/stamp.png";
 import { MintStatusType, Tpf2023StampType } from "types/journal-types";
+import { useStampRallyFetcher } from "fetchers";
 
 type StampDataType = {
   key: Tpf2023StampType;
@@ -16,9 +17,9 @@ type StampDataType = {
  * @returns {ReactElement} The `StampRally` component
  */
 export const StampRally = () => {
-  const { user } = useAuth();
-  const stampRally = user?.mintStatusData?.tpf2023StampRally;
+  const { requestReward } = useStampRallyFetcher();
 
+  const stampRally = useAuth().user?.mintStatusData?.tpf2023StampRally;
   const keys: Tpf2023StampType[] = [
     "g0",
     "g1Alpha",
@@ -56,12 +57,7 @@ export const StampRally = () => {
         </div>
       </div>
       <div className="w-full mt-6 sm:mt-12">
-        {stampRally?.complete === "IN_PROGRESS" ||
-        stampRally?.complete === "DONE" ? (
-          <p className="h-8 sm:h-12">Complete!!</p>
-        ) : (
-          <StampRallyRewardForm />
-        )}
+        <StampRallyRewardForm onSubmit={requestReward} />
       </div>
       <p className="mt-2 text-[10px] sm:text-xs font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}
