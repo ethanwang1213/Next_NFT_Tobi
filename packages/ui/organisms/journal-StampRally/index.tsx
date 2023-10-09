@@ -1,7 +1,7 @@
 import { useAuth } from "contexts/journal-AuthProvider";
 import { RoundedImage } from "../../atoms/journal-RoundedImage";
 import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
-import { StampRallyRewardForm } from "../journal-StampRallyRewardForm";
+import { StampRallyRewardForm } from "../../molecules/journal-StampRallyRewardForm";
 import stamp from "./assets/stamp.png";
 import { MintStatusType, Tpf2023StampType } from "types/journal-types";
 import { useStampRallyFetcher } from "fetchers";

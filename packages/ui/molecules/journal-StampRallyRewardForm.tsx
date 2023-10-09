@@ -34,7 +34,6 @@ export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
     <form
       onSubmit={handleSubmit((data: StampRallyRewardFormType) => {
         reset();
-        // requestReward(data);
         onSubmit(data);
       })}
       className="h-8 sm:h-12 w-full flex"
