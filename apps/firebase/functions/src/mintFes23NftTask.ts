@@ -1,6 +1,6 @@
 import {onTaskDispatched} from "firebase-functions/v2/tasks";
 import {REGION} from "./lib/constants";
-import {mintFestival23BadgeNFT} from "./lib/flow";
+import {mintTobirapolisFestival23BadgeNFT} from "./lib/tobirapolisFestival23Flow";
 import {firestore} from "firebase-admin";
 import Timestamp = firestore.Timestamp;
 
@@ -19,27 +19,27 @@ export const mintFes23NftTask = onTaskDispatched({
   const description = data.description;
   const type = data.type;
   const userId = data.userId;
-  const txDetails = await mintFestival23BadgeNFT(name, description);
+  const txDetails = await mintTobirapolisFestival23BadgeNFT(name, description);
   console.log({txDetails});
   const events = txDetails.events;
   for (const mintEvent of events) {
-    if (mintEvent.type === `${process.env.FLOW_FESTIVAL23_BADGE_CONTRACT_ID}.${process.env.FLOW_FESTIVAL23_BADGE_EVENT_NAME}`) {
+    if (mintEvent.type === `${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID}.${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_EVENT_NAME}`) {
       const totalSupply = mintEvent.data.totalSupply;
       if (!totalSupply) {
         return;
       }
       const nftId = totalSupply - 1;
-      const imageUrl = `${process.env.FESTIVAL23_BADGE_IMAGE_URL}${type}.png`;
-      await createFestival23Metadata(nftId, type, name, description, imageUrl);
-      await transferFestival23Badge(userId, nftId, name, description, new Date(), imageUrl, type);
+      const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type}.png`;
+      await createTobirapolisFestival23Metadata(nftId, type, name, description, imageUrl);
+      await transferTobirapolisFestival23Badge(userId, nftId, name, description, new Date(), imageUrl, type);
       // ここにFirestoreのステータス更新を挟む
       break;
     }
   }
 });
 
-const createFestival23Metadata = async (nftId: number, type: string, name: string, description: string, imageUrl: string) => {
-  await firestore().collection("festival23").doc(nftId.toString()).set({
+const createTobirapolisFestival23Metadata = async (nftId: number, type: string, name: string, description: string, imageUrl: string) => {
+  await firestore().collection("tobirapolisFestival23").doc(nftId.toString()).set({
     description: description,
     house_type: type,
     image: imageUrl,
@@ -47,11 +47,11 @@ const createFestival23Metadata = async (nftId: number, type: string, name: strin
   });
 };
 
-const transferFestival23Badge = async (userId: string, nftId: number, name: string, description: string, date: Date, imageUrl: string, type: string) => {
-  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_FESTIVAL23_BADGE_CONTRACT_ID ?? "").set({
+const transferTobirapolisFestival23Badge = async (userId: string, nftId: number, name: string, description: string, date: Date, imageUrl: string, type: string) => {
+  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID ?? "").set({
     created_at: Timestamp.fromDate(date),
   });
-  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_FESTIVAL23_BADGE_CONTRACT_ID ?? "").collection("hold").doc(nftId.toString()).set({
+  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID ?? "").collection("hold").doc(nftId.toString()).set({
     name: name,
     description: description,
     thumbnail: imageUrl,

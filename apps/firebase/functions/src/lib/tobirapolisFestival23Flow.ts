@@ -4,7 +4,7 @@ import {signer} from "./signer";
 config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
   "accessNode.api": process.env.FLOW_ACCESS_NOTE_API ?? "FLOW_ACCESS_NOTE_API",
-  "0xFestival23Badge": process.env.FLOW_FESTIVAL23_BADGE_ACCOUNT ?? "FLOW_FESTIVAL23_BADGE_ACCOUNT",
+  "0xTobirapolisFestival23Badge": process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT ?? "FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT",
   "0xOthers": process.env.FLOW_OTHER_ACCOUNT ?? "FLOW_OTHER_ACCOUNT",
 });
 
@@ -14,15 +14,15 @@ export const createCollection = async () => {
   const cadence = `
     import NonFungibleToken from 0xOthers;
     import MetadataViews from 0xOthers
-    import Festival23Badge from 0xFestival23Badge
+    import TobirapolisFestival23Badge from 0xTobirapolisFestival23Badge
 
     transaction() {
       prepare(acct: AuthAccount) {
        // Setup Collection
-        if acct.borrow<&Festival23Badge.Collection>(from: Festival23Badge.collectionStoragePath) == nil {
-            let collection <- Festival23Badge.createEmptyCollection() as! @Festival23Badge.Collection
-            acct.save(<- collection, to: Festival23Badge.collectionStoragePath)
-            acct.link<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(Festival23Badge.collectionPublicPath, target: Festival23Badge.collectionStoragePath)
+        if acct.borrow<&TobirapolisFestival23Badge.Collection>(from: TobirapolisFestival23Badge.collectionStoragePath) == nil {
+            let collection <- TobirapolisFestival23Badge.createEmptyCollection() as! @TobirapolisFestival23Badge.Collection
+            acct.save(<- collection, to: TobirapolisFestival23Badge.collectionStoragePath)
+            acct.link<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(TobirapolisFestival23Badge.collectionPublicPath, target: TobirapolisFestival23Badge.collectionStoragePath)
         }
       }
     }
@@ -54,26 +54,26 @@ export const createCollection = async () => {
   return txDetails;
 };
 
-export const mintFestival23BadgeNFT = async (name: string, description: string) => {
+export const mintTobirapolisFestival23BadgeNFT = async (name: string, description: string) => {
   console.log("%cSigning Transaction", "color: teal");
 
   const cadence = `
     import NonFungibleToken from 0xOthers;
     import MetadataViews from 0xOthers
-    import Festival23Badge from 0xFestival23Badge
+    import TobirapolisFestival23Badge from 0xTobirapolisFestival23Badge
 
     transaction(name: String, description: String) {
-        let minter: &Festival23Badge.Minter
+        let minter: &TobirapolisFestival23Badge.Minter
         let receiver: Capability<&{NonFungibleToken.Receiver}>
         prepare(acct: AuthAccount) {
            // Setup Collection
-            if acct.borrow<&Festival23Badge.Collection>(from: Festival23Badge.collectionStoragePath) == nil {
-                let collection <- Festival23Badge.createEmptyCollection() as! @Festival23Badge.Collection
-                acct.save(<- collection, to: Festival23Badge.collectionStoragePath)
-                acct.link<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(Festival23Badge.collectionPublicPath, target: Festival23Badge.collectionStoragePath)
+            if acct.borrow<&TobirapolisFestival23Badge.Collection>(from: TobirapolisFestival23Badge.collectionStoragePath) == nil {
+                let collection <- TobirapolisFestival23Badge.createEmptyCollection() as! @TobirapolisFestival23Badge.Collection
+                acct.save(<- collection, to: TobirapolisFestival23Badge.collectionStoragePath)
+                acct.link<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(TobirapolisFestival23Badge.collectionPublicPath, target: TobirapolisFestival23Badge.collectionStoragePath)
             }
-            self.minter = acct.borrow<&Festival23Badge.Minter>(from: Festival23Badge.minterStoragePath) ?? panic("Could not borrow minter reference")
-            self.receiver = acct.getCapability<&{NonFungibleToken.Receiver}>(Festival23Badge.collectionPublicPath)
+            self.minter = acct.borrow<&TobirapolisFestival23Badge.Minter>(from: TobirapolisFestival23Badge.minterStoragePath) ?? panic("Could not borrow minter reference")
+            self.receiver = acct.getCapability<&{NonFungibleToken.Receiver}>(TobirapolisFestival23Badge.collectionPublicPath)
         }
         execute {
             // let minter = self.minter.borrow() ?? panic("Could not borrow receiver capability (maybe receiver not configured?)")
