@@ -30,7 +30,7 @@ export const mintFes23NftTask = onTaskDispatched({
       }
       const nftId = totalSupply - 1;
       const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type}.png`;
-      await createTobirapolisFestival23Metadata(nftId, type, name, description, imageUrl);
+      await createTobirapolisFestival23BadgeMetadata(nftId, type, name, description, imageUrl);
       await transferTobirapolisFestival23Badge(userId, nftId, name, description, new Date(), imageUrl, type);
       // ここにFirestoreのステータス更新を挟む
       break;
@@ -38,7 +38,7 @@ export const mintFes23NftTask = onTaskDispatched({
   }
 });
 
-const createTobirapolisFestival23Metadata = async (nftId: number, type: string, name: string, description: string, imageUrl: string) => {
+const createTobirapolisFestival23BadgeMetadata = async (nftId: number, type: string, name: string, description: string, imageUrl: string) => {
   await firestore().collection("tobirapolisFestival23").doc(nftId.toString()).set({
     description: description,
     house_type: type,
