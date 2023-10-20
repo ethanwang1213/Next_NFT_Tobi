@@ -57,26 +57,28 @@ export type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
 
 // TOBIRAPOLIS祭2023スタンプラリーのスタンプタイプ
 export type Tpf2023StampType =
-  | "g0"
-  | "g1Alpha"
-  | "g1Beta"
-  | "g1Gamma"
-  | "g1Delta";
+  | "G0"
+  | "G1alpha"
+  | "G1beta"
+  | "G1gamma"
+  | "G1delta";
+
+export type Tpf2023Complete = "Complete";
 
 // TOBIRAPOLIS祭2023スタンプラリーのmint状態データ
 type Tpf2023StampRallyData = {
-  [key in Tpf2023StampType | "complete"]?: MintStatusType;
+  [key in Tpf2023StampType | Tpf2023Complete]?: MintStatusType;
 };
 
 // mint状態データ
 // 今後も使いそうなデータなので、追加できる形にしました
-export type MintStatusData = {
-  tpf2023StampRally?: Tpf2023StampRallyData;
+export type MintStatus = {
+  TOBIRAPOLISFESTIVAL2023?: Tpf2023StampRallyData;
 };
 
 // mint状態データ変更メソッド用（全てoptionalじゃなく設定）
 export type MintStatusDataForSetMethod = {
-  tpf2023StampRally: Tpf2023StampRallyData;
+  TOBIRAPOLISFESTIVAL2023: Tpf2023StampRallyData;
 };
 
 // ユーザーデータの型
@@ -89,7 +91,7 @@ export type User = {
   createdAt: number;
   birthday: Birthday;
   characteristic?: Characteristic;
-  mintStatusData?: MintStatusData;
+  mintStatus?: MintStatus;
 };
 
 // NFTの基本データ型

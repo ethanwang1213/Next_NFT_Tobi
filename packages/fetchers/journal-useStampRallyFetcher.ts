@@ -31,7 +31,7 @@ export const useStampRallyFetcher = () => {
       .then((result) => {
         console.log(result);
         setMintStatus(
-          "tpf2023StampRally",
+          "TOBIRAPOLISFESTIVAL2023",
           result.data.stamp,
           "IN_PROGRESS",
           result.data.isComplete

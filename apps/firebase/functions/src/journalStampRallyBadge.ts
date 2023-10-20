@@ -1,11 +1,7 @@
 import * as functions from "firebase-functions";
 import { firestore } from "firebase-admin";
 import { REGION, TPF2023_STAMP_RALLY_KEYWORDS } from "./lib/constants";
-import {
-  MintStatusData,
-  StampRallyResultType,
-  User,
-} from "types/journal-types";
+import { MintStatus, StampRallyResultType, User } from "types/journal-types";
 
 /**
  * ログイン状態で、正しいスタンプラリーの合言葉が渡されていれば、
@@ -61,11 +57,10 @@ exports.checkReward = functions
     }
 
     let isStampCompleted = false;
-    const mintStatusData: MintStatusData | undefined = user?.mintStatusData;
-    const tpf2023StampRallyMap = mintStatusData?.tpf2023StampRally;
-    if (tpf2023StampRallyMap) {
+    const tpf2023StatusMap = user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
+    if (tpf2023StatusMap) {
       // 初めてのリクエストであるか（mint中・済みでないか）チェック
-      const mintStatus = tpf2023StampRallyMap[correctStampEntry[0]];
+      const mintStatus = tpf2023StatusMap[correctStampEntry[0]];
       if (mintStatus === "IN_PROGRESS" || mintStatus === "DONE") {
         throw new functions.https.HttpsError(
           "already-exists",
@@ -76,20 +71,21 @@ exports.checkReward = functions
       isStampCompleted = (() => {
         // 今回更新するkey以外のkeyの配列
         const requiredKeys = [
-          "g0",
-          "g1Alpha",
-          "g1Beta",
-          "g1Gamma",
-          "g1Delta",
+          "G0",
+          "G1alpha",
+          "G1beta",
+          "G1gamma",
+          "G1delta",
         ].filter((key) => key !== correctStampEntry[0]);
         // requiredKeysの要素を全てkeyとして持っているかを判定
-        const mapKeys = new Set(Object.keys(tpf2023StampRallyMap));
+        const mapKeys = new Set(Object.keys(tpf2023StatusMap));
         if (!requiredKeys.every((key) => mapKeys.has(key))) {
           return false;
         }
         // 全てのvalueがvalidValuesのどれかに当てはまっているかを判定
+        // mint処理中・完了であればok
         const validValues = new Set(["IN_PROGRESS", "DONE"]);
-        const mapValues = Object.values(tpf2023StampRallyMap);
+        const mapValues = Object.values(tpf2023StatusMap);
         if (!mapValues.every((value) => validValues.has(value))) {
           return false;
         }
@@ -102,15 +98,15 @@ exports.checkReward = functions
     // スタンプをコンプリートしていたら追加でmint
 
     // mint待機状態に設定
-    const setData: { mintStatusData: MintStatusData } = {
-      mintStatusData: {
-        tpf2023StampRally: {
+    const setData: { mintStatus: MintStatus } = {
+      mintStatus: {
+        TOBIRAPOLISFESTIVAL2023: {
           [correctStampEntry[0]]: "IN_PROGRESS",
         },
       },
     };
     if (isStampCompleted) {
-      setData.mintStatusData.tpf2023StampRally!.complete = "IN_PROGRESS";
+      setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "IN_PROGRESS";
     }
     await firestore().collection("users").doc(context.auth.uid).set(setData, {
       merge: true,

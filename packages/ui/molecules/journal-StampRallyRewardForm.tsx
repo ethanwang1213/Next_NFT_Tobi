@@ -21,11 +21,11 @@ export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const { isSubmitting } = useStampRallyForm();
-  const stampRally = useAuth().user?.mintStatusData?.tpf2023StampRally;
+  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
 
   if (
-    stampRally?.complete === "IN_PROGRESS" ||
-    stampRally?.complete === "DONE"
+    stampRally?.Complete === "IN_PROGRESS" ||
+    stampRally?.Complete === "DONE"
   ) {
     return <p className="h-8 sm:h-12">Complete!!</p>;
   }
