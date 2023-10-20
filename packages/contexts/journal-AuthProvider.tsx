@@ -19,7 +19,7 @@ import React, {
 import { auth, db } from "fetchers/firebase/journal-client";
 import {
   Birthday,
-  MintStatusDataForSetMethod,
+  MintStatusForSetMethod,
   MintStatusType,
   Tpf2023Complete,
   User,
@@ -42,9 +42,9 @@ type ContextType = {
   ) => void;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
-  setMintStatus: <T extends keyof MintStatusDataForSetMethod>(
+  setMintStatus: <T extends keyof MintStatusForSetMethod>(
     event: T,
-    type: keyof MintStatusDataForSetMethod[T],
+    type: keyof MintStatusForSetMethod[T],
     status: MintStatusType,
     isComplete: boolean
   ) => void;
@@ -177,9 +177,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
     // 現状のuserデータに存在するmint状態データを取得
     const currentDataOrEmpty =
-      user.mintStatus && user.mintStatus[event]
-        ? user.mintStatus[event]
-        : {};
+      user.mintStatus && user.mintStatus[event] ? user.mintStatus[event] : {};
 
     // これでスタンプコンプリートだったらCompleteも"IN_PROGRESS"に設定
     const completeOrEmpty: { [cmp in Tpf2023Complete]: string } | {} =
