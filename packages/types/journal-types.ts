@@ -72,7 +72,7 @@ type Tpf2023StampRallyData = {
 
 // mint状態データ
 // 今後も使いそうなデータなので、追加できる形にしました
-export type MintStatusData = {
+export type MintStatus = {
   TOBIRAPOLISFESTIVAL2023?: Tpf2023StampRallyData;
 };
 
@@ -91,7 +91,7 @@ export type User = {
   createdAt: number;
   birthday: Birthday;
   characteristic?: Characteristic;
-  mintStatusData?: MintStatusData;
+  mintStatus?: MintStatus;
 };
 
 // NFTの基本データ型

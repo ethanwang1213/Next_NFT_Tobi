@@ -177,8 +177,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
     // 現状のuserデータに存在するmint状態データを取得
     const currentDataOrEmpty =
-      user.mintStatusData && user.mintStatusData[event]
-        ? user.mintStatusData[event]
+      user.mintStatus && user.mintStatus[event]
+        ? user.mintStatus[event]
         : {};
 
     // これでスタンプコンプリートだったらCompleteも"IN_PROGRESS"に設定
@@ -187,7 +187,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
     const newUser: User = {
       ...user,
-      mintStatusData: {
+      mintStatus: {
         [event]: {
           ...currentDataOrEmpty, // 現状のuserのmint状態データの展開
           [type]: status, // 新規mint状態データ

@@ -1,11 +1,7 @@
 import * as functions from "firebase-functions";
 import { firestore } from "firebase-admin";
 import { REGION, TPF2023_STAMP_RALLY_KEYWORDS } from "./lib/constants";
-import {
-  MintStatusData,
-  StampRallyResultType,
-  User,
-} from "types/journal-types";
+import { MintStatus, StampRallyResultType, User } from "types/journal-types";
 
 /**
  * ログイン状態で、正しいスタンプラリーの合言葉が渡されていれば、
@@ -61,7 +57,7 @@ exports.checkReward = functions
     }
 
     let isStampCompleted = false;
-    const tpf2023StatusMap = user?.mintStatusData?.TOBIRAPOLISFESTIVAL2023;
+    const tpf2023StatusMap = user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
     if (tpf2023StatusMap) {
       // 初めてのリクエストであるか（mint中・済みでないか）チェック
       const mintStatus = tpf2023StatusMap[correctStampEntry[0]];
@@ -102,15 +98,15 @@ exports.checkReward = functions
     // スタンプをコンプリートしていたら追加でmint
 
     // mint待機状態に設定
-    const setData: { mintStatusData: MintStatusData } = {
-      mintStatusData: {
+    const setData: { mintStatus: MintStatus } = {
+      mintStatus: {
         TOBIRAPOLISFESTIVAL2023: {
           [correctStampEntry[0]]: "IN_PROGRESS",
         },
       },
     };
     if (isStampCompleted) {
-      setData.mintStatusData.TOBIRAPOLISFESTIVAL2023!.Complete = "IN_PROGRESS";
+      setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "IN_PROGRESS";
     }
     await firestore().collection("users").doc(context.auth.uid).set(setData, {
       merge: true,
