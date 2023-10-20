@@ -19,13 +19,13 @@ type StampDataType = {
 export const StampRally = () => {
   const { requestReward } = useStampRallyFetcher();
 
-  const stampRally = useAuth().user?.mintStatusData?.tpf2023StampRally;
+  const stampRally = useAuth().user?.mintStatusData?.TOBIRAPOLISFESTIVAL2023;
   const keys: Tpf2023StampType[] = [
-    "g0",
-    "g1Alpha",
-    "g1Beta",
-    "g1Gamma",
-    "g1Delta",
+    "G0",
+    "G1alpha",
+    "G1beta",
+    "G1gamma",
+    "G1delta",
   ];
   const stamps: StampDataType[] = keys.map((key) => ({
     key: key,

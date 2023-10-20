@@ -21,6 +21,7 @@ import {
   Birthday,
   MintStatusDataForSetMethod,
   MintStatusType,
+  Tpf2023Complete,
   User,
 } from "types/journal-types";
 
@@ -180,8 +181,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         ? user.mintStatusData[event]
         : {};
 
-    // これでスタンプコンプリートだったらcompleteも"IN_PROGRESS"に設定
-    const completeOrEmpty = isComplete ? { complete: "IN_PROGRESS" } : {};
+    // これでスタンプコンプリートだったらCompleteも"IN_PROGRESS"に設定
+    const completeOrEmpty: { [cmp in Tpf2023Complete]: string } | {} =
+      isComplete ? { Complete: "IN_PROGRESS" } : {};
 
     const newUser: User = {
       ...user,
