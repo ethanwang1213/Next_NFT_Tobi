@@ -77,7 +77,7 @@ export type MintStatus = {
 };
 
 // mint状態データ変更メソッド用（全てoptionalじゃなく設定）
-export type MintStatusDataForSetMethod = {
+export type MintStatusForSetMethod = {
   TOBIRAPOLISFESTIVAL2023: Tpf2023StampRallyData;
 };
 
