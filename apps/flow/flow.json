@@ -88,10 +88,10 @@
 			"address": "e217638793f1e461",
 			"key": {
 				"type": "hex",
-				"index": 3,
+				"index": 4,
 				"signatureAlgorithm": "ECDSA_P256",
 				"hashAlgorithm": "SHA2_256",
-				"privateKey": ""
+				"privateKey": "fd8b5b6671f20c70aefbbb816a6303421128391c7d29fc8143a688ef932ef0c6"
 			}
 		},
 		"testnetAccount1": {
@@ -121,8 +121,7 @@
 		"mainnet": {
 			"mainnetAccount1": [
 				"TobiraNeko",
-				"HouseBadge",
-				"AchievementBadge"
+				"HouseBadge"
 			]
 		},
 		"testnet": {
