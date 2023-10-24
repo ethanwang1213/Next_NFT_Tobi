@@ -5,7 +5,6 @@ import {discordOAuth} from "./discord";
 import {discordUserNfts} from "./discordUserNfts";
 import {metadata} from "./tobiraneko";
 import {metadata as houseBadgeMetadata} from "./housebadge";
-import {mintFes23Nft} from "./mintFes23Nft";
 import {mintFes23NftTask} from "./mintFes23NftTask";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
@@ -22,7 +21,6 @@ exports.discordUserNfts = discordUserNfts;
 exports.tobiraneko = metadata;
 exports.housebadge = houseBadgeMetadata;
 exports.stampRallyBadge = require("./journalStampRallyBadge");
-exports.mintFes23Nft = mintFes23Nft;
 exports.mintFes23NftTask = mintFes23NftTask;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
