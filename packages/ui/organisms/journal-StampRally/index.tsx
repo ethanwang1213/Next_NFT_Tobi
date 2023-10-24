@@ -39,7 +39,7 @@ export const StampRally = () => {
     status: !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key],
   }));
 
-  /** debug */
+  // debug stamprally
   const loadCheckboxRef = useRef<HTMLInputElement>(null);
   const auth = useAuth();
 
@@ -51,7 +51,7 @@ export const StampRally = () => {
   };
 
   useEffect(() => {}, []);
-  /** end debug */
+  // end debug stamprally
 
   return (
     <div className="text-center text-primary">
@@ -70,12 +70,13 @@ export const StampRally = () => {
               alt={v.key}
               width={105}
               height={105}
-              // debug
+              // debug stamprally
               loading={
                 loadCheckboxRef.current &&
                 loadCheckboxRef.current.checked &&
                 v.status === "IN_PROGRESS"
               }
+              // end debug stamprally
             />
           ))}
         </div>
@@ -88,7 +89,7 @@ export const StampRally = () => {
       </p>
       <div className="mt-8 sm:mt-20 text-xs sm:text-base font-bold">
         <a>TOBIRAPOLIS祭詳細はこちら</a>
-        {/* debug */}
+        {/* debug stamprally */}
         {process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true" && (
           <>
             <button
@@ -101,6 +102,7 @@ export const StampRally = () => {
             <input type="checkbox" ref={loadCheckboxRef} />
           </>
         )}
+        {/* end debug stamprally */}
       </div>
     </div>
   );

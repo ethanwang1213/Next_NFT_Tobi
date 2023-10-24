@@ -20,6 +20,9 @@ exports.discordUserNfts = discordUserNfts;
 exports.tobiraneko = metadata;
 exports.housebadge = houseBadgeMetadata;
 exports.stampRallyBadge = require("./journalStampRallyBadge");
+// debug stamprally
+exports.stampRallyBadgeForDebug = require("./journalStampRallyBadgeForDebug");
+// end debug stamprally
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");

@@ -199,6 +199,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     });
   };
 
+  // debug stamprally
   const initMintStatusForDebug = () => {
     if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "false" || !user) return;
 
@@ -208,6 +209,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     };
     setUser(newUser);
   };
+  // end debug stamprally
 
   return (
     <AuthContext.Provider

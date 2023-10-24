@@ -21,13 +21,39 @@ export const useStampRallyFetcher = () => {
   const { setMintStatus } = useAuth();
   const { isSubmitting } = useStampRallyForm();
 
+  // debug stamprally
+  const transitionToDoneForDebug = (data: StampRallyResultType) => {
+    setTimeout(async () => {
+      const userSrcRef = doc(db, `users/${auth.user.id}`);
+      const newData = {
+        mintStatus: {
+          ...auth.user?.mintStatus,
+          TOBIRAPOLISFESTIVAL2023: {
+            ...auth.user?.mintStatus?.TOBIRAPOLISFESTIVAL2023,
+            [data.stamp]: "DONE",
+          },
+        },
+      };
+      await setDoc(userSrcRef, newData, { merge: true });
+      setMintStatus(
+        "TOBIRAPOLISFESTIVAL2023",
+        data.stamp,
+        "DONE",
+        data.isComplete
+      );
+    }, 10000);
+  };
+  // end debug stamprally
+
   const requestReward = (data: StampRallyRewardFormType) => {
     console.log(data);
     isSubmitting.set(true);
 
     const callable = httpsCallable<BodyType, StampRallyResultType>(
       functions,
-      "stampRallyBadge-checkReward"
+      process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true"
+        ? "stampRallyBadgeForDebug-checkReward" // debug stamprally
+        : "stampRallyBadge-checkReward"
     );
     callable({ keyword: data.keyword })
       .then((result) => {
@@ -40,28 +66,11 @@ export const useStampRallyFetcher = () => {
         );
         isSubmitting.set(false);
 
-        // debug
+        // debug stamprally
         if (process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true") {
-          setTimeout(async () => {
-            const userSrcRef = doc(db, `users/${auth.user.id}`);
-            const newData = {
-              mintStatus: {
-                ...auth.user?.mintStatus,
-                TOBIRAPOLISFESTIVAL2023: {
-                  ...auth.user?.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-                  [result.data.stamp]: "DONE",
-                },
-              },
-            };
-            await setDoc(userSrcRef, newData, { merge: true });
-            setMintStatus(
-              "TOBIRAPOLISFESTIVAL2023",
-              result.data.stamp,
-              "DONE",
-              result.data.isComplete
-            );
-          }, 10000);
+          transitionToDoneForDebug(result.data);
         }
+        // end debug sramprally
       })
       .catch((error) => {
         console.log(error);
