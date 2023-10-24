@@ -2,12 +2,12 @@ import { useAuth } from "contexts/journal-AuthProvider";
 import { RoundedImage } from "../../atoms/journal-RoundedImage";
 import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
 import { StampRallyRewardForm } from "../../molecules/journal-StampRallyRewardForm";
-import stamp from "./assets/stamp.png";
 import { MintStatusType, Tpf2023StampType } from "types/journal-types";
 import { useStampRallyFetcher } from "fetchers";
 
 type StampDataType = {
   key: Tpf2023StampType;
+  blankSrc: string;
   src: string;
   status: MintStatusType;
 };
@@ -27,9 +27,11 @@ export const StampRally = () => {
     "G1gamma",
     "G1delta",
   ];
+  const STAMP_DIR = "/journal/images/tobirapolisfestival/2023/";
   const stamps: StampDataType[] = keys.map((key) => ({
     key: key,
-    src: stamp.src,
+    src: `${STAMP_DIR}${key.toLowerCase()}.png`,
+    blankSrc: `${STAMP_DIR}${key.toLowerCase()}_blank.png`,
     status: !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key],
   }));
 
@@ -47,7 +49,9 @@ export const StampRally = () => {
             <RoundedImage
               key={v.key}
               src={
-                v.status === "IN_PROGRESS" || v.status === "DONE" ? v.src : ""
+                v.status === "IN_PROGRESS" || v.status === "DONE"
+                  ? v.src
+                  : v.blankSrc
               }
               alt={v.key}
               width={105}
