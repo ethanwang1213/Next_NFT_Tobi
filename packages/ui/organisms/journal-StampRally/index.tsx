@@ -34,7 +34,6 @@ export const StampRally = () => {
   const stamps: StampDataType[] = keys.map((key) => ({
     key: key,
     src: `${STAMP_DIR}${key.toLowerCase()}.png`,
-    // src: `${STORAGE_SRC}complete.png`,
     blankSrc: `${STAMP_DIR}${key.toLowerCase()}_blank.png`,
     status: !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key],
   }));
