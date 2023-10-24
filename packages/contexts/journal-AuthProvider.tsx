@@ -48,6 +48,7 @@ type ContextType = {
     status: MintStatusType,
     isComplete: boolean
   ) => void;
+  initMintStatusForDebug: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -174,27 +175,41 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     isComplete
   ) => {
     if (!user) return;
+    setUser((state) => {
+      // 現状のuserデータに存在するmint状態データを取得
+      const currentDataOrEmpty =
+        state.mintStatus && state.mintStatus[event]
+          ? state.mintStatus[event]
+          : {};
 
-    // 現状のuserデータに存在するmint状態データを取得
-    const currentDataOrEmpty =
-      user.mintStatus && user.mintStatus[event] ? user.mintStatus[event] : {};
+      // これでスタンプコンプリートだったらCompleteも"IN_PROGRESS"に設定
+      const completeOrEmpty: { [cmp in Tpf2023Complete]: string } | {} =
+        isComplete ? { Complete: "IN_PROGRESS" } : {};
 
-    // これでスタンプコンプリートだったらCompleteも"IN_PROGRESS"に設定
-    const completeOrEmpty: { [cmp in Tpf2023Complete]: string } | {} =
-      isComplete ? { Complete: "IN_PROGRESS" } : {};
+      return {
+        ...state,
+        mintStatus: {
+          [event]: {
+            ...currentDataOrEmpty, // 現状のuserのmint状態データの展開
+            [type]: status, // 新規mint状態データ
+            ...completeOrEmpty, // completeを設定
+          },
+        },
+      };
+    });
+  };
+
+  // debug stamprally
+  const initMintStatusForDebug = () => {
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "false" || !user) return;
 
     const newUser: User = {
       ...user,
-      mintStatus: {
-        [event]: {
-          ...currentDataOrEmpty, // 現状のuserのmint状態データの展開
-          [type]: status, // 新規mint状態データ
-          ...completeOrEmpty, // completeを設定
-        },
-      },
+      mintStatus: {},
     };
     setUser(newUser);
   };
+  // end debug stamprally
 
   return (
     <AuthContext.Provider
@@ -205,6 +220,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         setDbIconUrl,
         setJoinTobiratoryInfo,
         setMintStatus,
+        initMintStatusForDebug,
         MAX_NAME_LENGTH: MAX_NAME_LENGTH,
       }}
     >

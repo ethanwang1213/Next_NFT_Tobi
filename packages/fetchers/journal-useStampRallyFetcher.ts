@@ -3,9 +3,10 @@ import {
   StampRallyRewardFormType,
 } from "types/journal-types";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "./firebase/journal-client";
+import { db, functions } from "./firebase/journal-client";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
+import { doc, setDoc } from "firebase/firestore/lite";
 
 type BodyType = {
   keyword: string;
@@ -16,8 +17,33 @@ type BodyType = {
  * @returns
  */
 export const useStampRallyFetcher = () => {
+  const auth = useAuth();
   const { setMintStatus } = useAuth();
   const { isSubmitting } = useStampRallyForm();
+
+  // debug stamprally
+  const transitionToDoneForDebug = (data: StampRallyResultType) => {
+    setTimeout(async () => {
+      const userSrcRef = doc(db, `users/${auth.user.id}`);
+      const newData = {
+        mintStatus: {
+          ...auth.user?.mintStatus,
+          TOBIRAPOLISFESTIVAL2023: {
+            ...auth.user?.mintStatus?.TOBIRAPOLISFESTIVAL2023,
+            [data.stamp]: "DONE",
+          },
+        },
+      };
+      await setDoc(userSrcRef, newData, { merge: true });
+      setMintStatus(
+        "TOBIRAPOLISFESTIVAL2023",
+        data.stamp,
+        "DONE",
+        data.isComplete
+      );
+    }, 10000);
+  };
+  // end debug stamprally
 
   const requestReward = (data: StampRallyRewardFormType) => {
     console.log(data);
@@ -25,7 +51,9 @@ export const useStampRallyFetcher = () => {
 
     const callable = httpsCallable<BodyType, StampRallyResultType>(
       functions,
-      "stampRallyBadge-checkReward"
+      process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true"
+        ? "stampRallyBadgeForDebug-checkReward" // debug stamprally
+        : "stampRallyBadge-checkReward"
     );
     callable({ keyword: data.keyword })
       .then((result) => {
@@ -37,6 +65,12 @@ export const useStampRallyFetcher = () => {
           result.data.isComplete
         );
         isSubmitting.set(false);
+
+        // debug stamprally
+        if (process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true") {
+          transitionToDoneForDebug(result.data);
+        }
+        // end debug sramprally
       })
       .catch((error) => {
         console.log(error);

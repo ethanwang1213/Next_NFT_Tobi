@@ -21,6 +21,9 @@ exports.discordUserNfts = discordUserNfts;
 exports.tobiraneko = metadata;
 exports.housebadge = houseBadgeMetadata;
 exports.stampRallyBadge = require("./journalStampRallyBadge");
+// debug stamprally
+exports.stampRallyBadgeForDebug = require("./journalStampRallyBadgeForDebug");
+// end debug stamprally
 exports.mintFes23NftTask = mintFes23NftTask;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {

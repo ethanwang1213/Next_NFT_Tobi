@@ -4,6 +4,9 @@ import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
 import { StampRallyRewardForm } from "../../molecules/journal-StampRallyRewardForm";
 import { MintStatusType, Tpf2023StampType } from "types/journal-types";
 import { useStampRallyFetcher } from "fetchers";
+import { db } from "fetchers/firebase/journal-client";
+import { doc, setDoc } from "firebase/firestore/lite";
+import { useEffect, useRef } from "react";
 
 type StampDataType = {
   key: Tpf2023StampType;
@@ -35,6 +38,20 @@ export const StampRally = () => {
     status: !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key],
   }));
 
+  // debug stamprally
+  const loadCheckboxRef = useRef<HTMLInputElement>(null);
+  const auth = useAuth();
+
+  const handleInitClick = async () => {
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "false" || !auth.user) return;
+    const userSrcRef = doc(db, `users/${auth.user.id}`);
+    await setDoc(userSrcRef, { mintStatus: {} }, { merge: true });
+    auth.initMintStatusForDebug();
+  };
+
+  useEffect(() => {}, []);
+  // end debug stamprally
+
   return (
     <div className="text-center text-primary">
       <div>
@@ -48,14 +65,17 @@ export const StampRally = () => {
           {stamps.map((v) => (
             <RoundedImage
               key={v.key}
-              src={
-                v.status === "IN_PROGRESS" || v.status === "DONE"
-                  ? v.src
-                  : v.blankSrc
-              }
+              src={v.status === "DONE" ? v.src : v.blankSrc}
               alt={v.key}
               width={105}
               height={105}
+              // debug stamprally
+              loading={
+                loadCheckboxRef.current &&
+                loadCheckboxRef.current.checked &&
+                v.status === "IN_PROGRESS"
+              }
+              // end debug stamprally
             />
           ))}
         </div>
@@ -68,6 +88,20 @@ export const StampRally = () => {
       </p>
       <div className="mt-8 sm:mt-20 text-xs sm:text-base font-bold">
         <a>TOBIRAPOLIS祭詳細はこちら</a>
+        {/* debug stamprally */}
+        {process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true" && (
+          <>
+            <button
+              onClick={handleInitClick}
+              className="btn btn-xs btn-outline"
+            >
+              初期化
+            </button>
+            <label>load</label>
+            <input type="checkbox" ref={loadCheckboxRef} />
+          </>
+        )}
+        {/* end debug stamprally */}
       </div>
     </div>
   );
