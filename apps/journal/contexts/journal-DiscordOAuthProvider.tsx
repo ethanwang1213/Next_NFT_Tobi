@@ -4,12 +4,13 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
-import { useAuth } from "./AuthProvider";
-import { useHoldNfts } from "./HoldNftsProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
+import { useHoldNfts } from "./journal-HoldNftsProvider";
 import useCommunityData from "@/hooks/useCommunityData";
-import { HouseData } from "@/types/type";
+import { HouseData } from "types/journal-types";
 
 type Props = {
   children: React.ReactNode;
@@ -23,6 +24,7 @@ type ContextType = {
     set: Dispatch<SetStateAction<DisplayMode>>;
   };
   houseData: HouseData;
+  initContext: () => void;
 };
 
 const DiscordOAuthContext = createContext<ContextType>({} as ContextType);
@@ -41,6 +43,11 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
   const { nekoNfts } = useHoldNfts();
   const { loadHouseData } = useCommunityData();
   const [houseData, setHouseData] = useState<HouseData>(null);
+
+  const initContext = () => {
+    setDisplayMode("NONE");
+    setHouseData(null);
+  };
 
   const execLoadHouseData = async () => {
     if (!user || !user.email) return;
@@ -81,13 +88,17 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
     }
   }, [user, houseData, nekoNfts.current]);
 
+  const contextValue = useMemo(
+    () => ({
+      displayMode: { current: displayMode, set: setDisplayMode },
+      houseData: houseData,
+      initContext: initContext,
+    }),
+    [displayMode, setDisplayMode, houseData, initContext]
+  );
+
   return (
-    <DiscordOAuthContext.Provider
-      value={{
-        displayMode: { current: displayMode, set: setDisplayMode },
-        houseData: houseData,
-      }}
-    >
+    <DiscordOAuthContext.Provider value={contextValue}>
       {children}
     </DiscordOAuthContext.Provider>
   );

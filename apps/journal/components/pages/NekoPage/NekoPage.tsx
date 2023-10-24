@@ -2,7 +2,7 @@ import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import NftPageTitle from "../../PageTitle/NftPageTitle";
 import NekoGrid from "./sub/NekoGrid";
 import NekoSwiper from "./sub/NekoSwiper/NekoSwiper";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 
 type Props = {
   pageNum: number;

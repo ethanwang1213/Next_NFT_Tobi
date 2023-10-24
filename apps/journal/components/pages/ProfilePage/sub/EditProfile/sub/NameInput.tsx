@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import { useEffect } from "react";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { EditProfileValues } from "../EditProfileModal";

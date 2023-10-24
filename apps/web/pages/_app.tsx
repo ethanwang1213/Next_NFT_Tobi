@@ -12,12 +12,12 @@ import { AuthProvider } from "@/context/auth";
 import {
   ShowBurgerProvider,
   MenuAnimationProvider,
-  useWindowSize,
   MenuButtonLayout,
   BurgerMenu,
 } from "ui";
+import { useWindowSize } from "hooks";
 import LoadTransition from "@/components/global/Load";
-import { CanvasDprProvider } from "ui/contexts/canvasDprContext";
+import { CanvasDprProvider } from "contexts/CanvasDprContext";
 import DprController from "@/components/saidan/ui/dpr/DprController";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import useHomeStore from "@/stores/homeStore";

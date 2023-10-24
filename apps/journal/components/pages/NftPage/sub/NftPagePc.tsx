@@ -1,6 +1,6 @@
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
 import NftImage from "./NftImage";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 
 type Props = {
   pageNum: number;

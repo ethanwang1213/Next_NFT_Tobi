@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { menuItem } from "./../assets/menuItems";
-import { useLocatingAcrossBasePath } from "../../../hooks/useLocatingAcrossBasePath";
-import { useShowBurger } from "../../../contexts/menu/showBurger";
+import { useLocatingAcrossBasePath } from "hooks";
+import { useShowBurger } from "contexts/menu/ShowBurger";
 
 type Props = {
   initHomeStates?: () => void;

@@ -1,6 +1,6 @@
 import { useSpring, a, config } from "@react-spring/web";
 import { useState } from "react";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import useSaidanStore from "@/stores/saidanStore";
 import SkipButton from "./SkipButton";
 

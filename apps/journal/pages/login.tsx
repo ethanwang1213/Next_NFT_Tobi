@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/client";
+import { auth } from "fetchers/firebase/journal-client";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
@@ -396,7 +396,7 @@ const Login = () => {
                 checked={isAppleModalChecked}
                 className="checkbox checkbox-accent"
                 onClick={() => setAppleModalChecked(!isAppleModalChecked)}
-                onChange={() => {}}
+                onChange={() => { }}
               />
               <div className="grid content-center ml-2">
                 <span className="select-none sm:text-sm">確認しました</span>

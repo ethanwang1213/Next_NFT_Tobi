@@ -2,7 +2,7 @@ import NftPageTitle from "../../PageTitle/NftPageTitle";
 import NftPagePc from "./sub/NftPagePc";
 import NftPageSp from "./sub/NftPageSp";
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 
 type Props = {
   pageNum: number;

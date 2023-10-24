@@ -1,4 +1,4 @@
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 
 type Props = {
   title: string;

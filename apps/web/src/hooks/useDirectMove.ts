@@ -8,7 +8,7 @@ import {
   POINTER_TARGETS,
 } from "@/constants/saidanConstants";
 import useSaidanStore from "@/stores/saidanStore";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 
 type PointerMoveProps = {
   raycaster: Raycaster;

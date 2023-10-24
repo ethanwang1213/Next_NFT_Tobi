@@ -2,7 +2,7 @@ import { a } from "@react-spring/three";
 import { useMemo } from "react";
 import useHomePlaneSize from "@/hooks/useHomePlaneSize";
 import getImgSrc from "@/methods/home/getImgSrc";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import ImageModel from "../imageModel/ImageModel";
 
 /**
@@ -46,7 +46,7 @@ const TitlePhase = () => {
       z={-1001}
       // opacity={t1_1.to([0, 0.9, 1], [0, 0, 1]).to((v) => 1 - v)}
       opacity={1}
-      // color={'#888'}
+    // color={'#888'}
     />
   );
 };

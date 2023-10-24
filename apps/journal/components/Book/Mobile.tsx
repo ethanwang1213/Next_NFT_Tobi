@@ -17,10 +17,10 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import NftPage from "../pages/NftPage/NftPage";
 import NekoPage from "../pages/NekoPage/NekoPage";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
-import { BookContext } from "../../contexts/BookContextProvider";
+import { useBookContext } from "../../contexts/journal-BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 
 /**
@@ -30,7 +30,7 @@ import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 const Mobile = () => {
   const [isDisplayLeft, setIsDisplayLeft] = useState<Boolean>(true);
   const [isShowTag, setIsShowTag] = useState<Boolean>(false);
-  const bookContext = useContext(BookContext);
+  const bookContext = useBookContext();
   const pages = bookContext.pages.current;
   const pageNo = bookContext.pageNo.current;
   const { profilePage, nftPage } = bookContext.bookIndex;
@@ -82,8 +82,12 @@ const Mobile = () => {
   const pagePadding = (no: number) => {
     if (!pages[no]) return "";
 
-    if (isInPage(no, profilePage) && isLeftPage(no)) {
-      return " pb-[20%] px-2";
+    if (isInPage(no, profilePage)) {
+      if (isLeftPage(no)) {
+        return " pb-[20%] px-2";
+      } else {
+        return " px-2";
+      }
     } else if (isInPage(no, nftPage)) {
       return " px-0";
     } else {

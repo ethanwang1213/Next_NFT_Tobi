@@ -1,12 +1,11 @@
-import { BookContext } from "@/contexts/BookContextProvider";
-import { useContext } from "react";
+import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
 
 /**
  * サウンドのオンオフを切り替えるトグルボタン
  * 付箋をめくる時に鳴る音などをオンオフする
  */
 const SoundToggle: React.FC = () => {
-  const { isMute } = useContext(BookContext);
+  const { isMute } = useSoundConfig();
 
   return (
     <div className="text-amber-950 text-center">

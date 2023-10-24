@@ -1,12 +1,18 @@
-import { auth } from "@/firebase/client";
-import { useEffect } from "react";
+import { auth } from "fetchers/firebase/journal-client";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
+import { useActivityRecord } from "@/contexts/journal-ActivityRecordProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
+import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 
 const Logout = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { initContext: initActivityContext } = useActivityRecord();
+  const { initContext: initNftsContext } = useHoldNfts();
+  const { initContext: initDiscordContext } = useDiscordOAuth();
 
   useEffect(() => {
     if (!user) return;
@@ -14,6 +20,9 @@ const Logout = () => {
     const handleLogout = async () => {
       try {
         if (user.email) {
+          initActivityContext();
+          initNftsContext();
+          initDiscordContext();
           await auth.signOut();
         }
         router.push("/login");

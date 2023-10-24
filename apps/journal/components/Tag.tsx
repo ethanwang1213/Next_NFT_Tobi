@@ -1,16 +1,17 @@
-import { FC, ReactElement, useContext, useMemo } from "react";
+import { FC, ReactElement, useMemo } from "react";
 import useSound from "use-sound";
-import { BookContext } from "../contexts/BookContextProvider";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useBookContext } from "../contexts/journal-BookProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
+import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
 
 const Tag: FC<{
   image: string | ReactElement;
-  page: Number | (() => void);
+  page: number | (() => void);
   isHamburger?: boolean;
 }> = ({ image, page, isHamburger = false }) => {
-  const bookData = useContext(BookContext);
+  const bookData = useBookContext();
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
-  const { current: isMute } = bookData.isMute;
+  const { current: isMute } = useSoundConfig().isMute;
 
   const isNumber = useMemo(() => typeof page === "number", [page]);
 
@@ -22,7 +23,7 @@ const Tag: FC<{
 
   const handleClick = () => {
     if (isNumber) {
-      setPageNo(page);
+      setPageNo(page as number);
     } else {
       (page as () => void)();
     }
