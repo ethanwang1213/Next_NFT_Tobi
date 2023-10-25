@@ -32,12 +32,12 @@ export const mintFes23NftTask = onTaskDispatched({
       const setData: { mintStatus: MintStatus } = {
         mintStatus: {
           TOBIRAPOLISFESTIVAL2023: {
-            [type]: "SUCCESS",
+            [type]: "DONE",
           },
         },
       };
       if (isStampCompleted) {
-        setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "SUCCESS";
+        setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
       }
       await firestore().collection("users").doc(userId).set(setData, {
         merge: true,
