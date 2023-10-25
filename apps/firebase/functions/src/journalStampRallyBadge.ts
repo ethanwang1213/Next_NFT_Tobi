@@ -127,6 +127,7 @@ exports.checkReward = functions
         description: badge.description,
         type: `TOBIRAPOLISFESTIVAL2023_${correctStampEntry[0]}`,
         userId: userId,
+        isStampCompleted: isStampCompleted
       }, {
         dispatchDeadlineSeconds: 60 * 5,
         uri: targetUri,

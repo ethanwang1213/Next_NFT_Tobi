@@ -3,7 +3,7 @@ import {signer} from "./signer";
 
 config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
-  "accessNode.api": process.env.FLOW_ACCESS_NOTE_API ?? "FLOW_ACCESS_NOTE_API",
+  "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
   "0xTobirapolisFestival23Badge": process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT ?? "FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT",
   "0xOthers": process.env.FLOW_OTHER_ACCOUNT ?? "FLOW_OTHER_ACCOUNT",
 });
