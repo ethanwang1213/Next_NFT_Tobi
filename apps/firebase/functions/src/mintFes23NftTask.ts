@@ -2,6 +2,7 @@ import {onTaskDispatched} from "firebase-functions/v2/tasks";
 import {REGION} from "./lib/constants";
 import {mintTobirapolisFestival23BadgeNFT} from "./lib/tobirapolisFestival23Flow";
 import {firestore} from "firebase-admin";
+import {MintStatus, StampRallyResultType, User} from "types/journal-types";
 import Timestamp = firestore.Timestamp;
 
 export const mintFes23NftTask = onTaskDispatched({
@@ -14,11 +15,7 @@ export const mintFes23NftTask = onTaskDispatched({
   },
   region: REGION,
 }, async (req) => {
-  const data = req.data;
-  const name = data.name;
-  const description = data.description;
-  const type = data.type;
-  const userId = data.userId;
+  const {name, description, type, userId, isStampCompleted} = req.data;
   const txDetails = await mintTobirapolisFestival23BadgeNFT(name, description);
   console.log({txDetails});
   const events = txDetails.events;
@@ -32,7 +29,19 @@ export const mintFes23NftTask = onTaskDispatched({
       const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type}.png`;
       await createTobirapolisFestival23BadgeMetadata(nftId, type, name, description, imageUrl);
       await transferTobirapolisFestival23Badge(userId, nftId, name, description, new Date(), imageUrl, type);
-      // ここにFirestoreのステータス更新を挟む
+      const setData: { mintStatus: MintStatus } = {
+        mintStatus: {
+          TOBIRAPOLISFESTIVAL2023: {
+            [type]: "DONE",
+          },
+        },
+      };
+      if (isStampCompleted) {
+        setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
+      }
+      await firestore().collection("users").doc(userId).set(setData, {
+        merge: true,
+      });
       break;
     }
   }
