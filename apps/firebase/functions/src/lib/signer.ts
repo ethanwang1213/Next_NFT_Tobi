@@ -20,7 +20,7 @@ const hashMessageHex = (hashType: string, msgHex: string) => {
 
 const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string}) => {
   const key = curve.keyFromPrivate(Buffer.from(privateKey, "hex"));
-  const sig = key.sign(hashMessageHex("sha3", msgHex));
+  const sig = key.sign(hashMessageHex(process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT_KEY_HASH, msgHex));
   const n = 32;
   const r = sig.r.toArrayLike(Buffer, "be", n);
   const s = sig.s.toArrayLike(Buffer, "be", n);
