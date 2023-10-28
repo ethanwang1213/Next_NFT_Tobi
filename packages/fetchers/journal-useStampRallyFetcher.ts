@@ -24,7 +24,7 @@ export const useStampRallyFetcher = () => {
   // debug stamprally
   const transitionToDoneForDebug = (data: StampRallyResultType) => {
     setTimeout(async () => {
-      const userSrcRef = doc(db, `users/${auth.user.id}`);
+      const userSrcRef = doc(db, `users/${auth.user?.id}`);
       const newData = {
         mintStatus: {
           ...auth.user?.mintStatus,
