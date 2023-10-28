@@ -45,7 +45,7 @@ export const StampRallyRewardForm: React.FC<Props> = ({
     stampRally?.Complete === "IN_PROGRESS" ||
     stampRally?.Complete === "DONE"
   ) {
-    return <p className="h-8 sm:h-12">Complete!!</p>;
+    return <p className="h-8 sm:h-12 font-bold sm:text-xl">Completed!!</p>;
   }
 
   return (
