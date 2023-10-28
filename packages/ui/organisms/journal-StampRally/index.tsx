@@ -94,25 +94,35 @@ export const StampRally = () => {
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}
       </p>
       <div className="mt-6 sm:mt-10 text-xs sm:text-base font-bold">
-        <a>TOBIRAPOLIS祭詳細はこちら</a>
-        {/* debug stamprally */}
-        {process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true" && (
-          <>
-            <button
-              onClick={handleInitClick}
-              className="btn btn-xs btn-outline"
-            >
-              初期化
-            </button>
-            <label>load</label>
-            <input
-              type="checkbox"
-              ref={loadCheckboxRef}
-              defaultChecked={true}
-            />
-          </>
-        )}
-        {/* end debug stamprally */}
+        <p>
+          TOBIRAPOLIS祭詳細は
+          <a
+            href="https://tobirapolis.notion.site/TOBIRAPOLIS-4295b312a97d43d8832c6668eb62c2ae"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link link-info"
+          >
+            こちら
+          </a>
+          {/* debug stamprally */}
+          {process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true" && (
+            <>
+              <button
+                onClick={handleInitClick}
+                className="btn btn-xs btn-outline"
+              >
+                初期化
+              </button>
+              <label>load</label>
+              <input
+                type="checkbox"
+                ref={loadCheckboxRef}
+                defaultChecked={true}
+              />
+            </>
+          )}
+          {/* end debug stamprally */}
+        </p>
       </div>
     </div>
   );
