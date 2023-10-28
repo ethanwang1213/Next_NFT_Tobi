@@ -6,7 +6,7 @@ import { MintStatusType, Tpf2023StampType } from "types/journal-types";
 import { useStampRallyFetcher } from "fetchers";
 import { db } from "fetchers/firebase/journal-client";
 import { doc, setDoc } from "firebase/firestore/lite";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 type StampDataType = {
   key: Tpf2023StampType;
@@ -81,11 +81,13 @@ export const StampRally: React.FC = () => {
               width={STAMP_H}
               height={STAMP_H}
               // debug stamprally
-              loading={
-                loadCheckboxRef.current &&
-                loadCheckboxRef.current.checked &&
-                v.status === "IN_PROGRESS"
-              }
+              loading={useMemo(
+                () =>
+                  loadCheckboxRef.current &&
+                  loadCheckboxRef.current.checked &&
+                  v.status === "IN_PROGRESS",
+                [loadCheckboxRef.current]
+              )}
               // end debug stamprally
             />
           ))}
