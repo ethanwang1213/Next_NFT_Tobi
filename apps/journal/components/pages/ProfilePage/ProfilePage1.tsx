@@ -72,7 +72,7 @@ const ProfilePage1: React.FC = () => {
           )}
         </div>
       </div>
-      <div className="mt-6 sm:mt-12 pb-12 sm:pb-0">
+      <div className="mt-6 sm:mt-12">
         <StampRally />
       </div>
     </div>

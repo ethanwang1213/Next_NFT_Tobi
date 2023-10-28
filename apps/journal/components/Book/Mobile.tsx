@@ -83,11 +83,7 @@ const Mobile = () => {
     if (!pages[no]) return "";
 
     if (isInPage(no, profilePage)) {
-      if (isLeftPage(no)) {
-        return " pb-[20%] px-2";
-      } else {
-        return " px-2";
-      }
+      return " pb-[20%] px-2";
     } else if (isInPage(no, nftPage)) {
       return " px-0";
     } else {

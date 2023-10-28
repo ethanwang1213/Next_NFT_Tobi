@@ -86,7 +86,7 @@ export const StampRally = () => {
       <p className="mt-2 text-[10px] sm:text-xs font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}
       </p>
-      <div className="mt-8 sm:mt-20 text-xs sm:text-base font-bold">
+      <div className="mt-4 sm:mt-20 text-xs sm:text-base font-bold">
         <a>TOBIRAPOLIS祭詳細はこちら</a>
         {/* debug stamprally */}
         {process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true" && (
