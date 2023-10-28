@@ -1,9 +1,12 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useContext } from "react";
 import { useDebug } from "@/contexts/journal-DebugProvider";
 import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 import { useBookContext } from "@/contexts/journal-BookProvider";
+
+type Props = {
+  isDisplayLeft: boolean;
+};
 
 /**
  * Discordコミュニティ参加のための認証ボタン
@@ -11,7 +14,7 @@ import { useBookContext } from "@/contexts/journal-BookProvider";
  * 別のコンポーネント(SuccessDiscordStamp)で表示している
  * @returns
  */
-const DiscordOAuthButton: React.FC = () => {
+const DiscordOAuthButton: React.FC<Props> = ({ isDisplayLeft }) => {
   const { displayMode } = useDiscordOAuth();
   const bookContext = useBookContext();
   const pageNo = bookContext.pageNo.current;
@@ -38,7 +41,7 @@ const DiscordOAuthButton: React.FC = () => {
   const debug = useDebug();
   const { current: debugButtonMode } = debug.debugDiscordButtonMode;
 
-  if (pageNo !== profilePage.start) return <></>;
+  if (pageNo !== profilePage.start || !isDisplayLeft) return <></>;
 
   return (
     <>

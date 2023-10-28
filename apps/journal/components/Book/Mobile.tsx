@@ -28,15 +28,15 @@ import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
  * @returns {ReactElement} The `Mobile` component
  */
 const Mobile = () => {
-  const [isDisplayLeft, setIsDisplayLeft] = useState<Boolean>(true);
-  const [isShowTag, setIsShowTag] = useState<Boolean>(false);
+  const [isDisplayLeft, setIsDisplayLeft] = useState<boolean>(true);
+  const [isShowTag, setIsShowTag] = useState<boolean>(false);
   const bookContext = useBookContext();
   const pages = bookContext.pages.current;
   const pageNo = bookContext.pageNo.current;
   const { profilePage, nftPage } = bookContext.bookIndex;
 
-  const [isArrowShown, setIsArrowShown] = useState<Boolean>(true);
-  const [isSwiperPage, setIsSwiperPage] = useState<Boolean>(false);
+  const [isArrowShown, setIsArrowShown] = useState<boolean>(true);
+  const [isSwiperPage, setIsSwiperPage] = useState<boolean>(false);
 
   const { user } = useAuth();
   const footerBottom = useMemo(
@@ -185,7 +185,7 @@ const Mobile = () => {
       <div
         className={`absolute ${footerBottom} mb-[22px] w-full flex justify-center px-[90px] pointer-events-none select-none`}
       >
-        <DiscordOAuthButton />
+        <DiscordOAuthButton isDisplayLeft={isDisplayLeft} />
       </div>
       {/* 矢印アイコンの表示 */}
       {isArrowShown && (
