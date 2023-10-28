@@ -39,7 +39,7 @@ const ProfilePage1: React.FC = () => {
   }, [shouldRefresh]);
 
   return (
-    <div className="h-full mb-8 sm:mb-0 flex flex-col">
+    <div className="h-full flex flex-col">
       <div className="grow overflow-y-auto">
         <div className="grid gap-8 pt-8 sm:pt-4">
           {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
