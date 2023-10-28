@@ -22,7 +22,7 @@ type StampDataType = {
 export const StampRally = () => {
   const { requestReward } = useStampRallyFetcher();
 
-  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
+  // preparing stamps data
   const keys: Tpf2023StampType[] = [
     "G0",
     "G1alpha",
@@ -31,12 +31,17 @@ export const StampRally = () => {
     "G1delta",
   ];
   const STAMP_DIR = "/journal/images/tobirapolisfestival/2023/";
+  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
   const stamps: StampDataType[] = keys.map((key) => ({
     key: key,
     src: `${STAMP_DIR}${key.toLowerCase()}.png`,
     blankSrc: `${STAMP_DIR}${key.toLowerCase()}_blank.png`,
     status: !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key],
   }));
+
+  // setting height of stamps. This means size of them.
+  const STAMP_H = 120;
+  const STAMP_H_SP = 72;
 
   // debug stamprally
   const loadCheckboxRef = useRef<HTMLInputElement>(null);
@@ -61,14 +66,16 @@ export const StampRally = () => {
         <p className="text-xs sm:text-lg font-bold">
           すべて集めるとスペシャルスタンプNFTをプレゼント！
         </p>
-        <div className="mt-3 sm:mt-6 flex justify-center gap-3 sm:gap-6 h-[56px] sm:h-[104px]">
+        <div
+          className={`mt-3 sm:mt-6 flex justify-center sm:gap-2 h-[${STAMP_H_SP}px] sm:h-[${STAMP_H}px]`}
+        >
           {stamps.map((v) => (
             <RoundedImage
               key={v.key}
               src={v.status === "DONE" ? v.src : v.blankSrc}
               alt={v.key}
-              width={105}
-              height={105}
+              width={STAMP_H}
+              height={STAMP_H}
               // debug stamprally
               loading={
                 loadCheckboxRef.current &&
@@ -80,13 +87,13 @@ export const StampRally = () => {
           ))}
         </div>
       </div>
-      <div className="w-full mt-6 sm:mt-12">
+      <div className="w-full mt-4 sm:mt-10">
         <StampRallyRewardForm onSubmit={requestReward} />
       </div>
-      <p className="mt-2 text-[10px] sm:text-xs font-bold">
+      <p className="mt-1 text-[10px] sm:text-xs font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}
       </p>
-      <div className="mt-8 sm:mt-20 text-xs sm:text-base font-bold">
+      <div className="mt-6 sm:mt-10 text-xs sm:text-base font-bold">
         <a>TOBIRAPOLIS祭詳細はこちら</a>
         {/* debug stamprally */}
         {process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true" && (
@@ -98,7 +105,11 @@ export const StampRally = () => {
               初期化
             </button>
             <label>load</label>
-            <input type="checkbox" ref={loadCheckboxRef} />
+            <input
+              type="checkbox"
+              ref={loadCheckboxRef}
+              defaultChecked={true}
+            />
           </>
         )}
         {/* end debug stamprally */}
