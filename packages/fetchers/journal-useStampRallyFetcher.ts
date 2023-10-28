@@ -45,13 +45,24 @@ export const useStampRallyFetcher = () => {
   };
   // end debug stamprally
 
-  const requestReward = (data: StampRallyRewardFormType) => {
+  const requestReward = (
+    data: StampRallyRewardFormType,
+    // debug stamprally
+    mintChecked0: boolean,
+    mintChecked1: boolean,
+    mintChecked2: boolean
+    // end debug stamprally
+  ) => {
     console.log(data);
     isSubmitting.set(true);
 
+    const isDebug = process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG !== "false";
+    const allChecked = mintChecked0 && mintChecked1 && mintChecked2;
+    const useDebug = isDebug && !allChecked;
+    console.log(useDebug);
     const callable = httpsCallable<BodyType, StampRallyResultType>(
       functions,
-      process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true"
+      useDebug
         ? "stampRallyBadgeForDebug-checkReward" // debug stamprally
         : "stampRallyBadge-checkReward"
     );
@@ -67,7 +78,7 @@ export const useStampRallyFetcher = () => {
         isSubmitting.set(false);
 
         // debug stamprally
-        if (process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true") {
+        if (useDebug) {
           transitionToDoneForDebug(result.data);
         }
         // end debug sramprally

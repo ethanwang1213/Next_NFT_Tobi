@@ -133,8 +133,6 @@ exports.checkReward = functions
         uri: targetUri,
       });
 
-      // スタンプをコンプリートしていたら追加でmint
-
       // mint待機状態に設定
       const setData: { mintStatus: MintStatus } = {
         mintStatus: {

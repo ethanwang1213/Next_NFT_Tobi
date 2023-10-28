@@ -19,11 +19,11 @@ export const SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE =
 export const TPF2023_STAMP_RALLY_KEYWORDS: {
   [key in Tpf2023StampType]: string;
 } = {
-  G0: "toRuTo",
-  G1alpha: "aIUEO",
-  G1beta: "KKK",
-  G1gamma: "あいことば",
-  G1delta: "みかん",
+  G0: "Ca00",
+  G1alpha: "pe03",
+  G1beta: "ia04",
+  G1gamma: "io02",
+  G1delta: "ss01",
 };
 
 /* eslint-disable max-len, no-irregular-whitespace */
