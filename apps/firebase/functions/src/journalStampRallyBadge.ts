@@ -3,7 +3,7 @@ import {firestore} from "firebase-admin";
 import {REGION, TPF2023_STAMP_RALLY_KEYWORDS} from "./lib/constants";
 import {MintStatus, StampRallyResultType, User} from "types/journal-types";
 import {GoogleAuth} from "google-auth-library";
-import {getFunctions} from "firebase-admin/lib/functions";
+import {getFunctions} from "firebase-admin/functions";
 
 /**
  * ログイン状態で、正しいスタンプラリーの合言葉が渡されていれば、
