@@ -20,7 +20,11 @@ const hashMessageHex = (hashType: string, msgHex: string) => {
 
 const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string}) => {
   const key = curve.keyFromPrivate(Buffer.from(privateKey, "hex"));
-  const sig = key.sign(hashMessageHex(process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT_KEY_HASH, msgHex));
+  const hash = process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT_KEY_HASH;
+  if (!hash) {
+    throw new Error("The environment of flow signer is not defined.");
+  }
+  const sig = key.sign(hashMessageHex(hash, msgHex));
   const n = 32;
   const r = sig.r.toArrayLike(Buffer, "be", n);
   const s = sig.s.toArrayLike(Buffer, "be", n);
@@ -48,4 +52,4 @@ export const signer = async (account: any) => {
       };
     },
   };
-}
+};
