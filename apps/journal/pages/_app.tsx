@@ -20,7 +20,7 @@ import {
   BurgerMenu,
   ShowBurgerProvider,
   MenuAnimationProvider,
-  MenuButtonLayout,
+  FlexMenuButtonLayout,
 } from "ui";
 import SoundToggle from "@/components/SoundToggle";
 import { SoundConfigProvider } from "contexts/journal-SoundConfigProvider";
@@ -96,10 +96,10 @@ const App = ({ Component, pageProps }: AppProps) => {
                       <div className="overflow-hidden relative">
                         <Component {...pageProps} />
                         {/* 右上メニューボタン配置 */}
-                        <MenuButtonLayout>
+                        <FlexMenuButtonLayout>
                           <BurgerMenu serviceName="journal" />
                           <SoundToggle />
-                        </MenuButtonLayout>
+                        </FlexMenuButtonLayout>
                       </div>
                     </DebugProvider>
                   </MenuAnimationProvider>
