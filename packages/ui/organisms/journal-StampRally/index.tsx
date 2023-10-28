@@ -19,7 +19,7 @@ type StampDataType = {
  * スタンプラリー特設表示のコンポーネント
  * @returns {ReactElement} The `StampRally` component
  */
-export const StampRally = () => {
+export const StampRally: React.FC = () => {
   const { requestReward } = useStampRallyFetcher();
 
   // preparing stamps data
@@ -55,6 +55,10 @@ export const StampRally = () => {
   };
 
   useEffect(() => {}, []);
+
+  const mintCheckboxRef0 = useRef<HTMLInputElement>(null);
+  const mintCheckboxRef1 = useRef<HTMLInputElement>(null);
+  const mintCheckboxRef2 = useRef<HTMLInputElement>(null);
   // end debug stamprally
 
   return (
@@ -88,7 +92,14 @@ export const StampRally = () => {
         </div>
       </div>
       <div className="w-full mt-4 sm:mt-10">
-        <StampRallyRewardForm onSubmit={requestReward} />
+        <StampRallyRewardForm
+          onSubmit={requestReward}
+          // debug stamprally
+          mintChecked0={mintCheckboxRef0}
+          mintChecked1={mintCheckboxRef1}
+          mintChecked2={mintCheckboxRef2}
+          // end debug stamprally
+        />
       </div>
       <p className="mt-1 text-[10px] sm:text-xs font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}
@@ -118,6 +129,22 @@ export const StampRally = () => {
                 type="checkbox"
                 ref={loadCheckboxRef}
                 defaultChecked={true}
+              />
+              <label>mint</label>
+              <input
+                type="checkbox"
+                ref={mintCheckboxRef0}
+                defaultChecked={false}
+              />
+              <input
+                type="checkbox"
+                ref={mintCheckboxRef1}
+                defaultChecked={false}
+              />
+              <input
+                type="checkbox"
+                ref={mintCheckboxRef2}
+                defaultChecked={false}
               />
             </>
           )}
