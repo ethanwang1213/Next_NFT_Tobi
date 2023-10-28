@@ -98,7 +98,11 @@ export const StampRally = () => {
               初期化
             </button>
             <label>load</label>
-            <input type="checkbox" ref={loadCheckboxRef} />
+            <input
+              type="checkbox"
+              ref={loadCheckboxRef}
+              defaultChecked={true}
+            />
           </>
         )}
         {/* end debug stamprally */}
