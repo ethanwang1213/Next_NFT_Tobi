@@ -4,17 +4,13 @@ import { useDebug } from "@/contexts/journal-DebugProvider";
 import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 import { useBookContext } from "@/contexts/journal-BookProvider";
 
-type Props = {
-  isDisplayLeft: boolean;
-};
-
 /**
  * Discordコミュニティ参加のための認証ボタン
  * スタンプの表示はprofileページ内だとDOMの構造的に問題があるので、
  * 別のコンポーネント(SuccessDiscordStamp)で表示している
  * @returns
  */
-const DiscordOAuthButton: React.FC<Props> = ({ isDisplayLeft }) => {
+const DiscordOAuthButton: React.FC = () => {
   const { displayMode } = useDiscordOAuth();
   const bookContext = useBookContext();
   const pageNo = bookContext.pageNo.current;
@@ -41,7 +37,7 @@ const DiscordOAuthButton: React.FC<Props> = ({ isDisplayLeft }) => {
   const debug = useDebug();
   const { current: debugButtonMode } = debug.debugDiscordButtonMode;
 
-  if (pageNo !== profilePage.start || !isDisplayLeft) return <></>;
+  if (pageNo !== profilePage.start) return <></>;
 
   return (
     <>

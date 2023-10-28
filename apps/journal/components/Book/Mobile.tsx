@@ -181,7 +181,7 @@ const Mobile = () => {
       <div
         className={`absolute ${footerBottom} mb-[22px] w-full flex justify-center px-[90px] pointer-events-none select-none`}
       >
-        <DiscordOAuthButton isDisplayLeft={isDisplayLeft} />
+        {isDisplayLeft && <DiscordOAuthButton />}
       </div>
       {/* 矢印アイコンの表示 */}
       {isArrowShown && (
