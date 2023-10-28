@@ -54,6 +54,10 @@ pub contract HouseBadge: NonFungibleToken {
             return self.metadata
         }
 
+        pub fun rename(newName: String) {
+            self.metadata["name"] = newName
+        }
+
         destroy() {
             emit Destroy(id: self.id)
         }
@@ -63,7 +67,11 @@ pub contract HouseBadge: NonFungibleToken {
         pub fun borrow(id: UInt64): &NFT?
     }
 
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection, CollectionPublic {
+    pub resource interface Renameable {
+        pub fun fixBadgeName()
+    }
+
+    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection, CollectionPublic, Renameable {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         init() {
@@ -106,6 +114,21 @@ pub contract HouseBadge: NonFungibleToken {
         pub fun getMetadata(id: UInt64): {String:String} {
             let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             return (ref as! &HouseBadge.NFT).getMetadata()
+        }
+
+        pub fun fixBadgeName() {
+            var i: UInt64 = 0
+            while i < HouseBadge.totalSupply {
+                let ref = (&self.ownedNFTs[i] as auth &NonFungibleToken.NFT?)!
+                let badge = (ref as! &HouseBadge.NFT)
+                let badgeName = badge.getMetadata()["name"]
+                if (badgeName == "HYDOR Badge") {
+                    badge.rename(newName: "HUDOR Badge")
+                } else if (badgeName == "ARISMOS Badge") {
+                    badge.rename(newName: "ARITHMOS Badge")
+                }
+                i = i + 1
+            }
         }
 
         destroy() {
@@ -157,7 +180,7 @@ pub contract HouseBadge: NonFungibleToken {
         if self.account.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath) == nil {
             let collection <- self.createEmptyCollection()
             self.account.save(<- collection, to: self.collectionStoragePath)
-            self.account.link<&{NonFungibleToken.CollectionPublic,HouseBadge.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
+            self.account.link<&{NonFungibleToken.CollectionPublic,HouseBadge.CollectionPublic,HouseBadge.Renameable,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
         }
         emit ContractInitialized()
     }
