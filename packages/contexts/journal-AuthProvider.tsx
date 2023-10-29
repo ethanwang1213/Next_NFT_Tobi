@@ -223,10 +223,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     if (snap.exists()) {
       // ユーザーデータを取得してstateに格納
       const appUser = (await getDoc(ref)).data() as User;
-      console.log(
-        user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-        appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023
-      );
       // mintStatusに更新があった時のみuserデータ更新
       if (
         !_.isEqual(

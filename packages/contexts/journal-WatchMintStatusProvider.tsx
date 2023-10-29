@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useContext,
   useEffect,
-  useState,
 } from "react";
 import { useAuth } from "./journal-AuthProvider";
 import { useIntervalBySec } from "hooks/journal-useInterval";
@@ -23,35 +22,23 @@ const WatchMintStatusContext = createContext<ContextType>({} as ContextType);
  * @returns {ReactElement} The `WatchMintStatusProvider` context component
  */
 export const WatchMintStatusProvider: React.FC<Props> = ({ children }) => {
-  // const [intervalId, setIntervalId] = useState(-1);
   const { user, refetchUserMintStatus } = useAuth();
   const { paused, setPaused } = useIntervalBySec(refetchUserMintStatus, 10);
 
   const watch = () => {
-    // const id = window.setInterval(() => {
-    //   // console.log("watching...");
-    //   return;
-    // }, 1000);
-
-    // setIntervalId(id);
     setPaused(false);
     console.log("watch");
   };
 
   const unwatch = () => {
-    // window.clearInterval(intervalId);
-    // setIntervalId(-1);
     setPaused(true);
     console.log("unwatch");
   };
 
-  // const isWatching = () => intervalId !== -1;
   const isWatching = () => !paused;
 
   useEffect(() => {
     if (!user?.mintStatus?.TOBIRAPOLISFESTIVAL2023) return;
-    console.log("check watch");
-
     const tpf2023MintStatus = {
       ...user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
     };
