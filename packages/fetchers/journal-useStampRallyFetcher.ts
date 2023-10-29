@@ -23,24 +23,24 @@ export const useStampRallyFetcher = () => {
 
   // debug stamprally
   const transitionToDoneForDebug = (data: StampRallyResultType) => {
-    setTimeout(async () => {
+    window.setTimeout(async () => {
       const userSrcRef = doc(db, `users/${auth.user?.id}`);
+      console.log(auth.user?.mintStatus?.TOBIRAPOLISFESTIVAL2023);
       const newData = {
         mintStatus: {
-          ...auth.user?.mintStatus,
           TOBIRAPOLISFESTIVAL2023: {
-            ...auth.user?.mintStatus?.TOBIRAPOLISFESTIVAL2023,
             [data.stamp]: "DONE",
           },
         },
       };
+
       await setDoc(userSrcRef, newData, { merge: true });
-      setMintStatus(
-        "TOBIRAPOLISFESTIVAL2023",
-        data.stamp,
-        "DONE",
-        data.isComplete
-      );
+      // setMintStatus(
+      //   "TOBIRAPOLISFESTIVAL2023",
+      //   data.stamp,
+      //   "DONE",
+      //   data.isComplete
+      // );)
     }, 10000);
   };
   // end debug stamprally

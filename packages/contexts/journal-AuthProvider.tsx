@@ -24,6 +24,7 @@ import {
   Tpf2023Complete,
   User,
 } from "types/journal-types";
+import _ from "lodash";
 
 type Props = {
   children: ReactNode;
@@ -49,6 +50,7 @@ type ContextType = {
     isComplete: boolean
   ) => void;
   initMintStatusForDebug: () => void;
+  refetchUserMintStatus: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -211,17 +213,45 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
   // end debug stamprally
 
+  // TOBIRAPOLIS祭スタンプラリー用。
+  const refetchUserMintStatus = async () => {
+    if (!user) return;
+
+    // ユーザーコレクションからユーザーデータを参照
+    const ref = doc(db, `users/${user.id}`);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      // ユーザーデータを取得してstateに格納
+      const appUser = (await getDoc(ref)).data() as User;
+      // mintStatusに更新があった時のみuserデータ更新
+      if (
+        !_.isEqual(
+          user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
+          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023
+        )
+      ) {
+        console.log(
+          "updated!!!!!!!!!!!!",
+          user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
+          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023
+        );
+        setUser(appUser);
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         dbIconUrl,
+        MAX_NAME_LENGTH: MAX_NAME_LENGTH,
         updateProfile,
         setDbIconUrl,
         setJoinTobiratoryInfo,
         setMintStatus,
         initMintStatusForDebug,
-        MAX_NAME_LENGTH: MAX_NAME_LENGTH,
+        refetchUserMintStatus,
       }}
     >
       {children}
