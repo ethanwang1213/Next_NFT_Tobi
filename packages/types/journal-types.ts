@@ -66,7 +66,7 @@ export type Tpf2023StampType =
 export type Tpf2023Complete = "Complete";
 
 // TOBIRAPOLIS祭2023スタンプラリーのmint状態データ
-type Tpf2023StampRallyData = {
+export type Tpf2023StampRallyData = {
   [key in Tpf2023StampType | Tpf2023Complete]?: MintStatusType;
 };
 
