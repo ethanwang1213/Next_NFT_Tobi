@@ -8,8 +8,6 @@ import {
   Tpf2023StampType,
   User,
 } from "types/journal-types";
-import { GoogleAuth } from "google-auth-library";
-import { getFunctions } from "firebase-admin/functions";
 
 // ユーザー認証周りのチェック
 const verifyAuthorizedUser = async (
@@ -87,7 +85,7 @@ const checkStampCompleted = (
 
   // 今回更新するkey以外のkeyの配列
   const requiredKeys = ["G0", "G1alpha", "G1beta", "G1gamma", "G1delta"].filter(
-    (key) => key !== correctStampEntry[0]
+    (key) => key !== correctStampEntry
   );
   // 全てのスタンプがmint中以降であるかどうか
   const isEveryMinting = requiredKeys.every((key) => {
@@ -95,73 +93,6 @@ const checkStampCompleted = (
     return status && (status === "IN_PROGRESS" || status === "DONE");
   });
   return isEveryMinting;
-};
-
-let auth: GoogleAuth<any>;
-
-const getFunctionUrl = async (name: string, location = "us-central1") => {
-  if (!auth) {
-    auth = new GoogleAuth({
-      scopes: "https://www.googleapis.com/auth/cloud-platform",
-    });
-  }
-  const projectId = await auth.getProjectId();
-  const url =
-    "https://cloudfunctions.googleapis.com/v2beta/" +
-    `projects/${projectId}/locations/${location}/functions/${name}`;
-
-  const client = await auth.getClient();
-  const res = await client.request({ url });
-  const uri = res.data?.serviceConfig?.uri;
-  if (!uri) {
-    throw new Error(`Unable to retreive uri for function at ${url}`);
-  }
-  return uri as string;
-};
-
-const requestMint = async (
-  userId: string,
-  correctStampEntry: Tpf2023StampType,
-  isStampCompleted: boolean
-) => {
-  const badges: { [key: string]: { name: string; description: string } } = {
-    G0: {
-      name: "",
-      description: "",
-    },
-    G1alpha: {
-      name: "",
-      description: "",
-    },
-    G1beta: {
-      name: "",
-      description: "",
-    },
-    G1gamma: {
-      name: "",
-      description: "",
-    },
-    G1delta: {
-      name: "",
-      description: "",
-    },
-  };
-  const badge = badges[correctStampEntry];
-  const queue = getFunctions().taskQueue("testTaskFunction");
-  const targetUri = await getFunctionUrl("testTaskFunction");
-  await queue.enqueue(
-    {
-      name: badge.name,
-      description: badge.description,
-      type: `TOBIRAPOLISFESTIVAL2023_${correctStampEntry}`,
-      userId: userId,
-      isStampCompleted: isStampCompleted,
-    },
-    {
-      dispatchDeadlineSeconds: 60 * 5,
-      uri: targetUri,
-    }
-  );
 };
 
 const writeMintStatusAsInProgress = async (

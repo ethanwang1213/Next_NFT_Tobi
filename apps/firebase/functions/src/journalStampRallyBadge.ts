@@ -87,7 +87,7 @@ const checkStampCompleted = (
 
   // 今回更新するkey以外のkeyの配列
   const requiredKeys = ["G0", "G1alpha", "G1beta", "G1gamma", "G1delta"].filter(
-    (key) => key !== correctStampEntry[0]
+    (key) => key !== correctStampEntry
   );
   // 全てのスタンプがmint中以降であるかどうか
   const isEveryMinting = requiredKeys.every((key) => {
