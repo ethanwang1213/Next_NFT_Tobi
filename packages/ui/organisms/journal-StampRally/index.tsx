@@ -44,7 +44,6 @@ export const StampRally: React.FC = () => {
   const STAMP_H_SP = 72;
 
   // debug stamprally
-  const loadCheckboxRef = useRef<HTMLInputElement>(null);
   const auth = useAuth();
 
   const handleInitClick = async () => {
@@ -81,13 +80,7 @@ export const StampRally: React.FC = () => {
               width={STAMP_H}
               height={STAMP_H}
               // debug stamprally
-              loading={useMemo(
-                () =>
-                  loadCheckboxRef.current &&
-                  loadCheckboxRef.current.checked &&
-                  v.status === "IN_PROGRESS",
-                [loadCheckboxRef.current]
-              )}
+              loading={v.status === "IN_PROGRESS"}
               // end debug stamprally
             />
           ))}
@@ -126,12 +119,14 @@ export const StampRally: React.FC = () => {
               >
                 初期化
               </button>
-              <label>load</label>
-              <input
-                type="checkbox"
-                ref={loadCheckboxRef}
-                defaultChecked={true}
-              />
+              <button
+                onClick={() =>
+                  console.log(auth.user?.mintStatus?.TOBIRAPOLISFESTIVAL2023)
+                }
+                className="btn btn-xs btn-outline"
+              >
+                log
+              </button>
               <label>mint</label>
               <input
                 type="checkbox"
