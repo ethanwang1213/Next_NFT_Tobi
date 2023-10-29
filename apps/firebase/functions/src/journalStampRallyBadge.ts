@@ -205,8 +205,12 @@ exports.checkReward = functions
       currentTpf2023StatusMap
     );
 
-    requestMint(userId, correctStampEntry, isStampCompleted);
-    writeMintStatusAsInProgress(userId, correctStampEntry, isStampCompleted);
+    await requestMint(userId, correctStampEntry, isStampCompleted);
+    await writeMintStatusAsInProgress(
+      userId,
+      correctStampEntry,
+      isStampCompleted
+    );
 
     return {
       stamp: correctStampEntry,
