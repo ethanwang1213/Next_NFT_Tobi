@@ -99,7 +99,7 @@ const checkStampCompleted = (
 
 let auth: GoogleAuth<any>;
 
-const getFunctionUrl = async (name: string, location = "us-central1") => {
+const getFunctionUrl = async (name: string, location = REGION) => {
   if (!auth) {
     auth = new GoogleAuth({
       scopes: "https://www.googleapis.com/auth/cloud-platform",
