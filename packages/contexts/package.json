@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase": "^9.21.0"
+    "firebase": "^9.21.0",
+    "lodash": "^4.17.21",
+    "hooks": "*"
   },
   "devDependencies": {
     "@types/react": "^18.2.25"
