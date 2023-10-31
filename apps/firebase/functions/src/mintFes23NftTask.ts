@@ -2,7 +2,7 @@ import {onTaskDispatched} from "firebase-functions/v2/tasks";
 import {REGION} from "./lib/constants";
 import {mintTobirapolisFestival23BadgeNFT} from "./lib/tobirapolisFestival23Flow";
 import {firestore} from "firebase-admin";
-import {MintStatus} from "types/journal-types";
+import {MintStatus, Tpf2023StampType} from "types/journal-types";
 import Timestamp = firestore.Timestamp;
 
 export const mintFes23NftTask = onTaskDispatched({
@@ -32,7 +32,7 @@ export const mintFes23NftTask = onTaskDispatched({
       const setData: { mintStatus: MintStatus } = {
         mintStatus: {
           TOBIRAPOLISFESTIVAL2023: {
-            [type]: "DONE",
+            [type as Tpf2023StampType]: "DONE",
           },
         },
       };
