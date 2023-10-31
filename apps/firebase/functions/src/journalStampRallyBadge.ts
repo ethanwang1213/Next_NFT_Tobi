@@ -147,8 +147,8 @@ const requestMint = async (
     },
   };
   const badge = badges[correctStampEntry];
-  const queue = getFunctions().taskQueue("testTaskFunction");
-  const targetUri = await getFunctionUrl("testTaskFunction");
+  const queue = getFunctions().taskQueue("mintFes23NftTask");
+  const targetUri = await getFunctionUrl("mintFes23NftTask");
   await queue.enqueue(
     {
       name: badge.name,
