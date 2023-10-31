@@ -10,7 +10,6 @@ export const useIntervalBySec = (callback: () => void, sec: number) => {
   }, [callback]);
 
   useEffect(() => {
-    console.log(paused);
     if (paused) {
       if (intervalId !== -1) {
         window.clearInterval(intervalId);
@@ -25,7 +24,7 @@ export const useIntervalBySec = (callback: () => void, sec: number) => {
     const id = window.setInterval(tick, sec * 1000);
     setIntervalId(id);
     return () => {
-      window.clearInterval(intervalId);
+      window.clearInterval(id);
     };
   }, [paused]); // refはミュータブルなので依存配列に含めなくてもよい
 
