@@ -24,7 +24,7 @@ import {
   PlacedItemData,
   SrcItemData,
 } from "@/types/PlacedItemData";
-import { auth, db } from "@/../firebase/client";
+import { auth, db } from "fetchers/firebase/web-client";
 import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore/lite";
 import generateHash from "@/methods/saidan/generateHash";
 import getWhitedImageSrc from "@/methods/saidan/whitenImageBg";
@@ -342,8 +342,8 @@ const updatePosition = (
       item.itemType === "ACRYLIC_STAND"
         ? -0.01
         : item.itemType === "TIN_BADGE"
-        ? 0.06
-        : 0.01;
+          ? 0.06
+          : 0.01;
     item.position.y = itemOriginY * Math.cos(item.rotation) + floor; // y1
     item.position.z = limitFloorDepth(
       item.position.z,

@@ -2,15 +2,14 @@ import CheckingCodePc from "./RedeemStatusPc/CheckingCodePc";
 import SuccessPc from "./RedeemStatusPc/SuccessPc";
 import IncorrectPc from "./RedeemStatusPc/IncorrectPc";
 import ServerErrorPc from "./RedeemStatusPc/ServerErrorPc";
-import { RedeemContext } from "../../../../../contexts/RedeemContextProvider";
-import { useContext } from "react";
+import { useRedeemStatus } from "../../../../../contexts/journal-RedeemStatusProvider";
 
 /**
  * redeemページの右ページのPC表示用コンポーネント
- * @returns 
+ * @returns
  */
 const RedeemPc1: React.FC = () => {
-  const { redeemStatus } = useContext(RedeemContext);
+  const { redeemStatus } = useRedeemStatus();
 
   return (
     <div className="h-full flex flex-col min-h-[300px] text-center relative">

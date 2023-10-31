@@ -21,7 +21,7 @@ import useDirectMove from "@/hooks/useDirectMove";
 import useMouseScale from "@/hooks/useMouseScale";
 import usePinchScale from "@/hooks/usePinchScale";
 import useWheelScale from "@/hooks/useWheelScale";
-import { db } from "@/../firebase/client";
+import { db } from "fetchers/firebase/web-client";
 import { ItemType } from "@/types/ItemType";
 import { DBItemData } from "@/types/PlacedItemData";
 import _, { round } from "lodash";
@@ -34,9 +34,9 @@ import CameraContainer from "./CameraContainer";
 import Shelf from "./Shelf";
 import PlacedItems from "./placedItem/PlacedItems";
 import MovePointerTarget from "./placedItem/pointerTarget/MovePointerTarget";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import isSpLandscape from "@/methods/home/isSpLandscape";
-import { useCanvasDprContext } from "ui/contexts/canvasDprContext";
+import { useCanvasDprContext } from "contexts/CanvasDprContext";
 import { PerformanceMonitor } from "@react-three/drei";
 
 type SaidanCanvasProps = {
@@ -175,9 +175,8 @@ const SaidanCanvas = ({ canvasRef }: SaidanCanvasProps) => {
         const itemType = item.data().itemType as ItemType;
         // チェック用文字列 /id[sq|wh]/
         // sq:アクスタ用、wh:缶バッジ,ポスター用
-        const checkString = `${srcId}${
-          itemType === "ACRYLIC_STAND" ? "sq" : "wh"
-        }`;
+        const checkString = `${srcId}${itemType === "ACRYLIC_STAND" ? "sq" : "wh"
+          }`;
         if (registeredStrings.has(checkString)) {
           // すでに画像生成が予定されている場合
           laterItems.push(item);

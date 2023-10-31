@@ -3,24 +3,24 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import useFetchActivityRecords from "@/hooks/useFetchActivityRecords";
-import { LocalActivityRecord } from "@/types/type";
+import { LocalActivityRecord } from "types/journal-types";
 
 type Props = {
   children: ReactNode;
 };
 
-type ActivityRecordContextType = {
+type ContextType = {
   activityRecords: LocalActivityRecord[];
   addActivityRecord: (newRecord: LocalActivityRecord) => void;
+  initContext: () => void;
 };
 
-const ActivityRecordContext = createContext<ActivityRecordContextType>(
-  {} as ActivityRecordContextType
-);
+const ActivityRecordContext = createContext<ContextType>({} as ContextType);
 
 /**
  * Activity Recordのデータを管理するコンテキストプロバイダー
@@ -34,6 +34,10 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
 
   const { user } = useAuth();
   const { fetchActivityRecords } = useFetchActivityRecords();
+
+  const initContext = () => {
+    setActivityRecords([]);
+  };
 
   const loadActivityRecords = async () => {
     if (!user || !user.email) return;
@@ -53,13 +57,17 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
     setActivityRecords((prev) => [newRecord, ...prev]);
   };
 
+  const contextValue = useMemo(
+    () => ({
+      activityRecords,
+      addActivityRecord,
+      initContext,
+    }),
+    [activityRecords, addActivityRecord, initContext]
+  );
+
   return (
-    <ActivityRecordContext.Provider
-      value={{
-        activityRecords,
-        addActivityRecord,
-      }}
-    >
+    <ActivityRecordContext.Provider value={contextValue}>
       {children}
     </ActivityRecordContext.Provider>
   );

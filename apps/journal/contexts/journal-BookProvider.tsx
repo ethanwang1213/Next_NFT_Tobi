@@ -5,17 +5,21 @@ import {
   useMemo,
   useState,
   useRef,
+  ReactElement,
+  Dispatch,
+  SetStateAction,
+  useContext,
 } from "react";
 import NftPage from "../components/pages/NftPage/NftPage";
 import NekoPage from "../components/pages/NekoPage/NekoPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
-import { BookIndex, bookContext, tagType } from "../types/type";
-import { useAuth } from "./AuthProvider";
+import { BookIndex, tagType } from "types/journal-types";
+import { useAuth } from "contexts/journal-AuthProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useHoldNfts } from "./HoldNftsProvider";
+import { useHoldNfts } from "./journal-HoldNftsProvider";
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
 
@@ -23,18 +27,34 @@ type Props = {
   children: ReactNode;
 };
 
-export const BookContext = createContext<bookContext>(null);
+// journal 本のUIを構成するデータの型
+type ContextType = {
+  pageNo: {
+    current: number;
+    set: Dispatch<SetStateAction<number>>;
+  };
+  pages: {
+    current: ReactElement[];
+    set: Dispatch<SetStateAction<ReactElement[]>>;
+  };
+  tags: {
+    current: tagType[];
+    set: Dispatch<SetStateAction<tagType[]>>;
+  };
+  bookIndex: BookIndex;
+};
+
+const BookContext = createContext<ContextType>({} as ContextType);
 
 /**
  * 本の状態を管理するコンテキストプロバイダー
  * @param param0
  * @returns
  */
-const BookContextProvider: React.FC<Props> = ({ children }) => {
+export const BookProvider: React.FC<Props> = ({ children }) => {
   const [pageNo, setPageNo] = useState<number>(0);
-  const [pages, setPages] = useState<ReactNode[]>([]);
+  const [pages, setPages] = useState<ReactElement[]>([]);
   const [tags, setTags] = useState<tagType[]>([]);
-  const [isMute, setIsMute] = useState<boolean>(false);
 
   const [bookIndex, setBookIndex] = useState<BookIndex>({
     profilePage: {
@@ -60,39 +80,6 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
 
   const { user } = useAuth();
   const { nekoNfts, otherNfts } = useHoldNfts();
-
-  const pageContextValue = useMemo(
-    () => ({
-      pageNo: {
-        current: pageNo,
-        set: setPageNo,
-      },
-      pages: {
-        current: pages,
-        set: setPages,
-      },
-      tags: {
-        current: tags,
-        set: setTags,
-      },
-      isMute: {
-        current: isMute,
-        set: setIsMute,
-      },
-      bookIndex: bookIndex,
-    }),
-    [
-      pageNo,
-      pages,
-      tags,
-      isMute,
-      bookIndex,
-      setPageNo,
-      setPages,
-      setTags,
-      setIsMute,
-    ]
-  );
 
   // プロフィールタグ
   // アイコンが設定されている場合はタグにもアイコンを表示する
@@ -227,8 +214,27 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
     ]);
   }, [user]);
 
+  const contextValue = useMemo(
+    () => ({
+      pageNo: {
+        current: pageNo,
+        set: setPageNo,
+      },
+      pages: {
+        current: pages,
+        set: setPages,
+      },
+      tags: {
+        current: tags,
+        set: setTags,
+      },
+      bookIndex: bookIndex,
+    }),
+    [pageNo, pages, tags, bookIndex, setPageNo, setPages, setTags]
+  );
+
   return (
-    <BookContext.Provider value={pageContextValue}>
+    <BookContext.Provider value={contextValue}>
       <input
         type="checkbox"
         className="modal-toggle"
@@ -262,4 +268,4 @@ const BookContextProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-export default BookContextProvider;
+export const useBookContext = () => useContext(BookContext);

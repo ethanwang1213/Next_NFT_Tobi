@@ -1,10 +1,10 @@
 import Image from "next/image";
 import DefaultIcon from "../../../../public/images/icon/Profiledefault_journal.svg";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import { useEffect, useState } from "react";
-import { HouseBadgeNftData } from "@/types/type";
-import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
+import { HouseBadgeNftData } from "types/journal-types";
+import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 
 /**
  * プロフィールのアイコンのコンポーネント

@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper";
 import NekoSwiperContent from "./NekoSwiperContent";
 import { mockNekoSrcList } from "../../../../../libs/mocks/mockNekoSrcList";
-import { useHoldNfts } from "@/contexts/HoldNftsProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 
 type CardPos = {
   left: number;

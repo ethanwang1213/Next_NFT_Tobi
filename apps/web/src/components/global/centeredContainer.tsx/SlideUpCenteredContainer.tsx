@@ -1,5 +1,5 @@
 import { useState, ReactNode } from "react";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import { config, useSpring } from "@react-spring/web";
 import CenteredContainer from "./CenteredContainer";
 

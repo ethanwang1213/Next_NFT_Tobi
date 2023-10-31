@@ -7,8 +7,8 @@ import BirthdaySelect from "./sub/BirthdaySelect";
 import NameInput from "./sub/NameInput";
 import { useForm } from "react-hook-form";
 import useUpdateProfile from "@/hooks/useUpdateProfile";
-import { useEditProfile } from "@/contexts/EditProfileProvider";
-import { BookContext } from "@/contexts/BookContextProvider";
+import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
+import { useBookContext } from "@/contexts/journal-BookProvider";
 
 export type EditProfileValues = {
   iconUrl: string;
@@ -24,7 +24,7 @@ export type EditProfileValues = {
  * @returns
  */
 const EditProfileModal: React.FC = () => {
-  const { pages, pageNo, bookIndex } = useContext(BookContext);
+  const { pages, pageNo, bookIndex } = useBookContext();
   const { updateProfile } = useUpdateProfile();
   const {
     register,

@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/client";
+import { auth } from "fetchers/firebase/journal-client";
 import Mobile from "../components/Book/Mobile";
 import Pc from "../components/Book/Pc";
 import Image from "next/image";
@@ -8,7 +8,12 @@ import DebugText from "@/components/DebugText";
 import NftViewModal from "@/components/NftViewModal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
+import { RedeemStatusProvider } from "@/contexts/journal-RedeemStatusProvider";
+import { BookProvider } from "@/contexts/journal-BookProvider";
+import { EditProfileProvider } from "@/contexts/journal-EditProfileProvider";
+import { StampRallyFormProvider } from "contexts/journal-StampRallyFormProvider";
+import { WatchMintStatusProvider } from "contexts/journal-WatchMintStatusProvider";
 
 const Index = () => {
   const router = useRouter();
@@ -22,30 +27,41 @@ const Index = () => {
   }, [auth]);
 
   return (
-    <div
-      className={
-        process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && (!user || !user.email)
-          ? "invisible"
-          : ""
-      }
-    >
-      <Image
-        src="/journal/images/book/bg_journal.png"
-        fill
-        alt="bg_journal"
-        className="pointer-events-none select-none"
-      />
-      <div className="hidden sm:block">
-        <Pc />
-      </div>
-      <div className="block sm:hidden">
-        <Mobile />
-      </div>
-      <EditProfileModal />
-      <CropNewIconModal />
-      <DebugText />
-      <NftViewModal />
-    </div>
+    <RedeemStatusProvider>
+      <EditProfileProvider>
+        <BookProvider>
+          <StampRallyFormProvider>
+            <WatchMintStatusProvider>
+              <div
+                className={
+                  process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
+                  (!user || !user.email)
+                    ? "invisible"
+                    : ""
+                }
+              >
+                <Image
+                  src="/journal/images/book/bg_journal.png"
+                  fill
+                  alt="bg_journal"
+                  className="pointer-events-none select-none"
+                />
+                <div className="hidden sm:block">
+                  <Pc />
+                </div>
+                <div className="block sm:hidden">
+                  <Mobile />
+                </div>
+                <EditProfileModal />
+                <CropNewIconModal />
+                <DebugText />
+                <NftViewModal />
+              </div>
+            </WatchMintStatusProvider>
+          </StampRallyFormProvider>
+        </BookProvider>
+      </EditProfileProvider>
+    </RedeemStatusProvider>
   );
 };
 

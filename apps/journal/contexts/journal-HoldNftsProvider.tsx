@@ -1,7 +1,7 @@
 import {
   HouseBadgeNftData as HouseBadgeNftData,
   NftData as NftData,
-} from "@/types/type";
+} from "types/journal-types";
 import React, {
   ReactNode,
   createContext,
@@ -10,14 +10,14 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "contexts/journal-AuthProvider";
 import useFetchNftDatas from "@/hooks/useFetchNftDatas";
 
 type Props = {
   children: ReactNode;
 };
 
-type HoldNftsContextType = {
+type ContextType = {
   nekoNfts: {
     current: NftData[];
     set: React.Dispatch<React.SetStateAction<NftData[]>>;
@@ -34,10 +34,11 @@ type HoldNftsContextType = {
     current: string;
     set: React.Dispatch<React.SetStateAction<string>>;
   };
+  initContext: () => void;
 };
 
-const HoldNftsContext = createContext<HoldNftsContextType>(
-  {} as HoldNftsContextType
+const HoldNftsContext = createContext<ContextType>(
+  {} as ContextType
 );
 
 /**
@@ -57,6 +58,13 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
   const { fetchNftCollectionIds, fetchHoldNfts } = useFetchNftDatas();
 
   const [viewingSrc, setViewingSrc] = useState<string>("");
+
+  const initContext = () => {
+    setNekoNfts([]);
+    setOtherNfts([]);
+    setShouldUpdate(false);
+    setViewingSrc("");
+  };
 
   // TOBIRA NEKOのNFTを取得
   const loadNekos = async () => {
@@ -122,7 +130,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
     }
   }, [shouldUpdate]);
 
-  const holdNftContextValue = useMemo<HoldNftsContextType>(
+  const contextValue = useMemo<ContextType>(
     () => ({
       nekoNfts: {
         current: nekoNfts,
@@ -140,6 +148,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
         current: viewingSrc,
         set: setViewingSrc,
       },
+      initContext: initContext,
     }),
     [
       nekoNfts,
@@ -150,11 +159,12 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
       setOtherNfts,
       setShouldUpdate,
       setViewingSrc,
+      initContext,
     ]
   );
 
   return (
-    <HoldNftsContext.Provider value={holdNftContextValue}>
+    <HoldNftsContext.Provider value={contextValue}>
       {children}
     </HoldNftsContext.Provider>
   );

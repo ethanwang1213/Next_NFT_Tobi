@@ -1,9 +1,8 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useContext } from "react";
-import { useDebug } from "@/contexts/DebugProvider";
-import { useDiscordOAuth } from "@/contexts/DiscordOAuthProvider";
-import { BookContext } from "@/contexts/BookContextProvider";
+import { useDebug } from "@/contexts/journal-DebugProvider";
+import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
+import { useBookContext } from "@/contexts/journal-BookProvider";
 
 /**
  * Discordコミュニティ参加のための認証ボタン
@@ -13,7 +12,7 @@ import { BookContext } from "@/contexts/BookContextProvider";
  */
 const DiscordOAuthButton: React.FC = () => {
   const { displayMode } = useDiscordOAuth();
-  const bookContext = useContext(BookContext);
+  const bookContext = useBookContext();
   const pageNo = bookContext.pageNo.current;
   const { profilePage } = bookContext.bookIndex;
 

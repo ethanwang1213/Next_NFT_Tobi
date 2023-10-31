@@ -9,23 +9,21 @@ import "swiper/css/effect-cards";
 import Script from "next/script";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { AuthProvider } from "@/contexts/AuthProvider";
-import RedeemStatusContextProvider from "@/contexts/RedeemContextProvider";
-import BookContextProvider from "@/contexts/BookContextProvider";
-import { EditProfileProvider } from "@/contexts/EditProfileProvider";
-import { HoldNftsProvider } from "@/contexts/HoldNftsProvider";
-import { ActivityRecordProvider } from "@/contexts/ActivityRecordProvider";
-import DebugProvider from "@/contexts/DebugProvider";
-import { DiscordOAuthProvider } from "@/contexts/DiscordOAuthProvider";
+import { AuthProvider } from "contexts/journal-AuthProvider";
+import { HoldNftsProvider } from "@/contexts/journal-HoldNftsProvider";
+import { ActivityRecordProvider } from "@/contexts/journal-ActivityRecordProvider";
+import { DebugProvider } from "@/contexts/journal-DebugProvider";
+import { DiscordOAuthProvider } from "@/contexts/journal-DiscordOAuthProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import Head from "next/head";
 import {
   BurgerMenu,
   ShowBurgerProvider,
   MenuAnimationProvider,
-  MenuButtonLayout,
+  FlexMenuButtonLayout,
 } from "ui";
 import SoundToggle from "@/components/SoundToggle";
+import { SoundConfigProvider } from "contexts/journal-SoundConfigProvider";
 
 config.autoAddCss = false;
 
@@ -90,28 +88,24 @@ const App = ({ Component, pageProps }: AppProps) => {
       <AuthProvider>
         <ActivityRecordProvider>
           <HoldNftsProvider>
-            <RedeemStatusContextProvider>
-              <EditProfileProvider>
-                <BookContextProvider>
-                  <DiscordOAuthProvider>
-                    <ShowBurgerProvider>
-                      <MenuAnimationProvider>
-                        <DebugProvider>
-                          <div className="overflow-hidden relative">
-                            <Component {...pageProps} />
-                            {/* 右上メニューボタン配置 */}
-                            <MenuButtonLayout>
-                              <BurgerMenu serviceName="journal" />
-                              <SoundToggle />
-                            </MenuButtonLayout>
-                          </div>
-                        </DebugProvider>
-                      </MenuAnimationProvider>
-                    </ShowBurgerProvider>
-                  </DiscordOAuthProvider>
-                </BookContextProvider>
-              </EditProfileProvider>
-            </RedeemStatusContextProvider>
+            <DiscordOAuthProvider>
+              <SoundConfigProvider>
+                <ShowBurgerProvider>
+                  <MenuAnimationProvider>
+                    <DebugProvider>
+                      <div className="overflow-hidden relative">
+                        <Component {...pageProps} />
+                        {/* 右上メニューボタン配置 */}
+                        <FlexMenuButtonLayout>
+                          <BurgerMenu serviceName="journal" />
+                          <SoundToggle />
+                        </FlexMenuButtonLayout>
+                      </div>
+                    </DebugProvider>
+                  </MenuAnimationProvider>
+                </ShowBurgerProvider>
+              </SoundConfigProvider>
+            </DiscordOAuthProvider>
           </HoldNftsProvider>
         </ActivityRecordProvider>
       </AuthProvider>

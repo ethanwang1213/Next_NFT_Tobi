@@ -2,7 +2,7 @@ import makeImageSquare from "@/methods/saidan/makeImageSquare";
 import useSaidanStore from "@/stores/saidanStore";
 import { getDoc, doc } from "firebase/firestore/lite";
 import axios from "axios";
-import { auth, db } from "@/../firebase/client";
+import { auth, db } from "fetchers/firebase/web-client";
 import {
   updateFailedAcstRequestAt,
   postAcstModelUrl,

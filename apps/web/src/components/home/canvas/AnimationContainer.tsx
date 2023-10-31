@@ -17,7 +17,7 @@ import EndPhase from "./phases/EndPhase";
 import SkyBox from "./SkyBox";
 import useHomeCanvasAnims from "@/hooks/useHomeCanvasAnims";
 import useIsForward from "@/hooks/home/useIsForward";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import isSpLandscape from "@/methods/home/isSpLandscape";
 
 type Props = {

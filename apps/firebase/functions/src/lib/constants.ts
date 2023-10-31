@@ -1,4 +1,7 @@
-export const NEKO_NFT_ID = process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
+import { Tpf2023StampType } from "types/journal-types";
+
+export const NEKO_NFT_ID =
+  process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
 export const TOPIC_NAMES = {
   ordersPaid: "shopify-orders-paid",
   ordersCreate: "shopify-orders-create",
@@ -6,10 +9,22 @@ export const TOPIC_NAMES = {
 
 export const REGION = process.env.REGION || "asia-northeast1";
 
-export const IMAGE_HOST = process.env.IMAGE_HOST || "https://storage.googleapis.com/tobiratory-media";
+export const IMAGE_HOST =
+  process.env.IMAGE_HOST || "https://storage.googleapis.com/tobiratory-media";
 export const SITE_HOST = process.env.SITE_HOST || "https://www.tobiratory.com";
 
-export const SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE = process.env.SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE || "";
+export const SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE =
+  process.env.SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE || "";
+
+export const TPF2023_STAMP_RALLY_KEYWORDS: {
+  [key in Tpf2023StampType]: string;
+} = {
+  G0: "Ca00",
+  G1alpha: "pe03",
+  G1beta: "ia04",
+  G1gamma: "io02",
+  G1delta: "ss01",
+};
 
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `

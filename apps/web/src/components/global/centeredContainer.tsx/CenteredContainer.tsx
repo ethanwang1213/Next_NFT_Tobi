@@ -1,5 +1,5 @@
 import { useState, useLayoutEffect, ReactNode } from "react";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import { a, SpringValue } from "@react-spring/web";
 import CloseResultButton from "../../saidan/ui/screenShotResult/CloseResultButton";
 

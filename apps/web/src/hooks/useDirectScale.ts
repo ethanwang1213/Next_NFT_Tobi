@@ -4,7 +4,7 @@ import { ThreeEvent } from "@react-three/fiber";
 import { FullGestureState } from "@use-gesture/react";
 import { RefObject, useState } from "react";
 import { Raycaster, Group, Camera, Vector2, Vector3 } from "three";
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 
 type Props = {
   raycaster: Raycaster;

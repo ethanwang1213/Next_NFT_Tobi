@@ -2,10 +2,9 @@ import { Html, useTexture } from "@react-three/drei";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { gsap } from "gsap";
-import { useMenuAnimation } from "../../../../../contexts/menu/menuAnimation";
-import { useWindowSize } from "../../../../../hooks/useWindowSize";
-import { useLocatingAcrossBasePath } from "../../../../../hooks/useLocatingAcrossBasePath";
-import { useShowBurger } from "../../../../../contexts/menu/showBurger";
+import { useMenuAnimation } from "contexts/menu/MenuAnimation";
+import { useWindowSize, useLocatingAcrossBasePath } from "hooks";
+import { useShowBurger } from "contexts/menu/ShowBurger";
 
 type Props = {
   keyholeNodes: any;
@@ -151,8 +150,8 @@ export const KeyholeObject: React.FC<Props> = ({
               opacity: isVeryWide
                 ? (Math.cos(radian) - 0.9) * 8
                 : isWide
-                ? (Math.cos(radian) - 0.7) * (0.7 / 0.3) // 三角関数で考えて決めたはずだがマジックナンバー化してしまった...toruto
-                : (Math.cos(radian) - 0.3) * (1 / 0.3),
+                  ? (Math.cos(radian) - 0.7) * (0.7 / 0.3) // 三角関数で考えて決めたはずだがマジックナンバー化してしまった...toruto
+                  : (Math.cos(radian) - 0.3) * (1 / 0.3),
             }}
           >
             {name}

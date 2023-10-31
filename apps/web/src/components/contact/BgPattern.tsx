@@ -1,4 +1,4 @@
-import { useWindowSize } from "ui";
+import { useWindowSize } from "hooks";
 import BgPatternLeftPc from "@/../public/contact/pc/left.svg";
 import BgPatternLeftSp from "@/../public/contact/sp/left.svg";
 import BgPatternRightPc from "@/../public/contact/pc/right.svg";
