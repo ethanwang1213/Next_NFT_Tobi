@@ -34,8 +34,8 @@
 				"testnet": "5e9ccdb91ff7ad93"
 			}
 		},
-		"TobirapolisFestival23Badge": {
-			"source": "./cadence/contracts/TobirapolisFestival23Badge.cdc",
+		"Festival23Badge": {
+			"source": "./cadence/contracts/Festival23Badge.cdc",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
 				"testnet": "5e9ccdb91ff7ad93"
@@ -123,7 +123,7 @@
 				"TobiraNeko",
 				"HouseBadge",
 				"AchievementBadge",
-				"TobirapolisFestival23Badge"
+				"Festival23Badge"
 			]
 		},
 		"mainnet": {
@@ -131,7 +131,7 @@
 				"TobiraNeko",
 				"HouseBadge",
 				"AchievementBadge",
-				"TobirapolisFestival23Badge"
+				"Festival23Badge"
 			]
 		},
 		"testnet": {
@@ -139,7 +139,7 @@
 				"TobiraNeko",
 				"HouseBadge",
 				"AchievementBadge",
-				"TobirapolisFestival23Badge"
+				"Festival23Badge"
 			]
 		}
 	}

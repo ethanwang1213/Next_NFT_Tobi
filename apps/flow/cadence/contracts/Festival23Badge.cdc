@@ -1,7 +1,7 @@
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 import MetadataViews from "./core/MetadataViews.cdc"
 
-pub contract TobirapolisFestival23Badge: NonFungibleToken {
+pub contract Festival23Badge: NonFungibleToken {
 
     pub var totalSupply: UInt64
 
@@ -77,7 +77,7 @@ pub contract TobirapolisFestival23Badge: NonFungibleToken {
         }
 
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let token <- token as! @TobirapolisFestival23.NFT
+            let token <- token as! @Festival23Badge.NFT
             let id: UInt64 = token.id
             let dummy <- self.ownedNFTs[id] <- token
             destroy dummy
@@ -105,7 +105,7 @@ pub contract TobirapolisFestival23Badge: NonFungibleToken {
 
         pub fun getMetadata(id: UInt64): {String:String} {
             let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-            return (ref as! &TobirapolisFestival23.NFT).getMetadata()
+            return (ref as! &Festival23Badge.NFT).getMetadata()
         }
 
         destroy() {
@@ -119,20 +119,20 @@ pub contract TobirapolisFestival23Badge: NonFungibleToken {
 
     pub resource Minter {
         pub fun mintTo(creator: Capability<&{NonFungibleToken.Receiver}>, metadata: {String:String}): &NonFungibleToken.NFT {
-            let id = TobirapolisFestival23.totalSupply.toString()
+            let id = Festival23Badge.totalSupply.toString()
             let meta = {
                 "name": metadata["name"] ?? "",
                 "description": metadata["description"] ?? "",
-                "metaURI": "https://nft.tobiratory.com/TobirapolisFestival23/metadata/".concat(id)
+                "metaURI": "https://nft.tobiratory.com/festival23badge/metadata/".concat(id)
             };
             let token <- create NFT(
-                id: TobirapolisFestival23.totalSupply,
+                id: Festival23Badge.totalSupply,
                 creator: creator.address,
                 metadata: meta
             )
-            TobirapolisFestival23.totalSupply = TobirapolisFestival23.totalSupply + 1
+            Festival23Badge.totalSupply = Festival23Badge.totalSupply + 1
             let tokenRef = &token as &NonFungibleToken.NFT
-            emit Mint(id: token.id, creator: creator.address, metadata: meta, totalSupply: TobirapolisFestival23.totalSupply)
+            emit Mint(id: token.id, creator: creator.address, metadata: meta, totalSupply: Festival23Badge.totalSupply)
             creator.borrow()!.deposit(token: <- token)
             return tokenRef
         }
@@ -144,20 +144,20 @@ pub contract TobirapolisFestival23Badge: NonFungibleToken {
 
     init() {
         self.totalSupply = 0
-        self.collectionPublicPath = /public/TobirapolisFestival23
-        self.collectionStoragePath = /storage/TobirapolisFestival23
-        // self.minterPublicPath = /public/TobirapolisFestival23Minter
-        self.minterStoragePath = /storage/TobirapolisFestival23Minter
+        self.collectionPublicPath = /public/Festival23Badge
+        self.collectionStoragePath = /storage/Festival23Badge
+        // self.minterPublicPath = /public/Festival23BadgeMinter
+        self.minterStoragePath = /storage/Festival23BadgeMinter
 
         if self.account.borrow<&Minter>(from: self.minterStoragePath) == nil {
             let minter <- create Minter()
             self.account.save(<- minter, to: self.minterStoragePath)
         }
 
-        if self.account.borrow<&TobirapolisFestival23.Collection>(from: TobirapolisFestival23.collectionStoragePath) == nil {
+        if self.account.borrow<&Festival23Badge.Collection>(from: Festival23Badge.collectionStoragePath) == nil {
             let collection <- self.createEmptyCollection()
             self.account.save(<- collection, to: self.collectionStoragePath)
-            self.account.link<&{NonFungibleToken.CollectionPublic,TobirapolisFestival23.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
+            self.account.link<&{NonFungibleToken.CollectionPublic,Festival23Badge.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
         }
         emit ContractInitialized()
     }
