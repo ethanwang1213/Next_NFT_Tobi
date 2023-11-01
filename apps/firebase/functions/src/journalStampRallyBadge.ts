@@ -126,23 +126,23 @@ const requestMint = async (
 ) => {
   const badges: { [key: string]: { name: string; description: string } } = {
     G0: {
-      name: "",
+      name: "TOBIRAPOLIS FESTIVAL2023 STAMP G0",
       description: "",
     },
     G1alpha: {
-      name: "",
+      name: "TOBIRAPOLIS FESTIVAL2023 STAMP G1-Α",
       description: "",
     },
     G1beta: {
-      name: "",
+      name: "TOBIRAPOLIS FESTIVAL2023 STAMP G1-Β",
       description: "",
     },
     G1gamma: {
-      name: "",
+      name: "TOBIRAPOLIS FESTIVAL2023 STAMP G1-Γ",
       description: "",
     },
     G1delta: {
-      name: "",
+      name: "TOBIRAPOLIS FESTIVAL2023 STAMP G1-Δ",
       description: "",
     },
   };
