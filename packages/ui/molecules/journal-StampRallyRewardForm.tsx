@@ -4,22 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 import { useAuth } from "contexts/journal-AuthProvider";
-import { RefObject } from "react";
 
 type Props = {
   onSubmit: (
     data: StampRallyRewardFormType,
-    // debug stamprally
-    mintChecked0: boolean,
-    mintChecked1: boolean,
-    mintChecked2: boolean
-    // end debug stamprally
   ) => void;
-  // debug stamprally
-  mintChecked0: RefObject<HTMLInputElement>;
-  mintChecked1: RefObject<HTMLInputElement>;
-  mintChecked2: RefObject<HTMLInputElement>;
-  // end debug stamprally
 };
 
 /**
@@ -27,10 +16,7 @@ type Props = {
  * @returns {ReactElement} The `StampRallyRewardForm` component
  */
 export const StampRallyRewardForm: React.FC<Props> = ({
-  onSubmit,
-  mintChecked0,
-  mintChecked1,
-  mintChecked2,
+  onSubmit
 }) => {
   const { register, handleSubmit, reset } = useForm<StampRallyRewardFormType>({
     defaultValues: {
@@ -54,9 +40,6 @@ export const StampRallyRewardForm: React.FC<Props> = ({
         reset();
         onSubmit(
           data,
-          mintChecked0.current?.checked,
-          mintChecked1.current?.checked,
-          mintChecked2.current?.checked
         );
       })}
       className="h-8 sm:h-12 w-full flex"

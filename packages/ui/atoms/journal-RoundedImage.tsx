@@ -7,7 +7,6 @@ type Props = {
   alt: string;
   width: number;
   height: number;
-  // debug
   loading: boolean;
 };
 
@@ -29,7 +28,6 @@ export const RoundedImage: React.FC<Props> = ({
          text-xs sm:text-base"
     >
       <Image src={src} alt={alt} width={width} height={height} />
-      {/* debug */}
       {loading && (
         <div className="absolute w-full h-full left-0 top-0 flex justify-center grid content-center">
           <FontAwesomeIcon className="" fontSize={32} icon={faSpinner} spin />

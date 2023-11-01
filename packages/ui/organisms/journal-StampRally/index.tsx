@@ -4,9 +4,6 @@ import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
 import { StampRallyRewardForm } from "../../molecules/journal-StampRallyRewardForm";
 import { MintStatusType, Tpf2023StampType } from "types/journal-types";
 import { useStampRallyFetcher } from "fetchers";
-import { db } from "fetchers/firebase/journal-client";
-import { doc, setDoc } from "firebase/firestore/lite";
-import { useEffect, useMemo, useRef } from "react";
 
 type StampDataType = {
   key: Tpf2023StampType;
@@ -43,23 +40,6 @@ export const StampRally: React.FC = () => {
   const STAMP_H = 120;
   const STAMP_H_SP = 72;
 
-  // debug stamprally
-  const auth = useAuth();
-
-  const handleInitClick = async () => {
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "false" || !auth.user) return;
-    const userSrcRef = doc(db, `users/${auth.user.id}`);
-    await setDoc(userSrcRef, { mintStatus: {} }, { merge: true });
-    auth.initMintStatusForDebug();
-  };
-
-  useEffect(() => {}, []);
-
-  const mintCheckboxRef0 = useRef<HTMLInputElement>(null);
-  const mintCheckboxRef1 = useRef<HTMLInputElement>(null);
-  const mintCheckboxRef2 = useRef<HTMLInputElement>(null);
-  // end debug stamprally
-
   return (
     <div className="text-center text-primary">
       <div>
@@ -79,22 +59,13 @@ export const StampRally: React.FC = () => {
               alt={v.key}
               width={STAMP_H}
               height={STAMP_H}
-              // debug stamprally
               loading={v.status === "IN_PROGRESS"}
-              // end debug stamprally
             />
           ))}
         </div>
       </div>
       <div className="w-full mt-4 sm:mt-10">
-        <StampRallyRewardForm
-          onSubmit={requestReward}
-          // debug stamprally
-          mintChecked0={mintCheckboxRef0}
-          mintChecked1={mintCheckboxRef1}
-          mintChecked2={mintCheckboxRef2}
-          // end debug stamprally
-        />
+        <StampRallyRewardForm onSubmit={requestReward} />
       </div>
       <p className="mt-1 text-[10px] sm:text-xs font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}
@@ -110,42 +81,6 @@ export const StampRally: React.FC = () => {
           >
             こちら
           </a>
-          {/* debug stamprally */}
-          {process.env.NEXT_PUBLIC_STAMPRALLY_DEBUG === "true" && (
-            <>
-              <button
-                onClick={handleInitClick}
-                className="btn btn-xs btn-outline"
-              >
-                初期化
-              </button>
-              <button
-                onClick={() =>
-                  console.log(auth.user?.mintStatus?.TOBIRAPOLISFESTIVAL2023)
-                }
-                className="btn btn-xs btn-outline"
-              >
-                log
-              </button>
-              <label>mint</label>
-              <input
-                type="checkbox"
-                ref={mintCheckboxRef0}
-                defaultChecked={false}
-              />
-              <input
-                type="checkbox"
-                ref={mintCheckboxRef1}
-                defaultChecked={false}
-              />
-              <input
-                type="checkbox"
-                ref={mintCheckboxRef2}
-                defaultChecked={false}
-              />
-            </>
-          )}
-          {/* end debug stamprally */}
         </p>
       </div>
     </div>
