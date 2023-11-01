@@ -98,7 +98,7 @@
 				"index": 4,
 				"signatureAlgorithm": "ECDSA_P256",
 				"hashAlgorithm": "SHA2_256",
-				"privateKey": "fd8b5b6671f20c70aefbbb816a6303421128391c7d29fc8143a688ef932ef0c6"
+				"privateKey": ""
 			}
 		},
 		"testnetAccount1": {

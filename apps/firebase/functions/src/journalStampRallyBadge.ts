@@ -8,7 +8,6 @@ import {
   Tpf2023StampType,
   User,
 } from "types/journal-types";
-import {GoogleAuth} from "google-auth-library";
 import {getFunctions} from "firebase-admin/functions";
 
 // ユーザー認証周りのチェック
@@ -97,28 +96,6 @@ const checkStampCompleted = (
   return isEveryMinting;
 };
 
-let auth: GoogleAuth<any>;
-
-const getFunctionUrl = async (name: string, location = REGION) => {
-  if (!auth) {
-    auth = new GoogleAuth({
-      scopes: "https://www.googleapis.com/auth/cloud-platform",
-    });
-  }
-  const projectId = await auth.getProjectId();
-  const url =
-      "https://cloudfunctions.googleapis.com/v2beta/" +
-      `projects/${projectId}/locations/${location}/functions/${name}`;
-
-  const client = await auth.getClient();
-  const res = await client.request({url});
-  const uri = res.data?.serviceConfig?.uri;
-  if (!uri) {
-    throw new Error(`Unable to retreive uri for function at ${url}`);
-  }
-  return uri as string;
-};
-
 const requestMint = async (
     userId: string,
     correctStampEntry: Tpf2023StampType,
@@ -149,7 +126,6 @@ const requestMint = async (
 
   const badge = badges[correctStampEntry];
   const queue = getFunctions().taskQueue(`locations/${REGION}/functions/mintFes23NftTaskv1`);
-  const targetUri = await getFunctionUrl("mintFes23NftTask");
   await queue.enqueue(
       {
         name: badge.name,
@@ -160,7 +136,6 @@ const requestMint = async (
       },
       {
         dispatchDeadlineSeconds: 60 * 5,
-        uri: targetUri,
       }
   );
 };
