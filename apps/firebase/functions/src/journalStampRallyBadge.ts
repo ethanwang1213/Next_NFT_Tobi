@@ -130,7 +130,7 @@ const requestMint = async (
       {
         name: badge.name,
         description: badge.description,
-        type: `TOBIRAPOLISFESTIVAL2023_${correctStampEntry}`,
+        type: correctStampEntry,
         userId: userId,
         isStampCompleted: isStampCompleted,
       },
