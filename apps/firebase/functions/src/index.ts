@@ -5,7 +5,7 @@ import {discordOAuth} from "./discord";
 import {discordUserNfts} from "./discordUserNfts";
 import {metadata} from "./tobiraneko";
 import {metadata as houseBadgeMetadata} from "./housebadge";
-import {mintFes23NftTask} from "./mintFes23NftTask";
+import {mintFes23NftTaskv1} from "./mintFes23NftTask";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -24,7 +24,7 @@ exports.stampRallyBadge = require("./journalStampRallyBadge");
 // debug stamprally
 exports.stampRallyBadgeForDebug = require("./journalStampRallyBadgeForDebug");
 // end debug stamprally
-exports.mintFes23NftTask = mintFes23NftTask;
+exports.mintFes23NftTaskv1 = mintFes23NftTaskv1;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
