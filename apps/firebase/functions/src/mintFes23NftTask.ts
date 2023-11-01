@@ -45,7 +45,7 @@ export const mintFes23NftTaskv1 = functions.region(REGION).runWith({}).tasks.tas
       },
     };
     if (isStampCompleted) {
-      await mintNFT("Complete", "", userId, "Complete");
+      await mintNFT("TOBIRAPOLIS FESTIVAL2023 STAMP Complete", "", userId, "Complete");
       setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
     }
     await firestore().collection("users").doc(userId).set(setData, {
