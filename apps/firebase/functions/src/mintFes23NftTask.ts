@@ -16,7 +16,7 @@ const mintNFT = async (name: string, description: string, userId: string, type: 
         return;
       }
       const nftId = totalSupply - 1;
-      const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type}.png`;
+      const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type.toLowerCase()}.png`;
       await createTobirapolisFestival23BadgeMetadata(nftId, type, name, description, imageUrl);
       await transferTobirapolisFestival23Badge(userId, nftId, name, description, new Date(), imageUrl, type);
 
