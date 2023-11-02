@@ -12,7 +12,7 @@ type Props = {
  */
 const ActivityRecordLine: React.FC<Props> = ({ lineType, lineValue }) => {
   return (
-    <div className="text-xs sm:text-xl text-primary font-normal sm:font-bold">
+    <div className="text-xs sm:text-[1.18rem] sm:leading-[1.75rem] text-primary font-normal sm:font-bold">
       <TypeValueLine lineType={lineType} lineValue={lineValue} />
     </div>
   );
