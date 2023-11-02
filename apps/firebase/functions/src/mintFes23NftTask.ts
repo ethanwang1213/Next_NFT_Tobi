@@ -44,8 +44,10 @@ export const mintFes23NftTaskv1 = functions.region(REGION).runWith({}).tasks.tas
         },
       },
     };
+    await recordNewActivity(userId, `${name} を獲得した`);
     if (isStampCompleted) {
       await mintNFT("TOBIRAPOLIS FESTIVAL2023 STAMP Complete", "", userId, "Complete");
+      await recordNewActivity(userId, "「TOBIRAPOLIS祭2023」すべてのスタンプを獲得した");
       setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
     }
     await firestore().collection("users").doc(userId).set(setData, {
@@ -84,6 +86,13 @@ export const mintFes23NftTask = onTaskDispatched({
   });
 });
  */
+
+const recordNewActivity = async (userId: string, text: string) => {
+  await firestore().collection("users").doc(userId).collection("activity").add({
+    text: text,
+    timestamp: Timestamp.fromDate(new Date()),
+  });
+};
 
 const createTobirapolisFestival23BadgeMetadata = async (nftId: number, type: string, name: string, description: string, imageUrl: string) => {
   await firestore().collection("tobirapolisFestival23").doc(nftId.toString()).set({
