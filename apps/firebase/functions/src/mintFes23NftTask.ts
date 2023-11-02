@@ -48,8 +48,8 @@ export const mintFes23NftTaskv1 = functions.region(REGION).runWith({}).tasks.tas
     if (isStampCompleted) {
       const completeBadgeName = "TOBIRAPOLIS FESTIVAL2023 STAMP Complete";
       await mintNFT(completeBadgeName, "", userId, "Complete");
-      await recordNewActivity(userId, `${completeBadgeName} を獲得した`);
       await recordNewActivity(userId, "「TOBIRAPOLIS祭2023」すべてのスタンプを獲得した");
+      await recordNewActivity(userId, `${completeBadgeName} を獲得した`);
       setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
     }
     await firestore().collection("users").doc(userId).set(setData, {
