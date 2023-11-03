@@ -67,7 +67,7 @@ export const StampRally: React.FC = () => {
       <div className="w-full mt-4 sm:mt-10">
         <StampRallyRewardForm onSubmit={requestReward} />
       </div>
-      <p className="mt-1 text-[10px] sm:text-xs font-bold">
+      <p className="mt-1 text-[10px] sm:text-sm font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}
       </p>
       <div className="mt-6 sm:mt-10 text-xs sm:text-base font-bold">
