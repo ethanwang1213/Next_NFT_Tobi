@@ -23,7 +23,7 @@ const WatchMintStatusContext = createContext<ContextType>({} as ContextType);
  */
 export const WatchMintStatusProvider: React.FC<Props> = ({ children }) => {
   const { user, refetchUserMintStatus } = useAuth();
-  const { paused, setPaused } = useIntervalBySec(refetchUserMintStatus, 10);
+  const { paused, setPaused } = useIntervalBySec(refetchUserMintStatus, 7);
 
   const watch = () => {
     setPaused(false);
