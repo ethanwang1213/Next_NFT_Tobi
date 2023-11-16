@@ -12,7 +12,7 @@ pub contract HouseBadge: NonFungibleToken {
     pub var collectionStoragePath: StoragePath
     // pub var minterPublicPath: PublicPath
     pub var minterStoragePath: StoragePath
-    pub var adminPrivatePath: PrivatePath
+    pub var adminStoragePath: StoragePath
 
     /************************************************/
     /******************** EVENTS ********************/
@@ -24,7 +24,7 @@ pub contract HouseBadge: NonFungibleToken {
     pub event Mint(id: UInt64, creator: Address, metadata: {String:String}, totalSupply: UInt64)
     pub event Destroy(id: UInt64)
 
-    pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver, Admin {
+    pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
         pub let creator: Address
         access(self) let metadata: {String:String}
@@ -55,7 +55,7 @@ pub contract HouseBadge: NonFungibleToken {
             return self.metadata
         }
 
-        access(contract) fun fixBadgeName(newName: String) {
+        access(contract) fun rename(newName: String) {
             self.metadata["name"] = newName
         }
 
@@ -64,19 +64,17 @@ pub contract HouseBadge: NonFungibleToken {
         }
     }
 
-    pub resource interface Admin {
-        access(contract) fun fixBadgeName(newName: String)
+    pub resource Admin {
+        pub fun rename(nft: &NFT, newName: String) {
+            nft.rename(newName: newName)
+        }
     }
 
     pub resource interface CollectionPublic {
         pub fun borrow(id: UInt64): &NFT?
     }
 
-    pub resource interface Renameable {
-        pub fun rename(id: UInt64, newName: String)
-    }
-
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection, CollectionPublic, Renameable {
+    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection, CollectionPublic {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         init() {
@@ -121,12 +119,6 @@ pub contract HouseBadge: NonFungibleToken {
             return (ref as! &HouseBadge.NFT).getMetadata()
         }
 
-        pub fun rename(id: UInt64, newName: String) {
-            let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-            let badge = (ref as! &HouseBadge.NFT)
-            badge.fixBadgeName(newName: newName)
-        }
-
         destroy() {
             destroy self.ownedNFTs
         }
@@ -134,6 +126,10 @@ pub contract HouseBadge: NonFungibleToken {
 
     pub fun createEmptyCollection(): @NonFungibleToken.Collection {
         return <- create Collection()
+    }
+
+    pub fun createAdmin(): @Admin {
+        return <- create Admin()
     }
 
     pub resource Minter {
@@ -168,19 +164,22 @@ pub contract HouseBadge: NonFungibleToken {
         self.collectionStoragePath = /storage/HouseBadgeCollection
         // self.minterPublicPath = /public/HouseBadgeMinter
         self.minterStoragePath = /storage/HouseBadgeMinter
-
-        self.adminPrivatePath = /private/HouseBadgeAdmin
+        self.adminStoragePath = /storage/HouseBadgeAdmin
 
         if self.account.borrow<&Minter>(from: self.minterStoragePath) == nil {
             let minter <- create Minter()
             self.account.save(<- minter, to: self.minterStoragePath)
         }
 
+        if self.account.borrow<&Admin>(from: self.adminStoragePath) == nil {
+            let admin <- create Admin()
+            self.account.save(<- admin, to: self.adminStoragePath)
+        }
+
         if self.account.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath) == nil {
             let collection <- self.createEmptyCollection()
             self.account.save(<- collection, to: self.collectionStoragePath)
             self.account.link<&{NonFungibleToken.CollectionPublic,HouseBadge.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(self.collectionPublicPath, target: self.collectionStoragePath)
-            self.account.link<&{HouseBadge.Admin, HouseBadge.Renameable}>(self.adminPrivatePath, target: self.collectionStoragePath)
         }
         emit ContractInitialized()
     }
