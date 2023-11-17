@@ -375,6 +375,36 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             return &self.items[itemID] as &Item?
         }
 
+        pub fun updateItemName(itemID: UInt64, name: String) {
+            let itemRef = self.borrwoItem(itemID: itemID)!
+            itemRef.updateName(name: name)
+        }
+
+        pub fun updateItemDescription(itemID: UInt64, description: String) {
+            let itemRef = self.borrwoItem(itemID: itemID)!
+            itemRef.updateDescription(description: description)
+        }
+
+        pub fun updateItemImageUrls(itemID: UInt64, imageUrls: [String]) {
+            let itemRef = self.borrwoItem(itemID: itemID)!
+            itemRef.updateImageUrls(imageUrls: imageUrls)
+        }
+
+        pub fun updateItemCreator(itemID: UInt64, creator: String) {
+            let itemRef = self.borrwoItem(itemID: itemID)!
+            itemRef.updateCreator(creator: creator)
+        }
+
+        pub fun updateItemRoyalties(itemID: UInt64, royalties: [MetadataViews.Royalty]) {
+            let itemRef = self.borrwoItem(itemID: itemID)!
+            itemRef.updateRoyalties(royalties: royalties)
+        }
+
+        pub fun updateItemExtraMetadata(itemID: UInt64, extraMetadata: {String: AnyStruct}) {
+            let itemRef = self.borrwoItem(itemID: itemID)!
+            itemRef.updateExtraMetadata(extraMetadata: extraMetadata)
+        }
+
         pub fun destroyItem(itemID: UInt64) {
             let item <- self.items.remove(key: itemID) ?? panic("Missing Item")
             destroy item
