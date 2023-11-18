@@ -8,10 +8,7 @@ transaction(address: Address) {
     let collection: &HouseBadge.Collection
 
     prepare(acct: AuthAccount) {
-        if acct.borrow<&HouseBadge.Admin>(from: HouseBadge.adminStoragePath) == nil {
-            let admin <- HouseBadge.createAdmin() as! @HouseBadge.Admin
-            acct.save(<- admin, to: HouseBadge.adminStoragePath)
-        }
+        HouseBadge.createAdmin()
         self.admin = acct.borrow<&HouseBadge.Admin>(from: HouseBadge.adminStoragePath)
             ?? panic("Could not borrow Admin")
         self.collection = acct.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath)

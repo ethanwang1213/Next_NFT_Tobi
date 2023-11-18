@@ -128,10 +128,6 @@ pub contract HouseBadge: NonFungibleToken {
         return <- create Collection()
     }
 
-    pub fun createAdmin(): @Admin {
-        return <- create Admin()
-    }
-
     pub resource Minter {
         pub fun mintTo(creator: Capability<&{NonFungibleToken.Receiver}>, metadata: {String:String}): &NonFungibleToken.NFT {
             let id = HouseBadge.totalSupply.toString()
@@ -150,6 +146,13 @@ pub contract HouseBadge: NonFungibleToken {
             emit Mint(id: token.id, creator: creator.address, metadata: meta, totalSupply: HouseBadge.totalSupply)
             creator.borrow()!.deposit(token: <- token)
             return tokenRef
+        }
+    }
+
+    pub fun createAdmin() {
+        self.adminStoragePath = /storage/HouseBadgeAdmin
+        if self.account.borrow<&Admin>(from: self.adminStoragePath) == nil {
+            self.account.save(<- create Admin(), to: self.adminStoragePath)
         }
     }
 
