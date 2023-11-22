@@ -22,6 +22,7 @@ exports.tobiraneko = metadata;
 exports.housebadge = houseBadgeMetadata;
 exports.stampRallyBadge = require("./journalStampRallyBadge");
 exports.mintFes23NftTaskv1 = mintFes23NftTaskv1;
+exports.native = require("./native");
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
