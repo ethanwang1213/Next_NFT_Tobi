@@ -1,6 +1,16 @@
 import * as functions from "firebase-functions";
 import * as cors from "cors";
+import * as express from "express";
 import {REGION} from "../lib/constants";
+
+import {getAccounts, getAccountById} from "./accountController";
+
+const app = express();
+app.use(cors({origin: true}));
+
+const dummyResponse = (_: express.Request, res: express.Response) => {
+  res.status(200).send("under construction");
+};
 
 // TODO: connect to Cloud SQL
 // docs:
@@ -10,28 +20,66 @@ import {REGION} from "../lib/constants";
 
 // API Reference:
 // https://docs.google.com/spreadsheets/d/1XocLkxnpYL2Mfi-e7LuJOlmf_Njdgaz-0RfgqRxqtiE/edit#gid=0
-export const accounts = functions.region(REGION).https.onRequest((request, response) => {
-  const corsHandler = cors({origin: true});
-  corsHandler(request, response, () => {
-    // This is a dummy response.
-    const resData = {
-      accounts: [
-        {
-          userId: "xxx",
-          username: "xxx",
-          icon: "xxx",
-          sns: "xxx",
-          createdAt: "xxx",
-        },
-        {
-          userId: "xxx",
-          username: "xxx",
-          icon: "xxx",
-          sns: "xxx",
-          createdAt: "xxx",
-        },
-      ],
-    };
-    response.status(200).json(resData);
-  });
-});
+app.get("/accounts", getAccounts);
+app.get("/accounts/:id", getAccountById);
+
+app.get("/contents", dummyResponse);
+app.get("/contents/:id", dummyResponse);
+
+app.get("/items", dummyResponse);
+app.get("/items/:id", dummyResponse);
+app.get("/nfts/:id", dummyResponse);
+
+app.get("/saidans", dummyResponse);
+app.get("/saidans/:id", dummyResponse);
+app.get("/saidans/:id", dummyResponse);
+app.get("/posts", dummyResponse);
+app.get("/posts/:id", dummyResponse);
+
+app.get("/my/profile", dummyResponse);
+app.post("/my/profile", dummyResponse);
+app.post("/my/business/submission", dummyResponse);
+app.get("/my/business", dummyResponse);
+app.post("/my/business", dummyResponse);
+
+app.get("/my/inventory", dummyResponse);
+app.post("/my/inventory", dummyResponse);
+app.post("/my/inventory/folders", dummyResponse);
+app.get("/my/inventory/folders/:id", dummyResponse);
+app.delete("/my/inventory/folders/:id", dummyResponse);
+
+app.get("/my/nfts/:id", dummyResponse);
+app.post("/my/contents", dummyResponse);
+app.get("/my/contents/:id", dummyResponse);
+app.post("/my/contents/:id", dummyResponse);
+app.get("/my/items", dummyResponse);
+app.post("/my/items", dummyResponse);
+app.get("/my/items/:id", dummyResponse);
+
+app.get("/my/saidans", dummyResponse);
+app.get("/my/saidans/:saidanId", dummyResponse);
+app.post("/my/saidans/:saidanId/posts", dummyResponse);
+app.get("/my/saidans/:saidanId/posts/:postId", dummyResponse);
+
+app.post("/accounts/:userId/report", dummyResponse);
+app.post("/items/:id/report", dummyResponse);
+app.post("/posts/:id/report", dummyResponse);
+
+app.post("/contents/:id/favorite", dummyResponse);
+app.post("/saidans/:id/like", dummyResponse);
+app.post("/saidans/:id/save", dummyResponse);
+app.post("/saidans/:id/share", dummyResponse);
+app.post("/saidans/:id/notinterested", dummyResponse);
+
+app.post("/posts/:id/like", dummyResponse);
+app.post("/posts/:id/save", dummyResponse);
+app.post("/posts/:id/share", dummyResponse);
+app.post("/posts/:id/notinterested", dummyResponse);
+
+app.post("/my/items/:id/sale", dummyResponse);
+app.post("/my/nfts/:id/listing", dummyResponse);
+app.post("/items/:id/mint", dummyResponse);
+app.post("/nfts/:id/purchase", dummyResponse);
+app.post("/my/nfts/:id/gift", dummyResponse);
+
+export const native = functions.region(REGION).https.onRequest(app);
