@@ -7,9 +7,9 @@ const curve = new EC("p256");
 
 const hashMessageHex = (hashType: string, msgHex: string) => {
   const buffer = Buffer.from(msgHex, "hex");
-  if (hashType === "sha3") {
+  if (hashType === "sha256") {
     return sha256.digest(buffer);
-  } else if (hashType === "sha256") {
+  } else if (hashType === "sha3") {
     const sha3 = new SHA3(256);
     sha3.update(buffer);
     return sha3.digest();

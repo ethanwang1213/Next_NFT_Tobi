@@ -1,10 +1,64 @@
-import {onTaskDispatched} from "firebase-functions/v2/tasks";
 import {REGION} from "./lib/constants";
 import {mintTobirapolisFestival23BadgeNFT} from "./lib/tobirapolisFestival23Flow";
 import {firestore} from "firebase-admin";
-import {MintStatus} from "types/journal-types";
+import {MintStatus, Tpf2023Complete, Tpf2023StampType} from "types/journal-types";
+import * as functions from "firebase-functions";
 import Timestamp = firestore.Timestamp;
 
+const mintNFT = async (name: string, description: string, userId: string, type: Tpf2023StampType | Tpf2023Complete, onComplete?: () => void) => {
+  const txDetails = await mintTobirapolisFestival23BadgeNFT(name, description);
+  console.log({txDetails});
+  const events = txDetails.events;
+  for (const mintEvent of events) {
+    if (mintEvent.type === `${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID}.${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_EVENT_NAME}`) {
+      const totalSupply = mintEvent.data.totalSupply;
+      if (!totalSupply) {
+        return;
+      }
+      const nftId = totalSupply - 1;
+      const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type.toLowerCase()}.png`;
+      await createTobirapolisFestival23BadgeMetadata(nftId, type, name, description, imageUrl);
+      await transferTobirapolisFestival23Badge(userId, nftId, name, description, new Date(), imageUrl, type);
+
+      if (onComplete) await onComplete();
+      break;
+    }
+  }
+};
+
+export const mintFes23NftTaskv1 = functions.region(REGION).runWith({}).tasks.taskQueue({
+  retryConfig: {
+    maxAttempts: 5,
+    minBackoffSeconds: 60,
+  },
+  rateLimits: {
+    maxConcurrentDispatches: 1,
+  },
+}).onDispatch(async (data) => {
+  const {name, description, type, userId, isStampCompleted} = data;
+  await mintNFT(name, description, userId, type, async () => {
+    const setData: { mintStatus: MintStatus } = {
+      mintStatus: {
+        TOBIRAPOLISFESTIVAL2023: {
+          [type as Tpf2023StampType]: "DONE",
+        },
+      },
+    };
+    await recordNewActivity(userId, `${name} を獲得した`);
+    if (isStampCompleted) {
+      const completeBadgeName = "TOBIRAPOLIS FESTIVAL2023 STAMP Complete";
+      await mintNFT(completeBadgeName, "", userId, "Complete");
+      await recordNewActivity(userId, "「TOBIRAPOLIS祭2023」すべてのスタンプを獲得した");
+      await recordNewActivity(userId, `${completeBadgeName} を獲得した`);
+      setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
+    }
+    await firestore().collection("users").doc(userId).set(setData, {
+      merge: true,
+    });
+  });
+});
+
+/*
 export const mintFes23NftTask = onTaskDispatched({
   retryConfig: {
     maxAttempts: 5,
@@ -16,36 +70,31 @@ export const mintFes23NftTask = onTaskDispatched({
   region: REGION,
 }, async (req) => {
   const {name, description, type, userId, isStampCompleted} = req.data;
-  const txDetails = await mintTobirapolisFestival23BadgeNFT(name, description);
-  console.log({txDetails});
-  const events = txDetails.events;
-  for (const mintEvent of events) {
-    if (mintEvent.type === `${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID}.${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_EVENT_NAME}`) {
-      const totalSupply = mintEvent.data.totalSupply;
-      if (!totalSupply) {
-        return;
-      }
-      const nftId = totalSupply - 1;
-      const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type}.png`;
-      await createTobirapolisFestival23BadgeMetadata(nftId, type, name, description, imageUrl);
-      await transferTobirapolisFestival23Badge(userId, nftId, name, description, new Date(), imageUrl, type);
-      const setData: { mintStatus: MintStatus } = {
-        mintStatus: {
-          TOBIRAPOLISFESTIVAL2023: {
-            [type]: "DONE",
-          },
+  await mintNFT(name, description, userId, type, async () => {
+    const setData: { mintStatus: MintStatus } = {
+      mintStatus: {
+        TOBIRAPOLISFESTIVAL2023: {
+          [type as Tpf2023StampType]: "DONE",
         },
-      };
-      if (isStampCompleted) {
-        setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
-      }
-      await firestore().collection("users").doc(userId).set(setData, {
-        merge: true,
-      });
-      break;
+      },
+    };
+    if (isStampCompleted) {
+      await mintNFT("Complete", "", userId, "Complete");
+      setData.mintStatus.TOBIRAPOLISFESTIVAL2023!.Complete = "DONE";
     }
-  }
+    await firestore().collection("users").doc(userId).set(setData, {
+      merge: true,
+    });
+  });
 });
+ */
+
+const recordNewActivity = async (userId: string, text: string) => {
+  await firestore().collection("users").doc(userId).collection("activity").add({
+    text: text,
+    timestamp: Timestamp.fromDate(new Date()),
+  });
+};
 
 const createTobirapolisFestival23BadgeMetadata = async (nftId: number, type: string, name: string, description: string, imageUrl: string) => {
   await firestore().collection("tobirapolisFestival23").doc(nftId.toString()).set({

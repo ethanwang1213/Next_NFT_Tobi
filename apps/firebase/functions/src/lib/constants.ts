@@ -1,4 +1,4 @@
-import { Tpf2023StampType } from "types/journal-types";
+import {Tpf2023StampType} from "types/journal-types";
 
 export const NEKO_NFT_ID =
   process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
