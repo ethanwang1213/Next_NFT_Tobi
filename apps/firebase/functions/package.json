@@ -20,6 +20,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "@google-cloud/pubsub": "^3.5.2",
+    "@noble/secp256k1": "^1.7.1",
     "@onflow/fcl": "^1.6.0",
     "@sendgrid/mail": "^7.7.0",
     "cors": "^2.8.5",
