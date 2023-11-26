@@ -65,3 +65,14 @@ Transfer an NFT from the emulater-account (f8d6e0586b0a20c7) to the emulater-acc
 
 > yarn getIds2
 ```
+
+## mainnet / testnet
+
+To access mainnet and testnet, obtain mainnet-accounts.json and testnet-accounts.json from keybase and place them in the same folder as flow.json
+
+```
+$ ls *.json
+flow.json  mainnet-accounts.json  package.json  testnet-accounts.json
+
+$ flow project deploy -f flow.json -f testnet-accounts.json --network=testnet
+```
