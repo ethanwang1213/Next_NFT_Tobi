@@ -1,20 +1,41 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
-import {REGION} from "./lib/constants";
+import {REGION, TOPIC_NAMES} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as secp from "@noble/secp256k1";
 import {sha256} from "js-sha256";
 import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
-// import * as cors from "cors";
+import * as cors from "cors";
+
+fcl.config({
+  "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
+  "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
+});
 
 // export const createFlowAccountDemo = functions.region(REGION).https.onRequest(async (request, response) => {
-//     const email = 'test@test.com';
-//     const txId = await generateKeysAndSendFlowAccountCreationTx(email);
-//     const corsHandler = cors({origin: true});
-//     corsHandler(request, response, () => {
-//       response.status(200).json({ txId });
-//     });  
+//   const email = "test@test.com";
+//   const txId = await generateKeysAndSendFlowAccountCreationTx(email);
+//   const corsHandler = cors({origin: true});
+//   corsHandler(request, response, () => {
+//     response.status(200).json({txId});
+//   });
+// });
+
+// export const fillInFlowAddressesDemo = functions.region(REGION).https.onRequest(async (request, response) => {
+//   await fetchAndFillInFlowAddresses();
+//   const corsHandler = cors({origin: true});
+//   corsHandler(request, response, () => {
+//     response.status(200).json({result: "ok"});
+//   });
+// });
+
+// export const recoverFlowAccountCreationDemo = functions.region(REGION).https.onRequest(async (request, response) => {
+//   await fetchAndRecoverFlowAccountCreation();
+//   const corsHandler = cors({origin: true});
+//   corsHandler(request, response, () => {
+//     response.status(200).json({result: "ok"});
+//   });
 // });
 
 export const createFlowAccount = functions.region(REGION).https.onCall(async (data, context) => {
@@ -37,25 +58,46 @@ export const createFlowAccount = functions.region(REGION).https.onCall(async (da
   return {txId};
 });
 
+export const fillInFlowAddresses = functions.region(REGION).pubsub.topic(TOPIC_NAMES["fillInFlowAddresses"]).onPublish(async (_message) => {
+  await fetchAndFillInFlowAddresses();
+});
+
+export const recoverFlowAccountCreation = functions.region(REGION).pubsub.topic(TOPIC_NAMES["recoverFlowAccountCreation"]).onPublish(async (_message) => {
+  await fetchAndRecoverFlowAccountCreation();
+});
+
 const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
   // Create or Get Flow Account Doc Ref
   const flowAccountRef = await createOrGetFlowAccountDocRef(email);
 
   // Generate new key pair & Send Flow account creation tx
-  const { privKey, pubKey } = generateKeyPair();
-  const txId = await sendCreateAccountTx(pubKey);
+  const {privKey, pubKey, txId} = await sendCreateAccountTx();
 
   // Set key pair and tx info
-  await flowAccountRef.update({
-    privKey,
-    pubKey, // TODO: Encryption
-    txId,
-    sentAt: new Date(),
-  });
+  await fillInFlowAccountCreattionInfo({flowAccountRef, privKey, pubKey, txId});
 
   return txId;
 };
 
+const fillInFlowAccountCreattionInfo = async ({
+  flowAccountRef,
+  privKey,
+  pubKey,
+  txId,
+} : {
+  flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
+  privKey: string;
+  pubKey: string;
+  txId: string;
+}) => {
+  await flowAccountRef.update({
+    privKey, // TODO: Encryption
+    pubKey,
+    txId,
+    sentAt: new Date(),
+    address: "",
+  });
+}
 const createOrGetFlowAccountDocRef = async (email: string) => {
   const existingFlowAccounts = await firestore().collection("flowAccounts").where("email", "==", email).get();
   if (existingFlowAccounts.size > 0) {
@@ -79,11 +121,8 @@ const generateKeyPair = () => {
   };
 };
 
-const sendCreateAccountTx = async (pubKey: string) => {
-  fcl.config({
-    "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
-    "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
-  });
+const sendCreateAccountTx = async () => {
+  const {privKey, pubKey} = generateKeyPair();
 
   // TODO: Add initialization for Tobiratory-related NFT Collection?
   const cadence = `\
@@ -109,9 +148,9 @@ transaction(publicKey: String) {
     authorizations: [authz],
     limit: 9999,
   });
-  return txId;
-}
   console.log({txId});
+  return {privKey, pubKey, txId};
+};
 
 const authz = async (account: any) => {
   const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
@@ -162,4 +201,49 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
   const r = sig.r.toArrayLike(Buffer, "be", n);
   const s = sig.s.toArrayLike(Buffer, "be", n);
   return Buffer.concat([r, s]).toString("hex");
+};
+
+const fetchAndFillInFlowAddresses = async () => {
+  const uncheckedFlowAccounts = await firestore().collection("flowAccounts").where("address", "==", "").get();
+  for (const doc of uncheckedFlowAccounts.docs) {
+    await fetchAndUpdateFlowAddress(doc.ref);
+  }
+};
+
+const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => {
+  const flowAccount = await flowAccountRef.get();
+  if (flowAccount.exists) {
+    try {
+      const txId = flowAccount.data()?.txId;
+      const address = await fetchFlowAddress(txId);
+      await flowAccountRef.update({address});
+    } catch (e) {
+      console.error(e);
+    }
+  }
+};
+
+const fetchFlowAddress = async (txId: string) => {
+  const tx = await fcl.tx(txId).onceSealed();
+  console.log(tx);
+  for (const event of tx.events) {
+    if (event.type === "flow.AccountCreated") {
+      return event.data.address;
+    }
+  }
+  throw Error("Not found flow.AccountCreated event");
+};
+
+const fetchAndRecoverFlowAccountCreation = async () => {
+  const TEN_MINUTES = 10 * 60 * 1000; // In 10 minutes, Flow's transaction signature will be invalid.
+  const tenMinutesAgo = Date.now() - TEN_MINUTES;
+  const uncheckedFlowAccounts = await firestore().collection("flowAccounts").where("address", "==", "").get();
+  for (const flowAccount of uncheckedFlowAccounts.docs) {
+    const sentAt = flowAccount.data().sentAt;
+    if (!sentAt || sentAt.toMillis() > tenMinutesAgo) {
+      continue;
+    }
+    const {privKey, pubKey, txId} = await sendCreateAccountTx();
+    await fillInFlowAccountCreattionInfo({flowAccountRef: flowAccount.ref, privKey, pubKey, txId});
+  }
 };
