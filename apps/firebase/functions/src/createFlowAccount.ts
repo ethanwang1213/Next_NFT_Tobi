@@ -13,11 +13,6 @@ fcl.config({
   "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
 });
 
-fcl.config({
-  "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
-  "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
-});
-
 // export const createFlowAccountDemo = functions.region(REGION).https.onRequest(async (request, response) => {
 //   const email = "test@test.com";
 //   const txId = await generateKeysAndSendFlowAccountCreationTx(email);
