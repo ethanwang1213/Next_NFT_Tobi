@@ -30,35 +30,31 @@ const Index = () => {
     <RedeemStatusProvider>
       <EditProfileProvider>
         <BookProvider>
-          <StampRallyFormProvider>
-            <WatchMintStatusProvider>
-              <div
-                className={
-                  process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
-                  (!user || !user.email)
-                    ? "invisible"
-                    : ""
-                }
-              >
-                <Image
-                  src="/journal/images/book/bg_journal.png"
-                  fill
-                  alt="bg_journal"
-                  className="pointer-events-none select-none"
-                />
-                <div className="hidden sm:block">
-                  <Pc />
-                </div>
-                <div className="block sm:hidden">
-                  <Mobile />
-                </div>
-                <EditProfileModal />
-                <CropNewIconModal />
-                <DebugText />
-                <NftViewModal />
-              </div>
-            </WatchMintStatusProvider>
-          </StampRallyFormProvider>
+          <div
+            className={
+              process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
+              (!user || !user.email)
+                ? "invisible"
+                : ""
+            }
+          >
+            <Image
+              src="/journal/images/book/bg_journal.png"
+              fill
+              alt="bg_journal"
+              className="pointer-events-none select-none"
+            />
+            <div className="hidden sm:block">
+              <Pc />
+            </div>
+            <div className="block sm:hidden">
+              <Mobile />
+            </div>
+            <EditProfileModal />
+            <CropNewIconModal />
+            <DebugText />
+            <NftViewModal />
+          </div>
         </BookProvider>
       </EditProfileProvider>
     </RedeemStatusProvider>
