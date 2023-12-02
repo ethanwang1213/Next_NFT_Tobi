@@ -21,7 +21,7 @@ import useDirectMove from "@/hooks/useDirectMove";
 import useMouseScale from "@/hooks/useMouseScale";
 import usePinchScale from "@/hooks/usePinchScale";
 import useWheelScale from "@/hooks/useWheelScale";
-import { db } from "fetchers/firebase/web-client";
+import { db } from "fetchers/firebase/client";
 import { ItemType } from "@/types/ItemType";
 import { DBItemData } from "@/types/PlacedItemData";
 import _, { round } from "lodash";

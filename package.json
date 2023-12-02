@@ -5,8 +5,9 @@
     "packages/*"
   ],
   "scripts": {
-    "journal": "cd apps/journal && npm run dev",
-    "web": "cd apps/web && npm run dev",
+    "admin": "turbo run dev --filter=admin",
+    "journal": "turbo run dev --filter=journal",
+    "web": "turbo run dev --filter=web",
     "serve:firebase": "cd apps/firebase/functions && npm run serve",
     "emulate:flow": "cd apps/flow && npm run emulator",
     "deploy:flow": "cd apps/flow && npm run deploy",
