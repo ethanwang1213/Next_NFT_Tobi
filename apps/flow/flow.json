@@ -106,6 +106,16 @@
 			"address": "01cf0e2f2f715450",
 			"key": "af81d22fdec3fa17e283255e8de1d78db0070ef17d461fd065efbeab5349f7ef"
 		},
+		"mainnetAccount1": {
+			"address": "e217638793f1e461",
+			"key": {
+				"type": "hex",
+				"index": 4,
+				"signatureAlgorithm": "ECDSA_P256",
+				"hashAlgorithm": "SHA2_256",
+				"privateKey": ""
+			}
+		},
 		"testnetAccount1": {
 			"address": "ba1d680383821b26",
 			"key": "aab44332c5c035e01b503bb25d89691b59cd42910a4582ab7f6e78b8d8f0b1d4"
@@ -128,6 +138,14 @@
 				"TobiraNeko",
 				"HouseBadge",
 				"AchievementBadge",
+				"Festival23Badge",
+				"TobiratoryDigitalItems"
+			]
+		},
+		"mainnet": {
+			"mainnetAccount1": [
+				"TobiraNeko",
+				"HouseBadge",
 				"Festival23Badge",
 				"TobiratoryDigitalItems"
 			]
