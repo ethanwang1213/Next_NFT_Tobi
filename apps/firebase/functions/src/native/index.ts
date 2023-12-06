@@ -4,6 +4,7 @@ import * as express from "express";
 import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
+import {signUp, signIn} from "./userController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -20,6 +21,9 @@ const dummyResponse = (_: express.Request, res: express.Response) => {
 
 // API Reference:
 // https://docs.google.com/spreadsheets/d/1XocLkxnpYL2Mfi-e7LuJOlmf_Njdgaz-0RfgqRxqtiE/edit#gid=0
+app.post("/signup", signUp);
+app.post("/signin", signIn);
+
 app.get("/accounts", getAccounts);
 app.get("/accounts/:id", getAccountById);
 
