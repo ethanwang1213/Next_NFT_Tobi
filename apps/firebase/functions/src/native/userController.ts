@@ -9,12 +9,12 @@ type Request = {
 export const signUp = async (req: Request, res: Response) => {
   const {email, username} = req.body;
   const prisma = new PrismaClient();
-  await prisma.tobiratory_account.create({
+  await prisma.tobiratory_accounts.create({
     data: {
       uuid: "123",
       user_id: "0",
       username: username,
-      email: email,
+      sns: email,
       icon_url: "",
     },
   });
