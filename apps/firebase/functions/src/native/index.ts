@@ -5,6 +5,7 @@ import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
 import {signUp, signIn} from "./userController";
+import { getContentById, getContents } from "./contentController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -27,8 +28,8 @@ app.post("/signin", signIn);
 app.get("/accounts", getAccounts);
 app.get("/accounts/:id", getAccountById);
 
-app.get("/contents", dummyResponse);
-app.get("/contents/:id", dummyResponse);
+app.get("/contents", getContents);
+app.get("/contents/:id", getContentById);
 
 app.get("/items", dummyResponse);
 app.get("/items/:id", dummyResponse);
