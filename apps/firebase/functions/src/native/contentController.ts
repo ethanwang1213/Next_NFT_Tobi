@@ -2,21 +2,21 @@ import { Response } from "express";
 // import {firestore} from "firebase-admin";
 import { PrismaClient } from "@prisma/client";
 
-type AllAccountRequest = {
+type AllContentRequest = {
     params: {
         q: string,
-        sortBy: any,
+        sortBy: string,
         sortOrder: "desc" | "asc"
     }
 }
 
-type AccountRequest = {
-    params: { id: number }
+type ContentRequest = {
+    params: { id: string }
 }
 
 const prisma = new PrismaClient();
 
-export const getContents = async (req: AllAccountRequest, res: Response) => {
+export const getContents = async (req: AllContentRequest, res: Response) => {
     const { q, sortBy, sortOrder } = req.params;
     const orderValue = {};
     Object.defineProperty(orderValue, sortBy, {
@@ -25,7 +25,7 @@ export const getContents = async (req: AllAccountRequest, res: Response) => {
         enumerable: true,
         configurable: true,
     });
-    const accounts = await prisma.tobiratory_contents.findMany({
+    const contents = await prisma.tobiratory_contents.findMany({
         where: {
             title: {
                 in: [q],
@@ -34,11 +34,11 @@ export const getContents = async (req: AllAccountRequest, res: Response) => {
         orderBy: orderValue
     });
     const resData = {
-        contents: accounts.map(async (account) => {
+        contents: contents.map(async (content) => {
             return {
-                id: account.id,
-                title: account.title,
-                image: account.image
+                id: content.id,
+                title: content.title,
+                image: content.image
             };
         }),
     };
@@ -49,31 +49,31 @@ export const getContents = async (req: AllAccountRequest, res: Response) => {
     });
 };
 
-export const getContentById = async (req: AccountRequest, res: Response) => {
+export const getContentById = async (req: ContentRequest, res: Response) => {
     const { id } = req.params;
-    const accountData = await prisma.tobiratory_contents.findUnique({
+    const contentData = await prisma.tobiratory_contents.findUnique({
         where: {
-            id: id,
+            id: parseInt(id),
         }
     });
 
-    if (accountData == null) {
+    if (contentData == null) {
         res.status(404).send({
             status: "error",
-            data: 'Account does not exist!',
+            data: 'Content does not exist!',
         });
         return;
     }
 
     const resData = {
         id: id,
-        title: accountData.title,
-        image: accountData.image,
+        title: contentData.title,
+        image: contentData.image,
         creator: {
-            userId: accountData.creator_user_id,
-            username: accountData.creator_username,
-            icon: accountData.creator_username,
-            sns: accountData.creator_sns,
+            userId: contentData.creator_user_id,
+            username: contentData.creator_username,
+            icon: contentData.creator_username,
+            sns: contentData.creator_sns,
         },
     };
     res.status(200).send({
