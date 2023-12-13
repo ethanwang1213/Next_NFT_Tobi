@@ -4,8 +4,10 @@ import * as express from "express";
 import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
-import {signUp, signIn} from "./userController";
+import {signUp, signIn, getMyProfile, postMyProfile} from "./userController";
 import { getContentById, getContents } from "./contentController";
+import { getItems, getItemsById } from "./itemController";
+import { getSaidans, getSaidansById } from "./saidanController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -31,18 +33,18 @@ app.get("/accounts/:id", getAccountById);
 app.get("/contents", getContents);
 app.get("/contents/:id", getContentById);
 
-app.get("/items", dummyResponse);
-app.get("/items/:id", dummyResponse);
+app.get("/items", getItems);
+app.get("/items/:id", getItemsById);
 app.get("/nfts/:id", dummyResponse);
 
-app.get("/saidans", dummyResponse);
-app.get("/saidans/:id", dummyResponse);
-app.get("/saidans/:id", dummyResponse);
+app.get("/saidans", getSaidans);
+app.get("/saidans/:id", getSaidansById);
+app.post("/saidans/:id", dummyResponse);
 app.get("/posts", dummyResponse);
 app.get("/posts/:id", dummyResponse);
 
-app.get("/my/profile", dummyResponse);
-app.post("/my/profile", dummyResponse);
+app.get("/my/profile", getMyProfile);
+app.post("/my/profile", postMyProfile);
 app.post("/my/business/submission", dummyResponse);
 app.get("/my/business", dummyResponse);
 app.post("/my/business", dummyResponse);

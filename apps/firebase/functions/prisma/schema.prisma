@@ -76,3 +76,13 @@ model tobiratory_sales {
   license           String  @db.VarChar(255)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
+
+model tobiratory_nfts {
+  id                Int     @id @default(autoincrement())
+  serial_no         Int
+  owner             String  @db.VarChar(255)
+  title             String  @db.VarChar(255)
+  image             String  @db.VarChar(255)
+  creator           String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
