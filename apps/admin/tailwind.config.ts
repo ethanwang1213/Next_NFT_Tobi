@@ -15,7 +15,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        body: ["fot-tsukubrdgothic-std", "sans-serif"],
+        body: ["Hiragino Maru Gothic Pro", "sans-serif"],
       },
       fontSize: {
         redeemStatus: {
@@ -47,6 +47,7 @@ const config = {
           "secondary-content": "#7D5337",
           accent: "#7D5337",
           "accent-content": "#FDFAF1",
+          "accent-focus": "#EF883B",
           neutral: "#FFFFFF",
           "neutral-focus": "#F0F0F0",
           "neutral-content": "#8C8C8C",
