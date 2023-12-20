@@ -1,7 +1,6 @@
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 import MetadataViews from "./core/MetadataViews.cdc"
 import ViewResolver from "./core/ViewResolver.cdc"
-import Crypto
 
 pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
 
