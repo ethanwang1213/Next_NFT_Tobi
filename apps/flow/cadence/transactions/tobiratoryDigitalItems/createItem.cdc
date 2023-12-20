@@ -20,7 +20,7 @@ transaction(
         if creator.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) == nil {
             let items <- TobiratoryDigitalItems.createItems()
             creator.save(<- items, to: TobiratoryDigitalItems.ItemsStoragePath)
-            creator.link<&{TobiratoryDigitalItems.ItemsPublic}>(
+            creator.link<&TobiratoryDigitalItems.Items{TobiratoryDigitalItems.ItemsPublic}>(
                 TobiratoryDigitalItems.ItemsPublicPath,
                 target: TobiratoryDigitalItems.ItemsStoragePath
             )
