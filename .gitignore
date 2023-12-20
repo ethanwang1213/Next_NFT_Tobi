@@ -37,3 +37,5 @@ yarn-error.log*
 apps/journal/.env
 
 .idea/
+
+apps/flow/cadence/tmp/*
