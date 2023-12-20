@@ -77,6 +77,8 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             return self.ownerHistory
         }
 
+        // Note: This function is called when an NFT is deposited into the Collection and records the owner of the NFT, 
+        // but it cannot fully track the history. Users can hide the history of transfers. Please be careful when using this information.
         access(contract) fun recordOwnerHistory() {
             let owner = self.owner?.address
             if owner != nil {
