@@ -36,7 +36,6 @@ transaction(
             regularPrice: regularPrice,
             regularPriceCurrency: regularPriceCurrency,
             extraMetadata: {},
-            minter: self.minterRef,
         )
         self.receiverRef.deposit(token: <- nft)
     }
