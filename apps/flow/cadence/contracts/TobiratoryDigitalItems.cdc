@@ -51,7 +51,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
         ) {
             pre {
                 itemsCapability.check(): "Invalid itemsCapability"
-                itemsCapability.borrow()!.borrwoItem(itemID: itemID) != nil: "Invalid itemsCapability"
+                itemsCapability.borrow()!.borrowItem(itemID: itemID) != nil: "Invalid itemsCapability"
             }
             TobiratoryDigitalItems.totalSupply = TobiratoryDigitalItems.totalSupply + 1
             let id = TobiratoryDigitalItems.totalSupply
@@ -132,7 +132,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
         }
 
         pub fun resolveView(_ view: Type): AnyStruct? {
-            let itemRef = self.itemsCapability.borrow()!.borrwoItem(itemID: self.itemID)!
+            let itemRef = self.itemsCapability.borrow()!.borrowItem(itemID: self.itemID)!
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
@@ -264,17 +264,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
     pub resource interface ItemsPublic {
         pub fun getItemIDs(): [UInt64]
 
-        pub fun borrwoItem(itemID: UInt64): &Item?
-
-        pub fun mint(
-            itemID: UInt64,
-            purchasePrice: UFix64,
-            purchasePriceCurrency: String,
-            regularPrice: UFix64,
-            regularPriceCurrency: String,
-            extraMetadata: {String: AnyStruct},
-            minter: &Minter,
-        ): @NFT
+        pub fun borrowItem(itemID: UInt64): &Item?
     }
 
     pub resource Items: ItemsPublic {
@@ -316,38 +306,11 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             return id
         }
 
-        pub fun mint(
-            itemID: UInt64,
-            purchasePrice: UFix64,
-            purchasePriceCurrency: String,
-            regularPrice: UFix64,
-            regularPriceCurrency: String,
-            extraMetadata: {String: AnyStruct},
-            minter: &Minter,
-        ): @NFT {
-            pre {
-                minter.ownerAddress == minter.owner!.address: "Invalid minter"
-            }
-            let itemRef: &TobiratoryDigitalItems.Item = self.borrwoItem(itemID: itemID) ?? panic("Missing Item")
-            assert(itemRef.limit == nil || itemRef.mintedCount < itemRef.limit!, message: "Limit over")
-            itemRef.incrementMintedCount()
-            return <- create NFT(
-                itemID: itemID,
-                itemsCapability: self.owner!.getCapability<&{ItemsPublic}>(TobiratoryDigitalItems.ItemsPublicPath),
-                serialNumber: itemRef.mintedCount,
-                purchasePrice: purchasePrice,
-                purchasePriceCurrency: purchasePriceCurrency,
-                regularPrice: regularPrice,
-                regularPriceCurrency: regularPriceCurrency,
-                extraMetadata: extraMetadata,
-            )
-        }
-
         pub fun getItemIDs(): [UInt64] {
             return self.items.keys
         }
 
-        pub fun borrwoItem(itemID: UInt64): &Item? {
+        pub fun borrowItem(itemID: UInt64): &Item? {
             return &self.items[itemID] as &Item?
         }
 
@@ -355,7 +318,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
-            let itemRef = self.borrwoItem(itemID: itemID)!
+            let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateName(name: name)
         }
 
@@ -363,7 +326,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
-            let itemRef = self.borrwoItem(itemID: itemID)!
+            let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateDescription(description: description)
         }
 
@@ -371,7 +334,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
-            let itemRef = self.borrwoItem(itemID: itemID)!
+            let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateImageUrls(imageUrls: imageUrls)
         }
 
@@ -379,7 +342,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
-            let itemRef = self.borrwoItem(itemID: itemID)!
+            let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateCreatorName(creatorName: creatorName)
         }
 
@@ -387,7 +350,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
-            let itemRef = self.borrwoItem(itemID: itemID)!
+            let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateRoyalties(royalties: royalties)
         }
 
@@ -395,7 +358,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
-            let itemRef = self.borrwoItem(itemID: itemID)!
+            let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateLimit(limit: limit)
         }
 
@@ -403,7 +366,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
-            let itemRef = self.borrwoItem(itemID: itemID)!
+            let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateExtraMetadata(extraMetadata: extraMetadata)
         }
 
@@ -530,6 +493,35 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
 
     pub resource Minter {
         pub let ownerAddress: Address
+
+        pub fun mint(
+            itemCreatorAddress: Address,
+            itemID: UInt64,
+            purchasePrice: UFix64,
+            purchasePriceCurrency: String,
+            regularPrice: UFix64,
+            regularPriceCurrency: String,
+            extraMetadata: {String: AnyStruct},
+        ): @NFT {
+            pre {
+                self.ownerAddress == self.owner!.address: "Invalid minter"
+            }
+            let itemsCapability = getAccount(itemCreatorAddress).getCapability<&Items{ItemsPublic}>(TobiratoryDigitalItems.ItemsPublicPath)
+            let itemsRef = itemsCapability.borrow() ?? panic("Not found")
+            let itemRef = itemsRef.borrowItem(itemID: itemID) ?? panic("Missing Item")
+            assert(itemRef.limit == nil || itemRef.mintedCount < itemRef.limit!, message: "Limit over")
+            itemRef.incrementMintedCount()
+            return <- create NFT(
+                itemID: itemID,
+                itemsCapability: itemsCapability,
+                serialNumber: itemRef.mintedCount,
+                purchasePrice: purchasePrice,
+                purchasePriceCurrency: purchasePriceCurrency,
+                regularPrice: regularPrice,
+                regularPriceCurrency: regularPriceCurrency,
+                extraMetadata: extraMetadata,
+            )
+        }
 
         init(ownerAddress: Address) {
             self.ownerAddress = ownerAddress
