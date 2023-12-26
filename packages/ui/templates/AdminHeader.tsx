@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-const Header = () => {
+const AdminHeader = () => {
   return (
     <Head>
       <title>Tobiratory Admin</title>
@@ -9,7 +9,7 @@ const Header = () => {
       <meta property="og:type" content="website" />
       <meta
         property="og:url"
-        content="https://www.tobiratory.com/admin/login"
+        content="https://www.tobiratory.com/admin/signin"
       />
       <meta
         property="og:image"
@@ -36,13 +36,11 @@ const Header = () => {
         sizes="16x16"
         href="/admin/favicon-16x16.png"
       />
-      <link rel="manifest" href="/admin/site.webmanifest" />
       <link
         rel="mask-icon"
         href="/admin/safari-pinned-tab.svg"
         color="#5bbad5"
       />
-      <meta name="apple-mobile-web-app-title" content="Tobiratory" />
       <meta name="application-name" content="Tobiratory" />
       <meta name="msapplication-TileColor" content="#2b5797" />
       <meta name="theme-color" content="#ffffff" />
@@ -50,4 +48,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default AdminHeader;

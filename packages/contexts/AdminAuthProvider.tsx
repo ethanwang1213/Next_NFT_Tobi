@@ -1,4 +1,4 @@
-import { auth } from "fetchers/firebase/admin-client";
+import { auth } from "fetchers/firebase/client";
 import { onAuthStateChanged } from "firebase/auth";
 import React, {
   ReactNode,
@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { User } from "types/admin-types";
+import { User } from "types/adminTypes";
 
 type Props = {
   children: ReactNode;
