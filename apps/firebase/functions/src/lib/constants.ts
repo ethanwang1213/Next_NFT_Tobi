@@ -7,6 +7,8 @@ export const TOPIC_NAMES = {
   ordersCreate: "shopify-orders-create",
   fillInFlowAddresses: "fill-in-flow-addresses",
   recoverFlowAccountCreation: "recover-flow-account-creation",
+  flowTxSend: "flow-tx-send",
+  flowTxMonitor: "flow-tx-monitor",
 };
 
 export const REGION = process.env.REGION || "asia-northeast1";
