@@ -6,9 +6,9 @@ import { discordUserNfts } from "./discordUserNfts";
 import { metadata } from "./tobiraneko";
 import { metadata as houseBadgeMetadata } from "./housebadge";
 import { mintFes23NftTaskv1 } from "./mintFes23NftTask";
-import { createFlowAccount, fillInFlowAddresses, recoverFlowAccountCreation } from "./createFlowAccount";
 import { flowTxSend } from "./flowTxSend";
 import { flowTxMonitor } from "./flowTxMonitor";
+import { createFlowAccount } from "./createFlowAccount";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -28,8 +28,6 @@ exports.mintFes23NftTaskv1 = mintFes23NftTaskv1;
 exports.flowTxSend = flowTxSend;
 exports.flowTxMonitor = flowTxMonitor;
 exports.createFlowAccount = createFlowAccount;
-exports.fillInFlowAddresses = fillInFlowAddresses;
-exports.recoverFlowAccountCreation = recoverFlowAccountCreation;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
