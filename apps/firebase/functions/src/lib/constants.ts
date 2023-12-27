@@ -5,8 +5,6 @@ export const NEKO_NFT_ID =
 export const TOPIC_NAMES = {
   ordersPaid: "shopify-orders-paid",
   ordersCreate: "shopify-orders-create",
-  fillInFlowAddresses: "fill-in-flow-addresses",
-  recoverFlowAccountCreation: "recover-flow-account-creation",
   flowTxSend: "flow-tx-send",
   flowTxMonitor: "flow-tx-monitor",
 };
