@@ -1,24 +1,24 @@
 import { AuthProvider } from "contexts/AdminAuthProvider";
 import { ReactNode } from "react";
 import FontLoader from "ui/atoms/FontLoader";
-import AdminHeader from "ui/templates/AdminHeader";
-import AdminNavbar from "ui/templates/AdminNavbar";
+import Header from "ui/organisms/admin/Header";
+import Navbar from "ui/organisms/admin/Navbar";
 
 type Props = {
   children: ReactNode;
 };
 
-const AdminLayout = ({ children }: Props) => {
+const Layout = ({ children }: Props) => {
   return (
     <>
-      <AdminHeader />
+      <Header />
       <FontLoader />
       <AuthProvider>
-        <AdminNavbar />
+        <Navbar />
         {children}
       </AuthProvider>
     </>
   );
 };
 
-export default AdminLayout;
+export default Layout;

@@ -9,18 +9,18 @@ import "../styles/global.scss";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import AdminLayout from "ui/organisms/AdminLayout";
+import Layout from "ui/organisms/admin/Layout";
 
 config.autoAddCss = false;
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
-      <AdminLayout>
+      <Layout>
         <div className="overflow-hidden relative">
           <Component {...pageProps} />
         </div>
-      </AdminLayout>
+      </Layout>
     </>
   );
 };

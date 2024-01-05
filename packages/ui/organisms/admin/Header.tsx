@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-const AdminHeader = () => {
+const Header = () => {
   return (
     <Head>
       <title>Tobiratory Admin</title>
@@ -48,4 +48,4 @@ const AdminHeader = () => {
   );
 };
 
-export default AdminHeader;
+export default Header;

@@ -8,7 +8,7 @@ import {
 import useAuthState from "hooks/useAuthState";
 import { useRef, useState } from "react";
 import SignIn from "ui/templates/SignIn";
-import { LoginFormType } from "ui/templates/SignInForm";
+import { LoginFormType } from "ui/templates/SignIn";
 
 const Signin = () => {
   const emailModalRef = useRef<HTMLDialogElement>(null);
