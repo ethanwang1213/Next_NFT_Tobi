@@ -1,7 +1,6 @@
 import { AuthProvider } from "contexts/AdminAuthProvider";
 import { ReactNode } from "react";
 import FontLoader from "ui/atoms/FontLoader";
-import Header from "ui/organisms/admin/Header";
 import Navbar from "ui/organisms/admin/Navbar";
 
 type Props = {
@@ -11,7 +10,6 @@ type Props = {
 const Layout = ({ children }: Props) => {
   return (
     <>
-      <Header />
       <FontLoader />
       <AuthProvider>
         <Navbar />
