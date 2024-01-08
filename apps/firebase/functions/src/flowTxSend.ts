@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
-import {PubSub} from '@google-cloud/pubsub';
+import {KeyManagementServiceClient} from "@google-cloud/kms";
+import {PubSub} from "@google-cloud/pubsub";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as secp from "@noble/secp256k1";
@@ -9,43 +10,79 @@ import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
 
 const pubsub = new PubSub();
+const kmsClient = new KeyManagementServiceClient();
 
-export const flowTxSend = functions.region(REGION).pubsub.topic(TOPIC_NAMES["flowTxSend"]).onPublish(async (message: any) => {
-  const flowJobId = message.json.flowJobId;
-  const txType = message.json.txType;
-  const params = message.json.params;
-  console.log(`flowTxSend: ${flowJobId} ${txType} ${JSON.stringify(params)}`);
+export const flowTxSend = functions.region(REGION)
+    .runWith({
+      secrets: [
+        "KMS_PROJECT_ID",
+        "KMS_OPERATION_KEYRING",
+        "KMS_OPERATION_KEY",
+        "KMS_OPERATION_KEY_LOCATION",
+        "KMS_USER_KEYRING",
+        "KMS_USER_KEY",
+        "KMS_USER_KEY_LOCATION",
+        "FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS",
+        "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID",
+        "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH",
+        "FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY",
+      ],
+    })
+    .pubsub.topic(TOPIC_NAMES["flowTxSend"]).onPublish(async (message: any) => {
+      const flowJobId = message.json.flowJobId;
+      const txType = message.json.txType;
+      const params = message.json.params;
+      console.log(`flowTxSend: ${flowJobId} ${txType} ${JSON.stringify(params)}`);
 
-  const flowJobDocRef = await createOrGetFlowJobDocRef(flowJobId);
+      const flowJobDocRef = await createOrGetFlowJobDocRef(flowJobId);
 
-  // Add processing here according to txType
-  if (txType == "createFlowAccount") {
-    const txId = await generateKeysAndSendFlowAccountCreationTx(params.email);
-    await flowJobDocRef.update({
-      flowJobId,
-      txType,
-      params,
-      txId,
-      sentAt: new Date(),
+      // Add processing here according to txType
+      if (txType == "createFlowAccount") {
+        const txId = await generateKeysAndSendFlowAccountCreationTx(params.email);
+        await flowJobDocRef.update({
+          flowJobId,
+          txType,
+          params,
+          txId,
+          sentAt: new Date(),
+        });
+        const messageForMoitoring = {flowJobId, txType, params};
+        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
+        console.log(`Message ${messageId} published.`);
+      }
     });
-    const messageForMoitoring = { flowJobId, txType, params };
-    const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({ json: messageForMoitoring });
-    console.log(`Message ${messageId} published.`);
-  }
-});
 
 const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   const existingFlowJobs = await firestore().collection("flowJobs").where("flowJobId", "==", flowJobId).get();
   if (existingFlowJobs.size > 0) {
     return existingFlowJobs.docs[0].ref;
   }
-  return await firestore().collection("flowJobs").add({ flowJobId });
+  return await firestore().collection("flowJobs").add({flowJobId});
 };
 
 const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
+  if (
+    !process.env.KMS_PROJECT_ID ||
+    !process.env.KMS_USER_KEY_LOCATION ||
+    !process.env.KMS_USER_KEYRING ||
+    !process.env.KMS_USER_KEY
+  ) {
+    throw new Error("The environment of generate key is not defined.");
+  }
   const flowAccountRef = await createOrGetFlowAccountDocRef(email);
   const {privKey, pubKey, txId} = await sendCreateAccountTx();
-  await fillInFlowAccountCreattionInfo({flowAccountRef, privKey, pubKey, txId});
+
+  const keyName = kmsClient.cryptoKeyPath(
+      process.env.KMS_PROJECT_ID,
+      process.env.KMS_USER_KEY_LOCATION,
+      process.env.KMS_USER_KEYRING,
+      process.env.KMS_USER_KEY
+  );
+  const [result] = await kmsClient.encrypt({name: keyName, plaintext: Buffer.from(privKey)});
+  const encryptedPrivateKey = result.ciphertext || "";
+  const encryptedPrivateKeyBase64 = Buffer.from(encryptedPrivateKey).toString("base64");
+
+  await fillInFlowAccountCreattionInfo({flowAccountRef, encryptedPrivateKeyBase64, pubKey, txId});
   return txId;
 };
 
@@ -104,12 +141,32 @@ const generateKeyPair = () => {
 };
 
 const authz = async (account: any) => {
-  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
-  const privateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_PRIVATE_KEY;
-  const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
-  if (!addr || !privateKey) {
+  if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS ||
+      !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID ||
+      !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY ||
+      !process.env.KMS_PROJECT_ID ||
+      !process.env.KMS_OPERATION_KEY_LOCATION ||
+      !process.env.KMS_OPERATION_KEYRING ||
+      !process.env.KMS_OPERATION_KEY
+  ) {
     throw new Error("The environment of flow signer is not defined.");
   }
+  // const privateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_PRIVATE_KEY;
+  const encryptedPrivateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
+  const keyName = kmsClient.cryptoKeyPath(
+      process.env.KMS_PROJECT_ID,
+      process.env.KMS_OPERATION_KEY_LOCATION,
+      process.env.KMS_OPERATION_KEYRING,
+      process.env.KMS_OPERATION_KEY
+  );
+  const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
+  const privateKey = decryptedData.plaintext?.toString();
+
+  if (!privateKey) {
+    throw new Error("The private key of flow signer is not defined.");
+  }
+  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
+  const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
   return {
     ...account,
     tempId: `${addr}-${keyId}`,
@@ -156,17 +213,17 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
 
 const fillInFlowAccountCreattionInfo = async ({
   flowAccountRef,
-  privKey,
+  encryptedPrivateKeyBase64,
   pubKey,
   txId,
 } : {
   flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
-  privKey: string;
+  encryptedPrivateKeyBase64: string;
   pubKey: string;
   txId: string;
 }) => {
   await flowAccountRef.update({
-    privKey, // TODO: Encryption
+    encryptedPrivateKeyBase64,
     pubKey,
     txId,
     sentAt: new Date(),
