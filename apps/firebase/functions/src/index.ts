@@ -6,6 +6,8 @@ import { discordUserNfts } from "./discordUserNfts";
 import { metadata } from "./tobiraneko";
 import { metadata as houseBadgeMetadata } from "./housebadge";
 import { mintFes23NftTaskv1 } from "./mintFes23NftTask";
+import { flowTxSend } from "./flowTxSend";
+import { flowTxMonitor } from "./flowTxMonitor";
 import { createFlowAccount } from "./createFlowAccount";
 import { taskWrapperLink } from "./taskWrapperLink";
 
@@ -24,6 +26,8 @@ exports.tobiraneko = metadata;
 exports.housebadge = houseBadgeMetadata;
 exports.stampRallyBadge = require("./journalStampRallyBadge");
 exports.mintFes23NftTaskv1 = mintFes23NftTaskv1;
+exports.flowTxSend = flowTxSend;
+exports.flowTxMonitor = flowTxMonitor;
 exports.createFlowAccount = createFlowAccount;
 exports.taskWrapperLink = taskWrapperLink;
 
