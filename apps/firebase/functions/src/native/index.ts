@@ -1,16 +1,17 @@
 import * as functions from "firebase-functions";
 import * as cors from "cors";
 import * as express from "express";
-import {REGION} from "../lib/constants";
+import { REGION } from "../lib/constants";
 
-import {getAccounts, getAccountById} from "./accountController";
-import {signUp, signIn, getMyProfile, postMyProfile} from "./userController";
+import { getAccounts, getAccountById } from "./accountController";
+import { signUp, signIn, getMyProfile, postMyProfile } from "./userController";
 import { getContentById, getContents } from "./contentController";
 import { getItems, getItemsById } from "./itemController";
 import { getSaidans, getSaidansById } from "./saidanController";
+// import { requireLogin } from "./middleware";
 
 const app = express();
-app.use(cors({origin: true}));
+app.use(cors({ origin: true }));
 
 const dummyResponse = (_: express.Request, res: express.Response) => {
   res.status(200).send("under construction");
