@@ -7,8 +7,7 @@ import {
 } from "firebase/auth";
 import useAuthState from "hooks/useAuthState";
 import { useRef, useState } from "react";
-import SignIn from "ui/templates/SignIn";
-import { LoginFormType } from "ui/templates/SignIn";
+import SignIn, { LoginFormType } from "ui/templates/SignIn";
 
 const Signin = () => {
   const emailModalRef = useRef<HTMLDialogElement>(null);
@@ -17,7 +16,6 @@ const Signin = () => {
   useAuthState();
 
   // TODO: メールアドレスを使ってサインインする流れが変更になったので、後で修正する
-  // sign inボタンが押されたときに実行する関数
   const signIn = (data: LoginFormType) => {
     if (!data) {
       return;
@@ -48,7 +46,6 @@ const Signin = () => {
       });
   };
 
-  // Googleアカウントでログインする関数
   const withGoogle = async () => {
     const provider = new GoogleAuthProvider();
 
@@ -59,7 +56,6 @@ const Signin = () => {
     }
   };
 
-  // Appleアカウントでログインする関数
   const withApple = async () => {
     const provider = new OAuthProvider("apple.com");
 
