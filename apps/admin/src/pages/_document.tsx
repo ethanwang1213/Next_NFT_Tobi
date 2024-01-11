@@ -7,7 +7,6 @@ const Document = () => {
       prefix="og: http://ogp.me/ns# fb: https://ogp.me/ns/fb# website: https://ogp.me/ns/website#"
     >
       <Head>
-        <title>Tobiratory Admin</title>
         {/* OGP設定 */}
         <meta property="og:title" content="Tobiratory" />
         <meta property="og:type" content="website" />
