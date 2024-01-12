@@ -33,5 +33,5 @@ if (process.env.NEXT_PUBLIC_FIREBASE_USING_EMULATOR === "true") {
   connectAuthEmulator(auth, "http://localhost:9099");
   connectFirestoreEmulator(db, "localhost", 8080);
   connectFunctionsEmulator(functions, "localhost", 5001);
-  connectStorageEmulator(storage, "localhost", 7777);
+  connectStorageEmulator(storage, "localhost", 7778);
 }
