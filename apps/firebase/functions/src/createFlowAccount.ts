@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {REGION} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
-import * as secp from '@noble/secp256k1';
+import * as secp from "@noble/secp256k1";
 import {sha256} from "js-sha256";
 import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
@@ -14,7 +14,7 @@ import {ec as EC} from "elliptic";
 //     const corsHandler = cors({origin: true});
 //     corsHandler(request, response, () => {
 //       response.status(200).json({ txId });
-//     });  
+//     });
 // });
 
 export const createFlowAccount = functions.region(REGION).https.onCall(async (data, context) => {
@@ -34,7 +34,7 @@ export const createFlowAccount = functions.region(REGION).https.onCall(async (da
   }
 
   const txId = await generateKeysAndSendFlowAccountCreationTx(email);
-  return { txId };
+  return {txId};
 });
 
 const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
@@ -42,9 +42,9 @@ const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
   const flowAccountRef = await createOrGetFlowAccountDocRef(email);
 
   // Generate new key pair & Send Flow account creation tx
-  const { privKey, pubKey } = generateKeyPair();
+  const {privKey, pubKey} = generateKeyPair();
   const txId = await sendCreateAccountTx(pubKey);
-  console.log({ txId });
+  console.log({txId});
 
   // Set key pair and tx info
   await flowAccountRef.update({
@@ -75,10 +75,10 @@ const generateKeyPair = () => {
   const privKey = secp.utils.randomPrivateKey(); // ECDSA_secp256k1
   const pubKey = secp.getPublicKey(privKey);
   return {
-    privKey: Buffer.from(privKey).toString('hex'),
-    pubKey: Buffer.from(pubKey).toString('hex').replace(/^04/, ''), // Remove uncompressed key prefix
-  }
-}
+    privKey: Buffer.from(privKey).toString("hex"),
+    pubKey: Buffer.from(pubKey).toString("hex").replace(/^04/, ""), // Remove uncompressed key prefix
+  };
+};
 
 const sendCreateAccountTx = async (pubKey: string) => {
   fcl.config({
@@ -111,7 +111,7 @@ transaction(publicKey: String) {
     limit: 9999,
   });
   return txId;
-}
+};
 
 const authz = async (account: any) => {
   const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;

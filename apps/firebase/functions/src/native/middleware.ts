@@ -1,7 +1,7 @@
-//middleware
+// middleware
 
-import { NextFunction } from "express";
-import { Auth } from "firebase-admin/auth";
+import {NextFunction} from "express";
+import {Auth} from "firebase-admin/auth";
 
 type RequireAuth = {
     headers: {
@@ -10,15 +10,15 @@ type RequireAuth = {
     }
 }
 
-//recognize login
+// recognize login
 export const requireLogin = async (req: RequireAuth, res: Response, next: NextFunction) => {
-    const { authToken } = req.headers;
-    const firebaseAuth = new Auth();
-    firebaseAuth.verifyIdToken(authToken).then((decodedToken) => {
-        req.headers.uuid = decodedToken.uid;
-        next();
-    }).catch((error) => {
-        error.status = 400;
-        next(error);
-    });
+  const {authToken} = req.headers;
+  const firebaseAuth = new Auth();
+  firebaseAuth.verifyIdToken(authToken).then((decodedToken) => {
+    req.headers.uuid = decodedToken.uid;
+    next();
+  }).catch((error) => {
+    error.status = 400;
+    next(error);
+  });
 };

@@ -1,19 +1,19 @@
-import { initializeApp, applicationDefault } from "firebase-admin/app";
-import { firestore } from "firebase-admin";
-import { background } from "./shopifyApi";
-import { discordOAuth } from "./discord";
-import { discordUserNfts } from "./discordUserNfts";
-import { metadata } from "./tobiraneko";
-import { metadata as houseBadgeMetadata } from "./housebadge";
-import { mintFes23NftTaskv1 } from "./mintFes23NftTask";
-import { createFlowAccount } from "./createFlowAccount";
-import { native } from "./native";
+import {initializeApp, applicationDefault} from "firebase-admin/app";
+import {firestore} from "firebase-admin";
+import {background} from "./shopifyApi";
+import {discordOAuth} from "./discord";
+import {discordUserNfts} from "./discordUserNfts";
+import {metadata} from "./tobiraneko";
+import {metadata as houseBadgeMetadata} from "./housebadge";
+import {mintFes23NftTaskv1} from "./mintFes23NftTask";
+import {createFlowAccount} from "./createFlowAccount";
+import {native} from "./native";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
   credential: applicationDefault(),
 });
-firestore().settings({ ignoreUndefinedProperties: true });
+firestore().settings({ignoreUndefinedProperties: true});
 
 exports.shopifyOrders = require("./shopifyOrders");
 exports.journalNfts = require("./journalNfts");

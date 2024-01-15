@@ -1,6 +1,6 @@
-import { Response } from "express";
+import {Response} from "express";
 // import {firestore} from "firebase-admin";
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 
 type AllAccountRequest = {
   params: {
@@ -17,7 +17,7 @@ type AccountRequest = {
 const prisma = new PrismaClient();
 
 export const getAccounts = async (req: AllAccountRequest, res: Response) => {
-  const { q, sortBy, sortOrder } = req.params;
+  const {q, sortBy, sortOrder} = req.params;
   const orderValue = {};
   Object.defineProperty(orderValue, sortBy, {
     value: sortOrder,
@@ -29,17 +29,17 @@ export const getAccounts = async (req: AllAccountRequest, res: Response) => {
     where: {
       username: {
         in: [q],
-      }
+      },
     },
-    orderBy: orderValue
+    orderBy: orderValue,
   });
   const resData = {
     accounts: accounts.map(async (account) => {
       const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
         where: {
-          uuid: account.uuid
-        }
-      })
+          uuid: account.uuid,
+        },
+      });
       return {
         userId: account.user_id,
         username: account.username,
@@ -60,17 +60,17 @@ export const getAccounts = async (req: AllAccountRequest, res: Response) => {
 };
 
 export const getAccountById = async (req: AccountRequest, res: Response) => {
-  const { id } = req.params;
+  const {id} = req.params;
   const accountData = await prisma.tobiratory_accounts.findUnique({
     where: {
       uuid: id,
-    }
+    },
   });
 
   if (accountData == null) {
     res.status(200).send({
       status: "error",
-      data: 'Account does not exist!',
+      data: "Account does not exist!",
     });
     return;
   }
@@ -78,13 +78,13 @@ export const getAccountById = async (req: AccountRequest, res: Response) => {
   const flowAccountData = await prisma.tobiratory_flow_accounts.findUniqueOrThrow({
     where: {
       uuid: id,
-    }
-  })
+    },
+  });
 
   if (flowAccountData == null) {
     res.status(200).send({
       status: "error",
-      data: 'Flow account does not exist!',
+      data: "Flow account does not exist!",
     });
     return;
   }
