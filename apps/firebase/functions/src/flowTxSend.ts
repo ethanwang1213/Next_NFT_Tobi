@@ -1,0 +1,175 @@
+import * as functions from "firebase-functions";
+import {firestore} from "firebase-admin";
+import {PubSub} from '@google-cloud/pubsub';
+import {REGION, TOPIC_NAMES} from "./lib/constants";
+import * as fcl from "@onflow/fcl";
+import * as secp from "@noble/secp256k1";
+import {sha256} from "js-sha256";
+import {SHA3} from "sha3";
+import {ec as EC} from "elliptic";
+
+const pubsub = new PubSub();
+
+export const flowTxSend = functions.region(REGION).pubsub.topic(TOPIC_NAMES["flowTxSend"]).onPublish(async (message: any) => {
+  const flowJobId = message.json.flowJobId;
+  const txType = message.json.txType;
+  const params = message.json.params;
+  console.log(`flowTxSend: ${flowJobId} ${txType} ${JSON.stringify(params)}`);
+
+  const flowJobDocRef = await createOrGetFlowJobDocRef(flowJobId);
+
+  // Add processing here according to txType
+  if (txType == "createFlowAccount") {
+    const txId = await generateKeysAndSendFlowAccountCreationTx(params.email);
+    await flowJobDocRef.update({
+      flowJobId,
+      txType,
+      params,
+      txId,
+      sentAt: new Date(),
+    });
+    const messageForMoitoring = { flowJobId, txType, params };
+    const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({ json: messageForMoitoring });
+    console.log(`Message ${messageId} published.`);
+  }
+});
+
+const createOrGetFlowJobDocRef = async (flowJobId: string) => {
+  const existingFlowJobs = await firestore().collection("flowJobs").where("flowJobId", "==", flowJobId).get();
+  if (existingFlowJobs.size > 0) {
+    return existingFlowJobs.docs[0].ref;
+  }
+  return await firestore().collection("flowJobs").add({ flowJobId });
+};
+
+const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
+  const flowAccountRef = await createOrGetFlowAccountDocRef(email);
+  const {privKey, pubKey, txId} = await sendCreateAccountTx();
+  await fillInFlowAccountCreattionInfo({flowAccountRef, privKey, pubKey, txId});
+  return txId;
+};
+
+const createOrGetFlowAccountDocRef = async (email: string) => {
+  const existingFlowAccounts = await firestore().collection("flowAccounts").where("email", "==", email).get();
+  if (existingFlowAccounts.size > 0) {
+    const existingFlowAccountSnapshot = existingFlowAccounts.docs[0];
+    if (existingFlowAccountSnapshot.data().txId) {
+      throw new functions.https.HttpsError("already-exists", "The transaction has already been sent.");
+    }
+    return existingFlowAccountSnapshot.ref;
+  }
+  return await firestore().collection("flowAccounts").add({
+    email,
+  });
+};
+
+const sendCreateAccountTx = async () => {
+  const {privKey, pubKey} = generateKeyPair();
+
+  // TODO: Add initialization for Tobiratory-related NFT Collection?
+  const cadence = `\
+transaction(publicKey: String) {
+    prepare(signer: AuthAccount) {
+        let account = AuthAccount(payer: signer)
+        account.keys.add(
+            publicKey: PublicKey(
+                publicKey: publicKey.decodeHex(),
+                signatureAlgorithm: SignatureAlgorithm.ECDSA_secp256k1
+            ),
+            hashAlgorithm: HashAlgorithm.SHA3_256,
+            weight: 1000.0
+        )
+    }   
+}`;
+  const args = (arg: any, t: any) => [arg(pubKey, t.String)];
+  const txId = await fcl.mutate({
+    cadence,
+    args,
+    proposer: authz,
+    payer: authz,
+    authorizations: [authz],
+    limit: 9999,
+  });
+  console.log({txId});
+  return {privKey, pubKey, txId};
+};
+
+const generateKeyPair = () => {
+  const privKey = secp.utils.randomPrivateKey(); // ECDSA_secp256k1
+  const pubKey = secp.getPublicKey(privKey);
+  return {
+    privKey: Buffer.from(privKey).toString("hex"),
+    pubKey: Buffer.from(pubKey).toString("hex").replace(/^04/, ""), // Remove uncompressed key prefix
+  };
+};
+
+const authz = async (account: any) => {
+  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
+  const privateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_PRIVATE_KEY;
+  const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
+  if (!addr || !privateKey) {
+    throw new Error("The environment of flow signer is not defined.");
+  }
+  return {
+    ...account,
+    tempId: `${addr}-${keyId}`,
+    addr: fcl.sansPrefix(addr),
+    keyId,
+    signingFunction: async (signable: any) => {
+      const signature = signWithKey({privateKey, msgHex: signable.message});
+      return {
+        addr,
+        keyId,
+        signature,
+      };
+    },
+  };
+};
+
+const hashMessageHex = (hashType: string, msgHex: string) => {
+  const buffer = Buffer.from(msgHex, "hex");
+  if (hashType === "sha256") {
+    return sha256.digest(buffer);
+  } else if (hashType === "sha3") {
+    const sha3 = new SHA3(256);
+    sha3.update(buffer);
+    return sha3.digest();
+  } else {
+    throw Error("Invalid arguments");
+  }
+};
+
+const curve = new EC("secp256k1");
+
+const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string}) => {
+  const key = curve.keyFromPrivate(Buffer.from(privateKey, "hex"));
+  const hash = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH;
+  if (!hash) {
+    throw new Error("The environment of flow signer is not defined.");
+  }
+  const sig = key.sign(hashMessageHex(hash, msgHex));
+  const n = 32;
+  const r = sig.r.toArrayLike(Buffer, "be", n);
+  const s = sig.s.toArrayLike(Buffer, "be", n);
+  return Buffer.concat([r, s]).toString("hex");
+};
+
+const fillInFlowAccountCreattionInfo = async ({
+  flowAccountRef,
+  privKey,
+  pubKey,
+  txId,
+} : {
+  flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
+  privKey: string;
+  pubKey: string;
+  txId: string;
+}) => {
+  await flowAccountRef.update({
+    privKey, // TODO: Encryption
+    pubKey,
+    txId,
+    sentAt: new Date(),
+    address: "",
+  });
+};

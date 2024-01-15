@@ -1,0 +1,14 @@
+name: Deploy Admin Preview on Vercel
+
+on: push
+
+jobs:
+  deploy-admin-preview:
+    uses: ./.github/workflows/_deploy-vercel.yml
+    with:
+      ENV_NAME: "admin-preview"
+    secrets:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      NPM_RC_FOR_GSAP: ${{ secrets.NPM_RC_FOR_GSAP }}

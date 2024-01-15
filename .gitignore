@@ -38,4 +38,4 @@ apps/journal/.env
 
 .idea/
 
-apps/flow/cadence/tmp/*
+.vercel

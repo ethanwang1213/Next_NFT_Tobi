@@ -37,7 +37,7 @@
     "eslint-plugin-react": "7.31.10",
     "firebase": "^9.17.1",
     "google-spreadsheet": "^3.3.0",
-    "gsap": "npm:@gsap/business",
+    "gsap": "npm:@gsap/business@^3.12.4",
     "jimp": "0.22.8",
     "lodash": "^4.17.21",
     "microcms-js-sdk": "^2.3.2",
@@ -74,12 +74,12 @@
     "@types/three": "^0.152.1",
     "@types/ua-parser-js": "^0.7.36",
     "autoprefixer": "^10.4.13",
+    "hooks": "*",
     "postcss": "^8.4.19",
     "prettier": "2.8.3",
     "tailwindcss": "^3.2.4",
-    "webpack-cli": "^5.0.1",
     "ui": "*",
-    "hooks": "*"
+    "webpack-cli": "^5.0.1"
   },
   "resolutions": {
     "@types/react": "^18.2.0"
