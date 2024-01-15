@@ -43,6 +43,9 @@ flow transactions send ./cadence/transactions/tobiratoryDigitalItems/attachNFT.c
 # Detach NFT
 flow transactions send ./cadence/transactions/tobiratoryDigitalItems/detachNFT.cdc 1 2 --signer emulator-account-2
 
+# Transfer NFT
+flow transactions send ./cadence/transactions/tobiratoryDigitalItems/transferNFT.cdc f8d6e0586b0a20c7 1 --signer emulator-account-2
+
 # Setup item reviewer
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/setupItemReviewer.cdc \
     --authorizer emulator-account --authorizer emulator-account-2 \
