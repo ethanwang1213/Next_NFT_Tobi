@@ -8,6 +8,11 @@ import {sha256} from "js-sha256";
 import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
 
+fcl.config({
+  "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
+  "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
+});
+
 const pubsub = new PubSub();
 
 export const flowTxSend = functions.region(REGION).pubsub.topic(TOPIC_NAMES["flowTxSend"]).onPublish(async (message: any) => {
@@ -66,8 +71,15 @@ const createOrGetFlowAccountDocRef = async (email: string) => {
 const sendCreateAccountTx = async () => {
   const {privKey, pubKey} = generateKeyPair();
 
-  // TODO: Add initialization for Tobiratory-related NFT Collection?
+  const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+
+  // TODO: Add initialization for Tobiratory-related NFT Collection
   const cadence = `\
+// import NonFungibleToken from ${nonFungibleTokenAddress}
+// import MetadataViews from ${nonFungibleTokenAddress}
+// import TobiratoryDigitalItems from ${tobiratoryDigitalItemsAddress}
+
 transaction(publicKey: String) {
     prepare(signer: AuthAccount) {
         let account = AuthAccount(payer: signer)
@@ -79,7 +91,14 @@ transaction(publicKey: String) {
             hashAlgorithm: HashAlgorithm.SHA3_256,
             weight: 1000.0
         )
-    }   
+
+        // let collection: @TobiratoryDigitalItems.Collection <- TobiratoryDigitalItems.createEmptyCollection() as! @TobiratoryDigitalItems.Collection
+        // signer.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
+        // signer.link<&TobiratoryDigitalItems.Collection{NonFungibleToken.CollectionPublic, TobiratoryDigitalItems.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(
+        //     TobiratoryDigitalItems.CollectionPublicPath,
+        //     target: TobiratoryDigitalItems.CollectionStoragePath
+        // )
+    }
 }`;
   const args = (arg: any, t: any) => [arg(pubKey, t.String)];
   const txId = await fcl.mutate({
