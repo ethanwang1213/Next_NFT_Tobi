@@ -6,6 +6,7 @@
 
 - Shopページの背景に表示するパラメタを返却する
 - Shopifyから、決済完了時に注文情報を受け取り、NFTの引き換えコードを生成する
+- Tobiratory Appのネイティブアプリのバックエンドを提供する
 
 ## Setup
 
@@ -17,11 +18,19 @@
 - Sendgridのセットアップ、送信者の設定
 - SendgridのAPIキーを取得する
 - Pub/Subのトピック、SendgridのAPIキーを、Firebaseの環境変数に設定する
+- PostgresSQLのセットアップ、接続情報を環境変数に設定する
 
 環境変数は、下記コマンドにて .env ファイルを生成し、編集してください。開発用のサンプルデータは keybase の tobiratory.dev/02_tobiratory-web/firebase に保存してあります。
 
 ```sh
 $ cp .env.sample .env
+```
+
+ローカルでPostgreSQLを起動する場合は、下記コマンドを実行してください。
+
+```sh
+$ cd docker
+$ docker-compose up
 ```
 
 ## Develop

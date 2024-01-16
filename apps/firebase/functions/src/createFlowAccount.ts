@@ -1,6 +1,11 @@
 import * as functions from 'firebase-functions';
 import {PubSub} from '@google-cloud/pubsub';
 import {firestore} from "firebase-admin";
+import * as fcl from "@onflow/fcl";
+import * as secp from "@noble/secp256k1";
+import {sha256} from "js-sha256";
+import {SHA3} from "sha3";
+import {ec as EC} from "elliptic";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
 // import * as cors from "cors";
 
