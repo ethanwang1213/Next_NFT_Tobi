@@ -7,26 +7,20 @@ import "swiper/css/effect-cards";
 import "../styles/global.scss";
 
 import basicAuthCheck from "@/methods/basicAuthCheck";
-import FontLoader from "@/pages/fontLoader";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { AuthProvider } from "contexts/admin-AuthProvider";
-import Header from "./header";
-import Navbar from "./navbar";
+import Layout from "ui/organisms/admin/Layout";
 
 config.autoAddCss = false;
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
-      <Header />
-      <FontLoader />
-      <AuthProvider>
-        <Navbar />
+      <Layout>
         <div className="overflow-hidden relative">
           <Component {...pageProps} />
         </div>
-      </AuthProvider>
+      </Layout>
     </>
   );
 };

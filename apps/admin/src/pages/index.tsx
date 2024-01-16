@@ -1,18 +1,16 @@
-import { useAuth } from "contexts/admin-AuthProvider";
-import { auth } from "fetchers/firebase/client";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import useAuthCheck from "hooks/useAuthCheck";
+import Loading from "ui/atoms/Loading";
 
 const Index = () => {
-  const router = useRouter();
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuthCheck();
 
-  useEffect(() => {
-    if (!auth) return;
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && !auth.currentUser) {
-      router.push("/login");
-    }
-  }, [router, user]);
+  if (!isAuthenticated) {
+    return (
+      <div className={"h-[100dvh] flex justify-center"}>
+        <Loading />
+      </div>
+    );
+  }
 
   return <div>Admin Page</div>;
 };

@@ -3,7 +3,8 @@ import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-const Verify = () => {
+// TODO: メールアドレスを使ってサインインする流れが変更になったので、後で修正する
+const useEmailSignIn = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const Verify = () => {
           "申し訳ございませんが、ご入力いただいたメールアドレスを確認できなかったため再度ご入力お願いします。",
         );
         if (confirm) {
-          router.push("/login");
+          router.push("/signin");
         }
       }
 
@@ -42,22 +43,10 @@ const Verify = () => {
         "申し訳ございませんが、リンクの有効期限が切れているため再度ご入力お願いします。",
       );
       if (confirm) {
-        router.push("/login");
+        router.push("/signin");
       }
     }
   }, [router]);
-
-  return (
-    <>
-      <div className="flex items-center justify-center p-5 w-screen h-screen">
-        <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center">
-          <h1 className="text-4xl absolute text-neutral-content top-[75%]">
-            Connecting...
-          </h1>
-        </div>
-      </div>
-    </>
-  );
 };
 
-export default Verify;
+export default useEmailSignIn;
