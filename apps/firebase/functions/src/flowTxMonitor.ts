@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
-import {PubSub} from '@google-cloud/pubsub';
+import {PubSub} from "@google-cloud/pubsub";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 
@@ -27,12 +27,12 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
     }
     try {
       await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref);
-      await flowJobDocRef.update({ status: "done", updatedAt: new Date() });
+      await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
         console.log(`Message ${messageId} published.`);
-        await flowJobDocRef.update({ status: "retrying", updatedAt: new Date() });
+        await flowJobDocRef.update({status: "retrying", updatedAt: new Date()});
       }
     }
   }
@@ -43,7 +43,7 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   if (existingFlowJobs.size > 0) {
     return existingFlowJobs.docs[0].ref;
   }
-  return await firestore().collection("flowJobs").add({ flowJobId });
+  return await firestore().collection("flowJobs").add({flowJobId});
 };
 
 const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => {

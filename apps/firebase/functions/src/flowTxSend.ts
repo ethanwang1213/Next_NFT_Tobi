@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
-import {PubSub} from '@google-cloud/pubsub';
+import {PubSub} from "@google-cloud/pubsub";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as secp from "@noble/secp256k1";
@@ -28,8 +28,8 @@ export const flowTxSend = functions.region(REGION).pubsub.topic(TOPIC_NAMES["flo
       txId,
       sentAt: new Date(),
     });
-    const messageForMoitoring = { flowJobId, txType, params };
-    const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({ json: messageForMoitoring });
+    const messageForMoitoring = {flowJobId, txType, params};
+    const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
     console.log(`Message ${messageId} published.`);
   }
 });
@@ -39,7 +39,7 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   if (existingFlowJobs.size > 0) {
     return existingFlowJobs.docs[0].ref;
   }
-  return await firestore().collection("flowJobs").add({ flowJobId });
+  return await firestore().collection("flowJobs").add({flowJobId});
 };
 
 const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {

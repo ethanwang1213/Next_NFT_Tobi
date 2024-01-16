@@ -8,9 +8,9 @@ import {metadata as houseBadgeMetadata} from "./housebadge";
 import {mintFes23NftTaskv1} from "./mintFes23NftTask";
 import {createFlowAccount} from "./createFlowAccount";
 import {native} from "./native";
-import { flowTxSend } from "./flowTxSend";
-import { flowTxMonitor } from "./flowTxMonitor";
-import { taskWrapperLink } from "./taskWrapperLink";
+import {flowTxSend} from "./flowTxSend";
+import {flowTxMonitor} from "./flowTxMonitor";
+import {taskWrapperLink} from "./taskWrapperLink";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
