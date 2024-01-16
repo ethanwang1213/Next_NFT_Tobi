@@ -72,9 +72,12 @@ const ProfilePage1: React.FC = () => {
           )}
         </div>
       </div>
+      {/*
+      // TOBIRAPOLIS祭スタンプラリー用
       <div className="mt-6 sm:mt-12">
         <StampRally />
       </div>
+      */}
     </div>
   );
 };

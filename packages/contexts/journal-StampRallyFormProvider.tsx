@@ -23,6 +23,9 @@ const StampRallyFormContext = createContext<ContextType>({} as ContextType);
 
 /**
  * スタンプラリーのフォームの状態を管理するコンテキスト
+ * 
+ * 使用方法：pages/index.tsxで、WatchMintStatusProviderとともにcontextを宣言する
+ * 理由：ユーザーログインを必要とする機能であるため、ログイン後のページであるindexで宣言する必要がある
  * @param param0
  * @returns {ReactElement} The `StampRallyFormProvider` context component
  */

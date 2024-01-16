@@ -12,6 +12,7 @@ pub contract HouseBadge: NonFungibleToken {
     pub var collectionStoragePath: StoragePath
     // pub var minterPublicPath: PublicPath
     pub var minterStoragePath: StoragePath
+    pub var adminStoragePath: StoragePath
 
     /************************************************/
     /******************** EVENTS ********************/
@@ -54,8 +55,18 @@ pub contract HouseBadge: NonFungibleToken {
             return self.metadata
         }
 
+        access(contract) fun rename(newName: String) {
+            self.metadata["name"] = newName
+        }
+
         destroy() {
             emit Destroy(id: self.id)
+        }
+    }
+
+    pub resource Admin {
+        pub fun rename(nft: &NFT, newName: String) {
+            nft.rename(newName: newName)
         }
     }
 
@@ -138,6 +149,13 @@ pub contract HouseBadge: NonFungibleToken {
         }
     }
 
+    pub fun createAdmin() {
+        self.adminStoragePath = /storage/HouseBadgeAdmin
+        if self.account.borrow<&Admin>(from: self.adminStoragePath) == nil {
+            self.account.save(<- create Admin(), to: self.adminStoragePath)
+        }
+    }
+
     // pub fun minter(): Capability<&Minter> {
     //     return self.account.getCapability<&Minter>(self.minterPublicPath)
     // }
@@ -145,13 +163,20 @@ pub contract HouseBadge: NonFungibleToken {
     init() {
         self.totalSupply = 0
         self.collectionPublicPath = /public/HouseBadgeCollection
+
         self.collectionStoragePath = /storage/HouseBadgeCollection
         // self.minterPublicPath = /public/HouseBadgeMinter
         self.minterStoragePath = /storage/HouseBadgeMinter
+        self.adminStoragePath = /storage/HouseBadgeAdmin
 
         if self.account.borrow<&Minter>(from: self.minterStoragePath) == nil {
             let minter <- create Minter()
             self.account.save(<- minter, to: self.minterStoragePath)
+        }
+
+        if self.account.borrow<&Admin>(from: self.adminStoragePath) == nil {
+            let admin <- create Admin()
+            self.account.save(<- admin, to: self.adminStoragePath)
         }
 
         if self.account.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath) == nil {
