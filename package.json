@@ -21,6 +21,7 @@
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "prettier": "latest",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "turbo": "latest"
   },
   "packageManager": "npm@8.19.4",
