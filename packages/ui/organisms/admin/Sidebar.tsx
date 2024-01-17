@@ -1,6 +1,8 @@
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import useMenuClassName from "hooks/useMenuClassName";
+import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { useDebounce } from "react-use";
 import Button from "ui/atoms/Button";
 
 type Props = {
@@ -8,25 +10,36 @@ type Props = {
 };
 
 const Sidebar = ({ children }: Props) => {
+  const desktopWidth = 992; // TODO: It might be better to define it elsewhere
+  //const mobileWidth = 576;
   const menuMinWidth = 89;
   const menuMaxWidth = 255;
 
-  const [selected, setSelected] = useState<number>(0);
   const [menuClassName, menuItemClassName, setMenuWidth] = useMenuClassName(
     menuMinWidth,
     menuMaxWidth,
+    desktopWidth,
+  );
+  const [selected, setSelected] = useState<number>(0);
+  const { displayWidth } = useWindowSize();
+  const [,] = useDebounce(
+    () => {
+      setMenuWidth();
+    },
+    50,
+    [displayWidth],
   );
   const menuRef = useRef<HTMLUListElement>(null);
   const { clickedMenu, menuStatus } = useNavbar();
+
   useEffect(() => {
+    setMenuWidth();
+  }, []);
+
+  useEffect(() => {
+    // Prevent execution on initial rendering
     if (!clickedMenu) {
-      // Calling menuStatus() toggles the width of the menu.
-      // So Set the width to the opposite of the desired width.
-      if (window.innerWidth >= 992) {
-        menuRef.current.classList.add(`w-[${menuMinWidth}px]`);
-      } else {
-        menuRef.current.classList.add(`w-[${menuMaxWidth}px]`);
-      }
+      return;
     }
     setMenuWidth(menuRef.current.classList);
   }, [clickedMenu, menuStatus]);
@@ -76,10 +89,6 @@ const Sidebar = ({ children }: Props) => {
     return normalIconColorCode;
   };
 
-  const getInitialSidebarWidthClassName = () => {
-    return clickedMenu ? "" : `md:w-[${menuMaxWidth}px]`;
-  };
-
   const getTextColor = (index: number) => {
     if (selected === index) {
       return selectedColor;
@@ -100,7 +109,7 @@ const Sidebar = ({ children }: Props) => {
 
   return (
     <div className="drawer drawer-open bg-neutral shadow-inner">
-      <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-2">
         <ul
