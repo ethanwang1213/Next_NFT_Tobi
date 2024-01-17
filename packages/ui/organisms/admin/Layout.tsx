@@ -20,9 +20,8 @@ const Layout = ({ children }: Props) => {
       <AuthProvider>
         <NavbarProvider>
           <Navbar />
-          <Sidebar />
+          <Sidebar>{children}</Sidebar>
         </NavbarProvider>
-        {children}
       </AuthProvider>
     </>
   );

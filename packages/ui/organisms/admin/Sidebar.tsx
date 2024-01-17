@@ -1,9 +1,13 @@
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import useMenuClassName from "hooks/useMenuClassName";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
 
-const Sidebar = () => {
+type Props = {
+  children: ReactNode;
+};
+
+const Sidebar = ({ children }: Props) => {
   const menuMinWidth = 89;
   const menuMaxWidth = 255;
 
@@ -97,6 +101,7 @@ const Sidebar = () => {
   return (
     <div className="drawer drawer-open bg-neutral shadow-inner">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+      <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-2">
         <ul
           className={`p-4 ${menuClassName} min-h-full text-base-content flex flex-col`}
