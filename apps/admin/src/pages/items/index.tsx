@@ -19,8 +19,8 @@ export default function Index() {
     
     return (
     <div className="w-full">
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="page-title mt-8 ml-12">アイテム管理</h1>
+      <div className="flex justify-between items-baseline pl-12 pr-7 pt-9">
+        <h1 className="text-3xl font-semibold text-[#717171]">アイテム管理</h1>
         <CreateButton buttonLabel='NEW SAMPLE' linkAddress="/admin/itmes/create" />
       </div>
       <div className="w-full items-center justify-between">

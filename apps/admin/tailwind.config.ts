@@ -34,6 +34,12 @@ const config = {
       colors: {
         brown: "#894400",
       },
+      width: {
+        '76': '19rem',
+        '112': '28rem',
+        '120': '30rem',
+        '128': '32rem',
+      }
     },
   },
   daisyui: {
