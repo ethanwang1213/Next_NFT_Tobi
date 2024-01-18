@@ -1,5 +1,6 @@
 import { AuthProvider } from "contexts/AdminAuthProvider";
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
+import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
 import { ReactNode } from "react";
 import FontLoader from "ui/atoms/FontLoader";
@@ -18,13 +19,23 @@ const Layout = ({ children }: Props) => {
       </Head>
       <FontLoader />
       <AuthProvider>
-        <NavbarProvider>
-          <Navbar />
-          <Sidebar>{children}</Sidebar>
-        </NavbarProvider>
+        <Contents>{children}</Contents>
       </AuthProvider>
     </>
   );
+};
+
+const Contents = ({ children }: Props) => {
+  if (auth.currentUser) {
+    return (
+      <NavbarProvider>
+        <Navbar />
+        <Sidebar>{children}</Sidebar>
+      </NavbarProvider>
+    );
+  }
+
+  return <>{children}</>;
 };
 
 export default Layout;
