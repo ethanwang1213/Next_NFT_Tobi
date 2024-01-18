@@ -38,3 +38,5 @@ apps/journal/.env
 
 .idea/
 *.iml
+
+.vercel

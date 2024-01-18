@@ -6,7 +6,7 @@ import useSaidanStore from "@/stores/saidanStore";
 import { useWindowSize } from "hooks";
 
 type Props = {
-  cameraRef: RefObject<Camera>;
+  cameraRef: RefObject<THREE.PerspectiveCamera>;
 };
 
 const CameraContainer = ({ cameraRef }: Props) => {

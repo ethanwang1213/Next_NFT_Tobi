@@ -43,6 +43,7 @@ type ContextType = {
   ) => void;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
+  // TOBIRAPOLIS祭スタンプラリー用
   setMintStatus: <T extends keyof MintStatusForSetMethod>(
     event: T,
     type: keyof MintStatusForSetMethod[T],
@@ -50,6 +51,7 @@ type ContextType = {
     isComplete: boolean
   ) => void;
   refetchUserMintStatus: () => void;
+  //
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -168,6 +170,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     setUser(newUser);
   };
 
+  // TOBIRAPOLIS祭スタンプラリー用。
   // スタンプラリーのmint状態を更新する
   const setMintStatus: ContextType["setMintStatus"] = (
     event,
@@ -203,6 +206,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   // TOBIRAPOLIS祭スタンプラリー用。
+  // mintStatusを監視するための関数
   const refetchUserMintStatus = async () => {
     if (!user) return;
 
@@ -238,8 +242,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         updateProfile,
         setDbIconUrl,
         setJoinTobiratoryInfo,
+        // TOBIRAPOLIS祭スタンプラリー用
         setMintStatus,
         refetchUserMintStatus,
+        //
       }}
     >
       {children}

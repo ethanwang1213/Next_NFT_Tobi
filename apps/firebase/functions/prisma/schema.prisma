@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model tobiratory_accounts {
+  uuid              String   @id @db.VarChar(100)
+  user_id           String   @db.VarChar(255)
+  username          String   @db.VarChar(255)
+  sns               String   @unique
+  icon_url          String   @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_flow_accounts {
+  uuid              String    @id
+  flow_address      String    @db.VarChar(255)
+  public_key        String    @db.VarChar(255)
+  tx_id             String    @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_saidans {
+  id                Int     @id @default(autoincrement())
+  title             String  @db.VarChar(255)
+  description       String  @db.VarChar(255)
+  showcase          Boolean @default(true)
+  owner_id          String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_contents {
+  id                Int     @id @default(autoincrement())
+  title             String  @db.VarChar(255)
+  image             String  @db.VarChar(255)
+  creator_user_id   String  @db.VarChar(255)
+  creator_username  String  @db.VarChar(255)
+  creator_icon      String  @db.VarChar(255)
+  creator_sns       String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_items {
+  id                Int     @id @default(autoincrement())
+  title             String  @db.VarChar(255)
+  image             String  @db.VarChar(255)
+  type              String  @db.VarChar(255)
+  content_id        Int
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_businesses {
+  id                Int     @id @default(autoincrement())
+  uuid              String  @db.VarChar(255)
+  name              String  @db.VarChar(255)
+  address           String  @db.VarChar(255)
+  phone             String  @db.VarChar(255)
+  kyc               String  @db.VarChar(255)
+  bank_account      String  @db.VarChar(255)
+  balance           String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_sales {
+  id                Int     @id @default(autoincrement())
+  item_id           Int
+  amount            Int
+  span              String  @db.VarChar(255)
+  price             String  @db.VarChar(255)
+  image             String  @db.VarChar(255)
+  name              String  @db.VarChar(255)
+  license           String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_nfts {
+  id                Int     @id @default(autoincrement())
+  serial_no         Int
+  owner             String  @db.VarChar(255)
+  title             String  @db.VarChar(255)
+  image             String  @db.VarChar(255)
+  creator           String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}

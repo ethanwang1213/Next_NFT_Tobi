@@ -5,6 +5,8 @@ export const NEKO_NFT_ID =
 export const TOPIC_NAMES = {
   ordersPaid: "shopify-orders-paid",
   ordersCreate: "shopify-orders-create",
+  flowTxSend: "flow-tx-send",
+  flowTxMonitor: "flow-tx-monitor",
 };
 
 export const REGION = process.env.REGION || "asia-northeast1";
