@@ -1,20 +1,48 @@
-import React, { useState } from 'react';
-import Popup from 'reactjs-popup';
+import React, { useState, useEffect, useRef } from 'react';
 
 const PublishPopupMenu = ({ statusString }) => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  // State to track whether the popup menu is open or closed
+  const [isPopupOpen, setPopupOpen] = useState(false);
+  const popupRef = useRef(null);
+
+  // Function to toggle the popup menu
+  const openPopup = () => {
+    setPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setPopupOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        // Clicked outside the popup, so close it
+        closePopup();
+      }
+    };
+
+    // Attach the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []); // Run this effect once on mount
 
   return (
-    <td className="whitespace-nowrap px-3 h-24 mt-1 flex items-center">
-      <span className="text-center min-w-16">
-        {statusString}
-      </span>
-      <span className="ml-2 text-xs cursor-pointer" onClick={() => setIsPopupOpen(true)}>
-        {statusString && statusString !== "下書き" ? "▼" : ""}
-      </span>
-      <Popup open={isPopupOpen} closeOnDocumentClick onClose={() => setIsPopupOpen(false)}>
-        {/* Your popup menu content goes here */}
-        <div className="absolute bg-[#07396C] text-white rounded-xl p-4 w-32 z-10">
+    <td className="relative inline-block">
+      <div className="whitespace-nowrap px-3 h-24 mt-1 flex items-center">
+        <span className="text-center min-w-16">
+          {statusString}
+        </span>
+        <span className="ml-2 text-xs cursor-pointer" onClick={openPopup}>
+          {statusString && statusString !== "下書き" ? "▼" : ""}
+        </span>
+      </div>
+      {isPopupOpen  && (
+        <div ref={popupRef} className="absolute bg-[#07396C] text-white rounded-xl top-16 p-4 w-32 z-10">
           <div className="">
             <input type="radio" id="radio1" name="radioGroup" defaultChecked={statusString==="公開" || statusString==="公開中"} autoFocus={false} />
             <label htmlFor="radio1" className="ml-2 text-base/8">公開</label>
@@ -28,7 +56,7 @@ const PublishPopupMenu = ({ statusString }) => {
             <label htmlFor="radio3" className="ml-2 text-base/8">予約公開</label>
           </div>
         </div>
-      </Popup>
+      )}
     </td>
   );
 };
