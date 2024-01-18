@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const general = require("../../packages/tailwind-config/tailwind.config.js");
+import general from "../../packages/tailwind-config/tailwind.config.js";
 const config = {
   ...general,
   content: [
@@ -62,4 +62,4 @@ const config = {
   },
 };
 
-module.exports = config;
+export default config;

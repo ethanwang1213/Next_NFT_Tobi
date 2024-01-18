@@ -1,3 +1,4 @@
+import config from "admin/tailwind.config";
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import useMenuClassName from "hooks/useMenuClassName";
 import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
@@ -10,15 +11,14 @@ type Props = {
 };
 
 const Sidebar = ({ children }: Props) => {
-  const desktopWidth = 992; // TODO: It might be better to define it elsewhere
-  //const mobileWidth = 576;
   const menuMinWidth = 89;
   const menuMaxWidth = 255;
+  const screensMd = parseInt(config.theme.screens.md);
 
   const [menuClassName, menuItemClassName, setMenuWidth] = useMenuClassName(
     menuMinWidth,
     menuMaxWidth,
-    desktopWidth,
+    screensMd,
   );
   const [selected, setSelected] = useState<number>(0);
   const { displayWidth } = useWindowSize();
