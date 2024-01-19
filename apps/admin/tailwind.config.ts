@@ -14,9 +14,6 @@ const config = {
       md: "992px", // desktops
     },
     extend: {
-      fontFamily: {
-        body: ["Hiragino Maru Gothic Pro", "sans-serif"],
-      },
       fontSize: {
         redeemStatus: {
           pc: {

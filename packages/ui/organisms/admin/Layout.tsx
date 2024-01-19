@@ -3,7 +3,6 @@ import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
 import { ReactNode } from "react";
-import FontLoader from "ui/atoms/FontLoader";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
 
@@ -17,7 +16,6 @@ const Layout = ({ children }: Props) => {
       <Head>
         <title>Tobiratory Admin</title>
       </Head>
-      <FontLoader />
       <AuthProvider>
         <Contents>{children}</Contents>
       </AuthProvider>
