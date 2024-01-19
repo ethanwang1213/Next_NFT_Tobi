@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { fetchSamples } from "ui/organisms/admin/actions/SampleActions";
+import { formatDateToLocal, formatCurrency } from "ui/atoms/utils";
 import { Tooltip } from "react-tooltip";
 import Image from "next/image";
-import { formatDateToLocal, formatCurrency } from "ui/atoms/utils";
-import PublishPopupMenu from "ui/molecules/publish-popup-menu";
-import { fetchSamples } from "ui/organisms/admin/actions/SampleActions";
+import PublishPopupMenu from "ui/molecules/PublishPopupMenu";
+import React, { useState, useEffect } from "react";
 
 export default function SampleTable({ filters }) {
   const [isAscending, setIsAscending] = useState(true);
@@ -25,29 +25,10 @@ export default function SampleTable({ filters }) {
 
   // Apply filters when they change
   useEffect(() => {
-    const filteredData = samples.filter(sample => {
-      // Implement your filtering logic based on the filters
-      // For example, if filters.categoryA is true, only include samples with category A
-      if (filters.checkbox1 && sample.publish_setting === '出品中') {
-        return true;
-      }
-      if (filters.checkbox2 && sample.publish_setting === '未出品') {
-        return true;
-      }
-      if (filters.checkbox3 && sample.publish_setting === '公開') {
-        return true;
-      }
-      if (filters.checkbox4 && sample.publish_setting === '非公開') {
-        return true;
-      }
-      if (filters.checkbox5 && sample.publish_setting === '下書き') {
-        return true;
-      }
-
-      return false; // Return false if the sample should be filtered out
+    const filteredData = samples.filter((sample) => {
+      return true; // Return false if the sample should be filtered out
     });
     setSamples(filteredData);
-    
   }, [filters]);
 
   return (
@@ -57,9 +38,10 @@ export default function SampleTable({ filters }) {
           <table className="min-w-full text-[#717171]">
             <thead className="">
               <tr className="text-base/[56px] bg-[#1779DE] text-white">
+                <th className="w-40"></th>
                 <th
                   scope="col"
-                  className="w-76 py-0 text-center justify-center min-w-48"
+                  className="w-60 py-0 text-left"
                   onClick={toggleSortingDirection}
                 >
                   アイテム名
@@ -67,15 +49,15 @@ export default function SampleTable({ filters }) {
                     {isAscending ? "▲" : "▼"}
                   </span>
                 </th>
-                <th scope="col" className="w-20 py-0">
-                  <div className="flex text-center justify-center">
+                <th scope="col" className="py-0 w-38">
+                  <div className="flex text-center justify-center relative">
                     金額
                     <Image
                       src="/admin/images/info-icon.svg"
                       alt=""
                       width={16}
                       height={16}
-                      className="ml-2"
+                      className="ml-16 -mt-2 absolute top-2/4"
                       id="amount-tooltip-anchor"
                       data-tooltip-id="amount-tooltip"
                       data-tooltip-content="現在は¥0のみ設定が可能です。"
@@ -102,46 +84,49 @@ export default function SampleTable({ filters }) {
                     }}
                   />
                 </th>
-                <th scope="col" className="w-28 py-0 text-center">
+                <th scope="col" className="w-38 py-0 text-center">
                   公開設定
                 </th>
-                <th scope="col" className="w-28 py-0 text-center">
+                <th scope="col" className="w-38 py-0 text-center">
                   販売状況
                 </th>
-                <th scope="col" className="w-28 py-0 text-center">
+                <th scope="col" className="w-38 py-0 text-center">
                   公開日
                 </th>
-                <th scope="col" className="w-28 py-0 text-center">
+                <th scope="col" className="w-38 py-0 text-center">
                   販売開始日
                 </th>
-                <th scope="col" className="w-28 py-0 text-center">
+                <th scope="col" className="w-38 py-0 text-center">
                   販売終了日
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tbody className="bg-white">
               {samples?.map((sample) => (
                 <tr key={sample.id} className="w-full border-b py-3 text-sm">
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3 justify-start">
-                      <Image
-                        src={sample.image_url}
-                        className="rounded-full"
-                        width={80}
-                        height={80}
-                        alt={`${sample.name}'s profile picture`}
-                      />
-                      {sample.name}
-                      <br />
-                      {sample.position}
-                    </div>
+                  <td className="whitespace-nowrap py-3 text-right pr-8">
+                    <Image
+                      src={sample.image_url}
+                      className="rounded-full inline-block"
+                      width={80}
+                      height={80}
+                      alt={`${sample.name}'s profile picture`}
+                    />
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3 text-center">
+                  <td className="whitespace-nowrap py-3">
+                    {sample.name}
+                    <br />
+                    {sample.position}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3 text-center justify-center">
                     {/* {formatCurrency(sample.amount)} */}
                     {sample.amount}
                   </td>
-                  <PublishPopupMenu statusString={sample.publish_setting} />
-                  <td className="whitespace-nowrap px-3 py-3 text-center justify-center">
+                  <td className="text-center">
+                    <PublishPopupMenu statusString={sample.publish_setting} />
+                  </td>
+                  <td className="whitespace-nowrap p-3 text-center justify-center">
                     {sample.sales_status}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3  text-center justify-center">
@@ -169,6 +154,7 @@ export default function SampleTable({ filters }) {
                       </>
                     )}
                   </td>
+                  <td></td>
                 </tr>
               ))}
             </tbody>

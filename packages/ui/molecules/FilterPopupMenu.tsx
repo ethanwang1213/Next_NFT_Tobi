@@ -2,7 +2,7 @@ import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import Checkbox from "ui/atoms/Checkbox";
 
-const FilterPopupMenu = ( {preference, changeHandler} ) => {
+const FilterPopupMenu = ({ preference, changeHandler }) => {
   // State to track whether the popup menu is open or closed
   const [isPopupOpen, setPopupOpen] = useState(false);
   const popupRef = useRef(null);
@@ -34,7 +34,7 @@ const FilterPopupMenu = ( {preference, changeHandler} ) => {
   }, []); // Run this effect once on mount
 
   return (
-    <div className="relative">
+    <div className="relative inline-block">
       <div className="flex items-center px-8">
         <Image
           src="/admin/images/filter-icon.svg"
@@ -42,9 +42,8 @@ const FilterPopupMenu = ( {preference, changeHandler} ) => {
           onClick={openPopup}
           width={36}
           height={36}
-          style={{ marginTop: 11, marginBottom: 9, marginRight: 33 }}
+          className="my-2.5"
         />
-        <span className="text-base text-[#717171C1]">アイテムを検索</span>
       </div>
       {isPopupOpen && (
         <div
@@ -55,7 +54,7 @@ const FilterPopupMenu = ( {preference, changeHandler} ) => {
             <Checkbox
               id="checkbox1"
               checked={preference["checkbox1"]}
-              onChange={() => changeHandler('checkbox1')}
+              onChange={() => changeHandler("checkbox1")}
             />
             <label htmlFor="checkbox1" className="ml-2 text-base/8">
               出品中
@@ -65,7 +64,7 @@ const FilterPopupMenu = ( {preference, changeHandler} ) => {
             <Checkbox
               id="checkbox2"
               checked={preference["checkbox2"]}
-              onChange={() => changeHandler('checkbox2')}
+              onChange={() => changeHandler("checkbox2")}
             />
             <label htmlFor="checkbox2" className="ml-2 text-base/8">
               未出品
@@ -75,7 +74,7 @@ const FilterPopupMenu = ( {preference, changeHandler} ) => {
             <Checkbox
               id="checkbox3"
               checked={preference["checkbox3"]}
-              onChange={() => changeHandler('checkbox3')}
+              onChange={() => changeHandler("checkbox3")}
             />
             <label htmlFor="checkbox3" className="ml-2 text-base/8">
               公開
@@ -85,7 +84,7 @@ const FilterPopupMenu = ( {preference, changeHandler} ) => {
             <Checkbox
               id="checkbox4"
               checked={preference["checkbox4"]}
-              onChange={() => changeHandler('checkbox4')}
+              onChange={() => changeHandler("checkbox4")}
             />
             <label htmlFor="checkbox4" className="ml-2 text-base/8">
               非公開
@@ -95,7 +94,7 @@ const FilterPopupMenu = ( {preference, changeHandler} ) => {
             <Checkbox
               id="checkbox5"
               checked={preference["checkbox5"]}
-              onChange={() => changeHandler('checkbox5')}
+              onChange={() => changeHandler("checkbox5")}
             />
             <label htmlFor="checkbox5" className="ml-2 text-base/8">
               下書き
