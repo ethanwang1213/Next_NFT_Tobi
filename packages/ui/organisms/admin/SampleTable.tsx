@@ -1,102 +1,54 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import Image from "next/image";
 import { formatDateToLocal, formatCurrency } from "ui/atoms/utils";
 import PublishPopupMenu from "ui/molecules/publish-popup-menu";
+import { fetchSamples } from "ui/organisms/admin/actions/SampleActions";
 
-export default function SampleTable() {
-  const samples = [
-    {
-      id: 1,
-      image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
-      name: "Inutanuki - GORAKUBA!",
-      position: "Highschool",
-      amount: 1500,
-      publish_setting: "公開中",
-      sales_status: "販売中",
-      release_date: "2023/05/14 13:24",
-      sales_start_date: "2023/05/14 13:24",
-      sales_end_date: "2023/05/14 13:24",
-    },
-    {
-      id: 2,
-      image_url: "/admin/images/sample-thumnail/Rectangle-58.png",
-      name: "Pento - GORAKUBA!",
-      position: "Highschool",
-      amount: 1500,
-      publish_setting: "公開中",
-      sales_status: "販売終了",
-      release_date: "2023/05/14 13:24",
-      sales_start_date: "2023/05/14 13:24",
-      sales_end_date: "2023/05/14 13:24",
-    },
-    {
-      id: 3,
-      image_url: "/admin/images/sample-thumnail/Rectangle-60.png",
-      name: "Encho. - GORAKUBA! ",
-      position: "Highschool",
-      amount: 1500,
-      publish_setting: "非公開",
-      sales_status: "",
-      release_date: "",
-      sales_start_date: "",
-      sales_end_date: "",
-    },
-    {
-      id: 4,
-      image_url: "/admin/images/sample-thumnail/Rectangle-59.png",
-      name: "Tenri Kannagi 2023",
-      position: "",
-      amount: 2500,
-      publish_setting: "予約公開",
-      sales_status: "",
-      release_date: "2023/05/14 13:24",
-      sales_start_date: "2023/05/14 13:24",
-      sales_end_date: "2023/05/14 13:24",
-    },
-    {
-      id: 5,
-      image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
-      name: "SAMPLEITEM1234",
-      position: "",
-      amount: 0,
-      publish_setting: "下書き",
-      sales_status: "",
-      release_date: "",
-      sales_start_date: "",
-      sales_end_date: "",
-    },
-    {
-      id: 6,
-      image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
-      name: "SAMPLEITEM1235",
-      position: "",
-      amount: 0,
-      publish_setting: "下書き",
-      sales_status: "",
-      release_date: "",
-      sales_start_date: "",
-      sales_end_date: "",
-    },
-    {
-      id: 7,
-      image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
-      name: "SAMPLEITEM1236",
-      position: "",
-      amount: 0,
-      publish_setting: "下書き",
-      sales_status: "",
-      release_date: "",
-      sales_start_date: "",
-      sales_end_date: "",
-    },
-  ];
-
+export default function SampleTable({ filters }) {
   const [isAscending, setIsAscending] = useState(true);
+  const [samples, setSamples] = useState(fetchSamples());
 
   const toggleSortingDirection = () => {
     setIsAscending(!isAscending);
+    const sortedSamples = [...samples].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setSamples(sortedSamples);
   };
+
+  // Apply filters when they change
+  useEffect(() => {
+    const filteredData = samples.filter(sample => {
+      // Implement your filtering logic based on the filters
+      // For example, if filters.categoryA is true, only include samples with category A
+      if (filters.checkbox1 && sample.publish_setting === '出品中') {
+        return true;
+      }
+      if (filters.checkbox2 && sample.publish_setting === '未出品') {
+        return true;
+      }
+      if (filters.checkbox3 && sample.publish_setting === '公開') {
+        return true;
+      }
+      if (filters.checkbox4 && sample.publish_setting === '非公開') {
+        return true;
+      }
+      if (filters.checkbox5 && sample.publish_setting === '下書き') {
+        return true;
+      }
+
+      return false; // Return false if the sample should be filtered out
+    });
+    setSamples(filteredData);
+    
+  }, [filters]);
 
   return (
     <div className="flow-root">
@@ -169,10 +121,7 @@ export default function SampleTable() {
             </thead>
             <tbody className="bg-white">
               {samples?.map((sample) => (
-                <tr
-                  key={sample.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
+                <tr key={sample.id} className="w-full border-b py-3 text-sm">
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3 justify-start">
                       <Image
@@ -191,9 +140,7 @@ export default function SampleTable() {
                     {/* {formatCurrency(sample.amount)} */}
                     {sample.amount}
                   </td>
-                  <PublishPopupMenu 
-                    statusString={sample.publish_setting}
-                  />
+                  <PublishPopupMenu statusString={sample.publish_setting} />
                   <td className="whitespace-nowrap px-3 py-3 text-center justify-center">
                     {sample.sales_status}
                   </td>

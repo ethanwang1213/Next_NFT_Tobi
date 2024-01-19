@@ -32,7 +32,7 @@ const PublishPopupMenu = ({ statusString }) => {
   }, []); // Run this effect once on mount
 
   return (
-    <td className="relative inline-block">
+    <td className="relative">
       <div className="whitespace-nowrap px-3 h-24 mt-1 flex items-center">
         <span className="text-center min-w-16">
           {statusString}
@@ -42,7 +42,7 @@ const PublishPopupMenu = ({ statusString }) => {
         </span>
       </div>
       {isPopupOpen  && (
-        <div ref={popupRef} className="absolute bg-[#07396C] text-white rounded-xl top-16 p-4 w-32 z-10">
+        <div ref={popupRef} className="absolute bg-[#07396C] text-white rounded-xl top-16 p-4 pl-6 w-36 z-10">
           <div className="">
             <input type="radio" id="radio1" name="radioGroup" defaultChecked={statusString==="公開" || statusString==="公開中"} autoFocus={false} />
             <label htmlFor="radio1" className="ml-2 text-base/8">公開</label>
