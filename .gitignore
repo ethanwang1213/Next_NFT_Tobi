@@ -38,3 +38,4 @@ apps/journal/.env
 
 .idea/
 *.iml
+.vscode
