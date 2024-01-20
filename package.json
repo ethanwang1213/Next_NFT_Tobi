@@ -26,6 +26,7 @@
   "packageManager": "npm@8.19.4",
   "dependencies": {
     "react-easy-crop": "^4.7.4",
+    "react-headless-tabs": "^6.0.4",
     "react-hook-form": "^7.43.9",
     "react-tooltip": "^5.25.2",
     "reactjs-popup": "^2.0.6",

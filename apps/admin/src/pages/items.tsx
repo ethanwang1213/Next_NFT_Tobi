@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { useState } from "react";
-import CreateButton from "ui/molecules/ItemCreateButton";
+import CreateButton from "ui/molecules/CreateButton";
 import ItemsManageTab from "ui/organisms/admin/ItemsManageTab";
 
 export const metadata: Metadata = {
@@ -10,14 +10,15 @@ export const metadata: Metadata = {
 export default function Index() {
   const [selectedTab, setSelectedTab] = useState("sample");
 
-  const linkAddress = {
-    sample: "/admin/workspace",
-    package: "/admin/items",
-  };
-
-  const buttonLabel = {
-    sample: "new sample",
-    package: "new package",
+  const links = {
+    sample: {
+      label: "new sample",
+      href: "/admin/workspace",
+    },
+    package: {
+      label: "new package",
+      href: "/admin/items",
+    },
   };
 
   return (
@@ -29,7 +30,7 @@ export default function Index() {
         >
           アイテム管理
         </h1>
-        <CreateButton label={buttonLabel[selectedTab]} href={linkAddress[selectedTab]} />
+        <CreateButton {...(links[selectedTab] ?? links.sample)} />
       </div>
       <div className="w-full items-center justify-between">
         <ItemsManageTab onTabChange={setSelectedTab} />

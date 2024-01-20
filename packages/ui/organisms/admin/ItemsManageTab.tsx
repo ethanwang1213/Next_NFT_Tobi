@@ -4,17 +4,11 @@ import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
 import SampleTable from "./SampleTable";
 import PackageTable from "./PackageTable";
-import FilterPopupMenu from "ui/molecules/FilterPopupMenu";
+import FilterButton from "ui/organisms/admin/FilterButton";
 
 export default function ItemsManageTab({ onTabChange }) {
   const [tab, setTab] = useTabs(["sample", "package"]);
-  const [filterArray, setFilterArray] = useState({
-    checkbox1: false,
-    checkbox2: false,
-    checkbox3: false,
-    checkbox4: false,
-    checkbox5: false,
-  });
+  const [filterArray, setFilterArray] = useState({});
 
   const handleTabChange = (tab) => {
     setTab(tab);
@@ -49,10 +43,7 @@ export default function ItemsManageTab({ onTabChange }) {
         </TabSelector>
       </nav>
       <div className="flex justify-start">
-        <FilterPopupMenu
-          preference={filterArray}
-          changeHandler={toggleAtIndex}
-        />
+        <FilterButton preference={filterArray} changeHandler={toggleAtIndex} />
         <input
           className="text-base text-[#717171C1]"
           placeholder="アイテムを検索"

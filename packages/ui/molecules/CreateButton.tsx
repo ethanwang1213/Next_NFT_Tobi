@@ -3,10 +3,10 @@ import Link from "next/link";
 
 export default function CreateButton({
   label,
-  href
+  href,
 }: {
-  label: string,
-  href: string
+  label: string;
+  href: string;
 }) {
   return (
     <Link
