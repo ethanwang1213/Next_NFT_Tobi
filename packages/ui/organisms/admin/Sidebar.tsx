@@ -45,16 +45,11 @@ const Sidebar = ({ children }: Props) => {
   }, [clickedMenu, menuStatus]);
 
   const buttonBaseClassName =
-    "btn-block btn-square bg-neutral hover:bg-neutral pl-2 gap-3 flex flex-row place-content-start content-center rounded-none border-0 border-neutral border-l-8";
+    "btn-block btn-square bg-base-100 hover:bg-base-100 pl-2 gap-3 flex flex-row place-content-start content-center rounded-none border-0 border-l-8";
 
-  const normalIconColor = "[#B3B3B3]"; // TODO: replace color name
-  const normalTextColor = "[#717171]"; // TODO: replace color name
+  const normalIconColor = "non-active";
+  const normalTextColor = "base-content";
   const selectedColor = "primary";
-
-  // FIXME: Because specifying with className doesn't take effect, use inline styles instead.
-  const normalTextColorCode = "#717171";
-  const normalIconColorCode = "#B3B3B3";
-  const selectedColorCode = "#1779DE";
 
   const items = [
     { name: "ワークスペース", icon: "/admin/images/icon/workspace.svg" },
@@ -66,13 +61,11 @@ const Sidebar = ({ children }: Props) => {
   ];
 
   const getButtonClassName = (index: number) => {
-    const className = `${buttonBaseClassName} text-${getTextColor(
-      index,
-    )} hover:border-neutral`;
+    const className = `${buttonBaseClassName} text-${getTextColor(index)} `;
     if (selected === index) {
-      return `${className} border-l-accent-focus hover:border-l-accent-focus`;
+      return `${className} border-l-active hover:border-l-active`;
     }
-    return className;
+    return `${className} border-l-base-100 hover:border-l-base-100`;
   };
 
   const getIconColor = (index: number) => {
@@ -82,13 +75,6 @@ const Sidebar = ({ children }: Props) => {
     return normalIconColor;
   };
 
-  const getIconColorCode = (index: number) => {
-    if (selected === index) {
-      return selectedColorCode;
-    }
-    return normalIconColorCode;
-  };
-
   const getTextColor = (index: number) => {
     if (selected === index) {
       return selectedColor;
@@ -96,22 +82,16 @@ const Sidebar = ({ children }: Props) => {
     return normalTextColor;
   };
 
-  const getTextColorCode = (index: number) => {
-    if (selected === index) {
-      return selectedColor;
-    }
-    return normalTextColorCode;
-  };
-
   const getIconClassName = (index: number) => {
     return `relative h-[70%] aspect-square bg-${getIconColor(index)}`;
   };
 
   return (
-    <div className="drawer drawer-open bg-neutral shadow-inner">
+    <div className="drawer drawer-open">
+      <div className="bg-primary bg-non-active"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
-      <div className="drawer-side border-r-2">
+      <div className="drawer-side border-r-base-content border-r-[0.5px]">
         <ul
           className={`p-4 ${menuClassName} min-h-full text-base-content flex flex-col`}
           ref={menuRef}
@@ -131,12 +111,12 @@ const Sidebar = ({ children }: Props) => {
                     WebkitMaskRepeat: "no-repeat",
                     WebkitMaskPosition: "center",
                     WebkitMaskSize: "contain",
-                    backgroundColor: getIconColorCode(index),
                   }}
                 ></div>
                 <div
-                  className={`${menuItemClassName}`}
-                  style={{ color: getTextColorCode(index) }}
+                  className={`text-[0.9375rem] font-normal text-${getTextColor(
+                    index,
+                  )} ${menuItemClassName}`}
                 >
                   {item.name}
                 </div>

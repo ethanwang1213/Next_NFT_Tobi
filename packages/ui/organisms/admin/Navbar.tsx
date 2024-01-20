@@ -11,15 +11,15 @@ const Navbar = () => {
   const logoHeight = 32;
   const { onClickMenu } = useNavbar();
   return (
-    <NavbarContainer className={"bg-neutral shadow-xl"}>
+    <NavbarContainer className={"shadow-[0px_1px_10px_0px_rgba(0,0,0,0.20)]"}>
       <NavbarStart>
         <ImageIconButton
           label={""}
           type={"button"}
           imagePath={"/admin/images/icon/hamburger.svg"}
-          alt={"google"}
+          alt={"toggle menu"}
           buttonClassName={
-            "btn-block border-0 w-[35px] bg-neutral hover:bg-neutral"
+            "btn-block bg-base-100 hover:bg-base-100 border-0 w-[35px]"
           }
           iconClassName={"relative h-[50%] aspect-square"}
           onClick={onClickMenu}
