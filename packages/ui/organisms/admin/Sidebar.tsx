@@ -114,7 +114,7 @@ const Sidebar = ({ children }: Props) => {
                   }}
                 ></div>
                 <div
-                  className={`text-[0.9375rem] font-normal text-${getTextColor(
+                  className={`text-[15px] font-normal text-${getTextColor(
                     index,
                   )} ${menuItemClassName}`}
                 >

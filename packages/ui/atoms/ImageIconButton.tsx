@@ -7,6 +7,8 @@ type Props = {
   type: "button" | "submit" | "reset";
   imagePath: string;
   alt?: string;
+  width?: number;
+  height?: number;
   buttonClassName?: string;
   iconClassName?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -17,10 +19,13 @@ const ImageIconButton = ({
   type,
   imagePath,
   alt,
+  width,
+  height,
   buttonClassName,
   iconClassName,
   onClick,
 }: Props) => {
+  const fill = !(width && height);
   return (
     <Button
       label={label}
@@ -29,7 +34,13 @@ const ImageIconButton = ({
       onClick={onClick}
     >
       <div className={iconClassName}>
-        <Image src={imagePath} alt={alt} fill />
+        <Image
+          src={imagePath}
+          alt={alt}
+          width={width}
+          height={height}
+          fill={fill}
+        />
       </div>
     </Button>
   );

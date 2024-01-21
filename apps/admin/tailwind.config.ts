@@ -33,6 +33,7 @@ const config = {
         attention: "#FF4747",
         "attention-content": "#FFFFFF",
         "base-76-content": "#717171C2",
+        "base-200-content": "#5A5A5A",
         "non-active": "#B3B3B3",
         popup: "#07396C",
         "popup-content": "#FFFFFF",
