@@ -30,6 +30,7 @@ export const flowTxSend = functions.region(REGION)
         "FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS",
         "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID",
         "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH",
+        "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN",
         "FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY",
       ],
     })
@@ -62,7 +63,6 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   if (existingFlowJobs.size > 0) {
     return existingFlowJobs.docs[0].ref;
   }
-  return await firestore().collection("flowJobs").add({flowJobId});
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
@@ -216,14 +216,25 @@ const hashMessageHex = (hashType: string, msgHex: string) => {
   }
 };
 
-const curve = new EC("secp256k1");
+const getSignCurve = (signType: string) => {
+  if (signType == "ECDSA_secp256k1") {
+    return new EC("secp256k1");
+  } else if (signType == "ECDSA_P256") {
+    return new EC("p256");
+  } else {
+    throw Error("Invalid arguments");
+  }
+};
 
 const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string}) => {
-  const key = curve.keyFromPrivate(Buffer.from(privateKey, "hex"));
-  const hash = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH;
-  if (!hash) {
+  if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH ||
+    !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN
+  ) {
     throw new Error("The environment of flow signer is not defined.");
   }
+  const curve = getSignCurve(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN);
+  const key = curve.keyFromPrivate(Buffer.from(privateKey, "hex"));
+  const hash = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH;
   const sig = key.sign(hashMessageHex(hash, msgHex));
   const n = 32;
   const r = sig.r.toArrayLike(Buffer, "be", n);
