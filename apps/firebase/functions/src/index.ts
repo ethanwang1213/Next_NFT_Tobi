@@ -6,7 +6,7 @@ import {discordUserNfts} from "./discordUserNfts";
 import {metadata} from "./tobiraneko";
 import {metadata as houseBadgeMetadata} from "./housebadge";
 import {mintFes23NftTaskv1} from "./mintFes23NftTask";
-import {createFlowAccount} from "./createFlowAccount";
+import {createFlowAccount, createFlowAccountDemo} from "./createFlowAccount";
 import {native} from "./native";
 import {flowTxSend} from "./flowTxSend";
 import {flowTxMonitor} from "./flowTxMonitor";
@@ -35,4 +35,6 @@ exports.taskWrapperLink = taskWrapperLink;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
+  exports.kmsSample = require("./kmsSample");
+  exports.createFlowAccountDemo = createFlowAccountDemo;
 }
