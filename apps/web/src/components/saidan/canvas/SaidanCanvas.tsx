@@ -74,7 +74,7 @@ const SaidanCanvas = ({ canvasRef }: SaidanCanvasProps) => {
   // ユーザー操作に関する定義
   const { handleRelativeMove } = useRelativeMove();
   const raycaster = useMemo(() => new Raycaster(), []);
-  const cameraRef = useRef<Camera>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const movePointerTargetRef = useRef<Group>(null!);
   const { handleDirectDown, handleDirectMove } = useDirectMove({
     raycaster,
@@ -175,8 +175,9 @@ const SaidanCanvas = ({ canvasRef }: SaidanCanvasProps) => {
         const itemType = item.data().itemType as ItemType;
         // チェック用文字列 /id[sq|wh]/
         // sq:アクスタ用、wh:缶バッジ,ポスター用
-        const checkString = `${srcId}${itemType === "ACRYLIC_STAND" ? "sq" : "wh"
-          }`;
+        const checkString = `${srcId}${
+          itemType === "ACRYLIC_STAND" ? "sq" : "wh"
+        }`;
         if (registeredStrings.has(checkString)) {
           // すでに画像生成が予定されている場合
           laterItems.push(item);
