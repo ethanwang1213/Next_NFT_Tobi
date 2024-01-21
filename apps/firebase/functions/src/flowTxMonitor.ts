@@ -21,7 +21,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
 
   // Add processing here according to txType
   if (txType == "createFlowAccount") {
-    const flowAccounts = await firestore().collection("flowAccounts").where("email", "==", params.email).get();
+    const flowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", params.tobiratoryAccountUuid).get();
     if (flowAccounts.size == 0) {
       throw new Error("FLOW_ACCOUNT_NOT_FOUND");
     }
