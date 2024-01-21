@@ -1,49 +1,17 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { formatDateToLocal, formatCurrency } from "ui/atoms/utils";
-import PublishPopupMenu from "ui/molecules/PublishPopupMenu";
+import PublishStatus from "ui/organisms/admin/PublishStatus";
+import { fetchPackages } from "./actions/PackageActions";
 
 export default function PackageTable() {
-  const packages = [
-    {
-      id: 1,
-      image_url: "/admin/images/package-thumnail/Gorakuba.png",
-      name: "THE TITLE OF A PACKAGE",
-      publish_setting: "公開中",
-      release_date: "2023/05/14 13:24",
-      count: 9,
-    },
-    {
-      id: 2,
-      image_url: "/admin/images/package-thumnail/Gorakuba.png",
-      name: "THE TITLE OF A PACKAGE",
-      publish_setting: "公開中",
-      release_date: "2023/05/14 13:24",
-      count: 9,
-    },
-    {
-      id: 3,
-      image_url: "/admin/images/package-thumnail/Gorakuba.png",
-      name: "THE TITLE OF A PACKAGE",
-      publish_setting: "公開中",
-      release_date: "2023/05/14 13:24",
-      count: 9,
-    },
-    {
-      id: 4,
-      image_url: "/admin/images/package-thumnail/Gorakuba.png",
-      name: "THE TITLE OF A PACKAGE",
-      publish_setting: "公開中",
-      release_date: "2023/05/14 13:24",
-      count: 9,
-    },
-  ];
-
   const [isAscending, setIsAscending] = useState(true);
 
   const toggleSortingDirection = () => {
     setIsAscending(!isAscending);
   };
+
+  const packages = fetchPackages();
 
   return (
     <div className="flow-root">
@@ -93,9 +61,7 @@ export default function PackageTable() {
                     {package_item.name}
                   </td>
                   <td className="text-center">
-                    <PublishPopupMenu
-                      statusString={package_item.publish_setting}
-                    />
+                    <PublishStatus statusValue={package_item.publish_setting} />
                   </td>
                   <td className="whitespace-nowrap px-1 py-2 text-center justify-center">
                     {/* {formatDateToLocal(sample.release_date)} */}

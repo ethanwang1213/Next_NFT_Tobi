@@ -4,7 +4,7 @@ import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
 import SampleTable from "./SampleTable";
 import PackageTable from "./PackageTable";
-import FilterButton from "ui/organisms/admin/FilterButton";
+import FilterPopupButton from "ui/organisms/admin/FilterPopupButton";
 
 export default function ItemsManageTab({ onTabChange }) {
   const [tab, setTab] = useTabs(["sample", "package"]);
@@ -43,7 +43,10 @@ export default function ItemsManageTab({ onTabChange }) {
         </TabSelector>
       </nav>
       <div className="flex justify-start">
-        <FilterButton preference={filterArray} changeHandler={toggleAtIndex} />
+        <FilterPopupButton
+          preference={filterArray}
+          changeHandler={toggleAtIndex}
+        />
         <input
           className="text-base text-[#717171C1]"
           placeholder="アイテムを検索"

@@ -2,7 +2,7 @@ import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import FilterPopupMenu from "ui/organisms/admin/FilterPopupMenu";
 
-const FilterButton = (props) => {
+const FilterPopupButton = (props) => {
   // State to track whether the popup menu is open or closed
   const [isPopupOpen, setPopupOpen] = useState(false);
   const popupRef = useRef(null);
@@ -57,4 +57,4 @@ const FilterButton = (props) => {
   );
 };
 
-export default FilterButton;
+export default FilterPopupButton;

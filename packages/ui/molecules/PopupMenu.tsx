@@ -1,4 +1,4 @@
-import { FILTER_TYPE, FILTER } from "ui/atoms/PopupMenuChildType";
+import { FILTER_TYPE, FILTER } from "ui/atoms/PopupMenuItemType";
 
 export default function PopupMenu({ filters, preference, changeHandler }) {
   let offsetIndex: Number[] = [];

@@ -1,4 +1,4 @@
-import { FILTER_TYPE, FILTER } from "ui/atoms/PopupMenuChildType";
+import { FILTER_TYPE, FILTER } from "ui/atoms/PopupMenuItemType";
 import PopupMenu from "ui/molecules/PopupMenu";
 
 const filters: Array<FILTER> = [
