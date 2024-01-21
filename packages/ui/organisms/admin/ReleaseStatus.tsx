@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import PublishPopupMenu from "./PublishPopupMenu";
+import ReleasePopupMenu from "./ReleasePopupMenu";
 
-const PublishStatus = (statusValue: string) => {
+const ReleaseStatus = ({ value, date }: { value: string; date: string }) => {
   // State to track whether the popup menu is open or closed
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [pubState, setPubState] = useState(statusValue);
+  const [pubStatus, setPubStatus] = useState(value);
+  const [pubDate, setPubDate] = useState(date);
 
   const popupRef = useRef(null);
 
@@ -34,33 +35,29 @@ const PublishStatus = (statusValue: string) => {
     };
   }, []); // Run this effect once on mount
 
-  const onPubStateChange = (value: string) => {
-    setPubState(value);
-  };
-
   return (
     <div className="relative">
       <div className="whitespace-nowrap h-24 flex justify-center flex-col">
         <span className="relative">
-          {pubState}
+          {pubStatus}
           <span
             className="absolute top-2/4 -mt-2 right-5 text-xs cursor-pointer"
             onClick={openPopup}
           >
-            {pubState && pubState !== "下書き" ? "▼" : ""}
+            {pubStatus && pubStatus !== "下書き" ? "▼" : ""}
           </span>
         </span>
       </div>
       {isPopupOpen && (
         <div
           ref={popupRef}
-          className="absolute bg-[#07396C] text-white rounded-xl top-16 p-4 pl-6 w-36 z-10 text-left"
+          className="absolute bg-[#07396C] text-white rounded-xl top-16 p-4 pl-6 z-10 text-left"
         >
-          <PublishPopupMenu />
+          <ReleasePopupMenu {...{ pubStatus, pubDate }} />
         </div>
       )}
     </div>
   );
 };
 
-export default PublishPopupMenu;
+export default ReleaseStatus;

@@ -4,15 +4,18 @@ export default function PopupMenu({ filters, preference, changeHandler }) {
   let offsetIndex: Number[] = [];
   let parentOffsetIndex: Number[] = [];
 
-  const fnRenderFilterControl = (filter: FILTER, index: number) => {
+  const fnRenderFilterControl = (filter: FILTER) => {
     const type = filter.type === FILTER_TYPE.CHECKBOX ? "checkbox" : "radio";
 
+    console.log(filter);
     offsetIndex[type] = (offsetIndex[type] ?? 0) + 1;
 
-    const absIndex = index + offsetIndex[type];
-    const controlKey = `${type}${absIndex}`;
+    console.log(offsetIndex[type]);
 
-    filter.children && parentOffsetIndex.push(absIndex);
+    const controlKey = `${type}${offsetIndex[type]}`;
+    console.log(controlKey);
+
+    filter.children && parentOffsetIndex.push(offsetIndex[type]);
 
     const props = {
       id: controlKey,

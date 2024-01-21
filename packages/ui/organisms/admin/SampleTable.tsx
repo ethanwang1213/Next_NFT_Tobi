@@ -1,11 +1,11 @@
 "use client";
 
-import { fetchSamples } from "ui/organisms/admin/actions/SampleActions";
-import { formatDateToLocal, formatCurrency } from "ui/atoms/utils";
-import { Tooltip } from "react-tooltip";
 import Image from "next/image";
-import PublishPopupMenu from "ui/molecules/PublishPopupMenu";
+import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
 import React, { useState, useEffect } from "react";
+import { Tooltip } from "react-tooltip";
+import { fetchSamples } from "ui/organisms/admin/actions/SampleActions";
+import { formatDateToLocal, formatCurrency } from "ui/atoms/Formatters";
 
 export default function SampleTable({ filters }) {
   const [isAscending, setIsAscending] = useState(true);
@@ -120,38 +120,47 @@ export default function SampleTable({ filters }) {
                     {sample.position}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center justify-center">
-                    {/* {formatCurrency(sample.amount)} */}
-                    {sample.amount}
+                    {/* {formatCurrency({sample.amount})} */}
+                    {formatCurrency(sample.amount)}
                   </td>
                   <td className="text-center">
-                    <PublishPopupMenu statusString={sample.publish_setting} />
+                    <ReleaseStatus
+                      value={sample.release_status}
+                      date={sample.release_date}
+                    />
                   </td>
                   <td className="whitespace-nowrap p-3 text-center justify-center">
-                    {sample.sales_status}
+                    {sample.sales_status.length ? sample.sales_status : "-"}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3  text-center justify-center">
                     {/* {formatDateToLocal(sample.release_date)} */}
-                    {sample.release_date && (
+                    {sample.release_date.length ? (
                       <>
                         {sample.release_date.split(" ")[0]} <br />
                         {sample.release_date.split(" ")[1]}
                       </>
+                    ) : (
+                      "-"
                     )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3  text-center justify-center">
-                    {sample.sales_start_date && (
+                    {sample.sales_start_date.length ? (
                       <>
                         {sample.sales_start_date.split(" ")[0]} <br />
                         {sample.sales_start_date.split(" ")[1]}
                       </>
+                    ) : (
+                      "-"
                     )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3  text-center justify-center">
-                    {sample.sales_end_date && (
+                    {sample.sales_end_date.length ? (
                       <>
                         {sample.sales_end_date.split(" ")[0]} <br />
                         {sample.sales_end_date.split(" ")[1]}
                       </>
+                    ) : (
+                      "-"
                     )}
                   </td>
                   <td></td>

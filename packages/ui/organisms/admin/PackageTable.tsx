@@ -1,17 +1,24 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { formatDateToLocal, formatCurrency } from "ui/atoms/utils";
-import PublishStatus from "ui/organisms/admin/PublishStatus";
+import { formatDateToLocal, formatCurrency } from "ui/atoms/Formatters";
+import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
 import { fetchPackages } from "./actions/PackageActions";
 
 export default function PackageTable() {
   const [isAscending, setIsAscending] = useState(true);
+  const [packages, setPackages] = useState(fetchPackages());
 
   const toggleSortingDirection = () => {
     setIsAscending(!isAscending);
+    const sortedPackages = [...packages].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setPackages(sortedPackages);
   };
-
-  const packages = fetchPackages();
 
   return (
     <div className="flow-root">
@@ -61,15 +68,20 @@ export default function PackageTable() {
                     {package_item.name}
                   </td>
                   <td className="text-center">
-                    <PublishStatus statusValue={package_item.publish_setting} />
+                    <ReleaseStatus
+                      value={package_item.release_status}
+                      date={package_item.release_date}
+                    />
                   </td>
                   <td className="whitespace-nowrap px-1 py-2 text-center justify-center">
                     {/* {formatDateToLocal(sample.release_date)} */}
-                    {package_item.release_date && (
+                    {package_item.release_date.length ? (
                       <>
                         {package_item.release_date.split(" ")[0]} <br />
                         {package_item.release_date.split(" ")[1]}
                       </>
+                    ) : (
+                      "-"
                     )}
                   </td>
                   <td className="whitespace-nowrap px-1 py-2 text-center justify-center">

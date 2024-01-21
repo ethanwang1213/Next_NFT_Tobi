@@ -8,6 +8,7 @@ import FilterPopupButton from "ui/organisms/admin/FilterPopupButton";
 
 export default function ItemsManageTab({ onTabChange }) {
   const [tab, setTab] = useTabs(["sample", "package"]);
+
   const [filterArray, setFilterArray] = useState({});
 
   const handleTabChange = (tab) => {
@@ -48,7 +49,7 @@ export default function ItemsManageTab({ onTabChange }) {
           changeHandler={toggleAtIndex}
         />
         <input
-          className="text-base text-[#717171C1]"
+          className="text-base text-[#717171C1] outline-none"
           placeholder="アイテムを検索"
         />
       </div>

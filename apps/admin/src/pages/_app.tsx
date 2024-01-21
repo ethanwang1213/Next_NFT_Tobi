@@ -17,7 +17,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Layout>
-        <div className="overflow-hidden relative">
+        <div className="relative">
           <Component {...pageProps} />
         </div>
       </Layout>
