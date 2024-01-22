@@ -13,11 +13,11 @@ export default function Index() {
   const links = {
     sample: {
       label: "new sample",
-      href: "/admin/workspace",
+      href: "/workspace",
     },
     package: {
       label: "new package",
-      href: "/admin/items",
+      href: "/items",
     },
   };
 
