@@ -44,7 +44,7 @@ export const flowTxSend = functions.region(REGION)
 
       // Add processing here according to txType
       if (txType == "createFlowAccount") {
-        const txId = await generateKeysAndSendFlowAccountCreationTx(params.email);
+        const txId = await generateKeysAndSendFlowAccountCreationTx(params.tobiratoryAccountUuid);
         await flowJobDocRef.update({
           flowJobId,
           txType,
@@ -66,7 +66,7 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
+const generateKeysAndSendFlowAccountCreationTx = async (tobiratoryAccountUuid: string) => {
   if (
     !process.env.KMS_PROJECT_ID ||
     !process.env.KMS_USER_KEY_LOCATION ||
@@ -75,7 +75,7 @@ const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
   ) {
     throw new Error("The environment of generate key is not defined.");
   }
-  const flowAccountRef = await createOrGetFlowAccountDocRef(email);
+  const flowAccountRef = await createOrGetFlowAccountDocRef(tobiratoryAccountUuid);
   const {privKey, pubKey, txId} = await sendCreateAccountTx();
 
   const keyName = kmsClient.cryptoKeyPath(
@@ -92,8 +92,8 @@ const generateKeysAndSendFlowAccountCreationTx = async (email: string) => {
   return txId;
 };
 
-const createOrGetFlowAccountDocRef = async (email: string) => {
-  const existingFlowAccounts = await firestore().collection("flowAccounts").where("email", "==", email).get();
+const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
+  const existingFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", tobiratoryAccountUuid).get();
   if (existingFlowAccounts.size > 0) {
     const existingFlowAccountSnapshot = existingFlowAccounts.docs[0];
     if (existingFlowAccountSnapshot.data().txId) {
@@ -102,7 +102,7 @@ const createOrGetFlowAccountDocRef = async (email: string) => {
     return existingFlowAccountSnapshot.ref;
   }
   return await firestore().collection("flowAccounts").add({
-    email,
+    tobiratoryAccountUuid,
   });
 };
 
