@@ -37,7 +37,12 @@ export default function PopupMenu({ filters, preference, changeHandler }) {
         <div
           className={`px-4${filter.type === FILTER_TYPE.RADIO ? " pl-9" : ""}`}
         >
-          <input {...props} />
+          <input
+            {...props}
+            className={
+              filter.type === FILTER_TYPE.RADIO ? "tobiratory-radio" : ""
+            }
+          />
           <label htmlFor={props.id} className="ml-2 text-base/8">
             {filter.label}
           </label>

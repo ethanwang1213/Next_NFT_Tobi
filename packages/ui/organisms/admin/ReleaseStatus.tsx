@@ -51,7 +51,7 @@ const ReleaseStatus = ({ value, date }: { value: string; date: string }) => {
       {isPopupOpen && (
         <div
           ref={popupRef}
-          className="absolute bg-[#07396C] text-white rounded-xl top-16 p-4 pl-6 z-10 text-left"
+          className="absolute bg-[#07396C] text-white rounded-xl top-16 p-4 pl-6 pr-1 z-10 text-left"
         >
           <ReleasePopupMenu {...{ pubStatus, pubDate }} />
         </div>

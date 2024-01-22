@@ -22,12 +22,13 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
   };
 
   return (
-    <>
+    <div className={pubStatus === "予約公開" ? "w-67" : "w-28"}>
       <div className="">
         <input
           type="radio"
           id="radio1"
           name="radioGroup"
+          className="tobiratory-radio"
           defaultChecked={pubStatus === "公開" || pubStatus === "公開中"}
         />
         <label htmlFor="radio1" className="ml-2 text-base/8">
@@ -39,6 +40,7 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
           type="radio"
           id="radio2"
           name="radioGroup"
+          className="tobiratory-radio"
           defaultChecked={pubStatus === "非公開"}
         />
         <label htmlFor="radio2" className="ml-2 text-base/8">
@@ -50,13 +52,14 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
           type="radio"
           id="radio3"
           name="radioGroup"
+          className="tobiratory-radio"
           defaultChecked={pubStatus === "予約公開"}
         />
         <label htmlFor="radio3" className="ml-2 text-base/8">
           予約公開
         </label>
         {pubStatus === "予約公開" ? (
-          <div className="w-64">
+          <div>
             <div className="flex mt-2">
               <span className="w-18 text-xs bg-transparent border border-white rounded px-3 py-2 ml-3 text-center order-1">
                 {selectedTime}
@@ -82,7 +85,7 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
           <></>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
