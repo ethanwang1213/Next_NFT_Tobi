@@ -3,6 +3,8 @@ import Link from "next/link";
 import Button from "ui/atoms/Button";
 import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
+import DigitInput from "ui/molecules/DigitInput";
+import PriceInput from "ui/molecules/PriceInput";
 import PublicSwitch from "ui/molecules/PublicSwitch";
 import SizeInput from "ui/molecules/SizeInput";
 import TextInput from "ui/molecules/TextInput";
@@ -62,7 +64,7 @@ const Edit = () => {
         </div>
         <div className="h-14 text-base/[56px] text-[#717171]">商品の説明</div>
         <textarea
-          className="h-32 w-full pt-4 pb-3.5 pl-5 pr-11 border-2 border-[#717171]/50 rounded-lg resize-none"
+          className="h-32 w-full pt-4 pb-3.5 pl-5 pr-11 border-2 border-[#717171]/50 rounded-lg resize-none outline-none"
           placeholder="ディスクリプション"
         />
         <div className="text-2xl/[48x] text-[#717171] mt-8">SAMPLEアイテム</div>
@@ -90,13 +92,13 @@ const Edit = () => {
         <div className="mt-12 text-2xl/[48x] text-[#717171]">
           価格と詳細設定
           <div className="mt-8 grid grid-cols-2 gap-8">
-            <TextInput className="" placeholder="価格" />
+            <PriceInput className="" placeholder="価格" />
             <CheckboxInput
               className=""
               label="商品価格に税を適用する（消費税・VAT）"
               tooltip="This is VAT tooltip"
             />
-            <TextInput
+            <DigitInput
               className=""
               placeholder="GTIN"
               tooltip="This is a GTIN description"
@@ -106,7 +108,7 @@ const Edit = () => {
               placeholder="SKU（商品番号）"
               tooltip="This is a SKU（商品番号） description"
             />
-            <TextInput className="" placeholder="販売個数" />
+            <DigitInput className="" placeholder="販売個数" />
             <CheckboxInput
               className=""
               label="個数制限なし"
