@@ -1,16 +1,8 @@
 import {PrismaClient} from "@prisma/client";
-import {Response} from "express";
-// import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {Request, Response} from "express";
 import {FirebaseError, auth} from "firebase-admin";
-import {UserRecord} from "firebase-admin/auth";
-
-type SignUpRequest = {
-  body: {
-    email: any;
-    username: any;
-    password: any;
-  }
-}
+import {DecodedIdToken} from "firebase-admin/auth";
+import {createFlowAccount} from "../createFlowAccount";
 
 type SignInRequest = {
   body: {
@@ -40,57 +32,151 @@ type MyBusiness = {
 
 const prisma = new PrismaClient();
 
-export const signUp = async (req: SignUpRequest, res: Response) => {
-  const {email, username, password} = req.body;
-  const sameUsername = await prisma.tobiratory_accounts.findMany({
-    where: {
-      username: username,
-    },
-  });
-  if (sameUsername.length > 0) {
-    res.status(401).send({
-      status: "error",
-      data: "Username already exist.",
-    });
-    return;
-  }
-  let uuid = "";
-  await auth()
-      .createUser({
-        email: email,
-        emailVerified: false,
-        password: password,
-        disabled: false,
-      })
-      .then(async (userRecord: UserRecord) => {
-      // See the UserRecord reference doc for the contents of userRecord.
-        console.log("Successfully created new user:", userRecord.uid);
-        uuid = userRecord.uid;
-        const userData = {
-          uuid: uuid,
-          user_id: uuid,
-          email: email,
-          username: username,
-          sns: "",
-          icon_url: "",
-        };
-        await prisma.tobiratory_accounts.create({
-          data: userData,
-        });
+export const verifyEmail = async (req: Request, res: Response) => {
+  const {email} = req.body;
+  try {
+    const firebaseAuthUser = await auth().getUserByEmail(email);
+    if (!firebaseAuthUser.passwordHash && firebaseAuthUser.emailVerified) {
+      const firebaseToken = await auth().createCustomToken(firebaseAuthUser.uid);
+      res.status(200).send({
+        status: "success",
+        data: firebaseToken,
+      });
+      return;
+    } else if (!firebaseAuthUser.passwordHash && !firebaseAuthUser.emailVerified) {
+      await auth().generateEmailVerificationLink(email).then(() => {
         res.status(200).send({
           status: "success",
-          data: userData,
+          data: "sent-mail",
         });
-        return;
-      })
-      .catch((error: FirebaseError) => {
-        console.log("Error creating new user:", error);
+      });
+    } else {
+      res.status(200).send({
+        status: "success",
+        data: "next",
+      });
+    }
+  } catch (error: any) {
+    await auth().createUser({
+      email: email,
+      emailVerified: false,
+    }).then(async () => {
+      await auth().generateEmailVerificationLink(email).then(() => {
+        res.status(200).send({
+          status: "success",
+          data: "sent-mail",
+        });
+      });
+    }).catch(async (error: FirebaseError) => {
+      res.status(401).send({
+        status: "error",
+        data: error.message,
+      });
+    });
+  }
+};
+
+export const setPassword = async (req: Request, res: Response) => {
+  const {Authorization} = req.headers;
+  const {password} = req.body;
+  await auth().verifyIdToken((Authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+    const email = decodedToken.email;
+    if (password.length < 6) {
+      res.status(401).send({
+        status: "error",
+        data: "short-password",
+      });
+    }
+    try {
+      const userAuth = await auth().getUserByEmail(email ?? "");
+      await auth().updateUser(userAuth.uid, {
+        password: password,
+      }).then(() => {
+        res.status(200).send({
+          status: "success",
+          data: "updated-password",
+        });
+      }).catch((error: FirebaseError) => {
         res.status(401).send({
           status: "error",
           data: error.message,
         });
-        return;
       });
+    } catch (error: any) {
+      res.status(401).send({
+        status: "error",
+        data: error.message,
+      });
+    }
+  });
+};
+
+export const signUp = async (req: Request, res: Response) => {
+  const {Authorization} = req.headers;
+  await auth().verifyIdToken((Authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    const email = decodedToken.email ?? "";
+    const savedUser = await prisma.tobiratory_accounts.findMany({
+      where: {
+        email: email,
+      },
+    });
+    if (savedUser.length) {
+      const username = email.split("@")[0];
+      const userData = {
+        uuid: uid,
+        email: email,
+        username: username,
+        sns: "",
+        icon_url: "",
+      };
+      await prisma.tobiratory_accounts.create({
+        data: userData,
+      });
+      res.status(200).send({
+        status: "success",
+        data: {...userData, flow: null},
+      });
+      return;
+    } else {
+      const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
+        where: {
+          uuid: savedUser[0].uuid,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: {...savedUser[0], flow: flowAcc},
+      });
+      return;
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.message,
+    });
+    return;
+  });
+};
+
+export const createFlowAcc = async (req: Request, res: Response) => {
+  const {uid} = req.body;
+  const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
+    where: {
+      uuid: uid,
+    },
+  });
+  if (flowAcc != null) {
+    res.status(401).send({
+      status: "error",
+      data: "Flow account already exist",
+    });
+  }
+  const flowInfo = await createFlowAccount(uid);
+  res.status(200).send({
+    status: "success",
+    data: flowInfo.flowJobId,
+  });
 };
 
 export const signIn = async (req: SignInRequest, res: Response) => {

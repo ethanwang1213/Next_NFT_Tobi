@@ -41,7 +41,6 @@ export const getAccounts = async (req: AllAccountRequest, res: Response) => {
         },
       });
       return {
-        userId: account.user_id,
         username: account.username,
         icon: account.icon_url,
         sns: account.sns,

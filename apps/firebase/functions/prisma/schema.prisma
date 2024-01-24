@@ -9,7 +9,7 @@ datasource db {
 
 model tobiratory_accounts {
   uuid              String   @id @db.VarChar(100)
-  user_id           String   @db.VarChar(255)
+  email             String   @db.VarChar(255)
   username          String   @db.VarChar(255)
   sns               String   @unique
   icon_url          String   @db.VarChar(255)

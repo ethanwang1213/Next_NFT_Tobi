@@ -4,7 +4,7 @@ import * as express from "express";
 import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
-import {signUp, signIn, getMyProfile, postMyProfile} from "./userController";
+import {signUp, signIn, getMyProfile, postMyProfile, verifyEmail, setPassword, createFlowAcc} from "./userController";
 import {getContentById, getContents} from "./contentController";
 import {getItems, getItemsById} from "./itemController";
 import {getSaidans, getSaidansById} from "./saidanController";
@@ -26,6 +26,9 @@ const dummyResponse = (_: express.Request, res: express.Response) => {
 // API Reference:
 // https://docs.google.com/spreadsheets/d/1XocLkxnpYL2Mfi-e7LuJOlmf_Njdgaz-0RfgqRxqtiE/edit#gid=0
 app.post("/signup", signUp);
+app.post("/verifyemail", verifyEmail);
+app.post("/set-password", setPassword);
+app.post("/create-flow", createFlowAcc);
 app.post("/signin", signIn);
 
 app.get("/accounts", getAccounts);
