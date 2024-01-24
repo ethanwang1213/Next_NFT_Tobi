@@ -17,13 +17,8 @@ export default function ItemsManageTab({ onTabChange }) {
   };
 
   // Function to toggle a specific index in the array
-  const toggleAtIndex = (index) => {
-    setFilterArray((prevArray) => {
-      const newArray = { ...prevArray };
-      newArray[index] = !newArray[index];
-      return newArray;
-    });
-  };
+  const toggleAtIndex = (index) => 
+    setFilterArray((prevArray) => ({ ...prevArray, [index]:!prevArray[index] }));
 
   return (
     <>

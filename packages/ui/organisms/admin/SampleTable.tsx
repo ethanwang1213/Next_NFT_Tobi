@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { fetchSamples } from "ui/organisms/admin/actions/SampleActions";
 import { formatDateToLocal, formatCurrency } from "ui/atoms/Formatters";
+import Link from "next/link";
 
 export default function SampleTable({ filters }) {
   const [isAscending, setIsAscending] = useState(true);
@@ -106,18 +107,22 @@ export default function SampleTable({ filters }) {
               {samples?.map((sample) => (
                 <tr key={sample.id} className="w-full border-b py-3 text-sm">
                   <td className="whitespace-nowrap py-3 text-right pr-8">
-                    <Image
-                      src={sample.image_url}
-                      className="rounded-full inline-block"
-                      width={80}
-                      height={80}
-                      alt={`${sample.name}'s profile picture`}
-                    />
+                    <Link href={`/items/edit`}>
+                      <Image
+                        src={sample.image_url}
+                        className="rounded-full inline-block"
+                        width={80}
+                        height={80}
+                        alt={`${sample.name}'s profile picture`}
+                      />
+                    </Link>
                   </td>
                   <td className="whitespace-nowrap py-3">
-                    {sample.name}
-                    <br />
-                    {sample.position}
+                    <Link href={`/items/edit`}>
+                      {sample.name}
+                      <br />
+                      {sample.position}
+                    </Link>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center justify-center">
                     {/* {formatCurrency({sample.amount})} */}

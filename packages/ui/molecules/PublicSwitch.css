@@ -1,0 +1,86 @@
+.rc-switch {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 258px;
+  height: 48px;
+  line-height: 44px;
+  padding: 0;
+  vertical-align: middle;
+  border-radius: 64px 64px;
+  border: 1px solid #ccc;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.35, 0, 0.25, 1);
+  /* overflow: hidden; */
+}
+.rc-switch-inner-checked,
+.rc-switch-inner-unchecked {
+  color: #fff;
+  font-size: 24px;
+  position: absolute;
+  top: 1px;
+  transition: left 0.3s cubic-bezier(0.35, 0, 0.25, 1);
+}
+.rc-switch-inner-checked {
+  left: 43px;
+  z-index: 1;
+}
+.rc-switch-inner-unchecked {
+  left: 156px;
+  z-index: 1;
+}
+.rc-switch:after {
+  position: absolute;
+  width: 113px;
+  height: 40px;
+  left: 10px;
+  top: 3px;
+  border-radius: 60px 60px;
+  background-color: #1779DE;
+  content: " ";
+  cursor: pointer;
+  /* transform: scale(0.9); */
+  transition: left 0.3s cubic-bezier(0.35, 0, 0.25, 1);
+}
+.rc-switch:focus {
+  /* box-shadow: 0 0 0 2px #d5f1fd; */
+  outline: none;
+}
+/* .rc-switch-checked {
+  border: 1px solid #87d068;
+  background-color: #87d068;
+} */
+.rc-switch-checked .rc-switch-inner-checked {
+  left: 43px;
+}
+.rc-switch-checked .rc-switch-inner-unchecked {
+  left: 156px;
+}
+.rc-switch-checked:after {
+  left: 135px;
+}
+.rc-switch-disabled {
+  cursor: no-drop;
+  background: #ccc;
+  border-color: #ccc;
+}
+.rc-switch-disabled:after {
+  background: #9e9e9e;
+  animation-name: none;
+  cursor: no-drop;
+}
+.rc-switch-disabled:hover:after {
+  transform: scale(1);
+  animation-name: none;
+}
+.rc-switch-label {
+  display: inline-block;
+  line-height: 20px;
+  font-size: 14px;
+  padding-left: 10px;
+  vertical-align: middle;
+  white-space: normal;
+  pointer-events: none;
+  user-select: text;
+}

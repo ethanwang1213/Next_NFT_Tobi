@@ -24,12 +24,7 @@ export default function Index() {
   return (
     <div className="w-full">
       <div className="flex justify-between pl-12 pr-7 pt-9">
-        <h1
-          className="font-semibold text-[#717171]"
-          style={{ fontSize: 32, lineHeight: 1.5 }}
-        >
-          アイテム管理
-        </h1>
+        <h1 className="font-semibold text-[#717171] text-3xl">アイテム管理</h1>
         <CreateButton {...(links[selectedTab] ?? links.sample)} />
       </div>
       <div className="w-full items-center justify-between">

@@ -30,6 +30,7 @@ const config = {
             error: 34,
           },
         },
+        "3xl": ["32px", "48px"],
       },
       colors: {
         brown: "#894400",
