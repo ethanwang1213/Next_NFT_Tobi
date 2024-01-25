@@ -1,5 +1,3 @@
-"use client";
-
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
@@ -7,13 +5,15 @@ import { useState } from "react";
 const DigitInput = ({
   className,
   placeholder,
+  value,
   tooltip,
 }: {
   className: string;
   placeholder: string;
+  value?: string;
   tooltip?: string;
 }) => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(value);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ""); // Remove non-digit characters

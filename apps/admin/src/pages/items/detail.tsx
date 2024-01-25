@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import Button from "ui/atoms/Button";
 import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
@@ -8,9 +10,18 @@ import PriceInput from "ui/molecules/PriceInput";
 import PublicSwitch from "ui/molecules/PublicSwitch";
 import SizeInput from "ui/molecules/SizeInput";
 import TextInput from "ui/molecules/TextInput";
+import { fetchSampleItem } from "ui/organisms/admin/actions/SampleActions";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 
-const Edit = () => {
+const Detail = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const [sampleItem, setSampleItem] = useState(fetchSampleItem(id));
+
+  const fieldChangeHandler = (field, value) => {
+    setSampleItem({ ...{ ...sampleItem, [field]: value } });
+  };
+
   return (
     <div>
       <ItemEditHeader />
@@ -25,16 +36,31 @@ const Edit = () => {
         <div className="flex flex-row">
           <div className="flex-grow">
             <div className="mr-4">
-              <TextInput className="mb-4" placeholder="商品名" />
-              <TextInput className="mb-4" placeholder="フリガナ" />
-              <TextInput className="" placeholder="カテゴリ" />
+              <TextInput
+                className="mb-4"
+                placeholder="商品名"
+                value={sampleItem.name}
+                changeHandler={(value) => fieldChangeHandler("name", value)}
+              />
+              <TextInput
+                className="mb-4"
+                placeholder="フリガナ"
+                value={sampleItem.ruby}
+                changeHandler={(value) => fieldChangeHandler("ruby", value)}
+              />
+              <TextInput
+                className=""
+                placeholder="カテゴリ"
+                value={sampleItem.category}
+                changeHandler={(value) => fieldChangeHandler("category", value)}
+              />
             </div>
           </div>
           <Image
             width={179}
             height={179}
             className="mr-12"
-            src="/admin/images/sample-edit.png"
+            src={sampleItem.image_url}
             alt=""
           />
           <div
@@ -80,7 +106,7 @@ const Edit = () => {
               width={179}
               height={179}
               className="mr-12 inline-block"
-              src="/admin/images/sample-edit.png"
+              src={sampleItem.image_url}
               alt=""
             />
             <span className="h-12 mt-2 py-2 text-xl font-normal text-[#1779DE]">
@@ -92,7 +118,12 @@ const Edit = () => {
         <div className="mt-12 text-2xl/[48x] text-[#717171]">
           価格と詳細設定
           <div className="mt-8 grid grid-cols-2 gap-8">
-            <PriceInput className="" placeholder="価格" />
+            <PriceInput
+              className=""
+              placeholder="価格"
+              value={sampleItem.amount}
+              changeHandler={(value) => fieldChangeHandler("amount", value)}
+            />
             <CheckboxInput
               className=""
               label="商品価格に税を適用する（消費税・VAT）"
@@ -114,7 +145,14 @@ const Edit = () => {
               label="個数制限なし"
               tooltip="This is 個数制限なし tooltip"
             />
-            <DateTimeInput className="" placeholder="販売開始日" />
+            <DateTimeInput
+              className=""
+              placeholder="販売開始日"
+              value={sampleItem.release_date}
+              changeHandler={(value) =>
+                fieldChangeHandler("release_date", value)
+              }
+            />
             <DateTimeInput className="" placeholder="販売終了日" />
           </div>
         </div>
@@ -156,4 +194,4 @@ const Edit = () => {
   );
 };
 
-export default Edit;
+export default Detail;

@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
 import React, { useState, useEffect } from "react";
@@ -107,7 +105,7 @@ export default function SampleTable({ filters }) {
               {samples?.map((sample) => (
                 <tr key={sample.id} className="w-full border-b py-3 text-sm">
                   <td className="whitespace-nowrap py-3 text-right pr-8">
-                    <Link href={`/items/edit`}>
+                    <Link href={`/items/detail?id=${sample.id}`}>
                       <Image
                         src={sample.image_url}
                         className="rounded-full inline-block"
@@ -118,10 +116,10 @@ export default function SampleTable({ filters }) {
                     </Link>
                   </td>
                   <td className="whitespace-nowrap py-3">
-                    <Link href={`/items/edit`}>
+                    <Link href={`/items/detail?id=${sample.id}`}>
                       {sample.name}
                       <br />
-                      {sample.position}
+                      {sample.category}
                     </Link>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center justify-center">

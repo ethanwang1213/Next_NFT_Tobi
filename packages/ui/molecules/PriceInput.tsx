@@ -1,13 +1,18 @@
 import clsx from "clsx";
 import Image from "next/image";
+import { useState } from "react";
 
 const PriceInput = ({
   className,
   placeholder,
+  value,
+  changeHandler,
   tooltip,
 }: {
   className: string;
   placeholder: string;
+  value?: string | number;
+  changeHandler?: (value) => void;
   tooltip?: string;
 }) => {
   return (
@@ -21,8 +26,10 @@ const PriceInput = ({
         type="number"
         placeholder={placeholder}
         className="w-full h-12 text-sm placeholder:text-[#717171]/50 placeholder:font-normal outline-none flex-grow"
+        value={value ? value : undefined}
         step="0.01"
         min="0"
+        onChange={(e) => changeHandler(e.target.value)}
       />
       {tooltip && tooltip.length ? (
         <Image

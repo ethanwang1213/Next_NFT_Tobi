@@ -3,11 +3,15 @@ import Image from "next/image";
 
 const TextInput = ({
   className,
+  value,
+  changeHandler,
   placeholder,
   tooltip,
 }: {
   className: string;
-  placeholder: string;
+  value?: string;
+  changeHandler?: (value) => void;
+  placeholder?: string;
   tooltip?: string;
 }) => {
   return (
@@ -21,6 +25,10 @@ const TextInput = ({
         type="text"
         placeholder={placeholder}
         className="w-full h-12 text-sm placeholder:text-[#717171]/50 placeholder:font-normal outline-none flex-grow"
+        defaultValue={value ? value : undefined}
+        onChange={(e) => {
+          changeHandler ? changeHandler(e.target.value) : undefined;
+        }}
       />
       {tooltip && tooltip.length ? (
         <Image
