@@ -32,7 +32,6 @@ const DateTimeInput = ({
           })
         : ""
     );
-    changeHandler ? changeHandler(selectedDate.toLocaleString()) : "";
   };
 
   return (
