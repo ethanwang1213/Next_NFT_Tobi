@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,6 +21,8 @@ const DateTimeInput = ({
     value ? value.split(" ")[1] : ""
   );
 
+  const datePickerRef = useRef(null);
+
   const onChangeDatePicker = (date) => {
     setSelectedDate(date);
     setSelectedTime(
@@ -34,17 +36,30 @@ const DateTimeInput = ({
     );
   };
 
+  const openDatePicker = () => {
+    if (datePickerRef.current) {
+      datePickerRef.current.setOpen(true); // Open the datepicker when the time span is clicked
+    }
+  };
+
   return (
     <div
       className={clsx(
-        "border-2 border-[#717171]/50 rounded-lg flex flex-row pl-5 pr-4",
+        "border-2 border-[#717171]/50 hover:border-[#1779DE]/25 focus-within:border-[#1779DE]/50 hover:focus-within:border-[#1779DE]/50 rounded-lg cursor-text",
+        "flex flex-row pl-5 pr-4",
         className
       )}
+      onClick={openDatePicker}
     >
       <DatePicker
+        ref={datePickerRef}
         selected={selectedDate}
         onChange={onChangeDatePicker}
         dateFormat="yyyy/MM/dd"
+        showTimeSelect
+        timeIntervals={15} // Adjust as needed
+        timeFormat="HH:mm"
+        timeCaption="Time"
         showPopperArrow={false}
         className="h-12 flex-auto w-64 text-sm placeholder:text-[#717171]/50 placeholder:font-normal outline-none"
         placeholderText={selectedDate ? "" : placeholder} // Set the placeholder text conditionally

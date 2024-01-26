@@ -14,7 +14,8 @@ const SizeInput = ({
   return (
     <div
       className={clsx(
-        "border-2 border-[#717171]/50 rounded-lg flex",
+        "border-2 border-[#717171]/50 rounded-lg flex cursor-text",
+        "hover:border-[#1779DE]/25 focus-within:border-[#1779DE]/50 hover:focus-within:border-[#1779DE]/50",
         className
       )}
     >
