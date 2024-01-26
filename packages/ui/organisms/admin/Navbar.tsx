@@ -109,7 +109,7 @@ const UserMenu = () => {
             width={31.25}
             height={28}
             buttonClassName={
-              "btn btn-block flex justify-start bg-base-100 hover:bg-base-100 border-0 pl-2 text-[15px] text-base-200-content font-normal"
+              "btn-block flex justify-start bg-base-100 hover:bg-base-100 border-0 pl-2 text-[15px] text-base-200-content font-normal"
             }
             iconClassName={"pr-2"}
             onClick={signOut}
