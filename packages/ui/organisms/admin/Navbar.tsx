@@ -1,7 +1,7 @@
 import { useAuth } from "contexts/AdminAuthProvider";
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ImageIconButton from "ui/atoms/ImageIconButton";
 import NavbarContainer from "ui/atoms/NavbarContainer";
 import NavbarEnd from "ui/atoms/NavbarEnd";
@@ -50,19 +50,18 @@ const NavbarStartBlock = () => {
 };
 
 const UserMenu = () => {
+  const userProfileIconRef = useRef<HTMLDetailsElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
   const { signOut } = useAuth();
 
   // Close when clicking outside the dropdown.
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      const iconElement = document.getElementById("user-profile-icon");
-      const menuElement = document.getElementById("user-menu");
-
       if (
-        !iconElement.contains(event.target as Node) &&
-        !menuElement.contains(event.target as Node)
+        !userProfileIconRef.current.contains(event.target as Node) &&
+        !menuRef.current.contains(event.target as Node)
       ) {
-        iconElement.removeAttribute("open");
+        userProfileIconRef.current.removeAttribute("open");
       }
     };
     document.addEventListener("click", handleOutsideClick);
@@ -70,7 +69,7 @@ const UserMenu = () => {
   }, []);
 
   return (
-    <details id={"user-profile-icon"} className="dropdown dropdown-end">
+    <details ref={userProfileIconRef} className="dropdown dropdown-end">
       <summary className={"btn bg-base-100 hover:bg-base-100 border-0"}>
         <Image
           src={"/admin/images/icon/profile.svg"}
@@ -81,7 +80,7 @@ const UserMenu = () => {
         />
       </summary>
       <ul
-        id={"user-menu"}
+        ref={menuRef}
         tabIndex={0}
         className="dropdown-content z-[1] p-4 shadow-xl bg-base-100 rounded-box w-[235px] mt-2"
       >
