@@ -1,7 +1,7 @@
 import {PrismaClient} from "@prisma/client";
 import {Request, Response} from "express";
 import {FirebaseError, auth} from "firebase-admin";
-import {DecodedIdToken} from "firebase-admin/auth";
+import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 
 type SignInRequest = {
@@ -33,21 +33,23 @@ type MyBusiness = {
 const prisma = new PrismaClient();
 
 export const verifyEmail = async (req: Request, res: Response) => {
-  const {email} = req.body;
+  const {email, password} = req.body;
   try {
     const firebaseAuthUser = await auth().getUserByEmail(email);
-    if (!firebaseAuthUser.passwordHash && firebaseAuthUser.emailVerified) {
-      const firebaseToken = await auth().createCustomToken(firebaseAuthUser.uid);
+    if (!firebaseAuthUser.passwordHash) {
+      // sent password reset email
+      await getAuth().generatePasswordResetLink(email);
       res.status(200).send({
         status: "success",
-        data: firebaseToken,
+        data: "reset-password",
       });
       return;
-    } else if (!firebaseAuthUser.passwordHash && !firebaseAuthUser.emailVerified) {
+    } else if (!firebaseAuthUser.emailVerified) {
+      // sent email verify
       await auth().generateEmailVerificationLink(email).then(() => {
         res.status(200).send({
           status: "success",
-          data: "sent-mail",
+          data: "email-verify",
         });
       });
     } else {
@@ -57,8 +59,16 @@ export const verifyEmail = async (req: Request, res: Response) => {
       });
     }
   } catch (error: any) {
+    if (!password) {
+      res.status(401).send({
+        status: "error",
+        data: error.code,
+      });
+      return
+    }
     await auth().createUser({
       email: email,
+      password: password,
       emailVerified: false,
     }).then(async () => {
       await auth().generateEmailVerificationLink(email).then(() => {
@@ -67,48 +77,13 @@ export const verifyEmail = async (req: Request, res: Response) => {
           data: "sent-mail",
         });
       });
-    }).catch(async (error: FirebaseError) => {
+    }).catch(async (errorMail: FirebaseError) => {
       res.status(401).send({
         status: "error",
-        data: error.message,
+        data: errorMail.code,
       });
     });
   }
-};
-
-export const setPassword = async (req: Request, res: Response) => {
-  const {Authorization} = req.headers;
-  const {password} = req.body;
-  await auth().verifyIdToken((Authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
-    const email = decodedToken.email;
-    if (password.length < 6) {
-      res.status(401).send({
-        status: "error",
-        data: "short-password",
-      });
-    }
-    try {
-      const userAuth = await auth().getUserByEmail(email ?? "");
-      await auth().updateUser(userAuth.uid, {
-        password: password,
-      }).then(() => {
-        res.status(200).send({
-          status: "success",
-          data: "updated-password",
-        });
-      }).catch((error: FirebaseError) => {
-        res.status(401).send({
-          status: "error",
-          data: error.message,
-        });
-      });
-    } catch (error: any) {
-      res.status(401).send({
-        status: "error",
-        data: error.message,
-      });
-    }
-  });
 };
 
 export const signUp = async (req: Request, res: Response) => {
@@ -144,6 +119,9 @@ export const signUp = async (req: Request, res: Response) => {
           uuid: savedUser[0].uuid,
         },
       });
+      if (decodedToken.email_verified && !flowAcc) {
+        await createFlowAccount(uid);
+      }
       res.status(200).send({
         status: "success",
         data: {...savedUser[0], flow: flowAcc},
