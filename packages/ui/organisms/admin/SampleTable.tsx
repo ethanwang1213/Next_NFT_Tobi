@@ -57,14 +57,14 @@ export default function SampleTable({ filters }) {
                       width={16}
                       height={16}
                       className="ml-16 -mt-2 absolute top-2/4"
-                      id="amount-tooltip-anchor"
-                      data-tooltip-id="amount-tooltip"
+                      id="price-tooltip-anchor"
+                      data-tooltip-id="price-tooltip"
                       data-tooltip-content="現在は¥0のみ設定が可能です。"
                     />
                   </div>
                   <Tooltip
-                    id="amount-tooltip"
-                    anchorSelect="#amount-tooltip-anchor"
+                    id="price-tooltip"
+                    data-tooltip-id="#price-tooltip-anchor"
                     place="bottom-start"
                     opacity={100}
                     offset={-16}
@@ -123,8 +123,8 @@ export default function SampleTable({ filters }) {
                     </Link>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center justify-center">
-                    {/* {formatCurrency({sample.amount})} */}
-                    {formatCurrency(sample.amount)}
+                    {/* {formatCurrency({sample.price})} */}
+                    {formatCurrency(sample.price)}
                   </td>
                   <td className="text-center">
                     <ReleaseStatus

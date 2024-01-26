@@ -47,7 +47,7 @@ const DateTimeInput = ({
         dateFormat="yyyy/MM/dd"
         showPopperArrow={false}
         className="h-12 flex-auto w-64 text-sm placeholder:text-[#717171]/50 placeholder:font-normal outline-none"
-        placeholderText={value ? "" : placeholder} // Set the placeholder text conditionally
+        placeholderText={selectedDate ? "" : placeholder} // Set the placeholder text conditionally
       />
       <div className="w-px bg-[#717171]/50"></div>
       <span className="ml-3 mt-3.5 flex-auto w-32 text-sm placeholder:text-[#717171]/50 placeholder:font-normal">

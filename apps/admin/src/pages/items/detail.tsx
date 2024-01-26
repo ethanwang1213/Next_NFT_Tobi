@@ -5,11 +5,10 @@ import { useState } from "react";
 import Button from "ui/atoms/Button";
 import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
-import DigitInput from "ui/molecules/DigitInput";
-import PriceInput from "ui/molecules/PriceInput";
 import PublicSwitch from "ui/molecules/PublicSwitch";
 import SizeInput from "ui/molecules/SizeInput";
-import TextInput from "ui/molecules/TextInput";
+import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
+import StyledTextArea from "ui/molecules/StyledTextArea";
 import { fetchSampleItem } from "ui/organisms/admin/actions/SampleActions";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 
@@ -36,20 +35,24 @@ const Detail = () => {
         <div className="flex flex-row">
           <div className="flex-grow">
             <div className="mr-4">
-              <TextInput
+              <StyledTextInput
                 className="mb-4"
+                label="商品名"
                 placeholder="商品名"
                 value={sampleItem.name}
                 changeHandler={(value) => fieldChangeHandler("name", value)}
+                tooltip="test tooltip"
               />
-              <TextInput
+              <StyledTextInput
                 className="mb-4"
+                label="フリガナ"
                 placeholder="フリガナ"
                 value={sampleItem.ruby}
                 changeHandler={(value) => fieldChangeHandler("ruby", value)}
               />
-              <TextInput
+              <StyledTextInput
                 className=""
+                label="カテゴリ"
                 placeholder="カテゴリ"
                 value={sampleItem.category}
                 changeHandler={(value) => fieldChangeHandler("category", value)}
@@ -93,6 +96,13 @@ const Detail = () => {
           className="h-32 w-full pt-4 pb-3.5 pl-5 pr-11 border-2 border-[#717171]/50 rounded-lg resize-none outline-none"
           placeholder="ディスクリプション"
         />
+        <StyledTextArea
+          className=""
+          label="ディスクリプション"
+          placeholder="ディスクリプション"
+          value=""
+          changeHandler={(value) => fieldChangeHandler("desc", value)}
+        />
         <div className="text-2xl/[48x] text-[#717171] mt-8">SAMPLEアイテム</div>
         <div className="flex">
           <a
@@ -118,28 +128,44 @@ const Detail = () => {
         <div className="mt-12 text-2xl/[48x] text-[#717171]">
           価格と詳細設定
           <div className="mt-8 grid grid-cols-2 gap-8">
-            <PriceInput
+            <StyledTextInput
               className=""
+              label="価格"
               placeholder="価格"
-              value={sampleItem.amount}
-              changeHandler={(value) => fieldChangeHandler("amount", value)}
+              value={sampleItem.price.toString(10)}
+              inputMask={TextKind.Digit}
+              changeHandler={(value) => fieldChangeHandler("price", value)}
             />
             <CheckboxInput
               className=""
               label="商品価格に税を適用する（消費税・VAT）"
               tooltip="This is VAT tooltip"
             />
-            <DigitInput
+            <StyledTextInput
               className=""
+              value=""
+              label="GTIN"
               placeholder="GTIN"
               tooltip="This is a GTIN description"
+              inputMask={TextKind.Digit}
+              changeHandler={(value) => fieldChangeHandler("gtin", value)}
             />
-            <TextInput
+            <StyledTextInput
               className=""
+              label="SKU（商品番号）"
               placeholder="SKU（商品番号）"
+              value=""
               tooltip="This is a SKU（商品番号） description"
+              changeHandler={(value) => fieldChangeHandler("sku", value)}
             />
-            <DigitInput className="" placeholder="販売個数" />
+            <StyledTextInput
+              className=""
+              placeholder="販売個数"
+              value=""
+              label="販売個数"
+              inputMask={TextKind.Digit}
+              changeHandler={(value) => fieldChangeHandler("sales", value)}
+            />
             <CheckboxInput
               className=""
               label="個数制限なし"
@@ -149,9 +175,6 @@ const Detail = () => {
               className=""
               placeholder="販売開始日"
               value={sampleItem.release_date}
-              changeHandler={(value) =>
-                fieldChangeHandler("release_date", value)
-              }
             />
             <DateTimeInput className="" placeholder="販売終了日" />
           </div>
