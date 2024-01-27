@@ -92,10 +92,6 @@ const Detail = () => {
           </div>
         </div>
         <div className="h-14 text-base/[56px] text-[#717171]">商品の説明</div>
-        <textarea
-          className="h-32 w-full pt-4 pb-3.5 pl-5 pr-11 border-2 border-[#717171]/50 rounded-lg resize-none outline-none"
-          placeholder="ディスクリプション"
-        />
         <StyledTextArea
           className=""
           label="ディスクリプション"
@@ -173,10 +169,15 @@ const Detail = () => {
             />
             <DateTimeInput
               className=""
+              labelDate="販売開始日"
               placeholder="販売開始日"
               value={sampleItem.release_date}
             />
-            <DateTimeInput className="" placeholder="販売終了日" />
+            <DateTimeInput
+              className=""
+              labelDate="販売終了日"
+              placeholder="販売終了日"
+            />
           </div>
         </div>
         <div className="mt-12 text-2xl/[48x] text-[#717171]">
@@ -193,14 +194,29 @@ const Detail = () => {
         <div className="mt-12 text-2xl/[48x] text-[#717171]">
           公開予約設定
           <div className="mt-8 grid grid-cols-2 gap-8">
-            <DateTimeInput className="" placeholder="公開予約" />
-            <DateTimeInput className="" placeholder="非公開予約" />
+            <DateTimeInput
+              className=""
+              labelDate="公開予約"
+              labelTime="時間"
+              placeholder="公開予約"
+            />
+            <DateTimeInput
+              className=""
+              labelDate="非公開予約"
+              labelTime="時間"
+              placeholder="非公開予約"
+            />
           </div>
         </div>
         <div className="mt-12 text-2xl/[48x] text-[#717171]">
           パッケージ
           <div className="mt-8 grid grid-cols-2 gap-8">
-            <DateTimeInput className="" placeholder="パッケージから選ぶ" />
+            <StyledTextInput
+              className=""
+              value=""
+              label="パッケージから選ぶ"
+              placeholder="パッケージから選ぶ"
+            />
           </div>
         </div>
         <div className="text-center mt-11">

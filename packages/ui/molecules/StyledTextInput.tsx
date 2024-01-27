@@ -20,8 +20,8 @@ const StyledTextInput = ({
   className: string;
   value: string;
   label: string;
-  changeHandler: (e) => void;
-  placeholder: string;
+  changeHandler?: (e) => void;
+  placeholder?: string;
   inputMask?: TextKind;
   tooltip?: string;
 }) => {
