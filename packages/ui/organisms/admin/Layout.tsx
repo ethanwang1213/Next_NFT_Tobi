@@ -27,8 +27,10 @@ const Contents = ({ children }: Props) => {
   if (auth.currentUser) {
     return (
       <NavbarProvider>
-        <Navbar />
-        <Sidebar>{children}</Sidebar>
+        <div className="flex flex-col h-screen">
+          <Navbar />
+          <Sidebar>{children}</Sidebar>
+        </div>
       </NavbarProvider>
     );
   }
