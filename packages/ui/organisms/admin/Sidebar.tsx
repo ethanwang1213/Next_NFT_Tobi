@@ -88,6 +88,7 @@ const Sidebar = ({ children }: Props) => {
 
   return (
     <div className="drawer drawer-open flex-1">
+      <div className="bg-primary bg-non-active hidden"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
