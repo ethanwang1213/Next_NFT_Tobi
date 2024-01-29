@@ -54,9 +54,9 @@ const StyledTextInput = ({
         className={clsx(
           "w-full h-12 pl-5 pt-4",
           tooltip && tooltip.length ? "pr-8" : "pr-3",
-          "outline-none border-2 rounded-lg border-[#717171]/50 hover:border-[#1779DE]/25 focus:border-[#1779DE]/50",
-          "text-sm font-normal text-[#717171]",
-          "placeholder:text-[#717171]/50 placeholder:font-normal"
+          "outline-none border-2 rounded-lg border-normal-color hover:border-hover-color focus:border-focus-color",
+          "text-sm font-normal text-input-color",
+          "placeholder:text-placeholder-color placeholder:font-normal"
         )}
         id={`input_${uniqueId}`}
         value={inputValue}
@@ -66,10 +66,10 @@ const StyledTextInput = ({
         onBlur={handleBlur}
       />
       <label
-        className={`absolute cursor-text left-5 font-normal transition-all duration-300 z-10 ${
+        className={`absolute cursor-text left-5 font-normal transition-all duration-300 z-[1] ${
           isFocused || inputValue
-            ? "text-xs top-1 text-[#717171]"
-            : "text-sm top-3 text-[#717171]/50"
+            ? "text-xs top-1 text-input-color"
+            : "text-sm top-3 text-placeholder-color"
         }`}
         htmlFor={`input_${uniqueId}`}
       >

@@ -1,8 +1,9 @@
 import { format } from "date-fns";
 import clsx from "clsx";
 import { useEffect, useState, useRef } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ja from "date-fns/locale/ja";
 
 const DateTimeInput = ({
   className,
@@ -50,11 +51,13 @@ const DateTimeInput = ({
   };
 
   const openDatePicker = () => {
-    document.getElementById(`date-picker_${uniqueId}`).click();
+    const datePicker = document.getElementById(`date-picker_${uniqueId}`);
+    datePicker?.click();
   };
 
   const openTimePicker = () => {
-    document.getElementById(`time-picker_${uniqueId}`).click();
+    const timePicker = document.getElementById(`time-picker_${uniqueId}`);
+    timePicker?.click();
   };
 
   const datepickerChangeHandler = (date) => {
@@ -80,17 +83,20 @@ const DateTimeInput = ({
     if (e.target.value.length == 0) setDateValue("");
   };
 
+  registerLocale("ja", ja);
+  setDefaultLocale("ja");
+
   return (
     <div
       className={clsx(
-        "h-12 border-2 rounded-lg border-[#717171]/50",
-        "hover:border-[#1779DE]/25 focus-within:border-[#1779DE]/50 hover:focus-within:border-[#1779DE]/50",
+        "h-12 border-2 rounded-lg border-normal-color",
+        "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
         "flex flex-row",
         className
       )}
     >
       <div
-        className="w-36 flex-[3_2_auto] ml-5 mr-4 relative"
+        className="w-36 flex-[3_2_auto] ml-5 mr-4 relative font-normal text-sm"
         onClick={openDatePicker}
       >
         <input
@@ -99,8 +105,8 @@ const DateTimeInput = ({
           value={dateValue}
           className={clsx(
             "absolute left-0 right-0 top-0 bottom-0 pt-4 outline-none",
-            "text-sm font-normal text-[#717171]",
-            "placeholder:text-[#717171]/50 placeholder:font-normal"
+            "text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal"
           )}
           placeholder={isDateFocused ? placeholder : ""}
           onFocus={handleDateFocus}
@@ -108,10 +114,10 @@ const DateTimeInput = ({
           onChange={dateInputChangeHandler}
         />
         <label
-          className={`absolute cursor-text font-normal transition-all duration-300 z-10 ${
+          className={`absolute cursor-text font-normal transition-all duration-300 z-[1] ${
             isDateFocused || dateValue.length
-              ? "text-xs top-1 text-[#717171]"
-              : "text-sm top-3 text-[#717171]/50"
+              ? "text-xs top-1 text-input-color"
+              : "text-sm top-3 text-placeholder-color"
           }`}
           htmlFor={`date-input_${uniqueId}`}
         >
@@ -127,27 +133,31 @@ const DateTimeInput = ({
           className="hidden"
           popperPlacement="bottom-start"
           popperClassName="mt-4"
+          locale="ja"
         />
       </div>
       <div className="w-px bg-[#717171]/50"></div>
-      <div className="w-16 flex-auto mx-4 relative" onClick={openTimePicker}>
+      <div
+        className="w-16 flex-auto mx-4 relative font-normal text-sm"
+        onClick={openTimePicker}
+      >
         <input
           id={`time-input_${uniqueId}`}
           type="text"
           value={timeValue}
           className={clsx(
             "absolute left-0 right-0 top-0 bottom-0 pt-4 outline-none",
-            "text-sm font-normal text-[#717171]"
+            "text-sm text-input-color"
           )}
           onFocus={handleTimeFocus}
           onBlur={handleTimeBlur}
           onChange={timeInputChangeHandler}
         />
         <label
-          className={`absolute cursor-text font-normal transition-all duration-300 z-10 ${
+          className={`absolute cursor-text font-normal transition-all duration-300 z-[1] ${
             isTimeFocused || timeValue.length
-              ? "text-xs top-1 text-[#717171]"
-              : "text-sm top-3 text-[#717171]/50"
+              ? "text-xs top-1 text-input-color"
+              : "text-sm top-3 text-placeholder-color"
           }`}
           htmlFor={`time-input_${uniqueId}`}
         >
@@ -163,10 +173,11 @@ const DateTimeInput = ({
           showTimeSelect
           showTimeSelectOnly
           timeFormat="HH:mm"
-          timeCaption="Time"
+          timeCaption="時間"
           className="hidden"
           popperPlacement="bottom-start"
           popperClassName="mt-4"
+          locale="ja"
         />
       </div>
     </div>

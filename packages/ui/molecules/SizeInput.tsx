@@ -5,16 +5,16 @@ const SizeInput = ({
   className,
   height,
   width,
-  deep,
+  depth,
 }: {
   className: string;
   height?: number;
   width?: number;
-  deep?: number;
+  depth?: number;
 }) => {
   const [inputWidth, setInputWidth] = useState(width);
   const [inputHeight, setInputHeight] = useState(height);
-  const [inputDeep, setInputDeep] = useState(deep);
+  const [inputDepth, setInputDepth] = useState(depth);
 
   const handleWidthChange = (e) => {
     setInputWidth(e.target.value.replace(/\D/g, ""));
@@ -24,56 +24,45 @@ const SizeInput = ({
     setInputHeight(e.target.value.replace(/\D/g, ""));
   };
 
-  const handleDeepChange = (e) => {
-    setInputDeep(e.target.value.replace(/\D/g, ""));
+  const handleDepthChange = (e) => {
+    setInputDepth(e.target.value.replace(/\D/g, ""));
   };
 
   return (
     <div
       className={clsx(
-        "border-2 border-[#717171]/50 rounded-lg cursor-text flex",
+        "border-2 border-normal-color rounded-lg cursor-text flex",
         className,
-        "hover:border-[#1779DE]/25 focus-within:border-[#1779DE]/50 hover:focus-within:border-[#1779DE]/50"
+        "font-normal text-sm text-placeholder-color",
+        "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color"
       )}
     >
-      <span className="mt-3.5 mx-0.5 text-sm text-[#717171]/50 font-normal">
-        H
-      </span>
+      <span className="mt-3.5 mx-0.5">H</span>
       <input
         type="text"
-        className="h-12 w-4 flex-1 text-sm outline-none text-right"
+        className="h-12 w-4 flex-1 outline-none text-right text-input-color"
         value={inputWidth}
         onChange={handleWidthChange}
       />
-      <span className="mt-3.5 mx-0.5 text-sm text-[#717171]/50 font-normal">
-        mm
-      </span>
+      <span className="mt-3.5 mx-0.5">mm</span>
       <div className="w-0.5 bg-[#717171]/50"></div>
-      <span className="mt-3.5 mx-0.5 text-sm text-[#717171]/50 font-normal">
-        W
-      </span>
+      <span className="mt-3.5 mx-0.5">W</span>
       <input
         type="text"
-        className="h-12 w-4 flex-1 text-sm outline-none text-right"
+        className="h-12 w-4 flex-1 outline-none text-right text-input-color"
         value={inputHeight}
         onChange={handleHeightChange}
       />
-      <span className="mt-3.5 mx-0.5 text-sm text-[#717171]/50 font-normal">
-        mm
-      </span>
+      <span className="mt-3.5 mx-0.5">mm</span>
       <div className="w-0.5 bg-[#717171]/50"></div>
-      <span className="mt-3.5 mx-0.5 text-sm text-[#717171]/50 font-normal">
-        D
-      </span>
+      <span className="mt-3.5 mx-0.5">D</span>
       <input
         type="text"
-        className="h-12 w-4 flex-1 text-sm outline-none text-right"
-        value={inputDeep}
-        onChange={handleDeepChange}
+        className="h-12 w-4 flex-1 outline-none text-right text-input-color"
+        value={inputDepth}
+        onChange={handleDepthChange}
       />
-      <span className="mt-3.5 mx-0.5 text-sm text-[#717171]/50 font-normal">
-        mm
-      </span>
+      <span className="mt-3.5 mx-0.5">mm</span>
     </div>
   );
 };

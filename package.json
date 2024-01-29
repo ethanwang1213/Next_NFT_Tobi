@@ -26,6 +26,7 @@
   "packageManager": "npm@8.19.4",
   "dependencies": {
     "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
     "numeral": "^2.0.6",
     "rc-switch": "^4.1.0",
     "react-datepicker": "^4.25.0",

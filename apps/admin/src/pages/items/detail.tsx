@@ -29,7 +29,7 @@ const Detail = () => {
       </div>
 
       <div className="container mx-auto px-1.5 py-8">
-        <div className="mb-8 text-2xl/[48x] text-[#717171]">
+        <div className="mb-8 text-2xl/[48x] text-title-color">
           アイテム詳細情報
         </div>
         <div className="flex flex-row">
@@ -91,7 +91,7 @@ const Detail = () => {
             </span>
           </div>
         </div>
-        <div className="h-14 text-base/[56px] text-[#717171]">商品の説明</div>
+        <div className="h-14 text-base/[56px] text-title-color">商品の説明</div>
         <StyledTextArea
           className=""
           label="ディスクリプション"
@@ -99,7 +99,9 @@ const Detail = () => {
           value=""
           changeHandler={(value) => fieldChangeHandler("desc", value)}
         />
-        <div className="text-2xl/[48x] text-[#717171] mt-8">SAMPLEアイテム</div>
+        <div className="text-2xl/[48x] text-title-color mt-8">
+          SAMPLEアイテム
+        </div>
         <div className="flex">
           <a
             className="flex-grow h-12 mt-2 ml-6 underline text-xl/[48x] font-normal text-[#1779DE]"
@@ -121,7 +123,7 @@ const Detail = () => {
           </div>
           <div className="w-44"></div>
         </div>
-        <div className="mt-12 text-2xl/[48x] text-[#717171]">
+        <div className="mt-12 text-2xl/[48x] text-title-color">
           価格と詳細設定
           <div className="mt-8 grid grid-cols-2 gap-8">
             <StyledTextInput
@@ -170,17 +172,19 @@ const Detail = () => {
             <DateTimeInput
               className=""
               labelDate="販売開始日"
+              labelTime="時間"
               placeholder="販売開始日"
               value={sampleItem.release_date}
             />
             <DateTimeInput
               className=""
               labelDate="販売終了日"
+              labelTime="時間"
               placeholder="販売終了日"
             />
           </div>
         </div>
-        <div className="mt-12 text-2xl/[48x] text-[#717171]">
+        <div className="mt-12 text-2xl/[48x] text-title-color">
           サイズ
           <div className="mt-8 grid grid-cols-2 gap-8">
             <SizeInput className="" />
@@ -191,7 +195,7 @@ const Detail = () => {
             />
           </div>
         </div>
-        <div className="mt-12 text-2xl/[48x] text-[#717171]">
+        <div className="mt-12 text-2xl/[48x] text-title-color">
           公開予約設定
           <div className="mt-8 grid grid-cols-2 gap-8">
             <DateTimeInput
@@ -208,7 +212,7 @@ const Detail = () => {
             />
           </div>
         </div>
-        <div className="mt-12 text-2xl/[48x] text-[#717171]">
+        <div className="mt-12 text-2xl/[48x] text-title-color">
           パッケージ
           <div className="mt-8 grid grid-cols-2 gap-8">
             <StyledTextInput

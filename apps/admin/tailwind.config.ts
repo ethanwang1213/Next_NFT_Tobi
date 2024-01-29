@@ -35,6 +35,16 @@ const config = {
       colors: {
         brown: "#894400",
       },
+      textColor: {
+        "title-color": "#717171",
+        "input-color": "#4D4D4D",
+        "placeholder-color": "#71717180",
+      },
+      borderColor: {
+        "normal-color": "#71717180",
+        "hover-color": "#4A90E2",
+        "focus-color": "#FFA726",
+      },
       width: {
         "18": "4.5rem",
         "26": "6.5rem",
