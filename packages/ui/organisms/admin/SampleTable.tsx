@@ -123,7 +123,6 @@ export default function SampleTable({ filters }) {
                     </Link>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center justify-center">
-                    {/* {formatCurrency({sample.price})} */}
                     {formatCurrency(sample.price)}
                   </td>
                   <td className="text-center">
@@ -136,7 +135,6 @@ export default function SampleTable({ filters }) {
                     {sample.sales_status.length ? sample.sales_status : "-"}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3  text-center justify-center">
-                    {/* {formatDateToLocal(sample.release_date)} */}
                     {sample.release_date.length ? (
                       <>
                         {sample.release_date.split(" ")[0]} <br />
