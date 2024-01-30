@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: hiragino-kaku-gothic-pron, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+}
+
 @layer components {
   .modal {
     @apply bg-black/40;
@@ -38,5 +45,21 @@
   input::-webkit-input-placeholder {
     font-family: hiragino-kaku-gothic-pron, sans-serif;
   }
+}
 
+input[type="radio"].tobiratory-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 12px; /* Set the width of your custom radio button */
+  height: 12px; /* Set the height of your custom radio button */
+  background: url("/admin/images/radiobox.svg") no-repeat; /* Set the path to your custom image */
+  background-size: cover;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="radio"].tobiratory-radio:checked {
+  background: url("/admin/images/radiobox-checked.svg") no-repeat; /* Set the path to your custom checked image */
+  background-size: cover;
 }
