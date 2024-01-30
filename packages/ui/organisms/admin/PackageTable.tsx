@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { formatDateToLocal, formatCurrency } from "ui/atoms/Formatters";
 import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
-import { fetchPackages } from "./actions/PackageActions";
+import { fetchPackages } from "hooks/PackageActions";
 
 export default function PackageTable() {
   const [isAscending, setIsAscending] = useState(true);

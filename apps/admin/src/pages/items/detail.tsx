@@ -9,7 +9,7 @@ import PublicSwitch from "ui/molecules/PublicSwitch";
 import SizeInput from "ui/molecules/SizeInput";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
-import { fetchSampleItem } from "ui/organisms/admin/actions/SampleActions";
+import { fetchSampleItem } from "hooks/SampleActions";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 
 const Detail = () => {

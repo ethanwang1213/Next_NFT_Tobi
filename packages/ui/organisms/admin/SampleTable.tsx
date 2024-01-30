@@ -2,7 +2,7 @@ import Image from "next/image";
 import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
 import React, { useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { fetchSamples } from "ui/organisms/admin/actions/SampleActions";
+import { fetchSamples } from "hooks/SampleActions";
 import { formatDateToLocal, formatCurrency } from "ui/atoms/Formatters";
 import Link from "next/link";
 
