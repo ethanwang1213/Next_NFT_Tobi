@@ -1,8 +1,11 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
-import {PubSub} from '@google-cloud/pubsub';
+import {PubSub} from "@google-cloud/pubsub";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
+import {PrismaClient} from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -21,18 +24,20 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
 
   // Add processing here according to txType
   if (txType == "createFlowAccount") {
-    const flowAccounts = await firestore().collection("flowAccounts").where("email", "==", params.email).get();
+    const flowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", params.tobiratoryAccountUuid).get();
     if (flowAccounts.size == 0) {
       throw new Error("FLOW_ACCOUNT_NOT_FOUND");
     }
     try {
       await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref);
-      await flowJobDocRef.update({ status: "done", updatedAt: new Date() });
+      await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
         console.log(`Message ${messageId} published.`);
-        await flowJobDocRef.update({ status: "retrying", updatedAt: new Date() });
+        await flowJobDocRef.update({status: "retrying", updatedAt: new Date()});
+      } else {
+        throw e;
       }
     }
   }
@@ -43,15 +48,26 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   if (existingFlowJobs.size > 0) {
     return existingFlowJobs.docs[0].ref;
   }
-  return await firestore().collection("flowJobs").add({ flowJobId });
+  return await firestore().collection("flowJobs").add({flowJobId});
 };
 
 const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => {
   const flowAccount = await flowAccountRef.get();
   if (flowAccount.exists) {
-    const txId = flowAccount.data()?.txId;
-    const address = await fetchFlowAddress(txId);
-    await flowAccountRef.update({address});
+    const flowAccountData = flowAccount.data();
+    if (flowAccountData) {
+      const txId = flowAccountData.txId;
+      const tobiratoryAccountUuid = flowAccountData.tobiratoryAccountUuid;
+      const publicKey = flowAccountData.pubKey;
+      const address = await fetchFlowAddress(txId);
+      await flowAccountRef.update({address});
+      await upsertFlowAccountRecord({
+        tobiratoryAccountUuid,
+        address,
+        publicKey,
+        txId,
+      });
+    }
   }
 };
 
@@ -64,4 +80,35 @@ const fetchFlowAddress = async (txId: string) => {
     }
   }
   throw Error("TX_FAILED");
+};
+
+const upsertFlowAccountRecord = async (
+    {
+      tobiratoryAccountUuid,
+      address,
+      publicKey,
+      txId,
+    }: {
+      tobiratoryAccountUuid: string,
+      address: string,
+      publicKey: string,
+      txId: string
+    }
+) => {
+  await prisma.tobiratory_flow_accounts.upsert({
+    where: {
+      uuid: tobiratoryAccountUuid,
+    },
+    update: {
+      flow_address: address,
+      public_key: publicKey,
+      tx_id: txId,
+    },
+    create: {
+      uuid: tobiratoryAccountUuid,
+      flow_address: address,
+      public_key: publicKey,
+      tx_id: txId,
+    },
+  });
 };

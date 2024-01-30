@@ -41,3 +41,5 @@ apps/journal/.env
 
 .vercel
 .vscode
+
+apps/flow/cadence/tmp/*
