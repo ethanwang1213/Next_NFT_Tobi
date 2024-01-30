@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const general = require("../../packages/tailwind-config/tailwind.config.js");
+import general from "../../packages/tailwind-config/tailwind.config.js";
 const config = {
   ...general,
   content: [
@@ -14,9 +14,6 @@ const config = {
       md: "992px", // desktops
     },
     extend: {
-      fontFamily: {
-        body: ["fot-tsukubrdgothic-std", "sans-serif"],
-      },
       fontSize: {
         redeemStatus: {
           pc: {
@@ -30,9 +27,42 @@ const config = {
             error: 34,
           },
         },
+        "3xl": ["32px", "48px"],
       },
       colors: {
-        brown: "#894400",
+        active: "#FF811C",
+        attention: "#FF4747",
+        "attention-content": "#FFFFFF",
+        "base-76-content": "#717171C2",
+        "base-200-content": "#5A5A5A",
+        "non-active": "#B3B3B3",
+        popup: "#07396C",
+        "popup-content": "#FFFFFF",
+      },
+      textColor: {
+        "title-color": "#717171",
+        "input-color": "#4D4D4D",
+        "placeholder-color": "#71717180",
+      },
+      borderColor: {
+        "normal-color": "#71717180",
+        "hover-color": "#4A90E2",
+        "focus-color": "#FFA726",
+      },
+      width: {
+        "18": "4.5rem",
+        "26": "6.5rem",
+        "34": "8.5rem",
+        "38": "9.5rem",
+        "65": "16.25rem",
+        "67": "16.725rem",
+        "68": "17rem",
+        "70": "17.5rem",
+        "76": "19rem",
+        "112": "28rem",
+        "116": "29rem",
+        "120": "30rem",
+        "128": "32rem",
       },
     },
   },
@@ -41,24 +71,14 @@ const config = {
       {
         mytheme: {
           ...require("daisyui/src/theming/themes")["[data-theme=light]"],
-          primary: "#287BDB",
-          secondary: "#FDFAF1",
-          "secondary-focus": "#dbd3ba",
-          "secondary-content": "#7D5337",
-          accent: "#7D5337",
-          "accent-content": "#FDFAF1",
-          neutral: "#FFFFFF",
-          "neutral-focus": "#F0F0F0",
-          "neutral-content": "#8C8C8C",
+          primary: "#1779DE",
+          "primary-content": "#FFFFFF",
           "base-100": "#FFFFFF",
-          info: "#137BB1",
-          success: "#36D399",
-          warning: "#B25748",
-          error: "#E5574B",
+          "base-content": "#717171",
         },
       },
     ],
   },
 };
 
-module.exports = config;
+export default config;
