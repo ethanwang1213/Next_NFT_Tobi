@@ -6,11 +6,11 @@ import {discordUserNfts} from "./discordUserNfts";
 import {metadata} from "./tobiraneko";
 import {metadata as houseBadgeMetadata} from "./housebadge";
 import {mintFes23NftTaskv1} from "./mintFes23NftTask";
-import {createFlowAccount} from "./createFlowAccount";
+import {createFlowAccountDemo} from "./createFlowAccount";
 import {native} from "./native";
-import { flowTxSend } from "./flowTxSend";
-import { flowTxMonitor } from "./flowTxMonitor";
-import { taskWrapperLink } from "./taskWrapperLink";
+import {flowTxSend} from "./flowTxSend";
+import {flowTxMonitor} from "./flowTxMonitor";
+import {taskWrapperLink} from "./taskWrapperLink";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -29,10 +29,11 @@ exports.stampRallyBadge = require("./journalStampRallyBadge");
 exports.mintFes23NftTaskv1 = mintFes23NftTaskv1;
 exports.flowTxSend = flowTxSend;
 exports.flowTxMonitor = flowTxMonitor;
-exports.createFlowAccount = createFlowAccount;
 exports.native = native;
 exports.taskWrapperLink = taskWrapperLink;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
+  exports.kmsSample = require("./kmsSample");
+  exports.createFlowAccountDemo = createFlowAccountDemo;
 }
