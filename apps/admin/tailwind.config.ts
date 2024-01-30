@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const general = require("../../packages/tailwind-config/tailwind.config.js");
+import general from "../../packages/tailwind-config/tailwind.config.js";
 const config = {
   ...general,
   content: [
@@ -14,9 +14,6 @@ const config = {
       md: "992px", // desktops
     },
     extend: {
-      fontFamily: {
-        body: ["Hiragino Maru Gothic Pro", "sans-serif"],
-      },
       fontSize: {
         redeemStatus: {
           pc: {
@@ -33,7 +30,14 @@ const config = {
         "3xl": ["32px", "48px"],
       },
       colors: {
-        brown: "#894400",
+        active: "#FF811C",
+        attention: "#FF4747",
+        "attention-content": "#FFFFFF",
+        "base-76-content": "#717171C2",
+        "base-200-content": "#5A5A5A",
+        "non-active": "#B3B3B3",
+        popup: "#07396C",
+        "popup-content": "#FFFFFF",
       },
       textColor: {
         "title-color": "#717171",
@@ -67,25 +71,14 @@ const config = {
       {
         mytheme: {
           ...require("daisyui/src/theming/themes")["[data-theme=light]"],
-          primary: "#287BDB",
-          secondary: "#FDFAF1",
-          "secondary-focus": "#dbd3ba",
-          "secondary-content": "#7D5337",
-          accent: "#7D5337",
-          "accent-content": "#FDFAF1",
-          "accent-focus": "#EF883B",
-          neutral: "#FFFFFF",
-          "neutral-focus": "#F0F0F0",
-          "neutral-content": "#8C8C8C",
+          primary: "#1779DE",
+          "primary-content": "#FFFFFF",
           "base-100": "#FFFFFF",
-          info: "#137BB1",
-          success: "#36D399",
-          warning: "#B25748",
-          error: "#E5574B",
+          "base-content": "#717171",
         },
       },
     ],
   },
 };
 
-module.exports = config;
+export default config;

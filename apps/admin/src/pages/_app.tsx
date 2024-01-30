@@ -9,23 +9,26 @@ import "../styles/global.scss";
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { M_PLUS_2 } from "next/font/google";
 import Layout from "ui/organisms/admin/Layout";
 
 config.autoAddCss = false;
 
+const font = M_PLUS_2({ subsets: ["latin"] });
+
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
-      <Layout>
-        <div className="relative">
+      <main className={font.className}>
+        <Layout>
           <Component {...pageProps} />
-        </div>
-      </Layout>
+        </Layout>
+      </main>
     </>
   );
 };
 
-App.getInitialProps = async (appContext: AppContext) => {
+App.getServerSideProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx;
   if (req && res && process.env.ENABLE_BASIC_AUTH === "true") {
     await basicAuthCheck(req, res);

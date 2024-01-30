@@ -2,8 +2,8 @@ import { auth } from "fetchers/firebase/client";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
 import React, {
-  ReactNode,
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useState,
@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (user?.email) {
         await auth.signOut();
       }
-      await router.push("/signin");
+      router.push("/signin");
     } catch (error) {
       console.error("サインアウトに失敗しました。", error);
     }

@@ -21,6 +21,7 @@
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "prettier": "latest",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "turbo": "latest"
   },
   "packageManager": "npm@8.19.4",
@@ -35,6 +36,7 @@
     "react-hook-form": "^7.43.9",
     "react-tooltip": "^5.25.2",
     "reactjs-popup": "^2.0.6",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2"
   }
 }

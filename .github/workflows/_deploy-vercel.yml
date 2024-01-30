@@ -1,0 +1,57 @@
+name: Reusing Deploy Preview on Vercel
+
+on:
+  workflow_call:
+    inputs:
+      ENV_NAME:
+        description: "Environment Name"
+        type: string
+        required: true
+    secrets:
+      VERCEL_ORG_ID:
+        description: "Vercel Organization Id"
+        required: true
+      VERCEL_PROJECT_ID:
+        description: "Vercel Project Id"
+        required: true
+      VERCEL_TOKEN:
+        description: "Vercel Token"
+        required: true
+      NPM_RC_FOR_GSAP:
+        description: "the content of .npmrc for installation of gsap business library"
+        required: true
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENV_NAME }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Create .npmrc file
+        run: echo "${{ secrets.NPM_RC_FOR_GSAP }}" > .npmrc
+
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        id: deploy
+        run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT

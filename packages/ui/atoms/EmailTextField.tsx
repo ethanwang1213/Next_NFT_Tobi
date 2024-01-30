@@ -1,5 +1,5 @@
 import { UseFormRegister } from "react-hook-form/dist/types/form";
-import { LoginFormType } from "../templates/SignInForm";
+import { LoginFormType } from "ui/templates/SignIn";
 
 type Props = {
   placeholder: string;
