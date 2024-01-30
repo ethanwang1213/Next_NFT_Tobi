@@ -1,3 +1,4 @@
+import { fetchSampleItem } from "hooks/SampleActions";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,9 +8,8 @@ import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
 import PublicSwitch from "ui/molecules/PublicSwitch";
 import SizeInput from "ui/molecules/SizeInput";
-import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
-import { fetchSampleItem } from "hooks/SampleActions";
+import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 
 const Detail = () => {
@@ -39,7 +39,7 @@ const Detail = () => {
                 className="mb-4"
                 label="商品名"
                 placeholder="商品名"
-                value={sampleItem.name}
+                value={sampleItem?.name}
                 changeHandler={(value) => fieldChangeHandler("name", value)}
                 tooltip="test tooltip"
               />
@@ -47,14 +47,14 @@ const Detail = () => {
                 className="mb-4"
                 label="フリガナ"
                 placeholder="フリガナ"
-                value={sampleItem.ruby}
+                value={sampleItem?.ruby}
                 changeHandler={(value) => fieldChangeHandler("ruby", value)}
               />
               <StyledTextInput
                 className=""
                 label="カテゴリ"
                 placeholder="カテゴリ"
-                value={sampleItem.category}
+                value={sampleItem?.category}
                 changeHandler={(value) => fieldChangeHandler("category", value)}
               />
             </div>
@@ -63,7 +63,7 @@ const Detail = () => {
             width={179}
             height={179}
             className="mr-12"
-            src={sampleItem.image_url}
+            src={sampleItem?.image_url}
             alt=""
           />
           <div
@@ -114,7 +114,7 @@ const Detail = () => {
               width={179}
               height={179}
               className="mr-12 inline-block"
-              src={sampleItem.image_url}
+              src={sampleItem?.image_url}
               alt=""
             />
             <span className="h-12 mt-2 py-2 text-xl font-normal text-[#1779DE]">
@@ -130,7 +130,7 @@ const Detail = () => {
               className=""
               label="価格"
               placeholder="価格"
-              value={sampleItem.price.toString(10)}
+              value={sampleItem?.price.toString(10)}
               inputMask={TextKind.Digit}
               changeHandler={(value) => fieldChangeHandler("price", value)}
             />
@@ -174,7 +174,7 @@ const Detail = () => {
               labelDate="販売開始日"
               labelTime="時間"
               placeholder="販売開始日"
-              value={sampleItem.release_date}
+              value={sampleItem?.release_date}
             />
             <DateTimeInput
               className=""
