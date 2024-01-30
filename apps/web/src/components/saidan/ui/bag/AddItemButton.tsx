@@ -8,7 +8,7 @@ import * as _Jimp from "jimp";
 import ClosePolicyButton from "../policy/ClosePolicyButton";
 import { useAuth } from "@/context/auth";
 import { doc, updateDoc } from "firebase/firestore/lite";
-import { db } from "fetchers/firebase/web-client";
+import { db } from "fetchers/firebase/client";
 
 /**
  * 新しい画像を投稿するボタンのコンポーネント

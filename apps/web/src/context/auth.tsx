@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { auth, db } from "fetchers/firebase/web-client";
+import { auth, db } from "fetchers/firebase/client";
 import { User, UserContextType } from "@/types/user";
 
 const AuthContext = createContext<UserContextType>(undefined);

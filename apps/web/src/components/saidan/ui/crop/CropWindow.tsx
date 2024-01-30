@@ -5,7 +5,7 @@ import { CropData, CropperParams } from "@/types/PlacedItemData";
 import { doc, setDoc } from "firebase/firestore/lite";
 import BadgeCrop from "./BadgeCrop";
 import PosterCrop from "./PosterCrop";
-import { auth, db } from "fetchers/firebase/web-client";
+import { auth, db } from "fetchers/firebase/client";
 
 const CropWindow = () => {
   const allSrcs = useSaidanStore((state) => state.allSrcs);

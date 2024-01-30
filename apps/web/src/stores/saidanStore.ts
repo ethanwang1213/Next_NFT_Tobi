@@ -24,7 +24,7 @@ import {
   PlacedItemData,
   SrcItemData,
 } from "@/types/PlacedItemData";
-import { auth, db } from "fetchers/firebase/web-client";
+import { auth, db } from "fetchers/firebase/client";
 import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore/lite";
 import generateHash from "@/methods/saidan/generateHash";
 import getWhitedImageSrc from "@/methods/saidan/whitenImageBg";

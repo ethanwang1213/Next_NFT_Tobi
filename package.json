@@ -5,8 +5,9 @@
     "packages/*"
   ],
   "scripts": {
-    "journal": "cd apps/journal && npm run dev",
-    "web": "cd apps/web && npm run dev",
+    "admin": "turbo run dev --filter=admin",
+    "journal": "turbo run dev --filter=journal",
+    "web": "turbo run dev --filter=web",
     "serve:firebase": "cd apps/firebase/functions && npm run serve",
     "emulate:flow": "cd apps/flow && npm run emulator",
     "deploy:flow": "cd apps/flow && npm run deploy",
@@ -20,7 +21,22 @@
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "prettier": "latest",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "turbo": "latest"
   },
-  "packageManager": "npm@8.19.4"
+  "packageManager": "npm@8.19.4",
+  "dependencies": {
+    "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
+    "numeral": "^2.0.6",
+    "rc-switch": "^4.1.0",
+    "react-datepicker": "^4.25.0",
+    "react-easy-crop": "^4.7.4",
+    "react-headless-tabs": "^6.0.4",
+    "react-hook-form": "^7.43.9",
+    "react-tooltip": "^5.25.2",
+    "reactjs-popup": "^2.0.6",
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2"
+  }
 }
