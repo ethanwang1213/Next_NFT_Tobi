@@ -1,7 +1,7 @@
 import { useAuth } from "contexts/AdminAuthProvider";
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import ImageIconButton from "ui/atoms/ImageIconButton";
 import NavbarContainer from "ui/atoms/NavbarContainer";
 import NavbarEnd from "ui/atoms/NavbarEnd";
@@ -52,6 +52,7 @@ const NavbarStartBlock = () => {
 const UserMenu = () => {
   const userProfileIconRef = useRef<HTMLDetailsElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
+  const signOutModalRef = useRef<HTMLDialogElement>(null);
   const { signOut } = useAuth();
 
   // Close when clicking outside the dropdown.
@@ -69,53 +70,124 @@ const UserMenu = () => {
   }, []);
 
   return (
-    <details ref={userProfileIconRef} className="dropdown dropdown-end">
-      <summary className={"btn bg-base-100 hover:bg-base-100 border-0"}>
-        <Image
-          src={"/admin/images/icon/profile.svg"}
-          alt={"user menu icon"}
-          width={40}
-          height={40}
-          className={""}
-        />
-      </summary>
-      <ul
-        ref={menuRef}
-        tabIndex={0}
-        className="dropdown-content z-[1] p-4 shadow-xl bg-base-100 rounded-box w-[235px] mt-2"
-      >
-        <li>
-          <div className="hover:bg-base-100 flex flex-row items-center">
-            <div>
+    <>
+      <details ref={userProfileIconRef} className="dropdown dropdown-end">
+        <summary className={"btn bg-base-100 hover:bg-base-100 border-0"}>
+          <Image
+            src={"/admin/images/icon/profile.svg"}
+            alt={"user menu icon"}
+            width={40}
+            height={40}
+            className={""}
+          />
+        </summary>
+        <ul
+          ref={menuRef}
+          tabIndex={0}
+          className="dropdown-content z-[1] p-4 shadow-xl bg-base-100 rounded-box w-[235px] mt-2"
+        >
+          <li>
+            <div className="hover:bg-base-100 flex flex-row items-center">
+              <div>
+                <Image
+                  src="/admin/images/icon/profile.svg"
+                  alt={"profile image"}
+                  width={48}
+                  height={48}
+                />
+              </div>
+              <div className="flex flex-col ml-2 text-base-200-content">
+                <div className={"text-[15px]"}>IP NAME</div>
+                <div className={"text-[10px]"}>UID：123456789101112</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <ImageIconButton
+              label={"Sign Out"}
+              type={"button"}
+              imagePath={"/admin/images/icon/signout.svg"}
+              width={31.25}
+              height={28}
+              buttonClassName={
+                "btn-block flex justify-start bg-base-100 hover:bg-base-100 border-0 pl-2 text-[15px] text-base-200-content font-normal"
+              }
+              iconClassName={"pr-2"}
+              onClick={() => {
+                signOutModalRef.current.showModal();
+                console.log(signOutModalRef.current.getAttributeNames());
+              }}
+            ></ImageIconButton>
+          </li>
+        </ul>
+      </details>
+      <ConfirmSignOutModal dialogRef={signOutModalRef} />
+    </>
+  );
+};
+
+const ConfirmSignOutModal = ({
+  dialogRef,
+}: {
+  dialogRef: MutableRefObject<HTMLDialogElement>;
+}) => {
+  const { signOut } = useAuth();
+  return (
+    <dialog ref={dialogRef} className="modal">
+      <div className="modal-box w-[437px] rounded-[32px]">
+        <div className="flex justify-end mr-[2px] mt-[-2px]">
+          <form method={"dialog"}>
+            <button className="btn w-[16px] h-[19px] min-h-fit border-0 p-0 bg-base-100 hover:bg-base-100">
               <Image
-                src="/admin/images/icon/profile.svg"
-                alt={""}
-                width={48}
-                height={48}
+                src={"/admin/images/icon/close.svg"}
+                alt={"close button"}
+                width={16}
+                height={19}
+                className={"border-0 p-0"}
               />
+            </button>
+          </form>
+        </div>
+        <div className="text-center text-2xl text-base-200-content font-normal">
+          サインアウトしますか?
+        </div>
+        <Image
+          src="/admin/images/icon/profile.svg"
+          alt={"profile image"}
+          width={153}
+          height={153}
+          className={"m-auto mt-[30px]"}
+        />
+        <div className={"text-center mt-[30px] text-2xl text-base-200-content"}>
+          Account Name
+        </div>
+        <div
+          className={
+            "text-center text-[15px] text-base-200-content font-normal"
+          }
+        >
+          @account_ame
+        </div>
+        <div className="modal-action justify-center mt-[70px] mb-[33px]">
+          <form method="dialog">
+            <div className={"flex flex-col justify-center space-y-[26px]"}>
+              <button
+                onClick={signOut}
+                className="btn btn-block w-[268px] h-[56px] rounded-[30px] bg-primary hover:bg-primary text-primary-content text-xl font-semibold"
+              >
+                サインアウト
+              </button>
+              <button className="btn btn-block w-[268px] h-[56px] rounded-[30px] border-primary hover:border-primary bg-base-100 hover:bg-base-100 text-primary text-xl font-semibold">
+                キャンセル
+              </button>
             </div>
-            <div className="flex flex-col ml-2 text-base-200-content">
-              <div className={"text-[15px]"}>IP NAME</div>
-              <div className={"text-[10px]"}>UID：123456789101112</div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <ImageIconButton
-            label={"Sign Out"}
-            type={"button"}
-            imagePath={"/admin/images/icon/signout.svg"}
-            width={31.25}
-            height={28}
-            buttonClassName={
-              "btn-block flex justify-start bg-base-100 hover:bg-base-100 border-0 pl-2 text-[15px] text-base-200-content font-normal"
-            }
-            iconClassName={"pr-2"}
-            onClick={signOut}
-          ></ImageIconButton>
-        </li>
-      </ul>
-    </details>
+          </form>
+        </div>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   );
 };
 
