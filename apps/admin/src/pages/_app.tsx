@@ -29,7 +29,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-App.getServerSideProps = async (appContext: AppContext) => {
+App.getInitialProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx;
   if (req && res && process.env.ENABLE_BASIC_AUTH === "true") {
     await basicAuthCheck(req, res);
