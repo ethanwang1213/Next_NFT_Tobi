@@ -70,7 +70,7 @@ const Discord = () => {
 
   // テスト：dbへの書き込み
   useEffect(() => {
-    if (process.env["NEXT_PUBLIC_DEBUG_MODE"] === "false") return;
+    if (process.env["NEXT_PUBLIC_DEBUG_MODE"] !== "true") return;
     if (!user || !router.isReady) return;
 
     (async () => {

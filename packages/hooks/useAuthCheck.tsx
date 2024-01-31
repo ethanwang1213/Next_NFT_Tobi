@@ -6,7 +6,7 @@ const useAuthCheck = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && !auth.currentUser) {
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" && !auth.currentUser) {
       router.push("/signin");
       return;
     }
