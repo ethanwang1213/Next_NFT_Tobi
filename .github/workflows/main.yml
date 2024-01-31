@@ -16,6 +16,7 @@ jobs:
 
       - name: Lint Check
         run: |
+          echo "${{ secrets.NPM_RC_FOR_GSAP }}" > .npmrc
           npm install
           cd apps/admin
           npm run lint
