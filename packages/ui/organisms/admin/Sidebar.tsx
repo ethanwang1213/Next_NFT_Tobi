@@ -35,6 +35,11 @@ const Sidebar = ({ children }: Props) => {
 
   const items = [
     {
+      name: "Tobiratory Creator Programに参加",
+      icon: "/admin/images/icon/tobiratory.svg",
+      href: "/apply",
+    },
+    {
       name: "ワークスペース",
       icon: "/admin/images/icon/workspace.svg",
       href: "/workspace",
