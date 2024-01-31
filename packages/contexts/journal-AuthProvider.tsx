@@ -120,7 +120,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         }
       } else {
         // ログインしていない場合、匿名ログイン
-        if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false") {
+        if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "true") {
           signInAnonymously(auth).then(async (e) => {
             // console.log(`匿名ログイン: ${e.user.uid}`);
             if (e.user) {

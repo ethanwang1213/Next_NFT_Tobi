@@ -12,8 +12,6 @@ import { useAuth } from "contexts/journal-AuthProvider";
 import { RedeemStatusProvider } from "@/contexts/journal-RedeemStatusProvider";
 import { BookProvider } from "@/contexts/journal-BookProvider";
 import { EditProfileProvider } from "@/contexts/journal-EditProfileProvider";
-import { StampRallyFormProvider } from "contexts/journal-StampRallyFormProvider";
-import { WatchMintStatusProvider } from "contexts/journal-WatchMintStatusProvider";
 
 const Index = () => {
   const router = useRouter();
@@ -21,7 +19,7 @@ const Index = () => {
 
   useEffect(() => {
     if (!auth) return;
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE === "false" && !auth.currentUser) {
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" && !auth.currentUser) {
       router.push("/login");
     }
   }, [auth]);
@@ -32,7 +30,7 @@ const Index = () => {
         <BookProvider>
           <div
             className={
-              process.env.NEXT_PUBLIC_DEBUG_MODE === "false" &&
+              process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" &&
               (!user || !user.email)
                 ? "invisible"
                 : ""
