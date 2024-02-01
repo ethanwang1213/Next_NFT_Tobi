@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useRef } from "react";
+import React, { createContext, ReactNode, useContext, useRef } from "react";
 import { useToggle } from "react-use";
 
 type Props = {
@@ -6,7 +6,7 @@ type Props = {
 };
 
 type ContextType = {
-  clickedMenu: boolean; // A flag to prevent useEffect from running on the initial rendering."
+  clickedBefore: boolean; // A flag to prevent useEffect from running on the initial rendering."
   menuStatus: boolean;
   onClickMenu?: () => void;
 };
@@ -14,17 +14,17 @@ type ContextType = {
 const NavbarContext = createContext<ContextType>({} as ContextType);
 
 export const NavbarProvider: React.FC<Props> = ({ children }) => {
-  const clicked = useRef<boolean>(false);
+  const clickedBefore = useRef<boolean>(false);
   const [menuStatus, setMenuStatus] = useToggle(false);
   const handleClickMenu = () => {
-    clicked.current = true;
+    clickedBefore.current = true;
     setMenuStatus();
   };
 
   return (
     <NavbarContext.Provider
       value={{
-        clickedMenu: clicked.current,
+        clickedBefore: clickedBefore.current,
         menuStatus,
         onClickMenu: handleClickMenu,
       }}

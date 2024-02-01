@@ -3,6 +3,7 @@
 import config from "admin/tailwind.config";
 import clsx from "clsx";
 import { useNavbar } from "contexts/AdminNavbarProvider";
+import { gsap, Power2 } from "gsap";
 import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,13 +21,50 @@ const Sidebar = ({ children }: Props) => {
   const [expand, setExpand] = useState(true);
 
   const { displayWidth } = useWindowSize();
-  const { clickedMenu, menuStatus } = useNavbar();
+  const { clickedBefore, menuStatus } = useNavbar();
 
   const pathname = usePathname();
 
+  // set initial expand state
   useEffect(() => {
     if (window.innerWidth < screensMd) setExpand(false);
     else setExpand(true);
+  }, []);
+
+  // animate menu width on expand state change
+  useEffect(() => {
+    if (expand) {
+      gsap.to(".drawer-side", {
+        width: menuMaxWidth,
+        duration: 0.4,
+        ease: Power2.easeOut,
+      });
+    } else {
+      gsap.to(".drawer-side", {
+        width: menuMinWidth,
+        duration: 0.4,
+        ease: Power2.easeOut,
+      });
+    }
+  }, [expand]);
+
+  // toggle expand state on menuStatus change
+  useEffect(() => {
+    // prevent execution on the initial rendering.
+    if (!clickedBefore) {
+      return;
+    }
+
+    setExpand(!expand);
+  }, [clickedBefore, menuStatus]);
+
+  // set expand state on window resize
+  useEffect(() => {
+    if (displayWidth < screensMd) {
+      setExpand(false);
+    } else {
+      setExpand(true);
+    }
   }, [displayWidth]);
 
   const normalIconColor = "non-active";
@@ -66,7 +104,6 @@ const Sidebar = ({ children }: Props) => {
     },
   ];
 
-  console.log("sidebar is rendered, menuStatus:", menuStatus, "expand", expand);
   return (
     <div className="drawer drawer-open flex-1">
       <div className="bg-primary bg-non-active hidden"></div>
@@ -79,7 +116,7 @@ const Sidebar = ({ children }: Props) => {
               key={index}
               className="mb-1 text-base-content"
               style={{
-                width: menuStatus && expand ? menuMaxWidth : menuMinWidth,
+                width: expand ? menuMaxWidth : menuMinWidth,
               }}
             >
               <Link
@@ -109,7 +146,7 @@ const Sidebar = ({ children }: Props) => {
                 <div
                   className={clsx(
                     "text-[15px] font-normal",
-                    menuStatus && expand ? "inline" : "hidden",
+                    expand ? "inline" : "hidden",
                   )}
                 >
                   {item.name}
