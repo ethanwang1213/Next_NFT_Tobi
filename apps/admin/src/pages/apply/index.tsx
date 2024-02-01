@@ -18,12 +18,12 @@ const ConfirmModal = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      // style={customStyles}
+      overlayClassName="fixed inset-0 bg-black/40"
       ariaHideApp={false}
       className={clsx(
         "absolute w-[28rem] h-[39rem] top-1/2 left-1/2 -translate-y-1/2",
         menuStatus ? "-translate-x-[6rem]" : "-translate-x-[11.2rem]",
-        "bg-red-300 rounded-[30px] text-[#5A5A5A] p-7",
+        "bg-white rounded-[30px] text-[#5A5A5A] p-7",
       )}
     >
       <Image
