@@ -4,8 +4,9 @@ import { default as NextApp } from "next/app";
 import "react-easy-crop/react-easy-crop.css";
 import "swiper/css";
 import "swiper/css/effect-cards";
-import "../styles/global.scss";
-import "../styles/PublicSwitch.css";
+import "@/styles/global.scss";
+import "@/styles/PublicSwitch.css";
+import "@/styles/TripleToggleSwitch.scss";
 
 import basicAuthCheck from "@/methods/basicAuthCheck";
 import { config } from "@fortawesome/fontawesome-svg-core";
