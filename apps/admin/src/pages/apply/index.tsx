@@ -28,7 +28,7 @@ const ConfirmModal = ({
       secondButtonProp={{
         caption: "次へ",
         isPrimary: true,
-        callback: () => router.replace("/apply/info"),
+        callback: () => router.replace("/apply/terms"),
       }}
       dialogRef={dialogRef}
     />

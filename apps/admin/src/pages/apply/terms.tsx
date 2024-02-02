@@ -59,7 +59,7 @@ const Terms = () => {
           利用規約・プライバシーポリシーに同意する。
         </label>
       </div>
-      <Link href={"/apply/info"}>
+      <Link href={"/apply/register"}>
         <Button
           label="申請フォームへ"
           type="button"
