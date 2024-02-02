@@ -37,9 +37,9 @@ const StyledTextInput = ({
       <textarea
         className={clsx(
           "w-full h-32 pl-5 pt-4 pr-3 resize-none",
-          "outline-none border-2 rounded-lg border-normal-color hover:border-hover-color focus:border-focus-color",
+          "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
           "text-sm font-normal text-input-color",
-          "placeholder:text-placeholder-color placeholder:font-normal"
+          "placeholder:text-placeholder-color placeholder:font-normal",
         )}
         id={`input_${uniqueId}`}
         value={inputValue}

@@ -89,10 +89,10 @@ const DateTimeInput = ({
   return (
     <div
       className={clsx(
-        "h-12 border-2 rounded-lg border-normal-color",
+        "h-12 border-2 rounded-lg border-input-color",
         "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
         "flex flex-row",
-        className
+        className,
       )}
     >
       <div
@@ -106,7 +106,7 @@ const DateTimeInput = ({
           className={clsx(
             "absolute left-0 right-0 top-0 bottom-0 pt-4 outline-none",
             "text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal"
+            "placeholder:text-placeholder-color placeholder:font-normal",
           )}
           placeholder={isDateFocused ? placeholder : ""}
           onFocus={handleDateFocus}
@@ -147,7 +147,7 @@ const DateTimeInput = ({
           value={timeValue}
           className={clsx(
             "absolute left-0 right-0 top-0 bottom-0 pt-4 outline-none",
-            "text-sm text-input-color"
+            "text-sm text-input-color",
           )}
           onFocus={handleTimeFocus}
           onBlur={handleTimeBlur}

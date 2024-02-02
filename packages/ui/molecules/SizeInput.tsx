@@ -31,10 +31,10 @@ const SizeInput = ({
   return (
     <div
       className={clsx(
-        "border-2 border-normal-color rounded-lg cursor-text flex",
+        "border-2 border-input-color rounded-lg cursor-text flex",
         className,
         "font-normal text-sm text-placeholder-color",
-        "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color"
+        "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
       )}
     >
       <span className="mt-3.5 mx-0.5">H</span>

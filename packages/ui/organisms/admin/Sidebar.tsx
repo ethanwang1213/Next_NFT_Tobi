@@ -71,7 +71,6 @@ const Sidebar = ({ children }: Props) => {
     },
   ];
 
-  console.log("sidebar is rendered, menuStatus:", menuStatus, "expand", expand);
   return (
     <div className="drawer drawer-open flex-1">
       <div className="bg-primary bg-non-active hidden"></div>
