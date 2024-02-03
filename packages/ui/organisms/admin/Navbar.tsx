@@ -2,18 +2,18 @@ import { useAuth } from "contexts/AdminAuthProvider";
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import Image from "next/image";
 import { MutableRefObject, useEffect, useRef } from "react";
-import ImageIconButton from "ui/atoms/ImageIconButton";
 import NavbarContainer from "ui/atoms/NavbarContainer";
 import NavbarEnd from "ui/atoms/NavbarEnd";
 import NavbarStart from "ui/atoms/NavbarStart";
 
-const logoWidth = 135.68;
-const logoHeight = 32;
-
 const Navbar = () => {
   return (
-    <NavbarContainer className={"shadow-[0px_1px_10px_0px_rgba(0,0,0,0.20)]"}>
-      <NavbarStart>
+    <NavbarContainer
+      className={
+        "shadow-[0px_1px_10px_0px_rgba(0,0,0,0.20)] min-h-[56px] h-[56px] p-0"
+      }
+    >
+      <NavbarStart className={"min-h-[56px] h-[56px]"}>
         <NavbarStartBlock />
       </NavbarStart>
       <NavbarEnd>
@@ -27,23 +27,27 @@ const NavbarStartBlock = () => {
   const { onClickMenu } = useNavbar();
   return (
     <>
-      <ImageIconButton
-        label={""}
-        type={"button"}
-        imagePath={"/admin/images/icon/hamburger.svg"}
-        alt={"toggle menu"}
-        buttonClassName={
-          "btn-block bg-ghost bg-base-100 hover:bg-base-100 border-0 w-[35px] h-[25px]"
+      <button
+        className={
+          "btn btn-block bg-ghost bg-base-100 hover:bg-base-100 border-0 w-[35px] min-h-[25px] h-[25px] ml-[18px] p-0"
         }
-        iconClassName={"relative h-[50%] aspect-square"}
         onClick={onClickMenu}
-      />
+      >
+        <Image
+          src={"/admin/images/icon/hamburger.svg"}
+          alt={"toggle menu"}
+          priority={true}
+          width={35}
+          height={25}
+        />
+      </button>
       <Image
         src={"/admin/images/logo.svg"}
         alt={"logo"}
         priority={true}
-        width={logoWidth}
-        height={logoHeight}
+        width={135.68}
+        height={32}
+        className={"ml-[36px]"}
       />
     </>
   );
@@ -71,8 +75,15 @@ const UserMenu = () => {
 
   return (
     <>
-      <details ref={userProfileIconRef} className="dropdown dropdown-end">
-        <summary className={"btn bg-base-100 hover:bg-base-100 border-0"}>
+      <details
+        ref={userProfileIconRef}
+        className="dropdown dropdown-end w-[40px] h-[40px] mr-[14px]"
+      >
+        <summary
+          className={
+            "btn bg-base-100 hover:bg-base-100 w-[40px] min-h-[40px] h-[40px] border-0 p-0"
+          }
+        >
           <Image
             src={"/admin/images/icon/profile.svg"}
             alt={"user menu icon"}
@@ -84,11 +95,11 @@ const UserMenu = () => {
         <ul
           ref={menuRef}
           tabIndex={0}
-          className="dropdown-content z-[1] p-4 shadow-xl bg-base-100 rounded-box w-[235px] mt-2"
+          className="dropdown-content z-[1] pt-[30px] pr-[20px] pb-[28px] pl-[22px] shadow-xl bg-base-100 rounded-[12px] w-[235px] mt-[3px] mr-[-13px]"
         >
           <li>
-            <div className="hover:bg-base-100 flex flex-row items-center">
-              <div>
+            <div className="flex flex-row items-center">
+              <div className={"w-[48px]"}>
                 <Image
                   src="/admin/images/icon/profile.svg"
                   alt={"profile image"}
@@ -96,28 +107,42 @@ const UserMenu = () => {
                   height={48}
                 />
               </div>
-              <div className="flex flex-col ml-2 text-base-200-content">
-                <div className={"text-[15px]"}>IP NAME</div>
-                <div className={"text-[10px]"}>UID：123456789101112</div>
+              <div className="flex flex-col ml-[12px] text-base-200-content w-[132px]">
+                <div className={"text-[15px] font-normal"}>IP NAME</div>
+                <div className={"text-[10px] font-normal"}>
+                  UID：123456789101112
+                </div>
               </div>
             </div>
           </li>
-          <li>
-            <ImageIconButton
-              label={"Sign Out"}
-              type={"button"}
-              imagePath={"/admin/images/icon/signout.svg"}
-              width={31.25}
-              height={28}
-              buttonClassName={
-                "btn-block flex justify-start bg-base-100 hover:bg-base-100 border-0 pl-2 text-[15px] text-base-200-content font-normal"
+          <li className={"mt-[26px]"}>
+            <button
+              className={
+                "btn btn-block bg-base-100 hover:bg-base-100 border-0 min-h-[24px] h-[24px] p-0 flex flex-col items-start"
               }
-              iconClassName={"pr-2"}
               onClick={() => {
                 signOutModalRef.current.showModal();
                 console.log(signOutModalRef.current.getAttributeNames());
               }}
-            ></ImageIconButton>
+            >
+              <div className={"w-[48px] flex justify-center"}>
+                <Image
+                  src={"/admin/images/icon/signout.svg"}
+                  alt={"Sign Out Button"}
+                  width={24}
+                  height={24}
+                />
+              </div>
+              <div className={"w-[132px]"}>
+                <div
+                  className={
+                    "text-start text-base-content text-[15px] font-normal"
+                  }
+                >
+                  Sign Out
+                </div>
+              </div>
+            </button>
           </li>
         </ul>
       </details>
