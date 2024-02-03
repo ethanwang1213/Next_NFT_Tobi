@@ -1,17 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="_レイヤー_2" data-name="レイヤー 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.84 27.3">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #1779de;
-        stroke-width: 0px;
-      }
-    </style>
-  </defs>
-  <g id="_レイヤー_1-2" data-name="レイヤー 1">
-    <g>
-      <circle class="cls-1" cx="18.32" cy="16.75" r="1.19"/>
-      <path class="cls-1" d="M25.51,0H.33c-.19,0-.33.14-.33.33v5.96c0,.2.13.33.33.33h8.42v20.34c0,.2.13.33.33.33h12.4c.17,0,.31-.1.35-.26.04-.15-.03-.3-.15-.37,0,0-4.02-2.3-4.72-2.7v-15.83c0-.13.02-.17.12-.2l4.52-1.29s.1-.03.11-.03h3.79c.2,0,.33-.13.33-.33V.33c0-.2-.13-.33-.33-.33ZM25.51.2h0s0,0,0,0ZM8.95,5.57H1.06V1.06h11.63v25.17h-2.89V6.43c0-.48-.39-.86-.86-.86Z"/>
-    </g>
-  </g>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3582_7018)">
+<path d="M21 2H2.1L2 9H8V22H18.3C18.7 22 18.8 21.5 18.4 21.4L15 20V9L18 8H21V2ZM4 7V4H12V20H10V7C8.4 7 4 7 4 7Z" fill="black"/>
+<path d="M17 15C17.5523 15 18 14.5523 18 14C18 13.4477 17.5523 13 17 13C16.4477 13 16 13.4477 16 14C16 14.5523 16.4477 15 17 15Z" fill="black"/>
+</g>
+<defs>
+<clipPath id="clip0_3582_7018">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
 </svg>

@@ -110,11 +110,11 @@ const Sidebar = ({ children }: Props) => {
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
-        <ul className="pt-4">
+        <ul className="pt-[17px]">
           {items.map((item, index) => (
             <li
               key={index}
-              className="mb-1 text-base-content"
+              className="mb-[3px] text-base-content"
               style={{
                 width: expand ? menuMaxWidth : menuMinWidth,
               }}
