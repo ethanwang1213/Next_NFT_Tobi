@@ -4,32 +4,6 @@ import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 
-type SignInRequest = {
-  body: {
-    userId: any;
-    password: any;
-  }
-}
-
-type MyProfile = {
-  body: {
-    account: any,
-    flow: any,
-  };
-}
-
-type GetMyProfile = {
-  body: {
-    uuid: string;
-  }
-}
-
-type MyBusiness = {
-  headers: {
-    uuid: string;
-  }
-}
-
 const prisma = new PrismaClient();
 
 export const verifyEmail = async (req: Request, res: Response) => {
@@ -59,12 +33,28 @@ export const verifyEmail = async (req: Request, res: Response) => {
       });
     }
   } catch (error: any) {
+    const regExp = new RegExp(
+        "^" +
+        "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])" +
+        "(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*_\\-+=:;])" +
+        "(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_\\-+=:;])" +
+        "(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*_\\-+=:;])" +
+        "([a-zA-Z0-9!@#$%^&*_\\-+=:;]){8,}$"
+    );
+
+
     if (!password) {
       res.status(401).send({
         status: "error",
         data: error.code,
       });
-      return
+      return;
+    }
+    if (!regExp.test(password)) {
+      res.status(401).send({
+        status: "error",
+        data: "password-incorrect",
+      });
     }
     await auth().createUser({
       email: email,
@@ -74,7 +64,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
       await auth().generateEmailVerificationLink(email).then(() => {
         res.status(200).send({
           status: "success",
-          data: "sent-mail",
+          data: "email-verify",
         });
       });
     }).catch(async (errorMail: FirebaseError) => {
@@ -87,8 +77,8 @@ export const verifyEmail = async (req: Request, res: Response) => {
 };
 
 export const signUp = async (req: Request, res: Response) => {
-  const {Authorization} = req.headers;
-  await auth().verifyIdToken((Authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+  const {authorization} = req.headers;
+  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const email = decodedToken.email ?? "";
     const savedUser = await prisma.tobiratory_accounts.findMany({
@@ -131,233 +121,413 @@ export const signUp = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.message,
+      data: error.code,
     });
     return;
   });
 };
 
 export const createFlowAcc = async (req: Request, res: Response) => {
-  const {uid} = req.body;
-  const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
-    where: {
-      uuid: uid,
-    },
-  });
-  if (flowAcc != null) {
+  const {authorization} = req.headers;
+  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
+      where: {
+        uuid: uid,
+      },
+    });
+    if (flowAcc != null) {
+      res.status(401).send({
+        status: "error",
+        data: "Flow account already exist",
+      });
+    }
+    const flowInfo = await createFlowAccount(uid);
+    res.status(200).send({
+      status: "success",
+      data: flowInfo.flowJobId,
+    });
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: "Flow account already exist",
+      data: error.code,
     });
-  }
-  const flowInfo = await createFlowAccount(uid);
-  res.status(200).send({
-    status: "success",
-    data: flowInfo.flowJobId,
+    return;
   });
 };
 
-export const signIn = async (req: SignInRequest, res: Response) => {
-  const {userId} = req.body;
-  const validateEmail = String(userId)
-      .toLowerCase()
-      .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  if (!validateEmail) {
-    const usernameData = await prisma.tobiratory_accounts.findMany({
+export const getMyProfile = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    const accountData = await prisma.tobiratory_accounts.findUnique({
       where: {
-        username: userId,
+        uuid: uid,
       },
     });
-    if (usernameData.length == 0) {
+
+    if (accountData === null) {
       res.status(401).send({
         status: "error",
-        data: "Username does not exist.",
+        data: "Account does not exist!",
       });
       return;
     }
-    // userId = usernameData[0].email;
-  }
-  // auth().generateSignInWithEmailLink
-  // await signInWithEmailAndPassword(auth, userId, password)
-  //   .then(async (userCredential) => {
-  //     const uid = userCredential.user.uid;
-  //     const userData = await prisma.tobiratory_accounts.findUnique({
-  //       where: {
-  //         uuid: uid,
-  //       }
-  //     })
-  //     res.status(200).send({
-  //       status: "success",
-  //       data: userData,
-  //     });
-  //     return;
-  //   })
-  //   .catch((error) => {
-  //     res.status(401).send({
-  //       status: "error",
-  //       data: error.message
-  //     });
-  //     return;
-  //   });
-};
 
-export const getMyProfile = async (req: GetMyProfile, res: Response) => {
-  const {uuid} = req.body;
-  const accountData = await prisma.tobiratory_accounts.findUnique({
-    where: {
-      uuid: uuid,
-    },
-  });
-
-  if (accountData === null) {
-    res.status(200).send({
-      status: "error",
-      data: "Account does not exist!",
+    const flowAccountData = await prisma.tobiratory_flow_accounts.findUniqueOrThrow({
+      where: {
+        uuid: uid,
+      },
     });
-    return;
-  }
 
-  const flowAccountData = await prisma.tobiratory_flow_accounts.findUniqueOrThrow({
-    where: {
-      uuid: uuid,
-    },
-  });
-
-  if (flowAccountData === null) {
+    const resData = {
+      userId: uid,
+      username: accountData.username,
+      email: accountData.email,
+      icon: accountData.icon_url,
+      sns: accountData.sns,
+      flow: {
+        flowAddress: flowAccountData.flow_address,
+        publicKey: flowAccountData.public_key,
+        txId: flowAccountData.tx_id,
+      },
+      createdAt: accountData.created_date_time,
+    };
     res.status(200).send({
-      status: "error",
-      data: "Flow account does not exist!",
+      status: "success",
+      data: resData,
     });
-    return;
-  }
-
-  const resData = {
-    userId: uuid,
-    username: accountData.username,
-    icon: accountData.icon_url,
-    sns: accountData.sns,
-    flow: {
-      flowAddress: flowAccountData.flow_address,
-      publicKey: flowAccountData.public_key,
-      txId: flowAccountData.tx_id,
-    },
-    createdAt: accountData.created_date_time,
-  };
-  res.status(200).send({
-    status: "success",
-    data: resData,
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "success",
+      data: error.code,
+    });
   });
 };
 
-export const postMyProfile = async (req: MyProfile, res: Response) => {
+export const postMyProfile = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
   const {account, flow} = req.body;
-  const accountData = await prisma.tobiratory_accounts.findUnique({
-    where: {
-      uuid: account.id,
-    },
-  });
-  const flowData = await prisma.tobiratory_flow_accounts.findUnique({
-    where: {
-      uuid: flow.uuid,
-    },
-  });
-  res.status(200).send({
-    status: "success",
-    data: {
-      account: accountData,
-      flow: flowData,
-    },
+  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const accountData = await prisma.tobiratory_accounts.update({
+      where: {
+        uuid: uid,
+      },
+      data: account,
+    });
+    const flowData = await prisma.tobiratory_flow_accounts.update({
+      where: {
+        uuid: uid,
+      },
+      data: flow,
+    });
+    res.status(200).send({
+      status: "success",
+      data: {
+        account: accountData,
+        flow: flowData,
+      },
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
   });
 };
 
-export const myBusiness = async (req: MyBusiness, res: Response) => {
-  const {uuid} = req.headers;
-  const userData = await prisma.tobiratory_accounts.findUnique({
-    where: {
-      uuid: uuid,
-    },
-  });
-  if (userData == null) {
-    res.status(200).send({
-      status: "error",
-      data: "Userdata does not exist.",
+export const myBusiness = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const businesses = await prisma.tobiratory_businesses.findMany({
+      where: {
+        uuid: uid,
+      },
     });
-  }
-  const businesses = await prisma.tobiratory_businesses.findMany({
-    where: {
-      uuid: userData?.uuid,
-    },
-  });
-  const resData = {
-    name: businesses[0].name,
-    address: businesses[0].address,
-    phone: businesses[0].phone,
-    kyc: businesses[0].kyc,
-    bankAccount: businesses[0].bank_account,
-    balance: businesses[0].balance,
-  };
-  res.status(200).send({
-    status: "success",
-    data: resData,
+    const resData = {
+      name: businesses[0].name,
+      address: businesses[0].address,
+      phone: businesses[0].phone,
+      kyc: businesses[0].kyc,
+      bankAccount: businesses[0].bank_account,
+      balance: businesses[0].balance,
+    };
+    res.status(200).send({
+      status: "success",
+      data: resData,
+    });
   });
 };
 
-export const myInventory = async (req: MyBusiness, res: Response) => {
-  const {uuid} = req.headers;
-  const userData = await prisma.tobiratory_accounts.findUnique({
-    where: {
-      uuid: uuid,
-    },
-  });
-  if (userData == null) {
-    res.status(200).send({
-      status: "error",
-      data: "Userdata does not exist.",
+export const businessSubmission = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    await prisma.tobiratory_businesses.create({
+      data: {
+        uuid: uid,
+        name: "",
+        address: "",
+        phone: "",
+        kyc: "",
+        bank_account: "",
+        balance: "0",
+      },
     });
-  }
-  // const businesses =
-  await prisma.tobiratory_items.findMany({
-    where: {
-      id: parseInt(uuid),
-    },
-  });
-  const resData = {
-    item: [],
-    folders: [],
-  };
-  res.status(200).send({
-    status: "success",
-    data: resData,
+    res.status(200).send({
+      status: "success",
+      data: "resData",
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(200).send({
+      status: "success",
+      data: error.code,
+    });
   });
 };
 
-export const updateMyInventory = async (req: MyBusiness, res: Response) => {
-  const {uuid} = req.headers;
-  const userData = await prisma.tobiratory_accounts.findUnique({
-    where: {
-      uuid: uuid,
-    },
-  });
-  if (userData == null) {
-    res.status(200).send({
-      status: "error",
-      data: "Userdata does not exist.",
+export const updateMyBusiness = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {name, address, phone} = req.body;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const myBusiness = await prisma.tobiratory_businesses.updateMany({
+      where: {
+        uuid: uid,
+      },
+      data: {
+        name: name,
+        address: address,
+        phone: phone,
+      },
     });
-  }
-  // const businesses =
-  await prisma.tobiratory_items.findMany({
-    where: {
-      id: parseInt(uuid),
-    },
-  });
-  const resData = {
-    item: [],
-    folders: [],
-  };
-  res.status(200).send({
-    status: "success",
-    data: resData,
+    res.status(200).send({
+      status: "success",
+      data: myBusiness,
+    });
   });
 };
+
+export const myInventory = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    // const businesses =
+    const items = await prisma.tobiratory_items.findMany({
+      where: {
+        uuid: uid,
+      },
+    });
+    const resData = {
+      item: items,
+      boxes: [],
+    };
+    res.status(200).send({
+      status: "success",
+      data: resData,
+    });
+  });
+};
+
+// export const updateMyInventory = async (req: Request, res: Response) => {
+//   const {authorization} = req.headers;
+//   const userData = await prisma.tobiratory_accounts.findUnique({
+//     where: {
+//       uuid: uuid,
+//     },
+//   });
+//   if (userData == null) {
+//     res.status(200).send({
+//       status: "error",
+//       data: "Userdata does not exist.",
+//     });
+//   }
+//   // const businesses =
+//   await prisma.tobiratory_items.findMany({
+//     where: {
+//       id: parseInt(uuid),
+//     },
+//   });
+//   const resData = {
+//     item: [],
+//     boxes: [],
+//   };
+//   res.status(200).send({
+//     status: "success",
+//     data: resData,
+//   });
+// };
+
+
+export const makeFolder = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {parentFolder, name} = req.body;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    await prisma.tobiratory_boxes.create({
+      data: {
+        uuid: uid,
+        parent_id: parentFolder,
+        name: name,
+      }
+    });
+    res.status(200).send({
+      status: "success",
+      data: "created",
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "success",
+      data: error.code,
+    });
+  })
+}
+
+export const getFolderData = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const folder = await prisma.tobiratory_boxes.findUnique({
+      where: {
+        id: parseInt(id),
+      }
+    })
+    if (folder == null) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+    if (folder.uuid == uid) {
+      res.status(401).send({
+        status: "error",
+        data: "not-yours",
+      });
+      return;
+    }
+    const parentFolder = await prisma.tobiratory_boxes.findUnique({
+      where: {
+        id: folder.parent_id,
+      }
+    });
+    const childrenFolders = await prisma.tobiratory_boxes.findMany({
+      where: {
+        parent_id: parseInt(id),
+      }
+    });
+    const items = await prisma.tobiratory_items.findMany({
+      where: {
+        folder_id: parseInt(id),
+      }
+    })
+    res.status(200).send({
+      status: "success",
+      data: {
+        parentFolder: parentFolder,
+        items: items,
+        folders: childrenFolders,
+      },
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "success",
+      data: error.code,
+    });
+  })
+}
+
+export const deleteFolderData = async (req:Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const folder = await prisma.tobiratory_boxes.findUnique({
+      where: {
+        id: parseInt(id),
+      }
+    })
+    if (folder == null) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+    if (folder.uuid == uid) {
+      res.status(401).send({
+        status: "error",
+        data: "not-yours",
+      });
+      return;
+    }
+    await prisma.tobiratory_boxes.delete({
+      where: {
+        id: parseInt(id)
+      }
+    })
+    res.status(200).send({
+      status: "success",
+      data: "deleted",
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "success",
+      data: error.code,
+    });
+  })
+}
+
+export const getNFTInfo = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id, serialNo} = req.params;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const nftData = await prisma.tobiratory_nfts.findUnique({
+      where: {
+        id: parseInt(id),
+        serial_no: parseInt(serialNo)
+      }
+    });
+    if (nftData == null) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+    if (nftData.owner == uid) {
+      res.status(401).send({
+        status: "error",
+        data: "not-yours",
+      });
+      return;
+    }
+    const creator = await prisma.tobiratory_accounts.findUnique({
+      where: {
+        uuid: uid,
+      }
+    })
+    res.status(200).send({
+      status: "success",
+      data: {
+        serialNo: nftData.serial_no,
+        owner: nftData.owner,
+        id: nftData.id,
+        title: nftData.title,
+        image: nftData.image,
+        creator: creator,
+      },
+    });
+    return;
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  })
+}

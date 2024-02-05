@@ -4,7 +4,7 @@ import * as express from "express";
 import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
-import {signUp, signIn, getMyProfile, postMyProfile, verifyEmail, createFlowAcc} from "./userController";
+import {signUp, getMyProfile, postMyProfile, verifyEmail, createFlowAcc, myBusiness, updateMyBusiness, makeFolder, getFolderData, deleteFolderData} from "./userController";
 import {getContentById, getContents} from "./contentController";
 import {getItems, getItemsById} from "./itemController";
 import {getSaidans, getSaidansById} from "./saidanController";
@@ -27,7 +27,6 @@ const dummyResponse = (_: express.Request, res: express.Response) => {
 app.post("/signup", signUp);
 app.post("/verifyemail", verifyEmail);
 app.post("/create-flow", createFlowAcc);
-app.post("/signin", signIn);
 
 app.get("/accounts", getAccounts);
 app.get("/accounts/:id", getAccountById);
@@ -48,14 +47,14 @@ app.get("/posts/:id", dummyResponse);
 app.get("/my/profile", getMyProfile);
 app.post("/my/profile", postMyProfile);
 app.post("/my/business/submission", dummyResponse);
-app.get("/my/business", dummyResponse);
-app.post("/my/business", dummyResponse);
+app.get("/my/business", myBusiness);
+app.post("/my/business", updateMyBusiness);
 
 app.get("/my/inventory", dummyResponse);
 app.post("/my/inventory", dummyResponse);
-app.post("/my/inventory/folders", dummyResponse);
-app.get("/my/inventory/folders/:id", dummyResponse);
-app.delete("/my/inventory/folders/:id", dummyResponse);
+app.post("/my/inventory/boxes", makeFolder);
+app.get("/my/inventory/boxes/:id", getFolderData);
+app.delete("/my/inventory/boxes/:id", deleteFolderData);
 
 app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);
