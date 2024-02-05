@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
 import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
+import { useAuth } from "contexts/AdminAuthProvider";
 
 export const metadata: Metadata = {
   title: "Tobiratory Creator Programに参加",
@@ -15,6 +16,7 @@ const ConfirmModal = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
 }) => {
   const router = useRouter();
+  const { signOut } = useAuth();
 
   return (
     <AccountConfirmDialog
@@ -23,7 +25,7 @@ const ConfirmModal = ({
       firstButtonProp={{
         caption: "別のアカウントで申請",
         isPrimary: false,
-        callback: () => router.replace("/login"),
+        callback: signOut,
       }}
       secondButtonProp={{
         caption: "次へ",
