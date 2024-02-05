@@ -91,8 +91,17 @@ const Register = () => {
       case 2:
         // Check if any field is empty
         emptyField = Object.keys(userInfo).find(
-          (fieldName) => userInfo[fieldName].trim() === "",
+          (fieldName) =>
+            fieldName !== "building" && userInfo[fieldName].trim() === "",
         );
+        if (emptyField == undefined) {
+          // check email format
+          emptyField = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(
+            userInfo["email"],
+          )
+            ? undefined
+            : "email";
+        }
 
         if (emptyField) {
           userInfoInputRefs[emptyField].current.focus();
