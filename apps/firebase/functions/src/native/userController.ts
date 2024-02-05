@@ -41,8 +41,6 @@ export const verifyEmail = async (req: Request, res: Response) => {
         "(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*_\\-+=:;])" +
         "([a-zA-Z0-9!@#$%^&*_\\-+=:;]){8,}$"
     );
-
-
     if (!password) {
       res.status(401).send({
         status: "error",
@@ -55,6 +53,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
         status: "error",
         data: "password-incorrect",
       });
+      return;
     }
     await auth().createUser({
       email: email,
@@ -78,7 +77,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
 export const signUp = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+  await getAuth().verifyIdToken((authorization ?? "")).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const email = decodedToken.email ?? "";
     const savedUser = await prisma.tobiratory_accounts.findMany({
@@ -86,7 +85,7 @@ export const signUp = async (req: Request, res: Response) => {
         email: email,
       },
     });
-    if (savedUser.length) {
+    if (!savedUser.length) {
       const username = email.split("@")[0];
       const userData = {
         uuid: uid,
@@ -121,7 +120,7 @@ export const signUp = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -371,7 +370,7 @@ export const makeFolder = async (req: Request, res: Response) => {
         uuid: uid,
         parent_id: parentFolder,
         name: name,
-      }
+      },
     });
     res.status(200).send({
       status: "success",
@@ -382,8 +381,8 @@ export const makeFolder = async (req: Request, res: Response) => {
       status: "success",
       data: error.code,
     });
-  })
-}
+  });
+};
 
 export const getFolderData = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -393,8 +392,8 @@ export const getFolderData = async (req: Request, res: Response) => {
     const folder = await prisma.tobiratory_boxes.findUnique({
       where: {
         id: parseInt(id),
-      }
-    })
+      },
+    });
     if (folder == null) {
       res.status(401).send({
         status: "error",
@@ -412,18 +411,18 @@ export const getFolderData = async (req: Request, res: Response) => {
     const parentFolder = await prisma.tobiratory_boxes.findUnique({
       where: {
         id: folder.parent_id,
-      }
+      },
     });
     const childrenFolders = await prisma.tobiratory_boxes.findMany({
       where: {
         parent_id: parseInt(id),
-      }
+      },
     });
     const items = await prisma.tobiratory_items.findMany({
       where: {
         folder_id: parseInt(id),
-      }
-    })
+      },
+    });
     res.status(200).send({
       status: "success",
       data: {
@@ -437,8 +436,8 @@ export const getFolderData = async (req: Request, res: Response) => {
       status: "success",
       data: error.code,
     });
-  })
-}
+  });
+};
 
 export const deleteFolderData = async (req:Request, res: Response) => {
   const {authorization} = req.headers;
@@ -448,8 +447,8 @@ export const deleteFolderData = async (req:Request, res: Response) => {
     const folder = await prisma.tobiratory_boxes.findUnique({
       where: {
         id: parseInt(id),
-      }
-    })
+      },
+    });
     if (folder == null) {
       res.status(401).send({
         status: "error",
@@ -466,9 +465,9 @@ export const deleteFolderData = async (req:Request, res: Response) => {
     }
     await prisma.tobiratory_boxes.delete({
       where: {
-        id: parseInt(id)
-      }
-    })
+        id: parseInt(id),
+      },
+    });
     res.status(200).send({
       status: "success",
       data: "deleted",
@@ -478,8 +477,8 @@ export const deleteFolderData = async (req:Request, res: Response) => {
       status: "success",
       data: error.code,
     });
-  })
-}
+  });
+};
 
 export const getNFTInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -489,8 +488,8 @@ export const getNFTInfo = async (req: Request, res: Response) => {
     const nftData = await prisma.tobiratory_nfts.findUnique({
       where: {
         id: parseInt(id),
-        serial_no: parseInt(serialNo)
-      }
+        serial_no: parseInt(serialNo),
+      },
     });
     if (nftData == null) {
       res.status(401).send({
@@ -509,8 +508,8 @@ export const getNFTInfo = async (req: Request, res: Response) => {
     const creator = await prisma.tobiratory_accounts.findUnique({
       where: {
         uuid: uid,
-      }
-    })
+      },
+    });
     res.status(200).send({
       status: "success",
       data: {
@@ -529,5 +528,5 @@ export const getNFTInfo = async (req: Request, res: Response) => {
       data: error.code,
     });
     return;
-  })
-}
+  });
+};
