@@ -77,16 +77,8 @@ h4 {
 		justify-content: center;
 		height: 44px;
 		width: 141px;
+		left: 9px;
 	}
-	// &:checked {
-	// 	& + label {
-	// 		display: flex;
-	// 		align-items: center;
-	// 		justify-content: center;
-	// 		height: 44px;
-	// 		width: 141px;
-	// 	}
-	// }
 }
 .center-label {
 	position: absolute;
@@ -100,16 +92,6 @@ h4 {
 		height: 44px;
 		width: 141px;
 	}
-	// &:checked {
-	// 	& + label {
-	// 		display: flex;
-	// 		align-items: center;
-	// 		justify-content: center;
-	// 		height: 44px;
-	// 		width: 141px;
-	// 		border-radius: 100px;
-	// 	}
-	// }
 }
 .right-label {
 	position: absolute;
@@ -123,16 +105,6 @@ h4 {
 		height: 44px;
 		width: 141px;
 	}
-	// &:checked {
-	// 	& + label {
-	// 		display: flex;
-	// 		align-items: center;
-	// 		justify-content: center;
-	// 		height: 44px;
-	// 		width: 141px;
-	// 		// border-radius: 100px;
-	// 	}
-	// }
 }
 @keyframes leftToCenter {
   from {
