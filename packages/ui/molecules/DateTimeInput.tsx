@@ -31,8 +31,11 @@ const DateTimeInput = ({
   const [timeValue, setTimeValue] = useState(
     value && value.length ? value.split(" ")[1] : ""
   );
+  const [uniqueId, setUniqueId] = useState("");
 
-  const uniqueId = Math.random().toString(36).substring(2, 11);
+  useEffect(() => {
+    setUniqueId(Math.random().toString(36).substring(2, 11));
+  }, []);
 
   const handleDateFocus = () => {
     setIsDateFocused(true);

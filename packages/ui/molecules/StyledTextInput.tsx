@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
+import React, { MutableRefObject, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
 export enum TextKind {
@@ -16,6 +16,7 @@ const StyledTextInput = ({
   changeHandler,
   inputMask,
   tooltip,
+  inputRef,
 }: {
   className: string;
   value: string;
@@ -24,9 +25,11 @@ const StyledTextInput = ({
   placeholder?: string;
   inputMask?: TextKind;
   tooltip?: string;
+  inputRef?: MutableRefObject<HTMLInputElement>;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value);
+  const [uniqueId, setUniqueId] = useState("");
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -42,10 +45,12 @@ const StyledTextInput = ({
     if (inputMask === TextKind.Digit)
       setInputValue(e.target.value.replace(/\D/g, ""));
 
-    changeHandler(inputValue);
+    changeHandler(e.target.value);
   };
 
-  const uniqueId = Math.random().toString(36).substring(2, 11);
+  useEffect(() => {
+    setUniqueId(Math.random().toString(36).substring(2, 11));
+  }, []);
 
   return (
     <div className={clsx(className, "relative")}>
@@ -64,6 +69,7 @@ const StyledTextInput = ({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        ref={inputRef ? inputRef : null}
       />
       <label
         className={`absolute cursor-text left-5 font-normal transition-all duration-300 z-[1] ${
