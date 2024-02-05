@@ -88,6 +88,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       <Row1 label="申請者氏名">
         <div className="flex flex-row justify-between">
           <input
+            id="user_last_name"
             className={clsx(
               "flex-1 w-full h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -101,6 +102,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           />
           <span className="w-8"></span>
           <input
+            id="user_first_name"
             className={clsx(
               "flex-1 w-full h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -117,6 +119,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       <Row2 label1="申請者氏名" label2="フリガナ">
         <div className="flex flex-row justify-between">
           <input
+            id="user_last_name_ruby"
             className={clsx(
               "flex-1 w-full h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -130,6 +133,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           />
           <span className="w-8"></span>
           <input
+            id="user_first_name_ruby"
             className={clsx(
               "flex-1 w-full h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -146,6 +150,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       <Row1 label="生年月日">
         <div className="flex flex-row items-end">
           <input
+            id="user_birthday_year"
             className={clsx(
               "w-32 h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -158,6 +163,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           />
           <span className="mx-4">年</span>
           <input
+            id="user_birthday_month"
             className={clsx(
               "w-24 h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -170,6 +176,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           />
           <span className="mx-4">月</span>
           <input
+            id="user_birthday_date"
             className={clsx(
               "w-24 h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -185,6 +192,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="住所">
         <input
+          id="user_post_code"
           className={clsx(
             "w-48 h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -199,6 +207,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="">
         <input
+          id="user_prefectures"
           className={clsx(
             "w-48 h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -213,6 +222,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="">
         <input
+          id="user_municipalities"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -227,6 +237,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="">
         <input
+          id="user_street"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -241,6 +252,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="">
         <input
+          id="user_building"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -255,6 +267,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="電話番号">
         <input
+          id="user_phone"
           className={clsx(
             "w-64 h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -269,6 +282,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="メールアドレス">
         <input
+          id="user_email"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",

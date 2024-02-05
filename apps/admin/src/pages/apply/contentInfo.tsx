@@ -55,6 +55,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
       <div className="mb-6 text-2xl/[48x] text-title-color">コンテンツ情報</div>
       <Row1 label="コンテンツ名">
         <input
+          id="content_name"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -69,6 +70,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
       </Row1>
       <Row2 label1="コンテンツ名" label2="フリガナ">
         <input
+          id="content_ruby"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -83,6 +85,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
       </Row2>
       <Row3 label="ホームページURL">
         <input
+          id="content_url"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -99,6 +102,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
       </div>
       <Row1 label="ジャンル">
         <input
+          id="content_genre"
           className={clsx(
             "w-64 h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -113,6 +117,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
       </Row1>
       <Row1 label="コンテンツの説明">
         <textarea
+          id="content_description"
           className={clsx(
             "flex-1",
             "w-full h-32 pl-5 pt-4 resize-none",
