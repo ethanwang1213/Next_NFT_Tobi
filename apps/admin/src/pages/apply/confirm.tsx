@@ -54,7 +54,7 @@ const ConfirmInformation = ({ contentInfo, userInfo }) => {
           src="/admin/images/info-icon-2.svg"
           width={16}
           height={16}
-          alt=""
+          alt="information"
           className=""
         />
         <span className="text-[12px]/[48x] ml-4">

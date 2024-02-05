@@ -73,7 +73,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
           src="/admin/images/info-icon-2.svg"
           width={16}
           height={16}
-          alt=""
+          alt="information"
           className="ml-4"
         />
         <span className="text-[12px] ml-4">

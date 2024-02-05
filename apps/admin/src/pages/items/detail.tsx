@@ -73,7 +73,7 @@ const Detail = () => {
               height={179}
               className="mr-12"
               src={sampleItem.image_url}
-              alt=""
+              alt="sample item"
             />
             <div
               style={{
@@ -89,7 +89,7 @@ const Detail = () => {
               <Image
                 width={23}
                 height={28}
-                alt=""
+                alt="upload"
                 src="/admin/images/upload-icon.svg"
               />
               <span
@@ -126,7 +126,7 @@ const Detail = () => {
                 height={179}
                 className="mr-12 inline-block"
                 src={sampleItem.image_url}
-                alt=""
+                alt="sample item"
               />
               <span className="h-12 mt-2 py-2 text-xl font-normal text-[#1779DE]">
                 SAMPLEITEM1230

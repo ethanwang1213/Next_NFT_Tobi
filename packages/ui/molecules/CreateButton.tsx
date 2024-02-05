@@ -15,7 +15,7 @@ export default function CreateButton({
     >
       <Image
         src="/admin/images/plus-icon.svg"
-        alt=""
+        alt="plus"
         width={26}
         height={26}
         className="mr-6"

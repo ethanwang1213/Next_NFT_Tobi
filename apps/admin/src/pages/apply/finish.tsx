@@ -7,7 +7,7 @@ const Finish = () => {
         src="/admin/images/png/tobiratory.png"
         width={594}
         height={603}
-        alt=""
+        alt="Tobiratory"
         className="mx-auto"
       />
       <div className="text-[40px] mt-28">申請が完了しました！</div>

@@ -47,7 +47,7 @@ const Index = () => {
         src="/admin/images/png/tobiratory.png"
         width={191}
         height={194}
-        alt=""
+        alt="Tobiratory"
         className="mx-auto"
       />
       <div className="text-[40px] mt-28">Tobiratory Creator Program</div>
@@ -69,7 +69,7 @@ const Index = () => {
           src="/admin/images/info-icon-2.svg"
           width={16}
           height={16}
-          alt=""
+          alt="information"
           className="mr-2"
         />
         <span>１アカウントにつきコンテンツは１つまで申請できます</span>

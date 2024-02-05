@@ -53,7 +53,7 @@ export default function SampleTable({ filters }) {
                     金額
                     <Image
                       src="/admin/images/info-icon.svg"
-                      alt=""
+                      alt="information"
                       width={16}
                       height={16}
                       className="ml-16 -mt-2 absolute top-2/4"
