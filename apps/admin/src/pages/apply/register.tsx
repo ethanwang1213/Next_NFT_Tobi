@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
 import ConfirmInformation from "./confirm";
@@ -7,15 +7,10 @@ import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";
 import UserInformation from "./userInfo";
 
-const Register = () => {
-  const [step, setStep] = useState(1);
+const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
-  const [switchLabels, setSwitchLabels] = useState({
-    left: { title: "コンテンツ情報" },
-    center: { title: "登録者情報" },
-    right: { title: "その他" },
-  });
-  const [switchPosition, setSwitchPosition] = useState("left");
+const Register = () => {
+  const [switchValue, setSwitchValue] = useState(0);
 
   const router = useRouter();
 
@@ -70,76 +65,84 @@ const Register = () => {
     email: useRef(),
   };
 
+  const checkContentInfos = () => {
+    // Check if any field is empty
+    let emptyField;
+    emptyField = Object.keys(contentInfo).find((fieldName) => {
+      return fieldName !== "url" && contentInfo[fieldName].trim() === "";
+    });
+    if (emptyField) {
+      if (contentInfoInputRefs[emptyField].current) {
+        contentInfoInputRefs[emptyField].current.focus();
+      }
+      return false;
+    }
+
+    return true;
+  };
+
+  const checkUserInfos = () => {
+    // Check if any field is empty
+    let emptyField;
+    emptyField = Object.keys(userInfo).find(
+      (fieldName) =>
+        fieldName !== "building" && userInfo[fieldName].trim() === "",
+    );
+    if (emptyField == undefined) {
+      // check email format
+      emptyField = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(userInfo["email"])
+        ? undefined
+        : "email";
+    }
+    if (emptyField) {
+      if (userInfoInputRefs[emptyField].current) {
+        userInfoInputRefs[emptyField].current.focus();
+      }
+      return false;
+    }
+
+    return true;
+  };
+
   const handleNext = () => {
-    let emptyField = "";
+    switch (switchValue) {
+      case 0:
+        if (!checkContentInfos()) return;
+        break;
 
-    switch (step) {
       case 1:
-        // Check if any field is empty
-        emptyField = Object.keys(contentInfo).find(
-          (fieldName) =>
-            fieldName !== "url" && contentInfo[fieldName].trim() === "",
-        );
-
-        if (emptyField) {
-          contentInfoInputRefs[emptyField].current.focus();
-          return;
-        }
-        setSwitchPosition("center");
-
+        if (!checkUserInfos()) return;
         break;
-      case 2:
-        // Check if any field is empty
-        emptyField = Object.keys(userInfo).find(
-          (fieldName) =>
-            fieldName !== "building" && userInfo[fieldName].trim() === "",
-        );
-        if (emptyField == undefined) {
-          // check email format
-          emptyField = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(
-            userInfo["email"],
-          )
-            ? undefined
-            : "email";
-        }
 
-        if (emptyField) {
-          userInfoInputRefs[emptyField].current.focus();
-          return;
-        }
-        setSwitchPosition("right");
-
-        break;
+      case 3:
+        router.replace("/apply/finish");
+        return;
 
       default:
         break;
     }
 
-    if (step === 4) router.replace("/apply/finish");
-    else setStep((prevStep) => prevStep + 1);
+    setSwitchValue(switchValue + 1);
   };
 
   const handleBack = () => {
-    switch (step) {
-      case 1:
+    switch (switchValue) {
+      case 0:
         router.replace("/apply/terms");
         return;
-      case 2:
-        setSwitchPosition("left");
-        break;
-      case 3:
-        setSwitchPosition("center");
-        break;
     }
-    setStep((prevStep) => prevStep - 1);
+    setSwitchValue(switchValue - 1);
   };
 
-  const toggleSwitchHandler = useCallback((value) => {
-    value == "left" ? setStep(1) : value == "center" ? setStep(2) : setStep(3);
-    setSwitchPosition(value);
-  }, []);
+  const toggleSwitchHandler = (value) => {
+    console.log(value);
+    if (value > 0 && value <= 2 && !checkContentInfos()) return false;
+    if (value > 1 && value <= 3 && !checkUserInfos()) return false;
+    setSwitchValue(value);
+    return true;
+  };
 
-  // console.log("register is rendered");
+  console.log("register is rendered", switchValue);
 
   return (
     <div>
@@ -147,33 +150,32 @@ const Register = () => {
         <div className="flex flex-row justify-center mb-2">
           <TripleToggleSwitch
             labels={switchLabels}
-            toggleSwitchHandler={toggleSwitchHandler}
-            initPosition={switchPosition}
-            // passedPositions={switchPositions}
+            onChange={toggleSwitchHandler}
+            value={switchValue}
           />
         </div>
         <div className="pt-20">
-          {step === 1 && (
+          {switchValue === 0 && (
             <ContentInformation
               contentInfo={contentInfo}
               setContentInfo={setContentInfo}
               refs={contentInfoInputRefs}
             />
           )}
-          {step === 2 && (
+          {switchValue === 1 && (
             <UserInformation
               userInfo={userInfo}
               setUserInfo={setUserInfo}
               refs={userInfoInputRefs}
             />
           )}
-          {step === 3 && (
+          {switchValue === 2 && (
             <CopyrightInformation
               copyrightInfo={copyrightInfo}
               setCopyrightInfo={setCopyrightInfo}
             />
           )}
-          {step === 4 && (
+          {switchValue === 3 && (
             <ConfirmInformation userInfo={userInfo} contentInfo={contentInfo} />
           )}
         </div>
@@ -190,7 +192,7 @@ const Register = () => {
             type="button"
             className="w-[268px] h-14 text-xl leading-[56px] text-center bg-[#1779DE] text-white rounded-[30px]"
             onClick={handleNext}
-            disabled={step === 3 && !copyrightInfo.agreement}
+            disabled={switchValue === 2 && !copyrightInfo.agreement}
           ></Button>
         </div>
       </div>

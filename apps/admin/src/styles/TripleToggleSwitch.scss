@@ -1,161 +1,20 @@
-input[type="radio"] {
-	display: none;
-}
-label {
-	color: white;
-	z-index: 10;
-	cursor: pointer;
-}
-h4 {
-	margin: 0;
-	font-weight: 500;
-}
-.black-font {
-	color: black !important;
-}
-.main-container {
-	display: inline-block;
-	vertical-align: middle;
-	width: 441px;
-	height: 56px;
-	border-radius: 64px;
-	background-color: #B3B3B3;
-	position: relative;
-	font-size: 16px;
-	line-height: 44px;
-	padding-top: 6px;
-}
-.switch {
-	height: 44px;
-	width: 141px;
+.selected-item {
 	background-color: #1779DE;
+	position: absolute;
 	border-radius: 64px;
-	position: absolute;
-	left: 9px;
-	transition: ease-in;
-	&.left-to-center {
-		animation-name: leftToCenter;
-		animation-duration: 0.5s;
-	}
-	&.left-to-right {
-		animation-name: leftToRight;
-		animation-duration: 0.5s;
-	}
-	&.left-position {
-		left: 9px;
-	}
-	&.center-to-left {
-		animation-name: centerToLeft;
-		animation-duration: 0.5s;
-	}
-	&.center-to-right {
-		animation-name: centerToRight;
-		animation-duration: 0.5s;
-	}
-	&.center-position {
-		left: 150px;
-	}
-	&.right-to-left {
-		animation-name: rightToLeft;
-		animation-duration: 0.5s;
-	}
-	&.right-to-center {
-		animation-name: rightToCenter;
-		animation-duration: 0.5s;
-	}
-	&.right-position {
-		left: 291px;
-	}
-}
-.left-label {
-	position: absolute;
-}
-#left {
-	& + label {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 44px;
-		width: 141px;
-		left: 9px;
-	}
-}
-.center-label {
-	position: absolute;
-	left: 150px;
-}
-#center {
-	& + label {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 44px;
-		width: 141px;
-	}
-}
-.right-label {
-	position: absolute;
-	right: 9px;
-}
-#right {
-	& + label {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 44px;
-		width: 141px;
-	}
-}
-@keyframes leftToCenter {
-  from {
-    left: 9px;
-  }
-  to {
-    left: 150px;
-  }
+	transition: all linear .5s;
 }
 
-@keyframes leftToRight {
-  from {
-    left: 9px;
-  }
-  to {
-    left: 291px;
-  }
-}
-
-@keyframes centerToLeft {
-  from {
-    left: 150px;
-  }
-  to {
-    left: 9px;
-  }
-}
-
-@keyframes centerToRight {
-  from {
-    left: 150px;
-  }
-  to {
-    right: 9px;
-  }
-}
-
-@keyframes rightToLeft {
-  from {
-    left: 291px;
-  }
-  to {
-    left: 9px;
-  }
-}
-
-@keyframes rightToCenter {
-  from {
-    left: 291px;
-  }
-  to {
-    left: 150px;
-  }
+.switch-pane {
+	background-color: #B3B3B3;
+	color: white;
+	padding: 6px 9px;
+	border-radius: 64px;
+	height: 56px;
+	.switch-item {
+		position: relative;
+		// padding: 10px 20px;
+		line-height: 44px;
+		cursor: pointer;
+	}
 }

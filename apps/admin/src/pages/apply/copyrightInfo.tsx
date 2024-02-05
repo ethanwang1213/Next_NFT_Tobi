@@ -3,8 +3,8 @@ import { useRef, useState } from "react";
 import { OptionMark } from "ui/atoms/Marks";
 
 const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
-  const copyrightInfoChangeHandler = (field, value) => {
-    setCopyrightInfo({ ...copyrightInfo, [field]: value });
+  const copyrightInfoChangeHandler = (field, e) => {
+    setCopyrightInfo({ ...copyrightInfo, [field]: e.target.checked });
   };
 
   const [filePath1, setFilePath1] = useState("");
@@ -146,7 +146,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
           className="w-6 h-6 mr-3 outline-none"
           onChange={(e) => copyrightInfoChangeHandler("agreement", e)}
           id="checkbox"
-          value={copyrightInfo.agreement}
+          checked={copyrightInfo.agreement}
         />
         <label
           className={`text-base font-normal ${
