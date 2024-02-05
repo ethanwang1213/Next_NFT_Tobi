@@ -63,6 +63,13 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
     setUserInfo({ ...userInfo, birthday_date: inputDate });
   };
 
+  const handlePhoneChange = (event) => {
+    // Ensure that only numeric characters are allowed for the date
+    let inputPhone = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    // Apply any additional masking or validation logic as needed
+    setUserInfo({ ...userInfo, phone: inputPhone });
+  };
+
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-row items-center">
@@ -256,7 +263,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           )}
           placeholder="ハイフン無し"
           value={userInfo.phone}
-          onChange={(e) => userInfoChangeHandler("phone", e)}
+          onChange={handlePhoneChange}
           ref={refs["phone"]}
         />
       </Row1>
