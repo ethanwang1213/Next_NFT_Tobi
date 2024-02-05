@@ -1,6 +1,5 @@
+import clsx from "clsx";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
-import StyledTextArea from "ui/molecules/StyledTextArea";
-import StyledTextInput from "ui/molecules/StyledTextInput";
 
 const Row1 = ({ label, children }) => {
   return (
@@ -47,65 +46,84 @@ const Row3 = ({ label, children }) => {
 };
 
 const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
-  const contentInfoChangeHandler = (field, value) => {
-    setContentInfo({ ...contentInfo, [field]: value });
+  const contentInfoChangeHandler = (field, e) => {
+    setContentInfo({ ...contentInfo, [field]: e.target.value });
   };
 
   return (
     <>
       <div className="mb-6 text-2xl/[48x] text-title-color">コンテンツ情報</div>
       <Row1 label="コンテンツ名">
-        <StyledTextInput
-          className="flex-1"
-          label="コンテンツ名"
+        <input
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="コンテンツ名"
           value={contentInfo.name}
-          changeHandler={(value) => contentInfoChangeHandler("name", value)}
-          inputRef={refs["name"]}
+          onChange={(e) => contentInfoChangeHandler("name", e)}
+          ref={refs["name"]}
         />
       </Row1>
       <Row2 label1="コンテンツ名" label2="フリガナ">
-        <StyledTextInput
-          className="flex-1"
-          label="フリガナ"
+        <input
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="フリガナ"
           value={contentInfo.ruby}
-          changeHandler={(value) => contentInfoChangeHandler("ruby", value)}
-          inputRef={refs["ruby"]}
+          onChange={(e) => contentInfoChangeHandler("ruby", e)}
+          ref={refs["ruby"]}
         />
       </Row2>
       <Row3 label="ホームページURL">
-        <StyledTextInput
-          className="flex-1"
-          label="ホームページ"
+        <input
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="ホームページ"
           value={contentInfo.url}
-          changeHandler={(value) => contentInfoChangeHandler("url", value)}
+          onChange={(e) => contentInfoChangeHandler("url", e)}
         />
       </Row3>
       <div className="mt-12 mb-6 text-2xl/[48x] text-title-color">
         コンテンツの概要
       </div>
       <Row1 label="ジャンル">
-        <StyledTextInput
-          className="w-64"
-          label="ジャンル"
+        <input
+          className={clsx(
+            "w-64 h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="ジャンル"
           value={contentInfo.genre}
-          changeHandler={(value) => contentInfoChangeHandler("genre", value)}
-          inputRef={refs["genre"]}
+          onChange={(e) => contentInfoChangeHandler("genre", e)}
+          ref={refs["genre"]}
         />
       </Row1>
       <Row1 label="コンテンツの説明">
-        <StyledTextArea
-          className="flex-1"
-          label="コンテンツの説明"
+        <textarea
+          className={clsx(
+            "flex-1",
+            "w-full h-32 pl-5 pt-4 resize-none",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="コンテンツの説明"
           value={contentInfo.description}
-          changeHandler={(value) =>
-            contentInfoChangeHandler("description", value)
-          }
-          inputRef={refs["description"]}
+          onChange={(e) => contentInfoChangeHandler("description", e)}
+          ref={refs["description"]}
         />
       </Row1>
     </>

@@ -1,6 +1,6 @@
+import clsx from "clsx";
 import Image from "next/image";
 import { RequireMark } from "ui/atoms/Marks";
-import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 
 const Row1 = ({ label, children }) => {
   return (
@@ -35,8 +35,32 @@ const Row2 = ({ label1, label2, children }) => {
 };
 
 const UserInformation = ({ userInfo, setUserInfo, refs }) => {
-  const userInfoChangeHandler = (field, value) => {
-    setUserInfo({ ...userInfo, [field]: value });
+  const userInfoChangeHandler = (field, e) => {
+    setUserInfo({ ...userInfo, [field]: e.target.value });
+  };
+
+  const handleYearChange = (event) => {
+    // Ensure that only numeric characters are allowed for the year
+    let inputYear = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    if (parseInt(inputYear) > 3000) inputYear = "3000";
+    // Apply any additional masking or validation logic as needed
+    setUserInfo({ ...userInfo, birthday_year: inputYear });
+  };
+
+  const handleMonthChange = (event) => {
+    // Ensure that only numeric characters are allowed for the month
+    let inputMonth = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    if (parseInt(inputMonth) > 12) inputMonth = "12";
+    // Apply any additional masking or validation logic as needed
+    setUserInfo({ ...userInfo, birthday_month: inputMonth });
+  };
+
+  const handleDateChange = (event) => {
+    // Ensure that only numeric characters are allowed for the date
+    let inputDate = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    if (parseInt(inputDate) > 31) inputDate = "31";
+    // Apply any additional masking or validation logic as needed
+    setUserInfo({ ...userInfo, birthday_date: inputDate });
   };
 
   return (
@@ -56,162 +80,198 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </div>
       <Row1 label="申請者氏名">
         <div className="flex flex-row justify-between">
-          <StyledTextInput
-            className="flex-1"
-            label="姓"
+          <input
+            className={clsx(
+              "flex-1 w-full h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
             placeholder="姓"
             value={userInfo.last_name}
-            changeHandler={(value) => userInfoChangeHandler("last_name", value)}
-            inputRef={refs["last_name"]}
+            onChange={(e) => userInfoChangeHandler("last_name", e)}
+            ref={refs["last_name"]}
           />
           <span className="w-8"></span>
-          <StyledTextInput
-            className="flex-1"
-            label="名"
+          <input
+            className={clsx(
+              "flex-1 w-full h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
             placeholder="名"
             value={userInfo.first_name}
-            changeHandler={(value) =>
-              userInfoChangeHandler("first_name", value)
-            }
-            inputRef={refs["first_name"]}
+            onChange={(e) => userInfoChangeHandler("first_name", e)}
+            ref={refs["first_name"]}
           />
         </div>
       </Row1>
       <Row2 label1="申請者氏名" label2="フリガナ">
         <div className="flex flex-row justify-between">
-          <StyledTextInput
-            className="flex-1"
-            label="セイ"
+          <input
+            className={clsx(
+              "flex-1 w-full h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
             placeholder="セイ"
             value={userInfo.last_name_ruby}
-            changeHandler={(value) =>
-              userInfoChangeHandler("last_name_ruby", value)
-            }
-            inputRef={refs["last_name_ruby"]}
+            onChange={(e) => userInfoChangeHandler("last_name_ruby", e)}
+            ref={refs["last_name_ruby"]}
           />
           <span className="w-8"></span>
-          <StyledTextInput
-            className="flex-1"
-            label="メイ"
+          <input
+            className={clsx(
+              "flex-1 w-full h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
             placeholder="メイ"
             value={userInfo.first_name_ruby}
-            changeHandler={(value) =>
-              userInfoChangeHandler("first_name_ruby", value)
-            }
-            inputRef={refs["first_name_ruby"]}
+            onChange={(e) => userInfoChangeHandler("first_name_ruby", e)}
+            ref={refs["first_name_ruby"]}
           />
         </div>
       </Row2>
       <Row1 label="生年月日">
-        <div className="flex flex-row items-baseline">
-          <StyledTextInput
-            className="w-32"
-            label=""
-            placeholder=""
-            inputMask={TextKind.Digit}
+        <div className="flex flex-row items-end">
+          <input
+            className={clsx(
+              "w-32 h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
             value={userInfo.birthday_year}
-            changeHandler={(value) =>
-              userInfoChangeHandler("birthday_year", value)
-            }
-            inputRef={refs["birthday_year"]}
+            onChange={handleYearChange}
+            ref={refs["birthday_year"]}
           />
           <span className="mx-4">年</span>
-          <StyledTextInput
-            className="w-24"
-            label=""
-            placeholder=""
-            inputMask={TextKind.Digit}
+          <input
+            className={clsx(
+              "w-24 h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
             value={userInfo.birthday_month}
-            changeHandler={(value) =>
-              userInfoChangeHandler("birthday_month", value)
-            }
-            inputRef={refs["birthday_month"]}
+            onChange={handleMonthChange}
+            ref={refs["birthday_month"]}
           />
           <span className="mx-4">月</span>
-          <StyledTextInput
-            className="w-24"
-            label=""
-            placeholder=""
-            inputMask={TextKind.Digit}
+          <input
+            className={clsx(
+              "w-24 h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
             value={userInfo.birthday_date}
-            changeHandler={(value) =>
-              userInfoChangeHandler("birthday_date", value)
-            }
-            inputRef={refs["birthday_date"]}
+            onChange={handleDateChange}
+            ref={refs["birthday_date"]}
           />
           <span className="mx-4">日</span>
         </div>
       </Row1>
       <Row1 label="住所">
-        <StyledTextInput
-          className="w-48"
-          label="郵便番号"
+        <input
+          className={clsx(
+            "w-48 h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="郵便番号"
           value={userInfo.post_code}
-          changeHandler={(value) => userInfoChangeHandler("post_code", value)}
-          inputRef={refs["post_code"]}
+          onChange={(e) => userInfoChangeHandler("post_code", e)}
+          ref={refs["post_code"]}
         />
       </Row1>
       <Row1 label="">
-        <StyledTextInput
-          className="w-48"
-          label="都道府県"
+        <input
+          className={clsx(
+            "w-48 h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="都道府県"
           value={userInfo.prefectures}
-          changeHandler={(value) => userInfoChangeHandler("prefectures", value)}
-          inputRef={refs["prefectures"]}
+          onChange={(e) => userInfoChangeHandler("prefectures", e)}
+          ref={refs["prefectures"]}
         />
       </Row1>
       <Row1 label="">
-        <StyledTextInput
-          className="flex-1"
-          label="市区町村"
+        <input
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="市区町村"
           value={userInfo.municipalities}
-          changeHandler={(value) =>
-            userInfoChangeHandler("municipalities", value)
-          }
-          inputRef={refs["municipalities"]}
+          onChange={(e) => userInfoChangeHandler("municipalities", e)}
+          ref={refs["municipalities"]}
         />
       </Row1>
       <Row1 label="">
-        <StyledTextInput
-          className="flex-1"
-          label="番地"
+        <input
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="番地"
           value={userInfo.street}
-          changeHandler={(value) => userInfoChangeHandler("street", value)}
-          inputRef={refs["street"]}
+          onChange={(e) => userInfoChangeHandler("street", e)}
+          ref={refs["street"]}
         />
       </Row1>
       <Row1 label="">
-        <StyledTextInput
-          className="flex-1"
-          label="建物名・部屋番号"
+        <input
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="建物名・部屋番号"
           value={userInfo.building}
-          changeHandler={(value) => userInfoChangeHandler("building", value)}
-          inputRef={refs["building"]}
+          onChange={(e) => userInfoChangeHandler("building", e)}
+          ref={refs["building"]}
         />
       </Row1>
       <Row1 label="電話番号">
-        <StyledTextInput
-          className="w-64"
-          label="ハイフン無し"
+        <input
+          className={clsx(
+            "w-64 h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="ハイフン無し"
           value={userInfo.phone}
-          changeHandler={(value) => userInfoChangeHandler("phone", value)}
-          inputRef={refs["phone"]}
+          onChange={(e) => userInfoChangeHandler("phone", e)}
+          ref={refs["phone"]}
         />
       </Row1>
       <Row1 label="メールアドレス">
-        <StyledTextInput
-          className="flex-1"
-          label="tobiratory@example.com"
+        <input
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
           placeholder="tobiratory@example.com"
           value={userInfo.email}
-          changeHandler={(value) => userInfoChangeHandler("email", value)}
-          inputRef={refs["email"]}
+          onChange={(e) => userInfoChangeHandler("email", e)}
+          ref={refs["email"]}
         />
       </Row1>
     </div>
