@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput from "ui/molecules/StyledTextInput";
@@ -7,10 +6,10 @@ const Row1 = ({ label, children }) => {
   return (
     <div className="flex flex-row py-4 pl-6">
       <div className="w-52 h-12 flex-none flex flex-row items-center">
-        <span className="text-base mr-4">{label}</span>
-        {label.length ? <RequireMark /> : <></>}
+        <span className="text-base mr-4">{label ? label : ""}</span>
+        {label && label.length ? <RequireMark /> : <></>}
       </div>
-      <div className="flex-auto">{children}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 };
@@ -20,8 +19,8 @@ const Row2 = ({ label1, label2, children }) => {
     <div className="flex flex-row py-4 pl-6">
       <div className="w-52 h-12 flex-none flex flex-row items-center">
         <span className="text-base mr-4">
-          {label1}
-          {label2.length ? (
+          {label1 ? label1 : ""}
+          {label2 && label2.length ? (
             <>
               <br />
               {label2}
@@ -39,19 +38,17 @@ const Row3 = ({ label, children }) => {
   return (
     <div className="flex flex-row py-4 pl-6">
       <div className="w-52 h-12 flex-none flex flex-row items-center">
-        <span className="text-base mr-4">{label}</span>
-        {label.length ? <OptionMark /> : <></>}
+        <span className="text-base mr-4">{label ? label : ""}</span>
+        {label && label.length ? <OptionMark /> : <></>}
       </div>
       <div className="flex-auto">{children}</div>
     </div>
   );
 };
 
-const ContentInformation = () => {
-  const [contentInfo, setContentInfo] = useState(null);
-
-  const fieldChangeHandler = (field, value) => {
-    setContentInfo({ ...{ ...contentInfo, [field]: value } });
+const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
+  const contentInfoChangeHandler = (field, value) => {
+    setContentInfo({ ...contentInfo, [field]: value });
   };
 
   return (
@@ -62,8 +59,9 @@ const ContentInformation = () => {
           className="flex-1"
           label="コンテンツ名"
           placeholder="コンテンツ名"
-          value={""}
-          changeHandler={(value) => fieldChangeHandler("name", value)}
+          value={contentInfo.name}
+          changeHandler={(value) => contentInfoChangeHandler("name", value)}
+          inputRef={refs["name"]}
         />
       </Row1>
       <Row2 label1="コンテンツ名" label2="フリガナ">
@@ -71,8 +69,9 @@ const ContentInformation = () => {
           className="flex-1"
           label="フリガナ"
           placeholder="フリガナ"
-          value={""}
-          changeHandler={(value) => fieldChangeHandler("ruby", value)}
+          value={contentInfo.ruby}
+          changeHandler={(value) => contentInfoChangeHandler("ruby", value)}
+          inputRef={refs["ruby"]}
         />
       </Row2>
       <Row3 label="ホームページURL">
@@ -80,8 +79,8 @@ const ContentInformation = () => {
           className="flex-1"
           label="ホームページ"
           placeholder="ホームページ"
-          value={""}
-          changeHandler={(value) => fieldChangeHandler("url", value)}
+          value={contentInfo.url}
+          changeHandler={(value) => contentInfoChangeHandler("url", value)}
         />
       </Row3>
       <div className="mt-12 mb-6 text-2xl/[48x] text-title-color">
@@ -92,8 +91,9 @@ const ContentInformation = () => {
           className="w-64"
           label="ジャンル"
           placeholder="ジャンル"
-          value={""}
-          changeHandler={(value) => fieldChangeHandler("genre", value)}
+          value={contentInfo.genre}
+          changeHandler={(value) => contentInfoChangeHandler("genre", value)}
+          inputRef={refs["genre"]}
         />
       </Row1>
       <Row1 label="コンテンツの説明">
@@ -101,8 +101,11 @@ const ContentInformation = () => {
           className="flex-1"
           label="コンテンツの説明"
           placeholder="コンテンツの説明"
-          value={""}
-          changeHandler={(value) => fieldChangeHandler("description", value)}
+          value={contentInfo.description}
+          changeHandler={(value) =>
+            contentInfoChangeHandler("description", value)
+          }
+          inputRef={refs["description"]}
         />
       </Row1>
     </>
