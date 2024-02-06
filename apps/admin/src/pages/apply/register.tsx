@@ -6,6 +6,7 @@ import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";
 import UserInformation from "./userInfo";
+import { RubyCharacters } from "types/ruby";
 
 const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
@@ -67,10 +68,14 @@ const Register = () => {
 
   const checkContentInfos = () => {
     // Check if any field is empty
-    let emptyField;
-    emptyField = Object.keys(contentInfo).find((fieldName) => {
-      return fieldName !== "url" && contentInfo[fieldName].trim() === "";
+    const emptyField = Object.keys(contentInfo).find((fieldName) => {
+      return (
+        (fieldName !== "url" && contentInfo[fieldName].trim() === "") ||
+        (fieldName === "ruby" &&
+          RegExp(`[^${RubyCharacters}]`).test(contentInfo[fieldName]))
+      );
     });
+
     if (emptyField) {
       if (contentInfoInputRefs[emptyField].current) {
         contentInfoInputRefs[emptyField].current.focus();
@@ -83,17 +88,18 @@ const Register = () => {
 
   const checkUserInfos = () => {
     // Check if any field is empty
-    let emptyField;
-    emptyField = Object.keys(userInfo).find(
-      (fieldName) =>
-        fieldName !== "building" && userInfo[fieldName].trim() === "",
-    );
-    if (emptyField == undefined) {
-      // check email format
-      emptyField = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(userInfo["email"])
-        ? undefined
-        : "email";
-    }
+    const emptyField = Object.keys(userInfo).find((fieldName) => {
+      return (
+        (fieldName !== "building" && userInfo[fieldName].trim() === "") ||
+        (fieldName === "last_name_ruby" &&
+          RegExp(`[^${RubyCharacters}]`).test(userInfo[fieldName])) ||
+        (fieldName === "first_name_ruby" &&
+          RegExp(`[^${RubyCharacters}]`).test(userInfo[fieldName])) ||
+        (fieldName === "email" &&
+          !/^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(userInfo[fieldName]))
+      );
+    });
+
     if (emptyField) {
       if (userInfoInputRefs[emptyField].current) {
         userInfoInputRefs[emptyField].current.focus();
