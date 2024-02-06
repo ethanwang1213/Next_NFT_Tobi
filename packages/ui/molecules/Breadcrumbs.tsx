@@ -37,7 +37,7 @@ export default function Breadcrumbs({
                 width={8}
                 height={16}
                 src="/admin/images/right-arrow.svg"
-                alt=""
+                alt="arrow"
               />
             ) : null}
           </li>

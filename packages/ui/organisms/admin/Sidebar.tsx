@@ -73,6 +73,11 @@ const Sidebar = ({ children }: Props) => {
 
   const items = [
     {
+      name: "Tobiratory Creator Programに参加",
+      icon: "/admin/images/icon/contents.svg",
+      href: "/apply",
+    },
+    {
       name: "ワークスペース",
       icon: "/admin/images/icon/workspace.svg",
       href: "/workspace",
@@ -124,7 +129,7 @@ const Sidebar = ({ children }: Props) => {
                 className={clsx(
                   "btn-block btn-square bg-base-100 hover:bg-base-100 pl-6 gap-4 flex flex-row items-center",
                   "rounded-none border-0 border-l-[12px]",
-                  pathname === item.href
+                  pathname.split("/")[1] === item.href.split("/")[1]
                     ? `border-l-active hover:border-l-active text-${selectedColor}`
                     : `border-l-base-100 hover:border-l-base-100 text-${normalTextColor}`,
                 )}
@@ -132,7 +137,7 @@ const Sidebar = ({ children }: Props) => {
                 <div
                   className={clsx(
                     "w-6 h-6 aspect-square",
-                    pathname === item.href
+                    pathname.split("/")[1] === item.href.split("/")[1]
                       ? `bg-${selectedColor}`
                       : `bg-${normalIconColor}`,
                   )}

@@ -5,6 +5,7 @@ import { MutableRefObject, useEffect, useRef } from "react";
 import NavbarContainer from "ui/atoms/NavbarContainer";
 import NavbarEnd from "ui/atoms/NavbarEnd";
 import NavbarStart from "ui/atoms/NavbarStart";
+import AccountConfirmDialog from "./AccountConfirmDialog";
 
 const Navbar = () => {
   return (
@@ -158,61 +159,17 @@ const ConfirmSignOutModal = ({
 }) => {
   const { signOut } = useAuth();
   return (
-    <dialog ref={dialogRef} className="modal">
-      <div className="modal-box w-[437px] rounded-[32px]">
-        <div className="flex justify-end mr-[2px] mt-[-2px]">
-          <form method={"dialog"}>
-            <button className="btn w-[16px] h-[19px] min-h-fit border-0 p-0 bg-base-100 hover:bg-base-100">
-              <Image
-                src={"/admin/images/icon/close.svg"}
-                alt={"close button"}
-                width={16}
-                height={19}
-                className={"border-0 p-0"}
-              />
-            </button>
-          </form>
-        </div>
-        <div className="text-center text-2xl text-base-200-content font-normal">
-          サインアウトしますか?
-        </div>
-        <Image
-          src="/admin/images/icon/profile.svg"
-          alt={"profile image"}
-          width={153}
-          height={153}
-          className={"m-auto mt-[30px]"}
-        />
-        <div className={"text-center mt-[30px] text-2xl text-base-200-content"}>
-          Account Name
-        </div>
-        <div
-          className={
-            "text-center text-[15px] text-base-200-content font-normal"
-          }
-        >
-          @account_ame
-        </div>
-        <div className="modal-action justify-center mt-[70px] mb-[33px]">
-          <form method="dialog">
-            <div className={"flex flex-col justify-center space-y-[26px]"}>
-              <button
-                onClick={signOut}
-                className="btn btn-block w-[268px] h-[56px] rounded-[30px] bg-primary hover:bg-primary text-primary-content text-xl font-semibold"
-              >
-                サインアウト
-              </button>
-              <button className="btn btn-block w-[268px] h-[56px] rounded-[30px] border-primary hover:border-primary bg-base-100 hover:bg-base-100 text-primary text-xl font-semibold">
-                キャンセル
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
+    <AccountConfirmDialog
+      title="サインアウトしますか?"
+      account={null}
+      firstButtonProp={{
+        caption: "サインアウト",
+        isPrimary: true,
+        callback: signOut,
+      }}
+      secondButtonProp={{ caption: "キャンセル", isPrimary: false }}
+      dialogRef={dialogRef}
+    />
   );
 };
 

@@ -45,7 +45,8 @@ const config = {
         "placeholder-color": "#71717180",
       },
       borderColor: {
-        "normal-color": "#71717180",
+        "normal-color": "#717171",
+        "input-color": "#71717180",
         "hover-color": "#4A90E2",
         "focus-color": "#FFA726",
       },

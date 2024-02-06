@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
+import { MutableRefObject, useEffect, useState } from "react";
 
 const StyledTextInput = ({
   className,
@@ -7,15 +7,18 @@ const StyledTextInput = ({
   label,
   placeholder,
   changeHandler,
+  inputRef,
 }: {
   className: string;
   value: string;
   label: string;
   changeHandler: (e) => void;
   placeholder: string;
+  inputRef?: MutableRefObject<HTMLTextAreaElement>;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value);
+  const [uniqueId, setUniqueId] = useState("");
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -27,19 +30,21 @@ const StyledTextInput = ({
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
-    changeHandler(inputValue);
+    changeHandler(e.target.value);
   };
 
-  const uniqueId = Math.random().toString(36).substring(2, 11);
+  useEffect(() => {
+    setUniqueId(Math.random().toString(36).substring(2, 11));
+  }, []);
 
   return (
     <div className={clsx(className, "relative")}>
       <textarea
         className={clsx(
           "w-full h-32 pl-5 pt-4 pr-3 resize-none",
-          "outline-none border-2 rounded-lg border-normal-color hover:border-hover-color focus:border-focus-color",
+          "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
           "text-sm font-normal text-input-color",
-          "placeholder:text-placeholder-color placeholder:font-normal"
+          "placeholder:text-placeholder-color placeholder:font-normal",
         )}
         id={`input_${uniqueId}`}
         value={inputValue}
@@ -47,6 +52,7 @@ const StyledTextInput = ({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        ref={inputRef ? inputRef : null}
       />
       <label
         className={`absolute cursor-text left-5 font-normal transition-all duration-300 z-[1] ${

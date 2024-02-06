@@ -5,12 +5,25 @@ type Props = {
   type: "button" | "submit" | "reset";
   className?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
   children?: ReactNode;
 };
 
-const Button = ({ label, type, className, onClick, children }: Props) => {
+const Button = ({
+  label,
+  type,
+  className,
+  onClick,
+  disabled,
+  children,
+}: Props) => {
   return (
-    <button className={`btn ${className ?? ""}`} type={type} onClick={onClick}>
+    <button
+      className={`btn ${className ?? ""}`}
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {children}
       {label}
     </button>

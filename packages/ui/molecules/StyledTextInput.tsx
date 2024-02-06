@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
+import React, { MutableRefObject, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
 export enum TextKind {
@@ -16,6 +16,7 @@ const StyledTextInput = ({
   changeHandler,
   inputMask,
   tooltip,
+  inputRef,
 }: {
   className: string;
   value: string;
@@ -24,9 +25,11 @@ const StyledTextInput = ({
   placeholder?: string;
   inputMask?: TextKind;
   tooltip?: string;
+  inputRef?: MutableRefObject<HTMLInputElement>;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value);
+  const [uniqueId, setUniqueId] = useState("");
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -42,10 +45,12 @@ const StyledTextInput = ({
     if (inputMask === TextKind.Digit)
       setInputValue(e.target.value.replace(/\D/g, ""));
 
-    changeHandler(inputValue);
+    changeHandler(e.target.value);
   };
 
-  const uniqueId = Math.random().toString(36).substring(2, 11);
+  useEffect(() => {
+    setUniqueId(Math.random().toString(36).substring(2, 11));
+  }, []);
 
   return (
     <div className={clsx(className, "relative")}>
@@ -54,9 +59,9 @@ const StyledTextInput = ({
         className={clsx(
           "w-full h-12 pl-5 pt-4",
           tooltip && tooltip.length ? "pr-8" : "pr-3",
-          "outline-none border-2 rounded-lg border-normal-color hover:border-hover-color focus:border-focus-color",
+          "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
           "text-sm font-normal text-input-color",
-          "placeholder:text-placeholder-color placeholder:font-normal"
+          "placeholder:text-placeholder-color placeholder:font-normal",
         )}
         id={`input_${uniqueId}`}
         value={inputValue}
@@ -64,6 +69,7 @@ const StyledTextInput = ({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        ref={inputRef ? inputRef : null}
       />
       <label
         className={`absolute cursor-text left-5 font-normal transition-all duration-300 z-[1] ${
@@ -81,7 +87,7 @@ const StyledTextInput = ({
             src="/admin/images/info-icon-2.svg"
             width={16}
             height={16}
-            alt=""
+            alt="information"
             className="absolute right-2 top-3.5"
             id={`image_${uniqueId}`}
             data-tooltip-id={`tooltip_${uniqueId}`}

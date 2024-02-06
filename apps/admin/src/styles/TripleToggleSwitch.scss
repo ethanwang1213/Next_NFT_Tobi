@@ -1,0 +1,20 @@
+.selected-item {
+	background-color: #1779DE;
+	position: absolute;
+	border-radius: 64px;
+	transition: all linear .5s;
+}
+
+.switch-pane {
+	background-color: #B3B3B3;
+	color: white;
+	padding: 6px 9px;
+	border-radius: 64px;
+	height: 56px;
+	.switch-item {
+		position: relative;
+		// padding: 10px 20px;
+		line-height: 44px;
+		cursor: pointer;
+	}
+}
