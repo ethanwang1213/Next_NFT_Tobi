@@ -135,14 +135,11 @@ const Register = () => {
   };
 
   const toggleSwitchHandler = (value) => {
-    console.log(value);
     if (value > 0 && value <= 2 && !checkContentInfos()) return false;
     if (value > 1 && value <= 3 && !checkUserInfos()) return false;
     setSwitchValue(value);
     return true;
   };
-
-  // console.log("register is rendered", switchValue);
 
   return (
     <div>
