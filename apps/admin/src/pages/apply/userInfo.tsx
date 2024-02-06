@@ -70,6 +70,17 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
     setUserInfo({ ...userInfo, phone: inputPhone });
   };
 
+  const handleRubyChange = (field, event) => {
+    const rubyCharacters =
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ"; // The set of allowed characters
+    // Create a regular expression pattern that matches any character not in the allowed set
+    const pattern = new RegExp(`[^${rubyCharacters}]`, "g");
+    // Use the replace method to remove characters not in the allowed set
+    const inputRuby = event.target.value.replace(pattern, "");
+    // Apply any additional masking or validation logic as needed
+    setUserInfo({ ...userInfo, [field]: inputRuby });
+  };
+
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-row items-center">
@@ -128,7 +139,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             )}
             placeholder="セイ"
             value={userInfo.last_name_ruby}
-            onChange={(e) => userInfoChangeHandler("last_name_ruby", e)}
+            onChange={(e) => handleRubyChange("last_name_ruby", e)}
             ref={refs["last_name_ruby"]}
           />
           <span className="w-8"></span>
@@ -142,7 +153,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             )}
             placeholder="メイ"
             value={userInfo.first_name_ruby}
-            onChange={(e) => userInfoChangeHandler("first_name_ruby", e)}
+            onChange={(e) => handleRubyChange("first_name_ruby", e)}
             ref={refs["first_name_ruby"]}
           />
         </div>

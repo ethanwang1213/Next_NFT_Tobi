@@ -50,6 +50,17 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
     setContentInfo({ ...contentInfo, [field]: e.target.value });
   };
 
+  const handleRubyChange = (field, event) => {
+    const rubyCharacters =
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ"; // The set of allowed characters
+    // Create a regular expression pattern that matches any character not in the allowed set
+    const pattern = new RegExp(`[^${rubyCharacters}]`, "g");
+    // Use the replace method to remove characters not in the allowed set
+    const inputRuby = event.target.value.replace(pattern, "");
+    // Apply any additional masking or validation logic as needed
+    setContentInfo({ ...contentInfo, [field]: inputRuby });
+  };
+
   return (
     <>
       <div className="mb-6 text-2xl/[48x] text-title-color">コンテンツ情報</div>
@@ -79,7 +90,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
           )}
           placeholder="フリガナ"
           value={contentInfo.ruby}
-          onChange={(e) => contentInfoChangeHandler("ruby", e)}
+          onChange={(e) => handleRubyChange("ruby", e)}
           ref={refs["ruby"]}
         />
       </Row2>
