@@ -52,7 +52,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
 
   const handleRubyChange = (field, event) => {
     const rubyCharacters =
-      "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ"; // The set of allowed characters
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォッャュョヮヵヶ"; // The set of allowed characters
     // Create a regular expression pattern that matches any character not in the allowed set
     const pattern = new RegExp(`[^${rubyCharacters}]`, "g");
     // Use the replace method to remove characters not in the allowed set
