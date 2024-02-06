@@ -44,15 +44,16 @@ const Terms = () => {
           利用規約・プライバシーポリシーに同意する。
         </label>
       </div>
-      <Button
-        label="申請フォームへ"
+      <button
         type="button"
-        className={`w-[16rem] h-[3.5rem] text-xl leading-[3.5rem] text-white
+        className={`w-[16rem] h-[3.5rem] rounded-[30px] mt-6 text-xl leading-[3.5rem] text-white
           ${isChecked ? "bg-[#1779DE] " : "bg-[#B3B3B3]"} 
-          rounded-[30px] mt-6`}
+          relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
         disabled={!isChecked}
         onClick={handleButtonClicked}
-      />
+      >
+        申請フォームへ
+      </button>
     </div>
   );
 };

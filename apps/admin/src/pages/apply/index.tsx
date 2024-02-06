@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
-import Button from "ui/atoms/Button";
 import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
 import { useAuth } from "contexts/AdminAuthProvider";
 
@@ -76,12 +75,14 @@ const Index = () => {
         />
         <span>１アカウントにつきコンテンツは１つまで申請できます</span>
       </div>
-      <Button
-        label="Tobiratory Creator Program"
+      <button
         type="button"
-        className="w-[38rem] h-[4.5rem] text-3xl bg-[#1779DE] text-white rounded-[88px] px-10 py-3 mt-6"
+        className={`w-[38rem] h-[4.5rem] text-3xl bg-[#1779DE] text-white rounded-[88px] py-3 mt-6
+          relative hover:shadow-xl hover:-top-[3px] transition-shadow`}
         onClick={handleButtonClick}
-      />
+      >
+        Tobiratory Creator Program
+      </button>
       <ConfirmModal dialogRef={modalRef} />
     </div>
   );

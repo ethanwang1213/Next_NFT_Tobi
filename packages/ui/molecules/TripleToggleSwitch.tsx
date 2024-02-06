@@ -30,7 +30,7 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
     return () => window.removeEventListener("resize", fnCalcSelectedItemPos);
   }, [switchItemRef, value]);
 
-  console.log("switch is rendered");
+  // console.log("switch is rendered");
 
   return (
     <div className="flex flex-row switch-pane">

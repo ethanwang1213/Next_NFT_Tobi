@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
-import Button from "ui/atoms/Button";
+import clsx from "clsx";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
 import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
@@ -142,7 +142,7 @@ const Register = () => {
     return true;
   };
 
-  console.log("register is rendered", switchValue);
+  // console.log("register is rendered", switchValue);
 
   return (
     <div>
@@ -180,20 +180,34 @@ const Register = () => {
           )}
         </div>
 
-        <div className="w-[568px] h-14 mx-auto mt-10 flex flex-row justify-between">
-          <Button
-            label="戻る"
+        <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-between">
+          <button
             type="button"
-            className="w-[268px] h-14 text-xl leading-[56px] text-center border border-[#1779DE] bg-transparent text-[#1779DE] rounded-[30px]"
+            className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
+              border border-[#1779DE] bg-transparent rounded-[30px] 
+              relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
             onClick={handleBack}
-          ></Button>
-          <Button
-            label="次へ"
+          >
+            戻る
+          </button>
+          <button
             type="button"
-            className="w-[268px] h-14 text-xl leading-[56px] text-center bg-[#1779DE] text-white rounded-[30px]"
+            className={clsx(
+              "w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px]",
+              switchValue === 2 && !copyrightInfo.agreement
+                ? "bg-[#B3B3B3]"
+                : "bg-[#1779DE]",
+              "relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow",
+            )}
             onClick={handleNext}
             disabled={switchValue === 2 && !copyrightInfo.agreement}
-          ></Button>
+          >
+            {switchValue === 2
+              ? "確認する"
+              : switchValue === 3
+                ? "申請"
+                : "次へ"}
+          </button>
         </div>
       </div>
     </div>
