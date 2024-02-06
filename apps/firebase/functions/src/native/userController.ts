@@ -128,7 +128,7 @@ export const signUp = async (req: Request, res: Response) => {
 
 export const createFlowAcc = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
       where: {
@@ -157,7 +157,7 @@ export const createFlowAcc = async (req: Request, res: Response) => {
 
 export const getMyProfile = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const accountData = await prisma.tobiratory_accounts.findUnique({
       where: {
@@ -207,7 +207,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
 export const postMyProfile = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {account, flow} = req.body;
-  await auth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const accountData = await prisma.tobiratory_accounts.update({
       where: {
@@ -238,7 +238,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
 
 export const myBusiness = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const businesses = await prisma.tobiratory_businesses.findMany({
       where: {
@@ -262,14 +262,47 @@ export const myBusiness = async (req: Request, res: Response) => {
 
 export const businessSubmission = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  const {
+    contentName,
+    contentNameFurigana,
+    genre,
+    contentDesc,
+    homepageUrl,
+    name,
+    nameFurigana,
+    birth,
+    address,
+    phone,
+    email,
+  } = req.body;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    await prisma.tobiratory_businesses.create({
+    const exist = await prisma.tobiratory_businesses.findMany({
+      where: {
+        uuid: uid, 
+      }
+    })
+    if (!exist.length) {
+      res.status(401).send({
+        status: "error",
+        data: "already-exist",
+      });
+      return;
+    }
+    const businessData = await prisma.tobiratory_businesses.create({
       data: {
         uuid: uid,
-        name: "",
-        address: "",
-        phone: "",
+        email: email,
+        name: name,
+        name_furi: nameFurigana,
+        birth: birth,
+        content_name: contentName,
+        content_name_furi: contentNameFurigana,
+        content_desc: contentDesc,
+        homepage_url: homepageUrl,
+        genre: genre,
+        address: address,
+        phone: phone,
         kyc: "",
         bank_account: "",
         balance: "0",
@@ -277,7 +310,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
     });
     res.status(200).send({
       status: "success",
-      data: "resData",
+      data: businessData,
     });
   }).catch((error: FirebaseError)=>{
     res.status(200).send({
@@ -287,10 +320,44 @@ export const businessSubmission = async (req: Request, res: Response) => {
   });
 };
 
+export const checkExistBusinessAcc = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const exist = await prisma.tobiratory_businesses.findMany({
+      where: {
+        uuid: uid, 
+      }
+    })
+    if (!exist.length) {
+      res.status(200).send({
+        status: "success",
+        data: {
+          exist: true,
+        },
+      });
+      return;
+    }else {
+      res.status(200).send({
+        status: "success",
+        data: {
+          exist: false,
+        },
+      });
+      return;
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(200).send({
+      status: "success",
+      data: error.code,
+    });
+  });
+}
+
 export const updateMyBusiness = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {name, address, phone} = req.body;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const myBusiness = await prisma.tobiratory_businesses.updateMany({
       where: {
@@ -311,7 +378,7 @@ export const updateMyBusiness = async (req: Request, res: Response) => {
 
 export const myInventory = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     // const businesses =
     const items = await prisma.tobiratory_items.findMany({
@@ -363,7 +430,7 @@ export const myInventory = async (req: Request, res: Response) => {
 export const makeFolder = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {parentFolder, name} = req.body;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     await prisma.tobiratory_boxes.create({
       data: {
@@ -387,7 +454,7 @@ export const makeFolder = async (req: Request, res: Response) => {
 export const getFolderData = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const folder = await prisma.tobiratory_boxes.findUnique({
       where: {
@@ -442,7 +509,7 @@ export const getFolderData = async (req: Request, res: Response) => {
 export const deleteFolderData = async (req:Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const folder = await prisma.tobiratory_boxes.findUnique({
       where: {
@@ -483,7 +550,7 @@ export const deleteFolderData = async (req:Request, res: Response) => {
 export const getNFTInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id, serialNo} = req.params;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const nftData = await prisma.tobiratory_nfts.findUnique({
       where: {

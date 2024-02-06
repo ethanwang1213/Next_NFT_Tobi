@@ -4,7 +4,7 @@ import * as express from "express";
 import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
-import {signUp, getMyProfile, postMyProfile, verifyEmail, createFlowAcc, myBusiness, updateMyBusiness, makeFolder, getFolderData, deleteFolderData} from "./userController";
+import {signUp, getMyProfile, postMyProfile, verifyEmail, createFlowAcc, myBusiness, updateMyBusiness, makeFolder, getFolderData, deleteFolderData, businessSubmission, checkExistBusinessAcc} from "./userController";
 import {getContentById, getContents} from "./contentController";
 import {getItems, getItemsById} from "./itemController";
 import {getSaidans, getSaidansById} from "./saidanController";
@@ -46,7 +46,8 @@ app.get("/posts/:id", dummyResponse);
 
 app.get("/my/profile", getMyProfile);
 app.post("/my/profile", postMyProfile);
-app.post("/my/business/submission", dummyResponse);
+app.post("/my/business/submission", businessSubmission);
+app.post("/my/business/checkexist", checkExistBusinessAcc)
 app.get("/my/business", myBusiness);
 app.post("/my/business", updateMyBusiness);
 
