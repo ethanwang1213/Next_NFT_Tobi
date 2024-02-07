@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Button from "ui/atoms/Button";
 
 const Terms = () => {
   const [isChecked, setIsChecked] = useState(false);
