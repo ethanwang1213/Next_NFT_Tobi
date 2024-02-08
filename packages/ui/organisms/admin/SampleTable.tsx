@@ -1,10 +1,10 @@
-import Image from "next/image";
-import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
-import React, { useState, useEffect } from "react";
-import { Tooltip } from "react-tooltip";
 import { fetchSamples } from "hooks/SampleActions";
-import { formatDateToLocal, formatCurrency } from "ui/atoms/Formatters";
+import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Tooltip } from "react-tooltip";
+import { formatCurrency } from "ui/atoms/Formatters";
+import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
 
 export default function SampleTable({ filters }) {
   const [isAscending, setIsAscending] = useState(true);
@@ -28,7 +28,7 @@ export default function SampleTable({ filters }) {
       return true; // Return false if the sample should be filtered out
     });
     setSamples(filteredData);
-  }, [filters]);
+  }, [filters, samples]);
 
   return (
     <div className="flow-root">
