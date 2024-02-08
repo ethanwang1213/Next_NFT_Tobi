@@ -29,7 +29,7 @@ const Sidebar = ({ children }: Props) => {
   useEffect(() => {
     if (window.innerWidth < screensMd) setExpand(false);
     else setExpand(true);
-  }, []);
+  }, [screensMd]);
 
   // animate menu width on expand state change
   useEffect(() => {
@@ -55,7 +55,7 @@ const Sidebar = ({ children }: Props) => {
       return;
     }
 
-    setExpand(!expand);
+    setExpand((e) => !e);
   }, [clickedBefore, menuStatus]);
 
   // set expand state on window resize
@@ -65,7 +65,7 @@ const Sidebar = ({ children }: Props) => {
     } else {
       setExpand(true);
     }
-  }, [displayWidth]);
+  }, [displayWidth, screensMd]);
 
   const normalIconColor = "non-active";
   const normalTextColor = "base-content";
