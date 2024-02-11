@@ -8,6 +8,9 @@ module.exports = {
   images: {
     domains: ["storage.googleapis.com"],
   },
+  eslint: {
+    dirs: ['.', '../../packages/'],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
