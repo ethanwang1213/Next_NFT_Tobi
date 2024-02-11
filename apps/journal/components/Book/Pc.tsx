@@ -1,12 +1,12 @@
-import Image from "next/image";
-import { useContext, useEffect, useRef, useState } from "react";
-import { useWindowSize } from "react-use";
-import { BookPos } from "types/journal-types";
-import Tag from "../Tag";
+import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
 import gsap from "gsap";
+import { BookPos } from "journal-pkg/types/journal-types";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { useWindowSize } from "react-use";
 import { useBookContext } from "../../contexts/journal-BookProvider";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
-import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
+import Tag from "../Tag";
 
 /**
  * PCでの本の表示用コンポーネント
@@ -63,7 +63,7 @@ const Pc = () => {
   // ページめくり領域のホバー表示 (enter)
   const handleFlipAreaEnter = (
     e: React.MouseEvent<HTMLDivElement>,
-    offset: number
+    offset: number,
   ) => {
     const page = pageNo + offset;
     if (page < 0 || page >= pages.length) return;
@@ -99,7 +99,7 @@ const Pc = () => {
   const setAspect = () => {
     // 本の画像のアスペクト比を設定
     setBookAspect(
-      bookImgRef.current.naturalWidth / bookImgRef.current.naturalHeight
+      bookImgRef.current.naturalWidth / bookImgRef.current.naturalHeight,
     );
   };
 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRedeemStatus } from "../../../contexts/journal-RedeemStatusProvider";
 import RedeemPage0 from "./sub/RedeemPage0";
 import RedeemPage1 from "./sub/RedeemPage1";
-import { useAuth } from "contexts/journal-AuthProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
 
 type Props = {
   pageNum: number;

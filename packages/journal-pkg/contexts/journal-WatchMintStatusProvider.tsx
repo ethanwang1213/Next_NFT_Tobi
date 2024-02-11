@@ -1,12 +1,12 @@
+import { useIntervalBySec } from "journal-pkg/hooks/journal-useInterval";
 import React, {
-  ReactNode,
   createContext,
-  useMemo,
+  ReactNode,
   useContext,
   useEffect,
+  useMemo,
 } from "react";
 import { useAuth } from "./journal-AuthProvider";
-import { useIntervalBySec } from "hooks/journal-useInterval";
 
 type Props = {
   children: ReactNode;

@@ -35,7 +35,7 @@ export const useWindowSize: HookType = () => {
   // useLayoutEffect(() => {
   useEffect(() => {
     if (typeof window === "undefined") {
-      return () => { };
+      return () => {};
     }
     const handleResize = () => {
       const isVeryWide = window.innerWidth > mediaBorder;
@@ -67,6 +67,6 @@ export const useWindowSize: HookType = () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("orientationchange", handleResize);
     };
-  }, []);
+  }, [mediaBorder]);
   return windowSize;
 };

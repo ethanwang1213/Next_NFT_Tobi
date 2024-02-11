@@ -1,15 +1,15 @@
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { RedeemStatus } from "journal-pkg/types/journal-types";
 import {
+  createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  createContext,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { RedeemStatus } from "types/journal-types";
 
 type Props = {
   children: ReactNode;
@@ -107,7 +107,7 @@ export const RedeemStatusProvider: React.FC<Props> = ({ children }) => {
       setSelfAccount,
       setSelfJournalId,
       setModalInputIsChecked,
-    ]
+    ],
   );
 
   return (

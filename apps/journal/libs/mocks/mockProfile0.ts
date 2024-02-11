@@ -1,4 +1,4 @@
-import { LocalActivityRecord } from "types/journal-types";
+import { LocalActivityRecord } from "journal-pkg/types/journal-types";
 
 // 以下のtextからランダムに設定
 // "TOBIRA NEKO #1をJournalに追加した"
@@ -73,7 +73,11 @@ export const mockRecordList: (LocalActivityRecord & { id: number })[] = [
   },
 ];
 
-export const mockCharacteristicList: { id: number; text: string; value: string }[] = [
+export const mockCharacteristicList: {
+  id: number;
+  text: string;
+  value: string;
+}[] = [
   {
     id: 0,
     text: "Participation date of Tobiratory",

@@ -1,8 +1,8 @@
-import { auth } from "fetchers/firebase/journal-client";
-import { useRouter } from "next/router";
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
-import { useEffect } from "react";
+import { auth } from "journal-pkg/fetchers/firebase/journal-client";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Verify = () => {
   const router = useRouter();
@@ -18,7 +18,7 @@ const Verify = () => {
       if (!email) {
         // ローカルストレージにemailキーが存在しない場合、もう１度入力
         const confirm = window.confirm(
-          "申し訳ございませんが、ご入力いただいたメールアドレスを確認できなかったため再度ご入力お願いします。"
+          "申し訳ございませんが、ご入力いただいたメールアドレスを確認できなかったため再度ご入力お願いします。",
         );
         if (confirm) {
           router.push("/login");
@@ -43,7 +43,7 @@ const Verify = () => {
     } else {
       // リンクが正しくないとき
       const confirm = window.confirm(
-        "申し訳ございませんが、リンクの有効期限が切れているため再度ご入力お願いします。"
+        "申し訳ございませんが、リンクの有効期限が切れているため再度ご入力お願いします。",
       );
       if (confirm) {
         router.push("/login");

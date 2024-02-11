@@ -1,11 +1,11 @@
-import { auth } from "fetchers/firebase/journal-client";
-import { useContext, useEffect } from "react";
-import { useRouter } from "next/router";
-import Image from "next/image";
-import { useAuth } from "contexts/journal-AuthProvider";
 import { useActivityRecord } from "@/contexts/journal-ActivityRecordProvider";
-import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { auth } from "journal-pkg/fetchers/firebase/journal-client";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Logout = () => {
   const router = useRouter();

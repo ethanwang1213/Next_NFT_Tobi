@@ -1,29 +1,29 @@
+import type { AppContext, AppProps } from "next/app";
 import { default as NextApp } from "next/app";
-import type { AppProps, AppContext } from "next/app";
 
-import "../styles/global.scss";
 import "react-easy-crop/react-easy-crop.css";
 import "swiper/css";
 import "swiper/css/effect-cards";
+import "../styles/global.scss";
 
-import Script from "next/script";
-import { config } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { AuthProvider } from "contexts/journal-AuthProvider";
-import { HoldNftsProvider } from "@/contexts/journal-HoldNftsProvider";
+import SoundToggle from "@/components/SoundToggle";
 import { ActivityRecordProvider } from "@/contexts/journal-ActivityRecordProvider";
 import { DebugProvider } from "@/contexts/journal-DebugProvider";
 import { DiscordOAuthProvider } from "@/contexts/journal-DiscordOAuthProvider";
+import { HoldNftsProvider } from "@/contexts/journal-HoldNftsProvider";
 import basicAuthCheck from "@/methods/basicAuthCheck";
-import Head from "next/head";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { AuthProvider } from "journal-pkg/contexts/journal-AuthProvider";
+import { SoundConfigProvider } from "journal-pkg/contexts/journal-SoundConfigProvider";
 import {
   BurgerMenu,
-  ShowBurgerProvider,
-  MenuAnimationProvider,
   FlexMenuButtonLayout,
-} from "ui";
-import SoundToggle from "@/components/SoundToggle";
-import { SoundConfigProvider } from "contexts/journal-SoundConfigProvider";
+  MenuAnimationProvider,
+  ShowBurgerProvider,
+} from "journal-pkg/ui";
+import Head from "next/head";
+import Script from "next/script";
 
 config.autoAddCss = false;
 

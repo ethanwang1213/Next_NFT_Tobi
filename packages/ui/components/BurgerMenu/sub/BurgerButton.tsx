@@ -1,6 +1,6 @@
-import { useShowBurger } from "contexts/menu/ShowBurger";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useShowBurger } from "contexts/menu/ShowBurger";
 import { ServiceName } from "types";
 
 type Props = {

@@ -1,7 +1,7 @@
+import { useShowBurger } from "contexts/menu/ShowBurger";
+import { useLocatingAcrossBasePath } from "hooks";
 import { useMemo } from "react";
 import { menuItem } from "./../assets/menuItems";
-import { useLocatingAcrossBasePath } from "hooks";
-import { useShowBurger } from "contexts/menu/ShowBurger";
 
 type Props = {
   initHomeStates?: () => void;
@@ -51,7 +51,7 @@ export const TextMenuItems: React.FC<Props> = ({ initHomeStates }) => {
         }
         return null;
       }),
-    [menuItem]
+    [menuItem],
   );
 
   return <>{menu}</>;

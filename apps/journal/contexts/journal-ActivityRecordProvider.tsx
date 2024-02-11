@@ -1,14 +1,14 @@
+import useFetchActivityRecords from "@/hooks/useFetchActivityRecords";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { LocalActivityRecord } from "journal-pkg/types/journal-types";
 import React, {
-  ReactNode,
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "contexts/journal-AuthProvider";
-import useFetchActivityRecords from "@/hooks/useFetchActivityRecords";
-import { LocalActivityRecord } from "types/journal-types";
 
 type Props = {
   children: ReactNode;
@@ -29,7 +29,7 @@ const ActivityRecordContext = createContext<ContextType>({} as ContextType);
  */
 export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
   const [activityRecords, setActivityRecords] = useState<LocalActivityRecord[]>(
-    []
+    [],
   );
 
   const { user } = useAuth();
@@ -63,7 +63,7 @@ export const ActivityRecordProvider: React.FC<Props> = ({ children }) => {
       addActivityRecord,
       initContext,
     }),
-    [activityRecords, addActivityRecord, initContext]
+    [activityRecords, addActivityRecord, initContext],
   );
 
   return (

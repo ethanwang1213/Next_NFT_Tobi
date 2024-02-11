@@ -1,10 +1,10 @@
-import { useEffect, ReactNode, Dispatch, SetStateAction } from "react";
-import { menuItem } from "../../../assets/menuItems";
-import { KeyholeObject } from "./KeyholeObject";
-import { gsap } from "gsap";
 import { useGLTF, useTexture } from "@react-three/drei";
+import { gsap } from "gsap";
 import { useWindowSize } from "hooks";
 import { useRouter } from "next/router";
+import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
+import { menuItem } from "../../../assets/menuItems";
+import { KeyholeObject } from "./KeyholeObject";
 
 type Props = {
   rotate: number;
@@ -33,7 +33,7 @@ export const Keyholes: React.FC<Props> = ({
   const loop = isWide ? 4 : 2;
 
   const { nodes }: any = useGLTF(
-    `${router.basePath ? router.basePath : ""}/menu/keyhole.glb`
+    `${router.basePath ? router.basePath : ""}/menu/keyhole.glb`,
   );
 
   // 自動で定位置まで移動
@@ -75,7 +75,7 @@ export const Keyholes: React.FC<Props> = ({
               key={item.name}
               initHomeStates={initHomeStates}
             />
-          )
+          ),
       );
 
   // メニュー項目の鍵を「項目数 x ループ数」生成する

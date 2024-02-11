@@ -1,4 +1,4 @@
-import { useAuth } from "contexts/journal-AuthProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
 import { useEffect, useState } from "react";
 import {
   UseFormGetValues,

@@ -1,17 +1,14 @@
-import {
-  HouseBadgeNftData as HouseBadgeNftData,
-  NftData as NftData,
-} from "types/journal-types";
+import useFetchNftDatas from "@/hooks/useFetchNftDatas";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { HouseBadgeNftData, NftData } from "journal-pkg/types/journal-types";
 import React, {
-  ReactNode,
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "contexts/journal-AuthProvider";
-import useFetchNftDatas from "@/hooks/useFetchNftDatas";
 
 type Props = {
   children: ReactNode;
@@ -37,9 +34,7 @@ type ContextType = {
   initContext: () => void;
 };
 
-const HoldNftsContext = createContext<ContextType>(
-  {} as ContextType
-);
+const HoldNftsContext = createContext<ContextType>({} as ContextType);
 
 /**
  * 保有NFTのデータを管理するコンテキストプロバイダー
@@ -49,7 +44,7 @@ const HoldNftsContext = createContext<ContextType>(
 export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
   const [nekoNfts, setNekoNfts] = useState<NftData[]>([]);
   const [otherNfts, setOtherNfts] = useState<(NftData | HouseBadgeNftData)[]>(
-    []
+    [],
   );
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
@@ -70,7 +65,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
   const loadNekos = async () => {
     if (!user || !user.email) return;
     const nekos = await fetchHoldNfts(
-      process.env["NEXT_PUBLIC_NEKO_NFT_ADDRESS"]
+      process.env["NEXT_PUBLIC_NEKO_NFT_ADDRESS"],
     );
     // 最新順にソート
     nekos.sort((a, b) => {
@@ -98,7 +93,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
           const nfts = (await fetchHoldNfts(id)) as NftData[];
           otherNfts.push(...nfts);
         }
-      })
+      }),
     );
     // 最新順にソート
     otherNfts.sort((a, b) => {
@@ -160,7 +155,7 @@ export const HoldNftsProvider: React.FC<Props> = ({ children }) => {
       setShouldUpdate,
       setViewingSrc,
       initContext,
-    ]
+    ],
   );
 
   return (

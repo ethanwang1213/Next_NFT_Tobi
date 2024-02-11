@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
-import { useAuth } from "contexts/journal-AuthProvider";
-import useDateFormat from "@/hooks/useDateFormat";
-import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
 import { useDebug } from "@/contexts/journal-DebugProvider";
 import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
-import { StampRally } from "ui";
+import useDateFormat from "@/hooks/useDateFormat";
+import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { useEffect, useMemo, useState } from "react";
+import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
 
 /**
  * プロフィールページの2ページ目
@@ -19,12 +18,12 @@ const ProfilePage1: React.FC = () => {
 
   const joinAtExists = useMemo(
     () => user && user.characteristic && user.characteristic.join_tobiratory_at,
-    [user]
+    [user],
   );
 
   const houseDataExists = useMemo(
     () => houseData && houseData.name,
-    [houseData]
+    [houseData],
   );
 
   // Debug用
@@ -58,7 +57,7 @@ const ProfilePage1: React.FC = () => {
                 <CharacteristicLine
                   lineType={"Participation date of Tobiratory"}
                   lineValue={formattedFromDate(
-                    user.characteristic.join_tobiratory_at.toDate()
+                    user.characteristic.join_tobiratory_at.toDate(),
                   )}
                 />
               )}

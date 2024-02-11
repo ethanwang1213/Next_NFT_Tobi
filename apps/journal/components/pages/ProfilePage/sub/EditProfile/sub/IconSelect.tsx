@@ -1,15 +1,15 @@
-import { useAuth } from "contexts/journal-AuthProvider";
 import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
+  UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormGetValues,
   UseFormWatch,
 } from "react-hook-form";
-import { EditProfileValues } from "../EditProfileModal";
 import DefaultIcon from "../../../../../../public/images/icon/Profiledefault_journal.svg";
-import Image from "next/image";
+import { EditProfileValues } from "../EditProfileModal";
 
 type Props = {
   register: UseFormRegister<EditProfileValues>;
@@ -76,7 +76,7 @@ const IconSelect: React.FC<Props> = ({
           0,
           0,
           100,
-          100
+          100,
         );
       } else {
         ctx.fillStyle = "rgb(255, 255, 255)";

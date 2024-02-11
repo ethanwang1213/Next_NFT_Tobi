@@ -1,16 +1,16 @@
+import useCommunityData from "@/hooks/useCommunityData";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { HouseData } from "journal-pkg/types/journal-types";
 import {
+  createContext,
   Dispatch,
   SetStateAction,
-  createContext,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "contexts/journal-AuthProvider";
 import { useHoldNfts } from "./journal-HoldNftsProvider";
-import useCommunityData from "@/hooks/useCommunityData";
-import { HouseData } from "types/journal-types";
 
 type Props = {
   children: React.ReactNode;
@@ -94,7 +94,7 @@ export const DiscordOAuthProvider: React.FC<Props> = ({ children }) => {
       houseData: houseData,
       initContext: initContext,
     }),
-    [displayMode, setDisplayMode, houseData, initContext]
+    [displayMode, setDisplayMode, houseData, initContext],
   );
 
   return (

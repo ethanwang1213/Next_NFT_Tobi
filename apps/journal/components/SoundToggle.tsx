@@ -1,4 +1,4 @@
-import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
+import { useSoundConfig } from "journal-pkg/contexts/journal-SoundConfigProvider";
 
 /**
  * サウンドのオンオフを切り替えるトグルボタン

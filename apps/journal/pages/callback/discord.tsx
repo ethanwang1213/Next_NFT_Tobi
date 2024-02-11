@@ -1,8 +1,8 @@
-import { auth } from "fetchers/firebase/journal-client";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
-import { useAuth } from "contexts/journal-AuthProvider";
 import useUpdateDiscordOAuthData from "@/hooks/useUpdateDiscordOAuthData";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { auth } from "journal-pkg/fetchers/firebase/journal-client";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 /**
  * Discord認証のcallback用ページ
@@ -16,7 +16,7 @@ const Discord = () => {
 
   // Discordのユーザーデータを取得
   const getDiscordUserId: (code: string) => Promise<string> = async (
-    code: string
+    code: string,
   ) => {
     if (!auth.currentUser) return;
 
@@ -28,7 +28,7 @@ const Discord = () => {
           "Content-Type": "application/json",
           Authorization: token,
         },
-      }
+      },
     );
     if (response.status == 200) {
       const json = await response.json();

@@ -1,13 +1,13 @@
-import { useAuth } from "contexts/journal-AuthProvider";
-import { db } from "fetchers/firebase/journal-client";
-import { HouseData } from "types/journal-types";
 import {
-  getDocs,
   collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
 } from "firebase/firestore/lite";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { db } from "journal-pkg/fetchers/firebase/journal-client";
+import { HouseData } from "journal-pkg/types/journal-types";
 
 /**
  * communityのデータを扱うカスタムフック
@@ -19,7 +19,7 @@ const useCommunityData = () => {
   const fetchHouseData = async () => {
     try {
       const communitySnap = await getDocs(
-        collection(db, "users", user.id, "community")
+        collection(db, "users", user.id, "community"),
       );
       if (communitySnap.empty) return null;
 

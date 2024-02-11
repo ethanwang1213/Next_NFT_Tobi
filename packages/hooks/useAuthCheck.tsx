@@ -11,7 +11,7 @@ const useAuthCheck = () => {
       return;
     }
     setIsAuthenticated(true);
-  }, []);
+  }, [router]);
 
   return { isAuthenticated };
 };

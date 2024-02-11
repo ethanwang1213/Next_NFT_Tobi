@@ -1,9 +1,12 @@
 import { useAuth } from "contexts/journal-AuthProvider";
+import { useStampRallyFetcher } from "fetchers";
+import {
+  MintStatusType,
+  Tpf2023StampType,
+} from "types/journal-types";
 import { RoundedImage } from "../../atoms/journal-RoundedImage";
 import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
 import { StampRallyRewardForm } from "../../molecules/journal-StampRallyRewardForm";
-import { MintStatusType, Tpf2023StampType } from "types/journal-types";
-import { useStampRallyFetcher } from "fetchers";
 
 type StampDataType = {
   key: Tpf2023StampType;

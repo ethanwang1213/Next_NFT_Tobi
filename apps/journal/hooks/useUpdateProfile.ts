@@ -1,11 +1,11 @@
 import { EditProfileValues } from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
-import { useAuth } from "contexts/journal-AuthProvider";
 import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
-import { storage, db } from "fetchers/firebase/journal-client";
 import { doc, setDoc } from "firebase/firestore/lite";
 import { deleteObject, ref, uploadBytes } from "firebase/storage";
-import { Area } from "react-easy-crop";
 import * as _Jimp from "jimp";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { db, storage } from "journal-pkg/fetchers/firebase/journal-client";
+import { Area } from "react-easy-crop";
 
 type PostingData = {
   icon?: string;
@@ -56,7 +56,7 @@ const useUpdateProfile = () => {
     name: string,
     year: number,
     month: number,
-    day: number
+    day: number,
   ) => {
     const postingData: PostingData = {};
     let isAnyChanged = false;
@@ -163,7 +163,7 @@ const useUpdateProfile = () => {
         newName,
         year,
         month,
-        day
+        day,
       );
       if (!isNewIcon && !isAnyChanged) {
         return;
@@ -176,7 +176,7 @@ const useUpdateProfile = () => {
         scaled.getBuffer(Jimp.MIME_PNG, async (err, buf) => {
           // storageに新しいアイコン画像データをアップロード
           const path = await uploadNewIcon(
-            new File([buf], "img.png", { type: "image/png" })
+            new File([buf], "img.png", { type: "image/png" }),
           );
 
           if (!path) {
@@ -207,7 +207,7 @@ const useUpdateProfile = () => {
                 month: month,
                 day: day,
               },
-              path
+              path,
             );
           });
         });
@@ -227,7 +227,7 @@ const useUpdateProfile = () => {
             month: month,
             day: day,
           },
-          null
+          null,
         );
       }
     } catch (error) {
