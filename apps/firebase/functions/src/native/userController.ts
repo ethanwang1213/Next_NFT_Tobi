@@ -3,81 +3,39 @@ import {Request, Response} from "express";
 import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
+import {UserRecord} from "firebase-functions/v1/auth";
 
 const prisma = new PrismaClient();
 
-export const verifyEmail = async (req: Request, res: Response) => {
-  const {email, password} = req.body;
-  try {
-    const firebaseAuthUser = await auth().getUserByEmail(email);
-    if (!firebaseAuthUser.passwordHash) {
-      // sent password reset email
-      await getAuth().generatePasswordResetLink(email);
+export const checkPasswordSet = async (req: Request, res: Response) => {
+  const {email} = req.body;
+  await auth().getUserByEmail(email).then((userRecord: UserRecord)=>{
+    const providers = userRecord.providerData;
+
+    const hasPasswordProvider = providers.some((provider) => provider.providerId === "password");
+
+    if (hasPasswordProvider) {
       res.status(200).send({
         status: "success",
-        data: "reset-password",
-      });
-      return;
-    } else if (!firebaseAuthUser.emailVerified) {
-      // sent email verify
-      await auth().generateEmailVerificationLink(email).then(() => {
-        res.status(200).send({
-          status: "success",
-          data: "email-verify",
-        });
+        data: true,
       });
     } else {
       res.status(200).send({
         status: "success",
-        data: "next",
+        data: false,
       });
     }
-  } catch (error: any) {
-    const regExp = new RegExp(
-        "^" +
-        "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])" +
-        "(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*_\\-+=:;])" +
-        "(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_\\-+=:;])" +
-        "(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*_\\-+=:;])" +
-        "([a-zA-Z0-9!@#$%^&*_\\-+=:;]){8,}$"
-    );
-    if (!password) {
-      res.status(401).send({
-        status: "error",
-        data: error.code,
-      });
-      return;
-    }
-    if (!regExp.test(password)) {
-      res.status(401).send({
-        status: "error",
-        data: "password-incorrect",
-      });
-      return;
-    }
-    await auth().createUser({
-      email: email,
-      password: password,
-      emailVerified: false,
-    }).then(async () => {
-      await auth().generateEmailVerificationLink(email).then(() => {
-        res.status(200).send({
-          status: "success",
-          data: "email-verify",
-        });
-      });
-    }).catch(async (errorMail: FirebaseError) => {
-      res.status(401).send({
-        status: "error",
-        data: errorMail.code,
-      });
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
     });
-  }
+  });
 };
 
 export const signUp = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken((authorization ?? "")).then(async (decodedToken: DecodedIdToken) => {
+  await auth().verifyIdToken((authorization ?? "")).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const email = decodedToken.email ?? "";
     const savedUser = await prisma.tobiratory_accounts.findMany({
@@ -279,9 +237,9 @@ export const businessSubmission = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     const exist = await prisma.tobiratory_businesses.findMany({
       where: {
-        uuid: uid, 
-      }
-    })
+        uuid: uid,
+      },
+    });
     if (!exist.length) {
       res.status(401).send({
         status: "error",
@@ -326,9 +284,9 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     const exist = await prisma.tobiratory_businesses.findMany({
       where: {
-        uuid: uid, 
-      }
-    })
+        uuid: uid,
+      },
+    });
     if (!exist.length) {
       res.status(200).send({
         status: "success",
@@ -337,7 +295,7 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
         },
       });
       return;
-    }else {
+    } else {
       res.status(200).send({
         status: "success",
         data: {
@@ -352,7 +310,7 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
       data: error.code,
     });
   });
-}
+};
 
 export const updateMyBusiness = async (req: Request, res: Response) => {
   const {authorization} = req.headers;

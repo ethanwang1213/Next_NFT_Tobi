@@ -105,3 +105,10 @@ model tobiratory_nfts {
   creator           String  @db.VarChar(255)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
+
+model tobiratory_material_images {
+  id                Int     @id @default(autoincrement())
+  owner             String  @db.VarChar(255)
+  image             String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}

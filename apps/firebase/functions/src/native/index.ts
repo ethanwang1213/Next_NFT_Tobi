@@ -4,10 +4,25 @@ import * as express from "express";
 import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
-import {signUp, getMyProfile, postMyProfile, verifyEmail, createFlowAcc, myBusiness, updateMyBusiness, makeFolder, getFolderData, deleteFolderData, businessSubmission, checkExistBusinessAcc} from "./userController";
+import
+{
+  signUp,
+  getMyProfile,
+  postMyProfile,
+  createFlowAcc,
+  myBusiness,
+  updateMyBusiness,
+  makeFolder,
+  getFolderData,
+  deleteFolderData,
+  businessSubmission,
+  checkExistBusinessAcc,
+  checkPasswordSet,
+} from "./userController";
 import {getContentById, getContents} from "./contentController";
 import {getItems, getItemsById} from "./itemController";
 import {getSaidans, getSaidansById} from "./saidanController";
+import { fileMulter, uploadMaterial } from "./fileController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -25,7 +40,7 @@ const dummyResponse = (_: express.Request, res: express.Response) => {
 // API Reference:
 // https://docs.google.com/spreadsheets/d/1XocLkxnpYL2Mfi-e7LuJOlmf_Njdgaz-0RfgqRxqtiE/edit#gid=0
 app.post("/signup", signUp);
-app.post("/verifyemail", verifyEmail);
+app.post("/password-set", checkPasswordSet);
 app.post("/create-flow", createFlowAcc);
 
 app.get("/accounts", getAccounts);
@@ -47,7 +62,7 @@ app.get("/posts/:id", dummyResponse);
 app.get("/my/profile", getMyProfile);
 app.post("/my/profile", postMyProfile);
 app.post("/my/business/submission", businessSubmission);
-app.post("/my/business/checkexist", checkExistBusinessAcc)
+app.post("/my/business/checkexist", checkExistBusinessAcc);
 app.get("/my/business", myBusiness);
 app.post("/my/business", updateMyBusiness);
 
@@ -90,5 +105,7 @@ app.post("/my/nfts/:id/listing", dummyResponse);
 app.post("/items/:id/mint", dummyResponse);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
+app.post("/material/upload", fileMulter.single('image'), uploadMaterial)
+app.post("/material/get")
 
 export const native = functions.region(REGION).https.onRequest(app);
