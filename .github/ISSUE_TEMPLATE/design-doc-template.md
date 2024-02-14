@@ -74,7 +74,7 @@ If data fetching is expected, mention it.
 Include domain logic if applicable.  
 Essentially, verbalize the source code that would actually be written for the component.
 
-## 他の手段 / Alternative approach
+## Alternative approach
 
 もし上記の内容以外にも実装方法があり、どちらかで迷っていたりする場合は、こちらに記載する。  
  (メリデリがあると尚良い)
@@ -82,12 +82,12 @@ Essentially, verbalize the source code that would actually be written for the co
 If there are alternative implementation methods besides the above, or if you're unsure which approach to take, it's helpful to list them here.  
 (including pros and cons if possible)
 
-## 想定される問題 / Drawback, Risk
+## Drawback, Risk
 
 実装において考えられる問題がある場合は記載する。
 
 List any potential issues or challenges that may arise during implementation.
 
-## 関連リンク / Related link
+## Related link
 
 ー
