@@ -1,7 +1,7 @@
 ---
 name: Design Doc template
-about: "[Design Doc] Write Design Doc title here."
-title: ''
+about: a Design Doc template for front-end
+title: "[Design Doc] Write Design Doc title here."
 labels: design doc
 assignees: ''
 
