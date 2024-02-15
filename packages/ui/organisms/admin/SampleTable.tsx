@@ -1,7 +1,7 @@
 import { fetchSamples } from "hooks/SampleActions";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { formatCurrency } from "ui/atoms/Formatters";
 import ReleaseStatus from "ui/organisms/admin/ReleaseStatus";
@@ -23,12 +23,14 @@ export default function SampleTable({ filters }) {
   };
 
   // Apply filters when they change
+  /*
   useEffect(() => {
     const filteredData = samples.filter((sample) => {
       return true; // Return false if the sample should be filtered out
     });
     setSamples(filteredData);
   }, [filters, samples]);
+   */
 
   return (
     <div className="flow-root">
