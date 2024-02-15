@@ -1,6 +1,6 @@
 import { auth } from "fetchers/firebase/client";
 import { onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import React, {
   createContext,
   ReactNode,
@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react";
 import { User } from "types/adminTypes";
+import Loading from "ui/atoms/Loading";
 
 type Props = {
   children: ReactNode;
@@ -42,6 +43,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         console.log(`UID: ${firebaseUser.uid}`);
         console.log(`メールアドレス: ${firebaseUser.email}`);
         createUser(firebaseUser.uid, firebaseUser.email);
+        // If we use the router, we need to include it in the dependencies, and useEffect gets called multiple times. So, let's avoid using the router.
+        if (Router.pathname === "/signin") {
+          Router.push("/");
+        }
+      } else {
+        setUser(null);
+        Router.push("/signin");
       }
       return unsubscribe;
     });
@@ -68,16 +76,24 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        signOut,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  if (user || router.pathname === "/signin") {
+    return (
+      <AuthContext.Provider
+        value={{
+          user,
+          signOut,
+        }}
+      >
+        {children}
+      </AuthContext.Provider>
+    );
+  } else {
+    return (
+      <div className={"h-[100dvh] flex justify-center"}>
+        <Loading className={"loading-spinner text-info loading-md"} />
+      </div>
+    );
+  }
 };
 
 export const useAuth = () => useContext(AuthContext);
