@@ -1,13 +1,14 @@
-import React, { useState, forwardRef } from "react";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import FloatingButton from "../../atoms/FloatingButton";
 
 const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
   const [selectedDate, setSelectedDate] = useState(
-    new Date(pubDate.length ? pubDate.replace("-", "/") : undefined)
+    new Date(pubDate.length ? pubDate.replace("-", "/") : undefined),
   );
   const [selectedTime, setSelectedTime] = useState(
-    pubDate.length ? pubDate.split(" ")[1] : ""
+    pubDate.length ? pubDate.split(" ")[1] : "",
   );
 
   const onChangeDatePicker = (date) => {
@@ -17,7 +18,7 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
-      })
+      }),
     );
   };
 
@@ -73,12 +74,12 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
               />
             </div>
             <div className="mt-6">
-              <button className="w-26 text-xs bg-transparent border-0 px-3 py-2 ml-12">
+              <FloatingButton className="w-26 text-xs bg-transparent border-0 px-3 py-2 ml-12">
                 キャンセル
-              </button>
-              <button className="w-26 text-xs border-0 bg-[#1779DE] py-2 rounded">
+              </FloatingButton>
+              <FloatingButton className="w-26 text-xs border-0 bg-[#1779DE] py-2 rounded">
                 公開予約を設定
-              </button>
+              </FloatingButton>
             </div>
           </div>
         ) : (

@@ -8,6 +8,7 @@ type Props = {
   loadingClassName?: string;
 };
 
+// TODO: The fix using FloatingButton conflicts with feature/admin-login, so it should be implemented on the feature/admin-login side.
 const SubmitButton = ({
   label,
   loading,

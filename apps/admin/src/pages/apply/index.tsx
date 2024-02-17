@@ -1,9 +1,10 @@
+import { useAuth } from "contexts/AdminAuthProvider";
 import { Metadata } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
+import FloatingButton from "ui/atoms/FloatingButton";
 import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
-import { useAuth } from "contexts/AdminAuthProvider";
 
 export const metadata: Metadata = {
   title: "Tobiratory Creator Programに参加",
@@ -75,14 +76,13 @@ const Index = () => {
         />
         <span>１アカウントにつきコンテンツは１つまで申請できます</span>
       </div>
-      <button
+      <FloatingButton
         type="button"
-        className={`w-[38rem] h-[4.5rem] text-3xl bg-[#1779DE] text-white rounded-[88px] py-3 mt-6
-          relative hover:shadow-xl hover:-top-[3px] transition-shadow`}
+        className={`w-[38rem] h-[4.5rem] text-3xl bg-[#1779DE] text-white rounded-[88px] py-3 mt-6`}
         onClick={handleButtonClick}
       >
         Tobiratory Creator Program
-      </button>
+      </FloatingButton>
       <ConfirmModal dialogRef={modalRef} />
     </div>
   );
