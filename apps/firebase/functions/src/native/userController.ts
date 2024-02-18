@@ -43,7 +43,7 @@ export const signUp = async (req: Request, res: Response) => {
         email: email,
       },
     });
-    if (!savedUser.length) {
+    if (savedUser.length==0) {
       const username = email.split("@")[0];
       const userData = {
         uuid: uid,
@@ -100,6 +100,15 @@ export const createFlowAcc = async (req: Request, res: Response) => {
       });
     }
     const flowInfo = await createFlowAccount(uid);
+    await prisma.tobiratory_flow_accounts.create({
+      data: {
+        uuid: uid,
+        flow_address: "",
+        public_key: "",
+        tx_id: "",
+        flow_job_id: flowInfo.flowJobId,
+      }
+    })
     res.status(200).send({
       status: "success",
       data: flowInfo.flowJobId,

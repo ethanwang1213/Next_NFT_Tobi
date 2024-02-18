@@ -1,4 +1,4 @@
-import {Response} from "express";
+import {Request, Response} from "express";
 // import {firestore} from "firebase-admin";
 import {PrismaClient} from "@prisma/client";
 
@@ -115,3 +115,7 @@ export const getItemsById = async (req: EachItemRequest, res: Response) => {
     data: resData,
   });
 };
+
+export const createSample = async (req: Request, res: Response) => {
+
+}

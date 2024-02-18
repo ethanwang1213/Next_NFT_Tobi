@@ -11,7 +11,7 @@ model tobiratory_accounts {
   uuid              String   @id @db.VarChar(100)
   email             String   @db.VarChar(255)
   username          String   @db.VarChar(255)
-  sns               String   @unique
+  sns               String   @db.VarChar(255)
   icon_url          String   @db.VarChar(255)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
@@ -21,6 +21,7 @@ model tobiratory_flow_accounts {
   flow_address      String    @db.VarChar(255)
   public_key        String    @db.VarChar(255)
   tx_id             String    @db.VarChar(255)
+  flow_job_id       String    @db.VarChar(255)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 

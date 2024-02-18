@@ -22,7 +22,7 @@ import
 import {getContentById, getContents} from "./contentController";
 import {getItems, getItemsById} from "./itemController";
 import {getSaidans, getSaidansById} from "./saidanController";
-import { fileMulter, uploadMaterial } from "./fileController";
+// import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -105,7 +105,5 @@ app.post("/my/nfts/:id/listing", dummyResponse);
 app.post("/items/:id/mint", dummyResponse);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
-app.post("/material/upload", fileMulter.single('image'), uploadMaterial)
-app.post("/material/get")
-
+// app.post("/material/upload", fileMulter.single("image"), uploadMaterial);
 export const native = functions.region(REGION).https.onRequest(app);
