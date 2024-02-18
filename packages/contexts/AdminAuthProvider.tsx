@@ -51,8 +51,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         setUser(null);
         Router.push("/signin");
       }
-      return unsubscribe;
     });
+    return () => unsubscribe();
   }, []);
 
   // ユーザー作成用関数
