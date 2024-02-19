@@ -68,7 +68,7 @@ const Sidebar = ({ children }: Props) => {
   }, [displayWidth, screensMd]);
 
   const normalIconColor = "non-active";
-  const normalTextColor = "base-content";
+  const normalTextColor = "non-active";
   const selectedColor = "primary";
 
   const items = [
@@ -111,7 +111,9 @@ const Sidebar = ({ children }: Props) => {
 
   return (
     <div className="drawer drawer-open flex-1">
-      <div className="bg-primary bg-non-active hidden"></div>
+      {/* The className not used during the initial rendering cannot be applied later. */}
+      {/* Therefore, any className intended for later use should be added to this className. */}
+      <div className="bg-primary bg-non-active text-non-active hidden"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
@@ -150,7 +152,7 @@ const Sidebar = ({ children }: Props) => {
                 ></div>
                 <div
                   className={clsx(
-                    "text-[15px] font-normal",
+                    "text-[15px] font-medium",
                     expand ? "inline" : "hidden",
                   )}
                 >
