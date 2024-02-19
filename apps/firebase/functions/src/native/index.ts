@@ -21,7 +21,8 @@ import
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
 import {getItems, getItemsById} from "./itemController";
-import {getSaidans, getSaidansById} from "./saidanController";
+import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
+import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -55,7 +56,6 @@ app.get("/nfts/:id", dummyResponse);
 
 app.get("/saidans", getSaidans);
 app.get("/saidans/:id", getSaidansById);
-app.post("/saidans/:id", dummyResponse);
 app.get("/posts", dummyResponse);
 app.get("/posts/:id", dummyResponse);
 
@@ -80,8 +80,9 @@ app.get("/my/items", dummyResponse);
 app.post("/my/items", dummyResponse);
 app.get("/my/items/:id", dummyResponse);
 
-app.get("/my/saidans", dummyResponse);
-app.get("/my/saidans/:saidanId", dummyResponse);
+app.get("/my/saidans", getMySaidan);
+app.post("/my/saidans", createSaidan);
+app.get("/my/saidans/:saidanId", getMySaidansById);
 app.post("/my/saidans/:saidanId/posts", dummyResponse);
 app.get("/my/saidans/:saidanId/posts/:postId", dummyResponse);
 
@@ -105,5 +106,7 @@ app.post("/my/nfts/:id/listing", dummyResponse);
 app.post("/items/:id/mint", dummyResponse);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
-// app.post("/material/upload", fileMulter.single("image"), uploadMaterial);
+app.post("/material/save", uploadMaterial);
+app.post("/material/get", getMaterial);
+app.post("/material/remove", removeMaterials);
 export const native = functions.region(REGION).https.onRequest(app);

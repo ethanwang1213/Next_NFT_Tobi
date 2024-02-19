@@ -2,23 +2,13 @@ import {Request, Response} from "express";
 // import {firestore} from "firebase-admin";
 import {PrismaClient} from "@prisma/client";
 
-type AllItemRequest = {
-    params: {
-        q: string,
-        type: string,
-        creator: string,
-        sortBy: string,
-        sortOrder: "desc" | "asc"
-    }
-}
-
 type EachItemRequest = {
     params: { id: string }
 }
 
 const prisma = new PrismaClient();
 
-export const getItems = async (req: AllItemRequest, res: Response) => {
+export const getItems = async (req: Request, res: Response) => {
   const {q, type, creator, sortBy, sortOrder} = req.params;
   const orderValue = {};
   Object.defineProperty(orderValue, sortBy, {
@@ -116,6 +106,6 @@ export const getItemsById = async (req: EachItemRequest, res: Response) => {
   });
 };
 
-export const createSample = async (req: Request, res: Response) => {
+// export const createSample = async (req: Request, res: Response) => {
 
-}
+// };

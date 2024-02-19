@@ -107,8 +107,8 @@ export const createFlowAcc = async (req: Request, res: Response) => {
         public_key: "",
         tx_id: "",
         flow_job_id: flowInfo.flowJobId,
-      }
-    })
+      },
+    });
     res.status(200).send({
       status: "success",
       data: flowInfo.flowJobId,
