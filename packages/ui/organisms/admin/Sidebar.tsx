@@ -14,8 +14,8 @@ type Props = {
 };
 
 const Sidebar = ({ children }: Props) => {
-  const menuMinWidth = 90;
-  const menuMaxWidth = 256;
+  const menuMinWidth = 60;
+  const menuMaxWidth = 230;
   const screensMd = parseInt(config.theme.screens.md);
 
   const [expand, setExpand] = useState(true);
@@ -129,11 +129,11 @@ const Sidebar = ({ children }: Props) => {
               <Link
                 href={item.href}
                 className={clsx(
-                  "btn-block btn-square bg-base-100 hover:bg-base-100 pl-6 gap-4 flex flex-row items-center",
-                  "rounded-none border-0 border-l-[12px]",
+                  "btn-block btn-square bg-base-100 hover:bg-hover-item pl-[14px] gap-4 flex flex-row items-center",
+                  "rounded-none border-0 border-l-[4px]",
                   pathname.split("/")[1] === item.href.split("/")[1]
                     ? `border-l-active hover:border-l-active text-${selectedColor}`
-                    : `border-l-base-100 hover:border-l-base-100 text-${normalTextColor}`,
+                    : `border-l-base-100 hover:border-l-hover-item text-${normalTextColor}`,
                 )}
               >
                 <div
