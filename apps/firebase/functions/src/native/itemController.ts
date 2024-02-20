@@ -2,10 +2,6 @@ import {Request, Response} from "express";
 // import {firestore} from "firebase-admin";
 import {PrismaClient} from "@prisma/client";
 
-type EachItemRequest = {
-    params: { id: string }
-}
-
 const prisma = new PrismaClient();
 
 export const getItems = async (req: Request, res: Response) => {
@@ -58,7 +54,7 @@ export const getItems = async (req: Request, res: Response) => {
   });
 };
 
-export const getItemsById = async (req: EachItemRequest, res: Response) => {
+export const getItemsById = async (req: Request, res: Response) => {
   const {id} = req.params;
   const itemData = await prisma.tobiratory_items.findUnique({
     where: {

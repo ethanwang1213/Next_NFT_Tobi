@@ -13,6 +13,10 @@ model tobiratory_accounts {
   username          String   @db.VarChar(255)
   sns               String   @db.VarChar(255)
   icon_url          String   @db.VarChar(255)
+  about_me          String   @db.VarChar(255) @default("")
+  social_link       String[] @db.VarChar(255) @default([])
+  gender            String   @db.VarChar(255) @default("")
+  birth             String   @db.VarChar(255) @default("")
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -29,7 +33,10 @@ model tobiratory_saidans {
   id                Int     @id @default(autoincrement())
   title             String  @db.VarChar(255)
   description       String  @db.VarChar(255)
+  template_id       String  @db.VarChar(255)
+  is_public         Boolean @default(true)
   showcase          Boolean @default(true)
+  max_item_count    Int
   owner_id          String  @db.VarChar(255)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }

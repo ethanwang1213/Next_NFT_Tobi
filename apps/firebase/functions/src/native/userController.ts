@@ -152,6 +152,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
       email: accountData.email,
       icon: accountData.icon_url,
       sns: accountData.sns,
+      aboutMe: accountData.about_me,
+      socialLinks: accountData.social_link,
+      gender: accountData.gender,
       flow: {
         flowAddress: flowAccountData.flow_address,
         publicKey: flowAccountData.public_key,

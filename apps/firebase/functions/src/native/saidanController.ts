@@ -79,13 +79,15 @@ export const getSaidansById = async (req: Request, res: Response) => {
 
 export const createSaidan = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {title, description} = req.body;
+  const {title, description, templateId, maxItemCount} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const saveData = await prisma.tobiratory_saidans.create({
       data: {
         title: title,
         description: description,
+        template_id: templateId,
+        max_item_count: maxItemCount,
         owner_id: uid,
       },
     });
