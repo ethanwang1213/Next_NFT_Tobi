@@ -30,7 +30,7 @@ const NavbarStartBlock = () => {
     <>
       <button
         className={
-          "btn btn-block bg-non-active hover:bg-non-active border-0 w-[35px] min-h-[35px] h-[35px] ml-[18px] p-0"
+          "btn btn-block bg-non-active hover:bg-non-active border-0 w-[24px] min-h-[24px] h-[24px] ml-[18px] p-0"
         }
         onClick={onClickMenu}
         style={{
