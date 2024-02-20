@@ -38,6 +38,7 @@ const config = {
         "non-active": "#B3B3B3",
         popup: "#07396C",
         "popup-content": "#FFFFFF",
+        "hover-item": "#E5F0FF",
       },
       textColor: {
         "title-color": "#717171",

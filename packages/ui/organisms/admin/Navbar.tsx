@@ -30,18 +30,17 @@ const NavbarStartBlock = () => {
     <>
       <button
         className={
-          "btn btn-block bg-ghost bg-base-100 hover:bg-base-100 border-0 w-[35px] min-h-[25px] h-[25px] ml-[18px] p-0"
+          "btn btn-block bg-non-active hover:bg-non-active border-0 w-[24px] min-h-[24px] h-[24px] ml-[18px] p-0"
         }
         onClick={onClickMenu}
-      >
-        <Image
-          src={"/admin/images/icon/hamburger.svg"}
-          alt={"toggle menu"}
-          priority={true}
-          width={35}
-          height={25}
-        />
-      </button>
+        style={{
+          WebkitMaskImage: `url(/admin/images/icon/hamburger.svg)`,
+          WebkitMaskRepeat: "no-repeat",
+          WebkitMaskPosition: "center",
+          WebkitMaskSize: "contain",
+        }}
+      ></button>
+
       <Image
         src={"/admin/images/logo.svg"}
         alt={"logo"}
