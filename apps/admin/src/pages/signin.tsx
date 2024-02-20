@@ -5,15 +5,12 @@ import {
   sendSignInLinkToEmail,
   signInWithPopup,
 } from "firebase/auth";
-import useAuthState from "hooks/useAuthState";
 import { useRef, useState } from "react";
 import SignIn, { LoginFormType } from "ui/templates/SignIn";
 
 const Signin = () => {
   const emailModalRef = useRef<HTMLDialogElement>(null);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
-
-  useAuthState();
 
   // TODO: メールアドレスを使ってサインインする流れが変更になったので、後で修正する
   const signIn = (data: LoginFormType) => {
