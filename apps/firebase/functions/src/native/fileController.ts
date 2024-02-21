@@ -35,7 +35,12 @@ export const uploadMaterial = async (req: Request, res: Response) => {
         owner: uid,
       },
     });
-    const returnData = materials.map((material)=>material.image);
+    const returnData = materials.map((material)=>{
+      return {
+        id: material.id,
+        image: material.image,
+      };
+    });
     res.status(200).send({
       status: "success",
       data: returnData,
@@ -58,7 +63,12 @@ export const getMaterial = async (req: Request, res: Response) => {
         owner: uid,
       },
     });
-    const returnData = materials.map((material)=>material.image);
+    const returnData = materials.map((material)=>{
+      return {
+        id: material.id,
+        image: material.image,
+      };
+    });
     res.status(200).send({
       status: "success",
       data: returnData,

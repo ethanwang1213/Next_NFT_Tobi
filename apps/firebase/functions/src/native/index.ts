@@ -20,7 +20,7 @@ import
   checkPasswordSet,
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {getItems, getItemsById} from "./itemController";
+import {createItem, getItems, getItemsById, getMyItems, getMyItemsById} from "./itemController";
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 // import {fileMulter, uploadMaterial} from "./fileController";
@@ -76,9 +76,9 @@ app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);
 app.get("/my/contents/:id", dummyResponse);
 app.post("/my/contents/:id", dummyResponse);
-app.get("/my/items", dummyResponse);
-app.post("/my/items", dummyResponse);
-app.get("/my/items/:id", dummyResponse);
+app.get("/my/items", getMyItems);
+app.post("/my/items", createItem);
+app.get("/my/items/:id", getMyItemsById);
 
 app.get("/my/saidans", getMySaidan);
 app.post("/my/saidans", createSaidan);

@@ -140,11 +140,19 @@ export const getMyProfile = async (req: Request, res: Response) => {
       return;
     }
 
-    const flowAccountData = await prisma.tobiratory_flow_accounts.findUniqueOrThrow({
-      where: {
-        uuid: uid,
-      },
-    });
+    // const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
+    //   where: {
+    //     uuid: uid,
+    //   },
+    // });
+
+    // if (flowAccountData === null) {
+    //   res.status(401).send({
+    //     status: "error",
+    //     data: "Flow Account does not exist!",
+    //   });
+    //   return;
+    // }
 
     const resData = {
       userId: uid,
@@ -156,9 +164,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
       socialLinks: accountData.social_link,
       gender: accountData.gender,
       flow: {
-        flowAddress: flowAccountData.flow_address,
-        publicKey: flowAccountData.public_key,
-        txId: flowAccountData.tx_id,
+        flowAddress: "", // flowAccountData.flow_address,
+        publicKey: "", // flowAccountData.public_key,
+        txId: "", // flowAccountData.tx_id,
       },
       createdAt: accountData.created_date_time,
     };
@@ -168,7 +176,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
     });
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
-      status: "success",
+      status: "error",
       data: error.code,
     });
   });
@@ -353,7 +361,7 @@ export const myInventory = async (req: Request, res: Response) => {
     // const businesses =
     const items = await prisma.tobiratory_items.findMany({
       where: {
-        uuid: uid,
+        creator_uid: uid,
       },
     });
     const resData = {

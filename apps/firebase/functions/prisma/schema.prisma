@@ -54,13 +54,24 @@ model tobiratory_contents {
 
 model tobiratory_items {
   id                Int     @id @default(autoincrement())
-  uuid              String  @db.VarChar(100)
+  creator_uid       String  @db.VarChar(100)
   title             String  @db.VarChar(255)
-  image             String  @db.VarChar(255)
+  image             Int
   type              String  @db.VarChar(255)
   content_id        Int
   folder_id         Int
   created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_sample_items {
+  id                Int     @id @default(autoincrement())
+  digital_item_id   Int
+}
+
+model tobiratory_digital_item_nfts {
+  serial_no         Int     @id @default(autoincrement())
+  digital_item_id   Int
+  owner_uid         String  @db.VarChar(100)
 }
 
 model tobiratory_boxes {
