@@ -52,10 +52,6 @@ const HomeWindow: React.FC<Props> = ({}) => {
     { drag: { pointer: { buttons: [1] }, filterTaps: true, tapsThreshold: 10 } }
   );
 
-  // useEffect(() => {
-  //   console.log(canInteract, homePhase, canProgress);
-  // }, [canInteract, homePhase, canProgress]);
-
   return (
     <>
       <div className="relative w-full h-full touch-none" {...bind()}>
