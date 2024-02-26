@@ -18,17 +18,14 @@ export const fileMulter = multer({
 
 export const uploadMaterial = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {images} = req.body;
+  const {image} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const data = images.map((image: string)=>{
-      return {
+    await prisma.tobiratory_material_images.create({
+      data: {
         owner: uid,
         image: image,
-      };
-    });
-    await prisma.tobiratory_material_images.createMany({
-      data: data,
+      },
     });
     const materials = await prisma.tobiratory_material_images.findMany({
       where: {

@@ -20,7 +20,7 @@ import
   checkPasswordSet,
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {createItem, getItems, getItemsById, getMyItems, getMyItemsById} from "./itemController";
+import {createItem, getItems, getItemsById, getMyItems, getMyItemsById, updateItem} from "./itemController";
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 // import {fileMulter, uploadMaterial} from "./fileController";
@@ -79,6 +79,7 @@ app.post("/my/contents/:id", dummyResponse);
 app.get("/my/items", getMyItems);
 app.post("/my/items", createItem);
 app.get("/my/items/:id", getMyItemsById);
+app.post("/myitems/:id/update", updateItem);
 
 app.get("/my/saidans", getMySaidan);
 app.post("/my/saidans", createSaidan);

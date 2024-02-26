@@ -40,10 +40,10 @@ export const getItems = async (req: Request, res: Response) => {
         title: item.title,
         image: item.image,
         type: item.type,
-        content: {
-          id: content?.id ?? -1,
+        content: content == null ? null : {
+          id: content.id,
           creator: {
-            userId: content?.creator_user_id,
+            userId: content.creator_user_id,
           },
         },
       };
@@ -78,20 +78,12 @@ export const getItemsById = async (req: Request, res: Response) => {
     },
   });
 
-  if (contentData == null) {
-    res.status(404).send({
-      status: "error",
-      data: "Content for this item does not exist!",
-    });
-    return;
-  }
-
   const resData = {
     id: id,
     title: itemData.title,
     image: itemData.image,
     type: itemData.type,
-    content: {
+    content: contentData == null ? null : {
       id: contentData.id,
       creator: {
         userId: contentData.creator_user_id,
@@ -119,7 +111,7 @@ export const getMyItems = async (req: Request, res: Response) => {
     const items = await prisma.tobiratory_items.findMany({
       where: {
         creator_uid: {
-          equals: uid
+          equals: uid,
         },
         title: {
           in: [q],
@@ -138,22 +130,22 @@ export const getMyItems = async (req: Request, res: Response) => {
             creator_user_id: creator,
           },
         });
-  
+
         return {
           id: item.id,
           title: item.title,
           image: item.image,
           type: item.type,
-          content: {
-            id: content?.id ?? -1,
+          content: content == null ? null : {
+            id: content.id,
             creator: {
-              userId: content?.creator_user_id,
+              userId: content.creator_user_id,
             },
           },
         };
       }),
     };
-  
+
     res.status(200).send({
       status: "success",
       data: resData,
@@ -177,7 +169,7 @@ export const getMyItemsById = async (req: Request, res: Response) => {
         creator_uid: uid,
       },
     });
-  
+
     if (itemData == null) {
       res.status(404).send({
         status: "error",
@@ -185,27 +177,18 @@ export const getMyItemsById = async (req: Request, res: Response) => {
       });
       return;
     }
-  
+
     const contentData = await prisma.tobiratory_contents.findUnique({
       where: {
         id: itemData.content_id,
       },
     });
-  
-    if (contentData == null) {
-      res.status(404).send({
-        status: "error",
-        data: "Content for this item does not exist!",
-      });
-      return;
-    }
-  
     const resData = {
       id: id,
       title: itemData.title,
       image: itemData.image,
       type: itemData.type,
-      content: {
+      content: contentData==null ? null : {
         id: contentData.id,
         creator: {
           userId: contentData.creator_user_id,
@@ -222,7 +205,6 @@ export const getMyItemsById = async (req: Request, res: Response) => {
       data: error.code,
     });
   });
-  
 };
 
 export const createItem = async (req: Request, res: Response) => {
@@ -260,17 +242,19 @@ export const createItem = async (req: Request, res: Response) => {
 };
 
 export const updateItem = async (req: Request, res: Response) => {
+  const {id} = req.params;
   const {authorization} = req.headers;
   const {itemData} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const item = await prisma.tobiratory_items.update({
       where: {
-        id: itemData.id,
+        id: parseInt(id),
         creator_uid: uid,
       },
       data: {
-        // itemData,
+        title: itemData.title,
+        image: itemData.image,
       },
     });
     await prisma.tobiratory_sample_items.create({
