@@ -19,6 +19,7 @@ type Props = {
 type ContextType = {
   user?: User;
   signOut: () => Promise<void>;
+  confirmFlowAccountRegistration: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -42,10 +43,18 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         // TODO: リリースする前に消そう
         console.log(`UID: ${firebaseUser.uid}`);
         console.log(`メールアドレス: ${firebaseUser.email}`);
-        createUser(firebaseUser.uid, firebaseUser.email);
-        // If we use the router, we need to include it in the dependencies, and useEffect gets called multiple times. So, let's avoid using the router.
-        if (Router.pathname === "/signin") {
-          Router.push("/");
+        // TODO: check flow account
+        if (true) {
+          createUser(firebaseUser.uid, false, firebaseUser.email);
+          console.log("register flow account");
+          Router.push("/flow/register");
+        } else {
+          createUser(firebaseUser.uid, true, firebaseUser.email);
+          // If we use the router, we need to include it in the dependencies,
+          // and useEffect gets called multiple times. So, let's avoid using the router.
+          if (Router.pathname === "/signin") {
+            Router.push("/");
+          }
         }
       } else {
         setUser(null);
@@ -56,11 +65,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }, []);
 
   // ユーザー作成用関数
-  const createUser = (uid: string, email?: string | null) => {
+  const createUser = (
+    uid: string,
+    registeredFlowAccount: boolean,
+    email?: string | null,
+  ) => {
     const appUser: User = {
       id: uid,
       name: email?.split("@")[0].slice(0, MAX_NAME_LENGTH) ?? "", // nameには、メールアドレスの@より前でMAX_NAME_LENGTH文字までを格納する
       email: email ?? "",
+      registeredFlowAccount: registeredFlowAccount,
     };
     setUser(appUser);
   };
@@ -76,12 +90,25 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const confirmFlowAccountRegistration = () => {
+    if (!user) {
+      router.push("/signin");
+    }
+
+    if (user.registeredFlowAccount) {
+      return;
+    }
+
+    setUser((prev) => ({ ...prev, registeredFlowAccount: true }));
+  };
+
   if (user || router.pathname === "/signin") {
     return (
       <AuthContext.Provider
         value={{
           user,
           signOut,
+          confirmFlowAccountRegistration,
         }}
       >
         {children}

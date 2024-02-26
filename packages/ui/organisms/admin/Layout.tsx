@@ -1,4 +1,4 @@
-import { AuthProvider } from "contexts/AdminAuthProvider";
+import { AuthProvider, useAuth } from "contexts/AdminAuthProvider";
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
@@ -24,7 +24,8 @@ const Layout = ({ children }: Props) => {
 };
 
 const Contents = ({ children }: Props) => {
-  if (auth.currentUser) {
+  const { user } = useAuth();
+  if (auth.currentUser && user.registeredFlowAccount) {
     return (
       <NavbarProvider>
         <div className="flex flex-col h-screen">
