@@ -7,17 +7,18 @@ import { gsap, Power2 } from "gsap";
 import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 type Props = {
   children: ReactNode;
 };
 
 const Sidebar = ({ children }: Props) => {
-  const menuMinWidth = 90;
-  const menuMaxWidth = 256;
+  const menuMinWidth = 60;
+  const menuMaxWidth = 230;
   const screensMd = parseInt(config.theme.screens.md);
 
+  const resizedBefore = useRef<boolean>(false);
   const [expand, setExpand] = useState(true);
 
   const { displayWidth } = useWindowSize();
@@ -33,20 +34,31 @@ const Sidebar = ({ children }: Props) => {
 
   // animate menu width on expand state change
   useEffect(() => {
-    if (expand) {
-      gsap.to(".drawer-side", {
-        width: menuMaxWidth,
-        duration: 0.4,
-        ease: Power2.easeOut,
-      });
+    if (!resizedBefore.current && !clickedBefore) {
+      // prevent execution on the initial rendering.
+      return;
+    } else if (expand) {
+      gsap.fromTo(
+        ".drawer-side",
+        { width: menuMinWidth },
+        {
+          width: menuMaxWidth,
+          duration: 0.4,
+          ease: Power2.easeOut,
+        },
+      );
     } else {
-      gsap.to(".drawer-side", {
-        width: menuMinWidth,
-        duration: 0.4,
-        ease: Power2.easeOut,
-      });
+      gsap.fromTo(
+        ".drawer-side",
+        { width: menuMaxWidth },
+        {
+          width: menuMinWidth,
+          duration: 0.4,
+          ease: Power2.easeOut,
+        },
+      );
     }
-  }, [expand]);
+  }, [clickedBefore, expand, resizedBefore]);
 
   // toggle expand state on menuStatus change
   useEffect(() => {
@@ -60,15 +72,19 @@ const Sidebar = ({ children }: Props) => {
 
   // set expand state on window resize
   useEffect(() => {
-    if (displayWidth < screensMd) {
+    if (displayWidth === 0) {
+      // prevent execution on the initial rendering.
+      return;
+    } else if (displayWidth < screensMd) {
       setExpand(false);
     } else {
       setExpand(true);
     }
+    resizedBefore.current = true;
   }, [displayWidth, screensMd]);
 
   const normalIconColor = "non-active";
-  const normalTextColor = "base-content";
+  const normalTextColor = "non-active";
   const selectedColor = "primary";
 
   const items = [
@@ -111,7 +127,9 @@ const Sidebar = ({ children }: Props) => {
 
   return (
     <div className="drawer drawer-open flex-1">
-      <div className="bg-primary bg-non-active hidden"></div>
+      {/* The className not used during the initial rendering cannot be applied later. */}
+      {/* Therefore, any className intended for later use should be added to this className. */}
+      <div className="bg-primary bg-non-active text-non-active hidden"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
@@ -127,11 +145,11 @@ const Sidebar = ({ children }: Props) => {
               <Link
                 href={item.href}
                 className={clsx(
-                  "btn-block btn-square bg-base-100 hover:bg-base-100 pl-6 gap-4 flex flex-row items-center",
-                  "rounded-none border-0 border-l-[12px]",
+                  "btn-block btn-square bg-base-100 hover:bg-hover-item pl-[14px] gap-4 flex flex-row items-center",
+                  "rounded-none border-0 border-l-[4px]",
                   pathname.split("/")[1] === item.href.split("/")[1]
                     ? `border-l-active hover:border-l-active text-${selectedColor}`
-                    : `border-l-base-100 hover:border-l-base-100 text-${normalTextColor}`,
+                    : `border-l-base-100 hover:border-l-hover-item text-${normalTextColor}`,
                 )}
               >
                 <div
@@ -150,7 +168,7 @@ const Sidebar = ({ children }: Props) => {
                 ></div>
                 <div
                   className={clsx(
-                    "text-[15px] font-normal",
+                    "text-[15px] font-medium",
                     expand ? "inline" : "hidden",
                   )}
                 >

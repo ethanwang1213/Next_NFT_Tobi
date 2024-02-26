@@ -1,10 +1,10 @@
-import useAuthCheck from "hooks/useAuthCheck";
+import { useAuth } from "contexts/AdminAuthProvider";
 import Loading from "ui/atoms/Loading";
 
 const Index = () => {
-  const { isAuthenticated } = useAuthCheck();
+  const { user } = useAuth();
 
-  if (!isAuthenticated) {
+  if (!user) {
     return (
       <div className={"h-[100dvh] flex justify-center"}>
         <Loading />

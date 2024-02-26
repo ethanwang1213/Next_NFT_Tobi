@@ -1,3 +1,6 @@
 ../../packages/journal-pkg
+../../packages/contexts/journal-WatchMintStatusProvider.tsx
+../../packages/hooks/journal-useInterval.ts
+../../packages/hooks/useWindowSize/useWindowSize.ts
 ../../packages/ui/components/BurgerMenu
 ../../packages/ui/organisms/CustomDocument.tsx
