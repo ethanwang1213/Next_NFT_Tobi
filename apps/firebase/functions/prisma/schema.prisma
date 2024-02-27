@@ -21,10 +21,10 @@ model tobiratory_accounts {
 }
 
 model tobiratory_flow_accounts {
-  uuid              String    @id
-  flow_address      String    @db.VarChar(255)
-  public_key        String    @db.VarChar(255)
-  tx_id             String    @db.VarChar(255)
+  uuid              String    @id @db.VarChar(100)
+  flow_address      String    @db.VarChar(255) @default("")
+  public_key        String    @db.VarChar(255) @default("")
+  tx_id             String    @db.VarChar(255) @default("")
   flow_job_id       String    @db.VarChar(255)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }

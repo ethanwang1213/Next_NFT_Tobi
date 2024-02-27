@@ -79,7 +79,7 @@ app.post("/my/contents/:id", dummyResponse);
 app.get("/my/items", getMyItems);
 app.post("/my/items", createItem);
 app.get("/my/items/:id", getMyItemsById);
-app.post("/myitems/:id/update", updateItem);
+app.post("/my/items/:id/update", updateItem);
 
 app.get("/my/saidans", getMySaidan);
 app.post("/my/saidans", createSaidan);

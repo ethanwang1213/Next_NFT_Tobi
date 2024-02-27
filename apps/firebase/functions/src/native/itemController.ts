@@ -275,3 +275,28 @@ export const updateItem = async (req: Request, res: Response) => {
     return;
   });
 };
+
+export const deleteSample = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const item = await prisma.tobiratory_items.delete({
+      where: {
+        id: parseInt(id),
+        creator_uid: uid,
+      },
+    });
+    res.status(200).send({
+      status: "success",
+      data: item.id,
+    });
+    return;
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};

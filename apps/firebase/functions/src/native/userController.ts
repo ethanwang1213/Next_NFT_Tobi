@@ -93,6 +93,11 @@ export const createFlowAcc = async (req: Request, res: Response) => {
         uuid: uid,
       },
     });
+    const all = await prisma.tobiratory_flow_accounts.findMany();
+    res.status(200).send({
+      status: "success",
+      data: all,
+    });
     if (flowAcc != null) {
       res.status(401).send({
         status: "error",
@@ -100,19 +105,27 @@ export const createFlowAcc = async (req: Request, res: Response) => {
       });
     }
     const flowInfo = await createFlowAccount(uid);
-    await prisma.tobiratory_flow_accounts.create({
-      data: {
-        uuid: uid,
-        flow_address: "",
-        public_key: "",
-        tx_id: "",
-        flow_job_id: flowInfo.flowJobId,
-      },
-    });
-    res.status(200).send({
-      status: "success",
-      data: flowInfo.flowJobId,
-    });
+    const flowAccInfo = {
+      uuid: uid,
+      flow_job_id: flowInfo.flowJobId.toString(),
+    };
+    try {
+      const flowData = await prisma.tobiratory_flow_accounts.create({
+        data: flowAccInfo,
+      });
+
+      console.log(flowData);
+
+      res.status(200).send({
+        status: "success",
+        data: all,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "success",
+        data: error,
+      });
+    }
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
@@ -140,19 +153,19 @@ export const getMyProfile = async (req: Request, res: Response) => {
       return;
     }
 
-    // const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
-    //   where: {
-    //     uuid: uid,
-    //   },
-    // });
+    const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
+      where: {
+        uuid: uid,
+      },
+    });
 
-    // if (flowAccountData === null) {
-    //   res.status(401).send({
-    //     status: "error",
-    //     data: "Flow Account does not exist!",
-    //   });
-    //   return;
-    // }
+    if (flowAccountData === null) {
+      res.status(401).send({
+        status: "error",
+        data: "Flow Account does not exist!",
+      });
+      return;
+    }
 
     const resData = {
       userId: uid,
@@ -164,9 +177,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
       socialLinks: accountData.social_link,
       gender: accountData.gender,
       flow: {
-        flowAddress: "", // flowAccountData.flow_address,
-        publicKey: "", // flowAccountData.public_key,
-        txId: "", // flowAccountData.tx_id,
+        flowAddress: flowAccountData.flow_address,
+        publicKey: flowAccountData.public_key,
+        txId: flowAccountData.tx_id,
       },
       createdAt: accountData.created_date_time,
     };
