@@ -1,9 +1,9 @@
-import { useRedeemStatus } from "../../../../contexts/journal-RedeemStatusProvider";
-import { functions } from "fetchers/firebase/journal-client";
-import { httpsCallable } from "firebase/functions";
 import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
 import useRecordNewActivity from "@/hooks/useRecordNewActivity";
-import { RedeemStatus } from "types/journal-types";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "journal-pkg/fetchers/firebase/journal-client";
+import { RedeemStatus } from "journal-pkg/types/journal-types";
+import { useRedeemStatus } from "../../../../contexts/journal-RedeemStatusProvider";
 
 /**
  * 引き換えボタンのコンポーネント

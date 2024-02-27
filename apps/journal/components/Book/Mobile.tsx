@@ -1,27 +1,20 @@
-import Image from "next/image";
-import {
-  ReactElement,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isInPage } from "@/methods/isSpecificPage";
 import {
   faCircleLeft,
   faCircleRight,
 } from "@fortawesome/free-regular-svg-icons";
-import Tag from "../Tag";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import NftPage from "../pages/NftPage/NftPage";
-import NekoPage from "../pages/NekoPage/NekoPage";
-import RedeemPage from "../pages/RedeemPage/RedeemPage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import Image from "next/image";
+import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useBookContext } from "../../contexts/journal-BookProvider";
-import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
+import NekoPage from "../pages/NekoPage/NekoPage";
+import NftPage from "../pages/NftPage/NftPage";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { isInPage, isLeftPage } from "@/methods/isSpecificPage";
+import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
+import RedeemPage from "../pages/RedeemPage/RedeemPage";
+import Tag from "../Tag";
 
 /**
  * スマホでの本の表示用コンポーネント
@@ -42,7 +35,7 @@ const Mobile = () => {
   const footerBottom = useMemo(
     // () => (!user || !user.email ? " bottom-[50px]" : "bottom-0"),
     () => "bottom-0",
-    [user]
+    [user],
   );
   // タグ外部クリックでタグ一覧を閉じるため
   const tagRef = useRef<HTMLDivElement>();
@@ -141,7 +134,7 @@ const Mobile = () => {
               {/* ページによってpaddingを変更する */}
               <div
                 className={`page ${pagePadding(
-                  bookContext.pageNo.current + 1
+                  bookContext.pageNo.current + 1,
                 )}`}
               >
                 {bookContext.pages.current[bookContext.pageNo.current + 1]}

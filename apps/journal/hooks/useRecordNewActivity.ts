@@ -1,8 +1,8 @@
 import { useActivityRecord } from "@/contexts/journal-ActivityRecordProvider";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { db } from "fetchers/firebase/journal-client";
-import { DBActivityRecord } from "types/journal-types";
-import { Timestamp, addDoc, collection } from "firebase/firestore/lite";
+import { addDoc, collection, Timestamp } from "firebase/firestore/lite";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { db } from "journal-pkg/fetchers/firebase/journal-client";
+import { DBActivityRecord } from "journal-pkg/types/journal-types";
 
 /**
  * Activity Recordに新しいActivityを追加する処理を行うためのカスタムフック
@@ -15,7 +15,7 @@ const useRecordActivity = () => {
     try {
       const docRef = await addDoc(
         collection(db, `users/${user.id}/activity`),
-        newRecord
+        newRecord,
       );
       // console.log(docRef.id);
       return true;

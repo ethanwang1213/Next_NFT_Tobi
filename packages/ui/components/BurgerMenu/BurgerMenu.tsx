@@ -1,15 +1,15 @@
 /* eslint-disable react/no-unknown-property */
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { MenuFooter } from "./sub/MenuFooter";
 import { useShowBurger } from "contexts/menu/ShowBurger";
-import { KeyholeMenuCanvas } from "./sub/KeyholeMenuCanvas/KeyholeMenuCanvas";
+import { gsap } from "gsap";
 import { useWindowSize } from "hooks";
-import { TextMenuItems } from "./sub/TextMenuItems";
-import { CloseButton } from "./sub/CloseButton";
-import { LoadingImage } from "./sub/LoadingImage";
-import { BurgerButton } from "./sub/BurgerButton";
+import { useEffect, useRef, useState } from "react";
 import { ServiceName } from "types";
+import { BurgerButton } from "./sub/BurgerButton";
+import { CloseButton } from "./sub/CloseButton";
+import { KeyholeMenuCanvas } from "./sub/KeyholeMenuCanvas/KeyholeMenuCanvas";
+import { LoadingImage } from "./sub/LoadingImage";
+import { MenuFooter } from "./sub/MenuFooter";
+import { TextMenuItems } from "./sub/TextMenuItems";
 
 type Props = {
   serviceName: ServiceName;
@@ -46,7 +46,7 @@ export const BurgerMenu: React.FC<Props> = ({
           {
             x: "0px",
             duration: isAnimatedOpen ? 0 : 0.5,
-          }
+          },
         )
         .then(() => {
           setIsAnimatedOpen(true);
@@ -79,7 +79,8 @@ export const BurgerMenu: React.FC<Props> = ({
       {/* メニュー内容 */}
       <div
         className={`z-40 fixed inset-0 bg-slate-800 overflow-y-auto overflow-x-hidden 
-          scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 ${isVisible ? "" : "invisible"
+          scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 ${
+            isVisible ? "" : "invisible"
           }`}
         ref={menuRef}
         style={{ transform: `translate(${displayWidth}px, 0px)` }}

@@ -1,5 +1,5 @@
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
 import RedeemDataLine from "./RedeemDataLine";
-import { useAuth } from "contexts/journal-AuthProvider";
 
 const SelfData: React.FC = () => {
   const { user } = useAuth();

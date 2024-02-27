@@ -1,13 +1,13 @@
 import { useActivityRecord } from "@/contexts/journal-ActivityRecordProvider";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { db } from "fetchers/firebase/journal-client";
-import { DBActivityRecord } from "types/journal-types";
 import {
-  Timestamp,
   collection,
   doc,
+  Timestamp,
   writeBatch,
 } from "firebase/firestore/lite";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { db } from "journal-pkg/fetchers/firebase/journal-client";
+import { DBActivityRecord } from "journal-pkg/types/journal-types";
 import { useMemo } from "react";
 
 /**
@@ -23,14 +23,14 @@ const useUpdateDiscordOAuthData = () => {
       !!auth.user &&
       !!auth.user.characteristic &&
       !!auth.user.characteristic.join_tobiratory_at,
-    [auth.user]
+    [auth.user],
   );
 
   // db上にdiscordへの参加情報を書き込み
   const postDiscordOAuthData = async (
     discordId: string,
     joinDate: Date,
-    newRecord: DBActivityRecord
+    newRecord: DBActivityRecord,
   ) => {
     const batch = writeBatch(db);
 
@@ -54,7 +54,7 @@ const useUpdateDiscordOAuthData = () => {
       {
         userId: auth.user.id,
       },
-      { merge: true }
+      { merge: true },
     );
 
     // 初めてのTobiratoryへの参加の場合のみ、ActivityRecordsに参加記録を追加

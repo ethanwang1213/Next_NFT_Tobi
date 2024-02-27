@@ -1,12 +1,14 @@
-import { signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import {
-  Timestamp,
   addDoc,
   collection,
   doc,
   getDoc,
   setDoc,
+  Timestamp,
 } from "firebase/firestore/lite";
+import { auth, db } from "fetchers/firebase/journal-client";
+import _ from "lodash";
 import React, {
   createContext,
   Dispatch,
@@ -16,7 +18,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { auth, db } from "fetchers/firebase/journal-client";
 import {
   Birthday,
   MintStatusForSetMethod,
@@ -24,7 +25,6 @@ import {
   Tpf2023Complete,
   User,
 } from "types/journal-types";
-import _ from "lodash";
 
 type Props = {
   children: ReactNode;
@@ -39,7 +39,7 @@ type ContextType = {
     newIcon: string,
     newName: string,
     newBirthday: Birthday,
-    newDbIconPath: string
+    newDbIconPath: string,
   ) => void;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
@@ -48,7 +48,7 @@ type ContextType = {
     event: T,
     type: keyof MintStatusForSetMethod[T],
     status: MintStatusType,
-    isComplete: boolean
+    isComplete: boolean,
   ) => void;
   refetchUserMintStatus: () => void;
   //
@@ -138,7 +138,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     newIcon: string,
     newName: string,
     newBirthday: Birthday,
-    newDbIconUrl: string | null
+    newDbIconUrl: string | null,
   ) => {
     if (!user) return;
     const newUser = {
@@ -176,7 +176,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     event,
     type,
     status,
-    isComplete
+    isComplete,
   ) => {
     if (!user) return;
     setUser((state) => {
@@ -220,13 +220,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (
         !_.isEqual(
           user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023
+          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023,
         )
       ) {
         console.log(
           "updated!!!!!!!!!!!!",
           user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023
+          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023,
         );
         setUser(appUser);
       }

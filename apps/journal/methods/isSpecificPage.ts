@@ -1,4 +1,4 @@
-import { PageIndexData } from "types/journal-types";
+import { PageIndexData } from "journal-pkg/types/journal-types";
 
 /**
  * 現在表示ページが、

@@ -1,11 +1,11 @@
+import { useAuth } from "contexts/journal-AuthProvider";
+import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
+import { httpsCallable } from "firebase/functions";
 import {
   StampRallyResultType,
   StampRallyRewardFormType,
 } from "types/journal-types";
-import { httpsCallable } from "firebase/functions";
 import { functions } from "./firebase/journal-client";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 
 type BodyType = {
   keyword: string;
@@ -25,7 +25,7 @@ export const useStampRallyFetcher = () => {
 
     const callable = httpsCallable<BodyType, StampRallyResultType>(
       functions,
-      "stampRallyBadge-checkReward"
+      "stampRallyBadge-checkReward",
     );
     callable({ keyword: data.keyword })
       .then((result) => {
@@ -34,7 +34,7 @@ export const useStampRallyFetcher = () => {
           "TOBIRAPOLISFESTIVAL2023",
           result.data.stamp,
           "IN_PROGRESS",
-          result.data.isComplete
+          result.data.isComplete,
         );
         isSubmitting.set(false);
       })

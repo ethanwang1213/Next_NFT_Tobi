@@ -1,0 +1,19 @@
+{
+  "name": "contexts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^9.21.0",
+    "lodash": "^4.17.21",
+    "hooks": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.25"
+  }
+}

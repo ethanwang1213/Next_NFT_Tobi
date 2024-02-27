@@ -1,10 +1,10 @@
 import { Html, useTexture } from "@react-three/drei";
+import { useMenuAnimation } from "contexts/menu/MenuAnimation";
+import { useShowBurger } from "contexts/menu/ShowBurger";
+import { gsap } from "gsap";
+import { useLocatingAcrossBasePath, useWindowSize } from "hooks";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
-import { gsap } from "gsap";
-import { useMenuAnimation } from "contexts/menu/MenuAnimation";
-import { useWindowSize, useLocatingAcrossBasePath } from "hooks";
-import { useShowBurger } from "contexts/menu/ShowBurger";
 
 type Props = {
   keyholeNodes: any;
@@ -102,7 +102,7 @@ export const KeyholeObject: React.FC<Props> = ({
                   imageRef.current,
                   { scale: 0.7, opacity: 1 },
                   { scale: 1, duration: 0.3, ease: "power3.out" },
-                  "-=0.05"
+                  "-=0.05",
                 )
                 // 拡大終了後
                 .add(() => {

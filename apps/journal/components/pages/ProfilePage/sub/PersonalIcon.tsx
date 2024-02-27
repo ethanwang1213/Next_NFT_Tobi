@@ -1,10 +1,10 @@
-import Image from "next/image";
-import DefaultIcon from "../../../../public/images/icon/Profiledefault_journal.svg";
-import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { useEffect, useState } from "react";
-import { HouseBadgeNftData } from "types/journal-types";
 import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
+import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { HouseBadgeNftData } from "journal-pkg/types/journal-types";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import DefaultIcon from "../../../../public/images/icon/Profiledefault_journal.svg";
 
 /**
  * プロフィールのアイコンのコンポーネント
@@ -33,7 +33,7 @@ const PersonalIcon: React.FC = () => {
         (nft.house_type === houseData.type ||
           // NFTのスペルミスへの対応用
           // TODO:NFTのスペルが修正されたら削除する
-          (nft.house_type === "arismos" && houseData.type === "arithmos"))
+          (nft.house_type === "arismos" && houseData.type === "arithmos")),
     );
 
     // 所属のハウスバッジが存在すればurlをセット

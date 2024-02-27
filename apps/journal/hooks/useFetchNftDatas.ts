@@ -1,6 +1,6 @@
-import { useAuth } from "contexts/journal-AuthProvider";
-import { db } from "fetchers/firebase/journal-client";
-import { getDocs, collection } from "firebase/firestore/lite";
+import { collection, getDocs } from "firebase/firestore/lite";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { db } from "journal-pkg/fetchers/firebase/journal-client";
 
 const useFetchNftDatas = () => {
   const { user } = useAuth();
@@ -25,7 +25,7 @@ const useFetchNftDatas = () => {
       if (nftSnap.empty) return [];
 
       const snapshots = await getDocs(
-        collection(db, `users`, user.id, `nft`, collectionId, "hold")
+        collection(db, `users`, user.id, `nft`, collectionId, "hold"),
       );
       const nfts = [];
       snapshots.forEach((nft) => {

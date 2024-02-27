@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PersonalIcon from "./sub/PersonalIcon";
 import PersonalInfo from "./sub/PersonalInfo";
 import DiscordOAuthButton from "./sub/DiscordOAuthButton";
-import { useAuth } from "contexts/journal-AuthProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
 import ActivityRecord from "./sub/ActivityRecord";
 import useDateFormat from "@/hooks/useDateFormat";
 import JournalStampIcon from "@/public/images/icon/stamp_journal.svg";

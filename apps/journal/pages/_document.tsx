@@ -1,4 +1,4 @@
-import { CustomDocument } from "ui";
+import { CustomDocument } from "journal-pkg/ui";
 
 const Document = () => <CustomDocument />;
 

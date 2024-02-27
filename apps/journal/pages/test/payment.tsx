@@ -1,10 +1,10 @@
-import { functions } from "fetchers/firebase/journal-client";
-import { NextPage } from "next";
-import { ethers } from "ethers";
 import * as fcl from "@blocto/fcl";
 import * as t from "@onflow/types";
-import { useEffect, useState } from "react";
+import { ethers } from "ethers";
 import { httpsCallable } from "firebase/functions";
+import { functions } from "journal-pkg/fetchers/firebase/journal-client";
+import { NextPage } from "next";
+import { useEffect, useState } from "react";
 
 type Item = {
   name: string;
@@ -30,14 +30,14 @@ const Payment: NextPage = () => {
     console.log("getPayments");
     const callable = httpsCallable<{}, PaymentOrder[]>(
       functions,
-      "journalNfts-getPayments"
+      "journalNfts-getPayments",
     );
     callable()
       .then((result) => {
         setPayments(
           result.data.map((payment) => {
             return payment;
-          })
+          }),
         );
       })
       .catch((error) => {
@@ -123,7 +123,7 @@ const Payment: NextPage = () => {
         .put("accessNode.api", "https://access-testnet.onflow.org") // connect to Flow testnet
         .put(
           "challenge.handshake",
-          "https://flow-wallet-testnet.blocto.app/authn"
+          "https://flow-wallet-testnet.blocto.app/authn",
         ); // use Blocto testnet wallet
 
       fcl.currentUser().subscribe(console.log); // fires everytime account connection status updates
@@ -149,7 +149,7 @@ const Payment: NextPage = () => {
         }
       }
       `,
-        [fcl.arg("10.0", t.UFix64), fcl.arg("0x5e9ccdb91ff7ad93", t.Address)]
+        [fcl.arg("10.0", t.UFix64), fcl.arg("0x5e9ccdb91ff7ad93", t.Address)],
       );
 
       const transaction = await fcl.tx(transactionId).onceSealed();

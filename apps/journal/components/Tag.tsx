@@ -1,8 +1,8 @@
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { useSoundConfig } from "journal-pkg/contexts/journal-SoundConfigProvider";
 import { FC, ReactElement, useMemo } from "react";
 import useSound from "use-sound";
 import { useBookContext } from "../contexts/journal-BookProvider";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
 
 const Tag: FC<{
   image: string | ReactElement;

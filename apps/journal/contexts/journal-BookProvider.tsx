@@ -1,27 +1,27 @@
+import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
+import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { BookIndex, tagType } from "journal-pkg/types/journal-types";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import {
-  ReactNode,
   createContext,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-  ReactElement,
   Dispatch,
+  ReactElement,
+  ReactNode,
   SetStateAction,
   useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
-import NftPage from "../components/pages/NftPage/NftPage";
 import NekoPage from "../components/pages/NekoPage/NekoPage";
+import NftPage from "../components/pages/NftPage/NftPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
-import { BookIndex, tagType } from "types/journal-types";
-import { useAuth } from "contexts/journal-AuthProvider";
-import Image from "next/image";
-import { useRouter } from "next/router";
 import { useHoldNfts } from "./journal-HoldNftsProvider";
-import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
-import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
 
 type Props = {
   children: ReactNode;
@@ -96,7 +96,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
         )}
       </div>
     ),
-    [user]
+    [user],
   );
 
   useEffect(() => {
@@ -230,7 +230,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       },
       bookIndex: bookIndex,
     }),
-    [pageNo, pages, tags, bookIndex, setPageNo, setPages, setTags]
+    [pageNo, pages, tags, bookIndex, setPageNo, setPages, setTags],
   );
 
   return (

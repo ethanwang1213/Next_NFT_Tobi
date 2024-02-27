@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from "react";
-import Image from "next/image";
-import { menuItem } from "./../assets/menuItems";
-import { gsap } from "gsap";
 import { useMenuAnimation } from "contexts/menu/MenuAnimation";
+import { gsap } from "gsap";
+import Image from "next/image";
+import { useEffect, useMemo } from "react";
+import { menuItem } from "./../assets/menuItems";
 
 /**
  * 鍵穴クリック後のローディング画像を表示するコンポーネント
@@ -30,11 +30,12 @@ export const LoadingImage: React.FC = () => {
             src={item.loadImage}
             alt="loading image"
             fill
-            className={`object-cover ${item.loadImage === imageUrl ? "" : "hidden"
-              }`}
+            className={`object-cover ${
+              item.loadImage === imageUrl ? "" : "hidden"
+            }`}
           />
         )),
-    [menuItem, imageUrl]
+    [menuItem, imageUrl],
   );
 
   return (

@@ -1,17 +1,17 @@
-import { auth } from "fetchers/firebase/journal-client";
-import Mobile from "../components/Book/Mobile";
-import Pc from "../components/Book/Pc";
-import Image from "next/image";
-import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
-import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
 import DebugText from "@/components/DebugText";
 import NftViewModal from "@/components/NftViewModal";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { RedeemStatusProvider } from "@/contexts/journal-RedeemStatusProvider";
+import CropNewIconModal from "@/components/pages/ProfilePage/sub/EditProfile/CropNewIconModal";
+import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/EditProfileModal";
 import { BookProvider } from "@/contexts/journal-BookProvider";
 import { EditProfileProvider } from "@/contexts/journal-EditProfileProvider";
+import { RedeemStatusProvider } from "@/contexts/journal-RedeemStatusProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { auth } from "journal-pkg/fetchers/firebase/journal-client";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import Mobile from "../components/Book/Mobile";
+import Pc from "../components/Book/Pc";
 
 const Index = () => {
   const router = useRouter();

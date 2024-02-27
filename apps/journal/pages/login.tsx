@@ -1,18 +1,18 @@
-import { auth } from "fetchers/firebase/journal-client";
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import Image from "next/image";
-import {
-  sendSignInLinkToEmail,
-  GoogleAuthProvider,
-  signInWithPopup,
-  OAuthProvider,
-} from "firebase/auth";
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faApple } from "@fortawesome/free-brands-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  GoogleAuthProvider,
+  OAuthProvider,
+  sendSignInLinkToEmail,
+  signInWithPopup,
+} from "firebase/auth";
+import gsap from "gsap";
+import { auth } from "journal-pkg/fetchers/firebase/journal-client";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 type LoginFormType = {
   email: string;
@@ -123,38 +123,38 @@ const Login = () => {
         loginRef.current,
         { top: "-100dvh", ease: "power4.inOut" },
         { top: 0, duration: 1.5 },
-        "2"
+        "2",
       )
       .to(
         logoRef.current,
         { x: "-250px", ease: "power4.inOut", duration: 1.5 },
-        "<"
+        "<",
       )
       .from(
         bookRef.current,
         { y: "14rem", ease: "power4.inOut", duration: 1.5 },
-        "<"
+        "<",
       )
       .to(
         arcRef1.current,
         { left: "5dvw", top: "5dvh", ease: "power4.inOut", duration: 1.5 },
-        "<"
+        "<",
       )
       .to(
         arcRef2.current,
         { top: "-2dvh", ease: "power4.inOut", duration: 1.5 },
-        "<"
+        "<",
       )
       .to(
         arcRef3.current,
         { left: "-5dvw", ease: "power4.inOut", duration: 1.5 },
-        "<"
+        "<",
       )
       .fromTo(
         logoMobileRef.current,
         { y: 0, maxHeight: "100%" },
         { y: "-40dvh", maxHeight: "15dvh" },
-        "<"
+        "<",
       );
   }, []);
 
@@ -396,7 +396,7 @@ const Login = () => {
                 checked={isAppleModalChecked}
                 className="checkbox checkbox-accent"
                 onClick={() => setAppleModalChecked(!isAppleModalChecked)}
-                onChange={() => { }}
+                onChange={() => {}}
               />
               <div className="grid content-center ml-2">
                 <span className="select-none sm:text-sm">確認しました</span>
