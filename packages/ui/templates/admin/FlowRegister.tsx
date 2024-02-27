@@ -59,7 +59,7 @@ const LoadingButton = () => {
   return (
     <button
       type="button"
-      className="bg-non-active text-non-active-content w-[179px] h-[48px] rounded-2xl"
+      className="bg-inactive text-inactive-content w-[179px] h-[48px] rounded-2xl"
       disabled
     >
       <span className="loading loading-spinner loading-sm"></span>

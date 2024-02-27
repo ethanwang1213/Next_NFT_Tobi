@@ -16,7 +16,7 @@ const FlowAgreement = ({ user, onClickRegister }: Props) => {
     if (agreed) {
       return "bg-primary text-primary-content";
     } else {
-      return "bg-non-active text-non-active-content";
+      return "bg-inactive text-inactive-content";
     }
   };
 
