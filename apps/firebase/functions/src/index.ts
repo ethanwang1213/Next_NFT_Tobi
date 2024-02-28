@@ -8,6 +8,7 @@ import {metadata as houseBadgeMetadata} from "./housebadge";
 import {mintFes23NftTaskv1} from "./mintFes23NftTask";
 import {createFlowAccountDemo} from "./createFlowAccount";
 import {native} from "./native";
+import {pushDemo} from "./appSendPushMessage";
 import {flowTxSend} from "./flowTxSend";
 import {flowTxMonitor} from "./flowTxMonitor";
 import {taskWrapperLink} from "./taskWrapperLink";
@@ -35,5 +36,6 @@ exports.taskWrapperLink = taskWrapperLink;
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
   exports.kmsSample = require("./kmsSample");
+  exports.pushDemo = pushDemo;
   exports.createFlowAccountDemo = createFlowAccountDemo;
 }
