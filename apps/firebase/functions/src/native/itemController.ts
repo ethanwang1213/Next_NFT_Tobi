@@ -300,3 +300,49 @@ export const deleteSample = async (req: Request, res: Response) => {
     return;
   });
 };
+
+// export const createModel = async (req: Request, res: Response) => {
+//   const {materialId, type} = req.body;
+//   const modelData = await createModelCloud(materialId, type);
+//   res.status(200).send({
+//     status: "success",
+//     data: {
+//       modelUrl: modelData.modelUrl,
+//     }
+//   })
+// }
+
+
+// export const createThumbnail = async (req: Request, res: Response) => {
+//   const {authorization} = req.headers;
+//   const {thumbUrl, modelUrl, materialId} = req.body;
+//   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+//     const uid = decodedToken.uid;
+//     const item = await prisma.tobiratory_items.create({
+//       data: {
+//         creator_uid: uid,
+//         title: title,
+//         image: parseInt(image),
+//         type: type,
+//         content_id: 0,
+//         folder_id: 0,
+//       },
+//     });
+//     await prisma.tobiratory_sample_items.create({
+//       data: {
+//         digital_item_id: item.id,
+//       },
+//     });
+//     res.status(200).send({
+//       status: "success",
+//       data: "saved-success",
+//     });
+//     return;
+//   }).catch((error: FirebaseError)=>{
+//     res.status(401).send({
+//       status: "error",
+//       data: error.code,
+//     });
+//     return;
+//   });
+// }
