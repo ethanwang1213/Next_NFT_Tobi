@@ -131,3 +131,12 @@ model tobiratory_material_images {
   image             String  @db.VarChar(255)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
+model tobiratory_samples {
+  id                Int     @id @default(autoincrement())
+  creator_uid       String  @db.VarChar(100)
+  thumb_url         String  @db.VarChar(255)
+  model_url         String  @db.VarChar(255)
+  material_id       Int
+  type              String  @db.VarChar(255)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}

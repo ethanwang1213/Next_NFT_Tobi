@@ -281,23 +281,120 @@ export const deleteSample = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const item = await prisma.tobiratory_items.delete({
-      where: {
-        id: parseInt(id),
-        creator_uid: uid,
-      },
-    });
-    if (item.creator_uid != uid) {
+    try {
+      const item = await prisma.tobiratory_samples.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (item==null) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      if (item.creator_uid != uid) {
+        res.status(401).send({
+          status: "error",
+          data: "not-yours",
+        });
+        return;
+      }
+      await prisma.tobiratory_samples.delete({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: "deleted",
+      });
+    } catch (error) {
       res.status(401).send({
         status: "error",
-        data: "not-yours",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+export const createModel = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {materialId, type}:{materialId: number, type: "poster"|"acrylic"|"badge"} = req.body;
+  const predefinedModel = "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    if (type == "poster") {
+      res.status(200).send({
+        status: "success",
+        data: {
+          modelUrl: predefinedModel,
+        },
       });
       return;
     }
+    console.log(uid, materialId);
+
+    // const modelData = await createModelCloud(materialId, type);
     res.status(200).send({
       status: "success",
-      data: item.id,
+      data: {
+        modelUrl: predefinedModel, // modelData.modelUrl,
+      },
     });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+
+export const createSample = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {
+    thumbUrl,
+    modelUrl,
+    materialId,
+    type,
+  }: {thumbUrl: string, modelUrl: string, materialId: number, type: "poster"|"acrylic"|"badge"} = req.body;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const sample = await prisma.tobiratory_samples.create({
+        data: {
+          creator_uid: uid,
+          thumb_url: thumbUrl,
+          model_url: modelUrl,
+          material_id: materialId,
+          type: type,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: {
+          id: sample.id,
+          thumbUrl: sample.thumb_url,
+          modelUrl: sample.model_url,
+          materialId: sample.material_id,
+          type: sample.type,
+        },
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
     return;
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
@@ -308,48 +405,41 @@ export const deleteSample = async (req: Request, res: Response) => {
   });
 };
 
-// export const createModel = async (req: Request, res: Response) => {
-//   const {materialId, type} = req.body;
-//   const modelData = await createModelCloud(materialId, type);
-//   res.status(200).send({
-//     status: "success",
-//     data: {
-//       modelUrl: modelData.modelUrl,
-//     }
-//   })
-// }
-
-
-// export const createThumbnail = async (req: Request, res: Response) => {
-//   const {authorization} = req.headers;
-//   const {thumbUrl, modelUrl, materialId} = req.body;
-//   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-//     const uid = decodedToken.uid;
-//     const item = await prisma.tobiratory_items.create({
-//       data: {
-//         creator_uid: uid,
-//         title: title,
-//         image: parseInt(image),
-//         type: type,
-//         content_id: 0,
-//         folder_id: 0,
-//       },
-//     });
-//     await prisma.tobiratory_sample_items.create({
-//       data: {
-//         digital_item_id: item.id,
-//       },
-//     });
-//     res.status(200).send({
-//       status: "success",
-//       data: "saved-success",
-//     });
-//     return;
-//   }).catch((error: FirebaseError)=>{
-//     res.status(401).send({
-//       status: "error",
-//       data: error.code,
-//     });
-//     return;
-//   });
-// }
+export const getMySamples = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const samples = await prisma.tobiratory_samples.findMany({
+        where: {
+          creator_uid: uid,
+        },
+      });
+      const returnData = samples.map((sample)=>{
+        return {
+          id: sample.id,
+          thumbUrl: sample.thumb_url,
+          modelUrl: sample.model_url,
+          materialId: sample.material_id,
+          type: sample.type,
+        };
+      });
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+      return;
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};

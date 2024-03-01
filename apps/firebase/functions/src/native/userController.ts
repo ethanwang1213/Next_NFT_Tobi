@@ -9,7 +9,7 @@ import {isEmptyObject} from "./utils";
 const prisma = new PrismaClient();
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
-  const {email} = req.body;
+  const {email}: {email: string} = req.body;
   await auth().getUserByEmail(email).then((userRecord: UserRecord)=>{
     const providers = userRecord.providerData;
 
@@ -191,7 +191,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
     icon?: string,
     sns?: string,
     aboutMe?: string,
-    socialLinks?: object,
+    socialLinks?: Array<string>,
     gender?: string,
     birth?: string
   }
