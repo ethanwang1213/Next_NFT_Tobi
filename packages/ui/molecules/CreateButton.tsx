@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import FloatingButton from "../atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 
 export default function CreateButton({
   label,
@@ -11,7 +11,7 @@ export default function CreateButton({
 }) {
   const router = useRouter();
   return (
-    <FloatingButton
+    <Button
       onClick={() => router.push(href)}
       className={
         "flex h-14 px-6 items-center rounded-[30px] bg-[#1779DE] text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
@@ -27,6 +27,6 @@ export default function CreateButton({
       <span className="text-xl font-semibold uppercase text-center">
         {label}
       </span>
-    </FloatingButton>
+    </Button>
   );
 }

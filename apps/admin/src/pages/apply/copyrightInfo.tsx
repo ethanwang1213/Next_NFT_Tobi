@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
-import FloatingButton from "ui/atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 import { OptionMark } from "ui/atoms/Marks";
 
 const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
@@ -90,12 +90,12 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
           onChange={(e) => handleFileChange(1, e)}
         />
         <span className="flex-1 text-title-color">{filePath1}</span>
-        <FloatingButton
+        <Button
           className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
           onClick={() => file1InputRef.current.click()}
         >
           ファイルアップロード
-        </FloatingButton>
+        </Button>
       </div>
       <div className="flex flex-row items-center mb-6">
         <input
@@ -105,12 +105,12 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
           onChange={(e) => handleFileChange(2, e)}
         />
         <span className="flex-1 text-title-color">{filePath2}</span>
-        <FloatingButton
+        <Button
           className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
           onClick={() => file2InputRef.current.click()}
         >
           ファイルアップロード
-        </FloatingButton>
+        </Button>
       </div>
       <div className="flex flex-row items-center mb-6">
         <input
@@ -120,12 +120,12 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
           onChange={(e) => handleFileChange(3, e)}
         />
         <span className="flex-1 text-title-color">{filePath3}</span>
-        <FloatingButton
+        <Button
           className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
           onClick={() => file3InputRef.current.click()}
         >
           ファイルアップロード
-        </FloatingButton>
+        </Button>
       </div>
       <div className="flex flex-row items-center mb-6">
         <input
@@ -135,12 +135,12 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
           onChange={(e) => handleFileChange(4, e)}
         />
         <span className="flex-1 text-title-color">{filePath4}</span>
-        <FloatingButton
+        <Button
           className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
           onClick={() => file4InputRef.current.click()}
         >
           ファイルアップロード
-        </FloatingButton>
+        </Button>
       </div>
       <div className="flex flex-row justify-center items-center mt-6">
         <input

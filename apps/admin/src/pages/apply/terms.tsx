@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import FloatingButton from "ui/atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 
 const Terms = () => {
   const [isChecked, setIsChecked] = useState(false);
@@ -44,7 +44,7 @@ const Terms = () => {
           利用規約・プライバシーポリシーに同意する。
         </label>
       </div>
-      <FloatingButton
+      <Button
         type="button"
         className={`w-[16rem] h-[3.5rem] rounded-[30px] mt-6 text-xl leading-[3.5rem] text-white
           ${isChecked ? "bg-[#1779DE] " : "bg-[#B3B3B3]"}`}
@@ -52,7 +52,7 @@ const Terms = () => {
         onClick={handleButtonClicked}
       >
         申請フォームへ
-      </FloatingButton>
+      </Button>
     </div>
   );
 };

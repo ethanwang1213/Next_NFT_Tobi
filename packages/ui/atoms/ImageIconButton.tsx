@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React from "react";
-import Button from "ui/atoms/Button";
 
 type Props = {
   label: string;
@@ -27,9 +26,8 @@ const ImageIconButton = ({
 }: Props) => {
   const fill = !(width && height);
   return (
-    <Button
-      label={label}
-      className={buttonClassName}
+    <button
+      className={`btn ${buttonClassName ?? ""}`}
       type={type}
       onClick={onClick}
     >
@@ -42,7 +40,8 @@ const ImageIconButton = ({
           fill={fill}
         />
       </div>
-    </Button>
+      {label}
+    </button>
   );
 };
 

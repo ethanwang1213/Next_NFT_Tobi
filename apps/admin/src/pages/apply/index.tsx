@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
-import FloatingButton from "ui/atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
 
 export const metadata: Metadata = {
@@ -76,13 +76,13 @@ const Index = () => {
         />
         <span>１アカウントにつきコンテンツは１つまで申請できます</span>
       </div>
-      <FloatingButton
+      <Button
         type="button"
         className={`w-[38rem] h-[4.5rem] text-3xl bg-[#1779DE] text-white rounded-[88px] py-3 mt-6`}
         onClick={handleButtonClick}
       >
         Tobiratory Creator Program
-      </FloatingButton>
+      </Button>
       <ConfirmModal dialogRef={modalRef} />
     </div>
   );

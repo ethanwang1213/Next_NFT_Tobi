@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import FloatingButton from "../../atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 
 const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
   const [selectedDate, setSelectedDate] = useState(
@@ -74,12 +74,12 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
               />
             </div>
             <div className="mt-6">
-              <FloatingButton className="w-26 text-xs bg-transparent border-0 px-3 py-2 ml-12">
+              <Button className="w-26 text-xs bg-transparent border-0 px-3 py-2 ml-12">
                 キャンセル
-              </FloatingButton>
-              <FloatingButton className="w-26 text-xs border-0 bg-[#1779DE] py-2 rounded">
+              </Button>
+              <Button className="w-26 text-xs border-0 bg-[#1779DE] py-2 rounded">
                 公開予約を設定
-              </FloatingButton>
+              </Button>
             </div>
           </div>
         ) : (

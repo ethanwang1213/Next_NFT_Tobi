@@ -1,5 +1,5 @@
 import { LegacyRef } from "react";
-import FloatingButton from "../../atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 
 type Props = {
   dialogRef: LegacyRef<HTMLDialogElement>;
@@ -25,9 +25,9 @@ const MailSentDialog = ({ dialogRef }: Props) => {
           </ul>
         </div>
         <div className="modal-action">
-          <FloatingButton className="btn btn-sm sm:btn-md text-xs sm:text-base btn-primary text-neutral">
+          <Button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-primary text-neutral">
             閉じる
-          </FloatingButton>
+          </Button>
         </div>
       </form>
     </dialog>

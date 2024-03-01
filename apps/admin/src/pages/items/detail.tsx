@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import FloatingButton from "ui/atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
 import PublicSwitch from "ui/molecules/PublicSwitch";
@@ -236,12 +236,12 @@ const Detail = () => {
           </div>
           <div className="text-center mt-11">
             <Link href="/items">
-              <FloatingButton
+              <Button
                 type="submit"
                 className="text-xl h-14 bg-[#1779DE] text-white rounded-[30px] px-10"
               >
                 保存
-              </FloatingButton>
+              </Button>
             </Link>
           </div>
         </div>

@@ -1,4 +1,3 @@
-import Button from "ui/atoms/Button";
 import Loading from "ui/atoms/Loading";
 
 type Props = {
@@ -8,7 +7,6 @@ type Props = {
   loadingClassName?: string;
 };
 
-// TODO: The fix using FloatingButton conflicts with feature/admin-login, so it should be implemented on the feature/admin-login side.
 const SubmitButton = ({
   label,
   loading,
@@ -18,7 +16,11 @@ const SubmitButton = ({
   if (loading) {
     return <Loading className={loadingClassName} />;
   }
-  return <Button label={label} className={buttonClassName} type="submit" />;
+  return (
+    <button className={`btn ${buttonClassName ?? ""}`} type="submit">
+      {label}
+    </button>
+  );
 };
 
 export default SubmitButton;

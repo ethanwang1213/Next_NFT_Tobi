@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { MutableRefObject } from "react";
-import FloatingButton from "../../atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 
 type AccountInfo = {
   name: string;
@@ -69,7 +69,7 @@ const AccountConfirmDialog = ({
         <div className="modal-action justify-center mt-[70px] mb-[33px]">
           <form method="dialog">
             <div className={"flex flex-col justify-center space-y-[26px]"}>
-              <FloatingButton
+              <Button
                 onClick={
                   firstButtonProp.callback ? firstButtonProp.callback : null
                 }
@@ -82,8 +82,8 @@ const AccountConfirmDialog = ({
                 `}
               >
                 {firstButtonProp.caption}
-              </FloatingButton>
-              <FloatingButton
+              </Button>
+              <Button
                 onClick={
                   secondButtonProp.callback ? secondButtonProp.callback : null
                 }
@@ -96,7 +96,7 @@ const AccountConfirmDialog = ({
                 `}
               >
                 {secondButtonProp.caption}
-              </FloatingButton>
+              </Button>
             </div>
           </form>
         </div>

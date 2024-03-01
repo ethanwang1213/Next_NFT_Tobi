@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { RubyCharacters } from "types/ruby";
-import FloatingButton from "ui/atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
 import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
@@ -185,7 +185,7 @@ const Register = () => {
         </div>
 
         <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-between">
-          <FloatingButton
+          <Button
             type="button"
             className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
               border border-[#1779DE] bg-transparent rounded-[30px] 
@@ -193,8 +193,8 @@ const Register = () => {
             onClick={handleBack}
           >
             戻る
-          </FloatingButton>
-          <FloatingButton
+          </Button>
+          <Button
             type="button"
             className={clsx(
               "w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px]",
@@ -210,7 +210,7 @@ const Register = () => {
               : switchValue === 3
                 ? "申請"
                 : "次へ"}
-          </FloatingButton>
+          </Button>
         </div>
       </div>
     </div>

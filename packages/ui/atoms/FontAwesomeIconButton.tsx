@@ -1,7 +1,6 @@
 import { IconProp, SizeProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import Button from "ui/atoms/Button";
 
 type Props = {
   label: string;
@@ -21,9 +20,10 @@ const FontAwesomeIconButton = ({
   onClick,
 }: Props) => {
   return (
-    <Button label={label} className={className} type={type} onClick={onClick}>
+    <button className={`btn ${className ?? ""}`} type={type} onClick={onClick}>
       <FontAwesomeIcon icon={icon} size={size} />
-    </Button>
+      {label}
+    </button>
   );
 };
 
