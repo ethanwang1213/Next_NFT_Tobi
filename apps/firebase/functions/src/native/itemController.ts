@@ -287,6 +287,13 @@ export const deleteSample = async (req: Request, res: Response) => {
         creator_uid: uid,
       },
     });
+    if (item.creator_uid != uid) {
+      res.status(401).send({
+        status: "error",
+        data: "not-yours",
+      });
+      return;
+    }
     res.status(200).send({
       status: "success",
       data: item.id,
