@@ -1,6 +1,6 @@
-import Breadcrumbs from "ui/molecules/Breadcrumbs";
 import Link from "next/link";
 import Button from "ui/atoms/Button";
+import Breadcrumbs from "ui/molecules/Breadcrumbs";
 
 const ItemEditHeader = () => {
   return (
@@ -20,17 +20,19 @@ const ItemEditHeader = () => {
       <div>
         <Link href="/items">
           <Button
-            label="キャンセル"
             type="reset"
             className="text-xl h-14 bg-[#E2E1E1] text-[#1779DE] rounded-[30px] mr-6 px-8"
-          />
+          >
+            キャンセル
+          </Button>
         </Link>
         <Link href="/items">
           <Button
-            label="保存"
             type="submit"
             className="text-xl h-14 bg-[#1779DE] text-white rounded-[30px] px-10"
-          />
+          >
+            保存
+          </Button>
         </Link>
       </div>
     </div>

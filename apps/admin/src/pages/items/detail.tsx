@@ -237,10 +237,11 @@ const Detail = () => {
           <div className="text-center mt-11">
             <Link href="/items">
               <Button
-                label="保存"
                 type="submit"
                 className="text-xl h-14 bg-[#1779DE] text-white rounded-[30px] px-10"
-              />
+              >
+                保存
+              </Button>
             </Link>
           </div>
         </div>

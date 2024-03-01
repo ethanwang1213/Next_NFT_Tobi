@@ -1,31 +1,22 @@
-import React, { ReactNode } from "react";
+import { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode } from "react";
 
-type Props = {
-  label: string;
-  type: "button" | "submit" | "reset";
+type Props = DetailedHTMLProps<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+> & {
   className?: string;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  disabled?: boolean;
   children?: ReactNode;
 };
 
-const Button = ({
-  label,
-  type,
-  className,
-  onClick,
-  disabled,
-  children,
-}: Props) => {
+const Button = ({ className, children, ...props }: Props) => {
   return (
     <button
-      className={`btn ${className ?? ""}`}
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
+      className={`relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow ${
+        className ?? ""
+      }`}
+      {...props}
     >
       {children}
-      {label}
     </button>
   );
 };

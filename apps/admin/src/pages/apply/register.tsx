@@ -1,12 +1,13 @@
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
-import clsx from "clsx";
+import { RubyCharacters } from "types/ruby";
+import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
 import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";
 import UserInformation from "./userInfo";
-import { RubyCharacters } from "types/ruby";
 
 const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
@@ -184,7 +185,7 @@ const Register = () => {
         </div>
 
         <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-between">
-          <button
+          <Button
             type="button"
             className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
               border border-[#1779DE] bg-transparent rounded-[30px] 
@@ -192,15 +193,14 @@ const Register = () => {
             onClick={handleBack}
           >
             戻る
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             className={clsx(
               "w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px]",
               switchValue === 2 && !copyrightInfo.agreement
                 ? "bg-[#B3B3B3]"
                 : "bg-[#1779DE]",
-              "relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow",
             )}
             onClick={handleNext}
             disabled={switchValue === 2 && !copyrightInfo.agreement}
@@ -210,7 +210,7 @@ const Register = () => {
               : switchValue === 3
                 ? "申請"
                 : "次へ"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { LegacyRef } from "react";
+import Button from "ui/atoms/Button";
 
 type Props = {
   dialogRef: LegacyRef<HTMLDialogElement>;
@@ -24,9 +25,9 @@ const MailSentDialog = ({ dialogRef }: Props) => {
           </ul>
         </div>
         <div className="modal-action">
-          <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-primary text-neutral">
+          <Button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-primary text-neutral">
             閉じる
-          </button>
+          </Button>
         </div>
       </form>
     </dialog>
