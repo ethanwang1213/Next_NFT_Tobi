@@ -5,15 +5,23 @@ import {
   sendSignInLinkToEmail,
   signInWithPopup,
 } from "firebase/auth";
-import { useRef, useState } from "react";
-import SignIn, { LoginFormType } from "ui/templates/SignIn";
+import { useState } from "react";
+import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
+import AuthTemplate, { LoginFormType } from "ui/templates/AuthTemplate";
 
-const Signin = () => {
-  const emailModalRef = useRef<HTMLDialogElement>(null);
+const AuthStates = {
+  SignUp: 0,
+  SignIn: 1,
+  MailSent: 2,
+} as const;
+type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
+
+const Authentication = () => {
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [authState, setAuthState] = useState<AuthState>(AuthStates.SignIn);
 
   // TODO: メールアドレスを使ってサインインする流れが変更になったので、後で修正する
-  const signIn = (data: LoginFormType) => {
+  const withMail = (data: LoginFormType) => {
     if (!data) {
       return;
     }
@@ -21,7 +29,7 @@ const Signin = () => {
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain (www.example.com) for this
       // URL must be in the authorized domains list in the Firebase Console.
-      url: `${window.location.origin}/admin/email/verify`,
+      url: `${window.location.origin}/admin/auth/email_auth`,
       // This must be true.
       handleCodeInApp: true,
     };
@@ -32,8 +40,7 @@ const Signin = () => {
         // Save the email locally so you don't need to ask the user for it again
         // if they open the link on the same device.
         window.localStorage.setItem("emailForSignIn", data.email);
-        emailModalRef.current.showModal();
-        setIsEmailLoading(false);
+        setAuthState(AuthStates.MailSent);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -63,15 +70,38 @@ const Signin = () => {
     }
   };
 
-  return (
-    <SignIn
-      loading={isEmailLoading}
-      dialogRef={emailModalRef}
-      signIn={signIn}
-      withGoogle={withGoogle}
-      withApple={withApple}
-    />
-  );
+  switch (authState) {
+    case AuthStates.SignUp:
+      return (
+        <AuthTemplate
+          loading={isEmailLoading}
+          googleLabel={"Googleでサインアップ"}
+          appleLabel={"Appleでサインアップ"}
+          mailLabel={"サインアップ"}
+          prompt={"既にアカウントを持っていますか？ - サインイン"}
+          setAuthState={() => setAuthState(AuthStates.SignIn)}
+          withMail={withMail}
+          withGoogle={withGoogle}
+          withApple={withApple}
+        />
+      );
+    case AuthStates.SignIn:
+      return (
+        <AuthTemplate
+          loading={isEmailLoading}
+          googleLabel={"Googleでサインイン"}
+          appleLabel={"Appleでサインイン"}
+          mailLabel={"サインイン"}
+          prompt={"アカウントを持っていませんか？ - 新規登録"}
+          setAuthState={() => setAuthState(AuthStates.SignUp)}
+          withMail={withMail}
+          withGoogle={withGoogle}
+          withApple={withApple}
+        />
+      );
+    case AuthStates.MailSent:
+      return <ConfirmationSent />;
+  }
 };
 
-export default Signin;
+export default Authentication;

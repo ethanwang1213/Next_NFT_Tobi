@@ -24,6 +24,8 @@ type ContextType = {
 
 const AuthContext = createContext<ContextType>({} as ContextType);
 
+const unauthenticatedPages = ["/auth/email_auth", "/authentication"];
+
 /**
  * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー
  * @param param0
@@ -43,22 +45,27 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         // TODO: リリースする前に消そう
         console.log(`UID: ${firebaseUser.uid}`);
         console.log(`メールアドレス: ${firebaseUser.email}`);
-        // TODO: check flow account
+        // TODO: check flow account by API
         if (true) {
+          // not registered flow account yet
           createUser(firebaseUser.uid, false, firebaseUser.email);
           console.log("register flow account");
-          Router.push("/flow/register");
+          if (Router.pathname !== "/auth/email_auth") {
+            Router.push("/auth/sns_auth");
+          }
         } else {
           createUser(firebaseUser.uid, true, firebaseUser.email);
           // If we use the router, we need to include it in the dependencies,
           // and useEffect gets called multiple times. So, let's avoid using the router.
-          if (Router.pathname === "/signin") {
+          if (Router.pathname === "/authentication") {
             Router.push("/");
           }
         }
       } else {
         setUser(null);
-        Router.push("/signin");
+        if (!unauthenticatedPages.includes(Router.pathname)) {
+          Router.push("/authentication");
+        }
       }
     });
     return () => unsubscribe();
@@ -84,7 +91,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (user?.email) {
         await auth.signOut();
       }
-      router.push("/signin");
+      router.push("/authentication");
     } catch (error) {
       console.error("サインアウトに失敗しました。", error);
     }
@@ -92,7 +99,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const confirmFlowAccountRegistration = () => {
     if (!user) {
-      router.push("/signin");
+      router.push("/authentication");
     }
 
     if (user.registeredFlowAccount) {
@@ -102,7 +109,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     setUser((prev) => ({ ...prev, registeredFlowAccount: true }));
   };
 
-  if (user || router.pathname === "/signin") {
+  if (user || unauthenticatedPages.includes(router.pathname)) {
     return (
       <AuthContext.Provider
         value={{

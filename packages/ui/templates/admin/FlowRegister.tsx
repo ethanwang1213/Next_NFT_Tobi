@@ -1,6 +1,6 @@
 import { useAuth } from "contexts/AdminAuthProvider";
 import Image from "next/image";
-import FloatingButton from "ui/atoms/FloatingButton";
+import Button from "ui/atoms/Button";
 
 type Props = {
   registered: boolean;
@@ -44,12 +44,12 @@ const RegisterButton = ({ registered }: Props) => {
   };
   if (registered) {
     return (
-      <FloatingButton
+      <Button
         className="bg-primary text-primary-content w-[179px] h-[48px] rounded-2xl"
         onClick={confirmFlowAccountRegistration}
       >
         完了
-      </FloatingButton>
+      </Button>
     );
   }
   return <LoadingButton />;

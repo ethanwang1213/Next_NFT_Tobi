@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import MailSentDialog from "ui/organisms/admin/MailSentDialog";
 import AppleIconButton from "../atoms/AppleIconButton";
 import EmailTextField from "../atoms/EmailTextField";
 import ImageIconButton from "../atoms/ImageIconButton";
@@ -11,16 +10,24 @@ export type LoginFormType = {
 
 export type Props = {
   loading: boolean;
-  dialogRef: React.MutableRefObject<HTMLDialogElement>;
-  signIn: (data: LoginFormType) => void;
+  googleLabel: string;
+  appleLabel: string;
+  mailLabel: string;
+  prompt: string;
+  setAuthState: () => void;
+  withMail: (data: LoginFormType) => void;
   withGoogle: () => Promise<void>;
   withApple: () => Promise<void>;
 };
 
-const SignIn = ({
+const AuthTemplate = ({
   loading,
-  dialogRef,
-  signIn,
+  googleLabel,
+  appleLabel,
+  mailLabel,
+  prompt,
+  setAuthState,
+  withMail,
   withGoogle,
   withApple,
 }: Props) => {
@@ -38,10 +45,10 @@ const SignIn = ({
       <div className="flex items-center justify-center w-[100dvw] h-[100dvh] p-8">
         <form
           className="p-7 rounded-[40px] flex flex-col gap-5 items-center max-w-[400px] z-10"
-          onSubmit={handleSubmit(signIn)}
+          onSubmit={handleSubmit(withMail)}
         >
           <ImageIconButton
-            label={"Sign in with Google"}
+            label={googleLabel}
             type={"button"}
             imagePath={"/admin/images/icon/google.svg"}
             alt={"google"}
@@ -52,7 +59,7 @@ const SignIn = ({
             onClick={withGoogle}
           />
           <AppleIconButton
-            label={"Sign in with Apple"}
+            label={appleLabel}
             size={"xl"}
             className={
               "btn-block w-[408px] rounded-2xl bg-base-100 gap-3 flex-row text-xl font-normal drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
@@ -71,12 +78,21 @@ const SignIn = ({
               className="rounded-2xl bg-slate-100 w-full input-bordered text-md sm:text-lg placeholder:text-sm sm:placeholder:text-md px-6"
               register={register}
             />
+            <div className={"text-right"}>
+              <button
+                type={"button"}
+                className={"btn-link text-xs text-primary"}
+                onClick={setAuthState}
+              >
+                {prompt}
+              </button>
+            </div>
             <p className="pl-2 pt-1 text-xs text-error">
               {errors.email && `${errors.email.message}`}
             </p>
           </div>
           <SubmitButton
-            label={"Sign in"}
+            label={mailLabel}
             loading={loading}
             buttonClassName={
               "btn-block btn-primary w-[179px] rounded-2xl text-md text-xl font-normal text-primary-content drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
@@ -85,9 +101,8 @@ const SignIn = ({
           />
         </form>
       </div>
-      <MailSentDialog dialogRef={dialogRef} />
     </>
   );
 };
 
-export default SignIn;
+export default AuthTemplate;

@@ -1,11 +1,12 @@
 import { useAuth } from "contexts/AdminAuthProvider";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import FlowAgreement from "ui/templates/admin/FlowAgreement";
+import FlowAgreementWithSnsAccount from "ui/templates/admin/FlowAgreementWithSnsAccount";
 import FlowRegister from "ui/templates/admin/FlowRegister";
 
-const Register = () => {
+const SnsAuth = () => {
   const { user } = useAuth();
+  const router = useRouter();
   const [isRegistering, setIsRegistering] = useState(false);
   const [flowAccountRegistered, setFlowAccountRegistered] = useState(false);
 
@@ -34,8 +35,13 @@ const Register = () => {
   } else if (isRegistering) {
     return <FlowRegister registered={flowAccountRegistered} />;
   } else {
-    return <FlowAgreement user={user} onClickRegister={startRegistering} />;
+    return (
+      <FlowAgreementWithSnsAccount
+        user={user}
+        onClickRegister={startRegistering}
+      />
+    );
   }
 };
 
-export default Register;
+export default SnsAuth;
