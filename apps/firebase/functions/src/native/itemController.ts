@@ -219,7 +219,7 @@ export const createItem = async (req: Request, res: Response) => {
         image: parseInt(image),
         type: type,
         content_id: 0,
-        folder_id: 0,
+        box_id: 0,
       },
     });
     await prisma.tobiratory_sample_items.create({
@@ -267,55 +267,6 @@ export const updateItem = async (req: Request, res: Response) => {
       data: "saved-success",
     });
     return;
-  }).catch((error: FirebaseError)=>{
-    res.status(401).send({
-      status: "error",
-      data: error.code,
-    });
-    return;
-  });
-};
-
-export const deleteSample = async (req: Request, res: Response) => {
-  const {id} = req.params;
-  const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    try {
-      const item = await prisma.tobiratory_samples.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-      });
-      if (item==null) {
-        res.status(401).send({
-          status: "error",
-          data: "not-exist",
-        });
-        return;
-      }
-      if (item.creator_uid != uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-yours",
-        });
-        return;
-      }
-      await prisma.tobiratory_samples.delete({
-        where: {
-          id: parseInt(id),
-        },
-      });
-      res.status(200).send({
-        status: "success",
-        data: "deleted",
-      });
-    } catch (error) {
-      res.status(401).send({
-        status: "error",
-        data: error,
-      });
-    }
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
       status: "error",
@@ -439,6 +390,65 @@ export const getMySamples = async (req: Request, res: Response) => {
     res.status(401).send({
       status: "error",
       data: error.code,
+    });
+    return;
+  });
+};
+
+export const deleteSample = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const item = await prisma.tobiratory_samples.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (item==null) {
+        res.status(401).send({
+          status: "error",
+          data: {
+            result: "not-exist",
+          },
+        });
+        return;
+      }
+      if (item.creator_uid != uid) {
+        res.status(401).send({
+          status: "error",
+          data: {
+            result: "not-yours",
+          },
+        });
+        return;
+      }
+      await prisma.tobiratory_samples.delete({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: {
+          result: "deleted",
+        },
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: {
+          result: error,
+        },
+      });
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: {
+        result: error.code,
+      },
     });
     return;
   });

@@ -12,9 +12,6 @@ import
   createFlowAcc,
   myBusiness,
   updateMyBusiness,
-  makeFolder,
-  getFolderData,
-  deleteFolderData,
   businessSubmission,
   checkExistBusinessAcc,
   checkPasswordSet,
@@ -23,6 +20,7 @@ import {getContentById, getContents} from "./contentController";
 import {createItem, createModel, createSample, deleteSample, getItems, getItemsById, getMyItems, getMyItemsById, getMySamples, updateItem} from "./itemController";
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
+import {makeBox, getBoxData, deleteBoxData} from "./boxController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -68,9 +66,9 @@ app.post("/my/business", updateMyBusiness);
 
 app.get("/my/inventory", dummyResponse);
 app.post("/my/inventory", dummyResponse);
-app.post("/my/inventory/boxes", makeFolder);
-app.get("/my/inventory/boxes/:id", getFolderData);
-app.delete("/my/inventory/boxes/:id", deleteFolderData);
+app.post("/my/inventory/boxes", makeBox);
+app.get("/my/inventory/boxes/:id", getBoxData);
+app.delete("/my/inventory/boxes/:id", deleteBoxData);
 
 app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);

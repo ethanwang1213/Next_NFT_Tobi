@@ -59,7 +59,7 @@ model tobiratory_items {
   image             Int
   type              String  @db.VarChar(255)
   content_id        Int
-  folder_id         Int
+  box_id         Int
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -79,6 +79,7 @@ model tobiratory_boxes {
   uuid              String  @db.VarChar(100)
   parent_id         Int
   name              String  @db.VarChar(255)
+  gift_permission   Boolean @default(false)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
