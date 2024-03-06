@@ -1,5 +1,4 @@
 import {Request, Response} from "express";
-// import {firestore} from "firebase-admin";
 import {PrismaClient} from "@prisma/client";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
@@ -62,64 +61,14 @@ export const permissionGift = async (req: Request, res: Response) => {
   });
 };
 
-export const getMyItemsById = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  const {id} = req.params;
-  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
-    const uid = decodedToken.uid;
-    const itemData = await prisma.tobiratory_items.findUnique({
-      where: {
-        id: parseInt(id),
-        creator_uid: uid,
-      },
-    });
-
-    if (itemData == null) {
-      res.status(404).send({
-        status: "error",
-        data: "Item does not exist!",
-      });
-      return;
-    }
-
-    const contentData = await prisma.tobiratory_contents.findUnique({
-      where: {
-        id: itemData.content_id,
-      },
-    });
-    const resData = {
-      id: id,
-      title: itemData.title,
-      image: itemData.image,
-      type: itemData.type,
-      content: contentData == null ? null : {
-        id: contentData.id,
-        creator: {
-          userId: contentData.creator_user_id,
-        },
-      },
-    };
-    res.status(200).send({
-      status: "success",
-      data: resData,
-    });
-  }).catch((error: FirebaseError) => {
-    res.status(401).send({
-      status: "error",
-      data: error.code,
-    });
-  });
-};
-
 export const makeBox = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {parentBox, name} = req.body;
+  const {name} = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     await prisma.tobiratory_boxes.create({
       data: {
         uuid: uid,
-        parent_id: parentBox,
         name: name,
       },
     });
@@ -130,6 +79,77 @@ export const makeBox = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "success",
+      data: error.code,
+    });
+  });
+};
+
+export const getInventoryData = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      const boxes = await prisma.tobiratory_boxes.findMany({
+        where: {
+          uuid: uid,
+        },
+        orderBy: {
+          created_date_time: "desc",
+        },
+      });
+      const returnBoxes = boxes.map(async (box)=>{
+        const itemsInBox = await prisma.tobiratory_items.findMany({
+          where: {
+            box_id: box.id,
+          },
+          orderBy: {
+            updated_date_time: "desc"
+          }
+        });
+        const items4 = itemsInBox.splice(0, 4).map((item)=>{
+          return {
+            id: item.id,
+            title: item.title,
+            image: item.image,
+          };
+        });
+        return {
+          id: box.id,
+          name: box.name,
+          items: items4,
+        };
+      });
+      const items = await prisma.tobiratory_items.findMany({
+        where: {
+          creator_uid: uid,
+          box_id: 0,
+        },
+      });
+      const returnItems = items.map((item)=>{
+        return {
+          id: item.id,
+          title: item.title,
+          image: item.image,
+          saidanId: item.saidan_id,
+        };
+      });
+      res.status(200).send({
+        status: "success",
+        data: {
+          giftPermission: false,
+          items: returnItems,
+          boxes: returnBoxes,
+        },
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
       data: error.code,
     });
   });
@@ -159,27 +179,24 @@ export const getBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    const parentBox = await prisma.tobiratory_boxes.findUnique({
-      where: {
-        id: box.parent_id,
-      },
-    });
-    const childrenBoxes = await prisma.tobiratory_boxes.findMany({
-      where: {
-        parent_id: parseInt(id),
-      },
-    });
     const items = await prisma.tobiratory_items.findMany({
       where: {
         box_id: parseInt(id),
       },
     });
+    const returnItem = items.map((item)=>{
+      return {
+        id: item.id,
+        title: item.title,
+        image: item.image,
+        saidanId: item.saidan_id,
+      };
+    });
     res.status(200).send({
       status: "success",
       data: {
-        parentBox: parentBox,
-        items: items,
-        boxes: childrenBoxes,
+        giftPermission: box.gift_permission,
+        items: returnItem,
       },
     });
   }).catch((error: FirebaseError) => {

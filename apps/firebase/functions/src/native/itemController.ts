@@ -219,6 +219,7 @@ export const createItem = async (req: Request, res: Response) => {
         image: parseInt(image),
         type: type,
         content_id: 0,
+        saidan_id: 0,
         box_id: 0,
       },
     });

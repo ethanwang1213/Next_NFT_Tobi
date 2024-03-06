@@ -17,6 +17,7 @@ model tobiratory_accounts {
   social_link       String[] @db.VarChar(255) @default([])
   gender            String   @db.VarChar(255) @default("")
   birth             String   @db.VarChar(255) @default("")
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -26,6 +27,7 @@ model tobiratory_flow_accounts {
   public_key        String    @db.VarChar(255) @default("")
   tx_id             String    @db.VarChar(255) @default("")
   flow_job_id       String    @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -38,6 +40,7 @@ model tobiratory_saidans {
   showcase          Boolean @default(true)
   max_item_count    Int
   owner_id          String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -49,6 +52,7 @@ model tobiratory_contents {
   creator_username  String  @db.VarChar(255)
   creator_icon      String  @db.VarChar(255)
   creator_sns       String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -59,7 +63,9 @@ model tobiratory_items {
   image             Int
   type              String  @db.VarChar(255)
   content_id        Int
-  box_id         Int
+  saidan_id         Int
+  box_id            Int
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -77,9 +83,9 @@ model tobiratory_digital_item_nfts {
 model tobiratory_boxes {
   id                Int     @id @default(autoincrement())
   uuid              String  @db.VarChar(100)
-  parent_id         Int
   name              String  @db.VarChar(255)
   gift_permission   Boolean @default(false)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -101,6 +107,7 @@ model tobiratory_businesses {
   bank_account      String  @db.VarChar(255)
   balance           String  @db.VarChar(255)
   submission        Boolean @default(false)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -113,6 +120,7 @@ model tobiratory_sales {
   image             String  @db.VarChar(255)
   name              String  @db.VarChar(255)
   license           String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -123,6 +131,7 @@ model tobiratory_nfts {
   title             String  @db.VarChar(255)
   image             String  @db.VarChar(255)
   creator           String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -130,6 +139,7 @@ model tobiratory_material_images {
   id                Int     @id @default(autoincrement())
   owner             String  @db.VarChar(255)
   image             String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 model tobiratory_samples {
@@ -139,5 +149,6 @@ model tobiratory_samples {
   model_url         String  @db.VarChar(255)
   material_id       Int
   type              String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }

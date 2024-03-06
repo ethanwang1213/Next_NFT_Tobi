@@ -20,7 +20,7 @@ import {getContentById, getContents} from "./contentController";
 import {createItem, createModel, createSample, deleteSample, getItems, getItemsById, getMyItems, getMyItemsById, getMySamples, updateItem} from "./itemController";
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
-import {makeBox, getBoxData, deleteBoxData} from "./boxController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData} from "./boxController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -64,11 +64,11 @@ app.post("/my/business/checkexist", checkExistBusinessAcc);
 app.get("/my/business", myBusiness);
 app.post("/my/business", updateMyBusiness);
 
-app.get("/my/inventory", dummyResponse);
+app.get("/my/inventory", getInventoryData);
 app.post("/my/inventory", dummyResponse);
-app.post("/my/inventory/boxes", makeBox);
-app.get("/my/inventory/boxes/:id", getBoxData);
-app.delete("/my/inventory/boxes/:id", deleteBoxData);
+app.post("/my/inventory/box", makeBox);
+app.get("/my/inventory/box/:id", getBoxData);
+app.delete("/my/inventory/box/:id", deleteBoxData);
 
 app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);
