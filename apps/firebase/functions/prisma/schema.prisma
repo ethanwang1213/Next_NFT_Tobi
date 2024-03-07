@@ -60,7 +60,7 @@ model tobiratory_items {
   id                Int     @id @default(autoincrement())
   creator_uid       String  @db.VarChar(100)
   title             String  @db.VarChar(255)
-  image             Int
+  image             String  @db.VarChar(255)
   type              String  @db.VarChar(255)
   content_id        Int
   saidan_id         Int

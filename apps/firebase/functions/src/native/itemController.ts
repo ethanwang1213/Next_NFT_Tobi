@@ -216,7 +216,7 @@ export const createItem = async (req: Request, res: Response) => {
       data: {
         creator_uid: uid,
         title: title,
-        image: parseInt(image),
+        image: image,
         type: type,
         content_id: 0,
         saidan_id: 0,

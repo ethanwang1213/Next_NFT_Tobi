@@ -97,16 +97,17 @@ export const getInventoryData = async (req: Request, res: Response) => {
           created_date_time: "desc",
         },
       });
-      const returnBoxes = boxes.map(async (box)=>{
+      const returnBoxes = await Promise.all(boxes.map(async (box) => {
         const itemsInBox = await prisma.tobiratory_items.findMany({
           where: {
             box_id: box.id,
           },
           orderBy: {
-            updated_date_time: "desc"
-          }
+            updated_date_time: "desc",
+          },
         });
-        const items4 = itemsInBox.splice(0, 4).map((item)=>{
+        const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+        .map((item)=>{
           return {
             id: item.id,
             title: item.title,
@@ -118,11 +119,14 @@ export const getInventoryData = async (req: Request, res: Response) => {
           name: box.name,
           items: items4,
         };
-      });
+      }));
       const items = await prisma.tobiratory_items.findMany({
         where: {
           creator_uid: uid,
           box_id: 0,
+        },
+        orderBy: {
+          updated_date_time: "desc",
         },
       });
       const returnItems = items.map((item)=>{
@@ -159,7 +163,7 @@ export const getBoxData = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
-    const uid = decodedToken.uid;
+    const uuid = decodedToken.uid;
     const box = await prisma.tobiratory_boxes.findUnique({
       where: {
         id: parseInt(id),
@@ -172,7 +176,7 @@ export const getBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.uuid == uid) {
+    if (box.uuid != uuid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
