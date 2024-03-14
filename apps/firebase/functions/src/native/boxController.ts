@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
+import Hashids from "hashids";
 
 const prisma = new PrismaClient();
 
@@ -10,49 +11,86 @@ export const permissionGift = async (req: Request, res: Response) => {
   const {boxId} = req.body;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    try {
-      const boxData = await prisma.tobiratory_boxes.findUnique({
-        where: {
-          id: boxId,
-        },
-      });
-      if (!boxData) {
+    const userData = await prisma.tobiratory_accounts.findUnique({
+      where: {
+        uuid: uid,
+      },
+    });
+    let giftPermission = false;
+    if (!boxId) {
+      try {
+        const userData = await prisma.tobiratory_accounts.findUnique({
+          where: {
+            uuid: uid,
+          },
+        });
+        const updateInventory = await prisma.tobiratory_accounts.update({
+          where: {
+            uuid: uid,
+          },
+          data: {
+            gift_permission: userData?.gift_permission,
+          },
+        });
+        giftPermission = updateInventory.gift_permission;
+      } catch (error) {
         res.status(401).send({
           status: "error",
-          data: {
-            msg: "not-exist",
-          },
+          data: error,
         });
         return;
       }
-      if (boxData.uuid != uid) {
+    } else {
+      try {
+        const boxData = await prisma.tobiratory_boxes.findUnique({
+          where: {
+            id: boxId,
+          },
+        });
+        if (!boxData) {
+          res.status(401).send({
+            status: "error",
+            data: {
+              msg: "not-exist",
+            },
+          });
+          return;
+        }
+        if (boxData.uuid != uid) {
+          res.status(401).send({
+            status: "error",
+            data: {
+              msg: "not-yours",
+            },
+          });
+          return;
+        }
+        const updatedBox = await prisma.tobiratory_boxes.update({
+          where: {
+            id: boxId,
+          },
+          data: {
+            gift_permission: !boxData.gift_permission,
+          },
+        });
+        giftPermission = updatedBox.gift_permission;
+      } catch (error) {
         res.status(401).send({
           status: "error",
-          data: {
-            msg: "not-yours",
-          },
+          data: error,
         });
         return;
       }
-      const updatedBox = await prisma.tobiratory_boxes.update({
-        where: {
-          id: boxId,
-        },
-        data: {
-          gift_permission: !boxData.gift_permission,
-        },
-      });
-      res.status(200).send({
-        status: "success",
-        data: updatedBox,
-      });
-    } catch (error) {
-      res.status(401).send({
-        status: "error",
-        data: error,
-      });
-      return;
     }
+    const hashids = new Hashids();
+    const address = hashids.encode(userData?.id + boxId);
+    res.status(200).send({
+      status: "success",
+      data: {
+        address: address,
+        giftPermission: giftPermission,
+      },
+    });
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
@@ -89,6 +127,18 @@ export const getInventoryData = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
+      const userData = await prisma.tobiratory_accounts.findUnique({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (!userData) {
+        res.status(401).send({
+          status: "error",
+          data: "user-not-exist",
+        });
+        return;
+      }
       const boxes = await prisma.tobiratory_boxes.findMany({
         where: {
           uuid: uid,
@@ -98,7 +148,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.tobiratory_items.findMany({
+        const itemsInBox = await prisma.tobiratory_digital_items.findMany({
           where: {
             box_id: box.id,
           },
@@ -107,20 +157,20 @@ export const getInventoryData = async (req: Request, res: Response) => {
           },
         });
         const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-        .map((item)=>{
-          return {
-            id: item.id,
-            title: item.title,
-            image: item.image,
-          };
-        });
+            .map((item)=>{
+              return {
+                id: item.id,
+                title: item.title,
+                image: item.image,
+              };
+            });
         return {
           id: box.id,
           name: box.name,
           items: items4,
         };
       }));
-      const items = await prisma.tobiratory_items.findMany({
+      const items = await prisma.tobiratory_digital_items.findMany({
         where: {
           creator_uid: uid,
           box_id: 0,
@@ -135,12 +185,13 @@ export const getInventoryData = async (req: Request, res: Response) => {
           title: item.title,
           image: item.image,
           saidanId: item.saidan_id,
+          status: item.mint_status,
         };
       });
       res.status(200).send({
         status: "success",
         data: {
-          giftPermission: false,
+          giftPermission: userData.gift_permission,
           items: returnItems,
           boxes: returnBoxes,
         },
@@ -183,7 +234,7 @@ export const getBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    const items = await prisma.tobiratory_items.findMany({
+    const items = await prisma.tobiratory_digital_items.findMany({
       where: {
         box_id: parseInt(id),
       },

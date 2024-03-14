@@ -20,7 +20,7 @@ import {getContentById, getContents} from "./contentController";
 import {createItem, createModel, createSample, deleteSample, getItems, getItemsById, getMyItems, getMyItemsById, getMySamples, updateItem} from "./itemController";
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
-import {makeBox, getBoxData, deleteBoxData, getInventoryData} from "./boxController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift} from "./boxController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -69,6 +69,7 @@ app.post("/my/inventory", dummyResponse);
 app.post("/my/inventory/box", makeBox);
 app.get("/my/inventory/box/:id", getBoxData);
 app.delete("/my/inventory/box/:id", deleteBoxData);
+app.post("/my/inventory/gift-permission", permissionGift);
 
 app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);

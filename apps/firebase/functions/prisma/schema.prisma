@@ -8,7 +8,8 @@ datasource db {
 }
 
 model tobiratory_accounts {
-  uuid              String   @id @db.VarChar(100)
+  id                Int      @id @default(autoincrement())
+  uuid              String   @db.VarChar(100) @unique
   email             String   @db.VarChar(255)
   username          String   @db.VarChar(255)
   sns               String   @db.VarChar(255)
@@ -17,6 +18,7 @@ model tobiratory_accounts {
   social_link       String[] @db.VarChar(255) @default([])
   gender            String   @db.VarChar(255) @default("")
   birth             String   @db.VarChar(255) @default("")
+  gift_permission   Boolean  @default(false)
   updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
@@ -56,7 +58,7 @@ model tobiratory_contents {
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_items {
+model tobiratory_digital_items {
   id                Int     @id @default(autoincrement())
   creator_uid       String  @db.VarChar(100)
   title             String  @db.VarChar(255)
@@ -64,7 +66,7 @@ model tobiratory_items {
   type              String  @db.VarChar(255)
   content_id        Int
   saidan_id         Int
-  box_id            Int
+  mint_status       String  @default("minting") // "minted", "opened"
   updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
@@ -72,12 +74,17 @@ model tobiratory_items {
 model tobiratory_sample_items {
   id                Int     @id @default(autoincrement())
   digital_item_id   Int
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_digital_item_nfts {
-  serial_no         Int     @id @default(autoincrement())
+  serial_no         String    @id
   digital_item_id   Int
-  owner_uid         String  @db.VarChar(100)
+  owner_uid         String    @db.VarChar(100)
+  box_id            Int
+  updated_date_time DateTime  @default(now()) @db.Timestamp(6)
+  created_date_time DateTime  @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_boxes {

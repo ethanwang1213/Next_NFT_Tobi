@@ -56,6 +56,11 @@ export const signUp = async (req: Request, res: Response) => {
       const createdUser = await prisma.tobiratory_accounts.create({
         data: userData,
       });
+      const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
+        where: {
+          uuid: decodedToken.uid,
+        },
+      });
       res.status(200).send({
         status: "success",
         data: {
@@ -68,7 +73,11 @@ export const signUp = async (req: Request, res: Response) => {
           socialLinks: createdUser.social_link,
           gender: createdUser.gender,
           birth: createdUser.birth,
-          flow: null,
+          flow: flowAcc==null ? null : {
+            flowAddress: flowAcc.flow_address,
+            publicKey: flowAcc.public_key,
+            txId: flowAcc.tx_id,
+          },
           createdAt: createdUser.created_date_time,
         },
       });
@@ -123,9 +132,13 @@ export const createFlowAcc = async (req: Request, res: Response) => {
       },
     });
     if (flowAcc != null) {
-      res.status(401).send({
-        status: "error",
-        data: "Flow account already exist",
+      res.status(200).send({
+        status: "success",
+        data: {
+          flowAddress: flowAcc.flow_address,
+          publicKey: flowAcc.public_key,
+          txId: flowAcc.tx_id,
+        },
       });
     }
     const flowInfo = await createFlowAccount(uid);
@@ -428,56 +441,6 @@ export const updateMyBusiness = async (req: Request, res: Response) => {
     });
   });
 };
-
-export const myInventory = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    // const businesses =
-    const items = await prisma.tobiratory_items.findMany({
-      where: {
-        creator_uid: uid,
-      },
-    });
-    const resData = {
-      item: items,
-      boxes: [],
-    };
-    res.status(200).send({
-      status: "success",
-      data: resData,
-    });
-  });
-};
-
-// export const updateMyInventory = async (req: Request, res: Response) => {
-//   const {authorization} = req.headers;
-//   const userData = await prisma.tobiratory_accounts.findUnique({
-//     where: {
-//       uuid: uuid,
-//     },
-//   });
-//   if (userData == null) {
-//     res.status(200).send({
-//       status: "error",
-//       data: "Userdata does not exist.",
-//     });
-//   }
-//   // const businesses =
-//   await prisma.tobiratory_items.findMany({
-//     where: {
-//       id: parseInt(uuid),
-//     },
-//   });
-//   const resData = {
-//     item: [],
-//     boxes: [],
-//   };
-//   res.status(200).send({
-//     status: "success",
-//     data: resData,
-//   });
-// };
 
 export const getNFTInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
