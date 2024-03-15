@@ -56,7 +56,7 @@ export const permissionGift = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (boxData.uuid != uid) {
+        if (boxData.creator_uid != uid) {
           res.status(401).send({
             status: "error",
             data: {
@@ -106,7 +106,7 @@ export const makeBox = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     await prisma.tobiratory_boxes.create({
       data: {
-        uuid: uid,
+        creator_uid: uid,
         name: name,
       },
     });
@@ -141,14 +141,14 @@ export const getInventoryData = async (req: Request, res: Response) => {
       }
       const boxes = await prisma.tobiratory_boxes.findMany({
         where: {
-          uuid: uid,
+          creator_uid: uid,
         },
         orderBy: {
           created_date_time: "desc",
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.tobiratory_digital_items.findMany({
+        const itemsInBox = await prisma.tobiratory_digital_item_nfts.findMany({
           where: {
             box_id: box.id,
           },
@@ -156,38 +156,52 @@ export const getInventoryData = async (req: Request, res: Response) => {
             updated_date_time: "desc",
           },
         });
-        const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-            .map((item)=>{
-              return {
-                id: item.id,
-                title: item.title,
-                image: item.image,
-              };
-            });
+        const items4 = await Promise.all(
+            itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+                .map(async (item)=>{
+                  const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+                    where: {
+                      id: item.digital_item_id,
+                    },
+                  });
+                  return {
+                    id: item.id,
+                    title: itemInfo?.title,
+                    image: itemInfo?.image,
+                  };
+                })
+        );
         return {
           id: box.id,
           name: box.name,
           items: items4,
         };
       }));
-      const items = await prisma.tobiratory_digital_items.findMany({
+      const items = await prisma.tobiratory_digital_item_nfts.findMany({
         where: {
-          creator_uid: uid,
+          owner_uid: uid,
           box_id: 0,
         },
         orderBy: {
           updated_date_time: "desc",
         },
       });
-      const returnItems = items.map((item)=>{
-        return {
-          id: item.id,
-          title: item.title,
-          image: item.image,
-          saidanId: item.saidan_id,
-          status: item.mint_status,
-        };
-      });
+      const returnItems = await Promise.all(
+          items.map(async (item)=>{
+            const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: item.digital_item_id,
+              },
+            });
+            return {
+              id: item.id,
+              title: itemInfo?.title,
+              image: itemInfo?.image,
+              saidanId: itemInfo?.saidan_id,
+              status: item?.mint_status,
+            };
+          })
+      );
       res.status(200).send({
         status: "success",
         data: {
@@ -227,26 +241,33 @@ export const getBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.uuid != uuid) {
+    if (box.creator_uid != uuid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    const items = await prisma.tobiratory_digital_items.findMany({
+    const items = await prisma.tobiratory_digital_item_nfts.findMany({
       where: {
         box_id: parseInt(id),
       },
     });
-    const returnItem = items.map((item)=>{
-      return {
-        id: item.id,
-        title: item.title,
-        image: item.image,
-        saidanId: item.saidan_id,
-      };
-    });
+    const returnItem = await Promise.all(
+        items.map(async (item)=>{
+          const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+            where: {
+              id: item.digital_item_id,
+            },
+          });
+          return {
+            id: item.id,
+            title: itemInfo?.title,
+            image: itemInfo?.image,
+            saidanId: itemInfo?.saidan_id,
+          };
+        })
+    );
     res.status(200).send({
       status: "success",
       data: {
@@ -279,7 +300,7 @@ export const deleteBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.uuid == uid) {
+    if (box.creator_uid == uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",

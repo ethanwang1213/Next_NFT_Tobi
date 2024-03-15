@@ -238,7 +238,8 @@ export const postMyProfile = async (req: Request, res: Response) => {
     aboutMe?: string,
     socialLinks?: Array<string>,
     gender?: string,
-    birth?: string
+    birth?: string,
+    giftPermission?: boolean
   }
   type FlowType = {
     flowAddress?: string,
@@ -247,6 +248,22 @@ export const postMyProfile = async (req: Request, res: Response) => {
   }
   const {authorization} = req.headers;
   const {account, flow}: { account?: AccountType; flow?: FlowType } = req.body;
+  const accountUpdated = {
+    username: account?.username,
+    email: account?.email,
+    icon_url: account?.icon,
+    sns: account?.sns,
+    about_me: account?.aboutMe,
+    social_link: account?.socialLinks,
+    gender: account?.gender,
+    birth: account?.birth,
+    gift_permission: account?.giftPermission,
+  };
+  const flowUpdated = {
+    flow_address: flow?.flowAddress,
+    public_key: flow?.publicKey,
+    tx_id: flow?.txId,
+  };
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     let accountData; let flowData;
@@ -267,7 +284,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
           where: {
             uuid: uid,
           },
-          data: account,
+          data: accountUpdated,
         });
       }
       if (flow&&isEmptyObject(flow)) {
@@ -275,7 +292,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
           where: {
             uuid: uid,
           },
-          data: flow,
+          data: flowUpdated,
         });
       }
     } catch (error) {
@@ -290,8 +307,23 @@ export const postMyProfile = async (req: Request, res: Response) => {
     res.status(200).send({
       status: "success",
       data: {
-        account: accountData,
-        flow: flowData,
+        account: {
+          userId: accountData?.uuid,
+          username: accountData?.username,
+          email: accountData?.email,
+          icon: accountData?.icon_url,
+          sns: accountData?.sns,
+          aboutMe: accountData?.about_me,
+          socialLinks: accountData?.social_link,
+          gender: accountData?.gender,
+          birth: accountData?.birth,
+          createdAt: accountData?.created_date_time,
+        },
+        flow: flowData==null ? undefined : {
+          flowAddress: flowData.flow_address,
+          publicKey: flowData.public_key,
+          txId: flowData.tx_id,
+        },
       },
     });
   }).catch((error: FirebaseError)=>{

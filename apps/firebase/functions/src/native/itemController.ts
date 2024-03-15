@@ -15,7 +15,7 @@ export const getItems = async (req: Request, res: Response) => {
     enumerable: true,
     configurable: true,
   });
-  const items = await prisma.tobiratory_items.findMany({
+  const items = await prisma.tobiratory_digital_items.findMany({
     where: {
       title: {
         in: [q],
@@ -58,7 +58,7 @@ export const getItems = async (req: Request, res: Response) => {
 
 export const getItemsById = async (req: Request, res: Response) => {
   const {id} = req.params;
-  const itemData = await prisma.tobiratory_items.findUnique({
+  const itemData = await prisma.tobiratory_digital_items.findUnique({
     where: {
       id: parseInt(id),
     },
@@ -108,7 +108,7 @@ export const getMyItems = async (req: Request, res: Response) => {
   });
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const items = await prisma.tobiratory_items.findMany({
+    const items = await prisma.tobiratory_digital_items.findMany({
       where: {
         creator_uid: {
           equals: uid,
@@ -163,7 +163,7 @@ export const getMyItemsById = async (req: Request, res: Response) => {
   const {id} = req.params;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const itemData = await prisma.tobiratory_items.findUnique({
+    const itemData = await prisma.tobiratory_digital_items.findUnique({
       where: {
         id: parseInt(id),
         creator_uid: uid,
@@ -212,7 +212,7 @@ export const createItem = async (req: Request, res: Response) => {
   const {title, image, type} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const item = await prisma.tobiratory_items.create({
+    const item = await prisma.tobiratory_digital_items.create({
       data: {
         creator_uid: uid,
         title: title,
@@ -220,7 +220,6 @@ export const createItem = async (req: Request, res: Response) => {
         type: type,
         content_id: 0,
         saidan_id: 0,
-        box_id: 0,
       },
     });
     await prisma.tobiratory_sample_items.create({
@@ -248,7 +247,7 @@ export const updateItem = async (req: Request, res: Response) => {
   const {itemData} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const item = await prisma.tobiratory_items.update({
+    const item = await prisma.tobiratory_digital_items.update({
       where: {
         id: parseInt(id),
         creator_uid: uid,
