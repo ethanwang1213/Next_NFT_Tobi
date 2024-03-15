@@ -2,8 +2,8 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {REGION} from "./lib/constants";
 
-export const pushDemo = functions.region(REGION).https.onCall(async (data, _response) => {
-  const token = data.token;
+export const pushDemo = functions.region(REGION).https.onRequest(async (req, response) => {
+  const token = req.query.token as string;
 
   const message = {
     notification: {
@@ -11,11 +11,12 @@ export const pushDemo = functions.region(REGION).https.onCall(async (data, _resp
       body: "Notification Body",
     },
     data: {
-      title: "Data Title",
-      body: "Data Body",
-    }
+      body: "{ \"type\": \"mintCompleted\", \"data\": { \"id\": 0 } }",
+    },
   };
   pushToDevice(token, message);
+
+  response.status(200).send("submit").end();
 });
 
 export const pushToDevice = (deviceToken: string, message: {
