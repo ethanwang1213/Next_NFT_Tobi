@@ -19,24 +19,15 @@ export const pushDemo = functions.region(REGION).https.onCall(async (data, _resp
 });
 
 export const pushToDevice = (deviceToken: string, message: {
-  notification: {
+  notification?: {
     title: string,
     body: string,
   },
-  data: {
-    title: string,
+  data?: {
     body: string,
   }
 }) => {
-  admin.messaging().send({
-    notification: {
-      title: message.notification.title,
-      body: message.notification.body,
-    },
-    data: {
-      title: message.data.title,
-      body: message.data.body,
-    },
+  const body: any = {
     android: {
       notification: {
         sound: "default",
@@ -52,7 +43,20 @@ export const pushToDevice = (deviceToken: string, message: {
       },
     },
     token: deviceToken,
-  })
+  };
+  if (message.notification) {
+    body.notification = {
+      title: message.notification.title,
+      body: message.notification.body,
+    };
+  }
+  if (message.data) {
+    body.data = {
+      body: message.data.body,
+    };
+  }
+
+  admin.messaging().send(body)
       .then((response) => {
         return {
           text: deviceToken,
