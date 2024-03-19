@@ -1,53 +1,98 @@
 import { auth } from "fetchers/firebase/client";
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   OAuthProvider,
+  sendEmailVerification,
   sendSignInLinkToEmail,
+  signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { useState } from "react";
+import { ErrorMessage } from "types/adminTypes";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
+import EmailAndPasswordSignIn from "ui/templates/admin/EmailAndPasswordSignIn";
+import FlowAgreementWithEmailAndPassword from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import AuthTemplate, { LoginFormType } from "ui/templates/AuthTemplate";
 
 const AuthStates = {
   SignUp: 0,
   SignIn: 1,
-  MailSent: 2,
+  SignInWithEmailAndPassword: 2,
+  SignUpWithEmailAndPassword: 3,
+  PasswordReset: 4,
+  EmailSent: 5,
 } as const;
 type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
 const Authentication = () => {
+  const [email, setEmail] = useState("");
+  const [authError, setAuthError] = useState<ErrorMessage>(null);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [authState, setAuthState] = useState<AuthState>(AuthStates.SignIn);
+  const [
+    isRegisteringWithMailAndPassword,
+    setIsRegisteringWithMailAndPassword,
+  ] = useState(false);
 
-  // TODO: メールアドレスを使ってサインインする流れが変更になったので、後で修正する
-  const withMail = (data: LoginFormType) => {
+  const startMailSignUp = (data: LoginFormType) => {
     if (!data) {
       return;
     }
 
-    const actionCodeSettings = {
-      // URL you want to redirect back to. The domain (www.example.com) for this
-      // URL must be in the authorized domains list in the Firebase Console.
-      url: `${window.location.origin}/admin/auth/email_auth`,
-      // This must be true.
-      handleCodeInApp: true,
-    };
+    setEmail(data.email);
+    setAuthState(AuthStates.SignUpWithEmailAndPassword);
+  };
+
+  const startMailSignIn = (data: LoginFormType) => {
+    if (!data) {
+      return;
+    }
+
+    setEmail(data.email);
+    setAuthState(AuthStates.SignInWithEmailAndPassword);
+  };
+
+  const withMailSignUp = async (email: string, password: string) => {
+    setIsRegisteringWithMailAndPassword(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      console.log(userCredential);
+      await sendEmailOwnershipVerification("admin/auth/email_auth");
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        setAuthState(AuthStates.SignInWithEmailAndPassword);
+        return;
+      }
+      setAuthError({ code: error.code, message: error.message });
+      setIsRegisteringWithMailAndPassword(false);
+    }
+  };
+
+  const withMailSignIn = async (email: string, password: string) => {
     setIsEmailLoading(true);
-    sendSignInLinkToEmail(auth, data.email, actionCodeSettings)
-      .then(() => {
-        // The link was successfully sent. Inform the user.
-        // Save the email locally so you don't need to ask the user for it again
-        // if they open the link on the same device.
-        window.localStorage.setItem("emailForSignIn", data.email);
-        setAuthState(AuthStates.MailSent);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error("code: ", errorCode, ": ", errorMessage);
-        setIsEmailLoading(false);
-      });
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
+      console.log(user);
+      if (!user.emailVerified) {
+        console.log("email not verified");
+        await sendEmailOwnershipVerification("admin/auth/sns_auth");
+      }
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      setAuthError({ code: errorCode, message: errorMessage });
+      setIsEmailLoading(false);
+    }
   };
 
   const withGoogle = async () => {
@@ -70,6 +115,35 @@ const Authentication = () => {
     }
   };
 
+  const sendEmailOwnershipVerification = async (path: string) => {
+    const actionCodeSettings = {
+      url: `${window.location.origin}/${path}`,
+      handleCodeInApp: true,
+    };
+    try {
+      await sendEmailVerification(auth.currentUser, actionCodeSettings);
+      setAuthState(AuthStates.EmailSent);
+    } catch (error) {
+      setAuthError({ code: error.code, message: error.message });
+      setIsEmailLoading(false);
+    }
+  };
+
+  const sendEmailForPasswordReset = async (email: string, path: string) => {
+    const actionCodeSettings = {
+      url: `${window.location.origin}/${path}`,
+      handleCodeInApp: true,
+    };
+    try {
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      window.localStorage.setItem("emailForSignIn", email);
+      setAuthState(AuthStates.EmailSent);
+    } catch (error) {
+      setAuthError({ code: error.code, message: error.message });
+      setIsEmailLoading(false);
+    }
+  };
+
   switch (authState) {
     case AuthStates.SignUp:
       return (
@@ -80,7 +154,7 @@ const Authentication = () => {
           mailLabel={"サインアップ"}
           prompt={"既にアカウントを持っていますか？ - サインイン"}
           setAuthState={() => setAuthState(AuthStates.SignIn)}
-          withMail={withMail}
+          withMail={startMailSignUp}
           withGoogle={withGoogle}
           withApple={withApple}
         />
@@ -94,12 +168,36 @@ const Authentication = () => {
           mailLabel={"サインイン"}
           prompt={"アカウントを持っていませんか？ - 新規登録"}
           setAuthState={() => setAuthState(AuthStates.SignUp)}
-          withMail={withMail}
+          withMail={startMailSignIn}
           withGoogle={withGoogle}
           withApple={withApple}
         />
       );
-    case AuthStates.MailSent:
+    case AuthStates.SignUpWithEmailAndPassword:
+      return (
+        <FlowAgreementWithEmailAndPassword
+          title={"パスワード設定"}
+          buttonText={"登録"}
+          email={email}
+          isSubmitting={isRegisteringWithMailAndPassword}
+          isPasswordReset={false}
+          authError={authError}
+          onClickSubmit={withMailSignUp}
+        />
+      );
+    case AuthStates.SignInWithEmailAndPassword:
+      return (
+        <EmailAndPasswordSignIn
+          email={email}
+          loading={isEmailLoading}
+          error={authError}
+          onClickPasswordReset={(email) =>
+            sendEmailForPasswordReset(email, "admin/auth/password_reset")
+          }
+          withMailSignIn={withMailSignIn}
+        />
+      );
+    case AuthStates.EmailSent:
       return <ConfirmationSent />;
   }
 };

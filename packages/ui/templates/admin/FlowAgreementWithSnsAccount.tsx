@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { User } from "types/adminTypes";
 import Button from "ui/atoms/Button";
 
@@ -9,8 +9,6 @@ type Props = {
 };
 
 const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
-  const aboutLinkToFlowAccount = useRef<HTMLDialogElement>(null);
-  const termsDialogRef = useRef<HTMLDialogElement>(null);
   const [agreed, setAgreed] = useState(false);
   const buttonColor = () => {
     if (agreed) {

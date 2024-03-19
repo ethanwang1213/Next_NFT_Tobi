@@ -25,7 +25,7 @@ const Layout = ({ children }: Props) => {
 
 const Contents = ({ children }: Props) => {
   const { user } = useAuth();
-  if (auth.currentUser && user.registeredFlowAccount) {
+  if (auth.currentUser && user?.registeredFlowAccount) {
     return (
       <NavbarProvider>
         <div className="flex flex-col h-screen">

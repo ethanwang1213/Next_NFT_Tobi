@@ -1,10 +1,10 @@
 import { useAuth } from "contexts/AdminAuthProvider";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import FlowAgreementWithSnsAccount from "ui/templates/admin/FlowAgreementWithSnsAccount";
+import Loading from "ui/atoms/Loading";
 import FlowRegister from "ui/templates/admin/FlowRegister";
 
-const SnsAuth = () => {
+const EmailAuth = () => {
   const { user } = useAuth();
   const router = useRouter();
   const [isRegistering, setIsRegistering] = useState(false);
@@ -13,12 +13,19 @@ const SnsAuth = () => {
   useEffect(() => {
     if (!user) {
       router.push("/authentication");
-    } else if (user.registeredFlowAccount) {
-      router.push("/");
+      return;
     }
+
+    if (user?.registeredFlowAccount) {
+      router.push("/");
+      return;
+    }
+
+    startRegistering();
   }, [router, user]);
 
   const startRegistering = () => {
+    // TODO: Register Tobiratory account and Flow account
     setIsRegistering(true);
     const timer = setTimeout(() => {
       setFlowAccountRegistered(true);
@@ -26,22 +33,17 @@ const SnsAuth = () => {
     return () => clearTimeout(timer);
   };
 
-  if (!user) {
-    return <div>redirect to signin page</div>;
-  }
-
-  if (user.registeredFlowAccount) {
+  if (user?.registeredFlowAccount) {
     return <div>redirect to top page</div>;
   } else if (isRegistering) {
     return <FlowRegister registered={flowAccountRegistered} />;
   } else {
     return (
-      <FlowAgreementWithSnsAccount
-        user={user}
-        onClickRegister={startRegistering}
-      />
+      <div className={"h-[100dvh] flex justify-center"}>
+        <Loading className={"loading-spinner text-info loading-md"} />
+      </div>
     );
   }
 };
 
-export default SnsAuth;
+export default EmailAuth;

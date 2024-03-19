@@ -1,5 +1,10 @@
 import { auth } from "fetchers/firebase/client";
-import { onAuthStateChanged } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
+  onAuthStateChanged,
+  User as FirebaseUser,
+} from "firebase/auth";
 import Router, { useRouter } from "next/router";
 import React, {
   createContext,
@@ -19,12 +24,10 @@ type Props = {
 type ContextType = {
   user?: User;
   signOut: () => Promise<void>;
-  confirmFlowAccountRegistration: () => void;
+  finishFlowAccountRegistration: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
-
-const unauthenticatedPages = ["/auth/email_auth", "/authentication"];
 
 /**
  * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー
@@ -35,9 +38,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const MAX_NAME_LENGTH = 12;
+  const unrestrictedPaths = ["/authentication", "/auth/password_reset"];
+  const maxNameLength = 12;
 
   useEffect(() => {
+    console.log("onAuthStateChanged start");
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合
@@ -45,25 +50,65 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         // TODO: リリースする前に消そう
         console.log(`UID: ${firebaseUser.uid}`);
         console.log(`メールアドレス: ${firebaseUser.email}`);
+
+        console.log(firebaseUser.providerData);
+        const signInMethods = await fetchSignInMethodsForEmail(
+          auth,
+          firebaseUser.email,
+        );
+        console.log(signInMethods);
+        console.log("Router.pathname: ", Router.pathname);
+
+        // If we use the router, we need to include it in the dependencies,
+        // and useEffect gets called multiple times. So, let's avoid using the router.
+        if (Router.pathname === "/auth/password_reset") {
+          if (
+            !signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)
+          ) {
+            Router.push("/authentication");
+          }
+          return;
+        } else if (Router.pathname === "/auth/email_auth") {
+          if (
+            !signInMethods.includes(
+              EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
+            ) ||
+            !firebaseUser.emailVerified
+          ) {
+            Router.push("/authentication");
+            return;
+          }
+        } else if (Router.pathname === "/auth/sns_auth") {
+          if (
+            signInMethods.includes(
+              EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
+            ) ||
+            !firebaseUser.emailVerified
+          ) {
+            Router.push("/authentication");
+            return;
+          }
+        }
+
         // TODO: check flow account by API
-        if (true) {
-          // not registered flow account yet
-          createUser(firebaseUser.uid, false, firebaseUser.email);
-          console.log("register flow account");
-          if (Router.pathname !== "/auth/email_auth") {
-            Router.push("/auth/sns_auth");
+        const isRegisteredFlowAccount = false;
+        if (isRegisteredFlowAccount) {
+          // already registered flow account
+          await createUser(firebaseUser, true);
+          if (Router.pathname == "/authentication") {
+            Router.push("/");
+            return;
           }
         } else {
-          createUser(firebaseUser.uid, true, firebaseUser.email);
-          // If we use the router, we need to include it in the dependencies,
-          // and useEffect gets called multiple times. So, let's avoid using the router.
-          if (Router.pathname === "/authentication") {
-            Router.push("/");
-          }
+          console.log("start registering flow account");
+          // not registered flow account yet
+          await createUser(firebaseUser, false);
+          Router.push("/auth/sns_auth");
+          return;
         }
       } else {
         setUser(null);
-        if (!unauthenticatedPages.includes(Router.pathname)) {
+        if (!unrestrictedPaths.includes(Router.pathname)) {
           Router.push("/authentication");
         }
       }
@@ -71,24 +116,30 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // ユーザー作成用関数
-  const createUser = (
-    uid: string,
+  const createUser = async (
+    firebaseUser: FirebaseUser,
     registeredFlowAccount: boolean,
-    email?: string | null,
   ) => {
-    const appUser: User = {
-      id: uid,
-      name: email?.split("@")[0].slice(0, MAX_NAME_LENGTH) ?? "", // nameには、メールアドレスの@より前でMAX_NAME_LENGTH文字までを格納する
-      email: email ?? "",
-      registeredFlowAccount: registeredFlowAccount,
-    };
-    setUser(appUser);
+    const email = firebaseUser.email;
+    try {
+      const appUser: User = {
+        id: firebaseUser.uid,
+        name: email.split("@")[0].slice(0, maxNameLength) ?? "",
+        email: email,
+        emailVerified: firebaseUser.emailVerified,
+        registeredFlowAccount: registeredFlowAccount,
+      };
+      setUser(appUser);
+    } catch (error) {
+      console.error("sign in methods error", error);
+      setUser(null);
+      await auth.signOut();
+    }
   };
 
   const signOut = async () => {
     try {
-      if (user?.email) {
+      if (user) {
         await auth.signOut();
       }
       router.push("/authentication");
@@ -97,9 +148,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const confirmFlowAccountRegistration = () => {
+  const finishFlowAccountRegistration = () => {
     if (!user) {
       router.push("/authentication");
+      return;
     }
 
     if (user.registeredFlowAccount) {
@@ -109,13 +161,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     setUser((prev) => ({ ...prev, registeredFlowAccount: true }));
   };
 
-  if (user || unauthenticatedPages.includes(router.pathname)) {
+  if (user || unrestrictedPaths.includes(router.pathname)) {
     return (
       <AuthContext.Provider
         value={{
           user,
           signOut,
-          confirmFlowAccountRegistration,
+          finishFlowAccountRegistration: finishFlowAccountRegistration,
         }}
       >
         {children}

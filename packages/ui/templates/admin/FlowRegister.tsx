@@ -38,15 +38,12 @@ const ProcesssingStatus = ({ registered }: Props) => {
 };
 
 const RegisterButton = ({ registered }: Props) => {
-  const { confirmFlowAccountRegistration } = useAuth();
-  const handleClick = () => {
-    confirmFlowAccountRegistration();
-  };
+  const { finishFlowAccountRegistration } = useAuth();
   if (registered) {
     return (
       <Button
         className="bg-primary text-primary-content w-[179px] h-[48px] rounded-2xl"
-        onClick={confirmFlowAccountRegistration}
+        onClick={finishFlowAccountRegistration}
       >
         完了
       </Button>

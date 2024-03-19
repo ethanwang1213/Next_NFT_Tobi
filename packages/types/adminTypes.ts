@@ -2,6 +2,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
+  emailVerified: boolean;
   registeredFlowAccount: boolean;
 };
 
@@ -15,3 +16,8 @@ export interface FILTER {
   label: string;
   children?: Array<FILTER>;
 }
+
+export type ErrorMessage = {
+  code: string;
+  message: string;
+};
