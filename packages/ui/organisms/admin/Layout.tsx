@@ -36,7 +36,22 @@ const Contents = ({ children }: Props) => {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <div className={"flex flow-row sm:justify-center min-h-screen h-screen"}>
+      <div className={"grow flex flex-col self-stretch"}>
+        {children}
+        <div className={"flex grow justify-center"}>
+          <div className="self-end font-normal text-[12px] text-base-content">
+            Tobiratory Inc. all rights reserved.
+          </div>
+        </div>
+      </div>
+      <img
+        src={"/admin/images/bg-logo-png.png"}
+        className={"max-sm:hidden object-cover overflow-scroll"}
+      />
+    </div>
+  );
 };
 
 export default Layout;

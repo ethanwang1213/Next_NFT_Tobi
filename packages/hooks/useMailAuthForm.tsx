@@ -14,6 +14,7 @@ type PasswordStatus = {
   usedSymbol: boolean;
   usedThreeOrMoreCharacterTypes: boolean;
   isValidLength: boolean;
+  validationStepCount: number;
   valid: boolean;
   error: string;
 };
@@ -38,6 +39,7 @@ const useMailAuthForm = (email: string) => {
     usedSymbol: false,
     usedThreeOrMoreCharacterTypes: false,
     isValidLength: false,
+    validationStepCount: 0,
     valid: false,
     error: "",
   });

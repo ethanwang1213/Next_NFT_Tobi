@@ -5,6 +5,7 @@ import {
   signInWithEmailLink,
   updatePassword,
 } from "firebase/auth";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
@@ -56,12 +57,20 @@ const PasswordReset = () => {
     return <div>redirect to top page</div>;
   } else if (updatedPassword) {
     return (
-      <div className="flex flex-col items-center justify-center w-[100dvw] h-[100dvh] p-8">
-        <div>パスワードをリセットしました</div>
+      <div className="flex flex-col items-center justify-center w-[100dvw] p-8">
+        <Image
+          src={"/admin/images/tobiratory-logo.svg"}
+          alt={"Tobiratory logo"}
+          width={110}
+          height={114}
+        />
+        <div className={"mt-[200px]"}>パスワードをリセットしました</div>
         <div>
           <button
             type={"button"}
-            className={"btn-link text-xs text-primary"}
+            className={
+              "btn-link font-medium text-[14px] text-primary mt-[20px]"
+            }
             onClick={() => router.push("/authentication")}
           >
             認証画面へ

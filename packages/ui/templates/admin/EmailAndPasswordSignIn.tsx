@@ -1,12 +1,15 @@
+import Image from "next/image";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import Button from "ui/atoms/Button";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
+import BackLink from "ui/organisms/admin/BackLink";
 
-export type Props = {
+type Props = {
   email: string;
   loading: boolean;
   error?: ErrorMessage;
+  onClickBack: () => void;
   onClickPasswordReset: (email: string) => void;
   withMailSignIn: (email: string, password: string) => void;
 };
@@ -15,6 +18,7 @@ const EmailAndPasswordSignIn = ({
   email,
   loading,
   error,
+  onClickBack,
   onClickPasswordReset,
   withMailSignIn,
 }: Props) => {
@@ -22,35 +26,50 @@ const EmailAndPasswordSignIn = ({
 
   return (
     <>
-      <div className="flex items-center justify-center w-[100dvw] h-[100dvh] p-8">
-        <div className="p-7 rounded-[40px] flex flex-col gap-5 items-center max-w-[400px] z-10">
-          <div className={"text-[32px]"}>パスワードを入力</div>
-          <div className="w-[408px]">
-            <input
-              type={"text"}
-              value={email}
-              disabled={true}
-              className="rounded-2xl bg-slate-100 w-[408px] h-[52px] text-center input-bordered"
-            />
-            <input
-              type={"password"}
-              value={password}
-              placeholder={"パスワード"}
-              className="rounded-2xl bg-slate-100 w-[408px] h-[52px] placeholder:text-center input-bordered mt-4"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div>
-            <button
-              type={"button"}
-              className={"btn-link text-xs text-primary"}
-              onClick={() => onClickPasswordReset(email)}
-            >
-              パスワードを再設定する
-            </button>
-          </div>
+      <div className="flex flex-col items-center justify-center p-8">
+        <div className={"w-full"}>
+          <BackLink onClickBack={onClickBack} />
+        </div>
+        <Image
+          src={"/admin/images/tobiratory-name-logo.svg"}
+          alt={"link tobiratory account with flow account"}
+          width={450}
+          height={96}
+        />
+        <div className={"text-[32px] h-[80px] mt-[50px] font-bold"}>
+          パスワードを入力
+        </div>
+        <div className="w-[408px] mt-[80px]">
+          <input
+            type={"text"}
+            value={email}
+            disabled={true}
+            className="rounded-lg bg-disabled-field base-200-content font-normal w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+          />
+          <input
+            type={"password"}
+            value={password}
+            placeholder={"パスワード"}
+            className="rounded-lg base-content font-normal w-[408px] h-[52px] mt-[40px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className={"w-[408px] mt-[10px] text-right"}>
+          <button
+            type={"button"}
+            className={
+              "btn-link font-semibold text-[12px] no-underline text-primary"
+            }
+            onClick={() => onClickPasswordReset(email)}
+          >
+            パスワードを再設定する
+          </button>
+        </div>
+        <div className={"mt-[150px]"}>
           <FirebaseAuthError error={error} />
-          <LoadingButton
+        </div>
+        <div className={"mt-[10px]"}>
+          <SignInButton
             disabled={!!!password}
             loading={loading}
             onClick={() => withMailSignIn(email, password)}
@@ -61,7 +80,7 @@ const EmailAndPasswordSignIn = ({
   );
 };
 
-const LoadingButton = ({
+const SignInButton = ({
   disabled,
   loading,
   onClick,
@@ -81,7 +100,7 @@ const LoadingButton = ({
       }
       onClick={onClick}
     >
-      サインイン
+      <span className={"font-normal text-[20px]"}>サインイン</span>
     </Button>
   );
 };

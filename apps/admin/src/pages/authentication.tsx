@@ -144,6 +144,13 @@ const Authentication = () => {
     }
   };
 
+  const handleClickBack = (authState: AuthState) => {
+    setIsRegisteringWithMailAndPassword(false);
+    setIsEmailLoading(false);
+    setAuthError(null);
+    setAuthState(authState);
+  };
+
   switch (authState) {
     case AuthStates.SignUp:
       return (
@@ -176,12 +183,13 @@ const Authentication = () => {
     case AuthStates.SignUpWithEmailAndPassword:
       return (
         <FlowAgreementWithEmailAndPassword
-          title={"パスワード設定"}
+          title={""}
           buttonText={"登録"}
           email={email}
           isSubmitting={isRegisteringWithMailAndPassword}
           isPasswordReset={false}
           authError={authError}
+          onClickBack={() => handleClickBack(AuthStates.SignUp)}
           onClickSubmit={withMailSignUp}
         />
       );
@@ -191,6 +199,7 @@ const Authentication = () => {
           email={email}
           loading={isEmailLoading}
           error={authError}
+          onClickBack={() => handleClickBack(AuthStates.SignIn)}
           onClickPasswordReset={(email) =>
             sendEmailForPasswordReset(email, "admin/auth/password_reset")
           }
@@ -198,7 +207,11 @@ const Authentication = () => {
         />
       );
     case AuthStates.EmailSent:
-      return <ConfirmationSent />;
+      return (
+        <ConfirmationSent
+          onClickBack={() => handleClickBack(AuthStates.SignIn)}
+        />
+      );
   }
 };
 

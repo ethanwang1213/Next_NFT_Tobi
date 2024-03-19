@@ -33,7 +33,11 @@ const FirebaseAuthError = ({ error }: Props) => {
   if (!error) {
     return null;
   }
-  return <div className={"text-error text-sm"}>{getErrorMessage()}</div>;
+  return (
+    <div className={"font-semibold text-[12px] text-attention"}>
+      {getErrorMessage()}
+    </div>
+  );
 };
 
 export default FirebaseAuthError;

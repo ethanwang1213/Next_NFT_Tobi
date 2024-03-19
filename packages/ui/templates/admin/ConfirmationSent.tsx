@@ -1,37 +1,56 @@
 import Image from "next/image";
 import { useRef } from "react";
 import Button from "ui/atoms/Button";
+import BackLink from "ui/organisms/admin/BackLink";
 
-const ConfirmationSent = () => {
+type Props = {
+  onClickBack: () => void;
+};
+
+const ConfirmationSent = ({ onClickBack }: Props) => {
   const mailDeliveryIssueRef = useRef<HTMLDialogElement>(null);
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-[100dvw] h-[100dvh] p-8">
-        <div className={"text-[32px]"}>確認メールを送信しました！</div>
+      <div className="flex flex-col items-center justify-center h-[100dvh] p-8">
+        <div className={"w-full"}>
+          <BackLink onClickBack={onClickBack} />
+        </div>
+        <div className={"font-bold text-[32px]"}>
+          確認メールを送信しました！
+        </div>
         <Image
           src={"/admin/images/mail.svg"}
           alt={"sent mail"}
-          width={313}
-          height={114}
+          width={329}
+          height={282}
+          className={"mt-[100px]"}
         />
-        <div>メールボックスをご確認下さい。</div>
+        <div className={"mt-[50px] font-medium text-[16px] text-base-content"}>
+          メールボックスをご確認下さい。
+        </div>
         <div>メール内の認証リンクをクリックすることで認証が完了します。</div>
-        <button
-          className={"flex flex-row  items-center btn-link text-primary"}
-          onClick={() => mailDeliveryIssueRef.current.showModal()}
+        <a
+          href={"https://www.tobiratory.com/about"}
+          className={"text-primary underline mt-[30px]"}
+          target="_blank"
+          rel="noreferrer"
         >
-          <div
-            className={"w-[12px] h-[12px] bg-primary"}
-            style={{
-              WebkitMaskImage: "url(/admin/images/info-icon.svg)",
-              WebkitMaskRepeat: "no-repeat",
-              WebkitMaskPosition: "center",
-              WebkitMaskSize: "contain",
-            }}
-          ></div>
-          メールが届きませんか？
-        </button>
+          <div className={"flex flex-row items-baseline"}>
+            <div
+              className={"w-[12px] h-[12px] bg-primary"}
+              style={{
+                WebkitMaskImage: "url(/admin/images/info-icon.svg)",
+                WebkitMaskRepeat: "no-repeat",
+                WebkitMaskPosition: "center",
+                WebkitMaskSize: "contain",
+              }}
+            ></div>
+            <span className={"font-medium text-[12px]"}>
+              メールが届きませんか？
+            </span>
+          </div>
+        </a>
       </div>
       <MailDeliveryIssue dialogRef={mailDeliveryIssueRef} />
     </>

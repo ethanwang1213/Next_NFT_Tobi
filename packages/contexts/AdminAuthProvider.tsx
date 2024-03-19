@@ -107,6 +107,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           return;
         }
       } else {
+        console.log("onAuthStateChanged: user is null");
         setUser(null);
         if (!unrestrictedPaths.includes(Router.pathname)) {
           Router.push("/authentication");

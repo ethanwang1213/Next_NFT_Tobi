@@ -40,6 +40,7 @@ const config = {
         popup: "#07396C",
         "popup-content": "#FFFFFF",
         "hover-item": "#E5F0FF",
+        "disabled-field": "#A1A1A1",
       },
       textColor: {
         "title-color": "#717171",
@@ -67,6 +68,9 @@ const config = {
         "120": "30rem",
         "128": "32rem",
       },
+      backgroundImage: {
+        "tobiratory-logo": "url('/admin/images/bg-logo.svg')",
+      }
     },
   },
   daisyui: {

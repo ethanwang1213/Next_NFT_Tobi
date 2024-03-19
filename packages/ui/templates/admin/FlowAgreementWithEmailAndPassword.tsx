@@ -3,7 +3,9 @@ import Image from "next/image";
 import { SetStateAction, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import Button from "ui/atoms/Button";
-import FirebaseAuthError from "../../atoms/FirebaseAuthError";
+import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
+import BackLink from "ui/organisms/admin/BackLink";
+import { LoadingButton } from "ui/templates/admin/FlowRegister";
 
 type Props = {
   title: string;
@@ -12,6 +14,7 @@ type Props = {
   isSubmitting: boolean;
   isPasswordReset: boolean;
   authError?: ErrorMessage;
+  onClickBack?: () => void;
   onClickSubmit: (email: string, password: string) => void;
 };
 
@@ -25,6 +28,7 @@ const FlowAgreementWithEmailAndPassword = ({
   isSubmitting,
   isPasswordReset,
   authError,
+  onClickBack,
   onClickSubmit,
 }: Props) => {
   const [agreed, setAgreed] = useState(false);
@@ -82,12 +86,12 @@ const FlowAgreementWithEmailAndPassword = ({
     const usedSmallLetter = /[a-z]/.test(password);
     const usedNumber = /[0-9]/.test(password);
     const usedSymbol = new RegExp(`[${symbolPattern}]`).test(password);
-    const usedThreeOrMoreCharacterTypes =
+    const validationStepCount =
       (usedLargeLetter ? 1 : 0) +
-        (usedSmallLetter ? 1 : 0) +
-        (usedNumber ? 1 : 0) +
-        (usedSymbol ? 1 : 0) >=
-      3;
+      (usedSmallLetter ? 1 : 0) +
+      (usedNumber ? 1 : 0) +
+      (usedSymbol ? 1 : 0);
+    const usedThreeOrMoreCharacterTypes = validationStepCount >= 3;
     const isValidLength = password.length >= 8;
     const error = getPasswordError(password);
     setPasswordStatus({
@@ -98,7 +102,8 @@ const FlowAgreementWithEmailAndPassword = ({
       usedSymbol,
       usedThreeOrMoreCharacterTypes,
       isValidLength,
-      valid: usedThreeOrMoreCharacterTypes && !error,
+      validationStepCount,
+      valid: isValidLength && usedThreeOrMoreCharacterTypes && !error,
       error,
     });
     validatePasswordConfirmation(password, passwordConfirmationStatus.password);
@@ -133,34 +138,46 @@ const FlowAgreementWithEmailAndPassword = ({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-[100dvw] h-[100dvh] p-8">
-        <Image
-          src={"/admin/images/tobiratory-flow.svg"}
-          alt={"link tobiratory account with flow account"}
-          width={313}
-          height={114}
-        />
-        <div className={"text-[32px]"}>{title}</div>
-        <PasswordValidation {...passwordStatus} />
-        <EmailField
-          email={emailStatus.email}
-          visible={isPasswordReset}
-          validateEmail={validateEmail}
-        />
-        <div>パスワード</div>
+      <div className="flex flex-col items-center justify-center p-8">
+        <div className="w-full">
+          <BackLinkBlock visible={!isPasswordReset} onClickBack={onClickBack} />
+        </div>
+        <TitleLogoImage isPasswordReset={isPasswordReset} />
+        <div className={"text-[32px] h-[80px] mt-[30px] font-bold"}>
+          {title}
+        </div>
+        <div className={"mt-[10px]"}>
+          <PasswordValidation {...passwordStatus} />
+        </div>
+        <div className={"mt-[30px]"}>
+          <EmailField
+            email={emailStatus.email}
+            visible={isPasswordReset}
+            validateEmail={validateEmail}
+          />
+        </div>
+        <div
+          className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
+        >
+          パスワード
+        </div>
         <input
           type={"password"}
           value={passwordStatus.password}
-          className="rounded-2xl bg-slate-100 w-[408px] h-[52px] placeholder:text-center input-bordered"
+          className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
           onChange={(e) => {
             validatePassword(e.target.value);
           }}
         />
-        <div>確認（再入力）</div>
+        <div
+          className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
+        >
+          確認（再入力）
+        </div>
         <input
           type={"password"}
           value={passwordConfirmationStatus.password}
-          className="rounded-2xl bg-slate-100 w-[408px] h-[52px] placeholder:text-center input-bordered"
+          className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
           onChange={(e) => {
             validatePasswordConfirmation(
               passwordStatus.password,
@@ -168,24 +185,65 @@ const FlowAgreementWithEmailAndPassword = ({
             );
           }}
         />
-        <Error errors={getErrors()} />
-        <AboutFlowAccount visible={!isPasswordReset} />
-        <TermsOfService
-          agreed={agreed}
-          visible={!isPasswordReset}
-          setAgreed={setAgreed}
-        />
-        <FirebaseAuthError error={authError} />
-        <SubmitButton
-          buttonText={buttonText}
-          isSubmitting={isSubmitting}
-          disabled={isSubmitButtonDisabled()}
-          onClick={() =>
-            onClickSubmit(emailStatus.email, passwordStatus.password)
-          }
-        />
+        <div className={"mt-[30px]"}>
+          <Error errors={getErrors()} />
+        </div>
+        <div className={"mt-[30px]"}>
+          <TermsOfService
+            agreed={agreed}
+            visible={!isPasswordReset}
+            setAgreed={setAgreed}
+          />
+        </div>
+        <div className={"mt-[10px]"}>
+          <FirebaseAuthError error={authError} />
+        </div>
+        <div className={"mt-[20px]"}>
+          <SubmitButton
+            buttonText={buttonText}
+            isSubmitting={isSubmitting}
+            disabled={isSubmitButtonDisabled()}
+            onClick={() =>
+              onClickSubmit(emailStatus.email, passwordStatus.password)
+            }
+          />
+        </div>
       </div>
     </>
+  );
+};
+// isPasswordResetがfalseだったら、BackLinkコンポーネントを表示する
+const BackLinkBlock = ({
+  visible,
+  onClickBack,
+}: {
+  visible: boolean;
+  onClickBack?: () => void;
+}) => {
+  if (!visible) {
+    return <></>;
+  }
+  return <BackLink onClickBack={onClickBack} />;
+};
+
+const TitleLogoImage = ({ isPasswordReset }: { isPasswordReset: boolean }) => {
+  if (isPasswordReset) {
+    return (
+      <Image
+        src={"/admin/images/tobiratory-logo.svg"}
+        alt={"Tobiratory logo"}
+        width={110}
+        height={114}
+      />
+    );
+  }
+  return (
+    <Image
+      src={"/admin/images/tobiratory-flow.svg"}
+      alt={"link tobiratory account with flow account"}
+      width={313}
+      height={114}
+    />
   );
 };
 
@@ -208,8 +266,7 @@ const EmailField = ({
       <input
         type={"text"}
         value={email}
-        placeholder={"Email"}
-        className="rounded-2xl bg-slate-100 w-[408px] h-[52px] placeholder:text-center input-bordered"
+        className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
         onChange={(e) => {
           validateEmail(e.target.value);
         }}
@@ -218,35 +275,7 @@ const EmailField = ({
   );
 };
 
-const AboutFlowAccount = ({ visible }: { visible: boolean }) => {
-  if (!visible) {
-    return <></>;
-  }
-
-  return (
-    <a
-      href={"https://www.tobiratory.com/about"}
-      className={"text-primary underline"}
-      target="_blank"
-      rel="noreferrer"
-    >
-      <div className={"flex flex-row items-baseline"}>
-        <div
-          className={"w-[12px] h-[12px] bg-primary"}
-          style={{
-            WebkitMaskImage: "url(/admin/images/info-icon.svg)",
-            WebkitMaskRepeat: "no-repeat",
-            WebkitMaskPosition: "center",
-            WebkitMaskSize: "contain",
-          }}
-        ></div>
-        <div>Flowアカウントと連携するとできること</div>
-      </div>
-    </a>
-  );
-};
-
-const TermsOfService = ({
+export const TermsOfService = ({
   agreed,
   visible,
   setAgreed,
@@ -260,95 +289,77 @@ const TermsOfService = ({
   }
 
   return (
-    <div>
+    <div className={"flex flex-row items-center"}>
       <input
         type={"checkbox"}
         checked={agreed}
+        className={
+          "checkbox w-[16px] h-[16px] rounded bg-slate-200 shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+        }
         onChange={() => setAgreed((prev) => !prev)}
       />
       <a
         href={"https://www.tobiratory.com/about"}
-        className={"text-primary underline"}
+        className={"text-primary ml-[5px] font-medium text-[12px]"}
         target="_blank"
         rel="noreferrer"
       >
         利用規約
       </a>
-      に同意してトビラトリーアカウント、Flowアカウントを作成する。
+      <span className={"font-medium text-[12px]"}>
+        に同意してトビラトリーアカウント、Flowアカウントを作成する。
+      </span>
     </div>
   );
 };
 
 const PasswordValidation = ({
   isValidLength,
-  usedLargeLetter,
-  usedSmallLetter,
-  usedNumber,
-  usedSymbol,
+  validationStepCount,
   usedThreeOrMoreCharacterTypes,
 }: {
   isValidLength: boolean;
-  usedLargeLetter: boolean;
-  usedSmallLetter: boolean;
-  usedNumber: boolean;
-  usedSymbol: boolean;
+  validationStepCount: number;
   usedThreeOrMoreCharacterTypes: boolean;
 }) => {
   return (
     <div>
-      <div>
-        <ul>
-          <li>
-            <div className={"flex flex-row"}>
-              <ValidationIcon
-                valid={isValidLength}
-                alt={
-                  "alphanumeric and special characters, minimum 8 characters."
-                }
-              />
-              <span>英数記号8文字以上</span>
-            </div>
-          </li>
-          <li>
-            <div className={"flex flex-row"}>
-              <ValidationIcon
-                valid={usedLargeLetter}
-                alt={"used large letter"}
-              />
-              <span>大文字を含む</span>
-            </div>
-          </li>
-          <li>
-            <div className={"flex flex-row"}>
-              <ValidationIcon
-                valid={usedSmallLetter}
-                alt={"used small letter"}
-              />
-              <span>小文字を含む</span>
-            </div>
-          </li>
-          <li>
-            <div className={"flex flex-row"}>
-              <ValidationIcon valid={usedNumber} alt={"used number"} />
-              <span>数字を含む</span>
-            </div>
-          </li>
-          <li>
-            <div className={"flex flex-row"}>
-              <ValidationIcon valid={usedSymbol} alt={"used symbol"} />
-              <span>記号({availableSymbols})を含む</span>
-            </div>
-          </li>
-          <li>
-            <div className={"flex flex-row"}>
-              <ValidationIcon
-                valid={usedThreeOrMoreCharacterTypes}
-                alt={"used three or more character types"}
-              />
-              <span>三種類以上の文字種を含む</span>
-            </div>
-          </li>
-        </ul>
+      <div className={"flex flex-row justify-center"}>
+        <ValidationIcon
+          valid={isValidLength}
+          alt={"alphanumeric and special characters, minimum 8 characters."}
+        />
+        <div className={"ml-[7px] text-[12px]"}>英数記号8文字以上</div>
+      </div>
+      <div className={"flex flex-row justify-center mt-[5px]"}>
+        <ValidationIcon
+          valid={usedThreeOrMoreCharacterTypes}
+          alt={"alphanumeric and special characters, minimum 8 characters."}
+        />
+        <div className={"ml-[7px] text-[12px]"}>
+          三種類以上の文字種を含めて下さい
+        </div>
+      </div>
+      <ul className={"grid grid-cols-2 gap-2 mt-[10px]"}>
+        <li>
+          <div className={"font-normal text-[12px]"}>・大文字を含む</div>
+        </li>
+        <li>
+          <div className={"text-right font-normal text-[12px]"}>
+            ・数字を含む
+          </div>
+        </li>
+        <li>
+          <div className={"font-normal text-[12px]"}>・小文字を含む</div>
+        </li>
+        <li>
+          <div className={"text-right font-normal text-[12px]"}>
+            ・記号({availableSymbols})
+          </div>
+        </li>
+      </ul>
+      <div className={"flex flex-row justify-center mt-[10px]"}>
+        <ValidationProgressBars step={validationStepCount} />
       </div>
     </div>
   );
@@ -367,19 +378,51 @@ const ValidationIcon = ({ valid, alt }: { valid: boolean; alt: string }) => {
   );
 };
 
+const ValidationProgressBars = ({ step }: { step: number }) => {
+  const activeIcon = "active-bar.svg";
+  const inactiveIcon = "inactive-bar.svg";
+  const activeAlt = "active";
+  const inactiveAlt = "inactive";
+  return (
+    <div className={"grid grid-cols-3 gap-x-[6px]"}>
+      <ValidationProgressBar valid={step > 0} />
+      <ValidationProgressBar valid={step > 1} />
+      <ValidationProgressBar valid={step > 2} />
+    </div>
+  );
+};
+
+const ValidationProgressBar = ({ valid }: { valid: boolean }) => {
+  const activeIcon = "active-bar.svg";
+  const inactiveIcon = "inactive-bar.svg";
+  const activeAlt = "active";
+  const inactiveAlt = "inactive";
+  return (
+    <Image
+      src={`/admin/images/icon/${valid ? activeIcon : inactiveIcon}`}
+      alt={valid ? activeAlt : inactiveAlt}
+      width={96}
+      height={8}
+    />
+  );
+};
+
 const Error = ({ errors }: { errors: string[] }) => {
   return (
-    <>
+    <div className={"w-[412px] text-right"}>
       {errors.map((error, index) => {
         if (error) {
           return (
-            <p key={index} className="pl-2 pt-1 text-xs text-error">
+            <p
+              key={index}
+              className="pl-2 pt-1 font-medium text-[12px] text-attention"
+            >
               {error}
             </p>
           );
         }
       })}
-    </>
+    </div>
   );
 };
 
@@ -408,24 +451,11 @@ const SubmitButton = ({
         disabled={disabled}
         onClick={onClick}
       >
-        {buttonText}
+        <span className={"font-normal text-[20px]"}>{buttonText}</span>
       </Button>
     );
   }
   return <LoadingButton />;
-};
-
-const LoadingButton = () => {
-  return (
-    <button
-      type="button"
-      className="bg-inactive text-inactive-content w-[179px] h-[48px] rounded-2xl"
-      disabled
-    >
-      <span className="loading loading-spinner loading-sm"></span>
-      <span className="text-sm">しばらくお待ちください</span>
-    </button>
-  );
 };
 
 export default FlowAgreementWithEmailAndPassword;
