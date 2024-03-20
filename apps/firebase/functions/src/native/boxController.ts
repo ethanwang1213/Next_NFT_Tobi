@@ -2,13 +2,12 @@ import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-import Hashids from "hashids";
 
 const prisma = new PrismaClient();
 
 export const permissionGift = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {boxId} = req.body;
+  const {boxId, permission}:{boxId: number, permission: boolean} = req.body;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const userData = await prisma.tobiratory_accounts.findUnique({
@@ -16,23 +15,18 @@ export const permissionGift = async (req: Request, res: Response) => {
         uuid: uid,
       },
     });
-    let giftPermission = false;
+
+    const giftPermission = permission;
     if (!boxId) {
       try {
-        const userData = await prisma.tobiratory_accounts.findUnique({
-          where: {
-            uuid: uid,
-          },
-        });
-        const updateInventory = await prisma.tobiratory_accounts.update({
+        await prisma.tobiratory_accounts.update({
           where: {
             uuid: uid,
           },
           data: {
-            gift_permission: userData?.gift_permission,
+            gift_permission: giftPermission,
           },
         });
-        giftPermission = updateInventory.gift_permission;
       } catch (error) {
         res.status(401).send({
           status: "error",
@@ -47,7 +41,7 @@ export const permissionGift = async (req: Request, res: Response) => {
             id: boxId,
           },
         });
-        if (!boxData) {
+        if (boxData == null) {
           res.status(401).send({
             status: "error",
             data: {
@@ -65,25 +59,27 @@ export const permissionGift = async (req: Request, res: Response) => {
           });
           return;
         }
-        const updatedBox = await prisma.tobiratory_boxes.update({
+        await prisma.tobiratory_boxes.update({
           where: {
             id: boxId,
           },
           data: {
-            gift_permission: !boxData.gift_permission,
+            gift_permission: giftPermission,
           },
         });
-        giftPermission = updatedBox.gift_permission;
       } catch (error) {
         res.status(401).send({
-          status: "error",
+          status: "errorr",
           data: error,
         });
         return;
       }
     }
-    const hashids = new Hashids();
-    const address = hashids.encode(userData?.id + boxId);
+    const userIdPad = userData?.id.toString().padStart(5, "0");
+    const boxIdPad = boxId.toString().padStart(5, "0");
+    let address = Buffer.from(userIdPad+boxIdPad, "ascii").toString("base64");
+    address = "TB"+address.replace("==", "");
+    // const decode = Buffer.from(address, "base64").toString();
     res.status(200).send({
       status: "success",
       data: {
@@ -277,7 +273,7 @@ export const getBoxData = async (req: Request, res: Response) => {
     });
   }).catch((error: FirebaseError) => {
     res.status(401).send({
-      status: "success",
+      status: "error",
       data: error.code,
     });
   });
@@ -318,7 +314,90 @@ export const deleteBoxData = async (req: Request, res: Response) => {
     });
   }).catch((error: FirebaseError) => {
     res.status(401).send({
-      status: "success",
+      status: "error",
+      data: error.code,
+    });
+  });
+};
+
+export const openNFT = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id}:{id: number} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    const nftData = await prisma.tobiratory_digital_item_nfts.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (nftData == null) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+    if (nftData.owner_uid != uid) {
+      res.status(401).send({
+        status: "error",
+        data: "not-yours",
+      });
+      return;
+    }
+    if (nftData.mint_status == "minting") {
+      res.status(401).send({
+        status: "error",
+        data: "minting",
+      });
+      return;
+    }
+    if (nftData.mint_status == "opened") {
+      res.status(401).send({
+        status: "error",
+        data: "already-opened",
+      });
+      return;
+    }
+    try {
+      const updatedNFT = await prisma.tobiratory_digital_item_nfts.update({
+        where: {
+          id: id,
+        },
+        data: {
+          mint_status: "opened",
+        },
+      });
+      const itemData = await prisma.tobiratory_digital_items.findUnique({
+        where: {
+          id: updatedNFT.digital_item_id,
+        },
+      });
+      if (!itemData) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-item",
+        });
+        return;
+      }
+      res.status(200).send({
+        status: "success",
+        data: {
+          id: updatedNFT.id,
+          title: itemData.title,
+          image: itemData.image,
+          saidanId: itemData.saidan_id,
+          status: updatedNFT.mint_status,
+        },
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
       data: error.code,
     });
   });

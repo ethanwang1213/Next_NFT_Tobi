@@ -20,7 +20,7 @@ import {getContentById, getContents} from "./contentController";
 import {createItem, createModel, createSample, deleteSample, getItems, getItemsById, getMyItems, getMyItemsById, getMySamples, updateItem} from "./itemController";
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
-import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift} from "./boxController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT} from "./boxController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -107,6 +107,7 @@ app.post("/posts/:id/save", dummyResponse);
 app.post("/posts/:id/share", dummyResponse);
 app.post("/posts/:id/notinterested", dummyResponse);
 
+app.post("/my/nfts/open", openNFT);
 app.post("/my/items/:id/sale", dummyResponse);
 app.post("/my/nfts/:id/listing", dummyResponse);
 app.post("/items/:id/mint", dummyResponse);
