@@ -17,7 +17,7 @@ export const getItems = async (req: Request, res: Response) => {
   });
   const items = await prisma.tobiratory_digital_items.findMany({
     where: {
-      title: {
+      name: {
         in: [q],
       },
       type: {
@@ -37,7 +37,7 @@ export const getItems = async (req: Request, res: Response) => {
 
       return {
         id: item.id,
-        title: item.title,
+        name: item.name,
         image: item.image,
         type: item.type,
         content: content == null ? null : {
@@ -80,7 +80,7 @@ export const getItemsById = async (req: Request, res: Response) => {
 
   const resData = {
     id: id,
-    title: itemData.title,
+    name: itemData.name,
     image: itemData.image,
     type: itemData.type,
     content: contentData == null ? null : {
@@ -110,10 +110,10 @@ export const getMyItems = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     const items = await prisma.tobiratory_digital_items.findMany({
       where: {
-        creator_uid: {
+        creator_uuid: {
           equals: uid,
         },
-        title: {
+        name: {
           in: [q],
         },
         type: {
@@ -133,7 +133,7 @@ export const getMyItems = async (req: Request, res: Response) => {
 
         return {
           id: item.id,
-          title: item.title,
+          name: item.name,
           image: item.image,
           type: item.type,
           content: content == null ? null : {
@@ -166,7 +166,7 @@ export const getMyItemsById = async (req: Request, res: Response) => {
     const itemData = await prisma.tobiratory_digital_items.findUnique({
       where: {
         id: parseInt(id),
-        creator_uid: uid,
+        creator_uuid: uid,
       },
     });
 
@@ -185,7 +185,7 @@ export const getMyItemsById = async (req: Request, res: Response) => {
     });
     const resData = {
       id: id,
-      title: itemData.title,
+      name: itemData.name,
       image: itemData.image,
       type: itemData.type,
       content: contentData==null ? null : {
@@ -209,13 +209,13 @@ export const getMyItemsById = async (req: Request, res: Response) => {
 
 export const createItem = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {title, image, type} = req.body;
+  const {name, image, type} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const item = await prisma.tobiratory_digital_items.create({
       data: {
-        creator_uid: uid,
-        title: title,
+        creator_uuid: uid,
+        name: name,
         image: image,
         type: type,
         content_id: 0,
@@ -250,10 +250,10 @@ export const updateItem = async (req: Request, res: Response) => {
     const item = await prisma.tobiratory_digital_items.update({
       where: {
         id: parseInt(id),
-        creator_uid: uid,
+        creator_uuid: uid,
       },
       data: {
-        title: itemData.title,
+        name: itemData.name,
         image: itemData.image,
       },
     });
@@ -323,7 +323,7 @@ export const createSample = async (req: Request, res: Response) => {
     try {
       const sample = await prisma.tobiratory_samples.create({
         data: {
-          creator_uid: uid,
+          creator_uuid: uid,
           thumb_url: thumbUrl,
           model_url: modelUrl,
           material_id: materialId,
@@ -363,7 +363,7 @@ export const getMySamples = async (req: Request, res: Response) => {
     try {
       const samples = await prisma.tobiratory_samples.findMany({
         where: {
-          creator_uid: uid,
+          creator_uuid: uid,
         },
       });
       const returnData = samples.map((sample)=>{
@@ -415,7 +415,7 @@ export const deleteSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (item.creator_uid != uid) {
+      if (item.creator_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: {

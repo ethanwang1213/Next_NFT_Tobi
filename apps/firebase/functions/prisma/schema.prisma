@@ -60,12 +60,15 @@ model tobiratory_contents {
 
 model tobiratory_digital_items {
   id                Int     @id @default(autoincrement())
-  creator_uid       String  @db.VarChar(100)
-  title             String  @db.VarChar(255)
+  creator_uuid      String  @db.VarChar(100)
+  name              String  @db.VarChar(255)
   image             String  @db.VarChar(255)
   type              String  @db.VarChar(255)
+  item_id           Int     @default(0)
   content_id        Int
   saidan_id         Int
+  description       String  @db.VarChar(255) @default("")
+  limit             Int     @default(0)
   updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
@@ -81,7 +84,7 @@ model tobiratory_digital_item_nfts {
   id                Int     @id @default(autoincrement())
   serial_no         String    @unique
   digital_item_id   Int
-  owner_uid         String    @db.VarChar(100)
+  owner_uuid         String    @db.VarChar(100)
   box_id            Int
   mint_status       String  @default("minting") // "minted", "opened"
   updated_date_time DateTime  @default(now()) @db.Timestamp(6)
@@ -90,7 +93,7 @@ model tobiratory_digital_item_nfts {
 
 model tobiratory_boxes {
   id                Int     @id @default(autoincrement())
-  creator_uid       String  @db.VarChar(100)
+  creator_uuid       String  @db.VarChar(100)
   name              String  @db.VarChar(255)
   gift_permission   Boolean @default(false)
   updated_date_time DateTime @default(now()) @db.Timestamp(6)
@@ -132,17 +135,6 @@ model tobiratory_sales {
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_nfts {
-  id                Int     @id @default(autoincrement())
-  serial_no         Int
-  owner             String  @db.VarChar(255)
-  title             String  @db.VarChar(255)
-  image             String  @db.VarChar(255)
-  creator           String  @db.VarChar(255)
-  updated_date_time DateTime @default(now()) @db.Timestamp(6)
-  created_date_time DateTime @default(now()) @db.Timestamp(6)
-}
-
 model tobiratory_material_images {
   id                Int     @id @default(autoincrement())
   owner             String  @db.VarChar(255)
@@ -152,7 +144,7 @@ model tobiratory_material_images {
 }
 model tobiratory_samples {
   id                Int     @id @default(autoincrement())
-  creator_uid       String  @db.VarChar(100)
+  creator_uuid       String  @db.VarChar(100)
   thumb_url         String  @db.VarChar(255)
   model_url         String  @db.VarChar(255)
   material_id       Int

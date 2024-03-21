@@ -20,7 +20,7 @@ import {getContentById, getContents} from "./contentController";
 import {createItem, createModel, createSample, deleteSample, getItems, getItemsById, getMyItems, getMyItemsById, getMySamples, updateItem} from "./itemController";
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
-import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT} from "./boxController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress} from "./boxController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -43,7 +43,7 @@ app.post("/password-set", checkPasswordSet);
 app.post("/create-flow", createFlowAcc);
 
 app.get("/accounts", getAccounts);
-app.get("/accounts/:id", getAccountById);
+app.get("/accounts/:uid", getAccountById);
 
 app.get("/contents", getContents);
 app.get("/contents/:id", getContentById);
@@ -113,6 +113,8 @@ app.post("/my/nfts/:id/listing", dummyResponse);
 app.post("/items/:id/mint", dummyResponse);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
+app.post("/my/nfts/move");
+app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);

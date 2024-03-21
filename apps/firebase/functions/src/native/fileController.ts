@@ -5,16 +5,8 @@ import {Request, Response} from "express";
 import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken} from "firebase-admin/auth";
 // import { DecodedIdToken } from "firebase-admin/auth";
-import * as multer from "multer";
 
 const prisma = new PrismaClient();
-
-export const fileMulter = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5 MB limit
-  },
-});
 
 export const uploadMaterial = async (req: Request, res: Response) => {
   const {authorization} = req.headers;

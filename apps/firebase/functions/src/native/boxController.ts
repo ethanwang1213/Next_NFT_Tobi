@@ -50,7 +50,7 @@ export const permissionGift = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (boxData.creator_uid != uid) {
+        if (boxData.creator_uuid != uid) {
           res.status(401).send({
             status: "error",
             data: {
@@ -75,11 +75,10 @@ export const permissionGift = async (req: Request, res: Response) => {
         return;
       }
     }
-    const userIdPad = userData?.id.toString().padStart(5, "0");
+    const userIdPad = userData?.id.toString().padStart(4, "0");
     const boxIdPad = boxId.toString().padStart(5, "0");
-    let address = Buffer.from(userIdPad+boxIdPad, "ascii").toString("base64");
+    let address = Buffer.from(userIdPad+"_"+boxIdPad, "ascii").toString("base64");
     address = "TB"+address.replace("==", "");
-    // const decode = Buffer.from(address, "base64").toString();
     res.status(200).send({
       status: "success",
       data: {
@@ -102,7 +101,7 @@ export const makeBox = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     await prisma.tobiratory_boxes.create({
       data: {
-        creator_uid: uid,
+        creator_uuid: uid,
         name: name,
       },
     });
@@ -137,7 +136,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
       }
       const boxes = await prisma.tobiratory_boxes.findMany({
         where: {
-          creator_uid: uid,
+          creator_uuid: uid,
         },
         orderBy: {
           created_date_time: "desc",
@@ -162,7 +161,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
                   });
                   return {
                     id: item.id,
-                    title: itemInfo?.title,
+                    name: itemInfo?.name,
                     image: itemInfo?.image,
                   };
                 })
@@ -175,7 +174,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
       }));
       const items = await prisma.tobiratory_digital_item_nfts.findMany({
         where: {
-          owner_uid: uid,
+          owner_uuid: uid,
           box_id: 0,
         },
         orderBy: {
@@ -191,7 +190,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
             });
             return {
               id: item.id,
-              title: itemInfo?.title,
+              name: itemInfo?.name,
               image: itemInfo?.image,
               saidanId: itemInfo?.saidan_id,
               status: item?.mint_status,
@@ -237,7 +236,7 @@ export const getBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.creator_uid != uuid) {
+    if (box.creator_uuid != uuid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
@@ -258,7 +257,7 @@ export const getBoxData = async (req: Request, res: Response) => {
           });
           return {
             id: item.id,
-            title: itemInfo?.title,
+            name: itemInfo?.name,
             image: itemInfo?.image,
             saidanId: itemInfo?.saidan_id,
           };
@@ -296,7 +295,7 @@ export const deleteBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.creator_uid == uid) {
+    if (box.creator_uuid == uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
@@ -337,7 +336,7 @@ export const openNFT = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (nftData.owner_uid != uid) {
+    if (nftData.owner_uuid != uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
@@ -383,12 +382,82 @@ export const openNFT = async (req: Request, res: Response) => {
         status: "success",
         data: {
           id: updatedNFT.id,
-          title: itemData.title,
+          name: itemData.name,
           image: itemData.image,
           saidanId: itemData.saidan_id,
           status: updatedNFT.mint_status,
         },
       });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+  });
+};
+
+export const userInfoFromAddress = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {address}:{address: string} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (/* decodedToken: DecodedIdToken*/) => {
+    // const uid = decodedToken.uid;
+    const encodedAddress = address.replace("TB", "") + "==";
+    const decodeAddress = Buffer.from(encodedAddress, "base64").toString();
+    const receiverId = decodeAddress.split("_")[0];
+    const receiverBoxId = decodeAddress.split("_")[1];
+
+    try {
+      const receiverUserData = await prisma.tobiratory_accounts.findUnique({
+        where: {
+          id: parseInt(receiverId),
+        },
+      });
+      if (receiverUserData == null) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-receiver",
+        });
+        return;
+      }
+      if (!parseInt(receiverBoxId)) {
+        res.status(200).send({
+          status: "success",
+          data: {
+            userId: receiverUserData.uuid,
+            username: receiverUserData.username,
+            icon: receiverUserData.icon_url,
+            boxName: receiverUserData.username + "'s Inventory",
+          },
+        });
+      } else {
+        const receiverBoxData = await prisma.tobiratory_boxes.findUnique({
+          where: {
+            id: parseInt(receiverBoxId),
+          },
+        });
+        if (receiverBoxData == null) {
+          res.status(401).send({
+            status: "error",
+            data: "not-exist-box",
+          });
+          return;
+        }
+        res.status(200).send({
+          status: "success",
+          data: {
+            userId: receiverUserData.uuid,
+            username: receiverUserData.username,
+            icon: receiverUserData.icon_url,
+            boxName: receiverBoxData.name,
+          },
+        });
+      }
     } catch (error) {
       res.status(401).send({
         status: "error",
