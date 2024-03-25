@@ -125,8 +125,8 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
-                        name: itemRef.name,
-                        description: itemRef.description,
+                        name: itemRef.name ?? "",
+                        description: itemRef.description ?? "",
                         thumbnail: MetadataViews.HTTPFile(
                             url: itemRef.imageUrls.length > 0 ? itemRef.imageUrls[0] : ""
                         )
@@ -175,14 +175,14 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
     pub resource Item {
         pub let id: UInt64
         pub let type: String
-        pub var name: String
-        pub var description: String
+        pub var name: String?
+        pub var description: String?
         pub var imageUrls: [String]
         pub var creatorName: String
         pub let creatorAddress: Address
         pub let createdAt: UFix64
         pub var limit: UInt32?
-        pub var license: String
+        pub var license: String?
         pub var copyrightHolders: [String]
         pub var royalties: [MetadataViews.Royalty]
         pub var extraMetadata: {String: AnyStruct}
@@ -190,13 +190,13 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
 
         init (
             type: String,
-            name: String,
-            description: String,
+            name: String?,
+            description: String?,
             imageUrls: [String],
             creatorName: String,
             creatorAddress: Address,
             limit: UInt32?,
-            license: String,
+            license: String?,
             copyrightHolders: [String],
             royalties: [MetadataViews.Royalty],
             extraMetadata: {String: AnyStruct},
@@ -220,11 +220,11 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             emit ItemCreated(id: id, type: type, creatorAddress: creatorAddress)
         }
 
-        access(contract) fun updateName(name: String) {
+        access(contract) fun updateName(name: String?) {
             self.name = name
         }
 
-        access(contract) fun updateDescription(description: String) {
+        access(contract) fun updateDescription(description: String?) {
             self.description = description
         }
 
@@ -244,7 +244,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             self.royalties = royalties
         }
 
-        access(contract) fun updateLicense(license: String) {
+        access(contract) fun updateLicense(license: String?) {
             self.license = license
         }
 
@@ -276,12 +276,12 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
 
         pub fun createItem(
             type: String,
-            name: String,
-            description: String,
+            name: String?,
+            description: String?,
             imageUrls: [String],
             creatorName: String,
             limit: UInt32?,
-            license: String,
+            license: String?,
             copyrightHolders: [String],
             royalties: [MetadataViews.Royalty],
             extraMetadata: {String: AnyStruct},
@@ -316,7 +316,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             return &self.items[itemID] as &Item?
         }
 
-        pub fun updateItemName(itemID: UInt64, name: String, itemReviewer: &ItemReviewer?) {
+        pub fun updateItemName(itemID: UInt64, name: String?, itemReviewer: &ItemReviewer?) {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
@@ -324,7 +324,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             itemRef.updateName(name: name)
         }
 
-        pub fun updateItemDescription(itemID: UInt64, description: String, itemReviewer: &ItemReviewer?) {
+        pub fun updateItemDescription(itemID: UInt64, description: String?, itemReviewer: &ItemReviewer?) {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
@@ -356,7 +356,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             itemRef.updateRoyalties(royalties: royalties)
         }
 
-        pub fun updateItemLicense(itemID: UInt64, license: String, itemReviewer: &ItemReviewer?) {
+        pub fun updateItemLicense(itemID: UInt64, license: String?, itemReviewer: &ItemReviewer?) {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }

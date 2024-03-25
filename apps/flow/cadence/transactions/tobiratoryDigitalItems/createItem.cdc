@@ -5,12 +5,12 @@ import FungibleToken from 0xee82856bf20e2aa6
 
 transaction(
     type: String,
-    name: String,
-    description: String,
+    name: String?,
+    description: String?,
     imageUrls: [String],
     creatorName: String,
     limit: UInt32?,
-    license: String,
+    license: String?,
     copyrightHolders: [String],
 ) {
     let itemsRef: &TobiratoryDigitalItems.Items

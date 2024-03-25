@@ -6,7 +6,21 @@ flow transactions send ./cadence/transactions/tobiratoryDigitalItems/createColle
 
 # Create item
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/createItem.cdc \
-    testType testName testDescription '["testImageUrl1", "testImageUrl1"]' testCreatorName 100 testLicense '["copyrightHolder1"]' \
+    --args-json '[
+        { "type": "String", "value": "testType" },
+        { "type": "Optional", "value": { "type": "String", "value": "testName" }},
+        { "type": "Optional", "value": { "type": "String", "value": "testDescription" }},
+        { "type": "Array", "value": [
+            { "type": "String", "value": "testImageUrl1" },
+            { "type": "String", "value": "testImageUrl2" }
+        ]},
+        { "type": "String", "value": "testCreatorName" },
+        { "type": "Optional", "value": { "type": "UInt32", "value": "100" }},
+        { "type": "Optional", "value": { "type": "String", "value": "testLicense" }},
+        { "type": "Array", "value": [
+            { "type": "String", "value": "copyrightHolder1" }
+        ]}
+    ]' \
     --authorizer emulator-account-2 --authorizer emulator-account \
     --proposer emulator-account-2 --payer emulator-account \
     --filter payload --save ./cadence/tmp/tx_build.rlp -y
