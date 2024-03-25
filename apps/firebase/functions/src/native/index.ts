@@ -4,11 +4,24 @@ import * as express from "express";
 import {REGION} from "../lib/constants";
 
 import {getAccounts, getAccountById} from "./accountController";
-import {signUp, signIn, getMyProfile, postMyProfile} from "./userController";
+import
+{
+  signUp,
+  getMyProfile,
+  postMyProfile,
+  createFlowAcc,
+  myBusiness,
+  updateMyBusiness,
+  businessSubmission,
+  checkExistBusinessAcc,
+  checkPasswordSet,
+} from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {getItems, getItemsById} from "./itemController";
-import {getSaidans, getSaidansById} from "./saidanController";
-// import { requireLogin } from "./middleware";
+import {createItem, createModel, createSample, deleteSample, getItems, getItemsById, getMyItems, getMyItemsById, getMySamples, updateItem} from "./itemController";
+import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
+import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress} from "./boxController";
+// import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -26,10 +39,11 @@ const dummyResponse = (_: express.Request, res: express.Response) => {
 // API Reference:
 // https://docs.google.com/spreadsheets/d/1XocLkxnpYL2Mfi-e7LuJOlmf_Njdgaz-0RfgqRxqtiE/edit#gid=0
 app.post("/signup", signUp);
-app.post("/signin", signIn);
+app.post("/password-set", checkPasswordSet);
+app.post("/create-flow", createFlowAcc);
 
 app.get("/accounts", getAccounts);
-app.get("/accounts/:id", getAccountById);
+app.get("/accounts/:uid", getAccountById);
 
 app.get("/contents", getContents);
 app.get("/contents/:id", getContentById);
@@ -40,32 +54,41 @@ app.get("/nfts/:id", dummyResponse);
 
 app.get("/saidans", getSaidans);
 app.get("/saidans/:id", getSaidansById);
-app.post("/saidans/:id", dummyResponse);
 app.get("/posts", dummyResponse);
 app.get("/posts/:id", dummyResponse);
 
 app.get("/my/profile", getMyProfile);
 app.post("/my/profile", postMyProfile);
-app.post("/my/business/submission", dummyResponse);
-app.get("/my/business", dummyResponse);
-app.post("/my/business", dummyResponse);
+app.post("/my/business/submission", businessSubmission);
+app.post("/my/business/checkexist", checkExistBusinessAcc);
+app.get("/my/business", myBusiness);
+app.post("/my/business", updateMyBusiness);
 
-app.get("/my/inventory", dummyResponse);
+app.get("/my/inventory", getInventoryData);
 app.post("/my/inventory", dummyResponse);
-app.post("/my/inventory/folders", dummyResponse);
-app.get("/my/inventory/folders/:id", dummyResponse);
-app.delete("/my/inventory/folders/:id", dummyResponse);
+app.post("/my/inventory/box", makeBox);
+app.get("/my/inventory/box/:id", getBoxData);
+app.delete("/my/inventory/box/:id", deleteBoxData);
+app.post("/my/inventory/gift-permission", permissionGift);
 
 app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);
 app.get("/my/contents/:id", dummyResponse);
 app.post("/my/contents/:id", dummyResponse);
-app.get("/my/items", dummyResponse);
-app.post("/my/items", dummyResponse);
-app.get("/my/items/:id", dummyResponse);
+app.get("/my/items", getMyItems);
+app.post("/my/items", createItem);
+app.get("/my/items/:id", getMyItemsById);
+app.post("/my/items/:id/update", updateItem);
+app.post("/my/samples", createSample);
+app.get("/my/samples", getMySamples);
+app.get("/my/samples/:id");
+app.delete("/my/samples/:id", deleteSample);
 
-app.get("/my/saidans", dummyResponse);
-app.get("/my/saidans/:saidanId", dummyResponse);
+app.post("/model/create", createModel);
+
+app.get("/my/saidans", getMySaidan);
+app.post("/my/saidans", createSaidan);
+app.get("/my/saidans/:saidanId", getMySaidansById);
 app.post("/my/saidans/:saidanId/posts", dummyResponse);
 app.get("/my/saidans/:saidanId/posts/:postId", dummyResponse);
 
@@ -84,10 +107,15 @@ app.post("/posts/:id/save", dummyResponse);
 app.post("/posts/:id/share", dummyResponse);
 app.post("/posts/:id/notinterested", dummyResponse);
 
+app.post("/my/nfts/open", openNFT);
 app.post("/my/items/:id/sale", dummyResponse);
 app.post("/my/nfts/:id/listing", dummyResponse);
 app.post("/items/:id/mint", dummyResponse);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
-
+app.post("/my/nfts/move");
+app.post("/address/decoder", userInfoFromAddress);
+app.post("/material/save", uploadMaterial);
+app.post("/material/get", getMaterial);
+app.post("/material/remove", removeMaterials);
 export const native = functions.region(REGION).https.onRequest(app);

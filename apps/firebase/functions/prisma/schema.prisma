@@ -8,19 +8,28 @@ datasource db {
 }
 
 model tobiratory_accounts {
-  uuid              String   @id @db.VarChar(100)
-  user_id           String   @db.VarChar(255)
+  id                Int      @id @default(autoincrement())
+  uuid              String   @db.VarChar(100) @unique
+  email             String   @db.VarChar(255)
   username          String   @db.VarChar(255)
-  sns               String   @unique
+  sns               String   @db.VarChar(255)
   icon_url          String   @db.VarChar(255)
+  about_me          String   @db.VarChar(255) @default("")
+  social_link       String[] @db.VarChar(255) @default([])
+  gender            String   @db.VarChar(255) @default("")
+  birth             String   @db.VarChar(255) @default("")
+  gift_permission   Boolean  @default(false)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_flow_accounts {
-  uuid              String    @id
-  flow_address      String    @db.VarChar(255)
-  public_key        String    @db.VarChar(255)
-  tx_id             String    @db.VarChar(255)
+  uuid              String    @id @db.VarChar(100)
+  flow_address      String    @db.VarChar(255) @default("")
+  public_key        String    @db.VarChar(255) @default("")
+  tx_id             String    @db.VarChar(255) @default("")
+  flow_job_id       String    @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -28,8 +37,12 @@ model tobiratory_saidans {
   id                Int     @id @default(autoincrement())
   title             String  @db.VarChar(255)
   description       String  @db.VarChar(255)
+  template_id       String  @db.VarChar(255)
+  is_public         Boolean @default(true)
   showcase          Boolean @default(true)
+  max_item_count    Int
   owner_id          String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -41,15 +54,49 @@ model tobiratory_contents {
   creator_username  String  @db.VarChar(255)
   creator_icon      String  @db.VarChar(255)
   creator_sns       String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_items {
+model tobiratory_digital_items {
   id                Int     @id @default(autoincrement())
-  title             String  @db.VarChar(255)
+  creator_uuid      String  @db.VarChar(100)
+  name              String  @db.VarChar(255)
   image             String  @db.VarChar(255)
   type              String  @db.VarChar(255)
+  item_id           Int     @default(0)
   content_id        Int
+  saidan_id         Int
+  description       String  @db.VarChar(255) @default("")
+  limit             Int     @default(0)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_sample_items {
+  id                Int     @id @default(autoincrement())
+  digital_item_id   Int
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_digital_item_nfts {
+  id                Int     @id @default(autoincrement())
+  serial_no         String    @unique
+  digital_item_id   Int
+  owner_uuid         String    @db.VarChar(100)
+  box_id            Int
+  mint_status       String  @default("minting") // "minted", "opened"
+  updated_date_time DateTime  @default(now()) @db.Timestamp(6)
+  created_date_time DateTime  @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_boxes {
+  id                Int     @id @default(autoincrement())
+  creator_uuid       String  @db.VarChar(100)
+  name              String  @db.VarChar(255)
+  gift_permission   Boolean @default(false)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -57,11 +104,21 @@ model tobiratory_businesses {
   id                Int     @id @default(autoincrement())
   uuid              String  @db.VarChar(255)
   name              String  @db.VarChar(255)
+  name_furi         String  @db.VarChar(255)
+  birth             DateTime @db.Timestamp(6)
+  email             String  @db.VarChar(255)
   address           String  @db.VarChar(255)
   phone             String  @db.VarChar(255)
+  content_name      String  @db.VarChar(255)
+  content_name_furi String  @db.VarChar(255)
+  genre             String  @db.VarChar(255)
+  content_desc      String  @db.VarChar(255)
+  homepage_url      String  @db.VarChar(255)
   kyc               String  @db.VarChar(255)
   bank_account      String  @db.VarChar(255)
   balance           String  @db.VarChar(255)
+  submission        Boolean @default(false)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
@@ -74,15 +131,24 @@ model tobiratory_sales {
   image             String  @db.VarChar(255)
   name              String  @db.VarChar(255)
   license           String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_nfts {
+model tobiratory_material_images {
   id                Int     @id @default(autoincrement())
-  serial_no         Int
   owner             String  @db.VarChar(255)
-  title             String  @db.VarChar(255)
   image             String  @db.VarChar(255)
-  creator           String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+model tobiratory_samples {
+  id                Int     @id @default(autoincrement())
+  creator_uuid       String  @db.VarChar(100)
+  thumb_url         String  @db.VarChar(255)
+  model_url         String  @db.VarChar(255)
+  material_id       Int
+  type              String  @db.VarChar(255)
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }

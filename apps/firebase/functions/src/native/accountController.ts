@@ -1,22 +1,12 @@
-import {Response} from "express";
+import {Request, Response} from "express";
 // import {firestore} from "firebase-admin";
 import {PrismaClient} from "@prisma/client";
-
-type AllAccountRequest = {
-  params: {
-    q: string,
-    sortBy: any,
-    sortOrder: "desc" | "asc"
-  }
-}
-
-type AccountRequest = {
-  params: { id: string }
-}
+import {getAuth} from "firebase-admin/auth";
+import {FirebaseError} from "firebase-admin";
 
 const prisma = new PrismaClient();
 
-export const getAccounts = async (req: AllAccountRequest, res: Response) => {
+export const getAccounts = async (req: Request, res: Response) => {
   const {q, sortBy, sortOrder} = req.params;
   const orderValue = {};
   Object.defineProperty(orderValue, sortBy, {
@@ -41,7 +31,6 @@ export const getAccounts = async (req: AllAccountRequest, res: Response) => {
         },
       });
       return {
-        userId: account.user_id,
         username: account.username,
         icon: account.icon_url,
         sns: account.sns,
@@ -59,48 +48,52 @@ export const getAccounts = async (req: AllAccountRequest, res: Response) => {
   });
 };
 
-export const getAccountById = async (req: AccountRequest, res: Response) => {
-  const {id} = req.params;
-  const accountData = await prisma.tobiratory_accounts.findUnique({
-    where: {
-      uuid: id,
-    },
-  });
+export const getAccountById = async (req: Request, res: Response) => {
+  const {uid} = req.params;
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (/* decodedToken: DecodedIdToken*/) => {
+    // const uid = decodedToken.uid;
+    try {
+      const accountData = await prisma.tobiratory_accounts.findUnique({
+        where: {
+          uuid: uid,
+        },
+      });
 
-  if (accountData == null) {
-    res.status(200).send({
+      if (accountData == null) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+
+      const resData = {
+        userId: accountData.uuid,
+        username: accountData.username,
+        email: accountData.email,
+        icon: accountData.icon_url,
+        sns: accountData.sns,
+        aboutMe: accountData.about_me,
+        socialLinks: accountData.social_link,
+        gender: accountData.gender,
+        birth: accountData.birth,
+        createdAt: accountData.created_date_time,
+      };
+      res.status(200).send({
+        status: "success",
+        data: resData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
       status: "error",
-      data: "Account does not exist!",
+      data: error.code,
     });
-    return;
-  }
-
-  const flowAccountData = await prisma.tobiratory_flow_accounts.findUniqueOrThrow({
-    where: {
-      uuid: id,
-    },
-  });
-
-  if (flowAccountData == null) {
-    res.status(200).send({
-      status: "error",
-      data: "Flow account does not exist!",
-    });
-    return;
-  }
-
-  const resData = {
-    userId: id,
-    username: accountData.username,
-    icon: accountData.icon_url,
-    sns: accountData.sns,
-    flow: {
-      flowAddress: flowAccountData.flow_address,
-    },
-    createdAt: accountData.created_date_time,
-  };
-  res.status(200).send({
-    status: "success",
-    data: resData,
   });
 };
