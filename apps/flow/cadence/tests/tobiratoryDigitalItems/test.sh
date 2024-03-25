@@ -16,7 +16,7 @@ flow transactions send-signed ./cadence/tmp/tx_signed.rlp -y
 
 # Mint NFT
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/mintNFT.cdc \
-    01cf0e2f2f715450 1 500.0 'JPY' 100.0 'JPY' \
+    01cf0e2f2f715450 1 \
     --authorizer emulator-account-2 --authorizer emulator-account \
     --proposer emulator-account-2 --payer emulator-account \
     --filter payload --save ./cadence/tmp/tx_build.rlp -y
@@ -26,7 +26,7 @@ flow transactions send-signed ./cadence/tmp/tx_signed.rlp -y
 
 # Mint NFT 2
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/mintNFT.cdc \
-    01cf0e2f2f715450 1 500.0 'JPY' 100.0 'JPY' \
+    01cf0e2f2f715450 1 \
     --authorizer emulator-account-2 --authorizer emulator-account \
     --proposer emulator-account-2 --payer emulator-account \
     --filter payload --save ./cadence/tmp/tx_build.rlp -y

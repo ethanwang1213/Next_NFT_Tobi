@@ -31,10 +31,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
         pub let itemID: UInt64
         pub let itemsCapability: Capability<&Items{ItemsPublic}>
         pub let serialNumber: UInt32
-        pub let purchasePrice: UFix64
-        pub let purchasePriceCurrency: String
-        pub let regularPrice: UFix64
-        pub let regularPriceCurrency: String
         access(contract) var extraMetadata: {String: AnyStruct}
         access(contract) var ownerHistory: {UFix64: Address}
         access(contract) var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
@@ -43,10 +39,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             itemID: UInt64,
             itemsCapability: Capability<&Items{ItemsPublic}>,
             serialNumber: UInt32,
-            purchasePrice: UFix64,
-            purchasePriceCurrency: String,
-            regularPrice: UFix64,
-            regularPriceCurrency: String,
             extraMetadata: {String: AnyStruct},
         ) {
             pre {
@@ -59,10 +51,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             self.itemID = itemID
             self.itemsCapability = itemsCapability
             self.serialNumber = serialNumber
-            self.purchasePrice = purchasePrice
-            self.purchasePriceCurrency = purchasePriceCurrency
-            self.regularPrice = regularPrice
-            self.regularPriceCurrency = regularPriceCurrency
             self.extraMetadata = extraMetadata
             self.ownerHistory = {}
             self.ownedNFTs <- {}
@@ -499,10 +487,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
         pub fun mint(
             itemCreatorAddress: Address,
             itemID: UInt64,
-            purchasePrice: UFix64,
-            purchasePriceCurrency: String,
-            regularPrice: UFix64,
-            regularPriceCurrency: String,
             extraMetadata: {String: AnyStruct},
         ): @NFT {
             pre {
@@ -517,10 +501,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
                 itemID: itemID,
                 itemsCapability: itemsCapability,
                 serialNumber: itemRef.mintedCount,
-                purchasePrice: purchasePrice,
-                purchasePriceCurrency: purchasePriceCurrency,
-                regularPrice: regularPrice,
-                regularPriceCurrency: regularPriceCurrency,
                 extraMetadata: extraMetadata,
             )
         }
