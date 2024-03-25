@@ -66,9 +66,18 @@ model tobiratory_digital_items {
   type              String  @db.VarChar(255)
   item_id           Int     @default(0)
   content_id        Int
-  saidan_id         Int
   description       String  @db.VarChar(255) @default("")
   limit             Int     @default(0)
+  license           String  @db.VarChar(255) @default("")
+  copyright_holders String  @db.VarChar(255) @default("")
+  updated_date_time DateTime @default(now()) @db.Timestamp(6)
+  created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_digital_items_saidans_relationship {
+  id                Int     @id @default(autoincrement())
+  nft_id            Int     @unique
+  saidan_id         Int     @unique
   updated_date_time DateTime @default(now()) @db.Timestamp(6)
   created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
@@ -84,7 +93,7 @@ model tobiratory_digital_item_nfts {
   id                Int     @id @default(autoincrement())
   serial_no         String    @unique
   digital_item_id   Int
-  owner_uuid         String    @db.VarChar(100)
+  owner_uuid        String    @db.VarChar(100)
   box_id            Int
   mint_status       String  @default("minting") // "minted", "opened"
   updated_date_time DateTime  @default(now()) @db.Timestamp(6)

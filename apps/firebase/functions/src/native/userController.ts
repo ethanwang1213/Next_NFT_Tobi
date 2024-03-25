@@ -38,7 +38,14 @@ export const signUp = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken((authorization ?? "")).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const email = decodedToken.email ?? "";
+    const email = decodedToken.email;
+    if (email==undefined) {
+      res.status(401).send({
+        status: "error",
+        data: "anonymous-user",
+      });
+      return;
+    }
     const savedUser = await prisma.tobiratory_accounts.findMany({
       where: {
         email: email,

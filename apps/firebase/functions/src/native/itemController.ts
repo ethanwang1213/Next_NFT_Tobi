@@ -219,7 +219,6 @@ export const createItem = async (req: Request, res: Response) => {
         image: image,
         type: type,
         content_id: 0,
-        saidan_id: 0,
       },
     });
     await prisma.tobiratory_sample_items.create({
