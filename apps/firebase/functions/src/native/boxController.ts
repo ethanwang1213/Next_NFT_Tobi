@@ -188,11 +188,16 @@ export const getInventoryData = async (req: Request, res: Response) => {
                 id: item.digital_item_id,
               },
             });
+            const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
+              where: {
+                nft_id: item.id,
+              },
+            });
             return {
               id: item.id,
               name: itemInfo?.name,
               image: itemInfo?.image,
-              saidanId: itemInfo?.saidan_id,
+              saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
               status: item?.mint_status,
             };
           })
@@ -255,11 +260,16 @@ export const getBoxData = async (req: Request, res: Response) => {
               id: item.digital_item_id,
             },
           });
+          const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
+            where: {
+              nft_id: item.id,
+            },
+          });
           return {
             id: item.id,
             name: itemInfo?.name,
             image: itemInfo?.image,
-            saidanId: itemInfo?.saidan_id,
+            saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
           };
         })
     );
@@ -378,13 +388,18 @@ export const openNFT = async (req: Request, res: Response) => {
         });
         return;
       }
+      const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
+        where: {
+          nft_id: id,
+        },
+      });
       res.status(200).send({
         status: "success",
         data: {
           id: updatedNFT.id,
           name: itemData.name,
           image: itemData.image,
-          saidanId: itemData.saidan_id,
+          saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
           status: updatedNFT.mint_status,
         },
       });
@@ -458,6 +473,267 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
           },
         });
       }
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+  });
+};
+
+export const moveNFT = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {boxId, nfts}:{boxId: number, nfts: number[]} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      const boxData = await prisma.tobiratory_boxes.findUnique({
+        where: {
+          id: boxId,
+        },
+      });
+      if (!boxData) {
+        res.status(401).send({
+          status: "error",
+          data: "box-not-exist",
+        });
+        return;
+      }
+      for (const nftId of nfts) {
+        const nftData = await prisma.tobiratory_digital_item_nfts.findUnique({
+          where: {
+            id: nftId,
+          },
+        });
+        if (!nftData) {
+          res.status(401).send({
+            status: "error",
+            data: "not-exist",
+          });
+          return;
+        }
+        if (nftData.owner_uuid != uid) {
+          res.status(401).send({
+            status: "error",
+            data: "exist-not-yours",
+          });
+          return;
+        }
+      }
+      await prisma.tobiratory_digital_item_nfts.updateMany({
+        where: {
+          id: {
+            in: nfts,
+          },
+        },
+        data: {
+          box_id: boxId,
+        },
+      });
+      const boxes = await prisma.tobiratory_boxes.findMany({
+        where: {
+          creator_uuid: uid,
+        },
+        orderBy: {
+          created_date_time: "desc",
+        },
+      });
+      const returnBoxes = await Promise.all(boxes.map(async (box) => {
+        const itemsInBox = await prisma.tobiratory_digital_item_nfts.findMany({
+          where: {
+            box_id: box.id,
+          },
+          orderBy: {
+            updated_date_time: "desc",
+          },
+        });
+        const items4 = await Promise.all(
+            itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+                .map(async (item)=>{
+                  const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+                    where: {
+                      id: item.digital_item_id,
+                    },
+                  });
+                  return {
+                    id: item.id,
+                    name: itemInfo?.name,
+                    image: itemInfo?.image,
+                  };
+                })
+        );
+        return {
+          id: box.id,
+          name: box.name,
+          items: items4,
+        };
+      }));
+      const items = await prisma.tobiratory_digital_item_nfts.findMany({
+        where: {
+          owner_uuid: uid,
+          box_id: 0,
+        },
+        orderBy: {
+          updated_date_time: "desc",
+        },
+      });
+      const returnItems = await Promise.all(
+          items.map(async (item)=>{
+            const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: item.digital_item_id,
+              },
+            });
+            const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
+              where: {
+                nft_id: item.id,
+              },
+            });
+            return {
+              id: item.id,
+              name: itemInfo?.name,
+              image: itemInfo?.image,
+              saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
+              status: item?.mint_status,
+            };
+          })
+      );
+      res.status(200).send({
+        status: "success",
+        data: {
+          items: returnItems,
+          boxes: returnBoxes,
+        },
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+  });
+};
+
+export const deleteNFT = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {nfts}:{nfts: number[]} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      for (const nftId of nfts) {
+        const nftData = await prisma.tobiratory_digital_item_nfts.findUnique({
+          where: {
+            id: nftId,
+          },
+        });
+        if (!nftData) {
+          res.status(401).send({
+            status: "error",
+            data: "not-exist",
+          });
+          return;
+        }
+        if (nftData.owner_uuid != uid) {
+          res.status(401).send({
+            status: "error",
+            data: "exist-not-yours",
+          });
+          return;
+        }
+      }
+      await prisma.tobiratory_digital_item_nfts.deleteMany({
+        where: {
+          id: {
+            in: nfts,
+          },
+        }
+      });
+      const boxes = await prisma.tobiratory_boxes.findMany({
+        where: {
+          creator_uuid: uid,
+        },
+        orderBy: {
+          created_date_time: "desc",
+        },
+      });
+      const returnBoxes = await Promise.all(boxes.map(async (box) => {
+        const itemsInBox = await prisma.tobiratory_digital_item_nfts.findMany({
+          where: {
+            box_id: box.id,
+          },
+          orderBy: {
+            updated_date_time: "desc",
+          },
+        });
+        const items4 = await Promise.all(
+            itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+                .map(async (item)=>{
+                  const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+                    where: {
+                      id: item.digital_item_id,
+                    },
+                  });
+                  return {
+                    id: item.id,
+                    name: itemInfo?.name,
+                    image: itemInfo?.image,
+                  };
+                })
+        );
+        return {
+          id: box.id,
+          name: box.name,
+          items: items4,
+        };
+      }));
+      const items = await prisma.tobiratory_digital_item_nfts.findMany({
+        where: {
+          owner_uuid: uid,
+          box_id: 0,
+        },
+        orderBy: {
+          updated_date_time: "desc",
+        },
+      });
+      const returnItems = await Promise.all(
+          items.map(async (item)=>{
+            const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: item.digital_item_id,
+              },
+            });
+            const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
+              where: {
+                nft_id: item.id,
+              },
+            });
+            return {
+              id: item.id,
+              name: itemInfo?.name,
+              image: itemInfo?.image,
+              saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
+              status: item?.mint_status,
+            };
+          })
+      );
+      res.status(200).send({
+        status: "success",
+        data: {
+          items: returnItems,
+          boxes: returnBoxes,
+        },
+      });
     } catch (error) {
       res.status(401).send({
         status: "error",
