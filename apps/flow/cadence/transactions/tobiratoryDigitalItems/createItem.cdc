@@ -11,6 +11,7 @@ transaction(
     creatorName: String,
     limit: UInt32?,
     license: String,
+    copyrightHolders: [String],
 ) {
     let itemsRef: &TobiratoryDigitalItems.Items
     let itemReviewerRef: &TobiratoryDigitalItems.ItemReviewer
@@ -48,6 +49,7 @@ transaction(
             creatorName: creatorName,
             limit: limit,
             license: license,
+            copyrightHolders: copyrightHolders,
             royalties: [
                 MetadataViews.Royalty(
                     receiver: self.royaltyReceiver,

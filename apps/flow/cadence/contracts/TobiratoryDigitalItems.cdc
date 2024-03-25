@@ -1,8 +1,7 @@
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 import MetadataViews from "./core/MetadataViews.cdc"
-import ViewResolver from "./core/ViewResolver.cdc"
 
-pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
+pub contract TobiratoryDigitalItems: NonFungibleToken {
 
     pub var totalSupply: UInt64
     pub var itemTotalSupply: UInt64
@@ -184,6 +183,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
         pub let createdAt: UFix64
         pub var limit: UInt32?
         pub var license: String
+        pub var copyrightHolders: [String]
         pub var royalties: [MetadataViews.Royalty]
         pub var extraMetadata: {String: AnyStruct}
         pub var mintedCount: UInt32
@@ -197,6 +197,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             creatorAddress: Address,
             limit: UInt32?,
             license: String,
+            copyrightHolders: [String],
             royalties: [MetadataViews.Royalty],
             extraMetadata: {String: AnyStruct},
         ) {
@@ -212,6 +213,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             self.createdAt = getCurrentBlock().timestamp
             self.limit = limit
             self.license = license
+            self.copyrightHolders = copyrightHolders
             self.royalties = royalties
             self.extraMetadata = extraMetadata
             self.mintedCount = 0
@@ -240,6 +242,10 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
 
         access(contract) fun updateRoyalties(royalties: [MetadataViews.Royalty]) {
             self.royalties = royalties
+        }
+
+        access(contract) fun updateCopyrightHolders(copyrightHolders: [String]) {
+            self.copyrightHolders = copyrightHolders
         }
 
         access(contract) fun updateExtraMetadata(extraMetadata: {String: AnyStruct}) {
@@ -272,6 +278,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             creatorName: String,
             limit: UInt32?,
             license: String,
+            copyrightHolders: [String],
             royalties: [MetadataViews.Royalty],
             extraMetadata: {String: AnyStruct},
             itemReviewer: &ItemReviewer?,
@@ -288,6 +295,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
                 creatorAddress: self.owner!.address,
                 limit: limit,
                 license: license,
+                copyrightHolders: copyrightHolders,
                 royalties: royalties,
                 extraMetadata: extraMetadata,
             )
@@ -342,6 +350,14 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             }
             let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateRoyalties(royalties: royalties)
+        }
+
+        pub fun updateItemCopyrightHolders(itemID: UInt64, copyrightHolders: [String], itemReviewer: &ItemReviewer?) {
+            pre {
+                self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
+            }
+            let itemRef = self.borrowItem(itemID: itemID)!
+            itemRef.updateCopyrightHolders(copyrightHolders: copyrightHolders)
         }
 
         pub fun updateItemLimit(itemID: UInt64, limit: UInt32, itemReviewer: &ItemReviewer?) {

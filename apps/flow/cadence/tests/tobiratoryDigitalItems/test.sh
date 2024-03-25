@@ -6,7 +6,7 @@ flow transactions send ./cadence/transactions/tobiratoryDigitalItems/createColle
 
 # Create item
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/createItem.cdc \
-    testType testName testDescription '["testImageUrl1", "testImageUrl1"]' testCreatorName 100 testLicense \
+    testType testName testDescription '["testImageUrl1", "testImageUrl1"]' testCreatorName 100 testLicense '["copyrightHolder1"]' \
     --authorizer emulator-account-2 --authorizer emulator-account \
     --proposer emulator-account-2 --payer emulator-account \
     --filter payload --save ./cadence/tmp/tx_build.rlp -y
