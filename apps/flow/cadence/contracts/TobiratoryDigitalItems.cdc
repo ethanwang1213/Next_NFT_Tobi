@@ -128,7 +128,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
                         name: itemRef.name ?? "",
                         description: itemRef.description ?? "",
                         thumbnail: MetadataViews.HTTPFile(
-                            url: itemRef.imageUrls.length > 0 ? itemRef.imageUrls[0] : ""
+                            url: itemRef.thumbnailUrl
                         )
                     )
                 case Type<MetadataViews.Editions>():
@@ -155,16 +155,25 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
                     let traits = MetadataViews.Traits([
                         MetadataViews.Trait(name: "name", value: itemRef.name, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "description", value: itemRef.description, displayType: nil, rarity: nil),
-                        MetadataViews.Trait(name: "thumbnail", value: itemRef.imageUrls.length > 0 ? itemRef.imageUrls[0] : "", displayType: nil, rarity: nil),
+                        MetadataViews.Trait(name: "thumbnail", value: itemRef.thumbnailUrl, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "serialNumber", value: self.serialNumber, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "creatorName", value: itemRef.creatorName, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "creatorAddress", value: itemRef.creatorAddress.toString(), displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "limit", value: itemRef.limit ?? 0, displayType: nil, rarity: nil),
-                        MetadataViews.Trait(name: "license", value: itemRef.license, displayType: nil, rarity: nil)
+                        MetadataViews.Trait(name: "license", value: itemRef.license, displayType: nil, rarity: nil),
+                        MetadataViews.Trait(name: "copyrightHolders", value: self.getCopyrightHolders(itemRef: itemRef), displayType: nil, rarity: nil)
                     ])
                     return traits
             }
             return nil
+        }
+
+        priv fun getCopyrightHolders(itemRef: &Item): String {
+            var copyrightHolders = ""
+            for holder in itemRef.copyrightHolders {
+                copyrightHolders = copyrightHolders.concat(holder).concat(", ")
+            }
+            return copyrightHolders
         }
 
         destroy() {
@@ -177,7 +186,8 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
         pub let type: String
         pub var name: String?
         pub var description: String?
-        pub var imageUrls: [String]
+        pub var thumbnailUrl: String
+        pub var modelUrl: String?
         pub var creatorName: String
         pub let creatorAddress: Address
         pub let createdAt: UFix64
@@ -192,7 +202,8 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             type: String,
             name: String?,
             description: String?,
-            imageUrls: [String],
+            thumbnailUrl: String,
+            modelUrl: String?,
             creatorName: String,
             creatorAddress: Address,
             limit: UInt32?,
@@ -207,7 +218,8 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             self.type = type
             self.name = name
             self.description = description
-            self.imageUrls = imageUrls
+            self.thumbnailUrl = thumbnailUrl
+            self.modelUrl = modelUrl
             self.creatorName = creatorName
             self.creatorAddress = creatorAddress
             self.createdAt = getCurrentBlock().timestamp
@@ -228,8 +240,12 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             self.description = description
         }
 
-        access(contract) fun updateImageUrls(imageUrls: [String]) {
-            self.imageUrls = imageUrls
+        access(contract) fun updateThumbnailUrl(thumbnailUrl: String) {
+            self.thumbnailUrl = thumbnailUrl
+        }
+
+        access(contract) fun updateModelUrl(modelUrl: String?) {
+            self.modelUrl = modelUrl
         }
 
         access(contract) fun updateCreatorName(creatorName: String) {
@@ -278,7 +294,8 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             type: String,
             name: String?,
             description: String?,
-            imageUrls: [String],
+            thumbnailUrl: String,
+            modelUrl: String?,
             creatorName: String,
             limit: UInt32?,
             license: String?,
@@ -294,7 +311,8 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
                 type: type,
                 name: name,
                 description: description,
-                imageUrls: imageUrls,
+                thumbnailUrl: thumbnailUrl,
+                modelUrl: modelUrl,
                 creatorName: creatorName,
                 creatorAddress: self.owner!.address,
                 limit: limit,
@@ -332,12 +350,20 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             itemRef.updateDescription(description: description)
         }
 
-        pub fun updateItemImageUrls(itemID: UInt64, imageUrls: [String], itemReviewer: &ItemReviewer?) {
+        pub fun updateItemThumbnailUrl(itemID: UInt64, thumbnailUrl: String, itemReviewer: &ItemReviewer?) {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
             let itemRef = self.borrowItem(itemID: itemID)!
-            itemRef.updateImageUrls(imageUrls: imageUrls)
+            itemRef.updateThumbnailUrl(thumbnailUrl: thumbnailUrl)
+        }
+
+        pub fun updateItemModelUrl(itemID: UInt64, modelUrl: String?, itemReviewer: &ItemReviewer?) {
+            pre {
+                self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
+            }
+            let itemRef = self.borrowItem(itemID: itemID)!
+            itemRef.updateModelUrl(modelUrl: modelUrl)
         }
 
         pub fun updateItemCreatorName(itemID: UInt64, creatorName: String, itemReviewer: &ItemReviewer?) {

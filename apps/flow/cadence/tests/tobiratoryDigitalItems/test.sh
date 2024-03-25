@@ -10,15 +10,14 @@ flow transactions build ./cadence/transactions/tobiratoryDigitalItems/createItem
         { "type": "String", "value": "testType" },
         { "type": "Optional", "value": { "type": "String", "value": "testName" }},
         { "type": "Optional", "value": { "type": "String", "value": "testDescription" }},
-        { "type": "Array", "value": [
-            { "type": "String", "value": "testImageUrl1" },
-            { "type": "String", "value": "testImageUrl2" }
-        ]},
+        { "type": "String", "value": "testThumbnailUrl" },
+        { "type": "Optional", "value": { "type": "String", "value": "testModelUrl" }},
         { "type": "String", "value": "testCreatorName" },
         { "type": "Optional", "value": { "type": "UInt32", "value": "100" }},
         { "type": "Optional", "value": { "type": "String", "value": "testLicense" }},
         { "type": "Array", "value": [
-            { "type": "String", "value": "copyrightHolder1" }
+            { "type": "String", "value": "copyrightHolder1" },
+            { "type": "String", "value": "copyrightHolder2" }
         ]}
     ]' \
     --authorizer emulator-account-2 --authorizer emulator-account \
@@ -50,6 +49,7 @@ flow transactions send-signed ./cadence/tmp/tx_signed.rlp -y
 
 # View NFT Metadata
 flow scripts execute ./cadence/scripts/tobiratoryDigitalItems/getMetadata.cdc 01cf0e2f2f715450 1
+flow scripts execute ./cadence/scripts/tobiratoryDigitalItems/getMetadataTraits.cdc 01cf0e2f2f715450 1
 
 # Attach NFT
 flow transactions send ./cadence/transactions/tobiratoryDigitalItems/attachNFT.cdc 1 2 --signer emulator-account-2
