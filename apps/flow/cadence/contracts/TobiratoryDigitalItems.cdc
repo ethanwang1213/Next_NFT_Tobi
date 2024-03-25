@@ -244,6 +244,10 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             self.royalties = royalties
         }
 
+        access(contract) fun updateLicense(license: String) {
+            self.license = license
+        }
+
         access(contract) fun updateCopyrightHolders(copyrightHolders: [String]) {
             self.copyrightHolders = copyrightHolders
         }
@@ -350,6 +354,14 @@ pub contract TobiratoryDigitalItems: NonFungibleToken {
             }
             let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateRoyalties(royalties: royalties)
+        }
+
+        pub fun updateItemLicense(itemID: UInt64, license: String, itemReviewer: &ItemReviewer?) {
+            pre {
+                self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
+            }
+            let itemRef = self.borrowItem(itemID: itemID)!
+            itemRef.updateLicense(license: license)
         }
 
         pub fun updateItemCopyrightHolders(itemID: UInt64, copyrightHolders: [String], itemReviewer: &ItemReviewer?) {
