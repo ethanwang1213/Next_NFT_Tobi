@@ -1,8 +1,7 @@
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 import MetadataViews from "./core/MetadataViews.cdc"
-import ViewResolver from "./core/ViewResolver.cdc"
 
-pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
+pub contract TobiratoryDigitalItems: NonFungibleToken {
 
     pub var totalSupply: UInt64
     pub var itemTotalSupply: UInt64
@@ -31,10 +30,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
         pub let itemID: UInt64
         pub let itemsCapability: Capability<&Items{ItemsPublic}>
         pub let serialNumber: UInt32
-        pub let purchasePrice: UFix64
-        pub let purchasePriceCurrency: String
-        pub let regularPrice: UFix64
-        pub let regularPriceCurrency: String
         access(contract) var extraMetadata: {String: AnyStruct}
         access(contract) var ownerHistory: {UFix64: Address}
         access(contract) var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
@@ -43,10 +38,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             itemID: UInt64,
             itemsCapability: Capability<&Items{ItemsPublic}>,
             serialNumber: UInt32,
-            purchasePrice: UFix64,
-            purchasePriceCurrency: String,
-            regularPrice: UFix64,
-            regularPriceCurrency: String,
             extraMetadata: {String: AnyStruct},
         ) {
             pre {
@@ -59,10 +50,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             self.itemID = itemID
             self.itemsCapability = itemsCapability
             self.serialNumber = serialNumber
-            self.purchasePrice = purchasePrice
-            self.purchasePriceCurrency = purchasePriceCurrency
-            self.regularPrice = regularPrice
-            self.regularPriceCurrency = regularPriceCurrency
             self.extraMetadata = extraMetadata
             self.ownerHistory = {}
             self.ownedNFTs <- {}
@@ -138,10 +125,10 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
-                        name: itemRef.name,
-                        description: itemRef.description,
+                        name: itemRef.name ?? "",
+                        description: itemRef.description ?? "",
                         thumbnail: MetadataViews.HTTPFile(
-                            url: itemRef.imageUrls.length > 0 ? itemRef.imageUrls[0] : ""
+                            url: itemRef.thumbnailUrl
                         )
                     )
                 case Type<MetadataViews.Editions>():
@@ -168,16 +155,25 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
                     let traits = MetadataViews.Traits([
                         MetadataViews.Trait(name: "name", value: itemRef.name, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "description", value: itemRef.description, displayType: nil, rarity: nil),
-                        MetadataViews.Trait(name: "thumbnail", value: itemRef.imageUrls.length > 0 ? itemRef.imageUrls[0] : "", displayType: nil, rarity: nil),
+                        MetadataViews.Trait(name: "thumbnail", value: itemRef.thumbnailUrl, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "serialNumber", value: self.serialNumber, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "creatorName", value: itemRef.creatorName, displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "creatorAddress", value: itemRef.creatorAddress.toString(), displayType: nil, rarity: nil),
                         MetadataViews.Trait(name: "limit", value: itemRef.limit ?? 0, displayType: nil, rarity: nil),
-                        MetadataViews.Trait(name: "license", value: itemRef.license, displayType: nil, rarity: nil)
+                        MetadataViews.Trait(name: "license", value: itemRef.license, displayType: nil, rarity: nil),
+                        MetadataViews.Trait(name: "copyrightHolders", value: self.getCopyrightHolders(itemRef: itemRef), displayType: nil, rarity: nil)
                     ])
                     return traits
             }
             return nil
+        }
+
+        priv fun getCopyrightHolders(itemRef: &Item): String {
+            var copyrightHolders = ""
+            for holder in itemRef.copyrightHolders {
+                copyrightHolders = copyrightHolders.concat(holder).concat(", ")
+            }
+            return copyrightHolders
         }
 
         destroy() {
@@ -188,27 +184,31 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
     pub resource Item {
         pub let id: UInt64
         pub let type: String
-        pub var name: String
-        pub var description: String
-        pub var imageUrls: [String]
+        pub var name: String?
+        pub var description: String?
+        pub var thumbnailUrl: String
+        pub var modelUrl: String?
         pub var creatorName: String
         pub let creatorAddress: Address
         pub let createdAt: UFix64
         pub var limit: UInt32?
-        pub var license: String
+        pub var license: String?
+        pub var copyrightHolders: [String]
         pub var royalties: [MetadataViews.Royalty]
         pub var extraMetadata: {String: AnyStruct}
         pub var mintedCount: UInt32
 
         init (
             type: String,
-            name: String,
-            description: String,
-            imageUrls: [String],
+            name: String?,
+            description: String?,
+            thumbnailUrl: String,
+            modelUrl: String?,
             creatorName: String,
             creatorAddress: Address,
             limit: UInt32?,
-            license: String,
+            license: String?,
+            copyrightHolders: [String],
             royalties: [MetadataViews.Royalty],
             extraMetadata: {String: AnyStruct},
         ) {
@@ -218,28 +218,34 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             self.type = type
             self.name = name
             self.description = description
-            self.imageUrls = imageUrls
+            self.thumbnailUrl = thumbnailUrl
+            self.modelUrl = modelUrl
             self.creatorName = creatorName
             self.creatorAddress = creatorAddress
             self.createdAt = getCurrentBlock().timestamp
             self.limit = limit
             self.license = license
+            self.copyrightHolders = copyrightHolders
             self.royalties = royalties
             self.extraMetadata = extraMetadata
             self.mintedCount = 0
             emit ItemCreated(id: id, type: type, creatorAddress: creatorAddress)
         }
 
-        access(contract) fun updateName(name: String) {
+        access(contract) fun updateName(name: String?) {
             self.name = name
         }
 
-        access(contract) fun updateDescription(description: String) {
+        access(contract) fun updateDescription(description: String?) {
             self.description = description
         }
 
-        access(contract) fun updateImageUrls(imageUrls: [String]) {
-            self.imageUrls = imageUrls
+        access(contract) fun updateThumbnailUrl(thumbnailUrl: String) {
+            self.thumbnailUrl = thumbnailUrl
+        }
+
+        access(contract) fun updateModelUrl(modelUrl: String?) {
+            self.modelUrl = modelUrl
         }
 
         access(contract) fun updateCreatorName(creatorName: String) {
@@ -252,6 +258,14 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
 
         access(contract) fun updateRoyalties(royalties: [MetadataViews.Royalty]) {
             self.royalties = royalties
+        }
+
+        access(contract) fun updateLicense(license: String?) {
+            self.license = license
+        }
+
+        access(contract) fun updateCopyrightHolders(copyrightHolders: [String]) {
+            self.copyrightHolders = copyrightHolders
         }
 
         access(contract) fun updateExtraMetadata(extraMetadata: {String: AnyStruct}) {
@@ -278,12 +292,14 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
 
         pub fun createItem(
             type: String,
-            name: String,
-            description: String,
-            imageUrls: [String],
+            name: String?,
+            description: String?,
+            thumbnailUrl: String,
+            modelUrl: String?,
             creatorName: String,
             limit: UInt32?,
-            license: String,
+            license: String?,
+            copyrightHolders: [String],
             royalties: [MetadataViews.Royalty],
             extraMetadata: {String: AnyStruct},
             itemReviewer: &ItemReviewer?,
@@ -295,11 +311,13 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
                 type: type,
                 name: name,
                 description: description,
-                imageUrls: imageUrls,
+                thumbnailUrl: thumbnailUrl,
+                modelUrl: modelUrl,
                 creatorName: creatorName,
                 creatorAddress: self.owner!.address,
                 limit: limit,
                 license: license,
+                copyrightHolders: copyrightHolders,
                 royalties: royalties,
                 extraMetadata: extraMetadata,
             )
@@ -316,7 +334,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             return &self.items[itemID] as &Item?
         }
 
-        pub fun updateItemName(itemID: UInt64, name: String, itemReviewer: &ItemReviewer?) {
+        pub fun updateItemName(itemID: UInt64, name: String?, itemReviewer: &ItemReviewer?) {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
@@ -324,7 +342,7 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             itemRef.updateName(name: name)
         }
 
-        pub fun updateItemDescription(itemID: UInt64, description: String, itemReviewer: &ItemReviewer?) {
+        pub fun updateItemDescription(itemID: UInt64, description: String?, itemReviewer: &ItemReviewer?) {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
@@ -332,12 +350,20 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             itemRef.updateDescription(description: description)
         }
 
-        pub fun updateItemImageUrls(itemID: UInt64, imageUrls: [String], itemReviewer: &ItemReviewer?) {
+        pub fun updateItemThumbnailUrl(itemID: UInt64, thumbnailUrl: String, itemReviewer: &ItemReviewer?) {
             pre {
                 self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
             }
             let itemRef = self.borrowItem(itemID: itemID)!
-            itemRef.updateImageUrls(imageUrls: imageUrls)
+            itemRef.updateThumbnailUrl(thumbnailUrl: thumbnailUrl)
+        }
+
+        pub fun updateItemModelUrl(itemID: UInt64, modelUrl: String?, itemReviewer: &ItemReviewer?) {
+            pre {
+                self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
+            }
+            let itemRef = self.borrowItem(itemID: itemID)!
+            itemRef.updateModelUrl(modelUrl: modelUrl)
         }
 
         pub fun updateItemCreatorName(itemID: UInt64, creatorName: String, itemReviewer: &ItemReviewer?) {
@@ -354,6 +380,22 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
             }
             let itemRef = self.borrowItem(itemID: itemID)!
             itemRef.updateRoyalties(royalties: royalties)
+        }
+
+        pub fun updateItemLicense(itemID: UInt64, license: String?, itemReviewer: &ItemReviewer?) {
+            pre {
+                self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
+            }
+            let itemRef = self.borrowItem(itemID: itemID)!
+            itemRef.updateLicense(license: license)
+        }
+
+        pub fun updateItemCopyrightHolders(itemID: UInt64, copyrightHolders: [String], itemReviewer: &ItemReviewer?) {
+            pre {
+                self.validateItemReviewer(itemReviewer): "Invalid itemReviewer"
+            }
+            let itemRef = self.borrowItem(itemID: itemID)!
+            itemRef.updateCopyrightHolders(copyrightHolders: copyrightHolders)
         }
 
         pub fun updateItemLimit(itemID: UInt64, limit: UInt32, itemReviewer: &ItemReviewer?) {
@@ -499,10 +541,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
         pub fun mint(
             itemCreatorAddress: Address,
             itemID: UInt64,
-            purchasePrice: UFix64,
-            purchasePriceCurrency: String,
-            regularPrice: UFix64,
-            regularPriceCurrency: String,
             extraMetadata: {String: AnyStruct},
         ): @NFT {
             pre {
@@ -517,10 +555,6 @@ pub contract TobiratoryDigitalItems: NonFungibleToken, ViewResolver {
                 itemID: itemID,
                 itemsCapability: itemsCapability,
                 serialNumber: itemRef.mintedCount,
-                purchasePrice: purchasePrice,
-                purchasePriceCurrency: purchasePriceCurrency,
-                regularPrice: regularPrice,
-                regularPriceCurrency: regularPriceCurrency,
                 extraMetadata: extraMetadata,
             )
         }

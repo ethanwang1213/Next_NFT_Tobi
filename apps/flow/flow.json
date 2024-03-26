@@ -75,6 +75,13 @@
 				"emulator": "f8d6e0586b0a20c7",
 				"testnet": "5e9ccdb91ff7ad93"
 			}
+		},
+		"TobiratoryDigitalItems": {
+			"source": "./cadence/contracts/TobiratoryDigitalItems.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"testnet": "5e9ccdb91ff7ad93"
+			}
 		}
 	},
 	"networks": {
@@ -101,7 +108,8 @@
 				"TobiraNeko",
 				"HouseBadge",
 				"AchievementBadge",
-				"Festival23Badge"
+				"Festival23Badge",
+				"TobiratoryDigitalItems"
 			]
 		}
 	}

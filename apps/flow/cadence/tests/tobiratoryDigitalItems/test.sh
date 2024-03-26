@@ -6,7 +6,20 @@ flow transactions send ./cadence/transactions/tobiratoryDigitalItems/createColle
 
 # Create item
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/createItem.cdc \
-    testType testName testDescription '["testImageUrl1", "testImageUrl1"]' testCreatorName 100 testLicense \
+    --args-json '[
+        { "type": "String", "value": "testType" },
+        { "type": "Optional", "value": { "type": "String", "value": "testName" }},
+        { "type": "Optional", "value": { "type": "String", "value": "testDescription" }},
+        { "type": "String", "value": "testThumbnailUrl" },
+        { "type": "Optional", "value": { "type": "String", "value": "testModelUrl" }},
+        { "type": "String", "value": "testCreatorName" },
+        { "type": "Optional", "value": { "type": "UInt32", "value": "100" }},
+        { "type": "Optional", "value": { "type": "String", "value": "testLicense" }},
+        { "type": "Array", "value": [
+            { "type": "String", "value": "copyrightHolder1" },
+            { "type": "String", "value": "copyrightHolder2" }
+        ]}
+    ]' \
     --authorizer emulator-account-2 --authorizer emulator-account \
     --proposer emulator-account-2 --payer emulator-account \
     --filter payload --save ./cadence/tmp/tx_build.rlp -y
@@ -16,7 +29,7 @@ flow transactions send-signed ./cadence/tmp/tx_signed.rlp -y
 
 # Mint NFT
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/mintNFT.cdc \
-    01cf0e2f2f715450 1 500.0 'JPY' 100.0 'JPY' \
+    01cf0e2f2f715450 1 \
     --authorizer emulator-account-2 --authorizer emulator-account \
     --proposer emulator-account-2 --payer emulator-account \
     --filter payload --save ./cadence/tmp/tx_build.rlp -y
@@ -26,7 +39,7 @@ flow transactions send-signed ./cadence/tmp/tx_signed.rlp -y
 
 # Mint NFT 2
 flow transactions build ./cadence/transactions/tobiratoryDigitalItems/mintNFT.cdc \
-    01cf0e2f2f715450 1 500.0 'JPY' 100.0 'JPY' \
+    01cf0e2f2f715450 1 \
     --authorizer emulator-account-2 --authorizer emulator-account \
     --proposer emulator-account-2 --payer emulator-account \
     --filter payload --save ./cadence/tmp/tx_build.rlp -y
@@ -36,6 +49,7 @@ flow transactions send-signed ./cadence/tmp/tx_signed.rlp -y
 
 # View NFT Metadata
 flow scripts execute ./cadence/scripts/tobiratoryDigitalItems/getMetadata.cdc 01cf0e2f2f715450 1
+flow scripts execute ./cadence/scripts/tobiratoryDigitalItems/getMetadataTraits.cdc 01cf0e2f2f715450 1
 
 # Attach NFT
 flow transactions send ./cadence/transactions/tobiratoryDigitalItems/attachNFT.cdc 1 2 --signer emulator-account-2

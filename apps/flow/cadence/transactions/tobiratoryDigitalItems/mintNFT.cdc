@@ -5,10 +5,6 @@ import TobiratoryDigitalItems from "../../contracts/TobiratoryDigitalItems.cdc"
 transaction(
     itemCreatorAddress: Address,
     itemID: UInt64,
-    purchasePrice: UFix64,
-    purchasePriceCurrency: String,
-    regularPrice: UFix64,
-    regularPriceCurrency: String,
 ) {
     let receiverRef: &{NonFungibleToken.Receiver}
     let minterRef: &TobiratoryDigitalItems.Minter
@@ -30,10 +26,6 @@ transaction(
         let nft <- self.minterRef.mint(
             itemCreatorAddress: itemCreatorAddress,
             itemID: itemID,
-            purchasePrice: purchasePrice,
-            purchasePriceCurrency: purchasePriceCurrency,
-            regularPrice: regularPrice,
-            regularPriceCurrency: regularPriceCurrency,
             extraMetadata: {},
         )
         self.receiverRef.deposit(token: <- nft)
