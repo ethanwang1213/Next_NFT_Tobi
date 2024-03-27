@@ -61,7 +61,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.
-        if (Router.pathname === "/auth/password_reset") {
+        if (Router.pathname === "/authentication") {
+          // new user sign up
+          if (!firebaseUser.emailVerified) {
+            return;
+          }
+        } else if (Router.pathname === "/auth/password_reset") {
           if (
             !signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)
           ) {
