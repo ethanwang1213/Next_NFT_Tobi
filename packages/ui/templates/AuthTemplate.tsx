@@ -103,6 +103,7 @@ const GoogleButton = ({
 }) => {
   return (
     <Button
+      type={"button"}
       className={
         "btn btn-block w-[408px] rounded-xl bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
       }
@@ -134,6 +135,7 @@ const AppleButton = ({
 }) => {
   return (
     <Button
+      type={"button"}
       className={
         "btn btn-block w-[408px] rounded-xl bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
       }
