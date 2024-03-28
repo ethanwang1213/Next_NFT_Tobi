@@ -13,16 +13,12 @@ const EmailAuth = () => {
   useEffect(() => {
     if (!user) {
       router.push("/authentication");
-      return;
-    }
-
-    if (user?.registeredFlowAccount) {
+    } else if (user.registeredFlowAccount) {
       router.push("/");
-      return;
+    } else {
+      startRegistering();
     }
-
-    startRegistering();
-  }, [router, user]);
+  }, []);
 
   const startRegistering = () => {
     // TODO: Register Tobiratory account and Flow account

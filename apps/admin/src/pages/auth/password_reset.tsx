@@ -20,14 +20,7 @@ const PasswordReset = () => {
   const [authError, setAuthError] = useState<ErrorMessage>(null);
 
   useEffect(() => {
-    if (user?.registeredFlowAccount) {
-      router.push("/");
-    }
-  }, [router, user]);
-
-  useEffect(() => {
     const curHref = window.location.href;
-    console.log(curHref);
     if (!isSignInWithEmailLink(auth, curHref)) {
       router.push("/authentication");
       return;
@@ -45,7 +38,7 @@ const PasswordReset = () => {
       await updatePassword(userCredential.user, password);
       console.log("Password updated!");
       setUpdatedPassword(true);
-      auth.signOut();
+      await auth.signOut();
     } catch (error) {
       console.error(error);
       setAuthError({ code: error.code, message: error.message });

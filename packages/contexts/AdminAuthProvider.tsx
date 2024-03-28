@@ -52,26 +52,39 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         console.log(`メールアドレス: ${firebaseUser.email}`);
 
         console.log(firebaseUser.providerData);
+        console.log(firebaseUser.emailVerified);
+        console.log("Router.pathname: ", Router.pathname);
+
+        // If we use the router, we need to include it in the dependencies,
+        // and useEffect gets called multiple times. So, let's avoid using the router.
+        // TODO: check flow account by API
+        const isRegisteredFlowAccount = false;
+        if (isRegisteredFlowAccount) {
+          // already registered flow account
+          await createUser(firebaseUser, true);
+          const inaccessiblePaths = [
+            "/authentication",
+            "/auth/email_auth",
+            "/auth/sns_auth",
+          ];
+          if (inaccessiblePaths.includes(Router.pathname)) {
+            Router.push("/");
+          }
+          return;
+        }
+
         const signInMethods = await fetchSignInMethodsForEmail(
           auth,
           firebaseUser.email,
         );
         console.log(signInMethods);
-        console.log("Router.pathname: ", Router.pathname);
 
-        // If we use the router, we need to include it in the dependencies,
-        // and useEffect gets called multiple times. So, let's avoid using the router.
         if (Router.pathname === "/authentication") {
           // new user sign up
           if (!firebaseUser.emailVerified) {
             return;
           }
         } else if (Router.pathname === "/auth/password_reset") {
-          if (
-            !signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)
-          ) {
-            Router.push("/authentication");
-          }
           return;
         } else if (Router.pathname === "/auth/email_auth") {
           if (
@@ -85,32 +98,23 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           }
         } else if (Router.pathname === "/auth/sns_auth") {
           if (
-            signInMethods.includes(
-              EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
-            ) ||
+            isSignInWithEmailLinkOnly(signInMethods) ||
             !firebaseUser.emailVerified
           ) {
-            Router.push("/authentication");
+            await auth.signOut();
             return;
           }
         }
 
-        // TODO: check flow account by API
-        const isRegisteredFlowAccount = false;
-        if (isRegisteredFlowAccount) {
-          // already registered flow account
-          await createUser(firebaseUser, true);
-          if (Router.pathname == "/authentication") {
-            Router.push("/");
-            return;
-          }
-        } else {
-          console.log("start registering flow account");
-          // not registered flow account yet
-          await createUser(firebaseUser, false);
-          Router.push("/auth/sns_auth");
+        if (isSignInWithEmailLinkOnly(signInMethods)) {
+          await auth.signOut();
           return;
         }
+
+        console.log("start registering flow account");
+        // not registered flow account yet
+        await createUser(firebaseUser, false);
+        Router.push("/auth/sns_auth");
       } else {
         console.log("onAuthStateChanged: user is null");
         setUser(null);
@@ -141,6 +145,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setUser(null);
       await auth.signOut();
     }
+  };
+
+  const isSignInWithEmailLinkOnly = (signInMethods: string[]) => {
+    return (
+      signInMethods.length === 1 &&
+      signInMethods[0] === EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+    );
   };
 
   const signOut = async () => {
