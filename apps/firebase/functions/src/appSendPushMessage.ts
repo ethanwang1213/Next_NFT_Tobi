@@ -5,29 +5,18 @@ import {REGION} from "./lib/constants";
 export const pushDemo = functions.region(REGION).https.onRequest(async (req, response) => {
   const token = req.query.token as string;
 
-  const message = {
-    notification: {
-      title: "Notification Title",
-      body: "Notification Body",
-    },
-    data: {
-      body: "{ \"type\": \"mintCompleted\", \"data\": { \"id\": 0 } }",
-    },
-  };
-  pushToDevice(token, message);
+  pushToDevice(token, {
+        title: "Notification Title",
+        body: "Notification Body",
+      },
+      {
+        body: "{ \"type\": \"mintCompleted\", \"data\": { \"id\": 0 } }",
+      });
 
   response.status(200).send("submit").end();
 });
 
-export const pushToDevice = (deviceToken: string, message: {
-  notification?: {
-    title: string,
-    body: string,
-  },
-  data?: {
-    body: string,
-  }
-}) => {
+export const pushToDevice = (deviceToken: string, notification?: { title: string, body: string, }, data?: { body: string, }) => {
   const body: any = {
     android: {
       notification: {
@@ -45,15 +34,15 @@ export const pushToDevice = (deviceToken: string, message: {
     },
     token: deviceToken,
   };
-  if (message.notification) {
+  if (notification) {
     body.notification = {
-      title: message.notification.title,
-      body: message.notification.body,
+      title: notification.title,
+      body: notification.body,
     };
   }
-  if (message.data) {
+  if (data) {
     body.data = {
-      body: message.data.body,
+      body: data.body,
     };
   }
 
