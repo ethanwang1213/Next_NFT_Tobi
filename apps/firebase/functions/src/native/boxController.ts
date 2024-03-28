@@ -162,7 +162,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
                   return {
                     id: item.id,
                     name: itemInfo?.name,
-                    image: itemInfo?.image,
+                    image: itemInfo?.thumb_url,
                   };
                 })
         );
@@ -188,16 +188,11 @@ export const getInventoryData = async (req: Request, res: Response) => {
                 id: item.digital_item_id,
               },
             });
-            const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
-              where: {
-                nft_id: item.id,
-              },
-            });
             return {
               id: item.id,
               name: itemInfo?.name,
-              image: itemInfo?.image,
-              saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
+              image: itemInfo?.thumb_url,
+              saidanId: itemInfo?.saidan_id,
               status: item?.mint_status,
             };
           })
@@ -260,16 +255,11 @@ export const getBoxData = async (req: Request, res: Response) => {
               id: item.digital_item_id,
             },
           });
-          const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
-            where: {
-              nft_id: item.id,
-            },
-          });
           return {
             id: item.id,
             name: itemInfo?.name,
-            image: itemInfo?.image,
-            saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
+            image: itemInfo?.thumb_url,
+            saidanId: itemInfo?.saidan_id,
           };
         })
     );
@@ -388,18 +378,13 @@ export const openNFT = async (req: Request, res: Response) => {
         });
         return;
       }
-      const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
-        where: {
-          nft_id: id,
-        },
-      });
       res.status(200).send({
         status: "success",
         data: {
           id: updatedNFT.id,
           name: itemData.name,
-          image: itemData.image,
-          saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
+          image: itemData.thumb_url,
+          saidanId: itemData.saidan_id,
           status: updatedNFT.mint_status,
         },
       });
@@ -498,7 +483,7 @@ export const moveNFT = async (req: Request, res: Response) => {
           id: boxId,
         },
       });
-      if (!boxData) {
+      if (!boxData&&boxId) {
         res.status(401).send({
           status: "error",
           data: "box-not-exist",
@@ -564,7 +549,7 @@ export const moveNFT = async (req: Request, res: Response) => {
                   return {
                     id: item.id,
                     name: itemInfo?.name,
-                    image: itemInfo?.image,
+                    image: itemInfo?.thumb_url,
                   };
                 })
         );
@@ -590,16 +575,11 @@ export const moveNFT = async (req: Request, res: Response) => {
                 id: item.digital_item_id,
               },
             });
-            const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
-              where: {
-                nft_id: item.id,
-              },
-            });
             return {
               id: item.id,
               name: itemInfo?.name,
-              image: itemInfo?.image,
-              saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
+              image: itemInfo?.thumb_url,
+              saidanId: itemInfo?.saidan_id,
               status: item?.mint_status,
             };
           })
@@ -657,7 +637,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
           id: {
             in: nfts,
           },
-        }
+        },
       });
       const boxes = await prisma.tobiratory_boxes.findMany({
         where: {
@@ -687,7 +667,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
                   return {
                     id: item.id,
                     name: itemInfo?.name,
-                    image: itemInfo?.image,
+                    image: itemInfo?.thumb_url,
                   };
                 })
         );
@@ -713,16 +693,11 @@ export const deleteNFT = async (req: Request, res: Response) => {
                 id: item.digital_item_id,
               },
             });
-            const relatedItemSaidan = await prisma.tobiratory_digital_items_saidans_relationship.findUnique({
-              where: {
-                nft_id: item.id,
-              },
-            });
             return {
               id: item.id,
               name: itemInfo?.name,
-              image: itemInfo?.image,
-              saidanId: relatedItemSaidan?relatedItemSaidan.saidan_id:0,
+              image: itemInfo?.thumb_url,
+              saidanId: itemInfo?.saidan_id,
               status: item?.mint_status,
             };
           })
