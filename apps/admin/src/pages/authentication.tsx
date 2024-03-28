@@ -37,13 +37,21 @@ const Authentication = () => {
     setIsRegisteringWithMailAndPassword,
   ] = useState(false);
 
-  const startMailSignUp = (data: LoginFormType) => {
+  const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
       return;
     }
 
+    const usedPasswordAuthenticationAlready = await usedPasswordAuthentication(
+      data.email,
+    );
+
     setEmail(data.email);
-    setAuthState(AuthStates.SignUpWithEmailAndPassword);
+    if (usedPasswordAuthenticationAlready) {
+      setAuthState(AuthStates.SignInWithEmailAndPassword);
+    } else {
+      setAuthState(AuthStates.SignUpWithEmailAndPassword);
+    }
   };
 
   const startMailSignIn = async (data: LoginFormType) => {
@@ -61,6 +69,14 @@ const Authentication = () => {
     }
   };
 
+  const usedPasswordAuthentication = async (email: string) => {
+    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    console.log(signInMethods);
+    return signInMethods.includes(
+      EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
+    );
+  };
+
   const usedEmailLinkButNotSetPassword = async (email: string) => {
     const signInMethods = await fetchSignInMethodsForEmail(auth, email);
     console.log(signInMethods);
@@ -69,6 +85,7 @@ const Authentication = () => {
       !signInMethods.includes(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
     );
   };
+
   const withMailSignUp = async (email: string, password: string) => {
     setIsRegisteringWithMailAndPassword(true);
     try {
