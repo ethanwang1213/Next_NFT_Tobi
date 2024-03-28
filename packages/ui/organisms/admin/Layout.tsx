@@ -46,10 +46,12 @@ const Contents = ({ children }: Props) => {
           </div>
         </div>
       </div>
-      <img
-        src={"/admin/images/bg-logo-png.png"}
-        className={"max-sm:hidden object-cover overflow-scroll"}
-      />
+      <div
+        className={"flex flex-row max-sm:hidden object-cover overflow-hidden"}
+      >
+        <img src={"/admin/images/admin-logo.svg"} className={"object-cover"} />
+        <div className="w-[150px]" />
+      </div>
     </div>
   );
 };

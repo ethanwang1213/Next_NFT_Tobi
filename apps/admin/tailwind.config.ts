@@ -67,9 +67,6 @@ const config = {
         "116": "29rem",
         "120": "30rem",
         "128": "32rem",
-      },
-      backgroundImage: {
-        "tobiratory-logo": "url('/admin/images/bg-logo.svg')",
       }
     },
   },
