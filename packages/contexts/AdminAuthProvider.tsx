@@ -97,16 +97,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             return;
           }
         } else if (Router.pathname === "/auth/sns_auth") {
-          if (
-            isSignInWithEmailLinkOnly(signInMethods) ||
-            !firebaseUser.emailVerified
-          ) {
+          if (emailLinkOnly(signInMethods) || !firebaseUser.emailVerified) {
             await auth.signOut();
             return;
           }
         }
 
-        if (isSignInWithEmailLinkOnly(signInMethods)) {
+        if (emailLinkOnly(signInMethods)) {
           await auth.signOut();
           return;
         }
@@ -125,6 +122,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     });
     return () => unsubscribe();
   }, []);
+
+  const emailLinkOnly = (signInMethods: string[]) => {
+    return (
+      signInMethods.length === 1 &&
+      signInMethods[0] === EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+    );
+  };
 
   const createUser = async (
     firebaseUser: FirebaseUser,
@@ -145,13 +149,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setUser(null);
       await auth.signOut();
     }
-  };
-
-  const isSignInWithEmailLinkOnly = (signInMethods: string[]) => {
-    return (
-      signInMethods.length === 1 &&
-      signInMethods[0] === EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
-    );
   };
 
   const signOut = async () => {

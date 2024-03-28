@@ -1,6 +1,8 @@
 import { auth } from "fetchers/firebase/client";
 import {
   createUserWithEmailAndPassword,
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
   GoogleAuthProvider,
   OAuthProvider,
   sendEmailVerification,
@@ -44,15 +46,29 @@ const Authentication = () => {
     setAuthState(AuthStates.SignUpWithEmailAndPassword);
   };
 
-  const startMailSignIn = (data: LoginFormType) => {
+  const startMailSignIn = async (data: LoginFormType) => {
     if (!data) {
       return;
     }
 
-    setEmail(data.email);
-    setAuthState(AuthStates.SignInWithEmailAndPassword);
+    const notSetPassword = await usedEmailLinkButNotSetPassword(data.email);
+
+    if (notSetPassword) {
+      sendEmailForPasswordReset(data.email, "admin/auth/password_reset");
+    } else {
+      setEmail(data.email);
+      setAuthState(AuthStates.SignInWithEmailAndPassword);
+    }
   };
 
+  const usedEmailLinkButNotSetPassword = async (email: string) => {
+    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    console.log(signInMethods);
+    return (
+      signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) &&
+      !signInMethods.includes(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
+    );
+  };
   const withMailSignUp = async (email: string, password: string) => {
     setIsRegisteringWithMailAndPassword(true);
     try {
@@ -130,6 +146,15 @@ const Authentication = () => {
   };
 
   const sendEmailForPasswordReset = async (email: string, path: string) => {
+    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    if (signInMethods.length === 0) {
+      setAuthError({
+        code: "auth/user-not-found",
+        message: "Tobiratoryアカウントが存在しません",
+      });
+      return;
+    }
+
     const actionCodeSettings = {
       url: `${window.location.origin}/${path}`,
       handleCodeInApp: true,
