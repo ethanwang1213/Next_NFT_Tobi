@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import Button from "ui/atoms/Button";
 import EmailTextField from "ui/atoms/EmailTextField";
-import Loading from "ui/atoms/Loading";
 
 export type LoginFormType = {
   email: string;
@@ -87,7 +86,11 @@ const AuthTemplate = ({
               {errors.email && `${errors.email.message}`}
             </p>
           </div>
-          <SubmitButton label={mailLabel} loading={loading} />
+          <LoadingSpinnerButton
+            type={"submit"}
+            label={mailLabel}
+            loading={loading}
+          />
         </form>
       </div>
     </div>
@@ -152,25 +155,34 @@ const AppleButton = ({
   );
 };
 
-const SubmitButton = ({
+export const LoadingSpinnerButton = ({
+  type,
   label,
+  disabled,
   loading,
+  onClick,
 }: {
+  type?: "button" | "submit" | "reset";
   label: string;
+  disabled?: boolean;
   loading: boolean;
+  onClick?: () => void;
 }) => {
   if (loading) {
-    return <Loading className={"loading-spinner text-info loading-md"} />;
+    return <span className={"loading loading-spinner text-info loading-md"} />;
   }
   return (
-    <button
+    <Button
+      type={type ?? "button"}
+      disabled={disabled ?? false}
       className={
         "btn btn-block btn-primary w-[179px] rounded-2xl text-md text-xl font-normal text-primary-content"
       }
-      type="submit"
+      onClick={onClick}
     >
-      {label}
-    </button>
+      <span className={"font-normal text-[20px]"}>{label}</span>
+    </Button>
   );
 };
+
 export default AuthTemplate;

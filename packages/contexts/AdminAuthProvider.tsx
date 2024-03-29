@@ -96,6 +96,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             Router.push("/authentication");
             return;
           }
+          await createUser(firebaseUser, false);
+          return;
         } else if (Router.pathname === "/auth/sns_auth") {
           if (emailLinkOnly(signInMethods) || !firebaseUser.emailVerified) {
             await auth.signOut();

@@ -37,7 +37,7 @@ const Contents = ({ children }: Props) => {
   }
 
   return (
-    <div className={"flex flow-row sm:justify-center min-h-screen h-screen"}>
+    <div className={"flex flow-row sm:justify-center min-h-screen h-min"}>
       <div className={"grow flex flex-col self-stretch"}>
         {children}
         <div className={"flex grow justify-center"}>
@@ -46,11 +46,8 @@ const Contents = ({ children }: Props) => {
           </div>
         </div>
       </div>
-      <div
-        className={"flex flex-row max-sm:hidden object-cover overflow-hidden"}
-      >
+      <div className={"flex flex-row max-sm:hidden grow overflow-hidden"}>
         <img src={"/admin/images/admin-logo.svg"} className={"object-cover"} />
-        <div className="w-[150px]" />
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import Button from "ui/atoms/Button";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/organisms/admin/BackLink";
+import { LoadingSpinnerButton } from "ui/templates/AuthTemplate";
 
 type Props = {
   email: string;
@@ -69,7 +69,8 @@ const EmailAndPasswordSignIn = ({
           <FirebaseAuthError error={error} />
         </div>
         <div className={"mt-[10px]"}>
-          <SignInButton
+          <LoadingSpinnerButton
+            label={"サインイン"}
             disabled={!!!password}
             loading={loading}
             onClick={() => withMailSignIn(email, password)}
@@ -77,31 +78,6 @@ const EmailAndPasswordSignIn = ({
         </div>
       </div>
     </>
-  );
-};
-
-const SignInButton = ({
-  disabled,
-  loading,
-  onClick,
-}: {
-  disabled: boolean;
-  loading: boolean;
-  onClick: () => void;
-}) => {
-  if (loading) {
-    return <span className={"loading loading-spinner text-info loading-md"} />;
-  }
-  return (
-    <Button
-      disabled={disabled}
-      className={
-        "btn btn-block btn-primary w-[179px] rounded-2xl text-md text-xl font-normal text-primary-content"
-      }
-      onClick={onClick}
-    >
-      <span className={"font-normal text-[20px]"}>サインイン</span>
-    </Button>
   );
 };
 

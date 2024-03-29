@@ -2,10 +2,9 @@ import useMailAuthForm from "hooks/useMailAuthForm";
 import Image from "next/image";
 import { SetStateAction, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import Button from "ui/atoms/Button";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/organisms/admin/BackLink";
-import { LoadingButton } from "ui/templates/admin/FlowRegister";
+import { LoadingSpinnerButton } from "../AuthTemplate";
 
 type Props = {
   title: string;
@@ -199,9 +198,9 @@ const FlowAgreementWithEmailAndPassword = ({
           <FirebaseAuthError error={authError} />
         </div>
         <div className={"mt-[20px]"}>
-          <SubmitButton
-            buttonText={buttonText}
-            isSubmitting={isSubmitting}
+          <LoadingSpinnerButton
+            label={buttonText}
+            loading={isSubmitting}
             disabled={isSubmitButtonDisabled()}
             onClick={() =>
               onClickSubmit(emailStatus.email, passwordStatus.password)
@@ -298,15 +297,15 @@ export const TermsOfService = ({
         }
         onChange={() => setAgreed((prev) => !prev)}
       />
-      <a
-        href={"https://www.tobiratory.com/about"}
-        className={"text-primary ml-[5px] font-medium text-[12px]"}
-        target="_blank"
-        rel="noreferrer"
-      >
-        利用規約
-      </a>
       <span className={"font-medium text-[12px]"}>
+        <a
+          href={"https://www.tobiratory.com/about"}
+          className={"text-primary ml-[5px] font-medium text-[12px]"}
+          target="_blank"
+          rel="noreferrer"
+        >
+          利用規約
+        </a>
         に同意してトビラトリーアカウント、Flowアカウントを作成する。
       </span>
     </div>
@@ -424,38 +423,6 @@ const Error = ({ errors }: { errors: string[] }) => {
       })}
     </div>
   );
-};
-
-const SubmitButton = ({
-  buttonText,
-  isSubmitting,
-  disabled,
-  onClick,
-}: {
-  buttonText: string;
-  isSubmitting: boolean;
-  disabled: boolean;
-  onClick: () => void;
-}) => {
-  const buttonColor = () => {
-    if (!disabled) {
-      return "bg-primary text-primary-content";
-    } else {
-      return "bg-inactive text-inactive-content";
-    }
-  };
-  if (!isSubmitting) {
-    return (
-      <Button
-        className={`${buttonColor()} w-[179px] h-[48px] rounded-2xl`}
-        disabled={disabled}
-        onClick={onClick}
-      >
-        <span className={"font-normal text-[20px]"}>{buttonText}</span>
-      </Button>
-    );
-  }
-  return <LoadingButton />;
 };
 
 export default FlowAgreementWithEmailAndPassword;

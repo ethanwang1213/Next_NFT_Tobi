@@ -76,8 +76,17 @@ const AboutFlowAccount = ({ visible }: { visible: boolean }) => {
   }
 
   return (
+    <InfoLink
+      url={"https://www.tobiratory.com/about"}
+      text={"Flowアカウントと連携するとできること"}
+    />
+  );
+};
+
+export const InfoLink = ({ url, text }: { url: string; text: string }) => {
+  return (
     <a
-      href={"https://www.tobiratory.com/about"}
+      href={url}
       className={"text-primary underline"}
       target="_blank"
       rel="noreferrer"
@@ -93,7 +102,7 @@ const AboutFlowAccount = ({ visible }: { visible: boolean }) => {
           }}
         ></div>
         <div className={"font-medium text-[12px] ml-[5px] pb-[2px]"}>
-          Flowアカウントと連携するとできること
+          {text}
         </div>
       </div>
     </a>
