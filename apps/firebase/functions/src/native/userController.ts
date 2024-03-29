@@ -427,14 +427,15 @@ export const businessSubmission = async (req: Request, res: Response) => {
 
 export const checkExistBusinessAcc = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  const idToken = authorization?.replace(/^Bearer\s+/, "");
+  await getAuth().verifyIdToken(idToken??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const exist = await prisma.tobiratory_businesses.findMany({
+    const exist = await prisma.tobiratory_businesses.findFirst({
       where: {
         uuid: uid,
       },
     });
-    if (!exist.length) {
+    if (exist) {
       res.status(200).send({
         status: "success",
         data: {
@@ -452,8 +453,8 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
       return;
     }
   }).catch((error: FirebaseError)=>{
-    res.status(200).send({
-      status: "success",
+    res.status(500).send({
+      status: "error",
       data: error.code,
     });
   });
