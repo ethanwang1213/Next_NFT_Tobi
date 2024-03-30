@@ -32,11 +32,8 @@ const PasswordReset = () => {
     setUpdatingPassword(true);
     setAuthError(null);
     try {
-      console.log(email);
       const userCredential = await signInWithEmailLink(auth, email, emailLink);
-      console.log(userCredential);
       await updatePassword(userCredential.user, password);
-      console.log("Password updated!");
       setUpdatedPassword(true);
       await auth.signOut();
     } catch (error) {

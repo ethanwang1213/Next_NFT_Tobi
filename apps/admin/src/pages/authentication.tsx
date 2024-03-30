@@ -71,7 +71,6 @@ const Authentication = () => {
 
   const usedPasswordAuthentication = async (email: string) => {
     const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-    console.log(signInMethods);
     return signInMethods.includes(
       EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
     );
@@ -79,7 +78,6 @@ const Authentication = () => {
 
   const usedEmailLinkButNotSetPassword = async (email: string) => {
     const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-    console.log(signInMethods);
     return (
       signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) &&
       !signInMethods.includes(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
@@ -89,12 +87,7 @@ const Authentication = () => {
   const withMailSignUp = async (email: string, password: string) => {
     setIsRegisteringWithMailAndPassword(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      console.log(userCredential);
+      await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailOwnershipVerification("admin/auth/email_auth");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
@@ -115,9 +108,7 @@ const Authentication = () => {
         password,
       );
       const user = userCredential.user;
-      console.log(user);
       if (!user.emailVerified) {
-        console.log("email not verified");
         await sendEmailOwnershipVerification("admin/auth/sns_auth");
       }
     } catch (error) {

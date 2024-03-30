@@ -42,19 +42,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const maxNameLength = 12;
 
   useEffect(() => {
-    console.log("onAuthStateChanged start");
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合
       if (firebaseUser) {
-        // TODO: リリースする前に消そう
-        console.log(`UID: ${firebaseUser.uid}`);
-        console.log(`メールアドレス: ${firebaseUser.email}`);
-
-        console.log(firebaseUser.providerData);
-        console.log(firebaseUser.emailVerified);
-        console.log("Router.pathname: ", Router.pathname);
-
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.
         // TODO: check flow account by API
@@ -77,7 +68,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           auth,
           firebaseUser.email,
         );
-        console.log(signInMethods);
 
         if (Router.pathname === "/authentication") {
           // new user sign up
@@ -110,12 +100,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           return;
         }
 
-        console.log("start registering flow account");
         // not registered flow account yet
         await createUser(firebaseUser, false);
         Router.push("/auth/sns_auth");
       } else {
-        console.log("onAuthStateChanged: user is null");
         setUser(null);
         if (!unrestrictedPaths.includes(Router.pathname)) {
           Router.push("/authentication");
