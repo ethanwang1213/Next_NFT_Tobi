@@ -47,7 +47,12 @@ const Contents = ({ children }: Props) => {
         </div>
       </div>
       <div className={"flex flex-row max-sm:hidden grow overflow-hidden"}>
-        <img src={"/admin/images/admin-logo.svg"} className={"object-cover"} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={"/admin/images/admin-logo.svg"}
+          alt={"Tobiratory Logo"}
+          className={"object-cover"}
+        />
       </div>
     </div>
   );

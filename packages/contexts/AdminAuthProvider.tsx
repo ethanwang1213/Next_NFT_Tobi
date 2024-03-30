@@ -11,6 +11,7 @@ import React, {
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { User } from "types/adminTypes";
@@ -38,7 +39,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const unrestrictedPaths = ["/authentication", "/auth/password_reset"];
+  const unrestrictedPaths = useMemo(
+    () => ["/authentication", "/auth/password_reset"],
+    [],
+  );
   const maxNameLength = 12;
 
   useEffect(() => {
@@ -111,7 +115,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [unrestrictedPaths]);
 
   const emailLinkOnly = (signInMethods: string[]) => {
     return (

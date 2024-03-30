@@ -18,7 +18,7 @@ const EmailAuth = () => {
     } else {
       startRegistering();
     }
-  }, []);
+  }, [router, user]);
 
   const startRegistering = () => {
     // TODO: Register Tobiratory account and Flow account

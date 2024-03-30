@@ -26,7 +26,7 @@ const PasswordReset = () => {
       return;
     }
     setEmailLink(curHref);
-  }, []);
+  }, [router]);
 
   const resetPassword = async (email: string, password: string) => {
     setUpdatingPassword(true);
