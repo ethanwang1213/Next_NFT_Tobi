@@ -21,7 +21,7 @@ export const getItems = async (req: Request, res: Response) => {
         in: [q],
       },
       type: {
-        equals: type,
+        equals: parseInt(type),
       },
     },
     orderBy: orderValue,
@@ -117,7 +117,7 @@ export const getMyItems = async (req: Request, res: Response) => {
           in: [q],
         },
         type: {
-          equals: type,
+          equals: parseInt(type),
         },
       },
       orderBy: orderValue,
@@ -247,7 +247,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
     modelUrl,
     materialId,
     type,
-  }: {thumbUrl: string, modelUrl: string, materialId: number, type: "poster"|"acrylic"|"badge"} = req.body;
+  }: {thumbUrl: string, modelUrl: string, materialId: number, type: number} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {

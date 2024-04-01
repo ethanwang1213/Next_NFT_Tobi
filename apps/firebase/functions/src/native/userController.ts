@@ -274,11 +274,16 @@ export const postMyProfile = async (req: Request, res: Response) => {
     }
     try {
       if (account&&isEmptyObject(account)) {
-        accountData = await prisma.tobiratory_accounts.update({
+        await prisma.tobiratory_accounts.update({
           where: {
             uuid: uid,
           },
           data: accountUpdated,
+        });
+        accountData = await prisma.tobiratory_accounts.findUnique({
+          where: {
+            uuid: uid,
+          },
         });
       }
       if (flow&&isEmptyObject(flow)) {

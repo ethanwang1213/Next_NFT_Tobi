@@ -74,7 +74,7 @@ model tobiratory_saidans_template {
   saidans           tobiratory_saidans[]
   cover_image       String               @db.VarChar(255)
   model_url         String               @db.VarChar(255)
-  type              String               @db.VarChar(255)
+  type              Int
   updated_date_time DateTime             @default(now()) @db.Timestamp(6)
   created_date_time DateTime             @default(now()) @db.Timestamp(6)
 }
@@ -109,7 +109,7 @@ model tobiratory_digital_items {
   thumb_url         String                               @db.VarChar(255)
   model_url         String                               @db.VarChar(255)
   material_id       Int                                  @default(0)
-  type              String                               @db.VarChar(255)
+  type              Int
   content_id        Int                                  @default(0)
   description       String                               @default("") @db.VarChar(255)
   limit             Int                                  @default(0)

@@ -28,6 +28,7 @@ import {
   getSaidanTemplates,
   getSaidans,
   getSaidansById,
+  putAwayItemInSaidan,
   updateMySaidan,
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
@@ -100,6 +101,7 @@ app.post("/my/saidans", createSaidan);
 app.post("/my/saidans/:saidanId/update", updateMySaidan);
 app.get("/my/saidans/:saidanId/decoration", getSaidanDecorationData);
 app.post("/my/saidans/:saidanId/decoration", decorationSaidan);
+app.post("/my/saidans/:saidanId/putaway", putAwayItemInSaidan);
 app.get("/my/saidans/:saidanId", getMySaidansById);
 app.post("/my/saidans/:saidanId/posts", dummyResponse);
 app.get("/my/saidans/:saidanId/posts/:postId", dummyResponse);

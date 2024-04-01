@@ -112,14 +112,6 @@ export const createSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saveData = await prisma.tobiratory_saidans.create({
-        data: {
-          title: title,
-          template_id: templateId,
-          owner_uuid: uid,
-          thumbnail_image: "",
-        },
-      });
       const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
         where: {
           id: templateId,
@@ -132,6 +124,14 @@ export const createSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
+      const saveData = await prisma.tobiratory_saidans.create({
+        data: {
+          title: title,
+          template_id: templateId,
+          owner_uuid: uid,
+          thumbnail_image: saidanTemplate.cover_image,
+        },
+      });
       const favorite = await prisma.tobiratory_saidans_favorite.findMany({
         where: {
           saidan_id: saveData.id,
@@ -309,7 +309,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
 };
 
 export const favoriteSaidan = async (req: Request, res: Response) => {
-  const {saidanId} = req.params;
+  const {id} = req.params;
   const {authorization} = req.headers;
   const {favorite}: {favorite: boolean} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
@@ -317,7 +317,7 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
     try {
       const saidanData = await prisma.tobiratory_saidans.findUnique({
         where: {
-          id: parseInt(saidanId),
+          id: parseInt(id),
         },
       });
       if (!saidanData) {
@@ -330,14 +330,14 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
       const nowFavor = await prisma.tobiratory_saidans_favorite.findMany({
         where: {
           favorite_user_id: uid,
-          saidan_id: parseInt(saidanId),
+          saidan_id: parseInt(id),
         },
       });
       if (favorite&&!nowFavor.length) {
         await prisma.tobiratory_saidans_favorite.create({
           data: {
             favorite_user_id: uid,
-            saidan_id: parseInt(saidanId),
+            saidan_id: parseInt(id),
           },
         });
       } else if (!favorite&&nowFavor.length) {
@@ -473,6 +473,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                 id: item.itemId,
               },
               data: {
+                saidan_id: parseInt(saidanId),
                 state_type: item.stageType,
                 position: [
                   item.position.x,
@@ -641,6 +642,59 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+export const putAwayItemInSaidan = async (req: Request, res: Response) => {
+  const {saidanId} = req.params;
+  const {authorization} = req.headers;
+  const {itemId} = req.body;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const saidanData = await prisma.tobiratory_saidans.findUnique({
+        where: {
+          id: parseInt(saidanId),
+        },
+      });
+      if (!saidanData) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      if (saidanData.owner_uuid != uid) {
+        res.status(401).send({
+          status: "error",
+          data: "not-yours",
+        });
+        return;
+      }
+      await prisma.tobiratory_digital_items.update({
+        where: {
+          id: itemId,
+        },
+        data: {
+          saidan_id: 0,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: "removed",
       });
     } catch (error) {
       res.status(401).send({
