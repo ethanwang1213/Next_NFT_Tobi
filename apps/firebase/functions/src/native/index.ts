@@ -21,6 +21,7 @@ import {createItem, createModel, createSample, deleteSample, getItems, getItemsB
 import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
+import {mintNFT} from "./nftController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -110,7 +111,7 @@ app.post("/posts/:id/notinterested", dummyResponse);
 app.post("/my/nfts/open", openNFT);
 app.post("/my/items/:id/sale", dummyResponse);
 app.post("/my/nfts/:id/listing", dummyResponse);
-app.post("/items/:id/mint", dummyResponse);
+app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
 app.post("/my/nfts/move", moveNFT);
