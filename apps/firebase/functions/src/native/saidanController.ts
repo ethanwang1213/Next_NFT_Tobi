@@ -371,7 +371,7 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
 export const decorationSaidan = async (req: Request, res: Response) => {
   const {saidanId} = req.params;
   const {authorization} = req.headers;
-  const {itemList, cameraData}: {itemList: ItemType[], cameraData: CameraData} = req.body;
+  const {itemList, cameraData, thumbImage}: {itemList: ItemType[], cameraData: CameraData, thumbImage: string} = req.body;
 
   interface ItemType {
     itemId: number;
@@ -436,6 +436,14 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
+      await prisma.tobiratory_saidans.update({
+        where: {
+          id: parseInt(saidanId),
+        },
+        data: {
+          thumbnail_image: thumbImage,
+        },
+      });
       const cameraUpdate = await prisma.tobiratory_saidan_camera.upsert({
         where: {
           saidan_id: parseInt(saidanId),

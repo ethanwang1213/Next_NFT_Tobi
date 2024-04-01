@@ -209,20 +209,11 @@ export const getMyItemsById = async (req: Request, res: Response) => {
 
 export const createModel = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {materialId, type}:{materialId: number, type: "poster"|"acrylic"|"badge"} = req.body;
+  const {materialId, type}:{materialId: number, type: number} = req.body;
   const predefinedModel = "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    if (type == "poster") {
-      res.status(200).send({
-        status: "success",
-        data: {
-          modelUrl: predefinedModel,
-        },
-      });
-      return;
-    }
-    console.log(uid, materialId);
+    console.log(uid, materialId, type);
 
     // const modelData = await createModelCloud(materialId, type);
     res.status(200).send({
