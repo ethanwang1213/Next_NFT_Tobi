@@ -59,19 +59,22 @@ model tobiratory_contents {
 }
 
 model tobiratory_digital_items {
-  id                Int     @id @default(autoincrement())
-  creator_uuid      String  @db.VarChar(100)
-  name              String  @db.VarChar(255)
-  image             String  @db.VarChar(255)
-  type              String  @db.VarChar(255)
-  item_id           Int     @default(0)
-  content_id        Int
-  description       String  @db.VarChar(255) @default("")
-  limit             Int     @default(0)
-  license           String  @db.VarChar(255) @default("")
-  copyright_holders String  @db.VarChar(255) @default("")
-  updated_date_time DateTime @default(now()) @db.Timestamp(6)
-  created_date_time DateTime @default(now()) @db.Timestamp(6)
+  id                Int       @id @default(autoincrement())
+  creator_uuid      String    @db.VarChar(100)
+  name              String?   @db.VarChar(255)
+  image             String    @db.VarChar(255)
+  type              String    @db.VarChar(255)
+  item_id           Int
+  tx_id             String?   @db.VarChar(255)
+  content_id        Int?
+  description       String?   @db.VarChar(255) @default("")
+  thumbnail_url     String    @db.VarChar(255)
+  model_url         String?   @db.VarChar(255)
+  limit             Int?
+  license           String?   @db.VarChar(255) @default("")
+  copyright_holders String[]  @db.VarChar(255) @default([])
+  updated_date_time DateTime  @default(now()) @db.Timestamp(6)
+  created_date_time DateTime  @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_digital_items_saidans_relationship {
@@ -90,12 +93,13 @@ model tobiratory_sample_items {
 }
 
 model tobiratory_digital_item_nfts {
-  id                Int     @id @default(autoincrement())
-  serial_no         String    @unique
+  id                Int       @id @default(autoincrement())
+  serial_no         String?   @unique
   digital_item_id   Int
   owner_uuid        String    @db.VarChar(100)
-  box_id            Int
-  mint_status       String  @default("minting") // "minted", "opened"
+  box_id            Int?
+  mint_status       String    @default("minting") // "minted", "opened"
+  tx_id             String?   @db.VarChar(255)
   updated_date_time DateTime  @default(now()) @db.Timestamp(6)
   created_date_time DateTime  @default(now()) @db.Timestamp(6)
 }
