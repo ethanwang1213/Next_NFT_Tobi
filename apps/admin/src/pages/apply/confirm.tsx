@@ -13,26 +13,6 @@ const Row1 = ({ label, children }) => {
   );
 };
 
-const Row2 = ({ label1, label2, children }) => {
-  return (
-    <div className="flex flex-row py-4 pl-6">
-      <div className="w-52 h-12 flex-none flex flex-row items-center">
-        <span className="text-base mr-4">
-          {label1}
-          {label2.length ? (
-            <>
-              <br />
-              {label2}
-            </>
-          ) : null}
-        </span>
-        {label1 ? <RequireMark /> : <></>}
-      </div>
-      <div className="flex-auto">{children}</div>
-    </div>
-  );
-};
-
 const Row3 = ({ label, children }) => {
   return (
     <div className="flex flex-row py-4 pl-6">
@@ -45,7 +25,12 @@ const Row3 = ({ label, children }) => {
   );
 };
 
-const ConfirmInformation = ({ contentInfo, userInfo }) => {
+const ConfirmInformation = ({
+  contentInfo,
+  userInfo,
+  originalContentDeclaration,
+  setOriginalContentDeclaration,
+}) => {
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-row items-center">
@@ -64,12 +49,6 @@ const ConfirmInformation = ({ contentInfo, userInfo }) => {
       <Row1 label="コンテンツ名">
         <span className="">{contentInfo.name}</span>
       </Row1>
-      <Row2 label1="コンテンツ名" label2="フリガナ">
-        <span className="">{contentInfo.ruby}</span>
-      </Row2>
-      <Row1 label="ジャンル">
-        <span className="">{contentInfo.genre}</span>
-      </Row1>
       <Row1 label="コンテンツの説明">
         <span className="">{contentInfo.description}</span>
       </Row1>
@@ -81,11 +60,6 @@ const ConfirmInformation = ({ contentInfo, userInfo }) => {
           {userInfo.last_name} {userInfo.first_name}
         </span>
       </Row1>
-      <Row2 label1="申請者氏名" label2="フリガナ">
-        <span className="">
-          {userInfo.last_name_ruby} {userInfo.first_name_ruby}
-        </span>
-      </Row2>
       <Row1 label="生年月日">
         <span className="">
           {userInfo.birthday_year}年 {userInfo.birthday_month}月{" "}
@@ -94,7 +68,7 @@ const ConfirmInformation = ({ contentInfo, userInfo }) => {
       </Row1>
       <Row1 label="住所">
         <span className="">
-          {userInfo.post_code} {userInfo.prefectures} {userInfo.municipalities}{" "}
+          {userInfo.post_code} {userInfo.province} {userInfo.city}{" "}
           {userInfo.street} {userInfo.building}
         </span>
       </Row1>
@@ -104,6 +78,23 @@ const ConfirmInformation = ({ contentInfo, userInfo }) => {
       <Row1 label="メールアドレス">
         <span className="">{userInfo.email}</span>
       </Row1>
+      <div className="flex flex-row justify-center items-center mt-6">
+        <input
+          id={"originalContentDeclaration"}
+          type={"checkbox"}
+          checked={originalContentDeclaration}
+          className="w-6 h-6 mr-3 outline-none"
+          onChange={(e) => setOriginalContentDeclaration(e.target.checked)}
+        />
+        <label
+          className={`font-medium text-[16px] ${
+            originalContentDeclaration ? "text-black" : "text-base-content"
+          }`}
+          htmlFor={"originalContentDeclaration"}
+        >
+          オリジナルコンテンツ制作の宣言
+        </label>
+      </div>
     </div>
   );
 };

@@ -116,37 +116,6 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           />
         </div>
       </Row1>
-      <Row2 label1="申請者氏名" label2="フリガナ">
-        <div className="flex flex-row justify-between">
-          <input
-            id="user_last_name_ruby"
-            className={clsx(
-              "flex-1 w-full h-12 pl-5",
-              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-              "text-sm font-normal text-input-color",
-              "placeholder:text-placeholder-color placeholder:font-normal",
-            )}
-            placeholder="セイ"
-            value={userInfo.last_name_ruby}
-            onChange={(e) => userInfoChangeHandler("last_name_ruby", e)}
-            ref={refs["last_name_ruby"]}
-          />
-          <span className="w-8"></span>
-          <input
-            id="user_first_name_ruby"
-            className={clsx(
-              "flex-1 w-full h-12 pl-5",
-              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-              "text-sm font-normal text-input-color",
-              "placeholder:text-placeholder-color placeholder:font-normal",
-            )}
-            placeholder="メイ"
-            value={userInfo.first_name_ruby}
-            onChange={(e) => userInfoChangeHandler("first_name_ruby", e)}
-            ref={refs["first_name_ruby"]}
-          />
-        </div>
-      </Row2>
       <Row1 label="生年月日">
         <div className="flex flex-row items-end">
           <input
@@ -207,7 +176,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="">
         <input
-          id="user_prefectures"
+          id="user_province"
           className={clsx(
             "w-48 h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -215,14 +184,14 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
           placeholder="都道府県"
-          value={userInfo.prefectures}
-          onChange={(e) => userInfoChangeHandler("prefectures", e)}
-          ref={refs["prefectures"]}
+          value={userInfo.province}
+          onChange={(e) => userInfoChangeHandler("province", e)}
+          ref={refs["province"]}
         />
       </Row1>
       <Row1 label="">
         <input
-          id="user_municipalities"
+          id="user_city"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
@@ -230,9 +199,9 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
           placeholder="市区町村"
-          value={userInfo.municipalities}
-          onChange={(e) => userInfoChangeHandler("municipalities", e)}
-          ref={refs["municipalities"]}
+          value={userInfo.city}
+          onChange={(e) => userInfoChangeHandler("city", e)}
+          ref={refs["city"]}
         />
       </Row1>
       <Row1 label="">

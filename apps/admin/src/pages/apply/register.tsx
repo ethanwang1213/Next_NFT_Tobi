@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
-import { RubyCharacters } from "types/ruby";
 import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
 import ConfirmInformation from "./confirm";
@@ -12,29 +11,25 @@ import UserInformation from "./userInfo";
 const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
 const Register = () => {
-  const [switchValue, setSwitchValue] = useState(0);
+  const [switchValue, setSwitchValue] = useState(3);
 
   const router = useRouter();
 
   const [contentInfo, setContentInfo] = useState({
     name: "",
-    ruby: "",
     url: "",
-    genre: "",
     description: "",
   });
 
   const [userInfo, setUserInfo] = useState({
     last_name: "",
     first_name: "",
-    last_name_ruby: "",
-    first_name_ruby: "",
     birthday_year: "",
     birthday_month: "",
     birthday_date: "",
     post_code: "",
-    prefectures: "",
-    municipalities: "",
+    province: "",
+    city: "",
     street: "",
     building: "",
     phone: "",
@@ -42,25 +37,23 @@ const Register = () => {
   });
 
   const [copyrightInfo, setCopyrightInfo] = useState({ agreement: false });
+  const [originalContentDeclaration, setOriginalContentDeclaration] =
+    useState(false);
 
   const contentInfoInputRefs = {
     name: useRef(),
-    ruby: useRef(),
-    genre: useRef(),
     description: useRef(),
   };
 
   const userInfoInputRefs = {
     last_name: useRef(),
     first_name: useRef(),
-    last_name_ruby: useRef(),
-    first_name_ruby: useRef(),
     birthday_year: useRef(),
     birthday_month: useRef(),
     birthday_date: useRef(),
     post_code: useRef(),
-    prefectures: useRef(),
-    municipalities: useRef(),
+    province: useRef(),
+    city: useRef(),
     street: useRef(),
     building: useRef(),
     phone: useRef(),
@@ -70,11 +63,7 @@ const Register = () => {
   const checkContentInfos = () => {
     // Check if any field is empty
     const emptyField = Object.keys(contentInfo).find((fieldName) => {
-      return (
-        (fieldName !== "url" && contentInfo[fieldName].trim() === "") ||
-        (fieldName === "ruby" &&
-          RegExp(`[^${RubyCharacters}]`).test(contentInfo[fieldName]))
-      );
+      return fieldName !== "url" && contentInfo[fieldName].trim() === "";
     });
 
     if (emptyField) {
@@ -92,10 +81,6 @@ const Register = () => {
     const emptyField = Object.keys(userInfo).find((fieldName) => {
       return (
         (fieldName !== "building" && userInfo[fieldName].trim() === "") ||
-        (fieldName === "last_name_ruby" &&
-          RegExp(`[^${RubyCharacters}]`).test(userInfo[fieldName])) ||
-        (fieldName === "first_name_ruby" &&
-          RegExp(`[^${RubyCharacters}]`).test(userInfo[fieldName])) ||
         (fieldName === "email" &&
           !/^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(userInfo[fieldName]))
       );
@@ -148,6 +133,22 @@ const Register = () => {
     return true;
   };
 
+  const isButtonDisabled = () => {
+    if (switchValue === 2 && !copyrightInfo.agreement) {
+      return true;
+    } else if (switchValue === 3 && !originalContentDeclaration) {
+      return true;
+    }
+    return false;
+  };
+
+  const nextButtonColor = () => {
+    if (isButtonDisabled()) {
+      return "bg-inactive";
+    }
+    return "bg-primary";
+  };
+
   return (
     <div>
       <div className="container mx-auto my-2 pt-16 px-0 md:px-20 font-normal">
@@ -180,7 +181,12 @@ const Register = () => {
             />
           )}
           {switchValue === 3 && (
-            <ConfirmInformation userInfo={userInfo} contentInfo={contentInfo} />
+            <ConfirmInformation
+              userInfo={userInfo}
+              contentInfo={contentInfo}
+              originalContentDeclaration={originalContentDeclaration}
+              setOriginalContentDeclaration={setOriginalContentDeclaration}
+            />
           )}
         </div>
 
@@ -198,12 +204,10 @@ const Register = () => {
             type="button"
             className={clsx(
               "w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px]",
-              switchValue === 2 && !copyrightInfo.agreement
-                ? "bg-[#B3B3B3]"
-                : "bg-[#1779DE]",
+              nextButtonColor(),
             )}
             onClick={handleNext}
-            disabled={switchValue === 2 && !copyrightInfo.agreement}
+            disabled={isButtonDisabled()}
           >
             {switchValue === 2
               ? "確認する"
