@@ -142,7 +142,7 @@ type Metadata = {
 
 const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: number, metadata: Metadata) => {
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   const flowAccountDocRef = await createOrGetFlowAccountDocRef(tobiratoryAccountUuid);
 
@@ -406,7 +406,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
 
 const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, id: number) => {
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   const flowAccountDocRef = await createOrGetFlowAccountDocRef(tobiratoryAccountUuid);
 
@@ -558,7 +558,7 @@ const sendCreateAccountTx = async () => {
   const {privKey, pubKey} = generateKeyPair();
 
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   // TODO: Add initialization for Tobiratory-related NFT Collection
   const cadence = `\
