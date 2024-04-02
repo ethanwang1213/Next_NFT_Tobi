@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
-import {DecodedIdToken, getAuth} from "firebase-admin/lib/auth";
+import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {TOPIC_NAMES} from "../lib/constants";
