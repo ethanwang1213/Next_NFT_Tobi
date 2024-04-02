@@ -5,12 +5,14 @@ import FungibleToken from 0xee82856bf20e2aa6
 
 transaction(
     type: String,
-    name: String,
-    description: String,
-    imageUrls: [String],
+    name: String?,
+    description: String?,
+    thumbnailUrl: String,
+    modelUrl: String?,
     creatorName: String,
     limit: UInt32?,
-    license: String,
+    license: String?,
+    copyrightHolders: [String],
 ) {
     let itemsRef: &TobiratoryDigitalItems.Items
     let itemReviewerRef: &TobiratoryDigitalItems.ItemReviewer
@@ -44,10 +46,12 @@ transaction(
             type: type,
             name: name,
             description: description,
-            imageUrls: imageUrls,
+            thumbnailUrl: thumbnailUrl,
+            modelUrl: modelUrl,
             creatorName: creatorName,
             limit: limit,
             license: license,
+            copyrightHolders: copyrightHolders,
             royalties: [
                 MetadataViews.Royalty(
                     receiver: self.royaltyReceiver,

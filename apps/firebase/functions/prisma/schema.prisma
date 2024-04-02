@@ -124,6 +124,10 @@ model tobiratory_digital_items {
   saidan_id         Int                                  @default(0)
   sample_item       tobiratory_sample_items? //need to discuss
   digital_nft       tobiratory_digital_item_nfts? //need to discuss
+  image             String    @db.VarChar(255)
+  item_id           Int
+  tx_id             String?   @db.VarChar(255)
+  thumbnail_url     String    @db.VarChar(255)
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)
 }
@@ -145,6 +149,7 @@ model tobiratory_digital_item_nfts {
   owner_uuid        String                   @db.VarChar(100)
   box_id            Int                      @default(0)
   mint_status       String                   @default("minting") // "minted", "opened"
+  tx_id             String?                  @db.VarChar(255)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
   created_date_time DateTime                 @default(now()) @db.Timestamp(6)
 }

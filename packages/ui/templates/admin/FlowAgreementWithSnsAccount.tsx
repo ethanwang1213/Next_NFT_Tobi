@@ -1,0 +1,112 @@
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { User } from "types/adminTypes";
+import Button from "ui/atoms/Button";
+import BackLInk from "ui/organisms/admin/BackLink";
+import { TermsOfService } from "./FlowAgreementWithEmailAndPassword";
+
+type Props = {
+  user: User;
+  onClickRegister: () => void;
+};
+
+const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
+  const router = useRouter();
+  const [agreed, setAgreed] = useState(false);
+  const buttonColor = () => {
+    if (agreed) {
+      return "bg-primary text-primary-content";
+    } else {
+      return "bg-inactive text-inactive-content";
+    }
+  };
+
+  return (
+    <>
+      <div className="flex flex-col items-center justify-center p-8">
+        <div className={"w-full"}>
+          <BackLInk onClickBack={() => router.push("/authentication")} />
+        </div>
+        <Image
+          src={"/admin/images/tobiratory-flow.svg"}
+          alt={"link tobiratory account with flow account"}
+          width={313}
+          height={114}
+        />
+        <div className={"font-bold text-[32px] mt-[50px]"}>
+          デジタルアイテムを所有するために
+        </div>
+        <div className={"font-medium text-[16px] mt-[100px]"}>
+          ご登録のメールアドレスで、Flowアカウントを作成します。
+        </div>
+        <input
+          type={"text"}
+          placeholder={user?.email}
+          disabled={true}
+          className={
+            "rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+          }
+        />
+        <div className={"mt-[30px]"}>
+          <AboutFlowAccount visible={true} />
+        </div>
+        <div className={"mt-[100px]"}>
+          <TermsOfService
+            visible={true}
+            agreed={agreed}
+            setAgreed={setAgreed}
+          />
+        </div>
+        <Button
+          className={`${buttonColor()} w-[179px] h-[48px] rounded-2xl mt-[20px]`}
+          disabled={!agreed}
+          onClick={onClickRegister}
+        >
+          <span className={"font-normal text-[20px]"}>登録</span>
+        </Button>
+      </div>
+    </>
+  );
+};
+
+const AboutFlowAccount = ({ visible }: { visible: boolean }) => {
+  if (!visible) {
+    return <></>;
+  }
+
+  return (
+    <InfoLink
+      url={"https://www.tobiratory.com/about"}
+      text={"Flowアカウントと連携するとできること"}
+    />
+  );
+};
+
+export const InfoLink = ({ url, text }: { url: string; text: string }) => {
+  return (
+    <a
+      href={url}
+      className={"text-primary underline"}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <div className={"flex flex-row items-center"}>
+        <div
+          className={"w-[12px] h-[12px] bg-primary"}
+          style={{
+            WebkitMaskImage: "url(/admin/images/info-icon.svg)",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            WebkitMaskSize: "contain",
+          }}
+        ></div>
+        <div className={"font-medium text-[12px] ml-[5px] pb-[2px]"}>
+          {text}
+        </div>
+      </div>
+    </a>
+  );
+};
+
+export default FlowAgreementWithSnsAccount;

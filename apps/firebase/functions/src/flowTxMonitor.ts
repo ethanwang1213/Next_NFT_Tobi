@@ -4,6 +4,7 @@ import {PubSub} from "@google-cloud/pubsub";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import {PrismaClient} from "@prisma/client";
+import {pushToDevice} from "./appSendPushMessage";
 
 const prisma = new PrismaClient();
 
@@ -40,8 +41,137 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         throw e;
       }
     }
+  } else if (txType == "createItem") {
+    try {
+      const digitalItemId = params.digitalItemId;
+      const fcmToken = params.fcmToken;
+      await fetchAndUpdateCreateItem(digitalItemId, fcmToken);
+      await flowJobDocRef.update({status: "done", updatedAt: new Date()});
+    } catch (e) {
+      if (e instanceof Error && e.message === "TX_FAILED") {
+        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
+        console.log(`Message ${messageId} published.`);
+        await flowJobDocRef.update({status: "retrying", updatedAt: new Date()});
+      } else {
+        throw e;
+      }
+    }
+  } else if (txType == "mintNFT") {
+    try {
+      await fetchAndUpdateMintNFT(params.digitalItemId, params.fcmToken);
+      await flowJobDocRef.update({status: "done", updatedAt: new Date()});
+    } catch (e) {
+      if (e instanceof Error && e.message === "TX_FAILED") {
+        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
+        console.log(`Message ${messageId} published.`);
+        await flowJobDocRef.update({status: "retrying", updatedAt: new Date()});
+      } else {
+        throw e;
+      }
+    }
   }
 });
+
+const fetchAndUpdateCreateItem = async (digitalItemId: number, fcmToken: string) => {
+  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+    where: {
+      id: digitalItemId,
+    }
+  });
+  if (!digitalItem) {
+    throw new Error("DIGITAL_ITEM_NOT_FOUND");
+  }
+  const txId = digitalItem.tx_id;
+  if (!txId) {
+    throw new Error("TX_NOT_FOUND");
+  }
+  const { id } = await fetchCreateItem(txId);
+  await prisma.tobiratory_digital_items.update({
+    where: {
+      id: digitalItemId,
+    },
+    data: {
+      item_id: id,
+    }
+  });
+}
+
+const fetchCreateItem = async (txId: string) => {
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+  const tx = await fcl.tx(txId).onceSealed();
+  console.log(tx);
+  for (const event of tx.events) {
+    if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.ItemCreated`) {
+      return { id: event.data.id, type: event.data.type, creatorAddress: event.data.creatorAddress };
+    }
+  }
+  throw Error("TX_FAILED");
+}
+
+const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) => {
+  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+    where: {
+      id: digitalItemId,
+    }
+  });
+  const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
+    where: {
+      id: digitalItemId,
+    }
+  });
+  if (!digitalItem) {
+    throw new Error("DIGITAL_ITEM_NOT_FOUND");
+  }
+  if (!nft) {
+    throw new Error("NFT_NOT_FOUND");
+  }
+  const txId = nft.tx_id;
+  if (!txId) {
+    throw new Error("TX_NOT_FOUND");
+  }
+
+  const {serialNumber} = await fetchMintNFT(txId);
+
+  await prisma.tobiratory_digital_item_nfts.update({
+    where: {
+      id: digitalItemId,
+    },
+    data: {
+      mint_status: "minted",
+      serial_no: serialNumber,
+      box_id: 0,
+    }
+  });
+  await prisma.tobiratory_digital_items.update({
+    where: {
+      id: digitalItemId,
+    },
+    data: {
+      limit: digitalItem.limit ? digitalItem.limit - 1 : null,
+    }
+  });
+  pushToDevice(fcmToken, {
+    title: "NFTの作成が完了しました",
+    body: "タップして見に行ってみよう!",
+  }, {
+    body: JSON.stringify({
+      type: "mintCompleted",
+      data: {id: digitalItemId},
+    }),
+  });
+};
+
+const fetchMintNFT = async (txId: string) => {
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+  const tx = await fcl.tx(txId).onceSealed();
+  console.log(tx);
+  for (const event of tx.events) {
+    if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Mint`) {
+      return { id: event.data.id, itemID: event.data.itemID, serialNumber: event.data.serialNumber };
+    }
+  }
+  throw Error("TX_FAILED");
+};
 
 const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   const existingFlowJobs = await firestore().collection("flowJobs").where("flowJobId", "==", flowJobId).get();

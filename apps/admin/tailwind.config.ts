@@ -35,10 +35,12 @@ const config = {
         "attention-content": "#FFFFFF",
         "base-76-content": "#717171C2",
         "base-200-content": "#5A5A5A",
-        "non-active": "#B3B3B3",
+        inactive: "#B3B3B3",
+        "inactive-content": "#FFFFFF",
         popup: "#07396C",
         "popup-content": "#FFFFFF",
         "hover-item": "#E5F0FF",
+        "disabled-field": "#A1A1A1",
       },
       textColor: {
         "title-color": "#717171",
@@ -65,7 +67,7 @@ const config = {
         "116": "29rem",
         "120": "30rem",
         "128": "32rem",
-      },
+      }
     },
   },
   daisyui: {
