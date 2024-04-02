@@ -141,16 +141,31 @@ export const mintNFT = async (req: Request, res: Response) => {
                 }
                 creatorName = user.username;
             }
+            const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
+                where: {
+                    id: digitalItem.id,
+                }
+            });
+            const copyrights = await Promise.all(
+                copyrightRelate.map(async (relate)=>{
+                    const copyrightData = await prisma.tobiratory_copyright.findUnique({
+                        where: {
+                            id: relate.copyright_id,
+                        }
+                    });
+                    return copyrightData?.copyright_name;
+                })
+            )
             const metadata = {
                 type: digitalItem.type,
                 name: digitalItem.name,
                 description: digitalItem.description,
-                thumbnailUrl: digitalItem.thumbnail_url,
+                thumbnailUrl: digitalItem.thumb_url,
                 modelUrl: digitalItem.model_url,
                 creatorName: creatorName,
                 limit: digitalItem.limit,
                 license: digitalItem.license,
-                copyrightHolders: digitalItem.copyright_holders,
+                copyrightHolders: copyrights,
             };
             const flowJobId = uuidv4();
             const message = {flowJobId, txType: "createItem", params: {tobiratoryAccountUuid: uid, digitalItemId, metadata, fcmToken}};
