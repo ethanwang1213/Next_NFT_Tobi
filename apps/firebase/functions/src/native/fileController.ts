@@ -15,13 +15,13 @@ export const uploadMaterial = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     await prisma.tobiratory_material_images.create({
       data: {
-        owner: uid,
+        owner_uuid: uid,
         image: image,
       },
     });
     const materials = await prisma.tobiratory_material_images.findMany({
       where: {
-        owner: uid,
+        owner_uuid: uid,
       },
     });
     const returnData = materials.map((material)=>{
@@ -49,7 +49,7 @@ export const getMaterial = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     const materials = await prisma.tobiratory_material_images.findMany({
       where: {
-        owner: uid,
+        owner_uuid: uid,
       },
     });
     const returnData = materials.map((material)=>{
@@ -77,7 +77,7 @@ export const removeMaterials = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     await prisma.tobiratory_material_images.deleteMany({
       where: {
-        owner: uid,
+        owner_uuid: uid,
       },
     });
     res.status(200).send({

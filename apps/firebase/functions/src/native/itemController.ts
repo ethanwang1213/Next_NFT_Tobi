@@ -21,7 +21,7 @@ export const getItems = async (req: Request, res: Response) => {
         in: [q],
       },
       type: {
-        equals: type,
+        equals: parseInt(type),
       },
     },
     orderBy: orderValue,
@@ -38,7 +38,7 @@ export const getItems = async (req: Request, res: Response) => {
       return {
         id: item.id,
         name: item.name,
-        image: item.image,
+        image: item.thumb_url,
         type: item.type,
         content: content == null ? null : {
           id: content.id,
@@ -81,7 +81,7 @@ export const getItemsById = async (req: Request, res: Response) => {
   const resData = {
     id: id,
     name: itemData.name,
-    image: itemData.image,
+    image: itemData.thumb_url,
     type: itemData.type,
     content: contentData == null ? null : {
       id: contentData.id,
@@ -117,7 +117,7 @@ export const getMyItems = async (req: Request, res: Response) => {
           in: [q],
         },
         type: {
-          equals: type,
+          equals: parseInt(type),
         },
       },
       orderBy: orderValue,
@@ -134,7 +134,7 @@ export const getMyItems = async (req: Request, res: Response) => {
         return {
           id: item.id,
           name: item.name,
-          image: item.image,
+          image: item.thumb_url,
           type: item.type,
           content: content == null ? null : {
             id: content.id,
@@ -186,7 +186,7 @@ export const getMyItemsById = async (req: Request, res: Response) => {
     const resData = {
       id: id,
       name: itemData.name,
-      image: itemData.image,
+      image: itemData.thumb_url,
       type: itemData.type,
       content: contentData==null ? null : {
         id: contentData.id,
@@ -207,90 +207,13 @@ export const getMyItemsById = async (req: Request, res: Response) => {
   });
 };
 
-export const createItem = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  const {name, image, type} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    const item = await prisma.tobiratory_digital_items.create({
-      data: {
-        creator_uuid: uid,
-        name: name,
-        image: image,
-        type: type,
-        content_id: 0,
-      },
-    });
-    await prisma.tobiratory_sample_items.create({
-      data: {
-        digital_item_id: item.id,
-      },
-    });
-    res.status(200).send({
-      status: "success",
-      data: "saved-success",
-    });
-    return;
-  }).catch((error: FirebaseError)=>{
-    res.status(401).send({
-      status: "error",
-      data: error.code,
-    });
-    return;
-  });
-};
-
-export const updateItem = async (req: Request, res: Response) => {
-  const {id} = req.params;
-  const {authorization} = req.headers;
-  const {itemData} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    const item = await prisma.tobiratory_digital_items.update({
-      where: {
-        id: parseInt(id),
-        creator_uuid: uid,
-      },
-      data: {
-        name: itemData.name,
-        image: itemData.image,
-      },
-    });
-    await prisma.tobiratory_sample_items.create({
-      data: {
-        digital_item_id: item.id,
-      },
-    });
-    res.status(200).send({
-      status: "success",
-      data: "saved-success",
-    });
-    return;
-  }).catch((error: FirebaseError)=>{
-    res.status(401).send({
-      status: "error",
-      data: error.code,
-    });
-    return;
-  });
-};
-
 export const createModel = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {materialId, type}:{materialId: number, type: "poster"|"acrylic"|"badge"} = req.body;
+  const {materialId, type}:{materialId: number, type: number} = req.body;
   const predefinedModel = "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    if (type == "poster") {
-      res.status(200).send({
-        status: "success",
-        data: {
-          modelUrl: predefinedModel,
-        },
-      });
-      return;
-    }
-    console.log(uid, materialId);
+    console.log(uid, materialId, type);
 
     // const modelData = await createModelCloud(materialId, type);
     res.status(200).send({
@@ -308,19 +231,18 @@ export const createModel = async (req: Request, res: Response) => {
   });
 };
 
-
-export const createSample = async (req: Request, res: Response) => {
+export const createDigitalItem = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {
     thumbUrl,
     modelUrl,
     materialId,
     type,
-  }: {thumbUrl: string, modelUrl: string, materialId: number, type: "poster"|"acrylic"|"badge"} = req.body;
+  }: {thumbUrl: string, modelUrl: string, materialId: number, type: number} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const sample = await prisma.tobiratory_samples.create({
+      const sample = await prisma.tobiratory_digital_items.create({
         data: {
           creator_uuid: uid,
           thumb_url: thumbUrl,
@@ -355,12 +277,12 @@ export const createSample = async (req: Request, res: Response) => {
   });
 };
 
-export const getMySamples = async (req: Request, res: Response) => {
+export const getMyDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const samples = await prisma.tobiratory_samples.findMany({
+      const samples = await prisma.tobiratory_digital_items.findMany({
         where: {
           creator_uuid: uid,
         },
@@ -394,13 +316,13 @@ export const getMySamples = async (req: Request, res: Response) => {
   });
 };
 
-export const deleteSample = async (req: Request, res: Response) => {
+export const deleteDigitalItem = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const item = await prisma.tobiratory_samples.findUnique({
+      const item = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: parseInt(id),
         },
@@ -423,7 +345,7 @@ export const deleteSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.tobiratory_samples.delete({
+      await prisma.tobiratory_digital_items.delete({
         where: {
           id: parseInt(id),
         },

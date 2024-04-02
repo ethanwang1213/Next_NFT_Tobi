@@ -17,8 +17,20 @@ import
   checkPasswordSet,
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {createItem, createModel, createSample, deleteSample, getItems, getItemsById, getMyItems, getMyItemsById, getMySamples, updateItem} from "./itemController";
-import {createSaidan, getMySaidan, getMySaidansById, getSaidans, getSaidansById} from "./saidanController";
+import {createModel, createDigitalItem, deleteDigitalItem, getItems, getItemsById, getMyItems, getMyItemsById, getMyDigitalItems} from "./itemController";
+import {
+  createSaidan,
+  decorationSaidan,
+  favoriteSaidan,
+  getMySaidans,
+  getMySaidansById,
+  getSaidanDecorationData,
+  getSaidanTemplates,
+  getSaidans,
+  getSaidansById,
+  putAwayItemInSaidan,
+  updateMySaidan,
+} from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
 import {mintNFT} from "./nftController";
@@ -77,18 +89,20 @@ app.post("/my/contents", dummyResponse);
 app.get("/my/contents/:id", dummyResponse);
 app.post("/my/contents/:id", dummyResponse);
 app.get("/my/items", getMyItems);
-app.post("/my/items", createItem);
 app.get("/my/items/:id", getMyItemsById);
-app.post("/my/items/:id/update", updateItem);
-app.post("/my/samples", createSample);
-app.get("/my/samples", getMySamples);
+app.post("/my/samples", createDigitalItem);
+app.get("/my/samples", getMyDigitalItems);
 app.get("/my/samples/:id");
-app.delete("/my/samples/:id", deleteSample);
+app.delete("/my/samples/:id", deleteDigitalItem);
 
 app.post("/model/create", createModel);
 
-app.get("/my/saidans", getMySaidan);
+app.get("/my/saidans", getMySaidans);
 app.post("/my/saidans", createSaidan);
+app.post("/my/saidans/:saidanId/update", updateMySaidan);
+app.get("/my/saidans/:saidanId/decoration", getSaidanDecorationData);
+app.post("/my/saidans/:saidanId/decoration", decorationSaidan);
+app.post("/my/saidans/:saidanId/putaway", putAwayItemInSaidan);
 app.get("/my/saidans/:saidanId", getMySaidansById);
 app.post("/my/saidans/:saidanId/posts", dummyResponse);
 app.get("/my/saidans/:saidanId/posts/:postId", dummyResponse);
@@ -98,6 +112,8 @@ app.post("/items/:id/report", dummyResponse);
 app.post("/posts/:id/report", dummyResponse);
 
 app.post("/contents/:id/favorite", dummyResponse);
+app.get("/saidan/templates", getSaidanTemplates);
+app.post("/saidans/:id/favorite", favoriteSaidan);
 app.post("/saidans/:id/like", dummyResponse);
 app.post("/saidans/:id/save", dummyResponse);
 app.post("/saidans/:id/share", dummyResponse);
@@ -115,8 +131,7 @@ app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
 app.post("/my/nfts/move", moveNFT);
-app.post("/my/nfts/delete", deleteNFT)
-app.post("/my/nfts/delete");
+app.post("/my/nfts/delete", deleteNFT);
 app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);

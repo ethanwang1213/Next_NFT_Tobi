@@ -46,53 +46,23 @@ export const signUp = async (req: Request, res: Response) => {
       });
       return;
     }
-    const savedUser = await prisma.tobiratory_accounts.findMany({
-      where: {
-        email: email,
-      },
-    });
-    if (savedUser.length==0) {
-      const username = email.split("@")[0];
-      const userData = {
-        uuid: uid,
-        email: email,
-        username: username,
-        sns: "",
-        icon_url: "",
-      };
-      const createdUser = await prisma.tobiratory_accounts.create({
-        data: userData,
+    const username = email.split("@")[0];
+    const userData = {
+      uuid: uid,
+      email: email,
+      username: username,
+    };
+    try {
+      const savedUser = await prisma.tobiratory_accounts.upsert({
+        where: {
+          uuid: uid,
+        },
+        update: {},
+        create: userData,
       });
       const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
         where: {
-          uuid: decodedToken.uid,
-        },
-      });
-      res.status(200).send({
-        status: "success",
-        data: {
-          userId: uid,
-          username: createdUser.username,
-          email: createdUser.email,
-          icon: createdUser.icon_url,
-          sns: createdUser.sns,
-          aboutMe: createdUser.about_me,
-          socialLinks: createdUser.social_link,
-          gender: createdUser.gender,
-          birth: createdUser.birth,
-          flow: flowAcc==null ? null : {
-            flowAddress: flowAcc.flow_address,
-            publicKey: flowAcc.public_key,
-            txId: flowAcc.tx_id,
-          },
-          createdAt: createdUser.created_date_time,
-        },
-      });
-      return;
-    } else {
-      const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
-        where: {
-          uuid: savedUser[0].uuid,
+          uuid: uid,
         },
       });
       if (decodedToken.email_verified && !flowAcc) {
@@ -102,23 +72,27 @@ export const signUp = async (req: Request, res: Response) => {
         status: "success",
         data: {
           userId: uid,
-          username: savedUser[0].username,
-          email: savedUser[0].email,
-          icon: savedUser[0].icon_url,
-          sns: savedUser[0].sns,
-          aboutMe: savedUser[0].about_me,
-          socialLinks: savedUser[0].social_link,
-          gender: savedUser[0].gender,
-          birth: savedUser[0].birth,
+          username: savedUser.username,
+          email: savedUser.email,
+          icon: savedUser.icon_url,
+          sns: savedUser.sns,
+          aboutMe: savedUser.about_me,
+          socialLinks: savedUser.social_link,
+          gender: savedUser.gender,
+          birth: savedUser.birth,
           flow: flowAcc==null ? null : {
             flowAddress: flowAcc.flow_address,
             publicKey: flowAcc.public_key,
             txId: flowAcc.tx_id,
           },
-          createdAt: savedUser[0].created_date_time,
+          createdAt: savedUser.created_date_time,
         },
       });
-      return;
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
     }
   }).catch((error: FirebaseError) => {
     res.status(401).send({
@@ -133,39 +107,45 @@ export const createFlowAcc = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
-      where: {
+    try {
+      const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (flowAcc != null) {
+        res.status(200).send({
+          status: "success",
+          data: {
+            flowAddress: flowAcc.flow_address,
+            publicKey: flowAcc.public_key,
+            txId: flowAcc.tx_id,
+          },
+        });
+      }
+      const flowInfo = await createFlowAccount(uid);
+      const flowAccInfo = {
         uuid: uid,
-      },
-    });
-    if (flowAcc != null) {
+        flow_job_id: flowInfo.flowJobId,
+      };
+      const flowData = await prisma.tobiratory_flow_accounts.create({
+        data: flowAccInfo,
+      });
+
       res.status(200).send({
         status: "success",
         data: {
-          flowAddress: flowAcc.flow_address,
-          publicKey: flowAcc.public_key,
-          txId: flowAcc.tx_id,
+          flowAddress: flowData.flow_address,
+          publicKey: flowData.public_key,
+          txId: flowData.tx_id,
         },
       });
+    } catch (error) {
+      res.status(401).send({
+        status: "success",
+        data: error,
+      });
     }
-    const flowInfo = await createFlowAccount(uid);
-    const flowAccInfo = {
-      uuid: uid,
-      flow_job_id: flowInfo.flowJobId,
-    };
-    const flowData = await prisma.tobiratory_flow_accounts.create({
-      data: flowAccInfo,
-    });
-
-
-    res.status(200).send({
-      status: "success",
-      data: {
-        flowAddress: flowData.flow_address,
-        publicKey: flowData.public_key,
-        txId: flowData.tx_id,
-      },
-    });
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
@@ -179,55 +159,62 @@ export const getMyProfile = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const accountData = await prisma.tobiratory_accounts.findUnique({
-      where: {
-        uuid: uid,
-      },
-    });
+    try {
+      const accountData = await prisma.tobiratory_accounts.findUnique({
+        where: {
+          uuid: uid,
+        },
+      });
 
-    if (accountData === null) {
+      if (accountData === null) {
+        res.status(401).send({
+          status: "error",
+          data: "Account does not exist!",
+        });
+        return;
+      }
+
+      const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
+        where: {
+          uuid: uid,
+        },
+      });
+
+      if (flowAccountData === null) {
+        res.status(401).send({
+          status: "error",
+          data: "Flow Account does not exist!",
+        });
+        return;
+      }
+
+      const resData = {
+        userId: uid,
+        username: accountData.username,
+        email: accountData.email,
+        icon: accountData.icon_url,
+        sns: accountData.sns,
+        aboutMe: accountData.about_me,
+        socialLinks: accountData.social_link,
+        gender: accountData.gender,
+        birth: accountData.birth,
+        flow: {
+          flowAddress: flowAccountData.flow_address,
+          publicKey: flowAccountData.public_key,
+          txId: flowAccountData.tx_id,
+        },
+        createdAt: accountData.created_date_time,
+      };
+      res.status(200).send({
+        status: "success",
+        data: resData,
+      });
+    } catch (error) {
       res.status(401).send({
         status: "error",
-        data: "Account does not exist!",
+        data: error,
       });
-      return;
     }
-
-    const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
-      where: {
-        uuid: uid,
-      },
-    });
-
-    if (flowAccountData === null) {
-      res.status(401).send({
-        status: "error",
-        data: "Flow Account does not exist!",
-      });
-      return;
-    }
-
-    const resData = {
-      userId: uid,
-      username: accountData.username,
-      email: accountData.email,
-      icon: accountData.icon_url,
-      sns: accountData.sns,
-      aboutMe: accountData.about_me,
-      socialLinks: accountData.social_link,
-      gender: accountData.gender,
-      birth: accountData.birth,
-      flow: {
-        flowAddress: flowAccountData.flow_address,
-        publicKey: flowAccountData.public_key,
-        txId: flowAccountData.tx_id,
-      },
-      createdAt: accountData.created_date_time,
-    };
-    res.status(200).send({
-      status: "success",
-      data: resData,
-    });
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
       status: "error",
@@ -287,11 +274,16 @@ export const postMyProfile = async (req: Request, res: Response) => {
     }
     try {
       if (account&&isEmptyObject(account)) {
-        accountData = await prisma.tobiratory_accounts.update({
+        await prisma.tobiratory_accounts.update({
           where: {
             uuid: uid,
           },
           data: accountUpdated,
+        });
+        accountData = await prisma.tobiratory_accounts.findUnique({
+          where: {
+            uuid: uid,
+          },
         });
       }
       if (flow&&isEmptyObject(flow)) {
