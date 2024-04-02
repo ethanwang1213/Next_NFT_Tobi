@@ -29,5 +29,6 @@ module.exports = {
     "max-len": ["error", {"code": 200}],
     "import/no-unresolved": 0,
     "require-jsdoc": 0,
+    "new-cap": 0,
   },
 };

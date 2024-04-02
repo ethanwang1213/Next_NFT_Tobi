@@ -30,7 +30,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
       throw new Error("FLOW_ACCOUNT_NOT_FOUND");
     }
     try {
-      await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref);
+      await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref, flowJobId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -44,8 +44,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
   } else if (txType == "createItem") {
     try {
       const digitalItemId = params.digitalItemId;
-      const fcmToken = params.fcmToken;
-      await fetchAndUpdateCreateItem(digitalItemId, fcmToken);
+      await fetchAndUpdateCreateItem(digitalItemId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -72,11 +71,11 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
   }
 });
 
-const fetchAndUpdateCreateItem = async (digitalItemId: number, fcmToken: string) => {
+const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
   const digitalItem = await prisma.tobiratory_digital_items.findUnique({
     where: {
       id: digitalItemId,
-    }
+    },
   });
   if (!digitalItem) {
     throw new Error("DIGITAL_ITEM_NOT_FOUND");
@@ -85,16 +84,16 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number, fcmToken: string)
   if (!txId) {
     throw new Error("TX_NOT_FOUND");
   }
-  const { id } = await fetchCreateItem(txId);
+  const {id} = await fetchCreateItem(txId);
   await prisma.tobiratory_digital_items.update({
     where: {
       id: digitalItemId,
     },
     data: {
       item_id: id,
-    }
+    },
   });
-}
+};
 
 const fetchCreateItem = async (txId: string) => {
   const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
@@ -102,22 +101,22 @@ const fetchCreateItem = async (txId: string) => {
   console.log(tx);
   for (const event of tx.events) {
     if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.ItemCreated`) {
-      return { id: event.data.id, type: event.data.type, creatorAddress: event.data.creatorAddress };
+      return {id: event.data.id, type: event.data.type, creatorAddress: event.data.creatorAddress};
     }
   }
   throw Error("TX_FAILED");
-}
+};
 
 const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) => {
   const digitalItem = await prisma.tobiratory_digital_items.findUnique({
     where: {
       id: digitalItemId,
-    }
+    },
   });
   const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
     where: {
       id: digitalItemId,
-    }
+    },
   });
   if (!digitalItem) {
     throw new Error("DIGITAL_ITEM_NOT_FOUND");
@@ -140,7 +139,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) =>
       mint_status: "minted",
       serial_no: serialNumber,
       box_id: 0,
-    }
+    },
   });
   await prisma.tobiratory_digital_items.update({
     where: {
@@ -148,7 +147,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) =>
     },
     data: {
       limit: digitalItem.limit ? digitalItem.limit - 1 : null,
-    }
+    },
   });
   pushToDevice(fcmToken, {
     title: "NFTの作成が完了しました",
@@ -167,7 +166,7 @@ const fetchMintNFT = async (txId: string) => {
   console.log(tx);
   for (const event of tx.events) {
     if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Mint`) {
-      return { id: event.data.id, itemID: event.data.itemID, serialNumber: event.data.serialNumber };
+      return {id: event.data.id, itemID: event.data.itemID, serialNumber: event.data.serialNumber};
     }
   }
   throw Error("TX_FAILED");
@@ -181,7 +180,7 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => {
+const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>, flowJobId: any) => {
   const flowAccount = await flowAccountRef.get();
   if (flowAccount.exists) {
     const flowAccountData = flowAccount.data();
@@ -196,6 +195,7 @@ const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentRefer
         address,
         publicKey,
         txId,
+        flowJobId,
       });
     }
   }
@@ -218,11 +218,13 @@ const upsertFlowAccountRecord = async (
       address,
       publicKey,
       txId,
+      flowJobId,
     }: {
       tobiratoryAccountUuid: string,
       address: string,
       publicKey: string,
-      txId: string
+      txId: string,
+      flowJobId: any,
     }
 ) => {
   await prisma.tobiratory_flow_accounts.upsert({
@@ -239,6 +241,7 @@ const upsertFlowAccountRecord = async (
       flow_address: address,
       public_key: publicKey,
       tx_id: txId,
+      flow_job_id: flowJobId,
     },
   });
 };
