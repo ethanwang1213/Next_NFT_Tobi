@@ -112,7 +112,7 @@ model tobiratory_digital_items {
   type              Int
   content_id        Int                                  @default(0)
   description       String                               @default("") @db.VarChar(255)
-  limit             Int?                                 @default(0)
+  limit             Int?
   license           String                               @default("") @db.VarChar(255)
   state_type        Int                                  @default(0)
   can_scale         Boolean                              @default(false)
