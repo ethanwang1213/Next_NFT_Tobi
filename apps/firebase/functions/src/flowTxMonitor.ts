@@ -30,7 +30,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
       throw new Error("FLOW_ACCOUNT_NOT_FOUND");
     }
     try {
-      await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref);
+      await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref, flowJobId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -181,7 +181,7 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => {
+const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>, flowJobId: any) => {
   const flowAccount = await flowAccountRef.get();
   if (flowAccount.exists) {
     const flowAccountData = flowAccount.data();
@@ -196,6 +196,7 @@ const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentRefer
         address,
         publicKey,
         txId,
+        flowJobId,
       });
     }
   }
@@ -218,11 +219,13 @@ const upsertFlowAccountRecord = async (
       address,
       publicKey,
       txId,
+      flowJobId
     }: {
       tobiratoryAccountUuid: string,
       address: string,
       publicKey: string,
-      txId: string
+      txId: string,
+      flowJobId: any,
     }
 ) => {
   await prisma.tobiratory_flow_accounts.upsert({
@@ -239,6 +242,7 @@ const upsertFlowAccountRecord = async (
       flow_address: address,
       public_key: publicKey,
       tx_id: txId,
+      flow_job_id: flowJobId,
     },
   });
 };
