@@ -112,7 +112,7 @@ model tobiratory_digital_items {
   type              Int
   content_id        Int                                  @default(0)
   description       String                               @default("") @db.VarChar(255)
-  limit             Int                                  @default(0)
+  limit             Int?                                 @default(0)
   license           String                               @default("") @db.VarChar(255)
   state_type        Int                                  @default(0)
   can_scale         Boolean                              @default(false)
@@ -124,10 +124,8 @@ model tobiratory_digital_items {
   saidan_id         Int                                  @default(0)
   sample_item       tobiratory_sample_items? //need to discuss
   digital_nft       tobiratory_digital_item_nfts? //need to discuss
-  image             String    @db.VarChar(255)
-  item_id           Int
-  tx_id             String?   @db.VarChar(255)
-  thumbnail_url     String    @db.VarChar(255)
+  item_id           Int?
+  tx_id             String?                              @db.VarChar(255)
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)
 }
@@ -155,13 +153,13 @@ model tobiratory_digital_item_nfts {
 }
 
 model tobiratory_boxes {
-  id                Int                            @id @default(autoincrement())
-  user              tobiratory_accounts            @relation(fields: [creator_uuid], references: [uuid])
-  creator_uuid      String                         @db.VarChar(100)
-  name              String                         @db.VarChar(255)
-  gift_permission   Boolean                        @default(false)
-  updated_date_time DateTime                       @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                       @default(now()) @db.Timestamp(6)
+  id                Int                 @id @default(autoincrement())
+  user              tobiratory_accounts @relation(fields: [creator_uuid], references: [uuid])
+  creator_uuid      String              @db.VarChar(100)
+  name              String              @db.VarChar(255)
+  gift_permission   Boolean             @default(false)
+  updated_date_time DateTime            @default(now()) @db.Timestamp(6)
+  created_date_time DateTime            @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_businesses {
