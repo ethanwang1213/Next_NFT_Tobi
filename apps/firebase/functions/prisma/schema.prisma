@@ -26,6 +26,7 @@ model tobiratory_accounts {
   boxes             tobiratory_boxes[]
   material_iamges   tobiratory_material_images[]
   saidans           tobiratory_saidans[]
+  samples           tobiratory_sample_items[]
   updated_date_time DateTime                       @default(now()) @db.Timestamp(6)
   created_date_time DateTime                       @default(now()) @db.Timestamp(6)
 }
@@ -134,6 +135,8 @@ model tobiratory_sample_items {
   id                Int                      @id @default(autoincrement())
   digital_item      tobiratory_digital_items @relation(fields: [digital_item_id], references: [id])
   digital_item_id   Int                      @unique
+  user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
+  owner_uuid        String                   @db.VarChar(100)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
   created_date_time DateTime                 @default(now()) @db.Timestamp(6)
 }

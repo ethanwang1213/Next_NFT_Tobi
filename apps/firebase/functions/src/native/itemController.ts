@@ -242,7 +242,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const sample = await prisma.tobiratory_digital_items.create({
+      const digital_item = await prisma.tobiratory_digital_items.create({
         data: {
           creator_uuid: uid,
           thumb_url: thumbUrl,
@@ -251,14 +251,20 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           type: type,
         },
       });
+      await prisma.tobiratory_sample_items.create({
+        data: {
+          digital_item_id: digital_item.id,
+          owner_uuid: uid,
+        }
+      })
       res.status(200).send({
         status: "success",
         data: {
-          id: sample.id,
-          thumbUrl: sample.thumb_url,
-          modelUrl: sample.model_url,
-          materialId: sample.material_id,
-          type: sample.type,
+          id: digital_item.id,
+          thumbUrl: digital_item.thumb_url,
+          modelUrl: digital_item.model_url,
+          materialId: digital_item.material_id,
+          type: digital_item.type,
         },
       });
     } catch (error) {
@@ -282,20 +288,27 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const samples = await prisma.tobiratory_digital_items.findMany({
+      const samples = await prisma.tobiratory_sample_items.findMany({
         where: {
-          creator_uuid: uid,
-        },
-      });
-      const returnData = samples.map((sample)=>{
-        return {
-          id: sample.id,
-          thumbUrl: sample.thumb_url,
-          modelUrl: sample.model_url,
-          materialId: sample.material_id,
-          type: sample.type,
-        };
-      });
+          owner_uuid: uid,
+        }
+      })
+      const returnData = await Promise.all(
+        samples.map(async (sample)=>{
+          const digital_item = await prisma.tobiratory_digital_items.findUnique({
+            where: {
+              id: sample.digital_item_id,
+            }
+          });
+          return {
+            id: digital_item?.id,
+            thumbUrl: digital_item?.thumb_url,
+            modelUrl: digital_item?.model_url,
+            materialId: digital_item?.material_id,
+            type: digital_item?.type,
+          };
+        })
+      );
       res.status(200).send({
         status: "success",
         data: returnData,
