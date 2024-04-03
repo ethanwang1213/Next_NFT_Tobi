@@ -7,10 +7,8 @@ import {DecodedIdToken} from "firebase-admin/auth";
 const prisma = new PrismaClient();
 
 export const decorationWorkspace = async (req: Request, res: Response) => {
-  const {saidanId} = req.params;
   const {authorization} = req.headers;
-  const {itemList, thumbImage}: {itemList: ItemType[], thumbImage: string} = req.body;
-
+  const {itemList}: {itemList: ItemType[]} = req.body;
   interface ItemType {
     itemId: number;
     stageType: number;
@@ -29,54 +27,16 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
-        where: {
-          id: parseInt(saidanId),
-        },
-      });
-      if (!saidanData) {
-        res.status(401).send({
-          status: "error",
-          data: "not-exist",
-        });
-        return;
-      }
-      if (saidanData.owner_uuid != uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-yours",
-        });
-        return;
-      }
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
-        where: {
-          id: saidanData.template_id,
-        },
-      });
-      if (!saidanTemplate) {
-        res.status(401).send({
-          status: "error",
-          data: "missing-template",
-        });
-        return;
-      }
-      await prisma.tobiratory_saidans.update({
-        where: {
-          id: parseInt(saidanId),
-        },
-        data: {
-          thumbnail_image: thumbImage,
-        },
-      });
-      const items = await Promise.all(
+      await Promise.all(
           itemList.map(async (item)=>{
-            const updateItem = await prisma.tobiratory_digital_items.update({
+            await prisma.tobiratory_sample_items.updateMany({
               where: {
                 id: item.itemId,
               },
               data: {
-                saidan_id: parseInt(saidanId),
-                state_type: item.stageType,
+                in_workspace: true,
+                stage_type: item.stageType,
+                scale: item.scale,
                 position: [
                   item.position.x,
                   item.position.y,
@@ -86,42 +46,49 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
                   item.rotation.x,
                   item.rotation.y,
                   item.rotation.z,
-                ],
-                scale: item.scale,
-              },
-            });
-            return updateItem;
+                ]
+              }
+            })
           })
-      );
-      const saidanItemList = items.map((saidanItem)=>{
-        return {
-          itemId: saidanItem.id,
-          modelType: saidanItem.type,
-          modelUrl: saidanItem.model_url,
-          imageUrl: saidanItem.thumb_url,
-          stageType: saidanItem.state_type,
-          position: {
-            x: saidanItem.position[0],
-            y: saidanItem.position[1],
-            z: saidanItem.position[2],
-          },
-          rotation: {
-            x: saidanItem.rotation[0],
-            y: saidanItem.rotation[1],
-            z: saidanItem.rotation[2],
-          },
-          scale: saidanItem.scale,
-        };
+      )
+      const workspaceSamples = await prisma.tobiratory_sample_items.findMany({
+        where: {
+          owner_uuid: uid,
+          in_workspace: true,
+        },
       });
-      const returnData = {
-        saidanId: saidanData.id,
-        saidanType: saidanTemplate.type,
-        saidanUrl: saidanTemplate.model_url,
-        saidanItemList: saidanItemList,
-      };
+      const sampleItemList = await Promise.all(
+          workspaceSamples.map(async (sample)=>{
+            const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: sample.digital_item_id,
+              }
+            });
+            return {
+              itemId: sample.id,
+              modelType: digitalItem?.type,
+              modelUrl: digitalItem?.model_url,
+              imageUrl: digitalItem?.thumb_url,
+              stageType: sample.stage_type,
+              position: {
+                x: sample.position[0]??0,
+                y: sample.position[1]??0,
+                z: sample.position[2]??0,
+              },
+              rotation: {
+                x: sample.rotation[0]??0,
+                y: sample.rotation[1]??0,
+                z: sample.rotation[2]??0,
+              },
+              scale: sample.scale,
+            }
+          })
+      )
       res.status(200).send({
         status: "success",
-        data: returnData,
+        data: {
+          workspaceItemList: sampleItemList,
+        },
       });
     } catch (error) {
       res.status(401).send({
@@ -139,76 +106,48 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
 };
 
 export const getWorkspaceDecorationData = async (req: Request, res: Response) => {
-  const {saidanId} = req.params;
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const workspaceSamples = await prisma.tobiratory_sample_items.findMany({
         where: {
-          id: parseInt(saidanId),
+          owner_uuid: uid,
+          in_workspace: true,
         },
       });
-      if (!saidanData) {
-        res.status(401).send({
-          status: "error",
-          data: "not-exist",
-        });
-        return;
-      }
-      if (saidanData.owner_uuid != uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-yours",
-        });
-        return;
-      }
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
-        where: {
-          id: saidanData.template_id,
-        },
-      });
-      if (!saidanTemplate) {
-        res.status(401).send({
-          status: "error",
-          data: "missing-template",
-        });
-        return;
-      }
-      const saidanItems = await prisma.tobiratory_digital_items.findMany({
-        where: {
-          saidan_id: saidanData.id,
-        },
-      });
-      const saidanItemList = saidanItems.map((saidanItem)=>{
-        return {
-          itemId: saidanItem.id,
-          modelType: saidanItem.type,
-          modelUrl: saidanItem.model_url,
-          imageUrl: saidanItem.thumb_url,
-          stageType: saidanItem.state_type,
-          position: {
-            x: saidanItem.position[0],
-            y: saidanItem.position[1],
-            z: saidanItem.position[2],
-          },
-          rotation: {
-            x: saidanItem.rotation[0],
-            y: saidanItem.rotation[1],
-            z: saidanItem.rotation[2],
-          },
-          scale: saidanItem.scale,
-        };
-      });
-      const returnData = {
-        saidanId: saidanData.id,
-        saidanType: saidanTemplate.type,
-        saidanUrl: saidanTemplate.model_url,
-        saidanItemList: saidanItemList,
-      };
+      const itemList = await Promise.all(
+          workspaceSamples.map(async (sample)=>{
+            const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: sample.digital_item_id,
+              }
+            });
+            return {
+              itemId: sample.id,
+              modelType: digitalItem?.type,
+              modelUrl: digitalItem?.model_url,
+              imageUrl: digitalItem?.thumb_url,
+              stageType: sample.stage_type,
+              position: {
+                x: sample.position[0]??0,
+                y: sample.position[1]??0,
+                z: sample.position[2]??0,
+              },
+              rotation: {
+                x: sample.rotation[0]??0,
+                y: sample.rotation[1]??0,
+                z: sample.rotation[2]??0,
+              },
+              scale: sample.scale,
+            }
+          })
+      )
       res.status(200).send({
         status: "success",
-        data: returnData,
+        data: {
+          workspaceItemList: itemList,
+        },
       });
     } catch (error) {
       res.status(401).send({

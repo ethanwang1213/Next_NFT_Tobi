@@ -137,6 +137,11 @@ model tobiratory_sample_items {
   digital_item_id   Int                      @unique
   user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid        String                   @db.VarChar(100)
+  position          Float[]
+  rotation          Float[]
+  scale             Float?
+  stage_type        Int?
+  in_workspace      Boolean                  @default(false)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
   created_date_time DateTime                 @default(now()) @db.Timestamp(6)
 }
