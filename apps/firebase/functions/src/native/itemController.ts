@@ -251,7 +251,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           type: type,
         },
       });
-      await prisma.tobiratory_sample_items.create({
+      const sample = await prisma.tobiratory_sample_items.create({
         data: {
           digital_item_id: digitalItem.id,
           owner_uuid: uid,
@@ -260,7 +260,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: {
-          id: digitalItem.id,
+          id: sample.id,
           thumbUrl: digitalItem.thumb_url,
           modelUrl: digitalItem.model_url,
           materialId: digitalItem.material_id,
@@ -301,7 +301,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
             }
           });
           return {
-            id: digitalItem?.id,
+            id: sample.id,
             thumbUrl: digitalItem?.thumb_url,
             modelUrl: digitalItem?.model_url,
             materialId: digitalItem?.material_id,
