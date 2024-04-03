@@ -242,7 +242,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const digital_item = await prisma.tobiratory_digital_items.create({
+      const digitalItem = await prisma.tobiratory_digital_items.create({
         data: {
           creator_uuid: uid,
           thumb_url: thumbUrl,
@@ -253,18 +253,18 @@ export const createDigitalItem = async (req: Request, res: Response) => {
       });
       await prisma.tobiratory_sample_items.create({
         data: {
-          digital_item_id: digital_item.id,
+          digital_item_id: digitalItem.id,
           owner_uuid: uid,
         }
       })
       res.status(200).send({
         status: "success",
         data: {
-          id: digital_item.id,
-          thumbUrl: digital_item.thumb_url,
-          modelUrl: digital_item.model_url,
-          materialId: digital_item.material_id,
-          type: digital_item.type,
+          id: digitalItem.id,
+          thumbUrl: digitalItem.thumb_url,
+          modelUrl: digitalItem.model_url,
+          materialId: digitalItem.material_id,
+          type: digitalItem.type,
         },
       });
     } catch (error) {
@@ -295,17 +295,17 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
       })
       const returnData = await Promise.all(
         samples.map(async (sample)=>{
-          const digital_item = await prisma.tobiratory_digital_items.findUnique({
+          const digitalItem = await prisma.tobiratory_digital_items.findUnique({
             where: {
               id: sample.digital_item_id,
             }
           });
           return {
-            id: digital_item?.id,
-            thumbUrl: digital_item?.thumb_url,
-            modelUrl: digital_item?.model_url,
-            materialId: digital_item?.material_id,
-            type: digital_item?.type,
+            id: digitalItem?.id,
+            thumbUrl: digitalItem?.thumb_url,
+            modelUrl: digitalItem?.model_url,
+            materialId: digitalItem?.material_id,
+            type: digitalItem?.type,
           };
         })
       );
