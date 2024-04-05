@@ -246,7 +246,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
         data: {
           creator_uuid: uid,
           thumb_url: thumbUrl,
-          model_url: modelUrl,
+          nft_model: modelUrl,
           material_id: materialId,
           type: type,
         },
@@ -254,15 +254,16 @@ export const createDigitalItem = async (req: Request, res: Response) => {
       const sample = await prisma.tobiratory_sample_items.create({
         data: {
           digital_item_id: digitalItem.id,
+          model_url: modelUrl,
           owner_uuid: uid,
-        }
-      })
+        },
+      });
       res.status(200).send({
         status: "success",
         data: {
           id: sample.id,
           thumbUrl: digitalItem.thumb_url,
-          modelUrl: digitalItem.model_url,
+          modelUrl: sample.model_url,
           materialId: digitalItem.material_id,
           type: digitalItem.type,
         },
@@ -291,23 +292,23 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
       const samples = await prisma.tobiratory_sample_items.findMany({
         where: {
           owner_uuid: uid,
-        }
-      })
+        },
+      });
       const returnData = await Promise.all(
-        samples.map(async (sample)=>{
-          const digitalItem = await prisma.tobiratory_digital_items.findUnique({
-            where: {
-              id: sample.digital_item_id,
-            }
-          });
-          return {
-            id: sample.id,
-            thumbUrl: digitalItem?.thumb_url,
-            modelUrl: digitalItem?.model_url,
-            materialId: digitalItem?.material_id,
-            type: digitalItem?.type,
-          };
-        })
+          samples.map(async (sample)=>{
+            const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: sample.digital_item_id,
+              },
+            });
+            return {
+              id: sample.id,
+              thumbUrl: digitalItem?.thumb_url,
+              modelUrl: sample?.model_url,
+              materialId: digitalItem?.material_id,
+              type: digitalItem?.type,
+            };
+          })
       );
       res.status(200).send({
         status: "success",
