@@ -32,6 +32,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
             await prisma.tobiratory_sample_items.updateMany({
               where: {
                 id: item.itemId,
+                is_deleted: false,
               },
               data: {
                 in_workspace: true,
@@ -55,6 +56,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
         where: {
           owner_uuid: uid,
           in_workspace: true,
+          is_deleted: false,
         },
       });
       const sampleItemList = await Promise.all(
@@ -114,6 +116,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
         where: {
           owner_uuid: uid,
           in_workspace: true,
+          is_deleted: false,
         },
       });
       const itemList = await Promise.all(
