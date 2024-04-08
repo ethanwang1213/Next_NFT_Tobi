@@ -15,7 +15,6 @@ export const fetchMyProfile = async () => {
     });
     if (res.ok) {
       const resData = await res.json();
-      console.log(resData);
       return resData;
     } else {
       const resData = await res.json();
