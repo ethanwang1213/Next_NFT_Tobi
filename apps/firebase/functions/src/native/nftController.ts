@@ -146,7 +146,7 @@ export const mintNFT = async (req: Request, res: Response) => {
                     id: digitalItem.id,
                 }
             });
-            const copyrights = await Promise.all(
+            let copyrights = await Promise.all(
                 copyrightRelate.map(async (relate)=>{
                     const copyrightData = await prisma.tobiratory_copyright.findUnique({
                         where: {
@@ -155,9 +155,9 @@ export const mintNFT = async (req: Request, res: Response) => {
                     });
                     return copyrightData?.copyright_name;
                 })
-            )
+            );
             const metadata = {
-                type: digitalItem.type,
+                type: String(digitalItem.type),
                 name: digitalItem.name,
                 description: digitalItem.description,
                 thumbnailUrl: digitalItem.thumb_url,

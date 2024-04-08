@@ -248,20 +248,25 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
+  let privateKey: string | undefined;
   const doc = await flowAccountRef.get();
   const data = doc.data();
   if (!doc.exists || !data || !data.privKey) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  const encryptedPrivateKey = data.privKey;
-  const keyName = kmsClient.cryptoKeyPath(
-      process.env.KMS_PROJECT_ID,
-      process.env.KMS_OPERATION_KEY_LOCATION,
-      process.env.KMS_OPERATION_KEYRING,
-      process.env.KMS_OPERATION_KEY
-  );
-  const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
-  const privateKey = decryptedData.plaintext?.toString();
+  if (process.env.PUBSUB_EMULATOR_HOST) {
+    privateKey = data.privKey;
+  } else {
+    const encryptedPrivateKey = data.privKey;
+    const keyName = kmsClient.cryptoKeyPath(
+        process.env.KMS_PROJECT_ID,
+        process.env.KMS_OPERATION_KEY_LOCATION,
+        process.env.KMS_OPERATION_KEYRING,
+        process.env.KMS_OPERATION_KEY
+    );
+    const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
+    privateKey = decryptedData.plaintext?.toString();
+  }
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
@@ -278,7 +283,7 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     keyId: 0,
     signingFunction: async (signable: any) => {
 
-      const signature = signWithKey({privateKey, msgHex: signable.message});
+      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message});
       return {
         address,
         keyId: 0,
@@ -310,7 +315,6 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const limit = args[6].value ? args[6].value.value : args[6].value;
       const license = args[7].value ? args[7].value.value : args[7].value;
       const copyrightHolders = args[8].value;
-
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: digitalItemId,
@@ -354,22 +358,22 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
 
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
-            id: digitalItem.id,
+          id: digitalItem.id,
         }
       });
-      const copyrights = await Promise.all(
+      let copyrights = await Promise.all(
           copyrightRelate.map(async (relate)=>{
-              const copyrightData = await prisma.tobiratory_copyright.findUnique({
-                  where: {
-                      id: relate.copyright_id,
-                  }
-              });
-              return copyrightData?.copyright_name;
+            const copyrightData = await prisma.tobiratory_copyright.findUnique({
+              where: {
+                id: relate.copyright_id,
+              }
+            });
+            return copyrightData?.copyright_name;
           })
-      )
+      );
 
       const metadata = {
-        type: digitalItem.type,
+        type: String(digitalItem.type),
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.thumb_url,
@@ -387,9 +391,9 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
           metadata.thumbnailUrl === thumbnailUrl &&
           metadata.modelUrl === modelUrl &&
           metadata.creatorName === creatorName &&
-          metadata.limit === limit &&
+          metadata.limit == limit &&
           metadata.license === license &&
-          metadata.copyrightHolders === copyrightHolders
+          arraysEqual(metadata.copyrightHolders, copyrightHolders)
       ) {
         const signature = signWithKey({privateKey, msgHex: signable.message});
         return {
@@ -403,6 +407,10 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
     },
   };
 };
+
+function arraysEqual(a: any[], b: any[]): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
 
 const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, id: number) => {
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
@@ -637,16 +645,20 @@ const authzBase = async () => {
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
-  // const privateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_PRIVATE_KEY;
-  const encryptedPrivateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
-  const keyName = kmsClient.cryptoKeyPath(
-      process.env.KMS_PROJECT_ID,
-      process.env.KMS_OPERATION_KEY_LOCATION,
-      process.env.KMS_OPERATION_KEYRING,
-      process.env.KMS_OPERATION_KEY
-  );
-  const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
-  const privateKey = decryptedData.plaintext?.toString();
+  let privateKey: string | undefined;
+  if (process.env.PUBSUB_EMULATOR_HOST) {
+    privateKey = process.env.FLOW_ACCOUNT_PRIVATE_KEY;
+  } else {
+    const encryptedPrivateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
+    const keyName = kmsClient.cryptoKeyPath(
+        process.env.KMS_PROJECT_ID,
+        process.env.KMS_OPERATION_KEY_LOCATION,
+        process.env.KMS_OPERATION_KEYRING,
+        process.env.KMS_OPERATION_KEY
+    );
+    const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
+    privateKey = decryptedData.plaintext?.toString();
+  }
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
@@ -654,7 +666,7 @@ const authzBase = async () => {
   const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
   const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
 
-  return {addr, keyId, privateKey};
+  return {addr, keyId, privateKey: privateKey as string};
 };
 
 const hashMessageHex = (hashType: string, msgHex: string) => {
