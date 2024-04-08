@@ -505,7 +505,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         return {
           itemId: saidanItem.id,
           modelType: saidanItem.type,
-          modelUrl: saidanItem.model_url,
+          modelUrl: saidanItem.nft_model,
           imageUrl: saidanItem.thumb_url,
           stageType: saidanItem.state_type,
           position: {
@@ -611,7 +611,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
         return {
           itemId: saidanItem.id,
           modelType: saidanItem.type,
-          modelUrl: saidanItem.model_url,
+          modelUrl: saidanItem.nft_model,
           imageUrl: saidanItem.thumb_url,
           stageType: saidanItem.state_type,
           position: {

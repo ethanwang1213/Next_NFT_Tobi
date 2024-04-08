@@ -108,7 +108,8 @@ model tobiratory_digital_items {
   creator_uuid      String                               @db.VarChar(100)
   name              String                               @default("") @db.VarChar(255)
   thumb_url         String                               @db.VarChar(255)
-  model_url         String                               @db.VarChar(255)
+  nft_model         String                               @default("") @db.VarChar(255)
+  nft_metadata      String                               @default("") @db.Text
   material_id       Int                                  @default(0)
   type              Int
   content_id        Int                                  @default(0)
@@ -137,6 +138,7 @@ model tobiratory_sample_items {
   digital_item_id   Int                      @unique
   user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid        String                   @db.VarChar(100)
+  model_url         String                   @db.VarChar(255)
   position          Float[]
   rotation          Float[]
   scale             Float?

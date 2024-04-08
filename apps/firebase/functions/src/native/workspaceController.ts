@@ -47,11 +47,11 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
                   item.rotation.x,
                   item.rotation.y,
                   item.rotation.z,
-                ]
-              }
-            })
+                ],
+              },
+            });
           })
-      )
+      );
       const workspaceSamples = await prisma.tobiratory_sample_items.findMany({
         where: {
           owner_uuid: uid,
@@ -64,12 +64,12 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
             const digitalItem = await prisma.tobiratory_digital_items.findUnique({
               where: {
                 id: sample.digital_item_id,
-              }
+              },
             });
             return {
               itemId: sample.id,
               modelType: digitalItem?.type,
-              modelUrl: digitalItem?.model_url,
+              modelUrl: sample?.model_url,
               imageUrl: digitalItem?.thumb_url,
               stageType: sample.stage_type,
               position: {
@@ -83,9 +83,9 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
                 z: sample.rotation[2]??0,
               },
               scale: sample.scale,
-            }
+            };
           })
-      )
+      );
       res.status(200).send({
         status: "success",
         data: {
@@ -124,12 +124,12 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
             const digitalItem = await prisma.tobiratory_digital_items.findUnique({
               where: {
                 id: sample.digital_item_id,
-              }
+              },
             });
             return {
               itemId: sample.id,
               modelType: digitalItem?.type,
-              modelUrl: digitalItem?.model_url,
+              modelUrl: sample?.model_url,
               imageUrl: digitalItem?.thumb_url,
               stageType: sample.stage_type,
               position: {
@@ -143,9 +143,9 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
                 z: sample.rotation[2]??0,
               },
               scale: sample.scale,
-            }
+            };
           })
-      )
+      );
       res.status(200).send({
         status: "success",
         data: {

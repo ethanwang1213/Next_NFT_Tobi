@@ -34,7 +34,7 @@ import {
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
 import {mintNFT} from "./nftController";
-import { decorationWorkspace, getWorkspaceDecorationData } from "./workspaceController";
+import {decorationWorkspace, getWorkspaceDecorationData} from "./workspaceController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
