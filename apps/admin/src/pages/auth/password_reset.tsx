@@ -1,4 +1,3 @@
-import { useAuth } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import {
   isSignInWithEmailLink,
@@ -12,7 +11,6 @@ import { ErrorMessage } from "types/adminTypes";
 import FlowAgreementWithEmailAndPassword from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 
 const PasswordReset = () => {
-  const { user } = useAuth();
   const router = useRouter();
   const [emailLink, setEmailLink] = useState("");
   const [updatingPassword, setUpdatingPassword] = useState(false);

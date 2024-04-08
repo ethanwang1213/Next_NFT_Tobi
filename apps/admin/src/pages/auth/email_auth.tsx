@@ -19,7 +19,8 @@ const EmailAuth = () => {
     } else {
       register();
     }
-  }, [router, user]);
+    // When you put 'register' in the dependency, it causes an infinite loop.
+  }, [router, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (user?.registeredFlowAccount) {
     return <div>redirect to top page</div>;
