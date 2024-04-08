@@ -20,6 +20,7 @@ export const mintNFT = async (req: Request, res: Response) => {
         const sampleItem = await prisma.tobiratory_sample_items.findUnique({
             where: {
                 id: parseInt(id),
+                is_deleted: false,
             },
         });
         if (!sampleItem) {

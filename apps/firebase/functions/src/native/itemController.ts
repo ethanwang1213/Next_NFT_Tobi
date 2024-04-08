@@ -291,6 +291,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
       const samples = await prisma.tobiratory_sample_items.findMany({
         where: {
           owner_uuid: uid,
+          is_deleted: false,
         }
       })
       const returnData = await Promise.all(
@@ -335,7 +336,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const item = await prisma.tobiratory_digital_items.findUnique({
+      const item = await prisma.tobiratory_sample_items.findUnique({
         where: {
           id: parseInt(id),
         },
@@ -349,7 +350,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (item.creator_uuid != uid) {
+      if (item.owner_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: {
@@ -358,10 +359,13 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.tobiratory_digital_items.delete({
+      await prisma.tobiratory_sample_items.update({
         where: {
           id: parseInt(id),
         },
+        data: {
+          is_deleted: true,
+        }
       });
       res.status(200).send({
         status: "success",

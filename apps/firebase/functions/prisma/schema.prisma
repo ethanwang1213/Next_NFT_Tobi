@@ -142,6 +142,7 @@ model tobiratory_sample_items {
   scale             Float?
   stage_type        Int?
   in_workspace      Boolean                  @default(false)
+  is_deleted        Boolean                  @default(false)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
   created_date_time DateTime                 @default(now()) @db.Timestamp(6)
 }
