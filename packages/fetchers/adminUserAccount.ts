@@ -13,17 +13,16 @@ export const fetchMyProfile = async () => {
         "Content-Type": "application/json",
       },
     });
+    const resData = await res.json();
     if (res.ok) {
-      const resData = await res.json();
       return resData;
     } else {
-      const resData = await res.json();
       console.log(resData);
-      return null;
+      return resData;
     }
   } catch (error) {
     console.log(error);
-    return null;
+    return error;
   }
 };
 
