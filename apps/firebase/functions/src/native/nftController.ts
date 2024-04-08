@@ -171,6 +171,15 @@ export const mintNFT = async (req: Request, res: Response) => {
       const message = {flowJobId, txType: "createItem", params: {tobiratoryAccountUuid: uid, digitalItemId, metadata, fcmToken}};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
       console.log(`Message ${messageId} published.`);
+      await prisma.tobiratory_digital_items.update({
+        where: {
+          id: digitalItemId,
+        },
+        data: {
+          nft_metadata: JSON.stringify(metadata),
+          nft_model: sampleItem.model_url,
+        },
+      });
     }
 
     pushToDevice(fcmToken, {

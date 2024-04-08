@@ -108,7 +108,7 @@ model tobiratory_digital_items {
   creator_uuid      String                               @db.VarChar(100)
   name              String                               @default("") @db.VarChar(255)
   thumb_url         String                               @db.VarChar(255)
-  nft_model         String                               @db.VarChar(255)
+  nft_model         String                               @default("") @db.VarChar(255)
   nft_metadata      String                               @default("") @db.Text
   material_id       Int                                  @default(0)
   type              Int

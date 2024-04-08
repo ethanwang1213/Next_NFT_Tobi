@@ -246,7 +246,6 @@ export const createDigitalItem = async (req: Request, res: Response) => {
         data: {
           creator_uuid: uid,
           thumb_url: thumbUrl,
-          nft_model: modelUrl,
           material_id: materialId,
           type: type,
         },
