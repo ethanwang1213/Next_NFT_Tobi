@@ -105,7 +105,7 @@ app.get("/my/saidans/:saidanId/decoration", getSaidanDecorationData);
 app.post("/my/saidans/:saidanId/decoration", decorationSaidan);
 app.get("/my/workspace", getWorkspaceDecorationData);
 app.post("/my/workspace", decorationWorkspace);
-app.post("/my/workspace/throw", throwSample)
+app.post("/my/workspace/throw", throwSample);
 app.post("/my/saidans/:saidanId/putaway", putAwayItemInSaidan);
 app.get("/my/saidans/:saidanId", getMySaidansById);
 app.post("/my/saidans/:saidanId/posts", dummyResponse);

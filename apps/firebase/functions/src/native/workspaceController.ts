@@ -174,7 +174,7 @@ export const throwSample = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const sample =  await prisma.tobiratory_sample_items.findUnique({
+      const sample = await prisma.tobiratory_sample_items.findUnique({
         where: {
           id: sampleId,
         },
@@ -218,4 +218,4 @@ export const throwSample = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
