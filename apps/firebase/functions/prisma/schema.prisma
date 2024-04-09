@@ -128,6 +128,7 @@ model tobiratory_digital_items {
   digital_nft       tobiratory_digital_item_nfts? //need to discuss
   item_id           Int?
   tx_id             String?                              @db.VarChar(255)
+  status            Int
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)
 }
