@@ -58,7 +58,7 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "createItem") {
-        const { txId } = await sendCreateItemTx(params.tobiratoryAccountUuid, params.digitalItemId, params.metadata);
+        const {txId} = await sendCreateItemTx(params.tobiratoryAccountUuid, params.digitalItemId, params.metadata);
         await flowJobDocRef.update({
           flowJobId,
           txType,
@@ -71,8 +71,8 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
-        const { id } = await createNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid);
-        const { txId } = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, id);
+        const {id} = await createNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid);
+        const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, id);
         await flowJobDocRef.update({
           flowJobId,
           txType,
@@ -94,9 +94,9 @@ const updateDigitalItemRecord = async (id: number, txId: string) => {
     },
     data: {
       tx_id: txId,
-    }
+    },
   });
-}
+};
 
 const updateNFTRecord = async (id: number, txId: string) => {
   await prisma.tobiratory_digital_item_nfts.update({
@@ -105,7 +105,7 @@ const updateNFTRecord = async (id: number, txId: string) => {
     },
     data: {
       tx_id: txId,
-    }
+    },
   });
 };
 
@@ -122,7 +122,7 @@ const createNFTRecord = async (digitalItemId: number, ownerUuid: string) => {
     data: {
       digital_item_id: digitalItemId,
       owner_uuid: ownerUuid,
-    }
+    },
   });
 
   return {id: nft.id};
@@ -291,17 +291,16 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
       };
     },
   };
-}
+};
 
 const createItemAuthz = (digitalItemId: number) => async (account: any) => {
-  const { addr, keyId, privateKey } = await authzBase();
+  const {addr, keyId, privateKey} = await authzBase();
   return {
     ...account,
     tempId: `${addr}-${keyId}`,
     addr: fcl.sansPrefix(addr),
     keyId,
     signingFunction: async (signable: any) => {
-
       const args = signable.voucher.arguments;
       if (args.length != 9) {
         throw new Error("Invalid arguments");
@@ -318,7 +317,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: digitalItemId,
-        }
+        },
       });
       if (!digitalItem) {
         throw new Error("DigitalItem does not found");
@@ -328,8 +327,8 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       if (digitalItem.content_id) {
         const content = await prisma.tobiratory_contents.findUnique({
           where: {
-            id: digitalItem.content_id
-          }
+            id: digitalItem.content_id,
+          },
         });
         if (content) {
           dbCreatorName = content.title;
@@ -337,7 +336,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
           const user = await prisma.tobiratory_accounts.findUnique({
             where: {
               uuid: digitalItem.creator_uuid,
-            }
+            },
           });
           if (!user) {
             throw new Error("User does not found");
@@ -348,7 +347,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         const user = await prisma.tobiratory_accounts.findUnique({
           where: {
             uuid: digitalItem.creator_uuid,
-          }
+          },
         });
         if (!user) {
           throw new Error("User does not found");
@@ -359,14 +358,14 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
           id: digitalItem.id,
-        }
+        },
       });
-      let copyrights = await Promise.all(
+      const copyrights = await Promise.all(
           copyrightRelate.map(async (relate)=>{
             const copyrightData = await prisma.tobiratory_copyright.findUnique({
               where: {
                 id: relate.copyright_id,
-              }
+              },
             });
             return copyrightData?.copyright_name;
           })
@@ -377,7 +376,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.thumb_url,
-        modelUrl: digitalItem.model_url,
+        modelUrl: digitalItem.nft_model,
         creatorName: dbCreatorName,
         limit: digitalItem.limit,
         license: digitalItem.license,
@@ -385,7 +384,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       };
 
       if (
-          metadata.type === type &&
+        metadata.type === type &&
           metadata.name === name &&
           metadata.description === description &&
           metadata.thumbnailUrl === thumbnailUrl &&
@@ -473,14 +472,13 @@ transaction(
 };
 
 const createMintAuthz = (itemId: number) => async (account: any) => {
-  const { addr, keyId, privateKey } = await authzBase();
+  const {addr, keyId, privateKey} = await authzBase();
   return {
     ...account,
     tempId: `${addr}-${keyId}`,
     addr: fcl.sansPrefix(addr),
     keyId,
     signingFunction: async (signable: any) => {
-
       const args = signable.voucher.arguments;
       if (args.length != 2) {
         throw new Error("Invalid arguments");
@@ -491,7 +489,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
       const digitalItem = await prisma.tobiratory_digital_items.findFirst({
         where: {
           item_id: itemId,
-        }
+        },
       });
       if (!digitalItem) {
         throw new Error("DigitalItem does not found");
@@ -617,7 +615,7 @@ const generateKeyPair = () => {
 };
 
 const authz = async (account: any) => {
-  const { addr, keyId, privateKey } = await authzBase();
+  const {addr, keyId, privateKey} = await authzBase();
   return {
     ...account,
     tempId: `${addr}-${keyId}`,
@@ -709,11 +707,11 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
 };
 
 const fillInFlowAccountCreattionInfo = async ({
-                                                flowAccountRef,
-                                                encryptedPrivateKeyBase64,
-                                                pubKey,
-                                                txId,
-                                              } : {
+  flowAccountRef,
+  encryptedPrivateKeyBase64,
+  pubKey,
+  txId,
+} : {
   flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
   encryptedPrivateKeyBase64: string;
   pubKey: string;
@@ -731,10 +729,10 @@ const fillInFlowAccountCreattionInfo = async ({
 const updateDigitalItemNFT = async (id: number, txId: string) => {
   prisma.tobiratory_digital_item_nfts.update({
     where: {
-      id: id
+      id: id,
     },
     data: {
       tx_id: txId,
-    }
-  })
+    },
+  });
 };

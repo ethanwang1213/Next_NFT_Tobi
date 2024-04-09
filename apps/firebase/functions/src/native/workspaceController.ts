@@ -32,6 +32,8 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
             await prisma.tobiratory_sample_items.updateMany({
               where: {
                 id: item.itemId,
+                owner_uuid: uid,
+                is_deleted: false,
               },
               data: {
                 in_workspace: true,
@@ -46,15 +48,16 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
                   item.rotation.x,
                   item.rotation.y,
                   item.rotation.z,
-                ]
-              }
-            })
+                ],
+              },
+            });
           })
-      )
+      );
       const workspaceSamples = await prisma.tobiratory_sample_items.findMany({
         where: {
           owner_uuid: uid,
           in_workspace: true,
+          is_deleted: false,
         },
       });
       const sampleItemList = await Promise.all(
@@ -62,12 +65,12 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
             const digitalItem = await prisma.tobiratory_digital_items.findUnique({
               where: {
                 id: sample.digital_item_id,
-              }
+              },
             });
             return {
               itemId: sample.id,
               modelType: digitalItem?.type,
-              modelUrl: digitalItem?.model_url,
+              modelUrl: sample?.model_url,
               imageUrl: digitalItem?.thumb_url,
               stageType: sample.stage_type,
               position: {
@@ -81,9 +84,9 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
                 z: sample.rotation[2]??0,
               },
               scale: sample.scale,
-            }
+            };
           })
-      )
+      );
       res.status(200).send({
         status: "success",
         data: {
@@ -114,6 +117,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
         where: {
           owner_uuid: uid,
           in_workspace: true,
+          is_deleted: false,
         },
       });
       const itemList = await Promise.all(
@@ -121,12 +125,12 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
             const digitalItem = await prisma.tobiratory_digital_items.findUnique({
               where: {
                 id: sample.digital_item_id,
-              }
+              },
             });
             return {
               itemId: sample.id,
               modelType: digitalItem?.type,
-              modelUrl: digitalItem?.model_url,
+              modelUrl: sample?.model_url,
               imageUrl: digitalItem?.thumb_url,
               stageType: sample.stage_type,
               position: {
@@ -140,14 +144,66 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
                 z: sample.rotation[2]??0,
               },
               scale: sample.scale,
-            }
+            };
           })
-      )
+      );
       res.status(200).send({
         status: "success",
         data: {
           workspaceItemList: itemList,
         },
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+export const throwSample = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {sampleId}: {sampleId: number} = req.body;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const sample = await prisma.tobiratory_sample_items.findUnique({
+        where: {
+          id: sampleId,
+        },
+      });
+      if (!sample) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-sample",
+        });
+        return;
+      }
+      if (sample.owner_uuid != uid) {
+        res.status(401).send({
+          status: "error",
+          data: "not-yours",
+        });
+        return;
+      }
+      await prisma.tobiratory_sample_items.update({
+        where: {
+          id: sampleId,
+        },
+        data: {
+          in_workspace: false,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: "thrown",
       });
     } catch (error) {
       res.status(401).send({
