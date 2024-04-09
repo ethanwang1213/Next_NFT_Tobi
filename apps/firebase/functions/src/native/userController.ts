@@ -341,10 +341,8 @@ export const myBusiness = async (req: Request, res: Response) => {
       },
     });
     const resData = {
-      name: businesses[0].name,
-      address: businesses[0].address,
+      first_name: businesses[0].first_name,
       phone: businesses[0].phone,
-      kyc: businesses[0].kyc,
       bankAccount: businesses[0].bank_account,
       balance: businesses[0].balance,
     };
@@ -357,59 +355,101 @@ export const myBusiness = async (req: Request, res: Response) => {
 
 export const businessSubmission = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
+  const idToken = authorization?.replace(/^Bearer\s+/, "");
   const {
-    contentName,
-    contentNameFurigana,
-    genre,
-    contentDesc,
-    homepageUrl,
-    name,
-    nameFurigana,
-    birth,
-    address,
-    phone,
-    email,
+    content: {
+      name: contentName,
+      url,
+      description,
+    },
+    user: {
+      firstName,
+      lastName,
+      birthdayYear,
+      birthdayMonth,
+      birthdayDate,
+      email,
+      phone,
+      building,
+      street,
+      city,
+      province,
+      postalCode,
+      country,
+    },
+    copyright: {
+      copyrightHolders,
+      license,
+      file1,
+      file2,
+      file3,
+      file4,
+    }
   } = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  console.log(req.body);
+  await getAuth().verifyIdToken(idToken??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const exist = await prisma.tobiratory_businesses.findMany({
+    const exist = await prisma.tobiratory_businesses.findFirst({
       where: {
         uuid: uid,
       },
     });
-    if (!exist.length) {
-      res.status(401).send({
+    if (exist) {
+      res.status(400).send({
         status: "error",
         data: "already-exist",
       });
       return;
     }
-    const businessData = await prisma.tobiratory_businesses.create({
-      data: {
-        uuid: uid,
-        email: email,
-        name: name,
-        name_furi: nameFurigana,
-        birth: birth,
-        content_name: contentName,
-        content_name_furi: contentNameFurigana,
-        content_desc: contentDesc,
-        homepage_url: homepageUrl,
-        genre: genre,
-        address: address,
-        phone: phone,
-        kyc: "",
-        bank_account: "",
-        balance: "0",
-      },
-    });
-    res.status(200).send({
-      status: "success",
-      data: businessData,
-    });
+
+    const birth = new Date(birthdayYear, birthdayMonth - 1, birthdayDate);
+    const businessData = {
+      uuid: uid,
+      first_name: firstName,
+      last_name: lastName,
+      birth,
+      email,
+      country,
+      postal_code: postalCode,
+      province,
+      city,
+      street,
+      building,
+      phone,
+      bank_account: "",
+      balance: 0,
+    };
+    const contentData = {
+      owner_uuid: uid,
+      name: contentName,
+      url,
+      description,
+      copyright_holders: copyrightHolders,
+      license,
+      license_data: [file1, file2, file3, file4],
+    };
+    try {
+      const [savedBusinessData, savedContentData] = await prisma.$transaction([
+        prisma.tobiratory_businesses.create({
+          data: businessData,
+        }),
+        prisma.tobiratory_contents.create({
+          data: contentData,
+        })]
+      );
+      res.status(200).send({
+        status: "success",
+        data: {...savedBusinessData, content: {...savedContentData}},
+      });
+    } catch (error) {
+      res.status(500).send({
+        status: "error",
+        data: error,
+      });
+    }
   }).catch((error: FirebaseError)=>{
-    res.status(200).send({
-      status: "success",
+    res.status(500).send({
+      status: "error",
       data: error.code,
     });
   });
@@ -452,7 +492,7 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
 
 export const updateMyBusiness = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {name, address, phone} = req.body;
+  const {fistName, lastName, phone} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const myBusiness = await prisma.tobiratory_businesses.updateMany({
@@ -460,8 +500,8 @@ export const updateMyBusiness = async (req: Request, res: Response) => {
         uuid: uid,
       },
       data: {
-        name: name,
-        address: address,
+        first_name: fistName,
+        last_name: lastName,
         phone: phone,
       },
     });
