@@ -1,9 +1,10 @@
 import Image from "next/image";
+import { Fragment } from "react";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
 const Row1 = ({ label, children }) => {
   return (
-    <div className="flex flex-row py-4 pl-6">
+    <div className="flex flex-row py-4">
       <div className="w-52 h-12 flex-none flex flex-row items-center">
         <span className="text-base mr-4">{label}</span>
         {label.length ? <RequireMark /> : <></>}
@@ -15,7 +16,19 @@ const Row1 = ({ label, children }) => {
 
 const Row3 = ({ label, children }) => {
   return (
-    <div className="flex flex-row py-4 pl-6">
+    <div className="flex flex-row py-4">
+      <div className="w-52 h-12 flex-none flex flex-row items-center">
+        <span className="text-base mr-4">{label}</span>
+        {label.length ? <OptionMark /> : <></>}
+      </div>
+      <div className="flex-auto">{children}</div>
+    </div>
+  );
+};
+
+const Row4 = ({ label, children }) => {
+  return (
+    <div className="flex flex-row py-4">
       <div className="w-52 h-12 flex-none flex flex-row items-center">
         <span className="text-base mr-4">{label}</span>
         {label.length ? <OptionMark /> : <></>}
@@ -28,9 +41,30 @@ const Row3 = ({ label, children }) => {
 const ConfirmInformation = ({
   contentInfo,
   userInfo,
+  copyrightInfo,
   originalContentDeclaration,
   setOriginalContentDeclaration,
 }) => {
+  const copyrightFiles = () => {
+    return [
+      copyrightInfo.file1,
+      copyrightInfo.file2,
+      copyrightInfo.file3,
+      copyrightInfo.file4,
+    ]
+      .filter((f) => f !== "")
+      .join(", ");
+  };
+
+  const replaceNewLinesWithBreaks = (text) => {
+    return text.split("\n").map((line, index) => (
+      <Fragment key={index}>
+        {line}
+        <br />
+      </Fragment>
+    ));
+  };
+
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-row items-center">
@@ -57,26 +91,40 @@ const ConfirmInformation = ({
       </Row3>
       <Row1 label="申請者氏名">
         <span className="">
-          {userInfo.last_name} {userInfo.first_name}
+          {userInfo.lastName} {userInfo.firstName}
         </span>
       </Row1>
       <Row1 label="生年月日">
         <span className="">
-          {userInfo.birthday_year}年 {userInfo.birthday_month}月{" "}
-          {userInfo.birthday_date}日
+          {userInfo.birthdayYear}年 {userInfo.birthdayMonth}月{" "}
+          {userInfo.birthdayDate}日
         </span>
       </Row1>
-      <Row1 label="住所">
-        <span className="">
-          {userInfo.post_code} {userInfo.province} {userInfo.city}{" "}
-          {userInfo.street} {userInfo.building}
-        </span>
+      <Row1 label="メールアドレス">
+        <span className="">{userInfo.email}</span>
       </Row1>
       <Row1 label="電話番号">
         <span className="">{userInfo.phone}</span>
       </Row1>
-      <Row1 label="メールアドレス">
-        <span className="">{userInfo.email}</span>
+      <Row1 label="住所">
+        <span className="">
+          {userInfo.building} {userInfo.street} {userInfo.city}{" "}
+          {userInfo.province} {userInfo.postalCode} {userInfo.country}
+        </span>
+      </Row1>
+      <Row1 label="コピーライト（版権表記）">
+        <span className="">{copyrightInfo.copyrightHolders.join(", ")}</span>
+      </Row1>
+      <Row3 label="著作物に関するライセンス">
+        <span className="">{copyrightFiles()}</span>
+      </Row3>
+      <Row4 label="所有している著作権やライセンス情報の提供">
+        <span className="">
+          {replaceNewLinesWithBreaks(copyrightInfo.license)}
+        </span>
+      </Row4>
+      <Row1 label="提供するコンテンツが著作権に違反していないことに同意します。">
+        <span className="">同意する</span>
       </Row1>
       <div className="flex flex-row justify-center items-center mt-6">
         <input

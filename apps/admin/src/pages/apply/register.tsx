@@ -1,6 +1,13 @@
 import clsx from "clsx";
+import { useTcpRegistration } from "fetchers/businessAccount";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  TcpContent,
+  TcpCopyright,
+  TcpFormType,
+  TcpUser,
+} from "types/adminTypes";
 import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
 import ConfirmInformation from "./confirm";
@@ -11,34 +18,57 @@ import UserInformation from "./userInfo";
 const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
 const Register = () => {
-  const [switchValue, setSwitchValue] = useState(3);
+  const [switchValue, setSwitchValue] = useState(0);
 
   const router = useRouter();
 
-  const [contentInfo, setContentInfo] = useState({
+  const [contentInfo, setContentInfo] = useState<TcpContent>({
     name: "",
     url: "",
     description: "",
   });
 
-  const [userInfo, setUserInfo] = useState({
-    last_name: "",
-    first_name: "",
-    birthday_year: "",
-    birthday_month: "",
-    birthday_date: "",
-    post_code: "",
-    province: "",
-    city: "",
-    street: "",
-    building: "",
-    phone: "",
+  const [userInfo, setUserInfo] = useState<TcpUser>({
+    lastName: "",
+    firstName: "",
+    birthdayYear: 0,
+    birthdayMonth: 0,
+    birthdayDate: 0,
     email: "",
+    phone: "",
+    building: "",
+    street: "",
+    city: "",
+    province: "",
+    postalCode: "",
+    country: "",
   });
 
-  const [copyrightInfo, setCopyrightInfo] = useState({ agreement: false });
+  type CopyrightInfo = TcpCopyright & {
+    agreement: boolean;
+  };
+
+  const [copyrightInfo, setCopyrightInfo] = useState<CopyrightInfo>({
+    agreement: false,
+    copyrightHolders: [],
+    license: "",
+    file1: "",
+    file2: "",
+    file3: "",
+    file4: "",
+  });
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
+
+  const [registerTcp, submissionResponse, loading, submissionError] =
+    useTcpRegistration();
+
+  useEffect(() => {
+    if (!submissionResponse) {
+      return;
+    }
+    router.replace("/apply/finish");
+  }, [submissionResponse]);
 
   const contentInfoInputRefs = {
     name: useRef(),
@@ -46,18 +76,24 @@ const Register = () => {
   };
 
   const userInfoInputRefs = {
-    last_name: useRef(),
-    first_name: useRef(),
-    birthday_year: useRef(),
-    birthday_month: useRef(),
-    birthday_date: useRef(),
-    post_code: useRef(),
+    lastName: useRef(),
+    firstName: useRef(),
+    birthdayYear: useRef(),
+    birthdayMonth: useRef(),
+    birthdayDate: useRef(),
+    country: useRef(),
+    postalCode: useRef(),
     province: useRef(),
     city: useRef(),
     street: useRef(),
     building: useRef(),
     phone: useRef(),
     email: useRef(),
+  };
+
+  const copyrightInfoInputRefs = {
+    copyrightHolders: useRef(),
+    license: useRef(),
   };
 
   const checkContentInfos = () => {
@@ -79,6 +115,9 @@ const Register = () => {
   const checkUserInfos = () => {
     // Check if any field is empty
     const emptyField = Object.keys(userInfo).find((fieldName) => {
+      if (typeof userInfo[fieldName] === "number") {
+        return userInfo[fieldName] === 0;
+      }
       return (
         (fieldName !== "building" && userInfo[fieldName].trim() === "") ||
         (fieldName === "email" &&
@@ -96,6 +135,17 @@ const Register = () => {
     return true;
   };
 
+  const checkCopyrightInfos = () => {
+    if (
+      !copyrightInfo.agreement ||
+      copyrightInfo.copyrightHolders.length === 0
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
   const handleNext = () => {
     switch (switchValue) {
       case 0:
@@ -106,8 +156,12 @@ const Register = () => {
         if (!checkUserInfos()) return;
         break;
 
+      case 2:
+        if (!checkCopyrightInfos()) return;
+        break;
+
       case 3:
-        router.replace("/apply/finish");
+        postTCPData();
         return;
 
       default:
@@ -115,6 +169,15 @@ const Register = () => {
     }
 
     setSwitchValue(switchValue + 1);
+  };
+
+  const postTCPData = async () => {
+    const data: TcpFormType = {
+      content: contentInfo,
+      user: userInfo,
+      copyright: copyrightInfo,
+    };
+    registerTcp(data);
   };
 
   const handleBack = () => {
@@ -134,7 +197,7 @@ const Register = () => {
   };
 
   const isButtonDisabled = () => {
-    if (switchValue === 2 && !copyrightInfo.agreement) {
+    if (switchValue === 2 && !checkCopyrightInfos()) {
       return true;
     } else if (switchValue === 3 && !originalContentDeclaration) {
       return true;
@@ -178,45 +241,75 @@ const Register = () => {
             <CopyrightInformation
               copyrightInfo={copyrightInfo}
               setCopyrightInfo={setCopyrightInfo}
+              refs={copyrightInfoInputRefs}
             />
           )}
           {switchValue === 3 && (
             <ConfirmInformation
               userInfo={userInfo}
               contentInfo={contentInfo}
+              copyrightInfo={copyrightInfo}
               originalContentDeclaration={originalContentDeclaration}
               setOriginalContentDeclaration={setOriginalContentDeclaration}
             />
           )}
         </div>
 
-        <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-between">
-          <Button
-            type="button"
-            className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
+        <div className={"font-medium text-[16px] text-attention text-center"}>
+          {submissionError}
+        </div>
+
+        <LoadingButton
+          nextLabel={
+            switchValue === 2 ? "確認する" : switchValue === 3 ? "申請" : "次へ"
+          }
+          color={nextButtonColor()}
+          disabled={isButtonDisabled()}
+          loading={loading}
+          handleBack={handleBack}
+          handleNext={handleNext}
+        />
+      </div>
+    </div>
+  );
+};
+
+const LoadingButton = ({
+  nextLabel,
+  color,
+  disabled,
+  loading,
+  handleBack,
+  handleNext,
+}) => {
+  if (loading) {
+    return (
+      <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-center">
+        <span className={"loading loading-spinner text-info loading-md"} />
+      </div>
+    );
+  }
+  return (
+    <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-between">
+      <Button
+        type="button"
+        className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
               border border-[#1779DE] bg-transparent rounded-[30px] 
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
-            onClick={handleBack}
-          >
-            戻る
-          </Button>
-          <Button
-            type="button"
-            className={clsx(
-              "w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px]",
-              nextButtonColor(),
-            )}
-            onClick={handleNext}
-            disabled={isButtonDisabled()}
-          >
-            {switchValue === 2
-              ? "確認する"
-              : switchValue === 3
-                ? "申請"
-                : "次へ"}
-          </Button>
-        </div>
-      </div>
+        onClick={handleBack}
+      >
+        戻る
+      </Button>
+      <Button
+        type="button"
+        className={clsx(
+          `w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px] ${color}`,
+        )}
+        onClick={handleNext}
+        disabled={disabled}
+      >
+        {nextLabel}
+      </Button>
     </div>
   );
 };

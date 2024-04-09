@@ -39,3 +39,40 @@ export type ApiProfileData = {
   },
   createdAt: string;
 }
+
+export type TcpContent = {
+  name: string;
+  url: string;
+  description: string;
+};
+
+export type TcpUser = {
+  firstName: string;
+  lastName: string;
+  birthdayYear: number;
+  birthdayMonth: number;
+  birthdayDate: number;
+  email: string;
+  phone: string;
+  building: string;
+  street: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  country: string;
+};
+
+export type TcpCopyright = {
+  copyrightHolders: string[];
+  license: string;
+  file1: string;
+  file2: string;
+  file3: string;
+  file4: string;
+};
+
+export type TcpFormType = {
+  content: TcpContent;
+  user: TcpUser;
+  copyright: TcpCopyright;
+};
