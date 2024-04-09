@@ -248,6 +248,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           thumb_url: thumbUrl,
           material_id: materialId,
           type: type,
+          status: 1,
         },
       });
       const sample = await prisma.tobiratory_sample_items.create({
@@ -391,3 +392,46 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
     return;
   });
 };
+
+export const changeDigitalStatus = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {authorization} = req.headers;
+  const {digitalStatus}:{digitalStatus: number} = req.body;
+  await getAuth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    try {
+      if (digitalStatus<5) {
+        res.status(401).send({
+          status: "error",
+          data: "invalid-statusCode",
+        });
+      }
+      await prisma.tobiratory_digital_items.update({
+        where: {
+          id: parseInt(id),
+        },
+        data: {
+          status: digitalStatus,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: digitalStatus,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: {
+          result: error,
+        },
+      });
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: {
+        result: error.code,
+      },
+    });
+    return;
+  });
+}

@@ -17,7 +17,7 @@ import
   checkPasswordSet,
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {createModel, createDigitalItem, deleteDigitalItem, getItems, getItemsById, getMyItems, getMyItemsById, getMyDigitalItems} from "./itemController";
+import {createModel, createDigitalItem, deleteDigitalItem, getItems, getItemsById, getMyItems, getMyItemsById, getMyDigitalItems, changeDigitalStatus} from "./itemController";
 import {
   createSaidan,
   decorationSaidan,
@@ -140,4 +140,7 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
+
+//admin APIs
+app.post("/admin/digital/status", changeDigitalStatus);
 export const native = functions.region(REGION).https.onRequest(app);
