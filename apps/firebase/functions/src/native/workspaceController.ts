@@ -32,6 +32,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
             await prisma.tobiratory_sample_items.updateMany({
               where: {
                 id: item.itemId,
+                owner_uuid: uid,
                 is_deleted: false,
               },
               data: {
@@ -151,6 +152,58 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
         data: {
           workspaceItemList: itemList,
         },
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+export const throwSample = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {sampleId}: {sampleId: number} = req.body;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const sample = await prisma.tobiratory_sample_items.findUnique({
+        where: {
+          id: sampleId,
+        },
+      });
+      if (!sample) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-sample",
+        });
+        return;
+      }
+      if (sample.owner_uuid != uid) {
+        res.status(401).send({
+          status: "error",
+          data: "not-yours",
+        });
+        return;
+      }
+      await prisma.tobiratory_sample_items.update({
+        where: {
+          id: sampleId,
+        },
+        data: {
+          in_workspace: false,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: "thrown",
       });
     } catch (error) {
       res.status(401).send({
