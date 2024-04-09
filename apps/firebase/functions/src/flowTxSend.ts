@@ -80,6 +80,7 @@ export const flowTxSend = functions.region(REGION)
           txId,
           sentAt: new Date(),
         });
+        params.digitalItemNftId = id;
         await updateNFTRecord(id, txId);
         const messageForMonitoring = {flowJobId, txType, params};
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
@@ -384,7 +385,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       };
 
       if (
-        metadata.type === type &&
+          metadata.type === type &&
           metadata.name === name &&
           metadata.description === description &&
           metadata.thumbnailUrl === thumbnailUrl &&
@@ -461,7 +462,7 @@ transaction(
     args,
     proposer: createCreatorAuthz(flowAccountDocRef),
     payer: createMintAuthz(itemId),
-    authorizations: [createCreatorAuthz(flowAccountDocRef), createItemAuthz(itemId)],
+    authorizations: [createCreatorAuthz(flowAccountDocRef), createMintAuthz(itemId)],
     limit: 9999,
   });
   console.log({txId});
@@ -502,10 +503,9 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
         throw new Error("The address of flow signer is not defined.");
       }
       const creatorAddress = data.address;
-
       if (
           itemCreatorAddress === creatorAddress &&
-          itemID === digitalItem.item_id
+          itemID == digitalItem.item_id
       ) {
         const signature = signWithKey({privateKey, msgHex: signable.message});
         return {
@@ -661,10 +661,10 @@ const authzBase = async () => {
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
+  const addr = process.env.FLOW_ACCOUNT_ADDRESS;
   const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
 
-  return {addr, keyId, privateKey: privateKey as string};
+  return {addr: addr as string, keyId, privateKey: privateKey as string};
 };
 
 const hashMessageHex = (hashType: string, msgHex: string) => {
@@ -676,7 +676,7 @@ const hashMessageHex = (hashType: string, msgHex: string) => {
     sha3.update(buffer);
     return sha3.digest();
   } else {
-    throw Error("Invalid arguments");
+    throw Error("Invalid arguments3");
   }
 };
 
@@ -686,7 +686,7 @@ const getSignCurve = (signType: string) => {
   } else if (signType == "ECDSA_P256") {
     return new EC("p256");
   } else {
-    throw Error("Invalid arguments");
+    throw Error("Invalid arguments4");
   }
 };
 
@@ -707,11 +707,11 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
 };
 
 const fillInFlowAccountCreattionInfo = async ({
-  flowAccountRef,
-  encryptedPrivateKeyBase64,
-  pubKey,
-  txId,
-} : {
+                                                flowAccountRef,
+                                                encryptedPrivateKeyBase64,
+                                                pubKey,
+                                                txId,
+                                              } : {
   flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
   encryptedPrivateKeyBase64: string;
   pubKey: string;

@@ -17,7 +17,7 @@ export const mintNFT = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
 
-    const sampleItem = await prisma.tobiratory_sample_items.findUnique({
+    const sampleItem = await prisma.tobiratory_sample_items.findFirst({
       where: {
         id: parseInt(id),
         is_deleted: false,
@@ -84,22 +84,28 @@ export const mintNFT = async (req: Request, res: Response) => {
 
     const itemId = digitalItem.item_id;
     const digitalItemId = digitalItem.id;
-    if (itemId) {
-      const creatorUuid = digitalItem.creator_uuid;
-      const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
-        where: {
-          uuid: creatorUuid,
-        },
+    const creatorUuid = digitalItem.creator_uuid;
+    const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
+      where: {
+        uuid: creatorUuid,
+      },
+    });
+    if (!flowAccount) {
+      res.status(404).send({
+        status: "error",
+        data: "FlowAccount does not found",
       });
-      if (!flowAccount) {
-        res.status(404).send({
-          status: "error",
-          data: "FlowAccount does not found",
-        });
-        return;
-      }
+      return;
+    }
+    if (itemId) {
       const flowJobId = uuidv4();
-      const message = {flowJobId, txType: "mintNFT", params: {tobiratoryAccountUuid: uid, itemCreatorAddress: flowAccount.flow_address, itemId, digitalItemId, fcmToken}};
+      const message = {flowJobId, txType: "mintNFT", params: {
+        tobiratoryAccountUuid: uid,
+          itemCreatorAddress: flowAccount.flow_address,
+          itemId,
+          digitalItemId,
+          fcmToken
+      }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
       console.log(`Message ${messageId} published.`);
     } else {
@@ -202,5 +208,6 @@ export const mintNFT = async (req: Request, res: Response) => {
       status: "error",
       data: error.code,
     });
+    throw error;
   });
 };

@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {PubSub} from "@google-cloud/pubsub";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
+import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {PrismaClient} from "@prisma/client";
 import {pushToDevice} from "./appSendPushMessage";
@@ -44,8 +45,18 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
   } else if (txType == "createItem") {
     try {
       const digitalItemId = params.digitalItemId;
-      await fetchAndUpdateCreateItem(digitalItemId);
+      const {id} = await fetchAndUpdateCreateItem(digitalItemId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
+      const {flowAccount} = await fetchFlowAccount(params.tobiratoryAccountUuid);
+      const mintMessage = {flowJobId: uuidv4(), txType: "mintNFT", params: {
+        tobiratoryAccountUuid: params.tobiratoryAccountUuid,
+          itemCreatorAddress: flowAccount.flow_address,
+          itemId: id,
+          digitalItemId,
+          fcmToken: params.fcmToken,
+        }};
+      const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: mintMessage});
+      console.log(`Message ${messageId} published.`);
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
@@ -57,7 +68,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
     }
   } else if (txType == "mintNFT") {
     try {
-      await fetchAndUpdateMintNFT(params.digitalItemId, params.fcmToken);
+      await fetchAndUpdateMintNFT(params.digitalItemId, params.fcmToken, params.digitalItemNftId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -70,6 +81,19 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
     }
   }
 });
+
+const fetchFlowAccount = async (creatorUuid: string) => {
+  const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
+    where: {
+      uuid: creatorUuid,
+    },
+  });
+
+  if (!flowAccount) {
+    throw Error("FLOW_ACCOUNT_NOT_FOUND");
+  }
+  return {flowAccount};
+};
 
 const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
   const digitalItem = await prisma.tobiratory_digital_items.findUnique({
@@ -90,13 +114,14 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
       id: digitalItemId,
     },
     data: {
-      item_id: id,
+      item_id: Number(id),
     },
   });
+  return {id};
 };
 
 const fetchCreateItem = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "5e9ccdb91ff7ad93";
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   for (const event of tx.events) {
@@ -107,7 +132,7 @@ const fetchCreateItem = async (txId: string) => {
   throw Error("TX_FAILED");
 };
 
-const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) => {
+const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, digitalItemNftId: number) => {
   const digitalItem = await prisma.tobiratory_digital_items.findUnique({
     where: {
       id: digitalItemId,
@@ -115,7 +140,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) =>
   });
   const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
     where: {
-      id: digitalItemId,
+      id: digitalItemNftId,
     },
   });
   if (!digitalItem) {
@@ -133,7 +158,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) =>
 
   await prisma.tobiratory_digital_item_nfts.update({
     where: {
-      id: digitalItemId,
+      id: digitalItemNftId,
     },
     data: {
       mint_status: "minted",
@@ -161,7 +186,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string) =>
 };
 
 const fetchMintNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "TODO";
+  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "5e9ccdb91ff7ad93";
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   for (const event of tx.events) {
