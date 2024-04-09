@@ -49,7 +49,7 @@ export default function ItemsManageTab({ onTabChange }) {
         />
         <input
           className="text-base text-[#717171C1] outline-none"
-          placeholder="アイテムを検索"
+          placeholder="Search for Samples"
         />
       </div>
       <div className="">
