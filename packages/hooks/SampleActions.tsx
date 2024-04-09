@@ -1,100 +1,112 @@
+import { auth } from "fetchers/firebase/client";
+
 const sampleTestData = [
   {
     id: 1,
-    image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
-    name: "Inutanuki - GORAKUBA!",
-    ruby: "",
-    category: "Highschool",
+    name: "Inutanuki - GORAKUBA! Highschool",
+    thumbnail: "/admin/images/sample-thumnail/Rectangle-61.png",
+    status: 1, // Draft
     price: 1500,
-    release_status: "公開中",
-    sales_status: "販売中",
-    release_date: "2023/05/14 13:24",
-    sales_start_date: "2023/05/14 13:24",
-    sales_end_date: "2023/05/14 13:24",
+    saleStartDate: "2023/12/25",
+    saleEndDate: "2023/12/25",
+    saleQuantity: 10,
+    quantityLimit: 100,
+    createDate: "2023/12/25",
   },
   {
     id: 2,
-    image_url: "/admin/images/sample-thumnail/Rectangle-58.png",
-    name: "Pento - GORAKUBA!",
-    ruby: "",
-    category: "Highschool",
-    price: 1200,
-    release_status: "公開中",
-    sales_status: "販売終了",
-    release_date: "2023/05/14 13:24",
-    sales_start_date: "2023/05/14 13:24",
-    sales_end_date: "2023/05/14 13:24",
+    name: "Pento - GORAKUBA! Highschool",
+    thumbnail: "/admin/images/sample-thumnail/Rectangle-58.png",
+    status: 2, // Private
+    price: 1500,
+    saleStartDate: "2023/12/25",
+    saleEndDate: "2023/12/25",
+    saleQuantity: 1,
+    quantityLimit: 1,
+    createDate: "2023/12/25",
   },
   {
     id: 3,
-    image_url: "/admin/images/sample-thumnail/Rectangle-60.png",
-    name: "Encho. - GORAKUBA! ",
-    ruby: "",
-    category: "Highschool",
-    price: 2000,
-    release_status: "非公開",
-    sales_status: "",
-    release_date: "",
-    sales_start_date: "",
-    sales_end_date: "",
+    thumbnail: "/admin/images/sample-thumnail/Rectangle-60.png",
+    name: "Encho. - GORAKUBA! Highschool",
+    status: 3, // Viewing Only
+    price: 1500,
+    saleStartDate: "2023/12/25",
+    saleEndDate: "2023/12/25",
+    saleQuantity: 10,
+    quantityLimit: -1,
+    createDate: "2023/12/25",
   },
   {
     id: 4,
-    image_url: "/admin/images/sample-thumnail/Rectangle-59.png",
+    thumbnail: "/admin/images/sample-thumnail/Rectangle-59.png",
     name: "Tenri Kannagi 2023",
-    ruby: "",
-    category: "",
-    price: 2500,
-    release_status: "予約公開",
-    sales_status: "",
-    release_date: "2023/05/14 13:24",
-    sales_start_date: "2023/05/14 13:24",
-    sales_end_date: "2023/05/14 13:24",
+    status: 4, // On Sale
+    price: 1500,
+    saleStartDate: "2023/12/25",
+    saleEndDate: "2023/12/25",
+    saleQuantity: 10,
+    quantityLimit: -1,
+    createDate: "2023/12/25",
   },
   {
     id: 5,
-    image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
+    thumbnail: "/admin/images/sample-thumnail/Rectangle-61.png",
     name: "SAMPLEITEM1234",
-    ruby: "",
-    category: "",
-    price: 0,
-    release_status: "下書き",
-    sales_status: "",
-    release_date: "",
-    sales_start_date: "",
-    sales_end_date: "",
+    status: 5, // Unlisted
+    price: 1500,
+    saleStartDate: "2023/12/25",
+    saleEndDate: "2023/12/25",
+    saleQuantity: 10,
+    quantityLimit: -1,
+    createDate: "2023/12/25",
   },
   {
     id: 6,
-    image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
+    thumbnail: "/admin/images/sample-thumnail/Rectangle-61.png",
     name: "SAMPLEITEM1235",
-    ruby: "",
-    category: "",
-    price: 0,
-    release_status: "下書き",
-    sales_status: "",
-    release_date: "",
-    sales_start_date: "",
-    sales_end_date: "",
+    status: 6, // Scheduled Publishing
+    price: 1500,
+    saleStartDate: "2023/12/25",
+    saleEndDate: "2023/12/25",
+    saleQuantity: 10,
+    quantityLimit: -1,
+    createDate: "2023/12/25",
   },
   {
     id: 7,
-    image_url: "/admin/images/sample-thumnail/Rectangle-61.png",
+    thumbnail: "/admin/images/sample-thumnail/Rectangle-61.png",
     name: "SAMPLEITEM1236",
-    ruby: "",
-    category: "",
-    price: 0,
-    release_status: "下書き",
-    sales_status: "",
-    release_date: "",
-    sales_start_date: "",
-    sales_end_date: "",
+    status: 7, // Scheduled for Sale
+    price: 1500,
+    saleStartDate: "2023/12/25",
+    saleEndDate: "2023/12/25",
+    saleQuantity: 10,
+    quantityLimit: -1,
+    createDate: "2023/12/25",
   },
 ];
 
-export function fetchSamples() {
-  return sampleTestData;
-}
+export const fetchSamples = async () => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples",
+      {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // return [];
+    return sampleTestData;
+  }
+};
 
 export function fetchSampleItem(id) {
   const item = sampleTestData.find((sample) => sample.id == id);
