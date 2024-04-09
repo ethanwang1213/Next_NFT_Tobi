@@ -192,6 +192,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
             modelUrl: template.model_url,
             imageUrl: saidan.thumbnail_image,
             modelType: template.type,
+            description: saidan.description,
             isPublic: saidan.is_public,
             favorite: favorite.length!=0,
           };
@@ -263,7 +264,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
 export const updateMySaidan = async (req: Request, res: Response) => {
   const {saidanId} = req.params;
   const {authorization} = req.headers;
-  const {isPublic}: {isPublic: boolean} = req.body;
+  const {isPublic, title, description, thumbnailImage, favorite}: {isPublic?: boolean, title?: string, description?: string, thumbnailImage?: string, favorite?: boolean} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const saidanData = await prisma.tobiratory_saidans.findUnique({
@@ -285,19 +286,62 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       });
       return;
     }
-    const updatedSaidanData = await prisma.tobiratory_saidans.update({
+    await prisma.tobiratory_saidans.update({
       where: {
         id: parseInt(saidanId),
       },
       data: {
         is_public: isPublic,
+        title: title,
+        description: description,
+        thumbnail_image: thumbnailImage,
       },
     });
+    if (favorite != undefined) {
+      const nowFavor = await prisma.tobiratory_saidans_favorite.findMany({
+        where: {
+          favorite_user_id: uid,
+          saidan_id: parseInt(saidanId),
+        },
+      });
+      if (favorite&&!nowFavor.length) {
+        await prisma.tobiratory_saidans_favorite.create({
+          data: {
+            favorite_user_id: uid,
+            saidan_id: parseInt(saidanId),
+          },
+        });
+      } else if (!favorite&&nowFavor.length) {
+        await prisma.tobiratory_saidans_favorite.delete({
+          where: {
+            id: nowFavor[0].id,
+          },
+        });
+      }
+    }
+    const updatedSaidan = await prisma.tobiratory_saidans.findUnique({
+      where: {
+        id: parseInt(saidanId),
+      },
+    });
+    const template = await prisma.tobiratory_saidans_template.findUnique({
+      where: {
+        id: updatedSaidan?.template_id,
+      },
+    });
+    const resData = {
+      saidanId: updatedSaidan?.id,
+      title: updatedSaidan?.title,
+      modelUrl: template?.model_url,
+      imageUrl: updatedSaidan?.thumbnail_image,
+      modelType: template?.type,
+      description: updatedSaidan?.description,
+      isPublic: updatedSaidan?.is_public,
+      favorite: favorite,
+    };
     res.status(200).send({
       status: "success",
-      data: {
-        isPublic: updatedSaidanData.is_public,
-      },
+      data: resData,
     });
   }).catch((error: FirebaseError) => {
     res.status(401).send({
