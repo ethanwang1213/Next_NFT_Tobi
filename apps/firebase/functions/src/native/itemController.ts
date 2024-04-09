@@ -365,7 +365,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
         },
         data: {
           is_deleted: true,
-        }
+        },
       });
       res.status(200).send({
         status: "success",
