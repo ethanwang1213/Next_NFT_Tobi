@@ -34,7 +34,7 @@ import {
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
 import {mintNFT} from "./nftController";
-import {decorationWorkspace, getWorkspaceDecorationData} from "./workspaceController";
+import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -105,6 +105,7 @@ app.get("/my/saidans/:saidanId/decoration", getSaidanDecorationData);
 app.post("/my/saidans/:saidanId/decoration", decorationSaidan);
 app.get("/my/workspace", getWorkspaceDecorationData);
 app.post("/my/workspace", decorationWorkspace);
+app.post("/my/workspace/throw", throwSample)
 app.post("/my/saidans/:saidanId/putaway", putAwayItemInSaidan);
 app.get("/my/saidans/:saidanId", getMySaidansById);
 app.post("/my/saidans/:saidanId/posts", dummyResponse);
