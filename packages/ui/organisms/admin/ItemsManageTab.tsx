@@ -43,10 +43,7 @@ export default function ItemsManageTab({ onTabChange }) {
         </TabSelector> */}
       </nav>
       <div className="flex justify-start">
-        <FilterPopupButton
-          preference={filterArray}
-          changeHandler={toggleAtIndex}
-        />
+        <FilterPopupButton />
         <input
           className="text-base text-[#717171C1] outline-none"
           placeholder="Search for Samples"
