@@ -46,7 +46,7 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkPrice"
-            defaultChecked={filterArray[0]}
+            checked={filterArray[0]}
             onChange={(e) =>
               setFilterArray({ ...filterArray, [0]: e.target.checked })
             }
@@ -91,7 +91,7 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkStatus"
-            defaultChecked={filterArray[1]}
+            checked={filterArray[1]}
             onChange={(e) =>
               setFilterArray({ ...filterArray, [1]: e.target.checked })
             }
@@ -107,7 +107,7 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkDraft"
-                defaultChecked={statusArray[0]}
+                checked={statusArray[0]}
                 onChange={(e) =>
                   setStatusArray({ ...statusArray, [0]: e.target.checked })
                 }
@@ -121,7 +121,7 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkPrivate"
-                defaultChecked={statusArray[1]}
+                checked={statusArray[1]}
                 onChange={(e) =>
                   setStatusArray({ ...statusArray, [1]: e.target.checked })
                 }
@@ -135,7 +135,7 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkViewingOnly"
-                defaultChecked={statusArray[2]}
+                checked={statusArray[2]}
                 onChange={(e) =>
                   setStatusArray({ ...statusArray, [2]: e.target.checked })
                 }
@@ -149,7 +149,7 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkOnSale"
-                defaultChecked={statusArray[3]}
+                checked={statusArray[3]}
                 onChange={(e) =>
                   setStatusArray({ ...statusArray, [3]: e.target.checked })
                 }
@@ -163,7 +163,7 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkUnlisted"
-                defaultChecked={statusArray[4]}
+                checked={statusArray[4]}
                 onChange={(e) =>
                   setStatusArray({ ...statusArray, [4]: e.target.checked })
                 }
@@ -177,7 +177,7 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkScheduledPublishing"
-                defaultChecked={statusArray[5]}
+                checked={statusArray[5]}
                 onChange={(e) =>
                   setStatusArray({ ...statusArray, [5]: e.target.checked })
                 }
@@ -191,7 +191,7 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkScheduledSale"
-                defaultChecked={statusArray[6]}
+                checked={statusArray[6]}
                 onChange={(e) =>
                   setStatusArray({ ...statusArray, [6]: e.target.checked })
                 }
@@ -211,7 +211,7 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkSaleStartDate"
-            defaultChecked={filterArray[2]}
+            checked={filterArray[2]}
             onChange={(e) =>
               setFilterArray({ ...filterArray, [2]: e.target.checked })
             }
@@ -248,7 +248,7 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkSaleEndDate"
-            defaultChecked={filterArray[3]}
+            checked={filterArray[3]}
             onChange={(e) =>
               setFilterArray({ ...filterArray, [3]: e.target.checked })
             }
@@ -285,7 +285,7 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkUnitsSold"
-            defaultChecked={filterArray[4]}
+            checked={filterArray[4]}
             onChange={(e) =>
               setFilterArray({ ...filterArray, [4]: e.target.checked })
             }
@@ -328,7 +328,7 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkCreationDate"
-            defaultChecked={filterArray[5]}
+            checked={filterArray[5]}
             onChange={(e) =>
               setFilterArray({ ...filterArray, [5]: e.target.checked })
             }
