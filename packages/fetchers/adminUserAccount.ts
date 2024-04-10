@@ -1,5 +1,4 @@
-import { auth, functions } from "fetchers/firebase/client";
-import { httpsCallable } from "firebase/functions";
+import { auth } from "fetchers/firebase/client";
 import { useState } from "react";
 import { ApiProfileData } from "types/adminTypes";
 
@@ -9,7 +8,7 @@ export const fetchMyProfile = async () => {
     const res = await fetch(`/backend/api/functions/native/my/profile`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${idToken}`,
+        Authorization: idToken,
         "Content-Type": "application/json",
       },
     });
@@ -35,15 +34,17 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
     try {
       setLoading(true);
       setError(null);
-      const callable = httpsCallable<{}, ApiProfileData>(
-        functions,
-        "native/signup",
-      );
-      const result = await callable();
-      if (result.data.flow) {
-        setResponse(result.data);
+      const res = await registerToTobiratoryAndFlowAccount();
+      const resData = await res.json();
+      console.log(resData)
+      if (res.ok){
+        if (resData.data.flow) {
+          setResponse(resData.data);
+        } else {
+          setError("Failed to register");
+        }
       } else {
-        setError("Failed to register");
+        setError(resData.data);
       }
     } catch (error) {
       setError(String(error));
@@ -52,4 +53,15 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
   };
 
   return [register, response, loading, error] as const;
+};
+
+const registerToTobiratoryAndFlowAccount = async () => {
+  const idToken = await auth.currentUser.getIdToken();
+  return await fetch(`/backend/api/functions/native/signup`, {
+    method: "POST",
+    headers: {
+      Authorization: idToken,
+      "Content-Type": "application/json",
+    },
+  });
 };
