@@ -129,6 +129,7 @@ model tobiratory_digital_items {
   item_id           Int?
   tx_id             String?                              @db.VarChar(255)
   status            Int
+  minted_count      Int                                  @default(0)
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)
 }
@@ -144,11 +145,11 @@ model tobiratory_sample_items {
   rotation          Float[]
   scale             Float?
   stage_type        Int?
-  content_id        Int                                  @default(0)
+  content_id        Int                      @default(0)
   price             Int?
-  sale_start_date   DateTime?                 @db.Timestamp(6)
-  sale_end_date     DateTime?                 @db.Timestamp(6)
-  sale_quantity    Int?
+  sale_start_date   DateTime?                @db.Timestamp(6)
+  sale_end_date     DateTime?                @db.Timestamp(6)
+  sale_quantity     Int?
   quantity_limit    Int?
   in_workspace      Boolean                  @default(false)
   is_deleted        Boolean                  @default(false)
