@@ -47,12 +47,12 @@ const ConfirmInformation = ({
 }) => {
   const copyrightFiles = () => {
     return [
-      copyrightInfo.file1,
-      copyrightInfo.file2,
-      copyrightInfo.file3,
-      copyrightInfo.file4,
+      copyrightInfo.file1?.name,
+      copyrightInfo.file2?.name,
+      copyrightInfo.file3?.name,
+      copyrightInfo.file4?.name,
     ]
-      .filter((f) => f !== "")
+      .filter((f) => f !== undefined)
       .join(", ");
   };
 

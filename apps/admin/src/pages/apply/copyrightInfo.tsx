@@ -12,11 +12,6 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
     setCopyrightInfo({ ...copyrightInfo, [field]: value });
   };
 
-  // const [file1, setFile1] = useState(null);
-  // const [file2, setFile2] = useState(null);
-  // const [file3, setFile3] = useState(null);
-  // const [file4, setFile4] = useState(null);
-
   const file1InputRef = useRef(null);
   const file2InputRef = useRef(null);
   const file3InputRef = useRef(null);
@@ -28,35 +23,25 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
       case 1:
         // setFile1(selectedFile);
         //setFilePath1(selectedFile.name);
-        copyrightInfoChangeHandler("file1", selectedFile.name);
+        copyrightInfoChangeHandler("file1", selectedFile);
         break;
       case 2:
         // setFile2(selectedFile);
-        copyrightInfoChangeHandler("file2", selectedFile.name);
+        copyrightInfoChangeHandler("file2", selectedFile);
         break;
       case 3:
         // setFile3(selectedFile);
-        copyrightInfoChangeHandler("file3", selectedFile.name);
+        copyrightInfoChangeHandler("file3", selectedFile);
         break;
       case 4:
         // setFile4(selectedFile);
-        copyrightInfoChangeHandler("file4", selectedFile.name);
+        copyrightInfoChangeHandler("file4", selectedFile);
         break;
 
       default:
         break;
     }
   };
-
-  // const handleUpload = () => {
-  //   // Handle file upload logic here
-  //   if (file) {
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-  //     // Make a POST request to your server with the formData
-  //     // Example: fetch('/api/upload', { method: 'POST', body: formData });
-  //   }
-  // };
 
   return (
     <div className="text-title-color">
@@ -125,7 +110,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
               onChange={(e) => handleFileChange(1, e)}
             />
             <span className="flex-1 text-title-color">
-              {copyrightInfo.file1}
+              {copyrightInfo.file1?.name}
             </span>
             <Button
               className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
@@ -142,7 +127,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
               onChange={(e) => handleFileChange(2, e)}
             />
             <span className="flex-1 text-title-color">
-              {copyrightInfo.file2}
+              {copyrightInfo.file2?.name}
             </span>
             <Button
               className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
@@ -159,7 +144,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
               onChange={(e) => handleFileChange(3, e)}
             />
             <span className="flex-1 text-title-color">
-              {copyrightInfo.file3}
+              {copyrightInfo.file3?.name}
             </span>
             <Button
               className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
@@ -176,7 +161,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
               onChange={(e) => handleFileChange(4, e)}
             />
             <span className="flex-1 text-title-color">
-              {copyrightInfo.file4}
+              {copyrightInfo.file4?.name}
             </span>
             <Button
               className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"

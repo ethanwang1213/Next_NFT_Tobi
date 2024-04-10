@@ -52,10 +52,10 @@ const Register = () => {
     agreement: false,
     copyrightHolders: [],
     license: "",
-    file1: "",
-    file2: "",
-    file3: "",
-    file4: "",
+    file1: null,
+    file2: null,
+    file3: null,
+    file4: null,
   });
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
@@ -255,9 +255,11 @@ const Register = () => {
           )}
         </div>
 
-        <div className={"font-medium text-[16px] text-attention text-center"}>
-          {submissionError}
-        </div>
+        {switchValue === 3 && submissionError && (
+          <div className={"font-medium text-[16px] text-attention text-center"}>
+            {submissionError}
+          </div>
+        )}
 
         <LoadingButton
           nextLabel={

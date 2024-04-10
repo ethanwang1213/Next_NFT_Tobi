@@ -65,10 +65,10 @@ export type TcpUser = {
 export type TcpCopyright = {
   copyrightHolders: string[];
   license: string;
-  file1: string;
-  file2: string;
-  file3: string;
-  file4: string;
+  file1?: File;
+  file2?: File;
+  file3?: File;
+  file4?: File;
 };
 
 export type TcpFormType = {
