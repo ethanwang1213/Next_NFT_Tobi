@@ -108,11 +108,11 @@ model tobiratory_digital_items {
   creator_uuid      String                               @db.VarChar(100)
   name              String                               @default("") @db.VarChar(255)
   thumb_url         String                               @db.VarChar(255)
+  user_thumb_url    String                               @db.VarChar(255)
   nft_model         String                               @default("") @db.VarChar(255)
   nft_metadata      String                               @default("") @db.Text
   material_id       Int                                  @default(0)
   type              Int
-  content_id        Int                                  @default(0)
   description       String                               @default("") @db.VarChar(255)
   limit             Int?
   license           String                               @default("") @db.VarChar(255)
@@ -144,6 +144,12 @@ model tobiratory_sample_items {
   rotation          Float[]
   scale             Float?
   stage_type        Int?
+  content_id        Int                                  @default(0)
+  price             Int?
+  sale_start_date   DateTime?                 @db.Timestamp(6)
+  sale_end_date     DateTime?                 @db.Timestamp(6)
+  sale_quantity    Int?
+  quantity_limit    Int?
   in_workspace      Boolean                  @default(false)
   is_deleted        Boolean                  @default(false)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)

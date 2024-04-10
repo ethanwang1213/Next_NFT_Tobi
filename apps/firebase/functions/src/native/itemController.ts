@@ -4,207 +4,6 @@ import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
 
-export const getItems = async (req: Request, res: Response) => {
-  const {q, type, creator, sortBy, sortOrder} = req.params;
-  const orderValue = {};
-  Object.defineProperty(orderValue, sortBy, {
-    value: sortOrder,
-    writable: false,
-    enumerable: true,
-    configurable: true,
-  });
-  const items = await prisma.tobiratory_digital_items.findMany({
-    where: {
-      name: {
-        in: [q],
-      },
-      type: {
-        equals: parseInt(type),
-      },
-    },
-    orderBy: orderValue,
-  });
-  const resData = {
-    items: items.map(async (item) => {
-      const content = await prisma.tobiratory_contents.findUnique({
-        where: {
-          id: item.content_id,
-          creator_user_id: creator,
-        },
-      });
-
-      return {
-        id: item.id,
-        name: item.name,
-        image: item.thumb_url,
-        type: item.type,
-        content: content == null ? null : {
-          id: content.id,
-          creator: {
-            userId: content.creator_user_id,
-          },
-        },
-      };
-    }),
-  };
-
-  res.status(200).send({
-    status: "success",
-    data: resData,
-  });
-};
-
-export const getItemsById = async (req: Request, res: Response) => {
-  const {id} = req.params;
-  const itemData = await prisma.tobiratory_digital_items.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
-
-  if (itemData == null) {
-    res.status(404).send({
-      status: "error",
-      data: "Item does not exist!",
-    });
-    return;
-  }
-
-  const contentData = await prisma.tobiratory_contents.findUnique({
-    where: {
-      id: itemData.content_id,
-    },
-  });
-
-  const resData = {
-    id: id,
-    name: itemData.name,
-    image: itemData.thumb_url,
-    type: itemData.type,
-    content: contentData == null ? null : {
-      id: contentData.id,
-      creator: {
-        userId: contentData.creator_user_id,
-      },
-    },
-  };
-  res.status(200).send({
-    status: "success",
-    data: resData,
-  });
-};
-
-export const getMyItems = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  const {q, type, creator, sortBy, sortOrder} = req.params;
-  const orderValue = {};
-  Object.defineProperty(orderValue, sortBy, {
-    value: sortOrder,
-    writable: false,
-    enumerable: true,
-    configurable: true,
-  });
-  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    const items = await prisma.tobiratory_digital_items.findMany({
-      where: {
-        creator_uuid: {
-          equals: uid,
-        },
-        name: {
-          in: [q],
-        },
-        type: {
-          equals: parseInt(type),
-        },
-      },
-      orderBy: orderValue,
-    });
-    const resData = {
-      items: items.map(async (item) => {
-        const content = await prisma.tobiratory_contents.findUnique({
-          where: {
-            id: item.content_id,
-            creator_user_id: creator,
-          },
-        });
-
-        return {
-          id: item.id,
-          name: item.name,
-          image: item.thumb_url,
-          type: item.type,
-          content: content == null ? null : {
-            id: content.id,
-            creator: {
-              userId: content.creator_user_id,
-            },
-          },
-        };
-      }),
-    };
-
-    res.status(200).send({
-      status: "success",
-      data: resData,
-    });
-  }).catch((error: FirebaseError)=>{
-    res.status(401).send({
-      status: "error",
-      data: error.code,
-    });
-  });
-};
-
-export const getMyItemsById = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  const {id} = req.params;
-  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    const itemData = await prisma.tobiratory_digital_items.findUnique({
-      where: {
-        id: parseInt(id),
-        creator_uuid: uid,
-      },
-    });
-
-    if (itemData == null) {
-      res.status(404).send({
-        status: "error",
-        data: "Item does not exist!",
-      });
-      return;
-    }
-
-    const contentData = await prisma.tobiratory_contents.findUnique({
-      where: {
-        id: itemData.content_id,
-      },
-    });
-    const resData = {
-      id: id,
-      name: itemData.name,
-      image: itemData.thumb_url,
-      type: itemData.type,
-      content: contentData==null ? null : {
-        id: contentData.id,
-        creator: {
-          userId: contentData.creator_user_id,
-        },
-      },
-    };
-    res.status(200).send({
-      status: "success",
-      data: resData,
-    });
-  }).catch((error: FirebaseError)=>{
-    res.status(401).send({
-      status: "error",
-      data: error.code,
-    });
-  });
-};
-
 export const createModel = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {materialId, type}:{materialId: number, type: number} = req.body;
@@ -244,6 +43,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
         data: {
           creator_uuid: uid,
           thumb_url: thumbUrl,
+          user_thumb_url: thumbUrl,
           material_id: materialId,
           type: type,
           status: 1,
@@ -391,7 +191,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
   });
 };
 
-export const changeDigitalStatus = async (req: Request, res: Response) => {
+export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
   const {digitalStatus}:{digitalStatus: number} = req.body;
@@ -414,6 +214,161 @@ export const changeDigitalStatus = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: digitalStatus,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: {
+          result: error,
+        },
+      });
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: {
+        result: error.code,
+      },
+    });
+    return;
+  });
+};
+
+export const adminGetAllSamples = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const admin = await prisma.tobiratory_businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (!admin||!admin.submission) {
+        res.status(401).send({
+          status: "error",
+          data: "not-admin",
+        });
+        return;
+      }
+      const content = await prisma.tobiratory_contents.findFirst({
+        where: {
+          creator_user_id: uid,
+        },
+      });
+      const allSamples = await prisma.tobiratory_sample_items.findMany({
+        where: {
+          content_id: content?.id,
+          is_deleted: false,
+        },
+      });
+      const returnData = await Promise.all(
+          allSamples.map(async (sample) => {
+            const digitalItem = await prisma.tobiratory_digital_items.findFirst({
+              where: {
+                id: sample.digital_item_id,
+              },
+            });
+            return {
+              id: sample.id,
+              name: digitalItem?.name,
+              thumbnail: digitalItem?.thumb_url,
+              price: sample.price,
+              status: digitalItem?.status,
+              saleStartDate: sample.sale_start_date,
+              saleEndDate: sample.sale_end_date,
+              saleQuantity: sample.sale_quantity,
+              quantityLimit: sample.quantity_limit,
+              createDate: sample.created_date_time,
+            };
+          })
+      );
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: {
+          result: error,
+        },
+      });
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: {
+        result: error.code,
+      },
+    });
+    return;
+  });
+};
+
+export const adminDeleteSamples = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {sampleIds}: {sampleIds: number[]} = req.body;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    try {
+      const uid = decodedToken.uid;
+      const admin = await prisma.tobiratory_businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (!admin||!admin.submission) {
+        res.status(401).send({
+          status: "error",
+          data: "not-admin",
+        });
+        return;
+      }
+      const content = await prisma.tobiratory_contents.findFirst({
+        where: {
+          creator_user_id: uid,
+        },
+      });
+      for (const item of sampleIds) {
+        const sample = await prisma.tobiratory_sample_items.findUnique({
+          where: {
+            id: item,
+          },
+        });
+        if (sample==null) {
+          res.status(401).send({
+            status: "error",
+            data: {
+              result: "not-exist",
+            },
+          });
+          return;
+        }
+        if (sample.content_id!=content?.id) {
+          res.status(401).send({
+            status: "error",
+            data: {
+              result: "not-content",
+            },
+          });
+          return;
+        }
+      }
+      await prisma.tobiratory_sample_items.updateMany({
+        where: {
+          id: {
+            in: sampleIds,
+          },
+        },
+        data: {
+          is_deleted: true,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: {
+          result: "deleted",
+        },
       });
     } catch (error) {
       res.status(401).send({
