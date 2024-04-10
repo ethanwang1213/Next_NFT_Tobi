@@ -46,14 +46,15 @@ const SampleTable = ({ filters }) => {
 
       case -2:
         samples.sort((a, b) =>
-          a.price - b.price != 0 ? a.price - b.price : a.status - b.status,
+          a.price != b.price ? a.price - b.price : a.status - b.status,
         );
         break;
 
       case 2:
         samples.sort((a, b) =>
-          b.price - a.price != 0 ? b.price - a.price : a.status - b.status,
+          b.price != a.price ? b.price - a.price : a.status - b.status,
         );
+        break;
 
       case -4:
         samples.sort((a, b) =>
@@ -97,7 +98,7 @@ const SampleTable = ({ filters }) => {
 
       case -6:
         samples.sort((a, b) =>
-          a.saleQuantity - b.saleQuantity != 0
+          a.saleQuantity != b.saleQuantity
             ? a.saleQuantity - b.saleQuantity
             : a.status - b.status,
         );
@@ -105,7 +106,7 @@ const SampleTable = ({ filters }) => {
 
       case 6:
         samples.sort((a, b) =>
-          b.saleQuantity - a.saleQuantity != 0
+          b.saleQuantity != a.saleQuantity
             ? b.saleQuantity - a.saleQuantity
             : a.status - b.status,
         );
