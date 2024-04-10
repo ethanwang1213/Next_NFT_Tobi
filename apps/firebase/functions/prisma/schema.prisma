@@ -125,7 +125,7 @@ model tobiratory_digital_items {
   copyright         tobiratory_digital_items_copyright[]
   saidan_id         Int                                  @default(0)
   sample_item       tobiratory_sample_items? //need to discuss
-  digital_nft       tobiratory_digital_item_nfts? //need to discuss
+  digital_nft       tobiratory_digital_item_nfts[] //need to discuss
   item_id           Int?
   tx_id             String?                              @db.VarChar(255)
   status            Int
@@ -154,7 +154,7 @@ model tobiratory_digital_item_nfts {
   id                Int                      @id @default(autoincrement())
   serial_no         String?                  @unique
   digital_item      tobiratory_digital_items @relation(fields: [digital_item_id], references: [id])
-  digital_item_id   Int                      @unique
+  digital_item_id   Int
   user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid        String                   @db.VarChar(100)
   box_id            Int                      @default(0)

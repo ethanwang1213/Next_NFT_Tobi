@@ -80,6 +80,7 @@ export const flowTxSend = functions.region(REGION)
           txId,
           sentAt: new Date(),
         });
+        params.digitalItemNftId = id;
         await updateNFTRecord(id, txId);
         const messageForMonitoring = {flowJobId, txType, params};
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
@@ -248,20 +249,25 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
+  let privateKey: string | undefined;
   const doc = await flowAccountRef.get();
   const data = doc.data();
   if (!doc.exists || !data || !data.privKey) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  const encryptedPrivateKey = data.privKey;
-  const keyName = kmsClient.cryptoKeyPath(
-      process.env.KMS_PROJECT_ID,
-      process.env.KMS_OPERATION_KEY_LOCATION,
-      process.env.KMS_OPERATION_KEYRING,
-      process.env.KMS_OPERATION_KEY
-  );
-  const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
-  const privateKey = decryptedData.plaintext?.toString();
+  if (process.env.PUBSUB_EMULATOR_HOST) {
+    privateKey = data.privKey;
+  } else {
+    const encryptedPrivateKey = data.privKey;
+    const keyName = kmsClient.cryptoKeyPath(
+        process.env.KMS_PROJECT_ID,
+        process.env.KMS_OPERATION_KEY_LOCATION,
+        process.env.KMS_OPERATION_KEYRING,
+        process.env.KMS_OPERATION_KEY
+    );
+    const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
+    privateKey = decryptedData.plaintext?.toString();
+  }
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
@@ -277,7 +283,8 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     addr: fcl.sansPrefix(address),
     keyId: 0,
     signingFunction: async (signable: any) => {
-      const signature = signWithKey({privateKey, msgHex: signable.message});
+
+      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message});
       return {
         address,
         keyId: 0,
@@ -308,7 +315,6 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const limit = args[6].value ? args[6].value.value : args[6].value;
       const license = args[7].value ? args[7].value.value : args[7].value;
       const copyrightHolders = args[8].value;
-
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: digitalItemId,
@@ -367,7 +373,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       );
 
       const metadata = {
-        type: digitalItem.type,
+        type: String(digitalItem.type),
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.thumb_url,
@@ -379,15 +385,15 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       };
 
       if (
-        metadata.type === type &&
+          metadata.type === type &&
           metadata.name === name &&
           metadata.description === description &&
           metadata.thumbnailUrl === thumbnailUrl &&
           metadata.modelUrl === modelUrl &&
           metadata.creatorName === creatorName &&
-          metadata.limit === limit &&
+          metadata.limit == limit &&
           metadata.license === license &&
-          metadata.copyrightHolders === copyrightHolders
+          arraysEqual(metadata.copyrightHolders, copyrightHolders)
       ) {
         const signature = signWithKey({privateKey, msgHex: signable.message});
         return {
@@ -401,6 +407,10 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
     },
   };
 };
+
+function arraysEqual(a: any[], b: any[]): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
 
 const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, id: number) => {
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
@@ -452,7 +462,7 @@ transaction(
     args,
     proposer: createCreatorAuthz(flowAccountDocRef),
     payer: createMintAuthz(itemId),
-    authorizations: [createCreatorAuthz(flowAccountDocRef), createItemAuthz(itemId)],
+    authorizations: [createCreatorAuthz(flowAccountDocRef), createMintAuthz(itemId)],
     limit: 9999,
   });
   console.log({txId});
@@ -493,10 +503,9 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
         throw new Error("The address of flow signer is not defined.");
       }
       const creatorAddress = data.address;
-
       if (
-        itemCreatorAddress === creatorAddress &&
-          itemID === digitalItem.item_id
+          itemCreatorAddress === creatorAddress &&
+          itemID == digitalItem.item_id
       ) {
         const signature = signWithKey({privateKey, msgHex: signable.message});
         return {
@@ -513,7 +522,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
 
 const generateKeysAndSendFlowAccountCreationTx = async (tobiratoryAccountUuid: string) => {
   if (
-    !process.env.KMS_PROJECT_ID ||
+      !process.env.KMS_PROJECT_ID ||
       !process.env.KMS_USER_KEY_LOCATION ||
       !process.env.KMS_USER_KEYRING ||
       !process.env.KMS_USER_KEY
@@ -634,24 +643,28 @@ const authzBase = async () => {
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
-  // const privateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_PRIVATE_KEY;
-  const encryptedPrivateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
-  const keyName = kmsClient.cryptoKeyPath(
-      process.env.KMS_PROJECT_ID,
-      process.env.KMS_OPERATION_KEY_LOCATION,
-      process.env.KMS_OPERATION_KEYRING,
-      process.env.KMS_OPERATION_KEY
-  );
-  const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
-  const privateKey = decryptedData.plaintext?.toString();
+  let privateKey: string | undefined;
+  if (process.env.PUBSUB_EMULATOR_HOST) {
+    privateKey = process.env.FLOW_ACCOUNT_PRIVATE_KEY;
+  } else {
+    const encryptedPrivateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
+    const keyName = kmsClient.cryptoKeyPath(
+        process.env.KMS_PROJECT_ID,
+        process.env.KMS_OPERATION_KEY_LOCATION,
+        process.env.KMS_OPERATION_KEYRING,
+        process.env.KMS_OPERATION_KEY
+    );
+    const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
+    privateKey = decryptedData.plaintext?.toString();
+  }
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
+  const addr = process.env.FLOW_ACCOUNT_ADDRESS;
   const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
 
-  return {addr, keyId, privateKey};
+  return {addr: addr as string, keyId, privateKey: privateKey as string};
 };
 
 const hashMessageHex = (hashType: string, msgHex: string) => {
@@ -663,7 +676,7 @@ const hashMessageHex = (hashType: string, msgHex: string) => {
     sha3.update(buffer);
     return sha3.digest();
   } else {
-    throw Error("Invalid arguments");
+    throw Error("Invalid arguments3");
   }
 };
 
@@ -673,7 +686,7 @@ const getSignCurve = (signType: string) => {
   } else if (signType == "ECDSA_P256") {
     return new EC("p256");
   } else {
-    throw Error("Invalid arguments");
+    throw Error("Invalid arguments4");
   }
 };
 
@@ -694,11 +707,11 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
 };
 
 const fillInFlowAccountCreattionInfo = async ({
-  flowAccountRef,
-  encryptedPrivateKeyBase64,
-  pubKey,
-  txId,
-} : {
+                                                flowAccountRef,
+                                                encryptedPrivateKeyBase64,
+                                                pubKey,
+                                                txId,
+                                              } : {
   flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
   encryptedPrivateKeyBase64: string;
   pubKey: string;
