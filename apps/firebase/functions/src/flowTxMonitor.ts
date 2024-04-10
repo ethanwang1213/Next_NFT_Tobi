@@ -4,10 +4,9 @@ import {PubSub} from "@google-cloud/pubsub";
 import {REGION, TOPIC_NAMES} from "./lib/constants";
 import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
-import {PrismaClient} from "@prisma/client";
 import {pushToDevice} from "./appSendPushMessage";
+import {prisma} from "./prisma";
 
-const prisma = new PrismaClient();
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -50,11 +49,11 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
       const {flowAccount} = await fetchFlowAccount(params.tobiratoryAccountUuid);
       const mintMessage = {flowJobId: uuidv4(), txType: "mintNFT", params: {
         tobiratoryAccountUuid: params.tobiratoryAccountUuid,
-          itemCreatorAddress: flowAccount.flow_address,
-          itemId: id,
-          digitalItemId,
-          fcmToken: params.fcmToken,
-        }};
+        itemCreatorAddress: flowAccount.flow_address,
+        itemId: id,
+        digitalItemId,
+        fcmToken: params.fcmToken,
+      }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: mintMessage});
       console.log(`Message ${messageId} published.`);
     } catch (e) {

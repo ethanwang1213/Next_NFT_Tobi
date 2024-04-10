@@ -1,10 +1,8 @@
 import {Request, Response} from "express";
 // import {firestore} from "firebase-admin";
-import {PrismaClient} from "@prisma/client";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-
-const prisma = new PrismaClient();
+import {prisma} from "../prisma";
 
 export const getItems = async (req: Request, res: Response) => {
   const {q, type, creator, sortBy, sortOrder} = req.params;
@@ -434,4 +432,4 @@ export const changeDigitalStatus = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};

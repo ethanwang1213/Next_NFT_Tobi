@@ -1,6 +1,5 @@
 import {Response} from "express";
-// import {firestore} from "firebase-admin";
-import {PrismaClient} from "@prisma/client";
+import {prisma} from "../prisma";
 
 type AllContentRequest = {
     params: {
@@ -13,8 +12,6 @@ type AllContentRequest = {
 type ContentRequest = {
     params: { id: string }
 }
-
-const prisma = new PrismaClient();
 
 export const getContents = async (req: AllContentRequest, res: Response) => {
   const {q, sortBy, sortOrder} = req.params;

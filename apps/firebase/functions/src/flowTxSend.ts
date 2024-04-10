@@ -8,14 +8,13 @@ import * as secp from "@noble/secp256k1";
 import {sha256} from "js-sha256";
 import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
-import {PrismaClient} from "@prisma/client";
+import {prisma} from "./prisma";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
   "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
 });
 
-const prisma = new PrismaClient();
 const pubsub = new PubSub();
 const kmsClient = new KeyManagementServiceClient();
 
@@ -283,7 +282,6 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     addr: fcl.sansPrefix(address),
     keyId: 0,
     signingFunction: async (signable: any) => {
-
       const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message});
       return {
         address,
@@ -385,7 +383,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       };
 
       if (
-          metadata.type === type &&
+        metadata.type === type &&
           metadata.name === name &&
           metadata.description === description &&
           metadata.thumbnailUrl === thumbnailUrl &&
@@ -504,7 +502,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
       }
       const creatorAddress = data.address;
       if (
-          itemCreatorAddress === creatorAddress &&
+        itemCreatorAddress === creatorAddress &&
           itemID == digitalItem.item_id
       ) {
         const signature = signWithKey({privateKey, msgHex: signable.message});
@@ -522,7 +520,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
 
 const generateKeysAndSendFlowAccountCreationTx = async (tobiratoryAccountUuid: string) => {
   if (
-      !process.env.KMS_PROJECT_ID ||
+    !process.env.KMS_PROJECT_ID ||
       !process.env.KMS_USER_KEY_LOCATION ||
       !process.env.KMS_USER_KEYRING ||
       !process.env.KMS_USER_KEY
@@ -707,11 +705,11 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
 };
 
 const fillInFlowAccountCreattionInfo = async ({
-                                                flowAccountRef,
-                                                encryptedPrivateKeyBase64,
-                                                pubKey,
-                                                txId,
-                                              } : {
+  flowAccountRef,
+  encryptedPrivateKeyBase64,
+  pubKey,
+  txId,
+} : {
   flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
   encryptedPrivateKeyBase64: string;
   pubKey: string;

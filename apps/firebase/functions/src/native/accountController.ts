@@ -1,10 +1,7 @@
 import {Request, Response} from "express";
-// import {firestore} from "firebase-admin";
-import {PrismaClient} from "@prisma/client";
 import {getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-
-const prisma = new PrismaClient();
+import {prisma} from "../prisma";
 
 export const getAccounts = async (req: Request, res: Response) => {
   const {q, sortBy, sortOrder} = req.params;
