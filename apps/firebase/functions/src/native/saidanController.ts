@@ -178,6 +178,7 @@ export const createSaidan = async (req: Request, res: Response) => {
       const returnData = {
         saidanId: saveData.id,
         title: saveData.title,
+        description: saveData.description,
         showcase: saveData.showcase,
         modelUrl: saidanTemplate.model_url,
         imageUrl: saveData.thumbnail_image,
