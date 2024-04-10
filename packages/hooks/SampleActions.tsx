@@ -18,7 +18,7 @@ const sampleTestData = [
     name: "Pento - GORAKUBA! Highschool",
     thumbnail: "/admin/images/sample-thumnail/Rectangle-58.png",
     status: 2, // Private
-    price: 1500,
+    price: 1200,
     saleStartDate: "2023/12/25",
     saleEndDate: "2023/12/25",
     saleQuantity: 1,
@@ -30,7 +30,7 @@ const sampleTestData = [
     thumbnail: "/admin/images/sample-thumnail/Rectangle-60.png",
     name: "Encho. - GORAKUBA! Highschool",
     status: 3, // Viewing Only
-    price: 1500,
+    price: 1300,
     saleStartDate: "2023/12/25",
     saleEndDate: "2023/12/25",
     saleQuantity: 10,
@@ -42,7 +42,7 @@ const sampleTestData = [
     thumbnail: "/admin/images/sample-thumnail/Rectangle-59.png",
     name: "Tenri Kannagi 2023",
     status: 4, // On Sale
-    price: 1500,
+    price: 1600,
     saleStartDate: "2023/12/25",
     saleEndDate: "2023/12/25",
     saleQuantity: 10,
@@ -54,7 +54,7 @@ const sampleTestData = [
     thumbnail: "/admin/images/sample-thumnail/Rectangle-61.png",
     name: "SAMPLEITEM1234",
     status: 5, // Unlisted
-    price: 1500,
+    price: 1200,
     saleStartDate: "2023/12/25",
     saleEndDate: "2023/12/25",
     saleQuantity: 10,
@@ -66,7 +66,7 @@ const sampleTestData = [
     thumbnail: "/admin/images/sample-thumnail/Rectangle-61.png",
     name: "SAMPLEITEM1235",
     status: 6, // Scheduled Publishing
-    price: 1500,
+    price: 1200,
     saleStartDate: "2023/12/25",
     saleEndDate: "2023/12/25",
     saleQuantity: 10,
@@ -93,18 +93,42 @@ export const fetchSamples = async () => {
     const response = await fetch(
       "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples",
       {
+        method: "GET",
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
       },
     );
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error:", error);
     // return [];
     return sampleTestData;
+  }
+};
+
+export const deleteSamples = async (ids) => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples",
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sampleIds: ids,
+        }),
+      },
+    );
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    return "failed";
   }
 };
 

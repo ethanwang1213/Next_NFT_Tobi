@@ -1,18 +1,29 @@
 import clsx from "clsx";
-import { fetchSamples } from "hooks/SampleActions";
+import {
+  fetchSamples,
+  deleteSamples,
+} from "hooks/SampleActions";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "ui/atoms/Formatters";
+import Button from "../../atoms/Button";
 
 const SampleTable = ({ filters }) => {
+  // sample data
   const [samples, setSamples] = useState([]);
+
+  // active sorting column
   const [sortOrder, setSortOrder] = useState(0);
 
+  // selected sample id array
+  const [selSampleIds, setSelSampleIds] = useState([]);
+
+  // fetch samples from server
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchSamples(); // Assuming sampleData is a promise
+        const data = await fetchSamples();
         setSamples(data);
       } catch (error) {
         // Handle errors here
@@ -24,13 +35,13 @@ const SampleTable = ({ filters }) => {
   }, []);
 
   const toggleSortingDirection = (index) => {
+    // determine sorting direction
     let order = index;
     if (Math.abs(sortOrder) == index) {
       order = -sortOrder;
     }
 
-    setSortOrder(order);
-
+    // sort sample data
     switch (order) {
       case -1:
         samples.sort((a, b) =>
@@ -135,8 +146,12 @@ const SampleTable = ({ filters }) => {
       default:
         break;
     }
+
+    // set state
+    setSortOrder(order);
   };
 
+  // status number -> status string
   const statusString = (status) => {
     let value;
     switch (status) {
@@ -312,7 +327,23 @@ const SampleTable = ({ filters }) => {
               {samples?.map((sample) => (
                 <tr key={sample.id} className="w-full border-b py-3 text-sm">
                   <td className="py-3 text-center">
-                    <input type="checkbox" className="w-4 h-4" />
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4"
+                      checked={selSampleIds.includes(sample.id)}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        const sampleId = sample.id;
+
+                        setSelSampleIds((prevIds) => {
+                          if (checked) {
+                            return [...prevIds, sampleId];
+                          } else {
+                            return prevIds.filter((id) => id !== sampleId);
+                          }
+                        });
+                      }}
+                    />
                   </td>
                   <td className="py-3">
                     <Link
@@ -357,6 +388,41 @@ const SampleTable = ({ filters }) => {
               ))}
             </tbody>
           </table>
+          {selSampleIds.length > 0 ? (
+            <div className="fixed bottom-5 right-5 w-[472px] h-14 flex justify-between">
+              <Button
+                className="w-[208px] h-14 rounded-[30px] bg-[#009FF5] text-white text-2xl leading-[56px] text-center"
+                onClick={() => setSelSampleIds([])}
+              >
+                CANCEL
+              </Button>
+              <Button
+                className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
+                onClick={async () => {
+                  const result = await deleteSamples(selSampleIds);
+                  if (result == "deleted") {
+                    const data = await fetchSamples();
+                    setSelSampleIds([]);
+                    setSamples(data);
+                  }
+                }}
+              >
+                <div className="flex justify-between">
+                  <Image
+                    src="/admin/images/recyclebin-icon.svg"
+                    alt="icon"
+                    width={32}
+                    height={32}
+                  />
+                  <span className="text-white text-2xl leading-[56px] text-center">
+                    DELETE
+                  </span>
+                </div>
+              </Button>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>
