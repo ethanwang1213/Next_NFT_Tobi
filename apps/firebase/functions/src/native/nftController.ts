@@ -1,14 +1,13 @@
 import {Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
+import {prisma} from "../prisma";
 
 const pubsub = new PubSub();
-const prisma = new PrismaClient();
 
 export const mintNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
@@ -101,10 +100,10 @@ export const mintNFT = async (req: Request, res: Response) => {
       const flowJobId = uuidv4();
       const message = {flowJobId, txType: "mintNFT", params: {
         tobiratoryAccountUuid: uid,
-          itemCreatorAddress: flowAccount.flow_address,
-          itemId,
-          digitalItemId,
-          fcmToken
+        itemCreatorAddress: flowAccount.flow_address,
+        itemId,
+        digitalItemId,
+        fcmToken,
       }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
       console.log(`Message ${messageId} published.`);

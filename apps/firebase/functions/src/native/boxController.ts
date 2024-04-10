@@ -1,9 +1,7 @@
 import {Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-
-const prisma = new PrismaClient();
+import {prisma} from "../prisma";
 
 export const permissionGift = async (req: Request, res: Response) => {
   const {authorization} = req.headers;

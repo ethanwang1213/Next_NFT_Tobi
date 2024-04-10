@@ -1,10 +1,7 @@
 import {Request, Response} from "express";
-// import {firestore} from "firebase-admin";
-import {PrismaClient} from "@prisma/client";
 import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken} from "firebase-admin/auth";
-
-const prisma = new PrismaClient();
+import {prisma} from "../prisma";
 
 export const getSaidans = async (req: Request, res: Response) => {
   const {q, showcase, sortBy, sortOrder} = req.params;

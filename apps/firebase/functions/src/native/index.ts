@@ -141,6 +141,6 @@ app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
 
-//admin APIs
+// admin APIs
 app.post("/admin/digital/status", changeDigitalStatus);
 export const native = functions.region(REGION).https.onRequest(app);
