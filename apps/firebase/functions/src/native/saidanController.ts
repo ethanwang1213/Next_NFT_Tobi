@@ -53,7 +53,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
           id: parseInt(saidanId),
         },
       });
-  
+
       if (!saidanData) {
         res.status(404).send({
           status: "error",
@@ -61,13 +61,13 @@ export const getSaidansById = async (req: Request, res: Response) => {
         });
         return;
       }
-      
+
       const userData = await prisma.tobiratory_accounts.findUnique({
         where: {
           uuid: saidanData.owner_uuid,
-        }
-      })
-  
+        },
+      });
+
       if (!userData) {
         res.status(404).send({
           status: "error",
@@ -83,9 +83,9 @@ export const getSaidansById = async (req: Request, res: Response) => {
       });
 
       const items = digitalNFT.map((nft)=>nft.thumb_url);
-  
+
       const resData = {
-        id: saidanId,
+        id: saidanData.id,
         title: saidanData.title,
         description: saidanData.description,
         items: items,
