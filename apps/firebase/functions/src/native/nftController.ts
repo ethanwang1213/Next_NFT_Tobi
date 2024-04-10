@@ -43,10 +43,10 @@ export const mintNFT = async (req: Request, res: Response) => {
       return;
     }
 
-    if (digitalItem.content_id) {
+    if (sampleItem.content_id) {
       const content = await prisma.tobiratory_contents.findUnique({
         where: {
-          id: digitalItem.content_id,
+          id: sampleItem.content_id,
         },
       });
       if (!content) {
@@ -109,10 +109,10 @@ export const mintNFT = async (req: Request, res: Response) => {
       console.log(`Message ${messageId} published.`);
     } else {
       let creatorName;
-      if (digitalItem.content_id) {
+      if (sampleItem.content_id) {
         const content = await prisma.tobiratory_contents.findUnique({
           where: {
-            id: digitalItem.content_id,
+            id: sampleItem.content_id,
           },
         });
         if (content) {
@@ -166,7 +166,7 @@ export const mintNFT = async (req: Request, res: Response) => {
         type: String(digitalItem.type),
         name: digitalItem.name,
         description: digitalItem.description,
-        thumbnailUrl: digitalItem.thumb_url,
+        thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
         modelUrl: digitalItem.nft_model,
         creatorName: creatorName,
         limit: digitalItem.limit,

@@ -17,7 +17,16 @@ import
   checkPasswordSet,
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {createModel, createDigitalItem, deleteDigitalItem, getMyDigitalItems, adminChangeDigitalStatus, adminGetAllSamples, adminDeleteSamples} from "./itemController";
+import {
+  createModel,
+  createDigitalItem,
+  deleteDigitalItem,
+  getMyDigitalItems,
+  adminChangeDigitalStatus,
+  adminGetAllSamples,
+  adminDeleteSamples,
+  adminDetailOfSample,
+} from "./itemController";
 import {
   createSaidan,
   decorationSaidan,
@@ -142,4 +151,6 @@ app.post("/admin/digital/status", adminChangeDigitalStatus);
 
 app.get("/admin/samples", adminGetAllSamples);
 app.delete("/admin/samples", adminDeleteSamples);
+app.get("/admin/samples/:sampleId", adminDetailOfSample);
+app.post("/admin/samples/:sampleId", adminDeleteSamples);
 export const native = functions.region(REGION).https.onRequest(app);

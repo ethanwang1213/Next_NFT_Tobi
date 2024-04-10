@@ -107,8 +107,9 @@ model tobiratory_digital_items {
   user              tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
   creator_uuid      String                               @db.VarChar(100)
   name              String                               @default("") @db.VarChar(255)
-  thumb_url         String                               @db.VarChar(255)
-  user_thumb_url    String                               @db.VarChar(255)
+  default_thumb_url String                               @db.VarChar(255)
+  custom_thumb_url  String                               @db.VarChar(255)
+  is_default_thumb  Boolean                              @default(true)
   nft_model         String                               @default("") @db.VarChar(255)
   nft_metadata      String                               @default("") @db.Text
   material_id       Int                                  @default(0)
@@ -147,8 +148,8 @@ model tobiratory_sample_items {
   stage_type        Int?
   content_id        Int                      @default(0)
   price             Int?
-  sale_start_date   DateTime?                @db.Timestamp(6)
-  sale_end_date     DateTime?                @db.Timestamp(6)
+  start_date        DateTime?                @db.Timestamp(6)
+  end_date          DateTime?                @db.Timestamp(6)
   sale_quantity     Int?
   quantity_limit    Int?
   in_workspace      Boolean                  @default(false)
