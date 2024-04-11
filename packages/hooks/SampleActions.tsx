@@ -132,7 +132,36 @@ export const deleteSamples = async (ids) => {
   }
 };
 
-export function fetchSampleItem(id) {
-  const item = sampleTestData.find((sample) => sample.id == id);
-  return item || null; // Return the found item or null if not found
-}
+export const fetchSampleItem = async (id) => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples/${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      },
+    );
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    // return "failed";
+    return {
+      name: "Inutanuki - GORAKUBA! Highschool", // sample name
+      description: "sample description, max 1300 characters", // sample description, max 1300 characters
+      defaultThumbnailUrl: "/admin/images/sample-thumnail/Rectangle-61.png",
+      customThumbnailUrl: "",
+      isCustomThumbnailSelected: false,
+      price: 0,
+      status: 6, // draft/private/viewing only/on sale/unlisted/scheduled publishing/scheduled for sale
+      startDate: "", // available in 2 cases of 'scheduled publishing' and 'scheduled for sale'
+      endDate: "", // available in 2 cases of 'scheduled publishing' and 'scheduled for sale'
+      quantityLimit: 100,
+      license: "license string",
+      copyrights: ["content", "digitalitem"],
+    };
+  }
+};

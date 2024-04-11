@@ -23,7 +23,7 @@ const ItemEditHeader = () => {
             type="reset"
             className="text-xl h-14 bg-[#E2E1E1] text-[#1779DE] rounded-[30px] mr-6 px-8"
           >
-            キャンセル
+            CANCEL
           </Button>
         </Link>
         <Link href="/items">
@@ -31,7 +31,7 @@ const ItemEditHeader = () => {
             type="submit"
             className="text-xl h-14 bg-[#1779DE] text-white rounded-[30px] px-10"
           >
-            保存
+            SAVE
           </Button>
         </Link>
       </div>

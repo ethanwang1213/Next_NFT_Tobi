@@ -6,232 +6,330 @@ import { useEffect, useState } from "react";
 import Button from "ui/atoms/Button";
 import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
-import PublicSwitch from "ui/molecules/PublicSwitch";
-import SizeInput from "ui/molecules/SizeInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
+import { useSelect } from "downshift";
+import clsx from "clsx";
+
+const statusValues = [
+  { value: 1, title: "Draft", color: "#093159" },
+  { value: 2, title: "Private", color: "#505050" },
+  { value: 3, title: "Viewing Only", color: "#37AD00" },
+  { value: 4, title: "On Sale", color: "#DB6100" },
+  { value: 5, title: "Unlisted", color: "#3F3F3F" },
+  { value: 6, title: "Scheduled Publishing", color: "#277C00" },
+  { value: 7, title: "Scheduled for Sale", color: "#9A4500" },
+];
 
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [sampleItem, setSampleItem] = useState(null);
 
+  const {
+    isOpen,
+    selectedItem,
+    getToggleButtonProps,
+    getMenuProps,
+    highlightedIndex,
+    getItemProps,
+  } = useSelect({
+    items: statusValues,
+    itemToString,
+  });
+
   const fieldChangeHandler = (field, value) => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
   };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchSampleItem(id);
+        setSampleItem(data);
+      } catch (error) {
+        // Handle errors here
+        console.error("Error fetching data:", error);
+      }
+    };
+
     if (id) {
-      setSampleItem(fetchSampleItem(id));
+      fetchData();
     }
   }, [id]);
+
+  function itemToString(item) {
+    return item ? item.title : "";
+  }
+
+  function StatusDropdownButton() {
+    return (
+      <div>
+        <div
+          className="w-64 h-12 px-6 text-[#000000] flex justify-between items-center cursor-pointer rounded-[48px]"
+          style={{
+            backgroundColor: `${
+              selectedItem
+                ? selectedItem.color
+                : statusValues[sampleItem.status - 1].color
+            }`,
+          }}
+          {...getToggleButtonProps()}
+        >
+          <span>
+            {selectedItem
+              ? selectedItem.title
+              : statusValues[sampleItem.status - 1].title}
+          </span>
+          <span>{isOpen ? <>▲</> : <>▼</>}</span>
+        </div>
+        <ul
+          className={`absolute w-72 bg-white mt-1 shadow-md p-0 z-10 ${
+            !isOpen && "hidden"
+          }`}
+          {...getMenuProps()}
+        >
+          {isOpen &&
+            statusValues.map((item, index) => (
+              <li
+                className={clsx(
+                  highlightedIndex === index && "bg-blue-300",
+                  selectedItem === item && "font-bold",
+                  "py-2 px-3 shadow-sm flex flex-col",
+                )}
+                key={item.value}
+                {...getItemProps({ item, index })}
+              >
+                <span>{item.title}</span>
+              </li>
+            ))}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <div>
       <ItemEditHeader />
-      <div className="p-6">
-        <PublicSwitch />
-      </div>
 
       {sampleItem && (
-        <div className="container mx-auto px-1.5 py-8">
-          <div className="mb-8 text-2xl/[48x] text-title-color">
-            アイテム詳細情報
-          </div>
-          <div className="flex flex-row">
-            <div className="flex-grow">
-              <div className="mr-4">
-                <StyledTextInput
-                  className="mb-4"
-                  label="商品名"
-                  placeholder="商品名"
-                  value={sampleItem.name}
-                  changeHandler={(value) => fieldChangeHandler("name", value)}
-                  tooltip="test tooltip"
-                />
-                <StyledTextInput
-                  className="mb-4"
-                  label="フリガナ"
-                  placeholder="フリガナ"
-                  value={sampleItem.ruby}
-                  changeHandler={(value) => fieldChangeHandler("ruby", value)}
-                />
-                <StyledTextInput
-                  className=""
-                  label="カテゴリ"
-                  placeholder="カテゴリ"
-                  value={sampleItem.category}
-                  changeHandler={(value) =>
-                    fieldChangeHandler("category", value)
-                  }
-                />
+        <div className="container mx-auto px-1.5 py-12">
+          <div className="flex gap-4">
+            <div className="flex-grow flex flex-col gap-9">
+              <div className="flex flex-col gap-4 pr-11">
+                <h3 className="text-xl text-title-color">SAMPLE DETAIL</h3>
+                <div className="flex flex-col gap-6">
+                  <StyledTextInput
+                    className=""
+                    label="Sample Name*"
+                    placeholder="Sample Name"
+                    value={sampleItem.name}
+                    changeHandler={(value) => fieldChangeHandler("name", value)}
+                  />
+                  <StyledTextArea
+                    className=""
+                    label="Description"
+                    placeholder="Description"
+                    value={sampleItem.description}
+                    changeHandler={(value) =>
+                      fieldChangeHandler("description", value)
+                    }
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-6 pr-11">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xl text-title-color">SAMPLE STATUS</h3>
+                  <StatusDropdownButton />
+                </div>
+                {sampleItem.status == 6 ? (
+                  <div className="flex flex-col gap-6 pl-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl">Start Date (JST)</span>
+                      <DateTimeInput
+                        className=""
+                        labelDate=""
+                        labelTime=""
+                        placeholder=""
+                        value={sampleItem.release_date}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl">End Date (JST)</span>
+                      <DateTimeInput
+                        className=""
+                        labelDate=""
+                        labelTime=""
+                        placeholder=""
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </div>
+              <div className="flex flex-col gap-6 mt-12">
+                <h3 className="text-xl text-title-color">
+                  PRICE & DETAILS SETTINGS
+                </h3>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-6">
+                  <StyledTextInput
+                    className=""
+                    label="Price*"
+                    placeholder="Price"
+                    value={""}
+                    inputMask={TextKind.Digit}
+                    changeHandler={(value) =>
+                      fieldChangeHandler("price", value)
+                    }
+                  />
+                  <div className="flex">
+                    <Image
+                      src="/admin/images/info-icon-2.svg"
+                      width={16}
+                      height={16}
+                      alt="information"
+                    />
+                  </div>
+                  <StyledTextInput
+                    className=""
+                    placeholder="Quantity Limit"
+                    value=""
+                    label="Quantity Limit"
+                    inputMask={TextKind.Digit}
+                    changeHandler={(value) =>
+                      fieldChangeHandler("quantityLimit", value)
+                    }
+                  />
+                  <div className="flex justify-start gap-2">
+                    <CheckboxInput className="" label="No Quantity Limit" />
+                    <Image
+                      src="/admin/images/info-icon-2.svg"
+                      width={16}
+                      height={16}
+                      alt="information"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-6 mt-12">
+                <h3 className="text-xl text-title-color">
+                  LICENSE & COPYRIGHTS
+                </h3>
+                <div className="flex flex-col gap-6">
+                  <div className="flex gap-6">
+                    <StyledTextInput
+                      className="flex-grow"
+                      label="Copyrights*"
+                      placeholder="Copyrights"
+                      value={sampleItem.name}
+                      changeHandler={(value) =>
+                        fieldChangeHandler("name", value)
+                      }
+                    />
+                    <Image
+                      src="/admin/images/info-icon-2.svg"
+                      width={16}
+                      height={16}
+                      alt="information"
+                    />
+                  </div>
+                  <div className="flex items-start gap-6">
+                    <StyledTextArea
+                      className="flex-grow"
+                      label="License"
+                      placeholder="License"
+                      value={sampleItem.description}
+                      changeHandler={(value) =>
+                        fieldChangeHandler("description", value)
+                      }
+                    />
+                    <Image
+                      src="/admin/images/info-icon-2.svg"
+                      width={16}
+                      height={16}
+                      alt="information"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <Image
-              width={179}
-              height={179}
-              className="mr-12"
-              src={sampleItem.image_url}
-              alt="sample item"
-            />
-            <div
-              style={{
-                width: 179,
-                height: 179,
-                borderRadius: 13,
-                borderStyle: "dashed",
-                borderWidth: 2,
-                borderColor: "#B3B3B3",
-              }}
-              className="flex justify-center relative"
-            >
-              <Image
-                width={23}
-                height={28}
-                alt="upload"
-                src="/admin/images/upload-icon.svg"
-              />
-              <span
-                className="absolute h-14 bottom-0 text-[#717171C1]"
-                style={{ fontSize: 10, lineHeight: 3.6 }}
-              >
-                画像をアップロードして追加
-              </span>
-            </div>
-          </div>
-          <div className="h-14 text-base/[56px] text-title-color">
-            商品の説明
-          </div>
-          <StyledTextArea
-            className=""
-            label="ディスクリプション"
-            placeholder="ディスクリプション"
-            value=""
-            changeHandler={(value) => fieldChangeHandler("desc", value)}
-          />
-          <div className="text-2xl/[48x] text-title-color mt-8">
-            SAMPLEアイテム
-          </div>
-          <div className="flex">
-            <a
-              className="flex-grow h-12 mt-2 ml-6 underline text-xl/[48x] font-normal text-[#1779DE]"
-              href=""
-            >
-              SAMPLE アイテムリストより選択
-            </a>
-            <div className="flex flex-col">
-              <Image
-                width={179}
-                height={179}
-                className="mr-12 inline-block"
-                src={sampleItem.image_url}
-                alt="sample item"
-              />
-              <span className="h-12 mt-2 py-2 text-xl font-normal text-[#1779DE]">
-                SAMPLEITEM1230
-              </span>
-            </div>
-            <div className="w-44"></div>
-          </div>
-          <div className="mt-12 text-2xl/[48x] text-title-color">
-            価格と詳細設定
-            <div className="mt-8 grid grid-cols-2 gap-8">
-              <StyledTextInput
-                className=""
-                label="価格"
-                placeholder="価格"
-                value={sampleItem.price.toString(10)}
-                inputMask={TextKind.Digit}
-                changeHandler={(value) => fieldChangeHandler("price", value)}
-              />
-              <CheckboxInput
-                className=""
-                label="商品価格に税を適用する（消費税・VAT）"
-                tooltip="This is VAT tooltip"
-              />
-              <StyledTextInput
-                className=""
-                value=""
-                label="GTIN"
-                placeholder="GTIN"
-                tooltip="This is a GTIN description"
-                inputMask={TextKind.Digit}
-                changeHandler={(value) => fieldChangeHandler("gtin", value)}
-              />
-              <StyledTextInput
-                className=""
-                label="SKU（商品番号）"
-                placeholder="SKU（商品番号）"
-                value=""
-                tooltip="This is a SKU（商品番号） description"
-                changeHandler={(value) => fieldChangeHandler("sku", value)}
-              />
-              <StyledTextInput
-                className=""
-                placeholder="販売個数"
-                value=""
-                label="販売個数"
-                inputMask={TextKind.Digit}
-                changeHandler={(value) => fieldChangeHandler("sales", value)}
-              />
-              <CheckboxInput
-                className=""
-                label="個数制限なし"
-                tooltip="This is 個数制限なし tooltip"
-              />
-              <DateTimeInput
-                className=""
-                labelDate="販売開始日"
-                labelTime="時間"
-                placeholder="販売開始日"
-                value={sampleItem.release_date}
-              />
-              <DateTimeInput
-                className=""
-                labelDate="販売終了日"
-                labelTime="時間"
-                placeholder="販売終了日"
-              />
-            </div>
-          </div>
-          <div className="mt-12 text-2xl/[48x] text-title-color">
-            サイズ
-            <div className="mt-8 grid grid-cols-2 gap-8">
-              <SizeInput className="" />
-              <CheckboxInput
-                className=""
-                label="サイズを固定しない"
-                tooltip="This is VAT tooltip"
-              />
-            </div>
-          </div>
-          <div className="mt-12 text-2xl/[48x] text-title-color">
-            公開予約設定
-            <div className="mt-8 grid grid-cols-2 gap-8">
-              <DateTimeInput
-                className=""
-                labelDate="公開予約"
-                labelTime="時間"
-                placeholder="公開予約"
-              />
-              <DateTimeInput
-                className=""
-                labelDate="非公開予約"
-                labelTime="時間"
-                placeholder="非公開予約"
-              />
-            </div>
-          </div>
-          <div className="mt-12 text-2xl/[48x] text-title-color">
-            パッケージ
-            <div className="mt-8 grid grid-cols-2 gap-8">
-              <StyledTextInput
-                className=""
-                value=""
-                label="パッケージから選ぶ"
-                placeholder="パッケージから選ぶ"
-              />
+            <div>
+              <div>
+                <Image
+                  width={384}
+                  height={384}
+                  className="bg-[#2D94FF6B] rounded-[13px]"
+                  src={sampleItem.defaultThumbnailUrl}
+                  alt="thumbnail image"
+                />
+              </div>
+              <div className="flex gap-3 mt-6">
+                <div
+                  style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: 13,
+                    borderWidth: 2,
+                    borderColor: "#B3B3B3",
+                    backgroundImage: `url('${sampleItem.defaultThumbnailUrl}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                  className="relative"
+                >
+                  <Image
+                    width={24}
+                    height={24}
+                    alt="upload"
+                    src="/admin/images/upload-icon.svg"
+                    className="absolute right-3 bottom-3"
+                  />
+                </div>
+                <div
+                  style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: 13,
+                    borderWidth: 2,
+                    borderColor: "#B3B3B3",
+                  }}
+                  className="relative"
+                >
+                  <Image
+                    width={24}
+                    height={24}
+                    alt="cancel"
+                    src="/admin/images/cancel-icon.svg"
+                    className="absolute right-3 bottom-3"
+                  />
+                </div>
+                <div
+                  style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: 13,
+                    borderStyle: "dashed",
+                    borderWidth: 2,
+                    borderColor: "#B3B3B3",
+                  }}
+                  className="flex flex-col justify-center items-center"
+                >
+                  <span
+                    className="h-14 text-[#717171C1]"
+                    style={{ fontSize: 10, lineHeight: 3.6 }}
+                  >
+                    Drop your Image here
+                  </span>
+                  <Image
+                    width={24}
+                    height={24}
+                    alt="upload"
+                    src="/admin/images/upload-icon.svg"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div className="text-center mt-11">
@@ -240,7 +338,7 @@ const Detail = () => {
                 type="submit"
                 className="text-xl h-14 bg-[#1779DE] text-white rounded-[30px] px-10"
               >
-                保存
+                SAVE
               </Button>
             </Link>
           </div>
