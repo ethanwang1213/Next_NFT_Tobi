@@ -17,7 +17,16 @@ import
   checkPasswordSet,
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {createModel, createDigitalItem, deleteDigitalItem, getItems, getItemsById, getMyItems, getMyItemsById, getMyDigitalItems, changeDigitalStatus} from "./itemController";
+import {
+  createModel,
+  createDigitalItem,
+  deleteDigitalItem,
+  getMyDigitalItems,
+  adminChangeDigitalStatus,
+  adminGetAllSamples,
+  adminDeleteSamples,
+  adminDetailOfSample,
+} from "./itemController";
 import {
   createSaidan,
   decorationSaidan,
@@ -62,8 +71,6 @@ app.get("/accounts/:uid", getAccountById);
 app.get("/contents", getContents);
 app.get("/contents/:id", getContentById);
 
-app.get("/items", getItems);
-app.get("/items/:id", getItemsById);
 app.get("/nfts/:id", dummyResponse);
 
 app.get("/saidans", getSaidans);
@@ -89,8 +96,6 @@ app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);
 app.get("/my/contents/:id", dummyResponse);
 app.post("/my/contents/:id", dummyResponse);
-app.get("/my/items", getMyItems);
-app.get("/my/items/:id", getMyItemsById);
 app.post("/my/samples", createDigitalItem);
 app.get("/my/samples", getMyDigitalItems);
 app.get("/my/samples/:id");
@@ -142,5 +147,10 @@ app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
 
 // admin APIs
-app.post("/admin/digital/status", changeDigitalStatus);
+app.post("/admin/digital/status", adminChangeDigitalStatus);
+
+app.get("/admin/samples", adminGetAllSamples);
+app.delete("/admin/samples", adminDeleteSamples);
+app.get("/admin/samples/:sampleId", adminDetailOfSample);
+app.post("/admin/samples/:sampleId", adminDeleteSamples);
 export const native = functions.region(REGION).https.onRequest(app);

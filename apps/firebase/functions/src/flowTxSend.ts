@@ -323,10 +323,15 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       }
 
       let dbCreatorName = "";
-      if (digitalItem.content_id) {
+      const sampleItem = await prisma.tobiratory_sample_items.findUnique({
+        where: {
+          digital_item_id: digitalItem.id,
+        },
+      });
+      if (sampleItem?.content_id) {
         const content = await prisma.tobiratory_contents.findUnique({
           where: {
-            id: digitalItem.content_id,
+            id: sampleItem?.content_id,
           },
         });
         if (content) {
@@ -374,7 +379,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         type: String(digitalItem.type),
         name: digitalItem.name,
         description: digitalItem.description,
-        thumbnailUrl: digitalItem.thumb_url,
+        thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
         modelUrl: digitalItem.nft_model,
         creatorName: dbCreatorName,
         limit: digitalItem.limit,

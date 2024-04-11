@@ -107,12 +107,13 @@ model tobiratory_digital_items {
   user              tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
   creator_uuid      String                               @db.VarChar(100)
   name              String                               @default("") @db.VarChar(255)
-  thumb_url         String                               @db.VarChar(255)
+  default_thumb_url String                               @db.VarChar(255)
+  custom_thumb_url  String                               @db.VarChar(255)
+  is_default_thumb  Boolean                              @default(true)
   nft_model         String                               @default("") @db.VarChar(255)
   nft_metadata      String                               @default("") @db.Text
   material_id       Int                                  @default(0)
   type              Int
-  content_id        Int                                  @default(0)
   description       String                               @default("") @db.VarChar(255)
   limit             Int?
   license           String                               @default("") @db.VarChar(255)
@@ -129,6 +130,7 @@ model tobiratory_digital_items {
   item_id           Int?
   tx_id             String?                              @db.VarChar(255)
   status            Int
+  minted_count      Int                                  @default(0)
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)
 }
@@ -144,6 +146,12 @@ model tobiratory_sample_items {
   rotation          Float[]
   scale             Float?
   stage_type        Int?
+  content_id        Int                      @default(0)
+  price             Int?
+  start_date        DateTime?                @db.Timestamp(6)
+  end_date          DateTime?                @db.Timestamp(6)
+  sale_quantity     Int?
+  quantity_limit    Int?
   in_workspace      Boolean                  @default(false)
   is_deleted        Boolean                  @default(false)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
