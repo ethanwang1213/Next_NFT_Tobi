@@ -664,7 +664,7 @@ const authzBase = async () => {
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  const addr = process.env.FLOW_ACCOUNT_ADDRESS;
+  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
   const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
 
   return {addr: addr as string, keyId, privateKey: privateKey as string};
