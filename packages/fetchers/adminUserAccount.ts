@@ -3,25 +3,20 @@ import { useState } from "react";
 import { ApiProfileData } from "types/adminTypes";
 
 export const fetchMyProfile = async () => {
-  try {
-    const idToken = await auth.currentUser.getIdToken();
-    const res = await fetch(`/backend/api/functions/native/my/profile`, {
-      method: "GET",
-      headers: {
-        Authorization: idToken,
-        "Content-Type": "application/json",
-      },
-    });
-    const resData = await res.json();
-    if (res.ok) {
-      return resData;
-    } else {
-      console.log(resData);
-      return resData;
-    }
-  } catch (error) {
-    console.log(error);
-    return error;
+  const idToken = await auth.currentUser.getIdToken();
+  const res = await fetch(`/backend/api/functions/native/my/profile`, {
+    method: "GET",
+    headers: {
+      Authorization: idToken,
+      "Content-Type": "application/json",
+    },
+  });
+  const resData = await res.json();
+  if (res.ok) {
+    return resData;
+  } else {
+    console.log(resData);
+    return resData;
   }
 };
 
@@ -36,11 +31,23 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
       setError(null);
       const res = await registerToTobiratoryAndFlowAccount();
       const resData = await res.json();
-      console.log(resData)
-      if (res.ok){
-        if (resData.data.flow) {
+      if (res.ok) {
+        if (resData.data.flow?.flowAddress) {
+          // If Flow account is already registered, the account data is returned.
           setResponse(resData.data);
         } else {
+          // Wait until the Flow account is created.
+          const maxRetry = 100;
+          const sleepTime = 10000; // 10 seconds
+          for (let i = 0; i < maxRetry; i++) {
+            await new Promise((resolve) => setTimeout(resolve, sleepTime));
+            const profile = await fetchMyProfile();
+            if (profile.data?.flow?.flowAddress) {
+              setResponse(profile.data);
+              setLoading(false);
+              return;
+            }
+          }
           setError("Failed to register");
         }
       } else {

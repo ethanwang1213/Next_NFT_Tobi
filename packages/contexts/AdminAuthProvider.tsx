@@ -53,7 +53,15 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (firebaseUser) {
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.
-        const profile = await fetchMyProfile();
+        const profile = await fetchMyProfile().catch((error) => {
+          console.error(error);
+          auth.signOut();
+        });
+        if (!profile) {
+          Router.push("/authentication");
+          return;
+        }
+
         const isRegisteredFlowAccount = !!profile?.data?.flow?.flowAddress;
         if (isRegisteredFlowAccount) {
           // already registered flow account
