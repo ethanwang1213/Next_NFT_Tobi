@@ -82,7 +82,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
         },
       });
 
-      const items = digitalNFT.map((nft)=>nft.thumb_url);
+      const items = digitalNFT.map((nft)=>nft.is_default_thumb?nft.default_thumb_url:nft.custom_thumb_url);
 
       const resData = {
         id: saidanData.id,
