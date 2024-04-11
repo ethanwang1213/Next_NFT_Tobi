@@ -44,33 +44,73 @@ export const getSaidans = async (req: Request, res: Response) => {
 };
 
 export const getSaidansById = async (req: Request, res: Response) => {
-  const {id} = req.params;
-  const saidanData = await prisma.tobiratory_saidans.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
+  const {saidanId} = req.params;
+  const {authorization} = req.headers;
+  await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    try {
+      const saidanData = await prisma.tobiratory_saidans.findUnique({
+        where: {
+          id: parseInt(saidanId),
+        },
+      });
 
-  if (saidanData == null) {
-    res.status(404).send({
+      if (!saidanData) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+
+      const userData = await prisma.tobiratory_accounts.findUnique({
+        where: {
+          uuid: saidanData.owner_uuid,
+        },
+      });
+
+      if (!userData) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist-owner",
+        });
+        return;
+      }
+
+      const digitalNFT = await prisma.tobiratory_digital_items.findMany({
+        where: {
+          saidan_id: saidanData.id,
+        },
+      });
+
+      const items = digitalNFT.map((nft)=>nft.thumb_url);
+
+      const resData = {
+        id: saidanData.id,
+        title: saidanData.title,
+        description: saidanData.description,
+        items: items,
+        owner: {
+          avatar: userData.icon_url,
+          username: userData.username,
+        },
+      };
+      res.status(200).send({
+        status: "success",
+        data: resData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+      return;
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
       status: "error",
-      data: "Item does not exist!",
+      data: error.code,
     });
     return;
-  }
-
-  const resData = {
-    id: id,
-    title: saidanData.title,
-    description: saidanData.description,
-    owner: {
-      userId: saidanData.owner_uuid,
-    },
-    showcase: saidanData.showcase,
-  };
-  res.status(200).send({
-    status: "success",
-    data: resData,
   });
 };
 
@@ -138,6 +178,7 @@ export const createSaidan = async (req: Request, res: Response) => {
       const returnData = {
         saidanId: saveData.id,
         title: saveData.title,
+        description: saveData.description,
         showcase: saveData.showcase,
         modelUrl: saidanTemplate.model_url,
         imageUrl: saveData.thumbnail_image,

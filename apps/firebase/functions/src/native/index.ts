@@ -67,7 +67,7 @@ app.get("/items/:id", getItemsById);
 app.get("/nfts/:id", dummyResponse);
 
 app.get("/saidans", getSaidans);
-app.get("/saidans/:id", getSaidansById);
+app.get("/saidans/:saidanId", getSaidansById);
 app.get("/posts", dummyResponse);
 app.get("/posts/:id", dummyResponse);
 
