@@ -88,6 +88,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
         id: saidanData.id,
         title: saidanData.title,
         description: saidanData.description,
+        thumbImage: saidanData.thumbnail_image,
         items: items,
         owner: {
           avatar: userData.icon_url,
