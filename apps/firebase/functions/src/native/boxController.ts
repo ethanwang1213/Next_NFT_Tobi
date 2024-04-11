@@ -160,7 +160,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
                   return {
                     id: item.id,
                     name: itemInfo?.name,
-                    image: itemInfo?.thumb_url,
+                    image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
                   };
                 })
         );
@@ -189,7 +189,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
             return {
               id: item.id,
               name: itemInfo?.name,
-              image: itemInfo?.thumb_url,
+              image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
               saidanId: itemInfo?.saidan_id,
               status: item?.mint_status,
             };
@@ -256,7 +256,7 @@ export const getBoxData = async (req: Request, res: Response) => {
           return {
             id: item.id,
             name: itemInfo?.name,
-            image: itemInfo?.thumb_url,
+            image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
             saidanId: itemInfo?.saidan_id,
           };
         })
@@ -381,7 +381,7 @@ export const openNFT = async (req: Request, res: Response) => {
         data: {
           id: updatedNFT.id,
           name: itemData.name,
-          image: itemData.thumb_url,
+          image: itemData?.is_default_thumb?itemData.default_thumb_url:itemData?.custom_thumb_url,
           saidanId: itemData.saidan_id,
           status: updatedNFT.mint_status,
         },
@@ -547,7 +547,7 @@ export const moveNFT = async (req: Request, res: Response) => {
                   return {
                     id: item.id,
                     name: itemInfo?.name,
-                    image: itemInfo?.thumb_url,
+                    image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
                   };
                 })
         );
@@ -576,7 +576,7 @@ export const moveNFT = async (req: Request, res: Response) => {
             return {
               id: item.id,
               name: itemInfo?.name,
-              image: itemInfo?.thumb_url,
+              image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
               saidanId: itemInfo?.saidan_id,
               status: item?.mint_status,
             };
@@ -665,7 +665,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
                   return {
                     id: item.id,
                     name: itemInfo?.name,
-                    image: itemInfo?.thumb_url,
+                    image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
                   };
                 })
         );
@@ -694,7 +694,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
             return {
               id: item.id,
               name: itemInfo?.name,
-              image: itemInfo?.thumb_url,
+              image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
               saidanId: itemInfo?.saidan_id,
               status: item?.mint_status,
             };

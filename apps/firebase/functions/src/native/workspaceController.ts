@@ -68,7 +68,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
               itemId: sample.id,
               modelType: digitalItem?.type,
               modelUrl: sample?.model_url,
-              imageUrl: digitalItem?.thumb_url,
+              imageUrl: digitalItem?.is_default_thumb?digitalItem.default_thumb_url:digitalItem?.custom_thumb_url,
               stageType: sample.stage_type,
               position: {
                 x: sample.position[0]??0,
@@ -128,7 +128,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
               itemId: sample.id,
               modelType: digitalItem?.type,
               modelUrl: sample?.model_url,
-              imageUrl: digitalItem?.thumb_url,
+              imageUrl: digitalItem?.is_default_thumb?digitalItem.default_thumb_url:digitalItem?.custom_thumb_url,
               stageType: sample.stage_type,
               position: {
                 x: sample.position[0]??0,
