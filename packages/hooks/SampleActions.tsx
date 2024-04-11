@@ -91,20 +91,18 @@ export const fetchSamples = async () => {
   try {
     const token = await auth.currentUser.getIdToken();
     const response = await fetch(
-      "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples",
+      "/backend/api/functions/admin/samples",
       {
         method: "GET",
         headers: {
           Authorization: token,
-          "Content-Type": "application/json",
         },
       },
     );
     return await response.json();
   } catch (error) {
     console.error("Error:", error);
-    // return [];
-    return sampleTestData;
+    return [];
   }
 };
 
