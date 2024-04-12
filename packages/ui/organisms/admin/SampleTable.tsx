@@ -324,68 +324,69 @@ const SampleTable = ({ filters }) => {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {samples?.map((sample) => (
-                <tr key={sample.id} className="w-full border-b py-3 text-sm">
-                  <td className="py-3 text-center">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4"
-                      checked={selSampleIds.includes(sample.id)}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        const sampleId = sample.id;
+              {samples.length > 0 &&
+                samples?.map((sample) => (
+                  <tr key={sample.id} className="w-full border-b py-3 text-sm">
+                    <td className="py-3 text-center">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4"
+                        checked={selSampleIds.includes(sample.id)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          const sampleId = sample.id;
 
-                        setSelSampleIds((prevIds) => {
-                          if (checked) {
-                            return [...prevIds, sampleId];
-                          } else {
-                            return prevIds.filter((id) => id !== sampleId);
-                          }
-                        });
-                      }}
-                    />
-                  </td>
-                  <td className="py-3">
-                    <Link
-                      href={`/items/detail?id=${sample.id}`}
-                      className="flex items-center"
-                    >
-                      <Image
-                        src={sample.thumbnail}
-                        className="rounded-full inline-block mx-2"
-                        width={80}
-                        height={80}
-                        alt={`${sample.name}'s profile picture`}
+                          setSelSampleIds((prevIds) => {
+                            if (checked) {
+                              return [...prevIds, sampleId];
+                            } else {
+                              return prevIds.filter((id) => id !== sampleId);
+                            }
+                          });
+                        }}
                       />
-                      <span className="inline-block">{sample.name}</span>
-                    </Link>
-                  </td>
-                  <td className="px-3 py-3 text-center justify-center">
-                    {formatCurrency(sample.price)}
-                  </td>
-                  <td className="p-3 text-center justify-center">
-                    {statusString(sample.status)}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    {sample.saleStartDate.length ? sample.saleStartDate : "-"}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    {sample.saleEndDate.length ? sample.saleEndDate : "-"}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    <span>{sample.saleQuantity} / </span>
-                    {sample.quantityLimit != -1 ? (
-                      <span>{sample.quantityLimit}</span>
-                    ) : (
-                      <span className="text-[20px]">∞</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    {sample.createDate.length ? sample.createDate : "-"}
-                  </td>
-                  <td></td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="py-3">
+                      <Link
+                        href={`/items/detail?id=${sample.id}`}
+                        className="flex items-center"
+                      >
+                        <Image
+                          src={sample.thumbnail}
+                          className="rounded-full inline-block mx-2"
+                          width={80}
+                          height={80}
+                          alt={`${sample.name}'s profile picture`}
+                        />
+                        <span className="inline-block">{sample.name}</span>
+                      </Link>
+                    </td>
+                    <td className="px-3 py-3 text-center justify-center">
+                      {formatCurrency(sample.price)}
+                    </td>
+                    <td className="p-3 text-center justify-center">
+                      {statusString(sample.status)}
+                    </td>
+                    <td className="px-3 py-3  text-center justify-center">
+                      {sample.saleStartDate.length ? sample.saleStartDate : "-"}
+                    </td>
+                    <td className="px-3 py-3  text-center justify-center">
+                      {sample.saleEndDate.length ? sample.saleEndDate : "-"}
+                    </td>
+                    <td className="px-3 py-3  text-center justify-center">
+                      <span>{sample.saleQuantity} / </span>
+                      {sample.quantityLimit != -1 ? (
+                        <span>{sample.quantityLimit}</span>
+                      ) : (
+                        <span className="text-[20px]">∞</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-3  text-center justify-center">
+                      {sample.createDate.length ? sample.createDate : "-"}
+                    </td>
+                    <td></td>
+                  </tr>
+                ))}
             </tbody>
           </table>
           {selSampleIds.length > 0 ? (
