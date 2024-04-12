@@ -21,3 +21,21 @@ export type ErrorMessage = {
   code: string;
   message: string;
 };
+
+export type ApiProfileData = {
+  userId: string;
+  username: string;
+  email: string;
+  icon: string;
+  sns: string;
+  aboutMe: string;
+  socialLinks: string[];
+  gender: string;
+  birth: string;
+  flow: {
+    flowAddress: string;
+    publicKey: string;
+    txId: string;
+  },
+  createdAt: string;
+}

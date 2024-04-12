@@ -1,12 +1,10 @@
-import {PrismaClient} from "@prisma/client";
 import {Request, Response} from "express";
 import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
 import {isEmptyObject} from "./utils";
-
-const prisma = new PrismaClient();
+import {prisma} from "../prisma";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
   const {email}: {email: string} = req.body;
