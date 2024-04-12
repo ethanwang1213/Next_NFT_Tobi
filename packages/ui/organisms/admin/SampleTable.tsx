@@ -6,7 +6,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatCurrency } from "ui/atoms/Formatters";
+import {
+  formatCurrency,
+  formatDateToLocal,
+  formatSampleStatus,
+} from "ui/atoms/Formatters";
 import Button from "../../atoms/Button";
 
 const SampleTable = ({ filters }) => {
@@ -149,38 +153,6 @@ const SampleTable = ({ filters }) => {
 
     // set state
     setSortOrder(order);
-  };
-
-  // status number -> status string
-  const statusString = (status) => {
-    let value;
-    switch (status) {
-      case 1:
-        value = "Draft";
-        break;
-      case 2:
-        value = "Private";
-        break;
-      case 3:
-        value = "Viewing Only";
-        break;
-      case 4:
-        value = "On Sale";
-        break;
-      case 5:
-        value = "Unlisted";
-        break;
-      case 6:
-        value = "Scheduled Publishing";
-        break;
-      case 7:
-        value = "Scheduled for Sale";
-        break;
-      default:
-        value = "";
-        break;
-    }
-    return value;
   };
 
   return (
@@ -356,6 +328,7 @@ const SampleTable = ({ filters }) => {
                         width={80}
                         height={80}
                         alt={`${sample.name}'s profile picture`}
+                        unoptimized
                       />
                       <span className="inline-block">{sample.name}</span>
                     </Link>
@@ -364,13 +337,17 @@ const SampleTable = ({ filters }) => {
                     {formatCurrency(sample.price)}
                   </td>
                   <td className="p-3 text-center justify-center">
-                    {statusString(sample.status)}
+                    {formatSampleStatus(sample.status)}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    {sample.saleStartDate.length ? sample.saleStartDate : "-"}
+                    {!!sample.saleStartDate && sample.saleStartDate.length
+                      ? formatDateToLocal(sample.saleStartDate)
+                      : "-"}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    {sample.saleEndDate.length ? sample.saleEndDate : "-"}
+                    {!!sample.saleEndDate && sample.saleEndDate.length
+                      ? formatDateToLocal(sample.saleEndDate)
+                      : "-"}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
                     <span>{sample.saleQuantity} / </span>
@@ -381,7 +358,9 @@ const SampleTable = ({ filters }) => {
                     )}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    {sample.createDate.length ? sample.createDate : "-"}
+                    {!!sample.createDate && sample.createDate.length
+                      ? formatDateToLocal(sample.createDate)
+                      : "-"}
                   </td>
                   <td></td>
                 </tr>
@@ -400,7 +379,7 @@ const SampleTable = ({ filters }) => {
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
                   const result = await deleteSamples(selSampleIds);
-                  if (result == "deleted") {
+                  if (result == true) {
                     const data = await fetchSamples();
                     setSelSampleIds([]);
                     setSamples(data);

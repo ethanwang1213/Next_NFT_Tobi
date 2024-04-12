@@ -91,7 +91,7 @@ export const fetchSamples = async () => {
   try {
     const token = await auth.currentUser.getIdToken();
     const response = await fetch(
-      "/backend/api/functions/admin/samples",
+      "/backend/api/functions/native/admin/samples",
       {
         method: "GET",
         headers: {
@@ -99,7 +99,13 @@ export const fetchSamples = async () => {
         },
       },
     );
-    return await response.json();
+    const result = await response.json();
+    if (result.status == "success") {
+      return result.data;
+    } else {
+      console.log("Error:", result.status);
+      return [];
+    }
   } catch (error) {
     console.error("Error:", error);
     return [];
@@ -110,7 +116,7 @@ export const deleteSamples = async (ids) => {
   try {
     const token = await auth.currentUser.getIdToken();
     const response = await fetch(
-      "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples",
+      "/backend/api/functions/native/admin/samples",
       {
         method: "DELETE",
         headers: {
@@ -123,10 +129,18 @@ export const deleteSamples = async (ids) => {
       },
     );
     const result = await response.json();
+    if (result.status == "success") {
+      if (result.data.result == "deleted") {
+        return true;
+      } else {
+        console.error("Error:", result.data.result);
+        return false;
+      }
+    }
     return result.data;
   } catch (error) {
     console.error("Error:", error);
-    return "failed";
+    return false;
   }
 };
 
