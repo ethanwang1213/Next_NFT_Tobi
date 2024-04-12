@@ -26,6 +26,7 @@ import {
   adminGetAllSamples,
   adminDeleteSamples,
   adminDetailOfSample,
+  adminUpdateSample,
 } from "./itemController";
 import {
   createSaidan,
@@ -152,5 +153,5 @@ app.post("/admin/digital/status", adminChangeDigitalStatus);
 app.get("/admin/samples", adminGetAllSamples);
 app.delete("/admin/samples", adminDeleteSamples);
 app.get("/admin/samples/:sampleId", adminDetailOfSample);
-app.post("/admin/samples/:sampleId", adminDeleteSamples);
+app.post("/admin/samples/:sampleId", adminUpdateSample);
 export const native = functions.region(REGION).https.onRequest(app);

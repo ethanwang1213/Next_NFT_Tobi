@@ -242,7 +242,7 @@ transaction(
 
 const decryptBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
   if (
-      !process.env.KMS_PROJECT_ID ||
+    !process.env.KMS_PROJECT_ID ||
       !process.env.KMS_OPERATION_KEY_LOCATION ||
       !process.env.KMS_OPERATION_KEYRING ||
       !process.env.KMS_OPERATION_KEY
@@ -257,7 +257,7 @@ const decryptBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
     ciphertext: ciphertext,
   });
   return decryptResponse.plaintext?.toString();
-}
+};
 
 const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => async (account: any) => {
   if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS ||
