@@ -144,7 +144,10 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
   const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
-  const flowAccountDocRef = await createOrGetFlowAccountDocRef(tobiratoryAccountUuid);
+  const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
+  if (!flowAccountDocRef) {
+    throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
+  }
 
   const cadence = `\
 import NonFungibleToken from ${nonFungibleTokenAddress}
@@ -419,7 +422,10 @@ const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: 
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
   const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
-  const flowAccountDocRef = await createOrGetFlowAccountDocRef(tobiratoryAccountUuid);
+  const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
+  if (!flowAccountDocRef) {
+    throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
+  }
 
   const cadence = `\
 import NonFungibleToken from ${nonFungibleTokenAddress}
@@ -499,7 +505,11 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
         throw new Error("DigitalItem does not found");
       }
 
-      const flowAccountDocRef = await createOrGetFlowAccountDocRef(digitalItem.creator_uuid);
+      const flowAccountDocRef = await getFlowAccountDocRef(digitalItem.creator_uuid);
+      if (!flowAccountDocRef) {
+        throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
+      }
+
       const doc = await flowAccountDocRef.get();
       const data = doc.data();
       if (!doc.exists || !data || !data.address) {
@@ -547,6 +557,15 @@ const generateKeysAndSendFlowAccountCreationTx = async (tobiratoryAccountUuid: s
 
   await fillInFlowAccountCreattionInfo({flowAccountRef, encryptedPrivateKeyBase64, pubKey, txId});
   return txId;
+};
+
+const getFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
+  const existingFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", tobiratoryAccountUuid).get();
+  if (existingFlowAccounts.size > 0) {
+    const existingFlowAccountSnapshot = existingFlowAccounts.docs[0];
+    return existingFlowAccountSnapshot.ref;
+  }
+  return null;
 };
 
 const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
