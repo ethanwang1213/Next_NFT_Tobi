@@ -29,6 +29,7 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
     "downshift": "^9.0.4",
+    "firebase": "^10.11.0",
     "numeral": "^2.0.6",
     "rc-switch": "^4.1.0",
     "react-datepicker": "^4.25.0",

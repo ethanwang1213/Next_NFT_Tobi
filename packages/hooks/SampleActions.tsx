@@ -91,20 +91,24 @@ export const fetchSamples = async () => {
   try {
     const token = await auth.currentUser.getIdToken();
     const response = await fetch(
-      "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples",
+      "/backend/api/functions/native/admin/samples",
       {
         method: "GET",
         headers: {
           Authorization: token,
-          "Content-Type": "application/json",
         },
       },
     );
-    return await response.json();
+    const jsonResult = await response.json();
+    if (jsonResult.status == "success") {
+      return jsonResult.data;
+    } else {
+      console.log("Error:", jsonResult.status);
+      return [];
+    }
   } catch (error) {
     console.error("Error:", error);
-    // return [];
-    return sampleTestData;
+    return [];
   }
 };
 
@@ -112,7 +116,7 @@ export const deleteSamples = async (ids) => {
   try {
     const token = await auth.currentUser.getIdToken();
     const response = await fetch(
-      "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples",
+      "/backend/api/functions/native/admin/samples",
       {
         method: "DELETE",
         headers: {
@@ -133,10 +137,24 @@ export const deleteSamples = async (ids) => {
 };
 
 export const fetchSampleItem = async (id) => {
+  return {
+    name: "Inutanuki - GORAKUBA! Highschool", // sample name
+    description: "sample description, max 1300 characters", // sample description, max 1300 characters
+    defaultThumbnailUrl: "/admin/images/sample-thumnail/Rectangle-61.png",
+    customThumbnailUrl: "",
+    isCustomThumbnailSelected: false,
+    price: 0,
+    status: 6, // draft/private/viewing only/on sale/unlisted/scheduled publishing/scheduled for sale
+    startDate: "", // available in 2 cases of 'scheduled publishing' and 'scheduled for sale'
+    endDate: "", // available in 2 cases of 'scheduled publishing' and 'scheduled for sale'
+    quantityLimit: 100,
+    license: "license string",
+    copyrights: ["content", "digitalitem"],
+  };
   try {
     const token = await auth.currentUser.getIdToken();
     const response = await fetch(
-      `https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/admin/samples/${id}`,
+      `/backend/api/functions/native/admin/samples/${id}`,
       {
         method: "GET",
         headers: {

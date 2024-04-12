@@ -1,15 +1,17 @@
+import { auth } from "fetchers/firebase/client";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { fetchSampleItem } from "hooks/SampleActions";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
 import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
-import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
+import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
 
 const Detail = () => {
@@ -17,8 +19,79 @@ const Detail = () => {
   const { id } = router.query;
   const [sampleItem, setSampleItem] = useState(null);
 
+  const fileInputRef = useRef(null);
+  const imageDropButtonRef = useRef(null);
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    // Restore the background color when dropping
+    event.target.style.backgroundColor = "#FFFFFF";
+    const file = event.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      // upload to the server
+      uploadFileToFirestore(file);
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    // Change the background color when dragging over
+    event.target.style.backgroundColor = "#B3B3B3";
+  };
+
+  const handleFileInputChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      // upload to the server
+      uploadFileToFirestore(file);
+    }
+  };
+
+  const handleDragLeave = (event) => {
+    event.target.style.backgroundColor = "#FFFFFF";
+  };
+
+  const uploadFileToFirestore = async (file) => {
+    try {
+      // Get file extension
+      const fileName = file.name;
+      const extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+      // Create a root reference
+      const storage = getStorage();
+
+      // Generate a unique filename for the file
+      const storageFileName = `${Date.now()}.${extension}`;
+
+      // Upload the file to Firebase Storage
+      console.log(
+        "RefUrl",
+        `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
+      );
+      const fileRef = ref(
+        storage,
+        `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
+      );
+
+      await uploadBytes(fileRef, file);
+
+      // Get the download URL of the uploaded file
+      const downloadURL = await getDownloadURL(fileRef);
+      fieldChangeHandler("customThumbnailUrl", downloadURL);
+
+      console.log("File uploaded successfully!");
+    } catch (error) {
+      // Handle any errors that occur during the upload process
+      console.error("Error uploading file:", error);
+    }
+  };
+
   const fieldChangeHandler = (field, value) => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
+  };
+
+  const handleImageClick = () => {
+    fileInputRef.current.click(); // Trigger the click event of the file input
   };
 
   useEffect(() => {
@@ -192,7 +265,11 @@ const Detail = () => {
                   width={384}
                   height={384}
                   className="bg-[#2D94FF6B] rounded-[13px]"
-                  src={sampleItem.defaultThumbnailUrl}
+                  src={
+                    sampleItem.isCustomThumbnailSelected
+                      ? sampleItem.customThumbnailUrl
+                      : sampleItem.defaultThumbnailUrl
+                  }
                   alt="thumbnail image"
                 />
               </div>
@@ -203,12 +280,17 @@ const Detail = () => {
                     height: 120,
                     borderRadius: 13,
                     borderWidth: 2,
-                    borderColor: "#B3B3B3",
+                    borderColor: sampleItem.isCustomThumbnailSelected
+                      ? "#B3B3B3"
+                      : "#98C6F4",
                     backgroundImage: `url('${sampleItem.defaultThumbnailUrl}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
                   className="relative"
+                  onClick={() => {
+                    fieldChangeHandler("isCustomThumbnailSelected", false);
+                  }}
                 >
                   <Image
                     width={24}
@@ -224,19 +306,40 @@ const Detail = () => {
                     height: 120,
                     borderRadius: 13,
                     borderWidth: 2,
-                    borderColor: "#B3B3B3",
+                    borderColor: !sampleItem.isCustomThumbnailSelected
+                      ? "#B3B3B3"
+                      : "#98C6F4",
+                    backgroundImage: `url('${sampleItem.customThumbnailUrl}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                   }}
                   className="relative"
+                  onClick={() => {
+                    if (sampleItem.customThumbnailUrl.length > 0) {
+                      fieldChangeHandler("isCustomThumbnailSelected", true);
+                    }
+                  }}
                 >
-                  <Image
-                    width={24}
-                    height={24}
-                    alt="cancel"
-                    src="/admin/images/cancel-icon.svg"
-                    className="absolute right-3 bottom-3"
-                  />
+                  {sampleItem.customThumbnailUrl.length > 0 ? (
+                    <Image
+                      width={24}
+                      height={24}
+                      alt="cancel"
+                      src="/admin/images/cancel-icon.svg"
+                      className="absolute right-3 bottom-3"
+                    />
+                  ) : (
+                    <Image
+                      width={24}
+                      height={24}
+                      alt="cancel"
+                      src="/admin/images/empty-image-icon.svg"
+                      className="absolute top-12 left-12"
+                    />
+                  )}
                 </div>
                 <div
+                  ref={imageDropButtonRef}
                   style={{
                     width: 120,
                     height: 120,
@@ -245,12 +348,12 @@ const Detail = () => {
                     borderWidth: 2,
                     borderColor: "#B3B3B3",
                   }}
-                  className="flex flex-col justify-center items-center"
+                  className="flex flex-col justify-center items-center gap-1 pt-2"
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
                 >
-                  <span
-                    className="h-14 text-[#717171C1]"
-                    style={{ fontSize: 10, lineHeight: 3.6 }}
-                  >
+                  <span className="h-14 text-[#717171C1] text-base text-center">
                     Drop your Image here
                   </span>
                   <Image
@@ -258,6 +361,14 @@ const Detail = () => {
                     height={24}
                     alt="upload"
                     src="/admin/images/upload-icon.svg"
+                    onClick={handleImageClick}
+                  />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileInputChange}
+                    className="hidden"
                   />
                 </div>
               </div>
