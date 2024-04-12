@@ -1,4 +1,3 @@
-import { useAuth } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import {
   isSignInWithEmailLink,
@@ -12,7 +11,6 @@ import { ErrorMessage } from "types/adminTypes";
 import FlowAgreementWithEmailAndPassword from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 
 const PasswordReset = () => {
-  const { user } = useAuth();
   const router = useRouter();
   const [emailLink, setEmailLink] = useState("");
   const [updatingPassword, setUpdatingPassword] = useState(false);
@@ -43,9 +41,7 @@ const PasswordReset = () => {
     }
   };
 
-  if (user?.registeredFlowAccount) {
-    return <div>redirect to top page</div>;
-  } else if (updatedPassword) {
+  if (updatedPassword) {
     return (
       <div className="flex flex-col items-center justify-center w-[100dvw] p-8">
         <Image
@@ -53,8 +49,9 @@ const PasswordReset = () => {
           alt={"Tobiratory logo"}
           width={110}
           height={114}
+          className={"mt-[200px]"}
         />
-        <div className={"mt-[200px]"}>パスワードをリセットしました</div>
+        <div className={"mt-[40px]"}>パスワードをリセットしました</div>
         <div>
           <button
             type={"button"}
