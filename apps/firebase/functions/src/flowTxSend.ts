@@ -240,6 +240,25 @@ transaction(
   return {txId};
 };
 
+const decryptBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
+  if (
+      !process.env.KMS_PROJECT_ID ||
+      !process.env.KMS_OPERATION_KEY_LOCATION ||
+      !process.env.KMS_OPERATION_KEYRING ||
+      !process.env.KMS_OPERATION_KEY
+  ) {
+    throw new Error("The environment of flow signer is not defined.");
+  }
+  const client = new KeyManagementServiceClient();
+  const ciphertext = Buffer.from(encryptedPrivateKeyBase64, "base64");
+  const keyName = kmsClient.cryptoKeyPath(process.env.KMS_PROJECT_ID, process.env.KMS_OPERATION_KEY_LOCATION, process.env.KMS_OPERATION_KEYRING, process.env.KMS_OPERATION_KEY);
+  const [decryptResponse] = await client.decrypt({
+    name: keyName,
+    ciphertext: ciphertext,
+  });
+  return decryptResponse.plaintext?.toString();
+}
+
 const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => async (account: any) => {
   if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS ||
       !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID ||
@@ -254,21 +273,14 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
   let privateKey: string | undefined;
   const doc = await flowAccountRef.get();
   const data = doc.data();
-  if (!doc.exists || !data || !data.privKey) {
+  if (!doc.exists || !data || !data.encryptedPrivateKeyBase64) {
     throw new Error("The private key of flow signer is not defined.");
   }
   if (process.env.PUBSUB_EMULATOR_HOST) {
-    privateKey = data.privKey;
+    privateKey = data.encryptedPrivateKeyBase64;
   } else {
-    const encryptedPrivateKey = data.privKey;
-    const keyName = kmsClient.cryptoKeyPath(
-        process.env.KMS_PROJECT_ID,
-        process.env.KMS_OPERATION_KEY_LOCATION,
-        process.env.KMS_OPERATION_KEYRING,
-        process.env.KMS_OPERATION_KEY
-    );
-    const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
-    privateKey = decryptedData.plaintext?.toString();
+    const encryptedPrivateKey = data.encryptedPrivateKeyBase64;
+    privateKey = await decryptBase64PrivateKey(encryptedPrivateKey);
   }
 
   if (!privateKey) {
