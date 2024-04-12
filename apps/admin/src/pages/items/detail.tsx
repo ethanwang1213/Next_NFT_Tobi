@@ -9,35 +9,13 @@ import DateTimeInput from "ui/molecules/DateTimeInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
-import { useSelect } from "downshift";
-import clsx from "clsx";
-
-const statusValues = [
-  { value: 1, title: "Draft", color: "#093159" },
-  { value: 2, title: "Private", color: "#505050" },
-  { value: 3, title: "Viewing Only", color: "#37AD00" },
-  { value: 4, title: "On Sale", color: "#DB6100" },
-  { value: 5, title: "Unlisted", color: "#3F3F3F" },
-  { value: 6, title: "Scheduled Publishing", color: "#277C00" },
-  { value: 7, title: "Scheduled for Sale", color: "#9A4500" },
-];
+import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
+import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
 
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [sampleItem, setSampleItem] = useState(null);
-
-  const {
-    isOpen,
-    selectedItem,
-    getToggleButtonProps,
-    getMenuProps,
-    highlightedIndex,
-    getItemProps,
-  } = useSelect({
-    items: statusValues,
-    itemToString,
-  });
 
   const fieldChangeHandler = (field, value) => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
@@ -58,56 +36,6 @@ const Detail = () => {
       fetchData();
     }
   }, [id]);
-
-  function itemToString(item) {
-    return item ? item.title : "";
-  }
-
-  function StatusDropdownButton() {
-    return (
-      <div>
-        <div
-          className="w-64 h-12 px-6 text-[#000000] flex justify-between items-center cursor-pointer rounded-[48px]"
-          style={{
-            backgroundColor: `${
-              selectedItem
-                ? selectedItem.color
-                : statusValues[sampleItem.status - 1].color
-            }`,
-          }}
-          {...getToggleButtonProps()}
-        >
-          <span>
-            {selectedItem
-              ? selectedItem.title
-              : statusValues[sampleItem.status - 1].title}
-          </span>
-          <span>{isOpen ? <>▲</> : <>▼</>}</span>
-        </div>
-        <ul
-          className={`absolute w-72 bg-white mt-1 shadow-md p-0 z-10 ${
-            !isOpen && "hidden"
-          }`}
-          {...getMenuProps()}
-        >
-          {isOpen &&
-            statusValues.map((item, index) => (
-              <li
-                className={clsx(
-                  highlightedIndex === index && "bg-blue-300",
-                  selectedItem === item && "font-bold",
-                  "py-2 px-3 shadow-sm flex flex-col",
-                )}
-                key={item.value}
-                {...getItemProps({ item, index })}
-              >
-                <span>{item.title}</span>
-              </li>
-            ))}
-        </ul>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -141,7 +69,12 @@ const Detail = () => {
               <div className="flex flex-col gap-6 pr-11">
                 <div className="flex justify-between items-center">
                   <h3 className="text-xl text-title-color">SAMPLE STATUS</h3>
-                  <StatusDropdownButton />
+                  <StatusDropdownSelect
+                    initialIndex={sampleItem.status - 1}
+                    handleSelectedItemChange={(selectedItem) =>
+                      fieldChangeHandler("status", selectedItem.value)
+                    }
+                  />
                 </div>
                 {sampleItem.status == 6 ? (
                   <div className="flex flex-col gap-6 pl-4">
@@ -219,14 +152,11 @@ const Detail = () => {
                 </h3>
                 <div className="flex flex-col gap-6">
                   <div className="flex gap-6">
-                    <StyledTextInput
-                      className="flex-grow"
-                      label="Copyrights*"
-                      placeholder="Copyrights"
-                      value={sampleItem.name}
-                      changeHandler={(value) =>
-                        fieldChangeHandler("name", value)
-                      }
+                    <CopyrightMultiSelect
+                      initialSelectedItems={sampleItem.copyrights}
+                      handleSelectedItemChange={(changes) => {
+                        fieldChangeHandler("copyrights", changes);
+                      }}
                     />
                     <Image
                       src="/admin/images/info-icon-2.svg"
@@ -240,9 +170,9 @@ const Detail = () => {
                       className="flex-grow"
                       label="License"
                       placeholder="License"
-                      value={sampleItem.description}
+                      value={sampleItem.license}
                       changeHandler={(value) =>
-                        fieldChangeHandler("description", value)
+                        fieldChangeHandler("license", value)
                       }
                     />
                     <Image
@@ -250,6 +180,7 @@ const Detail = () => {
                       width={16}
                       height={16}
                       alt="information"
+                      className="pt-2"
                     />
                   </div>
                 </div>
