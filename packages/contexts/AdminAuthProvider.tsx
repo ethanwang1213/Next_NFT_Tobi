@@ -1,3 +1,4 @@
+import { fetchMyProfile } from "fetchers/adminUserAccount";
 import { auth } from "fetchers/firebase/client";
 import {
   EmailAuthProvider,
@@ -52,8 +53,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (firebaseUser) {
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.
-        // TODO: check flow account by API
-        const isRegisteredFlowAccount = false;
+        const profile = await fetchMyProfile().catch((error) => {
+          console.error(error);
+          auth.signOut();
+        });
+        if (!profile) {
+          Router.push("/authentication");
+          return;
+        }
+
+        const isRegisteredFlowAccount = !!profile?.data?.flow?.flowAddress;
         if (isRegisteredFlowAccount) {
           // already registered flow account
           await createUser(firebaseUser, true);

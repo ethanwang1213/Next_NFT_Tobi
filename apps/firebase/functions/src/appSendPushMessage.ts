@@ -6,12 +6,12 @@ export const pushDemo = functions.region(REGION).https.onRequest(async (req, res
   const token = req.query.token as string;
 
   pushToDevice(token, {
-        title: "Notification Title",
-        body: "Notification Body",
-      },
-      {
-        body: "{ \"type\": \"mintCompleted\", \"data\": { \"id\": 0 } }",
-      });
+    title: "Notification Title",
+    body: "Notification Body",
+  },
+  {
+    body: "{ \"type\": \"mintCompleted\", \"data\": { \"id\": 0 } }",
+  });
 
   response.status(200).send("submit").end();
 });

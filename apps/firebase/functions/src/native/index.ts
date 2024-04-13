@@ -17,7 +17,17 @@ import
   checkPasswordSet,
 } from "./userController";
 import {getContentById, getContents} from "./contentController";
-import {createModel, createDigitalItem, deleteDigitalItem, getItems, getItemsById, getMyItems, getMyItemsById, getMyDigitalItems} from "./itemController";
+import {
+  createModel,
+  createDigitalItem,
+  deleteDigitalItem,
+  getMyDigitalItems,
+  adminChangeDigitalStatus,
+  adminGetAllSamples,
+  adminDeleteSamples,
+  adminDetailOfSample,
+  adminUpdateSample,
+} from "./itemController";
 import {
   createSaidan,
   decorationSaidan,
@@ -34,7 +44,7 @@ import {
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
 import {mintNFT} from "./nftController";
-import { decorationWorkspace, getWorkspaceDecorationData } from "./workspaceController";
+import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -62,12 +72,10 @@ app.get("/accounts/:uid", getAccountById);
 app.get("/contents", getContents);
 app.get("/contents/:id", getContentById);
 
-app.get("/items", getItems);
-app.get("/items/:id", getItemsById);
 app.get("/nfts/:id", dummyResponse);
 
 app.get("/saidans", getSaidans);
-app.get("/saidans/:id", getSaidansById);
+app.get("/saidans/:saidanId", getSaidansById);
 app.get("/posts", dummyResponse);
 app.get("/posts/:id", dummyResponse);
 
@@ -89,8 +97,6 @@ app.get("/my/nfts/:id", dummyResponse);
 app.post("/my/contents", dummyResponse);
 app.get("/my/contents/:id", dummyResponse);
 app.post("/my/contents/:id", dummyResponse);
-app.get("/my/items", getMyItems);
-app.get("/my/items/:id", getMyItemsById);
 app.post("/my/samples", createDigitalItem);
 app.get("/my/samples", getMyDigitalItems);
 app.get("/my/samples/:id");
@@ -105,6 +111,7 @@ app.get("/my/saidans/:saidanId/decoration", getSaidanDecorationData);
 app.post("/my/saidans/:saidanId/decoration", decorationSaidan);
 app.get("/my/workspace", getWorkspaceDecorationData);
 app.post("/my/workspace", decorationWorkspace);
+app.post("/my/workspace/throw", throwSample);
 app.post("/my/saidans/:saidanId/putaway", putAwayItemInSaidan);
 app.get("/my/saidans/:saidanId", getMySaidansById);
 app.post("/my/saidans/:saidanId/posts", dummyResponse);
@@ -139,4 +146,12 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
+
+// admin APIs
+app.post("/admin/digital/status", adminChangeDigitalStatus);
+
+app.get("/admin/samples", adminGetAllSamples);
+app.delete("/admin/samples", adminDeleteSamples);
+app.get("/admin/samples/:sampleId", adminDetailOfSample);
+app.post("/admin/samples/:sampleId", adminUpdateSample);
 export const native = functions.region(REGION).https.onRequest(app);

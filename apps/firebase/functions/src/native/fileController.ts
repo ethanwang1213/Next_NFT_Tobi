@@ -1,12 +1,7 @@
-import {PrismaClient} from "@prisma/client";
 import {Request, Response} from "express";
-// import {firestore} from "firebase-admin";
-// import { PrismaClient } from "@prisma/client";
 import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken} from "firebase-admin/auth";
-// import { DecodedIdToken } from "firebase-admin/auth";
-
-const prisma = new PrismaClient();
+import {prisma} from "../prisma";
 
 export const uploadMaterial = async (req: Request, res: Response) => {
   const {authorization} = req.headers;

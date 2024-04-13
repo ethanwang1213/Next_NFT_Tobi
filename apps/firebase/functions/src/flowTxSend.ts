@@ -8,14 +8,13 @@ import * as secp from "@noble/secp256k1";
 import {sha256} from "js-sha256";
 import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
-import {PrismaClient} from "@prisma/client";
+import {prisma} from "./prisma";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
   "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
 });
 
-const prisma = new PrismaClient();
 const pubsub = new PubSub();
 const kmsClient = new KeyManagementServiceClient();
 
@@ -58,7 +57,7 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "createItem") {
-        const { txId } = await sendCreateItemTx(params.tobiratoryAccountUuid, params.digitalItemId, params.metadata);
+        const {txId} = await sendCreateItemTx(params.tobiratoryAccountUuid, params.digitalItemId, params.metadata);
         await flowJobDocRef.update({
           flowJobId,
           txType,
@@ -71,8 +70,8 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
-        const { id } = await createNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid);
-        const { txId } = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, id);
+        const {id} = await createNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid);
+        const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, id);
         await flowJobDocRef.update({
           flowJobId,
           txType,
@@ -80,6 +79,7 @@ export const flowTxSend = functions.region(REGION)
           txId,
           sentAt: new Date(),
         });
+        params.digitalItemNftId = id;
         await updateNFTRecord(id, txId);
         const messageForMonitoring = {flowJobId, txType, params};
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
@@ -94,9 +94,9 @@ const updateDigitalItemRecord = async (id: number, txId: string) => {
     },
     data: {
       tx_id: txId,
-    }
+    },
   });
-}
+};
 
 const updateNFTRecord = async (id: number, txId: string) => {
   await prisma.tobiratory_digital_item_nfts.update({
@@ -105,7 +105,7 @@ const updateNFTRecord = async (id: number, txId: string) => {
     },
     data: {
       tx_id: txId,
-    }
+    },
   });
 };
 
@@ -122,7 +122,7 @@ const createNFTRecord = async (digitalItemId: number, ownerUuid: string) => {
     data: {
       digital_item_id: digitalItemId,
       owner_uuid: ownerUuid,
-    }
+    },
   });
 
   return {id: nft.id};
@@ -144,7 +144,10 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
   const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
-  const flowAccountDocRef = await createOrGetFlowAccountDocRef(tobiratoryAccountUuid);
+  const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
+  if (!flowAccountDocRef) {
+    throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
+  }
 
   const cadence = `\
 import NonFungibleToken from ${nonFungibleTokenAddress}
@@ -237,6 +240,25 @@ transaction(
   return {txId};
 };
 
+const decryptBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
+  if (
+    !process.env.KMS_PROJECT_ID ||
+      !process.env.KMS_OPERATION_KEY_LOCATION ||
+      !process.env.KMS_OPERATION_KEYRING ||
+      !process.env.KMS_OPERATION_KEY
+  ) {
+    throw new Error("The environment of flow signer is not defined.");
+  }
+  const client = new KeyManagementServiceClient();
+  const ciphertext = Buffer.from(encryptedPrivateKeyBase64, "base64");
+  const keyName = kmsClient.cryptoKeyPath(process.env.KMS_PROJECT_ID, process.env.KMS_OPERATION_KEY_LOCATION, process.env.KMS_OPERATION_KEYRING, process.env.KMS_OPERATION_KEY);
+  const [decryptResponse] = await client.decrypt({
+    name: keyName,
+    ciphertext: ciphertext,
+  });
+  return decryptResponse.plaintext?.toString();
+};
+
 const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => async (account: any) => {
   if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS ||
       !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID ||
@@ -248,20 +270,18 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
+  let privateKey: string | undefined;
   const doc = await flowAccountRef.get();
   const data = doc.data();
-  if (!doc.exists || !data || !data.privKey) {
+  if (!doc.exists || !data || !data.encryptedPrivateKeyBase64) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  const encryptedPrivateKey = data.privKey;
-  const keyName = kmsClient.cryptoKeyPath(
-      process.env.KMS_PROJECT_ID,
-      process.env.KMS_OPERATION_KEY_LOCATION,
-      process.env.KMS_OPERATION_KEYRING,
-      process.env.KMS_OPERATION_KEY
-  );
-  const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
-  const privateKey = decryptedData.plaintext?.toString();
+  if (process.env.PUBSUB_EMULATOR_HOST) {
+    privateKey = data.encryptedPrivateKeyBase64;
+  } else {
+    const encryptedPrivateKey = data.encryptedPrivateKeyBase64;
+    privateKey = await decryptBase64PrivateKey(encryptedPrivateKey);
+  }
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
@@ -277,8 +297,7 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     addr: fcl.sansPrefix(address),
     keyId: 0,
     signingFunction: async (signable: any) => {
-
-      const signature = signWithKey({privateKey, msgHex: signable.message});
+      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message});
       return {
         address,
         keyId: 0,
@@ -286,17 +305,16 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
       };
     },
   };
-}
+};
 
 const createItemAuthz = (digitalItemId: number) => async (account: any) => {
-  const { addr, keyId, privateKey } = await authzBase();
+  const {addr, keyId, privateKey} = await authzBase();
   return {
     ...account,
     tempId: `${addr}-${keyId}`,
     addr: fcl.sansPrefix(addr),
     keyId,
     signingFunction: async (signable: any) => {
-
       const args = signable.voucher.arguments;
       if (args.length != 9) {
         throw new Error("Invalid arguments");
@@ -310,22 +328,26 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const limit = args[6].value ? args[6].value.value : args[6].value;
       const license = args[7].value ? args[7].value.value : args[7].value;
       const copyrightHolders = args[8].value;
-
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: digitalItemId,
-        }
+        },
       });
       if (!digitalItem) {
         throw new Error("DigitalItem does not found");
       }
 
       let dbCreatorName = "";
-      if (digitalItem.content_id) {
+      const sampleItem = await prisma.tobiratory_sample_items.findUnique({
+        where: {
+          digital_item_id: digitalItem.id,
+        },
+      });
+      if (sampleItem?.content_id) {
         const content = await prisma.tobiratory_contents.findUnique({
           where: {
-            id: digitalItem.content_id
-          }
+            id: sampleItem?.content_id,
+          },
         });
         if (content) {
           dbCreatorName = content.title;
@@ -333,7 +355,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
           const user = await prisma.tobiratory_accounts.findUnique({
             where: {
               uuid: digitalItem.creator_uuid,
-            }
+            },
           });
           if (!user) {
             throw new Error("User does not found");
@@ -344,7 +366,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         const user = await prisma.tobiratory_accounts.findUnique({
           where: {
             uuid: digitalItem.creator_uuid,
-          }
+          },
         });
         if (!user) {
           throw new Error("User does not found");
@@ -354,26 +376,26 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
 
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
-            id: digitalItem.id,
-        }
+          id: digitalItem.id,
+        },
       });
       const copyrights = await Promise.all(
           copyrightRelate.map(async (relate)=>{
-              const copyrightData = await prisma.tobiratory_copyright.findUnique({
-                  where: {
-                      id: relate.copyright_id,
-                  }
-              });
-              return copyrightData?.copyright_name;
+            const copyrightData = await prisma.tobiratory_copyright.findUnique({
+              where: {
+                id: relate.copyright_id,
+              },
+            });
+            return copyrightData?.copyright_name;
           })
-      )
+      );
 
       const metadata = {
-        type: digitalItem.type,
+        type: String(digitalItem.type),
         name: digitalItem.name,
         description: digitalItem.description,
-        thumbnailUrl: digitalItem.thumb_url,
-        modelUrl: digitalItem.model_url,
+        thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
+        modelUrl: digitalItem.nft_model,
         creatorName: dbCreatorName,
         limit: digitalItem.limit,
         license: digitalItem.license,
@@ -381,15 +403,15 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       };
 
       if (
-          metadata.type === type &&
+        metadata.type === type &&
           metadata.name === name &&
           metadata.description === description &&
           metadata.thumbnailUrl === thumbnailUrl &&
           metadata.modelUrl === modelUrl &&
           metadata.creatorName === creatorName &&
-          metadata.limit === limit &&
+          metadata.limit == limit &&
           metadata.license === license &&
-          metadata.copyrightHolders === copyrightHolders
+          arraysEqual(metadata.copyrightHolders, copyrightHolders)
       ) {
         const signature = signWithKey({privateKey, msgHex: signable.message});
         return {
@@ -404,11 +426,18 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
   };
 };
 
+function arraysEqual(a: any[], b: any[]): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, id: number) => {
   const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
   const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
-  const flowAccountDocRef = await createOrGetFlowAccountDocRef(tobiratoryAccountUuid);
+  const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
+  if (!flowAccountDocRef) {
+    throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
+  }
 
   const cadence = `\
 import NonFungibleToken from ${nonFungibleTokenAddress}
@@ -454,7 +483,7 @@ transaction(
     args,
     proposer: createCreatorAuthz(flowAccountDocRef),
     payer: createMintAuthz(itemId),
-    authorizations: [createCreatorAuthz(flowAccountDocRef), createItemAuthz(itemId)],
+    authorizations: [createCreatorAuthz(flowAccountDocRef), createMintAuthz(itemId)],
     limit: 9999,
   });
   console.log({txId});
@@ -465,14 +494,13 @@ transaction(
 };
 
 const createMintAuthz = (itemId: number) => async (account: any) => {
-  const { addr, keyId, privateKey } = await authzBase();
+  const {addr, keyId, privateKey} = await authzBase();
   return {
     ...account,
     tempId: `${addr}-${keyId}`,
     addr: fcl.sansPrefix(addr),
     keyId,
     signingFunction: async (signable: any) => {
-
       const args = signable.voucher.arguments;
       if (args.length != 2) {
         throw new Error("Invalid arguments");
@@ -483,23 +511,26 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
       const digitalItem = await prisma.tobiratory_digital_items.findFirst({
         where: {
           item_id: itemId,
-        }
+        },
       });
       if (!digitalItem) {
         throw new Error("DigitalItem does not found");
       }
 
-      const flowAccountDocRef = await createOrGetFlowAccountDocRef(digitalItem.creator_uuid);
+      const flowAccountDocRef = await getFlowAccountDocRef(digitalItem.creator_uuid);
+      if (!flowAccountDocRef) {
+        throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
+      }
+
       const doc = await flowAccountDocRef.get();
       const data = doc.data();
       if (!doc.exists || !data || !data.address) {
         throw new Error("The address of flow signer is not defined.");
       }
       const creatorAddress = data.address;
-
       if (
-          itemCreatorAddress === creatorAddress &&
-          itemID === digitalItem.item_id
+        itemCreatorAddress === creatorAddress &&
+          itemID == digitalItem.item_id
       ) {
         const signature = signWithKey({privateKey, msgHex: signable.message});
         return {
@@ -516,7 +547,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
 
 const generateKeysAndSendFlowAccountCreationTx = async (tobiratoryAccountUuid: string) => {
   if (
-      !process.env.KMS_PROJECT_ID ||
+    !process.env.KMS_PROJECT_ID ||
       !process.env.KMS_USER_KEY_LOCATION ||
       !process.env.KMS_USER_KEYRING ||
       !process.env.KMS_USER_KEY
@@ -538,6 +569,15 @@ const generateKeysAndSendFlowAccountCreationTx = async (tobiratoryAccountUuid: s
 
   await fillInFlowAccountCreattionInfo({flowAccountRef, encryptedPrivateKeyBase64, pubKey, txId});
   return txId;
+};
+
+const getFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
+  const existingFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", tobiratoryAccountUuid).get();
+  if (existingFlowAccounts.size > 0) {
+    const existingFlowAccountSnapshot = existingFlowAccounts.docs[0];
+    return existingFlowAccountSnapshot.ref;
+  }
+  return null;
 };
 
 const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
@@ -609,7 +649,7 @@ const generateKeyPair = () => {
 };
 
 const authz = async (account: any) => {
-  const { addr, keyId, privateKey } = await authzBase();
+  const {addr, keyId, privateKey} = await authzBase();
   return {
     ...account,
     tempId: `${addr}-${keyId}`,
@@ -637,16 +677,20 @@ const authzBase = async () => {
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
-  // const privateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_PRIVATE_KEY;
-  const encryptedPrivateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
-  const keyName = kmsClient.cryptoKeyPath(
-      process.env.KMS_PROJECT_ID,
-      process.env.KMS_OPERATION_KEY_LOCATION,
-      process.env.KMS_OPERATION_KEYRING,
-      process.env.KMS_OPERATION_KEY
-  );
-  const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
-  const privateKey = decryptedData.plaintext?.toString();
+  let privateKey: string | undefined;
+  if (process.env.PUBSUB_EMULATOR_HOST) {
+    privateKey = process.env.FLOW_ACCOUNT_PRIVATE_KEY;
+  } else {
+    const encryptedPrivateKey = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
+    const keyName = kmsClient.cryptoKeyPath(
+        process.env.KMS_PROJECT_ID,
+        process.env.KMS_OPERATION_KEY_LOCATION,
+        process.env.KMS_OPERATION_KEYRING,
+        process.env.KMS_OPERATION_KEY
+    );
+    const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
+    privateKey = decryptedData.plaintext?.toString();
+  }
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
@@ -654,7 +698,7 @@ const authzBase = async () => {
   const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
   const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
 
-  return {addr, keyId, privateKey};
+  return {addr: addr as string, keyId, privateKey: privateKey as string};
 };
 
 const hashMessageHex = (hashType: string, msgHex: string) => {
@@ -666,7 +710,7 @@ const hashMessageHex = (hashType: string, msgHex: string) => {
     sha3.update(buffer);
     return sha3.digest();
   } else {
-    throw Error("Invalid arguments");
+    throw Error("Invalid arguments3");
   }
 };
 
@@ -676,7 +720,7 @@ const getSignCurve = (signType: string) => {
   } else if (signType == "ECDSA_P256") {
     return new EC("p256");
   } else {
-    throw Error("Invalid arguments");
+    throw Error("Invalid arguments4");
   }
 };
 
@@ -697,11 +741,11 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
 };
 
 const fillInFlowAccountCreattionInfo = async ({
-                                                flowAccountRef,
-                                                encryptedPrivateKeyBase64,
-                                                pubKey,
-                                                txId,
-                                              } : {
+  flowAccountRef,
+  encryptedPrivateKeyBase64,
+  pubKey,
+  txId,
+} : {
   flowAccountRef: firestore.DocumentReference<firestore.DocumentData>;
   encryptedPrivateKeyBase64: string;
   pubKey: string;
@@ -719,10 +763,10 @@ const fillInFlowAccountCreattionInfo = async ({
 const updateDigitalItemNFT = async (id: number, txId: string) => {
   prisma.tobiratory_digital_item_nfts.update({
     where: {
-      id: id
+      id: id,
     },
     data: {
       tx_id: txId,
-    }
-  })
+    },
+  });
 };

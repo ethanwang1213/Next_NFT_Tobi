@@ -4,8 +4,10 @@ import Button from "ui/atoms/Button";
 
 type Props = {
   registered: boolean;
+  error?: string;
+  onClickRegister: () => void;
 };
-const FlowRegister = ({ registered }: Props) => {
+const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
   return (
     <div className="flex flex-col items-center justify-center p-8">
       <Image
@@ -16,17 +18,38 @@ const FlowRegister = ({ registered }: Props) => {
         className={"mt-[90px]"}
       />
       <div className={"mt-[50px]"}>
-        <ProcesssingStatus registered={registered} />
+        <ProcesssingStatus registered={registered} error={error} />
       </div>
       <div className={"mt-[15px]"}>
-        <RegisterButton registered={registered} />
+        <RegisterButton
+          registered={registered}
+          error={error}
+          onClickRegister={onClickRegister}
+        />
       </div>
     </div>
   );
 };
 
-const ProcesssingStatus = ({ registered }: Props) => {
-  if (registered) {
+const ProcesssingStatus = ({
+  registered,
+  error,
+}: {
+  registered: boolean;
+  error?: string;
+}) => {
+  if (error) {
+    return (
+      <>
+        <div className={"font-bold text-[32px]"}>
+          Flow アカウント作成に失敗しました
+        </div>
+        <div className={"font-semibold text-[12px] text-attention text-center"}>
+          {error}
+        </div>
+      </>
+    );
+  } else if (registered) {
     return (
       <div className={"font-bold text-[32px]"}>
         Flow アカウントを作成しました
@@ -50,9 +73,18 @@ const ProcesssingStatus = ({ registered }: Props) => {
   );
 };
 
-const RegisterButton = ({ registered }: Props) => {
+const RegisterButton = ({ registered, error, onClickRegister }: Props) => {
   const { finishFlowAccountRegistration } = useAuth();
-  if (registered) {
+  if (error) {
+    return (
+      <Button
+        className="bg-primary text-primary-content w-[179px] h-[48px] rounded-2xl"
+        onClick={onClickRegister}
+      >
+        <span className={"font-normal text-[20px]"}>再登録</span>
+      </Button>
+    );
+  } else if (registered) {
     return (
       <Button
         className="bg-primary text-primary-content w-[179px] h-[48px] rounded-2xl"

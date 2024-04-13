@@ -107,11 +107,13 @@ model tobiratory_digital_items {
   user              tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
   creator_uuid      String                               @db.VarChar(100)
   name              String                               @default("") @db.VarChar(255)
-  thumb_url         String                               @db.VarChar(255)
-  model_url         String                               @db.VarChar(255)
+  default_thumb_url String                               @db.VarChar(255)
+  custom_thumb_url  String                               @db.VarChar(255)
+  is_default_thumb  Boolean                              @default(true)
+  nft_model         String                               @default("") @db.VarChar(255)
+  nft_metadata      String                               @default("") @db.Text
   material_id       Int                                  @default(0)
   type              Int
-  content_id        Int                                  @default(0)
   description       String                               @default("") @db.VarChar(255)
   limit             Int?
   license           String                               @default("") @db.VarChar(255)
@@ -124,9 +126,11 @@ model tobiratory_digital_items {
   copyright         tobiratory_digital_items_copyright[]
   saidan_id         Int                                  @default(0)
   sample_item       tobiratory_sample_items? //need to discuss
-  digital_nft       tobiratory_digital_item_nfts? //need to discuss
+  digital_nft       tobiratory_digital_item_nfts[] //need to discuss
   item_id           Int?
   tx_id             String?                              @db.VarChar(255)
+  status            Int
+  minted_count      Int                                  @default(0)
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)
 }
@@ -137,11 +141,19 @@ model tobiratory_sample_items {
   digital_item_id   Int                      @unique
   user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid        String                   @db.VarChar(100)
+  model_url         String                   @db.VarChar(255)
   position          Float[]
   rotation          Float[]
   scale             Float?
   stage_type        Int?
+  content_id        Int                      @default(0)
+  price             Int?
+  start_date        DateTime?                @db.Timestamp(6)
+  end_date          DateTime?                @db.Timestamp(6)
+  sale_quantity     Int?
+  quantity_limit    Int?
   in_workspace      Boolean                  @default(false)
+  is_deleted        Boolean                  @default(false)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
   created_date_time DateTime                 @default(now()) @db.Timestamp(6)
 }
@@ -150,7 +162,7 @@ model tobiratory_digital_item_nfts {
   id                Int                      @id @default(autoincrement())
   serial_no         String?                  @unique
   digital_item      tobiratory_digital_items @relation(fields: [digital_item_id], references: [id])
-  digital_item_id   Int                      @unique
+  digital_item_id   Int
   user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid        String                   @db.VarChar(100)
   box_id            Int                      @default(0)
