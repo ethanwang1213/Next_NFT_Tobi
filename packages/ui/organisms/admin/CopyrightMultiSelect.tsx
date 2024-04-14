@@ -36,6 +36,7 @@ const CopyrightMultiSelect = ({
     highlightedIndex,
     getItemProps,
     selectedItem,
+    openMenu,
   } = useCombobox({
     items,
     inputValue,
@@ -86,10 +87,10 @@ const CopyrightMultiSelect = ({
       className={clsx(
         "flex flex-col w-full justify-center self-center",
         "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-        "text-sm font-normal text-input-color",
-        "placeholder:text-placeholder-color placeholder:font-normal",
       )}
-      onClick={() => console.log("div is clicked")}
+      onClick={() => {
+        openMenu();
+      }}
     >
       <div
         style={{
@@ -140,7 +141,7 @@ const CopyrightMultiSelect = ({
               })}
               data-testid="combobox-input"
               placeholder={showPlaceholder ? "Copyrights*" : ""}
-              className="placeholder:text-sm placeholder:text-placeholder-color placeholder:font-normal"
+              className="outline-[#717171] placeholder:text-sm placeholder:text-placeholder-color placeholder:font-normal"
             />
           </div>
         }
