@@ -244,7 +244,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           uuid: uid,
         },
       });
-      if (!admin||!admin.submission) {
+      if (!admin) {
         res.status(401).send({
           status: "error",
           data: "not-admin",
@@ -253,7 +253,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
       }
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          creator_user_id: uid,
+          owner_uuid: uid,
         },
       });
       const allSamples = await prisma.tobiratory_sample_items.findMany({
@@ -317,7 +317,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
           uuid: uid,
         },
       });
-      if (!admin||!admin.submission) {
+      if (!admin) {
         res.status(401).send({
           status: "error",
           data: "not-admin",
@@ -326,7 +326,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
       }
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          creator_user_id: uid,
+          owner_uuid: uid,
         },
       });
       for (const item of sampleIds) {
@@ -400,7 +400,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
           uuid: uid,
         },
       });
-      if (!admin||!admin.submission) {
+      if (!admin) {
         res.status(401).send({
           status: "error",
           data: "not-admin",
@@ -409,7 +409,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
       }
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          creator_user_id: uid,
+          owner_uuid: uid,
         },
       });
       const sample = await prisma.tobiratory_sample_items.findUnique({
@@ -527,7 +527,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
           uuid: uid,
         },
       });
-      if (!admin||!admin.submission) {
+      if (!admin) {
         res.status(401).send({
           status: "error",
           data: "not-admin",
@@ -536,7 +536,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
       }
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          creator_user_id: uid,
+          owner_uuid: uid,
         },
       });
       const sample = await prisma.tobiratory_sample_items.update({
