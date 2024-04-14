@@ -56,7 +56,7 @@ export const mintNFT = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (content.creator_user_id !== uid) {
+      if (content.owner_uuid !== uid) {
         res.status(401).send({
           status: "error",
           data: "You are not owner of this content",
@@ -116,7 +116,7 @@ export const mintNFT = async (req: Request, res: Response) => {
           },
         });
         if (content) {
-          creatorName = content.title;
+          creatorName = content.name;
         } else {
           const user = await prisma.tobiratory_accounts.findUnique({
             where: {

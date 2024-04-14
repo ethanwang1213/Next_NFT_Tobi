@@ -96,6 +96,7 @@ model tobiratory_contents {
   owner             tobiratory_businesses? @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid        String                 @unique @db.VarChar(255)
   name              String                 @db.VarChar(255)
+  image             String                 @db.VarChar(255)
   url               String                 @db.VarChar(255)
   description       String                 @db.Text
   copyright_holders String[]               @default([]) @db.VarChar(255)

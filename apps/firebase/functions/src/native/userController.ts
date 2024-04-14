@@ -422,6 +422,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
     const contentData = {
       owner_uuid: uid,
       name: contentName,
+      image: "",
       url,
       description,
       copyright_holders: copyrightHolders,
