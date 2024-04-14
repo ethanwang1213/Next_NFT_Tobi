@@ -377,7 +377,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
       country,
     },
     copyright: {
-      copyrightHolders,
+      copyrightHolder,
       license,
       file1,
       file2,
@@ -385,7 +385,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
       file4,
     },
   } = req.body;
-  console.log(req.body);
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const exist = await prisma.tobiratory_businesses.findFirst({
@@ -424,7 +423,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
       image: "",
       url,
       description,
-      copyright_holders: copyrightHolders,
+      copyright_holders: [copyrightHolder],
       license,
       license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
     };
