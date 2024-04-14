@@ -1,5 +1,5 @@
 export type User = {
-  id: string;
+  uuid: string;
   name: string;
   email: string;
   emailVerified: boolean;
@@ -63,7 +63,7 @@ export type TcpUser = {
 };
 
 export type TcpCopyright = {
-  copyrightHolders: string[];
+  copyrightHolder: string;
   license: string;
   file1?: File;
   file2?: File;

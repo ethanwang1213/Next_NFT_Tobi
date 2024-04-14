@@ -4,7 +4,6 @@ import {
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
   onAuthStateChanged,
-  User as FirebaseUser,
 } from "firebase/auth";
 import Router, { useRouter } from "next/router";
 import React, {
@@ -65,7 +64,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         const isRegisteredFlowAccount = !!profile?.data?.flow?.flowAddress;
         if (isRegisteredFlowAccount) {
           // already registered flow account
-          await createUser(firebaseUser, true);
+          await createUser(
+            profile.data.userId,
+            profile.data.email,
+            profile.data.username,
+            firebaseUser.emailVerified,
+            true,
+          );
           const inaccessiblePaths = [
             "/authentication",
             "/auth/email_auth",
@@ -99,7 +104,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             Router.push("/authentication");
             return;
           }
-          await createUser(firebaseUser, false);
+          await createUser(
+            firebaseUser.uid,
+            firebaseUser.email,
+            "",
+            firebaseUser.emailVerified,
+            false,
+          );
           return;
         } else if (Router.pathname === "/auth/sns_auth") {
           if (emailLinkOnly(signInMethods) || !firebaseUser.emailVerified) {
@@ -114,7 +125,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         }
 
         // not registered flow account yet
-        await createUser(firebaseUser, false);
+        await createUser(
+          firebaseUser.uid,
+          firebaseUser.email,
+          "",
+          firebaseUser.emailVerified,
+          false,
+        );
         Router.push("/auth/sns_auth");
       } else {
         setUser(null);
@@ -134,18 +151,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   const createUser = async (
-    firebaseUser: FirebaseUser,
+    uuid: string,
+    email: string,
+    name: string,
+    emailVerified: boolean,
     registeredFlowAccount: boolean,
   ) => {
-    const email = firebaseUser.email;
     try {
       const appUser: User = {
-        id: firebaseUser.uid,
-        name: email.split("@")[0].slice(0, maxNameLength) ?? "",
-        email: email,
-        emailVerified: firebaseUser.emailVerified,
-        registeredFlowAccount: registeredFlowAccount,
+        uuid,
+        name: name || email.split("@")[0],
+        email,
+        emailVerified,
+        registeredFlowAccount,
       };
+      console.log(appUser);
       setUser(appUser);
     } catch (error) {
       console.error("sign in methods error", error);
