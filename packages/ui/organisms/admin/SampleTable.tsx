@@ -1,8 +1,5 @@
 import clsx from "clsx";
-import {
-  fetchSamples,
-  deleteSamples,
-} from "hooks/SampleActions";
+import { fetchSamples, deleteSamples } from "fetchers/SampleActions";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
