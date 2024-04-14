@@ -64,10 +64,6 @@ const Detail = () => {
       const storageFileName = `${Date.now()}.${extension}`;
 
       // Upload the file to Firebase Storage
-      console.log(
-        "RefUrl",
-        `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
-      );
       const fileRef = ref(
         storage,
         `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
@@ -78,8 +74,6 @@ const Detail = () => {
       // Get the download URL of the uploaded file
       const downloadURL = await getDownloadURL(fileRef);
       fieldChangeHandler("customThumbnailUrl", downloadURL);
-
-      console.log("File uploaded successfully!");
     } catch (error) {
       // Handle any errors that occur during the upload process
       console.error("Error uploading file:", error);
@@ -144,12 +138,12 @@ const Detail = () => {
                   <h3 className="text-xl text-title-color">SAMPLE STATUS</h3>
                   <StatusDropdownSelect
                     initialIndex={sampleItem.status - 1}
-                    handleSelectedItemChange={(selectedItem) =>
-                      fieldChangeHandler("status", selectedItem.value)
-                    }
+                    handleSelectedItemChange={(changes) => {
+                      fieldChangeHandler("status", changes.selectedItem.value);
+                    }}
                   />
                 </div>
-                {sampleItem.status == 6 ? (
+                {sampleItem.status == 6 || sampleItem.status == 7 ? (
                   <div className="flex flex-col gap-6 pl-4">
                     <div className="flex items-center justify-between">
                       <span className="text-xl">Start Date (JST)</span>
@@ -292,13 +286,21 @@ const Detail = () => {
                     fieldChangeHandler("isCustomThumbnailSelected", false);
                   }}
                 >
-                  <Image
-                    width={24}
-                    height={24}
-                    alt="upload"
-                    src="/admin/images/upload-icon.svg"
-                    className="absolute right-3 bottom-3"
-                  />
+                  <a
+                    href={sampleItem.defaultThumbnailUrl}
+                    download
+                    className="absolute right-3 bottom-3 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Stop event propagation
+                    }}
+                  >
+                    <Image
+                      width={24}
+                      height={24}
+                      alt="download"
+                      src="/admin/images/download-icon.svg"
+                    />
+                  </a>
                 </div>
                 <div
                   style={{
@@ -315,18 +317,32 @@ const Detail = () => {
                   }}
                   className="relative"
                   onClick={() => {
-                    if (sampleItem.customThumbnailUrl.length > 0) {
+                    if (
+                      sampleItem.customThumbnailUrl &&
+                      sampleItem.customThumbnailUrl.length > 0
+                    ) {
                       fieldChangeHandler("isCustomThumbnailSelected", true);
                     }
                   }}
                 >
-                  {sampleItem.customThumbnailUrl.length > 0 ? (
+                  {sampleItem.customThumbnailUrl &&
+                  sampleItem.customThumbnailUrl.length > 0 ? (
                     <Image
                       width={24}
                       height={24}
                       alt="cancel"
                       src="/admin/images/cancel-icon.svg"
-                      className="absolute right-3 bottom-3"
+                      className="absolute right-3 bottom-3 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Stop event propagation
+                        setSampleItem({
+                          ...{
+                            ...sampleItem,
+                            ["isCustomThumbnailSelected"]: false,
+                            ["customThumbnailUrl"]: "",
+                          },
+                        });
+                      }}
                     />
                   ) : (
                     <Image
@@ -361,6 +377,7 @@ const Detail = () => {
                     height={24}
                     alt="upload"
                     src="/admin/images/upload-icon.svg"
+                    className="cursor-pointer"
                     onClick={handleImageClick}
                   />
                   <input
