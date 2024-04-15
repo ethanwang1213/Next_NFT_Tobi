@@ -390,7 +390,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
 };
 
 export const adminDetailOfSample = async (req: Request, res: Response) => {
-  const {sampleId} = req.body;
+  const {sampleId} = req.params;
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
