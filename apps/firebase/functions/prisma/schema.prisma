@@ -97,7 +97,7 @@ model tobiratory_contents {
   name              String                 @db.VarChar(255)
   image             String                 @db.VarChar(255)
   url               String                 @db.VarChar(255)
-  description       String                 @db.Text
+  description       String                 @db.VarChar(255)
   copyright_holders String[]               @default([]) @db.VarChar(255)
   license           String                 @db.VarChar(255)
   license_data      String[]               @default([]) @db.VarChar(255)
