@@ -84,3 +84,21 @@ const postTcpData = async (data: TcpFormType) => {
     body: JSON.stringify(postData),
   });
 };
+
+export const checkBusinessAccount = async () => {
+  const idToken = await auth.currentUser.getIdToken();
+  const res = await fetch(`/backend/api/functions/native/my/business/checkexist`, {
+    method: "POST",
+    headers: {
+      Authorization: idToken,
+      "Content-Type": "application/json",
+    },
+  });
+  if (res.ok) {
+    const resData = await res.json();
+    return resData.data.exist;
+  } else {
+    const resData = await res.text();
+    throw new Error(resData);
+  }
+}

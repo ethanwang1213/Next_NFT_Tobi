@@ -1,4 +1,5 @@
 import { fetchMyProfile } from "fetchers/adminUserAccount";
+import { checkBusinessAccount } from "fetchers/businessAccount";
 import { auth } from "fetchers/firebase/client";
 import {
   EmailAuthProvider,
@@ -63,13 +64,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
         const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
         if (hasFlowAccount) {
-          // already registered flow account
+          const hasBusinessAccount = await checkBusinessAccount().catch(
+            (error) => {
+              console.error(error);
+              auth.signOut();
+            },
+          );
           await createUser(
             profile.data.userId,
             profile.data.email,
             profile.data.username,
             firebaseUser.emailVerified,
             true,
+            hasBusinessAccount,
           );
           const inaccessiblePaths = [
             "/authentication",
@@ -78,7 +85,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           ];
           if (inaccessiblePaths.includes(Router.pathname)) {
             Router.push("/");
+          } else if (
+            hasBusinessAccount &&
+            Router.pathname.startsWith("/apply")
+          ) {
+            Router.push("/");
           }
+
           return;
         }
 
@@ -110,6 +123,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "",
             firebaseUser.emailVerified,
             false,
+            false,
           );
           return;
         } else if (Router.pathname === "/auth/sns_auth") {
@@ -130,6 +144,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           firebaseUser.email,
           "",
           firebaseUser.emailVerified,
+          false,
           false,
         );
         Router.push("/auth/sns_auth");
@@ -156,6 +171,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     name: string,
     emailVerified: boolean,
     hasFlowAccount: boolean,
+    hasBusinessAccount: boolean,
   ) => {
     try {
       const appUser: User = {
@@ -164,6 +180,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         email,
         emailVerified,
         hasFlowAccount,
+        hasBusinessAccount,
       };
       console.log(appUser);
       setUser(appUser);

@@ -1,18 +1,29 @@
 import { useAuth } from "contexts/AdminAuthProvider";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import Loading from "ui/atoms/Loading";
 
 const Index = () => {
   const { user } = useAuth();
+  const router = useRouter();
 
-  if (!user) {
-    return (
-      <div className={"h-[100dvh] flex justify-center"}>
-        <Loading />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
 
-  return <div>Admin Page</div>;
+    if (user.hasBusinessAccount) {
+      router.push("/items");
+    } else {
+      router.push("/apply");
+    }
+  }, [user]);
+
+  return (
+    <div className={"h-[100dvh] flex justify-center"}>
+      <Loading />
+    </div>
+  );
 };
 
 export default Index;
