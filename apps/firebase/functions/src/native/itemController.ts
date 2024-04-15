@@ -589,8 +589,8 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
             await prisma.tobiratory_digital_items_copyright.deleteMany({
               where: {
                 digital_item_id: digitalItemData.id,
-              }
-            })
+              },
+            });
             if (selectedCopyright) {
               await prisma.tobiratory_digital_items_copyright.create({
                 data: {
@@ -598,7 +598,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
                   copyright_id: selectedCopyright.id,
                 },
               });
-            }else {
+            } else {
               const createdCopyright = await prisma.tobiratory_copyright.create({
                 data: {
                   copyright_name: copyrightName,
