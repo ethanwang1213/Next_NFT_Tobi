@@ -21,6 +21,7 @@ const CopyrightMultiSelect = ({
           case useMultipleSelection.stateChangeTypes.DropdownKeyDownBackspace:
           case useMultipleSelection.stateChangeTypes.FunctionRemoveSelectedItem:
             setSelectedItems(newSelectedItems);
+            handleSelectedItemChange(newSelectedItems);
             break;
           default:
             break;
