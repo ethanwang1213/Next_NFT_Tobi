@@ -375,7 +375,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
 
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
-          id: digitalItem.id,
+          digital_item_id: digitalItem.id,
         },
       });
       const copyrights = await Promise.all(
