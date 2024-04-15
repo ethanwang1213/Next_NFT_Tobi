@@ -456,8 +456,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
 
 export const checkExistBusinessAcc = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const idToken = authorization?.replace(/^Bearer\s+/, "");
-  await getAuth().verifyIdToken(idToken??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const exist = await prisma.tobiratory_businesses.findFirst({
       where: {
