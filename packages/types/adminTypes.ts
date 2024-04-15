@@ -3,7 +3,7 @@ export type User = {
   name: string;
   email: string;
   emailVerified: boolean;
-  registeredFlowAccount: boolean;
+  hasFlowAccount: boolean;
 };
 
 export enum FILTER_TYPE {

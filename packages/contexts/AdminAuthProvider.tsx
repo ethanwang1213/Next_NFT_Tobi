@@ -61,8 +61,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           return;
         }
 
-        const isRegisteredFlowAccount = !!profile?.data?.flow?.flowAddress;
-        if (isRegisteredFlowAccount) {
+        const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
+        if (hasFlowAccount) {
           // already registered flow account
           await createUser(
             profile.data.userId,
@@ -155,7 +155,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     email: string,
     name: string,
     emailVerified: boolean,
-    registeredFlowAccount: boolean,
+    hasFlowAccount: boolean,
   ) => {
     try {
       const appUser: User = {
@@ -163,7 +163,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         name: name || email.split("@")[0],
         email,
         emailVerified,
-        registeredFlowAccount,
+        hasFlowAccount,
       };
       console.log(appUser);
       setUser(appUser);
@@ -191,11 +191,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    if (user.registeredFlowAccount) {
+    if (user.hasFlowAccount) {
       return;
     }
 
-    setUser((prev) => ({ ...prev, registeredFlowAccount: true }));
+    setUser((prev) => ({ ...prev, hasFlowAccount: true }));
   };
 
   if (user || unrestrictedPaths.includes(router.pathname)) {
