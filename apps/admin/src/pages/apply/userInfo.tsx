@@ -14,26 +14,6 @@ const Row1 = ({ label, children }) => {
   );
 };
 
-const Row2 = ({ label1, label2, children }) => {
-  return (
-    <div className="flex flex-row py-4 pl-6">
-      <div className="w-44 h-12 flex-none flex flex-row items-center">
-        <span className="text-base mr-4">
-          {label1}
-          {label2.length ? (
-            <>
-              <br />
-              {label2}
-            </>
-          ) : null}
-        </span>
-        {label1 ? <RequireMark /> : <></>}
-      </div>
-      <div className="flex-auto">{children}</div>
-    </div>
-  );
-};
-
 const UserInformation = ({ userInfo, setUserInfo, refs }) => {
   const userInfoChangeHandler = (field, e) => {
     setUserInfo({ ...userInfo, [field]: e.target.value });

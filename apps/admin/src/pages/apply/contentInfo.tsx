@@ -24,7 +24,14 @@ const Row1 = ({
 
 const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
   const contentInfoChangeHandler = (field, e) => {
-    setContentInfo({ ...contentInfo, [field]: e.target.value });
+    if (field === "description") {
+      setContentInfo({
+        ...contentInfo,
+        [field]: e.target.value.substring(0, 255),
+      });
+    } else {
+      setContentInfo({ ...contentInfo, [field]: e.target.value });
+    }
   };
 
   return (

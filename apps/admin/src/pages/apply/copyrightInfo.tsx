@@ -6,10 +6,14 @@ import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
 const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
   const copyrightInfoChangeHandler = (field, value) => {
-    if (field === "copyrightHolders") {
-      value = value.split(",").map((item) => item.trim());
+    if (field === "license") {
+      setCopyrightInfo({
+        ...copyrightInfo,
+        [field]: value.substring(0, 255),
+      });
+    } else {
+      setCopyrightInfo({ ...copyrightInfo, [field]: value });
     }
-    setCopyrightInfo({ ...copyrightInfo, [field]: value });
   };
 
   const file1InputRef = useRef(null);
@@ -21,20 +25,15 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
     const selectedFile = e.target.files[0];
     switch (field) {
       case 1:
-        // setFile1(selectedFile);
-        //setFilePath1(selectedFile.name);
         copyrightInfoChangeHandler("file1", selectedFile);
         break;
       case 2:
-        // setFile2(selectedFile);
         copyrightInfoChangeHandler("file2", selectedFile);
         break;
       case 3:
-        // setFile3(selectedFile);
         copyrightInfoChangeHandler("file3", selectedFile);
         break;
       case 4:
-        // setFile4(selectedFile);
         copyrightInfoChangeHandler("file4", selectedFile);
         break;
 
@@ -73,11 +72,11 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
           placeholder="©Tobiratory"
-          value={copyrightInfo.copyrightHolders.join(", ")}
+          value={copyrightInfo.copyrightHolder}
           onChange={(e) =>
-            copyrightInfoChangeHandler("copyrightHolders", e.target.value)
+            copyrightInfoChangeHandler("copyrightHolder", e.target.value)
           }
-          ref={refs["copyrightHolders"]}
+          ref={refs["copyrightHolder"]}
         />
       </div>
       <div className={"flex flex-row justify-between mb-[50px]"}>
@@ -96,7 +95,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
               alt="information"
             />
             <span className="text-[12px] ml-4">
-              著作権やライセンスを証明する公式文書を提出できます。
+              著作権やライセンスを証明する公式文書を提出できます。20MB以内のJPEG、PNG、PDFファイルのみ対応しています。
             </span>
           </div>
         </div>
@@ -225,7 +224,6 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
           提供するコンテンツが著作権に違反していないことに同意します。
         </label>
       </div>
-      {/* <button onClick={handleUpload}>Upload</button> */}
     </div>
   );
 };

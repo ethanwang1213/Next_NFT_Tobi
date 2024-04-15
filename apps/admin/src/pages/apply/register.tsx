@@ -1,5 +1,9 @@
 import clsx from "clsx";
-import { useTcpRegistration } from "fetchers/businessAccount";
+import { useAuth } from "contexts/AdminAuthProvider";
+import {
+  useTcpRegistration,
+  validateCopyrightFile,
+} from "fetchers/businessAccount";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -18,12 +22,15 @@ import UserInformation from "./userInfo";
 const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
 const Register = () => {
-  const [switchValue, setSwitchValue] = useState(0);
+  const [switchValue, setSwitchValue] = useState(2);
+  const [error, setError] = useState<string | null>(null);
+  const [response, setResponse] = useState<string | null>(null);
 
   const router = useRouter();
+  const { user } = useAuth();
 
   const [contentInfo, setContentInfo] = useState<TcpContent>({
-    name: "",
+    name: user.name,
     url: "",
     description: "",
   });
@@ -50,7 +57,7 @@ const Register = () => {
 
   const [copyrightInfo, setCopyrightInfo] = useState<CopyrightInfo>({
     agreement: false,
-    copyrightHolders: [],
+    copyrightHolder: "",
     license: "",
     file1: null,
     file2: null,
@@ -60,15 +67,14 @@ const Register = () => {
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
 
-  const [registerTcp, submissionResponse, loading, submissionError] =
-    useTcpRegistration();
+  const [registerTcp, loading] = useTcpRegistration(setResponse, setError);
 
   useEffect(() => {
-    if (!submissionResponse) {
+    if (!response) {
       return;
     }
     router.replace("/apply/finish");
-  }, [submissionResponse]);
+  }, [response]);
 
   const contentInfoInputRefs = {
     name: useRef(),
@@ -136,13 +142,35 @@ const Register = () => {
   };
 
   const checkCopyrightInfos = () => {
-    if (
-      !copyrightInfo.agreement ||
-      copyrightInfo.copyrightHolders.length === 0
-    ) {
+    if (!copyrightInfo.agreement || !copyrightInfo.copyrightHolder) {
       return false;
     }
 
+    const fileFields = ["file1", "file2", "file3", "file4"];
+    const invalidField = fileFields.find((fileField) => {
+      if (!copyrightInfo[fileField]) {
+        return false;
+      }
+      try {
+        validateCopyrightFile(copyrightInfo[fileField]);
+      } catch (err) {
+        // To prevent "Too many re-renders," call setError only when the message changes.
+        if (error !== err.message) {
+          setError(err.message);
+        }
+        return true;
+      }
+      return false;
+    });
+
+    if (invalidField) {
+      return false;
+    }
+
+    // To prevent "Too many re-renders," call setError only when the message changes.
+    if (error) {
+      setError(null);
+    }
     return true;
   };
 
@@ -185,11 +213,18 @@ const Register = () => {
       case 0:
         router.replace("/apply/terms");
         return;
+      case 2:
+        setError(null);
+        break;
+      case 3:
+        setError(null);
+        break;
     }
     setSwitchValue(switchValue - 1);
   };
 
   const toggleSwitchHandler = (value) => {
+    setError(null);
     if (value > 0 && value <= 2 && !checkContentInfos()) return false;
     if (value > 1 && value <= 3 && !checkUserInfos()) return false;
     setSwitchValue(value);
@@ -255,9 +290,9 @@ const Register = () => {
           )}
         </div>
 
-        {switchValue === 3 && submissionError && (
+        {error && (
           <div className={"font-medium text-[16px] text-attention text-center"}>
-            {submissionError}
+            {error}
           </div>
         )}
 

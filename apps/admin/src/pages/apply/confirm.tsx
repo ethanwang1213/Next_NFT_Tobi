@@ -113,7 +113,7 @@ const ConfirmInformation = ({
         </span>
       </Row1>
       <Row1 label="コピーライト（版権表記）">
-        <span className="">{copyrightInfo.copyrightHolders.join(", ")}</span>
+        <span className="">{copyrightInfo.copyrightHolder}</span>
       </Row1>
       <Row3 label="著作物に関するライセンス">
         <span className="">{copyrightFiles()}</span>
