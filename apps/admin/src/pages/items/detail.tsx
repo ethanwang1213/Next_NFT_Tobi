@@ -1,23 +1,27 @@
 import { auth } from "fetchers/firebase/client";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { fetchSampleItem } from "hooks/SampleActions";
+import { fetchSampleItem, updateSampleItem } from "fetchers/SampleActions";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
-import CheckboxInput from "ui/molecules/CheckboxInput";
 import DateTimeInput from "ui/molecules/DateTimeInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
-import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
+import StatusDropdownSelect, {
+  SampleStatus,
+} from "ui/organisms/admin/StatusDropdownSelect";
+import clsx from "clsx";
+import { Tooltip } from "react-tooltip";
 
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [sampleItem, setSampleItem] = useState(null);
+  const [changed, setChanged] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
 
   const fileInputRef = useRef(null);
   const imageDropButtonRef = useRef(null);
@@ -82,6 +86,7 @@ const Detail = () => {
 
   const fieldChangeHandler = (field, value) => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
+    setChanged(true);
   };
 
   const handleImageClick = () => {
@@ -104,9 +109,52 @@ const Detail = () => {
     }
   }, [id]);
 
+  const submitData = async () => {
+    console.log("sampleItem", sampleItem);
+    if (sampleItem.status != SampleStatus.Draft) {
+      if (
+        sampleItem.name == null ||
+        sampleItem.name.length == 0 ||
+        sampleItem.quantityLimit == null ||
+        sampleItem.quantityLimit == 0 ||
+        sampleItem.license == null ||
+        sampleItem.license.length == 0 ||
+        sampleItem.copyrights == null ||
+        sampleItem.license.copyrights == 0
+      ) {
+        setErrMsg(
+          "You cannot set it to 'Viewing Only' if mandatory fields are not filled in.",
+        );
+        return;
+      }
+      if (
+        sampleItem.status == SampleStatus.ScheduledPublishing ||
+        sampleItem.status == SampleStatus.ScheduledforSale
+      ) {
+        if (sampleItem.startDate == null || sampleItem.endDate == null) {
+          setErrMsg(
+            "You cannot set it to 'Viewing Only' if mandatory fields are not filled in.",
+          );
+          return;
+        }
+      }
+    }
+
+    if (errMsg.length > 0) {
+      setErrMsg("");
+    }
+
+    const result = await updateSampleItem(sampleItem);
+    if (result) {
+      setChanged(false);
+    }
+  };
+
   return (
     <div>
-      <ItemEditHeader />
+      <ItemEditHeader
+        activeName={sampleItem && sampleItem.name ? sampleItem.name : "No Name"}
+      />
 
       {sampleItem && (
         <div className="container mx-auto px-1.5 py-12">
@@ -121,6 +169,7 @@ const Detail = () => {
                     placeholder="Sample Name"
                     value={sampleItem.name}
                     changeHandler={(value) => fieldChangeHandler("name", value)}
+                    maxLen={50}
                   />
                   <StyledTextArea
                     className=""
@@ -130,6 +179,7 @@ const Detail = () => {
                     changeHandler={(value) =>
                       fieldChangeHandler("description", value)
                     }
+                    maxLen={1300}
                   />
                 </div>
               </div>
@@ -149,19 +199,26 @@ const Detail = () => {
                       <span className="text-xl">Start Date (JST)</span>
                       <DateTimeInput
                         className=""
-                        labelDate=""
-                        labelTime=""
+                        labelDate="Date"
+                        labelTime="Time"
                         placeholder=""
-                        value={sampleItem.release_date}
+                        value={sampleItem.startDate}
+                        changeHandler={(v) => {
+                          fieldChangeHandler("startDate", v);
+                        }}
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xl">End Date (JST)</span>
                       <DateTimeInput
                         className=""
-                        labelDate=""
-                        labelTime=""
+                        labelDate="Date"
+                        labelTime="Time"
                         placeholder=""
+                        value={sampleItem.endDate}
+                        changeHandler={(v) => {
+                          fieldChangeHandler("endDate", v);
+                        }}
                       />
                     </div>
                   </div>
@@ -178,11 +235,12 @@ const Detail = () => {
                     className=""
                     label="Price*"
                     placeholder="Price"
-                    value={""}
+                    value={`${sampleItem.price ? sampleItem.price : 0}`}
                     inputMask={TextKind.Digit}
                     changeHandler={(value) =>
                       fieldChangeHandler("price", value)
                     }
+                    readOnly={true}
                   />
                   <div className="flex">
                     <Image
@@ -190,25 +248,95 @@ const Detail = () => {
                       width={16}
                       height={16}
                       alt="information"
+                      id="image_price_info"
+                      data-tooltip-id={`tooltip_price_info`}
+                      data-tooltip-content={`only ￥0 can be set`}
+                    />
+                    <Tooltip
+                      id={`tooltip_price_info`}
+                      data-tooltip-id={`image_price_info`}
+                      place="right"
+                      noArrow={false}
+                      border="1px solid #717171"
+                      style={{
+                        whiteSpace: "pre-line",
+                        backgroundColor: "#FFFFFF",
+                        color: "#1779DE",
+                        width: "140px",
+                        fontSize: "12px",
+                        lineHeight: "18px",
+                        paddingLeft: "8px",
+                        paddingRight: "6px",
+                        paddingTop: "6px",
+                        paddingBottom: "6px",
+                        borderRadius: "4px",
+                        textAlign: "center",
+                      }}
                     />
                   </div>
                   <StyledTextInput
                     className=""
                     placeholder="Quantity Limit"
-                    value=""
+                    value={`${
+                      sampleItem.quantityLimit
+                        ? sampleItem.quantityLimit != -1
+                          ? sampleItem.quantityLimit
+                          : ""
+                        : ""
+                    }`}
                     label="Quantity Limit"
                     inputMask={TextKind.Digit}
                     changeHandler={(value) =>
                       fieldChangeHandler("quantityLimit", value)
                     }
                   />
-                  <div className="flex justify-start gap-2">
-                    <CheckboxInput className="" label="No Quantity Limit" />
+                  <div className="flex justify-start items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="quantityLimit"
+                      className="w-6 h-6"
+                      checked={sampleItem.quantityLimit == -1}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          fieldChangeHandler("quantityLimit", -1);
+                        }
+                      }}
+                    />
+                    <label
+                      className="text-sm text-[#717171] font-normal"
+                      htmlFor="quantityLimit"
+                    >
+                      No Quantity Limit
+                    </label>
                     <Image
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
                       alt="information"
+                      id="image_quantity_info"
+                      data-tooltip-id={`tooltip_quantity_info`}
+                      data-tooltip-content={`Please check the box if you do not want to set a maximum sales limit.`}
+                    />
+                    <Tooltip
+                      id={`tooltip_quantity_info`}
+                      data-tooltip-id={`image_quantity_info`}
+                      place="right"
+                      noArrow={false}
+                      border="1px solid #717171"
+                      style={{
+                        whiteSpace: "pre-line",
+                        backgroundColor: "#FFFFFF",
+                        color: "#1779DE",
+                        width: "424px",
+                        fontSize: "12px",
+                        lineHeight: "18px",
+                        paddingLeft: "8px",
+                        paddingRight: "6px",
+                        paddingTop: "6px",
+                        paddingBottom: "6px",
+                        borderRadius: "4px",
+                        textAlign: "center",
+                      }}
                     />
                   </div>
                 </div>
@@ -230,6 +358,30 @@ const Detail = () => {
                       width={16}
                       height={16}
                       alt="information"
+                      id="image_copyright_info"
+                      data-tooltip-id={`tooltip_copyright_info`}
+                      data-tooltip-content={`ex. ©Tobiratory`}
+                    />
+                    <Tooltip
+                      id={`tooltip_copyright_info`}
+                      data-tooltip-id={`image_copyright_info`}
+                      place="right"
+                      noArrow={false}
+                      border="1px solid #717171"
+                      style={{
+                        whiteSpace: "pre-line",
+                        backgroundColor: "#FFFFFF",
+                        color: "#1779DE",
+                        width: "140px",
+                        fontSize: "12px",
+                        lineHeight: "18px",
+                        paddingLeft: "8px",
+                        paddingRight: "6px",
+                        paddingTop: "6px",
+                        paddingBottom: "6px",
+                        borderRadius: "4px",
+                        textAlign: "center",
+                      }}
                     />
                   </div>
                   <div className="flex items-start gap-6">
@@ -248,6 +400,30 @@ const Detail = () => {
                       height={16}
                       alt="information"
                       className="pt-2"
+                      id="image_license_info"
+                      data-tooltip-id={`tooltip_license_info`}
+                      data-tooltip-content={`Please enter the license notation in this field. \n ex) "CC0" or detailed license information.`}
+                    />
+                    <Tooltip
+                      id={`tooltip_license_info`}
+                      data-tooltip-id={`image_license_info`}
+                      place="right"
+                      noArrow={false}
+                      border="1px solid #717171"
+                      style={{
+                        whiteSpace: "pre-line",
+                        backgroundColor: "#FFFFFF",
+                        color: "#1779DE",
+                        width: "420px",
+                        fontSize: "12px",
+                        lineHeight: "18px",
+                        paddingLeft: "8px",
+                        paddingRight: "6px",
+                        paddingTop: "6px",
+                        paddingBottom: "6px",
+                        borderRadius: "4px",
+                        textAlign: "center",
+                      }}
                     />
                   </div>
                 </div>
@@ -391,15 +567,19 @@ const Detail = () => {
               </div>
             </div>
           </div>
-          <div className="text-center mt-11">
-            <Link href="/items">
-              <Button
-                type="submit"
-                className="text-xl h-14 bg-[#1779DE] text-white rounded-[30px] px-10"
-              >
-                SAVE
-              </Button>
-            </Link>
+          <div className="text-center">
+            <div className="text-xl text-[#FF4747] py-8">{errMsg}</div>
+            <Button
+              type="submit"
+              className={clsx(
+                "text-xl h-14 text-white rounded-[30px] px-10",
+                changed ? "bg-[#1779DE]" : "bg-inactive",
+              )}
+              disabled={!changed}
+              onClick={submitData}
+            >
+              SAVE
+            </Button>
           </div>
         </div>
       )}

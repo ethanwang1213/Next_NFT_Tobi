@@ -64,9 +64,9 @@ const CopyrightMultiSelect = ({
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
+          handleSelectedItemChange([...selectedItems, inputValue]);
           setSelectedItems([...selectedItems, inputValue]);
           setInputValue("");
-          handleSelectedItemChange(selectedItems);
           break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
@@ -106,10 +106,15 @@ const CopyrightMultiSelect = ({
             return (
               <span
                 style={{
-                  backgroundColor: "lightgray",
-                  paddingLeft: "4px",
-                  paddingRight: "4px",
+                  backgroundColor: "#1779DE",
+                  color: "#FFFFFF",
+                  paddingLeft: "8px",
+                  paddingRight: "8px",
+                  paddingTop: "4px",
+                  paddingBottom: "4px",
                   borderRadius: "6px",
+                  fontWeight: 400,
+                  fontSize: "14px",
                 }}
                 key={`selected-item-${index}`}
                 {...getSelectedItemProps({
@@ -141,7 +146,7 @@ const CopyrightMultiSelect = ({
               })}
               data-testid="combobox-input"
               placeholder={showPlaceholder ? "Copyrights*" : ""}
-              className="outline-[#717171] placeholder:text-sm placeholder:text-placeholder-color placeholder:font-normal"
+              className="outline-[#FFA726] placeholder:text-sm placeholder:text-placeholder-color placeholder:font-normal"
             />
           </div>
         }

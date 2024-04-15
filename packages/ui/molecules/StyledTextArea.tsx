@@ -7,6 +7,7 @@ const StyledTextArea = ({
   label,
   placeholder,
   changeHandler,
+  maxLen,
   inputRef,
 }: {
   className: string;
@@ -14,6 +15,7 @@ const StyledTextArea = ({
   label: string;
   changeHandler: (e) => void;
   placeholder: string;
+  maxLen?: number;
   inputRef?: MutableRefObject<HTMLTextAreaElement>;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -29,8 +31,13 @@ const StyledTextArea = ({
   };
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
-    changeHandler(e.target.value);
+    let value = e.target.value;
+    if (maxLen) {
+      value = value.substring(0, maxLen);
+    }
+
+    setInputValue(value);
+    changeHandler(value);
   };
 
   useEffect(() => {
