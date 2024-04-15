@@ -1,13 +1,11 @@
 import clsx from "clsx";
-import {
-  fetchSamples,
-  deleteSamples,
-} from "hooks/SampleActions";
+import { fetchSamples, deleteSamples } from "fetchers/SampleActions";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatCurrency } from "ui/atoms/Formatters";
+import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "../../atoms/Button";
+import { formatSampleStatus } from "./StatusDropdownSelect";
 
 const SampleTable = ({ filters }) => {
   // sample data
@@ -151,38 +149,6 @@ const SampleTable = ({ filters }) => {
     setSortOrder(order);
   };
 
-  // status number -> status string
-  const statusString = (status) => {
-    let value;
-    switch (status) {
-      case 1:
-        value = "Draft";
-        break;
-      case 2:
-        value = "Private";
-        break;
-      case 3:
-        value = "Viewing Only";
-        break;
-      case 4:
-        value = "On Sale";
-        break;
-      case 5:
-        value = "Unlisted";
-        break;
-      case 6:
-        value = "Scheduled Publishing";
-        break;
-      case 7:
-        value = "Scheduled for Sale";
-        break;
-      default:
-        value = "";
-        break;
-    }
-    return value;
-  };
-
   return (
     <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -324,69 +290,75 @@ const SampleTable = ({ filters }) => {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {samples.length > 0 &&
-                samples?.map((sample) => (
-                  <tr key={sample.id} className="w-full border-b py-3 text-sm">
-                    <td className="py-3 text-center">
-                      <input
-                        type="checkbox"
-                        className="w-4 h-4"
-                        checked={selSampleIds.includes(sample.id)}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          const sampleId = sample.id;
+              {samples?.map((sample) => (
+                <tr key={sample.id} className="w-full border-b py-3 text-sm">
+                  <td className="py-3 text-center">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4"
+                      checked={selSampleIds.includes(sample.id)}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        const sampleId = sample.id;
 
-                          setSelSampleIds((prevIds) => {
-                            if (checked) {
-                              return [...prevIds, sampleId];
-                            } else {
-                              return prevIds.filter((id) => id !== sampleId);
-                            }
-                          });
-                        }}
+                        setSelSampleIds((prevIds) => {
+                          if (checked) {
+                            return [...prevIds, sampleId];
+                          } else {
+                            return prevIds.filter((id) => id !== sampleId);
+                          }
+                        });
+                      }}
+                    />
+                  </td>
+                  <td className="py-3">
+                    <Link
+                      href={`/items/detail?id=${sample.id}`}
+                      className="flex items-center"
+                    >
+                      <Image
+                        src={sample.thumbnail}
+                        className="rounded-full inline-block mx-2"
+                        width={80}
+                        height={80}
+                        alt={`${sample.name}'s profile picture`}
+                        unoptimized
                       />
-                    </td>
-                    <td className="py-3">
-                      <Link
-                        href={`/items/detail?id=${sample.id}`}
-                        className="flex items-center"
-                      >
-                        <Image
-                          src={sample.thumbnail}
-                          className="rounded-full inline-block mx-2"
-                          width={80}
-                          height={80}
-                          alt={`${sample.name}'s profile picture`}
-                        />
-                        <span className="inline-block">{sample.name}</span>
-                      </Link>
-                    </td>
-                    <td className="px-3 py-3 text-center justify-center">
-                      {formatCurrency(sample.price)}
-                    </td>
-                    <td className="p-3 text-center justify-center">
-                      {statusString(sample.status)}
-                    </td>
-                    <td className="px-3 py-3  text-center justify-center">
-                      {sample.saleStartDate.length ? sample.saleStartDate : "-"}
-                    </td>
-                    <td className="px-3 py-3  text-center justify-center">
-                      {sample.saleEndDate.length ? sample.saleEndDate : "-"}
-                    </td>
-                    <td className="px-3 py-3  text-center justify-center">
-                      <span>{sample.saleQuantity} / </span>
-                      {sample.quantityLimit != -1 ? (
-                        <span>{sample.quantityLimit}</span>
-                      ) : (
-                        <span className="text-[20px]">∞</span>
-                      )}
-                    </td>
-                    <td className="px-3 py-3  text-center justify-center">
-                      {sample.createDate.length ? sample.createDate : "-"}
-                    </td>
-                    <td></td>
-                  </tr>
-                ))}
+                      <span className="inline-block">{sample.name}</span>
+                    </Link>
+                  </td>
+                  <td className="px-3 py-3 text-center justify-center">
+                    {formatCurrency(sample.price)}
+                  </td>
+                  <td className="p-3 text-center justify-center">
+                    {formatSampleStatus(sample.status)}
+                  </td>
+                  <td className="px-3 py-3  text-center justify-center">
+                    {!!sample.saleStartDate && sample.saleStartDate.length
+                      ? formatDateToLocal(sample.saleStartDate)
+                      : "-"}
+                  </td>
+                  <td className="px-3 py-3  text-center justify-center">
+                    {!!sample.saleEndDate && sample.saleEndDate.length
+                      ? formatDateToLocal(sample.saleEndDate)
+                      : "-"}
+                  </td>
+                  <td className="px-3 py-3  text-center justify-center">
+                    <span>{sample.saleQuantity} / </span>
+                    {sample.quantityLimit != -1 ? (
+                      <span>{sample.quantityLimit}</span>
+                    ) : (
+                      <span className="text-[20px]">∞</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-3  text-center justify-center">
+                    {!!sample.createDate && sample.createDate.length
+                      ? formatDateToLocal(sample.createDate)
+                      : "-"}
+                  </td>
+                  <td></td>
+                </tr>
+              ))}
             </tbody>
           </table>
           {selSampleIds.length > 0 ? (
@@ -401,7 +373,7 @@ const SampleTable = ({ filters }) => {
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
                   const result = await deleteSamples(selSampleIds);
-                  if (result == "deleted") {
+                  if (result == true) {
                     const data = await fetchSamples();
                     setSelSampleIds([]);
                     setSamples(data);

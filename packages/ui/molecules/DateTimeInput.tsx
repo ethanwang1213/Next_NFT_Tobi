@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ja from "date-fns/locale/ja";
+import { formatDateToLocal } from "../atoms/Formatters";
 
 const DateTimeInput = ({
   className,
@@ -23,13 +24,13 @@ const DateTimeInput = ({
   const [isDateFocused, setIsDateFocused] = useState(false);
   const [isTimeFocused, setIsTimeFocused] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
-    value && value.length ? new Date(value) : undefined
+    value && value.length ? new Date(value) : undefined,
   );
   const [dateValue, setDateValue] = useState(
-    value && value.length ? value.split(" ")[0] : ""
+    value && value.length ? value.split(" ")[0] : "",
   );
   const [timeValue, setTimeValue] = useState(
-    value && value.length ? value.split(" ")[1] : ""
+    value && value.length ? value.split(" ")[1] : "",
   );
   const [uniqueId, setUniqueId] = useState("");
 
@@ -73,17 +74,23 @@ const DateTimeInput = ({
             minute: "2-digit",
             hour12: false,
           })
-        : ""
+        : "",
     );
+    changeHandler(formatDateToLocal(date, true));
   };
 
   const dateInputChangeHandler = (e) => {
     setDateValue(e.target.value.length ? e.target.value : "");
     if (e.target.value.length == 0) setTimeValue("");
+
+    changeHandler("");
   };
+
   const timeInputChangeHandler = (e) => {
     setTimeValue(e.target.value.length ? e.target.value : "");
     if (e.target.value.length == 0) setDateValue("");
+
+    changeHandler("");
   };
 
   registerLocale("ja", ja);

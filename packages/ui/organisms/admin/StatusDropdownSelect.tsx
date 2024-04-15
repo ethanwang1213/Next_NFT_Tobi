@@ -1,14 +1,56 @@
 import clsx from "clsx";
 import { useSelect } from "downshift";
 
+export enum SampleStatus {
+  Draft = 1,
+  Private,
+  ViewingOnly,
+  OnSale,
+  Unlisted,
+  ScheduledPublishing,
+  ScheduledforSale,
+  SampleStatusCount,
+}
+
+export const formatSampleStatus = (status) => {
+  let value;
+  switch (status) {
+    case SampleStatus.Draft:
+      value = "Draft";
+      break;
+    case SampleStatus.Private:
+      value = "Private";
+      break;
+    case SampleStatus.ViewingOnly:
+      value = "Viewing Only";
+      break;
+    case SampleStatus.OnSale:
+      value = "On Sale";
+      break;
+    case SampleStatus.Unlisted:
+      value = "Unlisted";
+      break;
+    case SampleStatus.ScheduledPublishing:
+      value = "Scheduled Publishing";
+      break;
+    case SampleStatus.ScheduledforSale:
+      value = "Scheduled for Sale";
+      break;
+    default:
+      value = "";
+      break;
+  }
+  return value;
+};
+
 const statusValues = [
-  { value: 1, title: "Draft", color: "#093159" },
-  { value: 2, title: "Private", color: "#505050" },
-  { value: 3, title: "Viewing Only", color: "#37AD00" },
-  { value: 4, title: "On Sale", color: "#DB6100" },
-  { value: 5, title: "Unlisted", color: "#3F3F3F" },
-  { value: 6, title: "Scheduled Publishing", color: "#277C00" },
-  { value: 7, title: "Scheduled for Sale", color: "#9A4500" },
+  { value: SampleStatus.Draft, color: "#093159" },
+  { value: SampleStatus.Private, color: "#505050" },
+  { value: SampleStatus.ViewingOnly, color: "#37AD00" },
+  { value: SampleStatus.OnSale, color: "#DB6100" },
+  { value: SampleStatus.Unlisted, color: "#3F3F3F" },
+  { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+  { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
 ];
 
 const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
@@ -35,11 +77,11 @@ const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
         }}
         {...getToggleButtonProps()}
       >
-        <span>{selectedItem.title}</span>
+        <span>{formatSampleStatus(selectedItem.value)}</span>
         <span>{isOpen ? <>▲</> : <>▼</>}</span>
       </div>
       <ul
-        className={`absolute w-72 bg-white mt-1 shadow-md p-0 z-10 ${
+        className={`absolute w-72 bg-[#FAFAFA] shadow-md px-2 py-2 z-10 rounded-[20px] ${
           !isOpen && "hidden"
         }`}
         {...getMenuProps()}
@@ -50,12 +92,12 @@ const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
               className={clsx(
                 highlightedIndex === index && "bg-blue-300",
                 selectedItem === item && "font-bold",
-                "py-2 px-3 shadow-sm flex flex-col",
+                "py-1 px-3 flex flex-col rounded-[20px] my-1",
               )}
               key={item.value}
               {...getItemProps({ item, index })}
             >
-              <span>{item.title}</span>
+              <span>{formatSampleStatus(item.value)}</span>
             </li>
           ))}
       </ul>

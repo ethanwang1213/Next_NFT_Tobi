@@ -15,10 +15,6 @@ export default function Index() {
       label: "new sample",
       href: "/workspace",
     },
-    // package: {
-    //   label: "new package",
-    //   href: "/items",
-    // },
   };
 
   return (
