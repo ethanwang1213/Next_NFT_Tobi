@@ -249,10 +249,9 @@ const decryptBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
-  const client = new KeyManagementServiceClient();
-  const ciphertext = Buffer.from(encryptedPrivateKeyBase64, "base64");
+  const ciphertext = encryptedPrivateKeyBase64;
   const keyName = kmsClient.cryptoKeyPath(process.env.KMS_PROJECT_ID, process.env.KMS_OPERATION_KEY_LOCATION, process.env.KMS_OPERATION_KEYRING, process.env.KMS_OPERATION_KEY);
-  const [decryptResponse] = await client.decrypt({
+  const [decryptResponse] = await kmsClient.decrypt({
     name: keyName,
     ciphertext: ciphertext,
   });
@@ -376,7 +375,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
 
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
-          id: digitalItem.id,
+          digital_item_id: digitalItem.id,
         },
       });
       const copyrights = await Promise.all(
