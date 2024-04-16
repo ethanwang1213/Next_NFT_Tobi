@@ -513,8 +513,8 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     isCustomThumbnailSelected: boolean,
     price: number,
     status: number,
-    startDate: string,
-    endDate: string,
+    startDate: string | undefined,
+    endDate: string | undefined,
     quantityLimit: number,
     license: string,
     copyrights: string[],
@@ -547,8 +547,8 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         },
         data: {
           price: price,
-          start_date: new Date(startDate),
-          end_date: new Date(endDate),
+          start_date: startDate==undefined?undefined:new Date(startDate),
+          end_date: endDate==undefined?undefined:new Date(endDate),
           quantity_limit: quantityLimit,
         },
       });
@@ -579,38 +579,28 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
+      await prisma.tobiratory_digital_items_copyright.deleteMany({
+        where: {
+          digital_item_id: digitalItemData.id,
+        },
+      });
       await Promise.all(
           copyrights.map(async (copyrightName)=>{
-            const selectedCopyright = await prisma.tobiratory_copyright.findFirst({
+            const selectedCopyright = await prisma.tobiratory_copyright.upsert({
               where: {
                 copyright_name: copyrightName,
               },
-            });
-            await prisma.tobiratory_digital_items_copyright.deleteMany({
-              where: {
-                digital_item_id: digitalItemData.id,
+              update: {},
+              create: {
+                copyright_name: copyrightName,
               },
             });
-            if (selectedCopyright) {
-              await prisma.tobiratory_digital_items_copyright.create({
-                data: {
-                  digital_item_id: digitalItemData.id,
-                  copyright_id: selectedCopyright.id,
-                },
-              });
-            } else {
-              const createdCopyright = await prisma.tobiratory_copyright.create({
-                data: {
-                  copyright_name: copyrightName,
-                },
-              });
-              await prisma.tobiratory_digital_items_copyright.create({
-                data: {
-                  digital_item_id: digitalItemData.id,
-                  copyright_id: createdCopyright.id,
-                },
-              });
-            }
+            await prisma.tobiratory_digital_items_copyright.create({
+              data: {
+                digital_item_id: digitalItemData.id,
+                copyright_id: selectedCopyright.id,
+              },
+            });
           })
       );
       res.status(200).send({
