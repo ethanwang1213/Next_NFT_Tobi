@@ -1,6 +1,8 @@
 name: Deploy Admin Preview on Vercel
 
-on: push
+on:
+  pull_request:
+    types: [opened]
 
 jobs:
   deploy-admin-preview:
