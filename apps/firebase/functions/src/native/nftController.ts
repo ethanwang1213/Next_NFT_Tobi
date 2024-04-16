@@ -6,6 +6,7 @@ import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
+import axios from "axios";
 
 const pubsub = new PubSub();
 
@@ -210,3 +211,63 @@ export const mintNFT = async (req: Request, res: Response) => {
     throw error;
   });
 };
+
+export const fetchNftMedia = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {mediaUrl} = req.body;
+  const digitalData = await prisma.tobiratory_digital_items.findFirst({
+    where: {
+      OR: [
+        {default_thumb_url: mediaUrl},
+        {custom_thumb_url: mediaUrl},
+      ]
+    }
+  });
+  if (!digitalData) {
+    res.status(401).send({
+      status: "error",
+      data: "digital-not-exist",
+    });
+    return;
+  }
+  if (digitalData.status>2) {
+    try {
+      const response = await axios.get(mediaUrl, { responseType: 'arraybuffer' });
+      res.status(200).send({
+        status: "success",
+        data: response.data,
+      });
+      return;
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+      return;
+    }
+  }
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    if (digitalData.creator_uuid != uid) {
+      const placeHolderImageUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/images%2FJournal_book_TOBIRAPOLIS_2.png?alt=media&token=2b51b911-65c3-4b34-82c9-329477b83d50";
+      const response = await axios.get(placeHolderImageUrl, { responseType: 'arraybuffer' });
+      res.status(200).send({
+        status: "success",
+        data: response.data,
+      });
+      return
+    }
+    const response = await axios.get(mediaUrl, { responseType: 'arraybuffer' });
+    res.status(200).send({
+      status: "success",
+      data: response.data,
+    });
+    return
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+}
