@@ -23,7 +23,7 @@ export default function Index() {
         <h1 className="font-semibold text-[#717171] text-3xl">ITEMS</h1>
         <CreateButton {...(links[selectedTab] ?? links.sample)} />
       </div>
-      <div className="w-full items-center justify-between pl-5">
+      <div className="w-full items-center justify-between">
         <ItemsManageTab onTabChange={setSelectedTab} />
       </div>
     </div>
