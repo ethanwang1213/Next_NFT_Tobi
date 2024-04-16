@@ -85,13 +85,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           ];
           if (inaccessiblePaths.includes(Router.pathname)) {
             Router.push("/");
-          } else if (
-            hasBusinessAccount &&
-            Router.pathname.startsWith("/apply")
-          ) {
+          } else if (hasBusinessAccount && isApplyPage(Router.pathname)) {
             Router.push("/");
+          } else if (
+            !hasBusinessAccount &&
+            !isPageForNonBusinessAccount(Router.pathname)
+          ) {
+            Router.push("/apply");
           }
-
           return;
         }
 
@@ -182,7 +183,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         hasFlowAccount,
         hasBusinessAccount,
       };
-      console.log(appUser);
       setUser(appUser);
     } catch (error) {
       console.error("sign in methods error", error);
@@ -234,6 +234,20 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       </div>
     );
   }
+};
+
+export const isApplyPage = (path: string) => {
+  return path === "/apply" || path.startsWith("/apply/");
+};
+
+export const isPageForNonBusinessAccount = (path: string) => {
+  return (
+    isApplyPage(path) ||
+    path === "/" ||
+    path.startsWith("/auth/") ||
+    path === "/account" ||
+    path.startsWith("/account/")
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);
