@@ -8,27 +8,28 @@ datasource db {
 }
 
 model tobiratory_accounts {
-  id                Int                            @id @default(autoincrement())
-  uuid              String                         @unique @db.VarChar(100)
-  email             String                         @unique @db.VarChar(255)
-  username          String                         @db.VarChar(255)
-  sns               String                         @default("") @db.VarChar(255)
-  icon_url          String                         @default("") @db.VarChar(255)
-  about_me          String                         @default("") @db.VarChar(255)
-  social_link       String[]                       @default([]) @db.VarChar(255)
-  gender            String                         @default("") @db.VarChar(255)
-  birth             String                         @default("") @db.VarChar(255)
-  gift_permission   Boolean                        @default(false)
-  digital_item      tobiratory_digital_items[]
-  flow_account      tobiratory_flow_accounts?
-  favorite_saidans  tobiratory_saidans_favorite[]
-  digital_nft       tobiratory_digital_item_nfts[]
-  boxes             tobiratory_boxes[]
-  material_iamges   tobiratory_material_images[]
-  saidans           tobiratory_saidans[]
-  samples           tobiratory_sample_items[]
-  updated_date_time DateTime                       @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                       @default(now()) @db.Timestamp(6)
+  id                               Int                                @id @default(autoincrement())
+  uuid                             String                             @unique @db.VarChar(100)
+  email                            String                             @unique @db.VarChar(255)
+  username                         String                             @db.VarChar(255)
+  sns                              String                             @default("") @db.VarChar(255)
+  icon_url                         String                             @default("") @db.VarChar(255)
+  about_me                         String                             @default("") @db.VarChar(255)
+  social_link                      String[]                           @default([]) @db.VarChar(255)
+  gender                           String                             @default("") @db.VarChar(255)
+  birth                            String                             @default("") @db.VarChar(255)
+  gift_permission                  Boolean                            @default(false)
+  digital_item                     tobiratory_digital_items[]
+  flow_account                     tobiratory_flow_accounts?
+  favorite_saidans                 tobiratory_saidans_favorite[]
+  digital_nft                      tobiratory_digital_item_nfts[]
+  boxes                            tobiratory_boxes[]
+  material_iamges                  tobiratory_material_images[]
+  saidans                          tobiratory_saidans[]
+  samples                          tobiratory_sample_items[]
+  updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
+  created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
+  tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
 }
 
 model tobiratory_flow_accounts {
@@ -103,36 +104,37 @@ model tobiratory_contents {
 }
 
 model tobiratory_digital_items {
-  id                Int                                  @id @default(autoincrement())
-  user              tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
-  creator_uuid      String                               @db.VarChar(100)
-  name              String                               @default("") @db.VarChar(255)
-  default_thumb_url String                               @db.VarChar(255)
-  custom_thumb_url  String                               @db.VarChar(255)
-  is_default_thumb  Boolean                              @default(true)
-  nft_model         String                               @default("") @db.VarChar(255)
-  nft_metadata      String                               @default("") @db.Text
-  material_id       Int                                  @default(0)
-  type              Int
-  description       String                               @default("") @db.VarChar(255)
-  limit             Int?
-  license           String                               @default("") @db.VarChar(255)
-  state_type        Int                                  @default(0)
-  can_scale         Boolean                              @default(false)
-  meter_height      Float                                @default(0)
-  scale             Float                                @default(0)
-  position          Float[]                              @default([0, 0, 0])
-  rotation          Float[]                              @default([0, 0, 0])
-  copyright         tobiratory_digital_items_copyright[]
-  saidan_id         Int                                  @default(0)
-  sample_item       tobiratory_sample_items? //need to discuss
-  digital_nft       tobiratory_digital_item_nfts[] //need to discuss
-  item_id           Int?
-  tx_id             String?                              @db.VarChar(255)
-  status            Int
-  minted_count      Int                                  @default(0)
-  updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                             @default(now()) @db.Timestamp(6)
+  id                               Int                                  @id @default(autoincrement())
+  user                             tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
+  creator_uuid                     String                               @db.VarChar(100)
+  name                             String                               @default("") @db.VarChar(255)
+  default_thumb_url                String                               @db.VarChar(255)
+  custom_thumb_url                 String                               @db.VarChar(255)
+  is_default_thumb                 Boolean                              @default(true)
+  nft_model                        String                               @default("") @db.VarChar(255)
+  nft_metadata                     String                               @default("") @db.Text
+  material_id                      Int                                  @default(0)
+  type                             Int
+  description                      String                               @default("") @db.VarChar(255)
+  limit                            Int?
+  license                          String                               @default("") @db.VarChar(255)
+  state_type                       Int                                  @default(0)
+  can_scale                        Boolean                              @default(false)
+  meter_height                     Float                                @default(0)
+  scale                            Float                                @default(0)
+  position                         Float[]                              @default([0, 0, 0])
+  rotation                         Float[]                              @default([0, 0, 0])
+  copyright                        tobiratory_digital_items_copyright[]
+  saidan_id                        Int                                  @default(0)
+  sample_item                      tobiratory_sample_items? //need to discuss
+  digital_nft                      tobiratory_digital_item_nfts[] //need to discuss
+  item_id                          Int?
+  tx_id                            String?                              @db.VarChar(255)
+  status                           Int
+  minted_count                     Int                                  @default(0)
+  updated_date_time                DateTime                             @default(now()) @db.Timestamp(6)
+  created_date_time                DateTime                             @default(now()) @db.Timestamp(6)
+  tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
 }
 
 model tobiratory_sample_items {
@@ -170,6 +172,16 @@ model tobiratory_digital_item_nfts {
   tx_id             String?                  @db.VarChar(255)
   updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
   created_date_time DateTime                 @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_digital_nft_ownership {
+  id                       Int                       @id @default(autoincrement())
+  tobiratory_accounts      tobiratory_accounts?      @relation(fields: [owner_uuid], references: [uuid])
+  owner_uuid               String                    @db.VarChar(100)
+  tobiratory_digital_items tobiratory_digital_items? @relation(fields: [nft_id], references: [id])
+  nft_id                   Int
+  updated_date_time        DateTime                  @default(now()) @db.Timestamp(6)
+  created_date_time        DateTime                  @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_boxes {
