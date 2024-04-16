@@ -146,7 +146,7 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
-app.get("/copyright", getCopyrights);
+app.get("/copyrights", getCopyrights);
 
 // admin APIs
 app.post("/admin/digital/status", adminChangeDigitalStatus);

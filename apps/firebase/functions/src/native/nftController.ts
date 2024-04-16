@@ -256,7 +256,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
           created_date_time: "desc",
         },
       });
-      
+
       if (!ownerships.length||ownerships[0].owner_uuid!=uid) {
         res.status(401).send({
           status: "error",
@@ -304,7 +304,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       );
       const returnData = {
         content: content!=null?{
-          name: content.title
+          name: content.title,
         }:null,
         name: digitalData.name,
         modelUrl: digitalData.nft_model,
@@ -347,7 +347,7 @@ export const getCopyrights = async (req: Request, res: Response) => {
         return {
           id: copyright.id,
           name: copyright.copyright_name,
-        }
+        };
       });
       res.status(200).send({
         status: "success",
@@ -366,4 +366,4 @@ export const getCopyrights = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
