@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
-import {FirebaseError} from "firebase-admin";
+import {FirebaseError, storage} from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
@@ -212,9 +212,20 @@ export const mintNFT = async (req: Request, res: Response) => {
   });
 };
 
-export const fetchNftMedia = async (req: Request, res: Response) => {
+export const fetchNftThumb = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {mediaUrl} = req.body;
+  const {mediaUrl}:{mediaUrl: string} = req.body;
+  const storageBucket = storage().bucket();
+  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/"
+  if (!mediaUrl.includes(prefixUrl)) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-thumb",
+    });
+    return;
+  }
+  const bucketUrl = mediaUrl.substring(mediaUrl.lastIndexOf('/') + 1).split("?")[0];
+  const file = storageBucket.file(bucketUrl);
   const digitalData = await prisma.tobiratory_digital_items.findFirst({
     where: {
       OR: [
@@ -232,10 +243,10 @@ export const fetchNftMedia = async (req: Request, res: Response) => {
   }
   if (digitalData.status>2) {
     try {
-      const response = await axios.get(mediaUrl, { responseType: 'arraybuffer' });
+      const download = await file.download();
       res.status(200).send({
         status: "success",
-        data: response.data,
+        data: download[0],
       });
       return;
     } catch (error) {
@@ -249,20 +260,93 @@ export const fetchNftMedia = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     if (digitalData.creator_uuid != uid) {
-      const placeHolderImageUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/images%2FJournal_book_TOBIRAPOLIS_2.png?alt=media&token=2b51b911-65c3-4b34-82c9-329477b83d50";
-      const response = await axios.get(placeHolderImageUrl, { responseType: 'arraybuffer' });
+      const placeHolderImageUrl = "images/Journal_book_TOBIRAPOLIS_2.png";
+      const placeHolderFile = storageBucket.file(placeHolderImageUrl);
+      const download = await placeHolderFile.download();
       res.status(200).send({
         status: "success",
-        data: response.data,
+        data: download[0],
       });
-      return
+      return;
     }
-    const response = await axios.get(mediaUrl, { responseType: 'arraybuffer' });
+    const download = await file.download();
     res.status(200).send({
       status: "success",
-      data: response.data,
+      data: download[0],
     });
-    return
+    return;
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+}
+
+export const fetchNftModel = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {modelUrl}:{modelUrl: string} = req.body;
+  const storageBucket = storage().bucket();
+  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/"
+  if (!modelUrl.includes(prefixUrl)) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-model",
+    });
+    return;
+  }
+  const bucketUrl = modelUrl.substring(modelUrl.lastIndexOf('/') + 1).split("?")[0];
+  const file = storageBucket.file(bucketUrl);
+  const digitalData = await prisma.tobiratory_digital_items.findFirst({
+    where: {
+      OR: [
+        {default_thumb_url: modelUrl},
+        {custom_thumb_url: modelUrl},
+      ]
+    }
+  });
+  if (!digitalData) {
+    res.status(401).send({
+      status: "error",
+      data: "digital-not-exist",
+    });
+    return;
+  }
+  if (digitalData.status>2) {
+    try {
+      const download = await file.download();
+      res.status(200).send({
+        status: "success",
+        data: download,
+      });
+      return;
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+      return;
+    }
+  }
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    if (digitalData.creator_uuid != uid) {
+      const placeHolderImageUrl = "images/Journal_book_TOBIRAPOLIS_2.png";
+      const placeHolderFile = storageBucket.file(placeHolderImageUrl);
+      const download = await placeHolderFile.download();
+      res.status(200).send({
+        status: "success",
+        data: download,
+      });
+      return;
+    }
+    const download = await file.download();
+    res.status(200).send({
+      status: "success",
+      data: download,
+    });
+    return;
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
       status: "error",
