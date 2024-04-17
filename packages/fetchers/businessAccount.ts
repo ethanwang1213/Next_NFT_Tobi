@@ -24,7 +24,8 @@ export const useTcpRegistration = (setResponse, setError) => {
         setResponse(resData);
       } else {
         const resData = await res.text();
-        setError(resData);
+        console.log(resData)
+        setError("エラーが発生しました。もう一度お試しください。");
         setLoading(false);
       }
     } catch (error) {
@@ -99,6 +100,7 @@ export const checkBusinessAccount = async () => {
     return resData.data.exist;
   } else {
     const resData = await res.text();
-    throw new Error(resData);
+    console.log(resData)
+    throw new Error("エラーが発生しました。もう一度お試しください。");
   }
 }
