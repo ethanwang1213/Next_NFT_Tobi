@@ -57,7 +57,7 @@ const UserMenu = () => {
   const userProfileIconRef = useRef<HTMLDetailsElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
   const signOutModalRef = useRef<HTMLDialogElement>(null);
-  const { signOut } = useAuth();
+  const { user } = useAuth();
 
   // Close when clicking outside the dropdown.
   useEffect(() => {
@@ -108,9 +108,9 @@ const UserMenu = () => {
                 />
               </div>
               <div className="flex flex-col ml-[12px] text-base-200-content w-[132px]">
-                <div className={"text-[15px] font-normal"}>IP NAME</div>
+                <div className={"text-[15px] font-normal"}>{user.name}</div>
                 <div className={"text-[10px] font-normal"}>
-                  UID：123456789101112
+                  UID：{user.uuid}
                 </div>
               </div>
             </div>
@@ -156,11 +156,11 @@ const ConfirmSignOutModal = ({
 }: {
   dialogRef: MutableRefObject<HTMLDialogElement>;
 }) => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   return (
     <AccountConfirmDialog
       title="サインアウトしますか?"
-      account={null}
+      account={user}
       firstButtonProp={{
         caption: "サインアウト",
         isPrimary: true,
