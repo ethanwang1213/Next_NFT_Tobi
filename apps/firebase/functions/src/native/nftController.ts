@@ -256,7 +256,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
           created_date_time: "desc",
         },
       });
-      
+
       if (!ownerships.length||ownerships[0].owner_uuid!=uid) {
         res.status(401).send({
           status: "error",
@@ -304,7 +304,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       );
       const returnData = {
         content: content!=null?{
-          name: content.title
+          name: content.title,
         }:null,
         name: digitalData.name,
         modelUrl: digitalData.nft_model,
@@ -319,6 +319,36 @@ export const getNftInfo = async (req: Request, res: Response) => {
         certImageUrl: "",
         owners: owners,
       };
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const getCopyrights = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    try {
+      const copyrights = await prisma.tobiratory_copyright.findMany();
+      const returnData = copyrights.map((copyright)=> {
+        return {
+          id: copyright.id,
+          name: copyright.copyright_name,
+        };
+      });
       res.status(200).send({
         status: "success",
         data: returnData,
