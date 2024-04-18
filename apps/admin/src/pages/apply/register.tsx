@@ -22,9 +22,8 @@ import UserInformation from "./userInfo";
 const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
 const Register = () => {
-  const [switchValue, setSwitchValue] = useState(2);
+  const [switchValue, setSwitchValue] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [response, setResponse] = useState<string | null>(null);
 
   const router = useRouter();
   const { user } = useAuth();
@@ -67,12 +66,13 @@ const Register = () => {
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
 
-  const [registerTcp, loading] = useTcpRegistration(setResponse, setError);
+  const [registerTcp, response, loading] = useTcpRegistration(setError);
 
   useEffect(() => {
     if (!response) {
       return;
     }
+
     router.replace("/apply/finish");
   }, [response]);
 
@@ -290,11 +290,13 @@ const Register = () => {
           )}
         </div>
 
-        {error && (
-          <div className={"font-medium text-[16px] text-attention text-center"}>
-            {error}
-          </div>
-        )}
+        <div
+          className={
+            "flex justify-center items-center font-medium h-10 text-[16px] text-attention"
+          }
+        >
+          {error}
+        </div>
 
         <LoadingButton
           nextLabel={
@@ -327,7 +329,7 @@ const LoadingButton = ({
     );
   }
   return (
-    <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-between">
+    <div className="w-[568px] h-14 mx-auto flex flex-row justify-between">
       <Button
         type="button"
         className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 

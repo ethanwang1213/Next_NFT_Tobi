@@ -16,7 +16,7 @@ const Row1 = ({ label, children }) => {
 
 const UserInformation = ({ userInfo, setUserInfo, refs }) => {
   const userInfoChangeHandler = (field, e) => {
-    setUserInfo({ ...userInfo, [field]: e.target.value });
+    setUserInfo({ ...userInfo, [field]: e.target.value.substring(0, 255) });
   };
 
   const handleYearChange = (event) => {
@@ -186,7 +186,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="建物名・部屋番号"
+          placeholder="建物名・部屋番号（任意）"
           value={userInfo.building}
           onChange={(e) => userInfoChangeHandler("building", e)}
           ref={refs["building"]}

@@ -3,7 +3,8 @@ import { useState } from "react";
 import { TcpFormType } from "types/adminTypes";
 import { auth, storage } from "./firebase/client";
 
-export const useTcpRegistration = (setResponse, setError) => {
+export const useTcpRegistration = (setError) => {
+  const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const registerTcp = async (data: TcpFormType) => {
@@ -20,11 +21,10 @@ export const useTcpRegistration = (setResponse, setError) => {
       await uploadFiles(files, filePath);
       const res = await postTcpData(data);
       if (res.ok) {
-        const resData = await res.json();
-        setResponse(resData);
+        setResponse("登録が完了しました。");
       } else {
         const resData = await res.text();
-        console.log(resData)
+        console.log(resData);
         setError("エラーが発生しました。もう一度お試しください。");
         setLoading(false);
       }
@@ -34,7 +34,7 @@ export const useTcpRegistration = (setResponse, setError) => {
     }
   };
 
-  return [registerTcp, loading] as const;
+  return [registerTcp, response, loading] as const;
 };
 
 const uploadFiles = async (files: File[], path: string) => {
@@ -42,10 +42,10 @@ const uploadFiles = async (files: File[], path: string) => {
   // so we should use for loop instead.
   for (let i = 0; i < files.length; i++) {
     const maxFileSize = 20 * 1024 * 1024; // 20MB
-    const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!files[i]) continue;
 
-    validateCopyrightFile(files[i])
+    validateCopyrightFile(files[i]);
 
     const storageRef = ref(storage, `${path}/${files[i].name}`);
     await uploadBytes(storageRef, files[i]);
@@ -53,16 +53,21 @@ const uploadFiles = async (files: File[], path: string) => {
 };
 
 export const validateCopyrightFile = (file: File) => {
-    const maxFileSize = 20 * 1024 * 1024; // 20MB
-    const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-    if (!fileTypes.includes(file.type)) {
-        throw new Error("アップロードできるファイル形式は、JPEG、PNG、PDFのみです");
-    }
+  const maxFileSize = 20 * 1024 * 1024; // 20MB
+  const maxFileNameLength = 255;
+  const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
+  if (!fileTypes.includes(file.type)) {
+    throw new Error("アップロードできるファイル形式は、JPEG、PNG、PDFのみです");
+  }
 
-    if (file.size > maxFileSize) {
-        throw new Error("ファイルサイズは20MB以内にしてください");
-    }
-}
+  if (file.name.length > maxFileNameLength) {
+    throw new Error("ファイル名は255文字以内にしてください");
+  }
+
+  if (file.size > maxFileSize) {
+    throw new Error("ファイルサイズは20MB以内にしてください");
+  }
+};
 
 const postTcpData = async (data: TcpFormType) => {
   const postData = {
@@ -88,19 +93,22 @@ const postTcpData = async (data: TcpFormType) => {
 
 export const checkBusinessAccount = async () => {
   const idToken = await auth.currentUser.getIdToken();
-  const res = await fetch(`/backend/api/functions/native/my/business/checkexist`, {
-    method: "POST",
-    headers: {
-      Authorization: idToken,
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `/backend/api/functions/native/my/business/checkexist`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: idToken,
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
   if (res.ok) {
     const resData = await res.json();
     return resData.data.exist;
   } else {
     const resData = await res.text();
-    console.log(resData)
+    console.log(resData);
     throw new Error("エラーが発生しました。もう一度お試しください。");
   }
-}
+};

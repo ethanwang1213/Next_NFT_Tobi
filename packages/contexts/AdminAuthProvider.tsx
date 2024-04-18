@@ -27,6 +27,7 @@ type ContextType = {
   user?: User;
   signOut: () => Promise<void>;
   finishFlowAccountRegistration: () => void;
+  finishBusinessAccountRegistration: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -215,6 +216,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     setUser((prev) => ({ ...prev, hasFlowAccount: true }));
   };
 
+  const finishBusinessAccountRegistration = () => {
+    if (!user) {
+      router.push("/authentication");
+      return;
+    }
+
+    if (user.hasBusinessAccount) {
+      return;
+    }
+
+    setUser((prev) => ({ ...prev, hasBusinessAccount: true }));
+  };
+
   if (user || unrestrictedPaths.includes(router.pathname)) {
     return (
       <AuthContext.Provider
@@ -222,6 +236,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           user,
           signOut,
           finishFlowAccountRegistration: finishFlowAccountRegistration,
+          finishBusinessAccountRegistration: finishBusinessAccountRegistration,
         }}
       >
         {children}
