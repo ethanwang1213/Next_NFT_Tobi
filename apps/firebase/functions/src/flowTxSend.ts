@@ -349,7 +349,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
           },
         });
         if (content) {
-          dbCreatorName = content.title;
+          dbCreatorName = content.name;
         } else {
           const user = await prisma.tobiratory_accounts.findUnique({
             where: {

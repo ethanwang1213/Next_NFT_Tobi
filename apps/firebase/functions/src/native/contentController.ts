@@ -24,7 +24,7 @@ export const getContents = async (req: AllContentRequest, res: Response) => {
   });
   const contents = await prisma.tobiratory_contents.findMany({
     where: {
-      title: {
+      name: {
         in: [q],
       },
     },
@@ -34,7 +34,7 @@ export const getContents = async (req: AllContentRequest, res: Response) => {
     contents: contents.map(async (content) => {
       return {
         id: content.id,
-        title: content.title,
+        name: content.name,
         image: content.image,
       };
     }),
@@ -64,14 +64,9 @@ export const getContentById = async (req: ContentRequest, res: Response) => {
 
   const resData = {
     id: id,
-    title: contentData.title,
+    name: contentData.name,
     image: contentData.image,
-    creator: {
-      userId: contentData.creator_user_id,
-      username: contentData.creator_username,
-      icon: contentData.creator_username,
-      sns: contentData.creator_sns,
-    },
+    owner_uuid: contentData.owner_uuid,
   };
   res.status(200).send({
     status: "success",
