@@ -428,7 +428,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       });
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          creator_user_id: uid,
+          owner_uuid: uid,
         },
       });
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
@@ -448,7 +448,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       );
       const returnData = {
         content: content!=null?{
-          name: content.title,
+          name: content.name,
         }:null,
         name: digitalData.name,
         modelUrl: digitalData.nft_model,
