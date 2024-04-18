@@ -3,7 +3,7 @@ import * as cors from "cors";
 import * as express from "express";
 import {REGION} from "../lib/constants";
 
-import {getAccounts, getAccountById} from "./accountController";
+import {getAccounts, getAccountById, getOthersSaidans} from "./accountController";
 import
 {
   signUp,
@@ -68,6 +68,7 @@ app.post("/create-flow", createFlowAcc);
 
 app.get("/accounts", getAccounts);
 app.get("/accounts/:uid", getAccountById);
+app.get("/accounts/:uid/saidans", getOthersSaidans);
 
 app.get("/contents", getContents);
 app.get("/contents/:id", getContentById);
