@@ -355,7 +355,6 @@ export const myBusiness = async (req: Request, res: Response) => {
 
 export const businessSubmission = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const idToken = authorization?.replace(/^Bearer\s+/, "");
   const {
     content: {
       name: contentName,
@@ -384,10 +383,10 @@ export const businessSubmission = async (req: Request, res: Response) => {
       file2,
       file3,
       file4,
-    }
+    },
   } = req.body;
   console.log(req.body);
-  await getAuth().verifyIdToken(idToken??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     const exist = await prisma.tobiratory_businesses.findFirst({
       where: {
@@ -427,7 +426,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
       description,
       copyright_holders: copyrightHolders,
       license,
-      license_data: [file1, file2, file3, file4],
+      license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
     };
     try {
       const [savedBusinessData, savedContentData] = await prisma.$transaction([
