@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
-import SampleTable from "./SampleTable";
+import { SampleTable } from "./SampleTable";
 import PackageTable from "./PackageTable";
 import FilterPopupButton from "ui/organisms/admin/FilterPopupButton";
 
 export default function ItemsManageTab({ onTabChange }) {
-  const [tab, setTab] = useTabs(["sample", "package"]);
+  // const [tab, setTab] = useTabs(["sample", "package"]);
+  const [tab, setTab] = useTabs(["sample"]);
 
   const [filterArray, setFilterArray] = useState({});
 
@@ -17,8 +18,11 @@ export default function ItemsManageTab({ onTabChange }) {
   };
 
   // Function to toggle a specific index in the array
-  const toggleAtIndex = (index) => 
-    setFilterArray((prevArray) => ({ ...prevArray, [index]:!prevArray[index] }));
+  const toggleAtIndex = (index) =>
+    setFilterArray((prevArray) => ({
+      ...prevArray,
+      [index]: !prevArray[index],
+    }));
 
   return (
     <>
@@ -30,31 +34,28 @@ export default function ItemsManageTab({ onTabChange }) {
         >
           SAMPLE
         </TabSelector>
-        <TabSelector
+        {/* <TabSelector
           isActive={tab === "package"}
           onClick={() => handleTabChange("package")}
           isFirst={false}
         >
           PACKAGE
-        </TabSelector>
+        </TabSelector> */}
       </nav>
       <div className="flex justify-start">
-        <FilterPopupButton
-          preference={filterArray}
-          changeHandler={toggleAtIndex}
-        />
+        <FilterPopupButton />
         <input
           className="text-base text-[#717171C1] outline-none"
-          placeholder="アイテムを検索"
+          placeholder="Search for Samples"
         />
       </div>
       <div className="">
         <TabPanel hidden={tab !== "sample"}>
           <SampleTable filters={filterArray} />
         </TabPanel>
-        <TabPanel hidden={tab !== "package"}>
+        {/* <TabPanel hidden={tab !== "package"}>
           <PackageTable />
-        </TabPanel>
+        </TabPanel> */}
       </div>
     </>
   );
