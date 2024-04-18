@@ -440,7 +440,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
       }
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
-          id: digitalItemData.id,
+          digital_item_id: digitalItemData.id,
         },
       });
       const copyrights = await Promise.all(
@@ -492,7 +492,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
 };
 
 export const adminUpdateSample = async (req: Request, res: Response) => {
-  const {sampleId} = req.body;
+  const {sampleId} = req.params;
   const {authorization} = req.headers;
   const {
     name,
@@ -513,11 +513,11 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     isCustomThumbnailSelected: boolean,
     price: number,
     status: number,
-    startDate: string,
-    endDate: string,
+    startDate: string | undefined,
+    endDate: string | undefined,
     quantityLimit: number,
     license: string,
-    copyrights: number[],
+    copyrights: string[],
   }=req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
@@ -547,8 +547,8 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         },
         data: {
           price: price,
-          start_date: startDate,
-          end_date: endDate,
+          start_date: startDate==undefined?undefined:new Date(startDate),
+          end_date: endDate==undefined?undefined:new Date(endDate),
           quantity_limit: quantityLimit,
         },
       });
@@ -579,17 +579,26 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
+      await prisma.tobiratory_digital_items_copyright.deleteMany({
+        where: {
+          digital_item_id: digitalItemData.id,
+        },
+      });
       await Promise.all(
-          copyrights.map(async (copyrightId)=>{
-            await prisma.tobiratory_digital_items_copyright.deleteMany({
+          copyrights.map(async (copyrightName)=>{
+            const selectedCopyright = await prisma.tobiratory_copyright.upsert({
               where: {
-                digital_item_id: digitalItemData.id,
+                copyright_name: copyrightName,
+              },
+              update: {},
+              create: {
+                copyright_name: copyrightName,
               },
             });
             await prisma.tobiratory_digital_items_copyright.create({
               data: {
                 digital_item_id: digitalItemData.id,
-                copyright_id: copyrightId,
+                copyright_id: selectedCopyright.id,
               },
             });
           })
