@@ -146,8 +146,8 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
-app.post("/nfts/fetch-thumb", fetchNftThumb)
-app.post("/nfts/fetch-model", fetchNftModel)
+app.post("/nfts/fetch-thumb", fetchNftThumb);
+app.post("/nfts/fetch-model", fetchNftModel);
 app.get("/copyrights", getCopyrights);
 
 // admin APIs

@@ -6,7 +6,6 @@ import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import axios from "axios";
 
 const pubsub = new PubSub();
 
@@ -216,7 +215,7 @@ export const fetchNftThumb = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {mediaUrl}:{mediaUrl: string} = req.body;
   const storageBucket = storage().bucket();
-  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/"
+  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/";
   if (!mediaUrl.includes(prefixUrl)) {
     res.status(401).send({
       status: "error",
@@ -224,15 +223,15 @@ export const fetchNftThumb = async (req: Request, res: Response) => {
     });
     return;
   }
-  const bucketUrl = mediaUrl.substring(mediaUrl.lastIndexOf('/') + 1).split("?")[0];
+  const bucketUrl = mediaUrl.substring(mediaUrl.lastIndexOf("/") + 1).split("?")[0];
   const file = storageBucket.file(bucketUrl);
   const digitalData = await prisma.tobiratory_digital_items.findFirst({
     where: {
       OR: [
         {default_thumb_url: mediaUrl},
         {custom_thumb_url: mediaUrl},
-      ]
-    }
+      ],
+    },
   });
   if (!digitalData) {
     res.status(401).send({
@@ -282,13 +281,13 @@ export const fetchNftThumb = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
 
 export const fetchNftModel = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {modelUrl}:{modelUrl: string} = req.body;
   const storageBucket = storage().bucket();
-  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/"
+  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/";
   if (!modelUrl.includes(prefixUrl)) {
     res.status(401).send({
       status: "error",
@@ -296,15 +295,15 @@ export const fetchNftModel = async (req: Request, res: Response) => {
     });
     return;
   }
-  const bucketUrl = modelUrl.substring(modelUrl.lastIndexOf('/') + 1).split("?")[0];
+  const bucketUrl = modelUrl.substring(modelUrl.lastIndexOf("/") + 1).split("?")[0];
   const file = storageBucket.file(bucketUrl);
   const digitalData = await prisma.tobiratory_digital_items.findFirst({
     where: {
       OR: [
         {default_thumb_url: modelUrl},
         {custom_thumb_url: modelUrl},
-      ]
-    }
+      ],
+    },
   });
   if (!digitalData) {
     res.status(401).send({
@@ -354,7 +353,7 @@ export const fetchNftModel = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
 
 export const getNftInfo = async (req: Request, res: Response) => {
   const {id} = req.params;
