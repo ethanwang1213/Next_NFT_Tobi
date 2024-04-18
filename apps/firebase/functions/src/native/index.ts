@@ -43,7 +43,7 @@ import {
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
-import {getCopyrights, getNftInfo, mintNFT} from "./nftController";
+import {fetchNftModel, fetchNftThumb, getCopyrights, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
@@ -146,6 +146,8 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
+app.post("/nfts/fetch-thumb", fetchNftThumb);
+app.post("/nfts/fetch-model", fetchNftModel);
 app.get("/copyrights", getCopyrights);
 
 // admin APIs
