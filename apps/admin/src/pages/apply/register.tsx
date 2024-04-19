@@ -74,7 +74,7 @@ const Register = () => {
     }
 
     router.replace("/apply/finish");
-  }, [response]);
+  }, [response, router]);
 
   const contentInfoInputRefs = {
     name: useRef(),

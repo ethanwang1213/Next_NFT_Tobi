@@ -17,7 +17,7 @@ const Index = () => {
     } else {
       router.push("/apply");
     }
-  }, [user]);
+  }, [router, user]);
 
   return (
     <div className={"h-[100dvh] flex justify-center"}>

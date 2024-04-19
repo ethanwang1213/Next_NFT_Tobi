@@ -49,7 +49,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
 
   const handlePhoneChange = (event) => {
     // Ensure that only numeric characters are allowed for the date
-    let inputPhone = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    const inputPhone = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
     // Apply any additional masking or validation logic as needed
     setUserInfo({ ...userInfo, phone: inputPhone });
   };
