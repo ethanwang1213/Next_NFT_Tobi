@@ -534,11 +534,18 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
+      const content = await prisma.tobiratory_contents.findUnique({
         where: {
           owner_uuid: uid,
         },
       });
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-content",
+        });
+        return;
+      }
       const sample = await prisma.tobiratory_sample_items.update({
         where: {
           id: parseInt(sampleId),
@@ -593,6 +600,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
               update: {},
               create: {
                 copyright_name: copyrightName,
+                content_id: content.id,
               },
             });
             await prisma.tobiratory_digital_items_copyright.create({

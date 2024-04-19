@@ -117,8 +117,8 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
       const saidans = await prisma.tobiratory_saidans.findMany({
         where: {
           owner_uuid: uid,
-        }
-      })
+        },
+      });
 
       const resData = saidans.map((saidan)=>{
         return {
@@ -142,4 +142,4 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
       data: error.code,
     });
   });
-}
+};

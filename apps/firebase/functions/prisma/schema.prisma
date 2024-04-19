@@ -102,6 +102,7 @@ model tobiratory_contents {
   copyright_holders String[]               @default([]) @db.VarChar(255)
   license           String                 @db.VarChar(255)
   license_data      String[]               @default([]) @db.VarChar(255)
+  copyrights        tobiratory_copyright[]
   updated_date_time DateTime               @default(now()) @db.Timestamp(6)
   created_date_time DateTime               @default(now()) @db.Timestamp(6)
 }
@@ -242,7 +243,9 @@ model tobiratory_material_images {
 
 model tobiratory_copyright {
   id                Int                                  @id @default(autoincrement())
-  copyright_name    String                               @db.VarChar(255) @unique
+  copyright_name    String                               @unique @db.VarChar(255)
+  content           tobiratory_contents                  @relation(fields: [content_id], references: [id])
+  content_id        Int
   digital_items     tobiratory_digital_items_copyright[]
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)
