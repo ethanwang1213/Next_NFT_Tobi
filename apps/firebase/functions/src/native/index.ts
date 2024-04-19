@@ -43,8 +43,9 @@ import {
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
-import {fetchNftModel, fetchNftThumb, getCopyrights, getNftInfo, mintNFT} from "./nftController";
+import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
+import { getCopyrights } from "./copyrightsController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -149,9 +150,9 @@ app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
 app.post("/nfts/fetch-thumb", fetchNftThumb);
 app.post("/nfts/fetch-model", fetchNftModel);
-app.get("/copyrights", getCopyrights);
 
 // admin APIs
+app.get("/admin/copyrights", getCopyrights);
 app.post("/admin/digital/status", adminChangeDigitalStatus);
 
 app.get("/admin/samples", adminGetAllSamples);
