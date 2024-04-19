@@ -46,6 +46,11 @@ const Row4 = ({ label, children }) => {
   );
 };
 
+// When making this app multilingual, replace this process.
+const countryNames = {
+  japan: "日本",
+};
+
 const ConfirmInformation = ({
   contentInfo,
   userInfo,
@@ -124,7 +129,8 @@ const ConfirmInformation = ({
       <Row1 label="住所" wide={false}>
         <span className="">
           {userInfo.building} {userInfo.street} {userInfo.city}{" "}
-          {userInfo.province} {userInfo.postalCode} {userInfo.country}
+          {userInfo.province} {userInfo.postalCode}{" "}
+          {countryNames[userInfo.country]}
         </span>
       </Row1>
       <Row1 label="コピーライト（版権表記）" wide={false}>
