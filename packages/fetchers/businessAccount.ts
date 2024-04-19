@@ -54,15 +54,10 @@ const uploadFiles = async (files: File[], path: string) => {
 
 export const validateCopyrightFile = (file: File) => {
   const maxFileSize = 20 * 1024 * 1024; // 20MB
-  const maxFileNameLength = 255;
   const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
 
   if (!fileTypes.includes(file.type)) {
     throw new Error("アップロードできるファイル形式は、JPEG、PNG、PDFのみです");
-  }
-
-  if (file.name.length > maxFileNameLength) {
-    throw new Error("ファイル名は255文字以内にしてください");
   }
 
   if (file.size > maxFileSize) {
@@ -75,10 +70,10 @@ const postTcpData = async (data: TcpFormType) => {
     ...data,
     copyright: {
       ...data.copyright,
-      file1: data.copyright.file1?.name,
-      file2: data.copyright.file2?.name,
-      file3: data.copyright.file3?.name,
-      file4: data.copyright.file4?.name,
+      file1: replaceFileName(data.copyright.file1?.name),
+      file2: replaceFileName(data.copyright.file2?.name),
+      file3: replaceFileName(data.copyright.file3?.name),
+      file4: replaceFileName(data.copyright.file4?.name),
     },
   };
   const idToken = await auth.currentUser.getIdToken();
@@ -101,6 +96,20 @@ const deleteFiles = async (path: string) => {
     deleteObject(list.items[i]);
   }
 };
+
+const replaceFileName = (name?: string) => {
+    if (!name) {
+      return "";
+    }
+
+    let newFileName = crypto.randomUUID();
+    const lastDotIndex = name.lastIndexOf(".");
+    if (lastDotIndex !== -1) {
+      const extension = name.substring(lastDotIndex);
+      newFileName += extension;
+    }
+    return newFileName;
+}
 
 export const checkBusinessAccount = async () => {
   const idToken = await auth.currentUser.getIdToken();
