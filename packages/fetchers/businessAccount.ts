@@ -98,18 +98,18 @@ const deleteFiles = async (path: string) => {
 };
 
 const replaceFileName = (name?: string) => {
-    if (!name) {
-      return "";
-    }
+  if (!name) {
+    return "";
+  }
 
-    let newFileName = crypto.randomUUID();
-    const lastDotIndex = name.lastIndexOf(".");
-    if (lastDotIndex !== -1) {
-      const extension = name.substring(lastDotIndex);
-      newFileName += extension;
-    }
-    return newFileName;
-}
+  let newFileName = crypto.randomUUID();
+  const lastDotIndex = name.lastIndexOf(".");
+  if (lastDotIndex !== -1) {
+    const extension = name.substring(lastDotIndex);
+    newFileName += extension;
+  }
+  return newFileName;
+};
 
 export const checkBusinessAccount = async () => {
   const idToken = await auth.currentUser.getIdToken();
