@@ -15,6 +15,7 @@ import StatusDropdownSelect, {
 } from "ui/organisms/admin/StatusDropdownSelect";
 import clsx from "clsx";
 import { Tooltip } from "react-tooltip";
+import { useDebouncedCallback } from "use-debounce";
 
 const Detail = () => {
   const router = useRouter();
@@ -84,10 +85,10 @@ const Detail = () => {
     }
   };
 
-  const fieldChangeHandler = (field, value) => {
+  const fieldChangeHandler = useDebouncedCallback((field, value) => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
     setChanged(true);
-  };
+  }, 300);
 
   const handleImageClick = () => {
     fileInputRef.current.click(); // Trigger the click event of the file input
