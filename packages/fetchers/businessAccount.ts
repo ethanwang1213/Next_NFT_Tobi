@@ -1,4 +1,4 @@
-import { ref, uploadBytes } from "firebase/storage";
+import { deleteObject, listAll, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
 import { TcpFormType } from "types/adminTypes";
 import { auth, storage } from "./firebase/client";
@@ -6,6 +6,7 @@ import { auth, storage } from "./firebase/client";
 export const useTcpRegistration = (setError) => {
   const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const filePath = `/users/${auth.currentUser.uid}/tcp/copyright/files`;
 
   const registerTcp = async (data: TcpFormType) => {
     try {
@@ -17,7 +18,6 @@ export const useTcpRegistration = (setError) => {
         data.copyright.file3,
         data.copyright.file4,
       ];
-      const filePath = `/users/${auth.currentUser.uid}/tcp/copyright/files`;
       await uploadFiles(files, filePath);
       const res = await postTcpData(data);
       if (res.ok) {
@@ -29,6 +29,7 @@ export const useTcpRegistration = (setError) => {
         setLoading(false);
       }
     } catch (error) {
+      deleteFiles(filePath).catch((e) => console.error(e));
       setError(String(error));
       setLoading(false);
     }
@@ -41,8 +42,6 @@ const uploadFiles = async (files: File[], path: string) => {
   // When using foreach, we cannot catch exceptions thrown by uploadBytes,
   // so we should use for loop instead.
   for (let i = 0; i < files.length; i++) {
-    const maxFileSize = 20 * 1024 * 1024; // 20MB
-    const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!files[i]) continue;
 
     validateCopyrightFile(files[i]);
@@ -56,6 +55,7 @@ export const validateCopyrightFile = (file: File) => {
   const maxFileSize = 20 * 1024 * 1024; // 20MB
   const maxFileNameLength = 255;
   const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
+
   if (!fileTypes.includes(file.type)) {
     throw new Error("アップロードできるファイル形式は、JPEG、PNG、PDFのみです");
   }
@@ -89,6 +89,16 @@ const postTcpData = async (data: TcpFormType) => {
     },
     body: JSON.stringify(postData),
   });
+};
+
+const deleteFiles = async (path: string) => {
+  const listRef = ref(storage, path);
+  const list = await listAll(listRef);
+  // When using foreach, we cannot catch exceptions thrown by uploadBytes,
+  // so we should use for loop instead.
+  for (let i = 0; i < list.items.length; i++) {
+    deleteObject(list.items[i]);
+  }
 };
 
 export const checkBusinessAccount = async () => {
