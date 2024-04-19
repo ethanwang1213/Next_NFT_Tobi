@@ -45,7 +45,7 @@ import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
 import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
-import { getCopyrights } from "./copyrightsController";
+import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -153,6 +153,8 @@ app.post("/nfts/fetch-model", fetchNftModel);
 
 // admin APIs
 app.get("/admin/copyrights", getCopyrights);
+app.post("/admin/copyrights/:id", updateCopyrights);
+app.delete("/admin/copyrights/:id", deleteCopyrights);
 app.post("/admin/digital/status", adminChangeDigitalStatus);
 
 app.get("/admin/samples", adminGetAllSamples);

@@ -35,7 +35,7 @@ export const getCopyrights = async (req: Request, res: Response) => {
       const copyrights = await prisma.tobiratory_copyright.findMany({
         where: {
           content_id: content.id,
-        }
+        },
       });
       const returnData = copyrights.map((copyright)=> {
         return {
@@ -97,7 +97,7 @@ export const updateCopyrights = async (req: Request, res: Response) => {
         where: {
           id: parseInt(id),
           content_id: content.id,
-        }
+        },
       });
       if (!copyright) {
         res.status(401).send({
@@ -112,7 +112,7 @@ export const updateCopyrights = async (req: Request, res: Response) => {
         },
         data: {
           copyright_name: name,
-        }
+        },
       });
       const returnData = {
         id: updatedCopyrights.id,
@@ -135,7 +135,7 @@ export const updateCopyrights = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
 
 export const deleteCopyrights = async (req: Request, res: Response) => {
   const {id} = req.params;
@@ -171,7 +171,7 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
         where: {
           id: parseInt(id),
           content_id: content.id,
-        }
+        },
       });
       if (!copyright) {
         res.status(401).send({
@@ -205,4 +205,4 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
