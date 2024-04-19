@@ -162,7 +162,7 @@ const Detail = () => {
           <div className="flex gap-4">
             <div className="flex-grow flex flex-col gap-9">
               <div className="flex flex-col gap-4 pr-11">
-                <h3 className="text-xl text-title-color">SAMPLE DETAIL</h3>
+                <h3 className="text-xl text-secondary">SAMPLE DETAIL</h3>
                 <div className="flex flex-col gap-6">
                   <StyledTextInput
                     className=""
@@ -186,7 +186,7 @@ const Detail = () => {
               </div>
               <div className="flex flex-col gap-6 pr-11">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl text-title-color">SAMPLE STATUS</h3>
+                  <h3 className="text-xl text-secondary">SAMPLE STATUS</h3>
                   <StatusDropdownSelect
                     initialIndex={sampleItem.status - 1}
                     handleSelectedItemChange={(changes) => {
@@ -228,7 +228,7 @@ const Detail = () => {
                 )}
               </div>
               <div className="flex flex-col gap-6 mt-12">
-                <h3 className="text-xl text-title-color">
+                <h3 className="text-xl text-secondary">
                   PRICE & DETAILS SETTINGS
                 </h3>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-6">
@@ -304,7 +304,7 @@ const Detail = () => {
                       }}
                     />
                     <label
-                      className="text-sm text-[#717171] font-normal"
+                      className="text-sm text-secondary font-normal"
                       htmlFor="quantityLimit"
                     >
                       No Quantity Limit
@@ -343,9 +343,7 @@ const Detail = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-6 mt-12">
-                <h3 className="text-xl text-title-color">
-                  LICENSE & COPYRIGHTS
-                </h3>
+                <h3 className="text-xl text-secondary">LICENSE & COPYRIGHTS</h3>
                 <div className="flex flex-col gap-6">
                   <div className="flex gap-6">
                     <CopyrightMultiSelect
@@ -546,7 +544,7 @@ const Detail = () => {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                 >
-                  <span className="h-14 text-[#717171C1] text-base text-center">
+                  <span className="h-14 text-secondary-500 text-base text-center">
                     Drop your Image here
                   </span>
                   <Image
@@ -574,7 +572,7 @@ const Detail = () => {
               type="submit"
               className={clsx(
                 "text-xl h-14 text-white rounded-[30px] px-10",
-                changed ? "bg-[#1779DE]" : "bg-inactive",
+                changed ? "bg-primary" : "bg-inactive",
               )}
               disabled={!changed}
               onClick={submitData}

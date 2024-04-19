@@ -153,9 +153,9 @@ const SampleTable = ({ filters }) => {
     <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 pt-0">
-          <table className="min-w-full text-[#717171]">
+          <table className="min-w-full text-secondary">
             <thead className="">
-              <tr className="text-base/[56px] bg-[#1779DE] text-white">
+              <tr className="text-base/[56px] bg-primary text-white">
                 <th className="min-w-10"></th>
                 <th
                   scope="col"

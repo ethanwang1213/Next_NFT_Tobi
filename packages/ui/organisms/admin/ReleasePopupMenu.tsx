@@ -77,7 +77,7 @@ const ReleasePopupMenu = ({ pubStatus, pubDate }) => {
               <Button className="w-26 text-xs bg-transparent border-0 px-3 py-2 ml-12">
                 キャンセル
               </Button>
-              <Button className="w-26 text-xs border-0 bg-[#1779DE] py-2 rounded">
+              <Button className="w-26 text-xs border-0 bg-primary py-2 rounded">
                 公開予約を設定
               </Button>
             </div>

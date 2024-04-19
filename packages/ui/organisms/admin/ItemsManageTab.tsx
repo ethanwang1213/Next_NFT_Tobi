@@ -45,7 +45,7 @@ export default function ItemsManageTab({ onTabChange }) {
       <div className="flex justify-start">
         <FilterPopupButton />
         <input
-          className="text-base text-[#717171C1] outline-none"
+          className="text-base text-secondary/[76] outline-none"
           placeholder="Search for Samples"
         />
       </div>

@@ -146,7 +146,7 @@ const DateTimeInput = ({
           locale="ja"
         />
       </div>
-      <div className="w-px bg-[#717171]/50"></div>
+      <div className="w-px bg-secondary/50"></div>
       <div
         className="w-16 flex-auto mx-4 relative font-normal text-sm"
         onClick={openTimePicker}

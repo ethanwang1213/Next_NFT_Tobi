@@ -49,7 +49,7 @@ const FilterPopupButton = (props) => {
       {isPopupOpen && (
         <div
           ref={popupRef}
-          className="absolute bg-[#0D437B] text-white rounded-xl px-6 py-4 z-10"
+          className="absolute bg-primary-900 text-white rounded-xl px-6 py-4 z-10"
         >
           <SampleFilterMenu />
         </div>

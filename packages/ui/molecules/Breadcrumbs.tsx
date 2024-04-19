@@ -26,7 +26,7 @@ export default function Breadcrumbs({
               href={breadcrumb.href}
               className={clsx(
                 "text-3xl",
-                breadcrumb.active ? "text-[#1779DE]" : "text-[#717171]",
+                breadcrumb.active ? "text-primary" : "text-secondary",
               )}
             >
               {breadcrumb.label}

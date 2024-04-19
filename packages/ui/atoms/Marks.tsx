@@ -8,7 +8,7 @@ export function RequireMark() {
 
 export function OptionMark() {
   return (
-    <span className="w-[34px] h-[21px] rounded bg-[#717171] text-[10px] leading-[21px] text-center text-white">
+    <span className="w-[34px] h-[21px] rounded bg-secondary text-[10px] leading-[21px] text-center text-white">
       任意
     </span>
   );
