@@ -24,13 +24,14 @@ export const useTcpRegistration = (setError) => {
         setResponse("登録が完了しました。");
       } else {
         const resData = await res.text();
-        console.log(resData);
+        console.error(resData);
         setError("エラーが発生しました。もう一度お試しください。");
         setLoading(false);
       }
     } catch (error) {
       deleteFiles(filePath).catch((e) => console.error(e));
-      setError(String(error));
+      console.error(String(error));
+      setError("エラーが発生しました。もう一度お試しください。");
       setLoading(false);
     }
   };
@@ -94,7 +95,7 @@ const postTcpData = async (data: TcpFormType) => {
 const deleteFiles = async (path: string) => {
   const listRef = ref(storage, path);
   const list = await listAll(listRef);
-  // When using foreach, we cannot catch exceptions thrown by uploadBytes,
+  // When using foreach, we cannot catch exceptions thrown by deleteObject,
   // so we should use for loop instead.
   for (let i = 0; i < list.items.length; i++) {
     deleteObject(list.items[i]);
