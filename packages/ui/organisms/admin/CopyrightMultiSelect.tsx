@@ -1,19 +1,58 @@
 import clsx from "clsx";
 import { useCombobox, useMultipleSelection } from "downshift";
-import { useState } from "react";
+import { fetchCopyrights } from "fetchers/SampleActions";
+import { useState, useMemo, useEffect } from "react";
 
 const CopyrightMultiSelect = ({
   initialSelectedItems,
   handleSelectedItemChange,
 }) => {
   const [inputValue, setInputValue] = useState("");
-  const [selectedItems, setSelectedItems] = useState(initialSelectedItems);
-  const items = [];
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [elements, setElements] = useState([]);
+
+  const items = useMemo(
+    () => getFilteredItems(selectedItems, inputValue),
+    [selectedItems, inputValue],
+  );
+
+  function getFilteredItems(selectedItems, inputValue) {
+    const lowerCasedInputValue = inputValue.toLowerCase();
+
+    return elements.filter(
+      (element) =>
+        !selectedItems.includes(element) &&
+        element.toLowerCase().startsWith(lowerCasedInputValue),
+    );
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchCopyrights();
+        setElements(data.map((item) => item.name));
+      } catch (error) {
+        // Handle errors here
+        console.error("Error fetching copyrights:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    setSelectedItems(initialSelectedItems);
+  }, [initialSelectedItems]);
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
       selectedItems,
       onStateChange({ selectedItems: newSelectedItems, type }) {
+        console.log(
+          "useMultipleSelection::onStateChange",
+          type,
+          newSelectedItems,
+        );
         switch (type) {
           case useMultipleSelection.stateChangeTypes
             .SelectedItemKeyDownBackspace:
@@ -36,7 +75,6 @@ const CopyrightMultiSelect = ({
     getInputProps,
     highlightedIndex,
     getItemProps,
-    selectedItem,
     openMenu,
   } = useCombobox({
     items,
@@ -65,9 +103,16 @@ const CopyrightMultiSelect = ({
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
-          handleSelectedItemChange([...selectedItems, inputValue]);
-          setSelectedItems([...selectedItems, inputValue]);
-          setInputValue("");
+          if (newSelectedItem != undefined) {
+            setSelectedItems([...selectedItems, newSelectedItem]);
+            handleSelectedItemChange([...selectedItems, newSelectedItem]);
+          }
+          else if (inputValue && inputValue.length > 0) {
+            setSelectedItems([...selectedItems, inputValue]);
+            handleSelectedItemChange([...selectedItems, inputValue]);
+            setInputValue("");
+            openMenu();
+          }
           break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
@@ -80,17 +125,14 @@ const CopyrightMultiSelect = ({
       }
     },
   });
-
-  const showPlaceholder = selectedItems.length === 0;
-
   return (
     <div
       className={clsx(
-        "flex flex-col w-full justify-center self-center",
+        "flex flex-col w-full justify-center self-center min-h-[52px]",
         "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
       )}
       onClick={() => {
-        openMenu();
+        if (!isOpen) openMenu();
       }}
     >
       <div
@@ -102,55 +144,54 @@ const CopyrightMultiSelect = ({
           padding: "6px",
         }}
       >
-        {selectedItems.map(
-          function renderSelectedItem(selectedItemForRender, index) {
-            return (
-              <span
-                style={{
-                  backgroundColor: "#1779DE",
-                  color: "#FFFFFF",
-                  paddingLeft: "8px",
-                  paddingRight: "8px",
-                  paddingTop: "4px",
-                  paddingBottom: "4px",
-                  borderRadius: "6px",
-                  fontWeight: 400,
-                  fontSize: "14px",
-                }}
-                key={`selected-item-${index}`}
-                {...getSelectedItemProps({
-                  selectedItem: selectedItemForRender,
-                  index,
-                })}
-              >
-                @{selectedItemForRender}
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-                <span
-                  style={{ padding: "4px", cursor: "pointer" }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeSelectedItem(selectedItemForRender);
-                  }}
-                >
-                  &#10005;
-                </span>
-              </span>
-            );
-          },
-        )}
-        {
-          <div className="px-2">
+        {selectedItems.map((selectedItem, index) => (
+          <span
+            style={{
+              backgroundColor: "#1779DE",
+              color: "#FFFFFF",
+              paddingLeft: "8px",
+              paddingRight: "8px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              borderRadius: "6px",
+              fontWeight: 400,
+              fontSize: "14px",
+            }}
+            key={`selected-item-${index}`}
+            {...getSelectedItemProps({ selectedItem, index })}
+          >
+            @{selectedItem}
+            <span
+              style={{
+                cursor: "pointer",
+                padding: "4px",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                removeSelectedItem(selectedItem);
+              }}
+            >
+              &#10005;
+            </span>
+          </span>
+        ))}
+        <div
+          style={{
+            display: "inline-block",
+            marginLeft: "5px",
+          }}
+        >
+          {
             <input
+              className={clsx(
+                "outline-[#FFA726] placeholder:text-sm placeholder:text-placeholder-color placeholder:font-normal",
+                !isOpen ? "hidden" : "",
+              )}
               style={{ padding: "4px" }}
-              {...getInputProps({
-                ...getDropdownProps({ preventKeyAction: isOpen }),
-              })}
-              data-testid="combobox-input"
-              placeholder={showPlaceholder ? "Copyrights*" : ""}
-              className="outline-[#FFA726] placeholder:text-sm placeholder:text-placeholder-color placeholder:font-normal"
+              {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
             />
-          </div>
-        }
+          }
+        </div>
       </div>
       <ul
         {...getMenuProps()}
@@ -160,7 +201,21 @@ const CopyrightMultiSelect = ({
           padding: "0",
           margin: "4px 0 0 0",
         }}
-      ></ul>
+      >
+        {isOpen &&
+          items.map((item, index) => (
+            <li
+              style={{
+                padding: "4px",
+                backgroundColor: highlightedIndex === index ? "#bde4ff" : null,
+              }}
+              key={`${item}${index}`}
+              {...getItemProps({ item, index })}
+            >
+              {item}
+            </li>
+          ))}
+      </ul>
     </div>
   );
 };
