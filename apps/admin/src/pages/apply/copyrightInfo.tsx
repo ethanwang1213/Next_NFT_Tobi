@@ -6,7 +6,12 @@ import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
 const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
   const copyrightInfoChangeHandler = (field, value) => {
-    if (["copyrightHolder", "license"].includes(field)) {
+    if (field === "copyrightHolder") {
+      setCopyrightInfo({
+        ...copyrightInfo,
+        [field]: value.replace(/^©/, "").substring(0, 255),
+      });
+    } else if (field === "license") {
       setCopyrightInfo({
         ...copyrightInfo,
         [field]: value.substring(0, 255),
@@ -76,21 +81,33 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             ここでは１つのみ提出してください。あとから追加・変更が可能です。
           </span>
         </div>
-        <input
-          id="copyright_holder"
+        {/* Be sure to include 'sm:' and 'md:' like
+         'sm:focus-within:border-focus-color md:focus-within:border-focus-color'
+          to prevent 'hover:' from taking precedence. */}
+        <label
           className={clsx(
+            "input flex items-center gap-1",
             "w-[178px] h-8 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color",
+            "focus:outline-none focus-within:outline-none sm:focus-within:border-focus-color md:focus-within:border-focus-color",
             "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="©Tobiratory"
-          value={copyrightInfo.copyrightHolder}
-          onChange={(e) =>
-            copyrightInfoChangeHandler("copyrightHolder", e.target.value)
-          }
-          ref={refs["copyrightHolder"]}
-        />
+        >
+          ©
+          <input
+            id="copyright_holder"
+            className={clsx(
+              "w-full text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder="Tobiratory"
+            value={copyrightInfo.copyrightHolder}
+            onChange={(e) =>
+              copyrightInfoChangeHandler("copyrightHolder", e.target.value)
+            }
+            ref={refs["copyrightHolder"]}
+          />
+        </label>
       </div>
       <div className={"flex flex-row justify-between mb-[50px]"}>
         <div className="flex flex-col text-nowrap">

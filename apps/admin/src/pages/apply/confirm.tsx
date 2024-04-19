@@ -134,7 +134,7 @@ const ConfirmInformation = ({
         </span>
       </Row1>
       <Row1 label="コピーライト（版権表記）" wide={false}>
-        <span className="">{copyrightInfo.copyrightHolder}</span>
+        <span className="">©{copyrightInfo.copyrightHolder}</span>
       </Row1>
       <Row3 label="著作物に関するライセンス">
         <span className="">{copyrightFiles()}</span>
