@@ -3,7 +3,7 @@ import { useState } from "react";
 import { TcpFormType } from "types/adminTypes";
 import { auth, storage } from "./firebase/client";
 
-export const useTcpRegistration = (setError) => {
+export const useTcpRegistration = (setError: (arg: string|null) => void) => {
   const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const filePath = `/users/${auth.currentUser.uid}/tcp/copyright/files`;
