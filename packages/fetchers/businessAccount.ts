@@ -3,7 +3,7 @@ import { useState } from "react";
 import { TcpFormType } from "types/adminTypes";
 import { auth, storage } from "./firebase/client";
 
-export const useTcpRegistration = (setError: (arg: string|null) => void) => {
+export const useTcpRegistration = (setError: (arg: string | null) => void) => {
   const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const filePath = `/users/${auth.currentUser.uid}/tcp/copyright/files`;
@@ -18,8 +18,9 @@ export const useTcpRegistration = (setError: (arg: string|null) => void) => {
         data.copyright.file3,
         data.copyright.file4,
       ];
-      await uploadFiles(files, filePath);
-      const res = await postTcpData(data);
+      const fileNames = files.map((file) => replaceFileName(file?.name));
+      await uploadFiles(files, fileNames, filePath);
+      const res = await postTcpData(data, fileNames);
       if (res.ok) {
         setResponse("登録が完了しました。");
       } else {
@@ -39,7 +40,11 @@ export const useTcpRegistration = (setError: (arg: string|null) => void) => {
   return [registerTcp, response, loading] as const;
 };
 
-const uploadFiles = async (files: File[], path: string) => {
+const uploadFiles = async (
+  files: File[],
+  fileNames: string[],
+  path: string,
+) => {
   // When using foreach, we cannot catch exceptions thrown by uploadBytes,
   // so we should use for loop instead.
   for (let i = 0; i < files.length; i++) {
@@ -47,7 +52,7 @@ const uploadFiles = async (files: File[], path: string) => {
 
     validateCopyrightFile(files[i]);
 
-    const storageRef = ref(storage, `${path}/${files[i].name}`);
+    const storageRef = ref(storage, `${path}/${fileNames[i]}`);
     await uploadBytes(storageRef, files[i]);
   }
 };
@@ -65,15 +70,15 @@ export const validateCopyrightFile = (file: File) => {
   }
 };
 
-const postTcpData = async (data: TcpFormType) => {
+const postTcpData = async (data: TcpFormType, fileNames: string[]) => {
   const postData = {
     ...data,
     copyright: {
       ...data.copyright,
-      file1: replaceFileName(data.copyright.file1?.name),
-      file2: replaceFileName(data.copyright.file2?.name),
-      file3: replaceFileName(data.copyright.file3?.name),
-      file4: replaceFileName(data.copyright.file4?.name),
+      file1: fileNames[0],
+      file2: fileNames[1],
+      file3: fileNames[2],
+      file4: fileNames[3],
     },
   };
   const idToken = await auth.currentUser.getIdToken();
