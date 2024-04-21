@@ -71,7 +71,9 @@ const MainContents = ({ children }: Props) => {
   const router = useRouter();
 
   const loading = (
-    <span className={"loading loading-spinner text-info loading-md"} />
+    <div className={"h-[100dvh] flex justify-center"}>
+      <span className={"loading loading-spinner text-info loading-md"} />
+    </div>
   );
 
   if (
