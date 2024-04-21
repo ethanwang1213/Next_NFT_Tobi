@@ -142,3 +142,56 @@ export const fetchCopyrights = async () => {
     return [];
   }
 };
+
+export const updateCopyright = async (id, name) => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `/backend/api/functions/native/admin/copyrights/${id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          name,
+        }),
+      },
+    );
+    const result = await response.json();
+    if (result.status == "success") {
+      return true;
+    } else {
+      console.log("Error:", result.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};
+
+export const deleteCopyright = async (id) => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `/backend/api/functions/native/admin/copyrights/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      },
+    );
+    const result = await response.json();
+    if (result.status == "success") {
+      return true;
+    } else {
+      console.log("Error:", result.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};
