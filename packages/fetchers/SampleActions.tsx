@@ -57,6 +57,141 @@ export const deleteSamples = async (ids) => {
   }
 };
 
-export function fetchSampleItem(id) {
-  return null; // Return the found item or null if not found
-}
+export const fetchSampleItem = async (id) => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `/backend/api/functions/native/admin/samples/${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      },
+    );
+    const result = await response.json();
+    if (result.status == "success") {
+      return result.data;
+    } else {
+      console.error("Error:", result.data);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+};
+
+export const updateSampleItem = async (data) => {
+  try {
+    console.log(
+      JSON.stringify({
+        ...data,
+      }),
+    );
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `/backend/api/functions/native/admin/samples/${data.id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+        }),
+      },
+    );
+    const result = await response.json();
+    if (result.status == "success") {
+      if (result.data == "updated") {
+        return true;
+      } else {
+        console.error("Error:", result.data);
+        return false;
+      }
+    } else {
+      console.error("Error:", result.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};
+
+export const fetchCopyrights = async () => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch("/backend/api/functions/native/copyrights", {
+      method: "GET",
+      headers: {
+        Authorization: token,
+      },
+    });
+    const result = await response.json();
+    if (result.status == "success") {
+      return result.data;
+    } else {
+      console.log("Error:", result.status);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return [];
+  }
+};
+
+export const updateCopyright = async (id, name) => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `/backend/api/functions/native/admin/copyrights/${id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          name,
+        }),
+      },
+    );
+    const result = await response.json();
+    if (result.status == "success") {
+      return true;
+    } else {
+      console.log("Error:", result.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};
+
+export const deleteCopyright = async (id) => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const response = await fetch(
+      `/backend/api/functions/native/admin/copyrights/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      },
+    );
+    const result = await response.json();
+    if (result.status == "success") {
+      return true;
+    } else {
+      console.log("Error:", result.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};

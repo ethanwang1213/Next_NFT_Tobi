@@ -20,7 +20,7 @@ export default function Index() {
   return (
     <div className="w-full">
       <div className="flex justify-between pl-12 pr-7 pt-9">
-        <h1 className="font-semibold text-[#717171] text-3xl">ITEMS</h1>
+        <h1 className="font-semibold text-secondary text-3xl">ITEMS</h1>
         <CreateButton {...(links[selectedTab] ?? links.sample)} />
       </div>
       <div className="w-full items-center justify-between">

@@ -11,46 +11,26 @@ export const formatCurrency = (amount: number) => {
 
 export const formatDateToLocal = (
   dateStr: string,
+  showTime: boolean = false,
   locale: string = "ja-JP",
 ) => {
   const date = new Date(dateStr);
-  const options: Intl.DateTimeFormatOptions = {
+  const optionsDateOnly: Intl.DateTimeFormatOptions = {
     day: "numeric",
     month: "numeric",
     year: "numeric",
   };
-  const formatter = new Intl.DateTimeFormat(locale, options);
+  const optionsDateTime: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+  const formatter = new Intl.DateTimeFormat(
+    locale,
+    showTime ? optionsDateTime : optionsDateOnly,
+  );
   return formatter.format(date);
-};
-
-// status number -> status string
-export const formatSampleStatus = (status) => {
-  let value;
-  switch (status) {
-    case 1:
-      value = "Draft";
-      break;
-    case 2:
-      value = "Private";
-      break;
-    case 3:
-      value = "Viewing Only";
-      break;
-    case 4:
-      value = "On Sale";
-      break;
-    case 5:
-      value = "Unlisted";
-      break;
-    case 6:
-      value = "Scheduled Publishing";
-      break;
-    case 7:
-      value = "Scheduled for Sale";
-      break;
-    default:
-      value = "";
-      break;
-  }
-  return value;
 };

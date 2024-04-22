@@ -16,7 +16,9 @@ const StyledTextInput = ({
   changeHandler,
   inputMask,
   tooltip,
+  maxLen,
   inputRef,
+  readOnly = false,
 }: {
   className: string;
   value: string;
@@ -25,11 +27,17 @@ const StyledTextInput = ({
   placeholder?: string;
   inputMask?: TextKind;
   tooltip?: string;
+  maxLen?: number;
   inputRef?: MutableRefObject<HTMLInputElement>;
+  readOnly?: boolean;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value);
   const [uniqueId, setUniqueId] = useState("");
+
+  useEffect(() => {
+    setInputValue(value);
+  }, [value]);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -40,12 +48,21 @@ const StyledTextInput = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!inputMask) setInputValue(e.target.value);
+    let value = e.target.value;
 
-    if (inputMask === TextKind.Digit)
-      setInputValue(e.target.value.replace(/\D/g, ""));
+    if (maxLen) {
+      value = value.substring(0, maxLen);
+    }
 
-    changeHandler(e.target.value);
+    if (!inputMask) {
+      setInputValue(value);
+    }
+
+    if (inputMask === TextKind.Digit) {
+      setInputValue(value.replace(/\D/g, ""));
+    }
+
+    changeHandler(value);
   };
 
   useEffect(() => {
@@ -69,6 +86,7 @@ const StyledTextInput = ({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        readOnly={readOnly}
         ref={inputRef ? inputRef : null}
       />
       <label

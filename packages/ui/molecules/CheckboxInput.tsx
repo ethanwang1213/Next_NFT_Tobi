@@ -13,7 +13,7 @@ const CheckboxInput = ({
   return (
     <div className={clsx("flex flex-row items-center", className)}>
       <input type="checkbox" className="w-6 h-6 mr-3" />
-      <span className="text-sm text-[#717171] font-normal">{label}</span>
+      <span className="text-sm text-secondary font-normal">{label}</span>
       {tooltip ? (
         <Image
           src="/admin/images/info-icon-2.svg"

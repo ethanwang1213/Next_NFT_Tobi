@@ -26,14 +26,14 @@ export default function Breadcrumbs({
               href={breadcrumb.href}
               className={clsx(
                 "text-3xl",
-                breadcrumb.active ? "text-[#717171]" : "text-[#1779DE]"
+                breadcrumb.active ? "text-primary" : "text-secondary",
               )}
             >
               {breadcrumb.label}
             </Link>
             {index < breadcrumbs.length - 1 ? (
               <Image
-                className="ml-4 mr-2"
+                className="ml-8 mr-8"
                 width={8}
                 height={16}
                 src="/admin/images/right-arrow.svg"

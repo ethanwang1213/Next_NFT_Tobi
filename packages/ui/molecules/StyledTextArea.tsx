@@ -1,12 +1,13 @@
 import clsx from "clsx";
 import { MutableRefObject, useEffect, useState } from "react";
 
-const StyledTextInput = ({
+const StyledTextArea = ({
   className,
   value,
   label,
   placeholder,
   changeHandler,
+  maxLen,
   inputRef,
 }: {
   className: string;
@@ -14,6 +15,7 @@ const StyledTextInput = ({
   label: string;
   changeHandler: (e) => void;
   placeholder: string;
+  maxLen?: number;
   inputRef?: MutableRefObject<HTMLTextAreaElement>;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -29,8 +31,13 @@ const StyledTextInput = ({
   };
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
-    changeHandler(e.target.value);
+    let value = e.target.value;
+    if (maxLen) {
+      value = value.substring(0, maxLen);
+    }
+
+    setInputValue(value);
+    changeHandler(value);
   };
 
   useEffect(() => {
@@ -41,7 +48,7 @@ const StyledTextInput = ({
     <div className={clsx(className, "relative")}>
       <textarea
         className={clsx(
-          "w-full h-32 pl-5 pt-4 pr-3 resize-none",
+          "w-full h-[180px] pl-5 pt-4 pr-3 resize-none",
           "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
@@ -68,4 +75,4 @@ const StyledTextInput = ({
   );
 };
 
-export default StyledTextInput;
+export default StyledTextArea;

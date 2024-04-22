@@ -45,7 +45,7 @@ const SizeInput = ({
         onChange={handleWidthChange}
       />
       <span className="mt-3.5 mx-0.5">mm</span>
-      <div className="w-0.5 bg-[#717171]/50"></div>
+      <div className="w-0.5 bg-secondary/50"></div>
       <span className="mt-3.5 mx-0.5">W</span>
       <input
         type="text"
@@ -54,7 +54,7 @@ const SizeInput = ({
         onChange={handleHeightChange}
       />
       <span className="mt-3.5 mx-0.5">mm</span>
-      <div className="w-0.5 bg-[#717171]/50"></div>
+      <div className="w-0.5 bg-secondary/50"></div>
       <span className="mt-3.5 mx-0.5">D</span>
       <input
         type="text"

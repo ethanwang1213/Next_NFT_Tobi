@@ -14,7 +14,7 @@ export default function CreateButton({
     <Button
       onClick={() => router.push(href)}
       className={
-        "flex h-14 px-6 items-center rounded-[30px] bg-[#1779DE] text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+        "flex h-14 px-6 items-center rounded-[30px] bg-primary text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
       }
     >
       <Image
