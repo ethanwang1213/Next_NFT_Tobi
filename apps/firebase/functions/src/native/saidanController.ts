@@ -4,7 +4,7 @@ import {DecodedIdToken} from "firebase-admin/auth";
 import {prisma} from "../prisma";
 
 export const getSaidans = async (req: Request, res: Response) => {
-  const {q, showcase, sortBy, sortOrder} = req.params;
+  const {q, sortBy, sortOrder} = req.params;
   const orderValue = {};
   Object.defineProperty(orderValue, sortBy, {
     value: sortOrder,
@@ -16,9 +16,6 @@ export const getSaidans = async (req: Request, res: Response) => {
     where: {
       title: {
         in: [q],
-      },
-      showcase: {
-        equals: showcase=="true",
       },
     },
     orderBy: orderValue,
@@ -32,7 +29,6 @@ export const getSaidans = async (req: Request, res: Response) => {
         owner: {
           userId: saidan.owner_uuid,
         },
-        showcase: saidan.showcase,
       };
     }),
   };
@@ -189,7 +185,6 @@ export const createSaidan = async (req: Request, res: Response) => {
         saidanId: saveData.id,
         title: saveData.title,
         description: saveData.description,
-        showcase: saveData.showcase,
         modelUrl: saidanTemplate.model_url,
         imageUrl: saveData.thumbnail_image,
         modelType: saidanTemplate.type,
@@ -294,7 +289,6 @@ export const getMySaidansById = async (req: Request, res: Response) => {
       owner: {
         userId: saidanData.owner_uuid,
       },
-      showcase: saidanData.showcase,
     };
     res.status(200).send({
       status: "success",

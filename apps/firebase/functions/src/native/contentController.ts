@@ -1,5 +1,7 @@
 import {Request, Response} from "express";
 import {prisma} from "../prisma";
+import { DecodedIdToken, getAuth } from "firebase-admin/auth";
+import { FirebaseError } from "firebase-admin";
 
 export const getContents = async (req: Request, res: Response) => {
   const {q, sortBy, sortOrder} = req.params;
@@ -61,3 +63,69 @@ export const getContentById = async (req: Request, res: Response) => {
     data: resData,
   });
 };
+
+export const createMyContent = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {title, description}: {title: string, description: string} = req.body;
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    try {
+      const uid = decodedToken.uid;
+      const admin = await prisma.tobiratory_businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (!admin) {
+        res.status(401).send({
+          status: "error",
+          data: "not-admin",
+        });
+        return;
+      }
+      const content = await prisma.tobiratory_contents.findFirst({
+        where: {
+          owner_uuid: uid,
+        },
+      });
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-content",
+        });
+        return;
+      }
+      const showcase = await prisma.tobiratory_showcase.create({
+        data: {
+          title: title,
+          description: description,
+          owner_uuid: admin.uuid,
+          content_id: content?.id,
+        }
+      })
+      const returnData = {
+        id: showcase.id,
+        title: showcase.title,
+        description: showcase.description,
+      }
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: {
+          result: error,
+        },
+      });
+    }
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: {
+        result: error.code,
+      },
+    });
+    return;
+  });
+}
