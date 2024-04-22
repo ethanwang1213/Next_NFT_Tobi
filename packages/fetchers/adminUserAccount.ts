@@ -30,8 +30,8 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
       setLoading(true);
       setError(null);
       const res = await registerToTobiratoryAndFlowAccount();
-      const resData = await res.json();
       if (res.ok) {
+        const resData = await res.json();
         if (resData.data.flow?.flowAddress) {
           // If Flow account is already registered, the account data is returned.
           setResponse(resData.data);
@@ -51,10 +51,13 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
           setError("Failed to register");
         }
       } else {
-        setError(resData.data);
+        const resData = await res.text();
+        console.log(resData);
+        setError("エラーが発生しました。もう一度お試し下さい。");
       }
     } catch (error) {
-      setError(String(error));
+      console.log(String(error))
+      setError("エラーが発生しました。もう一度お試し下さい。");
     }
     setLoading(false);
   };

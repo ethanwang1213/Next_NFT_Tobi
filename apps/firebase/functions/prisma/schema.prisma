@@ -92,15 +92,19 @@ model tobiratory_saidans_favorite {
 }
 
 model tobiratory_contents {
-  id                Int      @id @default(autoincrement())
-  title             String   @db.VarChar(255)
-  image             String   @db.VarChar(255)
-  creator_user_id   String   @db.VarChar(255)
-  creator_username  String   @db.VarChar(255)
-  creator_icon      String   @db.VarChar(255)
-  creator_sns       String   @db.VarChar(255)
-  updated_date_time DateTime @default(now()) @db.Timestamp(6)
-  created_date_time DateTime @default(now()) @db.Timestamp(6)
+  id                Int                    @id @default(autoincrement())
+  owner             tobiratory_businesses? @relation(fields: [owner_uuid], references: [uuid])
+  owner_uuid        String                 @unique @db.VarChar(255)
+  name              String                 @db.VarChar(255)
+  image             String                 @db.VarChar(255)
+  url               String                 @db.VarChar(255)
+  description       String                 @db.VarChar(255)
+  copyright_holders String[]               @default([]) @db.VarChar(255)
+  license           String                 @db.VarChar(255)
+  license_data      String[]               @default([]) @db.VarChar(255)
+  copyrights        tobiratory_copyright[]
+  updated_date_time DateTime               @default(now()) @db.Timestamp(6)
+  created_date_time DateTime               @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_digital_items {
@@ -195,25 +199,24 @@ model tobiratory_boxes {
 }
 
 model tobiratory_businesses {
-  id                Int      @id @default(autoincrement())
-  uuid              String   @db.VarChar(255)
-  name              String   @db.VarChar(255)
-  name_furi         String   @db.VarChar(255)
-  birth             DateTime @db.Timestamp(6)
-  email             String   @db.VarChar(255)
-  address           String   @db.VarChar(255)
-  phone             String   @db.VarChar(255)
-  content_name      String   @db.VarChar(255)
-  content_name_furi String   @db.VarChar(255)
-  genre             String   @db.VarChar(255)
-  content_desc      String   @db.VarChar(255)
-  homepage_url      String   @db.VarChar(255)
-  kyc               String   @db.VarChar(255)
-  bank_account      String   @db.VarChar(255)
-  balance           String   @db.VarChar(255)
-  submission        Boolean  @default(false)
-  updated_date_time DateTime @default(now()) @db.Timestamp(6)
-  created_date_time DateTime @default(now()) @db.Timestamp(6)
+  id                Int                  @id @default(autoincrement())
+  uuid              String               @unique @db.VarChar(255)
+  first_name        String               @db.VarChar(255)
+  last_name         String               @db.VarChar(255)
+  birth             DateTime             @db.Date()
+  email             String               @db.VarChar(255)
+  country           String               @db.VarChar(255)
+  postal_code       String               @db.VarChar(255)
+  province          String               @db.VarChar(255)
+  city              String               @db.VarChar(255)
+  street            String               @db.VarChar(255)
+  building          String               @db.VarChar(255)
+  phone             String               @db.VarChar(255)
+  bank_account      String               @db.VarChar(255)
+  balance           Int                  @default(0)
+  content           tobiratory_contents?
+  updated_date_time DateTime             @default(now()) @db.Timestamp(6)
+  created_date_time DateTime             @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_sales {
@@ -240,7 +243,9 @@ model tobiratory_material_images {
 
 model tobiratory_copyright {
   id                Int                                  @id @default(autoincrement())
-  copyright_name    String                               @db.VarChar(255) @unique
+  copyright_name    String                               @unique @db.VarChar(255)
+  content           tobiratory_contents                  @relation(fields: [content_id], references: [id])
+  content_id        Int
   digital_items     tobiratory_digital_items_copyright[]
   updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time DateTime                             @default(now()) @db.Timestamp(6)

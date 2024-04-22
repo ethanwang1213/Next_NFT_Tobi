@@ -3,7 +3,7 @@ import * as cors from "cors";
 import * as express from "express";
 import {REGION} from "../lib/constants";
 
-import {getAccounts, getAccountById} from "./accountController";
+import {getAccounts, getAccountById, getOthersSaidans} from "./accountController";
 import
 {
   signUp,
@@ -43,8 +43,9 @@ import {
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
-import {getNftInfo, mintNFT} from "./nftController";
+import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
+import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -68,6 +69,7 @@ app.post("/create-flow", createFlowAcc);
 
 app.get("/accounts", getAccounts);
 app.get("/accounts/:uid", getAccountById);
+app.get("/accounts/:uid/saidans", getOthersSaidans);
 
 app.get("/contents", getContents);
 app.get("/contents/:id", getContentById);
@@ -146,8 +148,13 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/material/save", uploadMaterial);
 app.post("/material/get", getMaterial);
 app.post("/material/remove", removeMaterials);
+app.post("/nfts/fetch-thumb", fetchNftThumb);
+app.post("/nfts/fetch-model", fetchNftModel);
 
 // admin APIs
+app.get("/admin/copyrights", getCopyrights);
+app.post("/admin/copyrights/:id", updateCopyrights);
+app.delete("/admin/copyrights/:id", deleteCopyrights);
 app.post("/admin/digital/status", adminChangeDigitalStatus);
 
 app.get("/admin/samples", adminGetAllSamples);

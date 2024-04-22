@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
-import {FirebaseError} from "firebase-admin";
+import {FirebaseError, storage} from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
@@ -56,7 +56,7 @@ export const mintNFT = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (content.creator_user_id !== uid) {
+      if (content.owner_uuid !== uid) {
         res.status(401).send({
           status: "error",
           data: "You are not owner of this content",
@@ -116,7 +116,7 @@ export const mintNFT = async (req: Request, res: Response) => {
           },
         });
         if (content) {
-          creatorName = content.title;
+          creatorName = content.name;
         } else {
           const user = await prisma.tobiratory_accounts.findUnique({
             where: {
@@ -149,7 +149,7 @@ export const mintNFT = async (req: Request, res: Response) => {
       }
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
-          digital_item_id: digitalItem.id,
+          id: digitalItem.id,
         },
       });
       const copyrights = await Promise.all(
@@ -211,6 +211,150 @@ export const mintNFT = async (req: Request, res: Response) => {
   });
 };
 
+export const fetchNftThumb = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {mediaUrl}:{mediaUrl: string} = req.body;
+  const storageBucket = storage().bucket();
+  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/";
+  if (!mediaUrl.includes(prefixUrl)) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-thumb",
+    });
+    return;
+  }
+  const bucketUrl = mediaUrl.substring(mediaUrl.lastIndexOf("/") + 1).split("?")[0];
+  const file = storageBucket.file(bucketUrl);
+  const digitalData = await prisma.tobiratory_digital_items.findFirst({
+    where: {
+      OR: [
+        {default_thumb_url: mediaUrl},
+        {custom_thumb_url: mediaUrl},
+      ],
+    },
+  });
+  if (!digitalData) {
+    res.status(401).send({
+      status: "error",
+      data: "digital-not-exist",
+    });
+    return;
+  }
+  if (digitalData.status>2) {
+    try {
+      const download = await file.download();
+      res.status(200).send({
+        status: "success",
+        data: download[0],
+      });
+      return;
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+      return;
+    }
+  }
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    if (digitalData.creator_uuid != uid) {
+      const placeHolderImageUrl = "images/Journal_book_TOBIRAPOLIS_2.png";
+      const placeHolderFile = storageBucket.file(placeHolderImageUrl);
+      const download = await placeHolderFile.download();
+      res.status(200).send({
+        status: "success",
+        data: download[0],
+      });
+      return;
+    }
+    const download = await file.download();
+    res.status(200).send({
+      status: "success",
+      data: download[0],
+    });
+    return;
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const fetchNftModel = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {modelUrl}:{modelUrl: string} = req.body;
+  const storageBucket = storage().bucket();
+  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/";
+  if (!modelUrl.includes(prefixUrl)) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-model",
+    });
+    return;
+  }
+  const bucketUrl = modelUrl.substring(modelUrl.lastIndexOf("/") + 1).split("?")[0];
+  const file = storageBucket.file(bucketUrl);
+  const digitalData = await prisma.tobiratory_digital_items.findFirst({
+    where: {
+      OR: [
+        {default_thumb_url: modelUrl},
+        {custom_thumb_url: modelUrl},
+      ],
+    },
+  });
+  if (!digitalData) {
+    res.status(401).send({
+      status: "error",
+      data: "digital-not-exist",
+    });
+    return;
+  }
+  if (digitalData.status>2) {
+    try {
+      const download = await file.download();
+      res.status(200).send({
+        status: "success",
+        data: download,
+      });
+      return;
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+      return;
+    }
+  }
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    if (digitalData.creator_uuid != uid) {
+      const placeHolderImageUrl = "images/Journal_book_TOBIRAPOLIS_2.png";
+      const placeHolderFile = storageBucket.file(placeHolderImageUrl);
+      const download = await placeHolderFile.download();
+      res.status(200).send({
+        status: "success",
+        data: download,
+      });
+      return;
+    }
+    const download = await file.download();
+    res.status(200).send({
+      status: "success",
+      data: download,
+    });
+    return;
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
 export const getNftInfo = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
@@ -256,7 +400,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
           created_date_time: "desc",
         },
       });
-      
+
       if (!ownerships.length||ownerships[0].owner_uuid!=uid) {
         res.status(401).send({
           status: "error",
@@ -284,7 +428,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       });
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          creator_user_id: uid,
+          owner_uuid: uid,
         },
       });
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
@@ -304,7 +448,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       );
       const returnData = {
         content: content!=null?{
-          name: content.title
+          name: content.name,
         }:null,
         name: digitalData.name,
         modelUrl: digitalData.nft_model,

@@ -14,7 +14,7 @@ const EmailAuth = () => {
   useEffect(() => {
     if (!user) {
       router.push("/authentication");
-    } else if (user.registeredFlowAccount) {
+    } else if (user.hasFlowAccount) {
       router.push("/");
     } else {
       register();
@@ -22,7 +22,7 @@ const EmailAuth = () => {
     // When you put 'register' in the dependency, it causes an infinite loop.
   }, [router, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (user?.registeredFlowAccount) {
+  if (user?.hasFlowAccount) {
     return <div>redirect to top page</div>;
   } else if (registering || response || error) {
     return (
