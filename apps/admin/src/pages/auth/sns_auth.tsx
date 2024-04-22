@@ -14,7 +14,7 @@ const SnsAuth = () => {
   useEffect(() => {
     if (!user) {
       router.push("/authentication");
-    } else if (user.registeredFlowAccount) {
+    } else if (user.hasFlowAccount) {
       router.push("/");
     }
   }, [router, user]);
@@ -23,7 +23,7 @@ const SnsAuth = () => {
     return <div>redirect to signin page</div>;
   }
 
-  if (user.registeredFlowAccount) {
+  if (user.hasFlowAccount) {
     return <div>redirect to top page</div>;
   } else if (registering || response || error) {
     return (

@@ -1,7 +1,13 @@
-import { AuthProvider, useAuth } from "contexts/AdminAuthProvider";
+import {
+  AuthProvider,
+  isApplyPage,
+  isPageForNonBusinessAccount,
+  useAuth,
+} from "contexts/AdminAuthProvider";
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
@@ -25,12 +31,14 @@ const Layout = ({ children }: Props) => {
 
 const Contents = ({ children }: Props) => {
   const { user } = useAuth();
-  if (auth.currentUser && user?.registeredFlowAccount) {
+  if (auth.currentUser && user?.hasFlowAccount) {
     return (
       <NavbarProvider>
         <div className="flex flex-col h-screen">
           <Navbar />
-          <Sidebar>{children}</Sidebar>
+          <Sidebar>
+            <MainContents>{children}</MainContents>
+          </Sidebar>
         </div>
       </NavbarProvider>
     );
@@ -56,6 +64,26 @@ const Contents = ({ children }: Props) => {
       </div>
     </div>
   );
+};
+
+const MainContents = ({ children }: Props) => {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const loading = (
+    <div className={"h-[100dvh] flex justify-center"}>
+      <span className={"loading loading-spinner text-info loading-md"} />
+    </div>
+  );
+
+  if (
+    !user ||
+    (user.hasBusinessAccount && isApplyPage(router.pathname)) ||
+    (!user.hasBusinessAccount && !isPageForNonBusinessAccount(router.pathname))
+  ) {
+    return loading;
+  }
+  return <>{children}</>;
 };
 
 export default Layout;

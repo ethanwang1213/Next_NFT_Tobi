@@ -2,6 +2,7 @@
 
 import config from "admin/tailwind.config";
 import clsx from "clsx";
+import { useAuth } from "contexts/AdminAuthProvider";
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import { gsap, Power2 } from "gsap";
 import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
@@ -18,6 +19,7 @@ const Sidebar = ({ children }: Props) => {
   const menuMaxWidth = 230;
   const screensMd = parseInt(config.theme.screens.md);
 
+  const { user } = useAuth();
   const resizedBefore = useRef<boolean>(false);
   const [expand, setExpand] = useState(true);
 
@@ -92,36 +94,43 @@ const Sidebar = ({ children }: Props) => {
       name: "Tobiratory Creator Programに参加",
       icon: "/admin/images/icon/contents.svg",
       href: "/apply",
+      visible: !user.hasBusinessAccount,
     },
     {
       name: "ワークスペース",
       icon: "/admin/images/icon/workspace.svg",
       href: "/workspace",
+      visible: user.hasBusinessAccount,
     },
     {
       name: "アイテム管理",
       icon: "/admin/images/icon/tag.svg",
       href: "/items",
+      visible: user.hasBusinessAccount,
     },
     {
       name: "コンテンツ管理",
       icon: "/admin/images/icon/contents.svg",
       href: "/contents",
+      visible: user.hasBusinessAccount,
     },
     {
       name: "ギフト受け取り設定",
       icon: "/admin/images/icon/gift.svg",
       href: "/gift",
+      visible: user.hasBusinessAccount,
     },
     {
       name: "SAIDAN/SHOWCASE",
       icon: "/admin/images/icon/saidan.svg",
       href: "/saidan",
+      visible: user.hasBusinessAccount,
     },
     {
       name: "アカウントの設定",
       icon: "/admin/images/icon/account.svg",
       href: "/account",
+      visible: true,
     },
   ];
 
@@ -134,49 +143,51 @@ const Sidebar = ({ children }: Props) => {
       <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
         <ul className="pt-[17px]">
-          {items.map((item, index) => (
-            <li
-              key={index}
-              className="mb-[3px] text-base-content"
-              style={{
-                width: expand ? menuMaxWidth : menuMinWidth,
-              }}
-            >
-              <Link
-                href={item.href}
-                className={clsx(
-                  "btn-block btn-square bg-base-100 hover:bg-hover-item pl-[14px] gap-4 flex flex-row items-center",
-                  "rounded-none border-0 border-l-[4px]",
-                  pathname.split("/")[1] === item.href.split("/")[1]
-                    ? `border-l-active hover:border-l-active text-${selectedColor}`
-                    : `border-l-base-100 hover:border-l-hover-item text-${normalTextColor}`,
-                )}
+          {items
+            .filter((item) => item.visible)
+            .map((item, index) => (
+              <li
+                key={index}
+                className="mb-[3px] text-base-content"
+                style={{
+                  width: expand ? menuMaxWidth : menuMinWidth,
+                }}
               >
-                <div
+                <Link
+                  href={item.href}
                   className={clsx(
-                    "w-6 h-6 aspect-square",
+                    "btn-block btn-square bg-base-100 hover:bg-hover-item pl-[14px] gap-4 flex flex-row items-center",
+                    "rounded-none border-0 border-l-[4px]",
                     pathname.split("/")[1] === item.href.split("/")[1]
-                      ? `bg-${selectedColor}`
-                      : `bg-${normalIconColor}`,
-                  )}
-                  style={{
-                    WebkitMaskImage: `url(${item.icon})`,
-                    WebkitMaskRepeat: "no-repeat",
-                    WebkitMaskPosition: "center",
-                    WebkitMaskSize: "contain",
-                  }}
-                ></div>
-                <div
-                  className={clsx(
-                    "text-[15px] font-medium",
-                    expand ? "inline" : "hidden",
+                      ? `border-l-active hover:border-l-active text-${selectedColor}`
+                      : `border-l-base-100 hover:border-l-hover-item text-${normalTextColor}`,
                   )}
                 >
-                  {item.name}
-                </div>
-              </Link>
-            </li>
-          ))}
+                  <div
+                    className={clsx(
+                      "w-6 h-6 aspect-square",
+                      pathname.split("/")[1] === item.href.split("/")[1]
+                        ? `bg-${selectedColor}`
+                        : `bg-${normalIconColor}`,
+                    )}
+                    style={{
+                      WebkitMaskImage: `url(${item.icon})`,
+                      WebkitMaskRepeat: "no-repeat",
+                      WebkitMaskPosition: "center",
+                      WebkitMaskSize: "contain",
+                    }}
+                  ></div>
+                  <div
+                    className={clsx(
+                      "text-[15px] font-medium",
+                      expand ? "inline" : "hidden",
+                    )}
+                  >
+                    {item.name}
+                  </div>
+                </Link>
+              </li>
+            ))}
         </ul>
       </div>
     </div>

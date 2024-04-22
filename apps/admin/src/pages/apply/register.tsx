@@ -1,7 +1,17 @@
 import clsx from "clsx";
+import { useAuth } from "contexts/AdminAuthProvider";
+import {
+  useTcpRegistration,
+  validateCopyrightFile,
+} from "fetchers/businessAccount";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
-import { RubyCharacters } from "types/ruby";
+import { useEffect, useRef, useState } from "react";
+import {
+  TcpContent,
+  TcpCopyright,
+  TcpFormType,
+  TcpUser,
+} from "types/adminTypes";
 import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
 import ConfirmInformation from "./confirm";
@@ -13,68 +23,89 @@ const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
 const Register = () => {
   const [switchValue, setSwitchValue] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
+  const { user } = useAuth();
 
-  const [contentInfo, setContentInfo] = useState({
-    name: "",
-    ruby: "",
+  const [contentInfo, setContentInfo] = useState<TcpContent>({
+    name: user.name,
     url: "",
-    genre: "",
     description: "",
   });
 
-  const [userInfo, setUserInfo] = useState({
-    last_name: "",
-    first_name: "",
-    last_name_ruby: "",
-    first_name_ruby: "",
-    birthday_year: "",
-    birthday_month: "",
-    birthday_date: "",
-    post_code: "",
-    prefectures: "",
-    municipalities: "",
-    street: "",
-    building: "",
-    phone: "",
+  const [userInfo, setUserInfo] = useState<TcpUser>({
+    lastName: "",
+    firstName: "",
+    birthdayYear: 0,
+    birthdayMonth: 0,
+    birthdayDate: 0,
     email: "",
+    phone: "",
+    building: "",
+    street: "",
+    city: "",
+    province: "",
+    postalCode: "",
+    country: "",
   });
 
-  const [copyrightInfo, setCopyrightInfo] = useState({ agreement: false });
+  type CopyrightInfo = TcpCopyright & {
+    agreement: boolean;
+  };
+
+  const [copyrightInfo, setCopyrightInfo] = useState<CopyrightInfo>({
+    agreement: false,
+    copyrightHolder: "",
+    license: "",
+    file1: null,
+    file2: null,
+    file3: null,
+    file4: null,
+  });
+  const [originalContentDeclaration, setOriginalContentDeclaration] =
+    useState(false);
+
+  const [registerTcp, response, loading] = useTcpRegistration(setError);
+
+  useEffect(() => {
+    if (!response) {
+      return;
+    }
+
+    router.replace("/apply/finish");
+  }, [response, router]);
 
   const contentInfoInputRefs = {
     name: useRef(),
-    ruby: useRef(),
-    genre: useRef(),
     description: useRef(),
   };
 
   const userInfoInputRefs = {
-    last_name: useRef(),
-    first_name: useRef(),
-    last_name_ruby: useRef(),
-    first_name_ruby: useRef(),
-    birthday_year: useRef(),
-    birthday_month: useRef(),
-    birthday_date: useRef(),
-    post_code: useRef(),
-    prefectures: useRef(),
-    municipalities: useRef(),
+    lastName: useRef(),
+    firstName: useRef(),
+    birthdayYear: useRef(),
+    birthdayMonth: useRef(),
+    birthdayDate: useRef(),
+    country: useRef(),
+    postalCode: useRef(),
+    province: useRef(),
+    city: useRef(),
     street: useRef(),
     building: useRef(),
     phone: useRef(),
     email: useRef(),
   };
 
+  const copyrightInfoInputRefs = {
+    copyrightHolders: useRef(),
+    license: useRef(),
+  };
+
   const checkContentInfos = () => {
     // Check if any field is empty
     const emptyField = Object.keys(contentInfo).find((fieldName) => {
-      return (
-        (fieldName !== "url" && contentInfo[fieldName].trim() === "") ||
-        (fieldName === "ruby" &&
-          RegExp(`[^${RubyCharacters}]`).test(contentInfo[fieldName]))
-      );
+      return fieldName !== "url" && contentInfo[fieldName].trim() === "";
     });
 
     if (emptyField) {
@@ -90,12 +121,11 @@ const Register = () => {
   const checkUserInfos = () => {
     // Check if any field is empty
     const emptyField = Object.keys(userInfo).find((fieldName) => {
+      if (typeof userInfo[fieldName] === "number") {
+        return userInfo[fieldName] === 0;
+      }
       return (
         (fieldName !== "building" && userInfo[fieldName].trim() === "") ||
-        (fieldName === "last_name_ruby" &&
-          RegExp(`[^${RubyCharacters}]`).test(userInfo[fieldName])) ||
-        (fieldName === "first_name_ruby" &&
-          RegExp(`[^${RubyCharacters}]`).test(userInfo[fieldName])) ||
         (fieldName === "email" &&
           !/^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(userInfo[fieldName]))
       );
@@ -111,6 +141,39 @@ const Register = () => {
     return true;
   };
 
+  const checkCopyrightInfos = () => {
+    if (!copyrightInfo.agreement || !copyrightInfo.copyrightHolder) {
+      return false;
+    }
+
+    const fileFields = ["file1", "file2", "file3", "file4"];
+    const invalidField = fileFields.find((fileField) => {
+      if (!copyrightInfo[fileField]) {
+        return false;
+      }
+      try {
+        validateCopyrightFile(copyrightInfo[fileField]);
+      } catch (err) {
+        // To prevent "Too many re-renders," call setError only when the message changes.
+        if (error !== err.message) {
+          setError(err.message);
+        }
+        return true;
+      }
+      return false;
+    });
+
+    if (invalidField) {
+      return false;
+    }
+
+    // To prevent "Too many re-renders," call setError only when the message changes.
+    if (error) {
+      setError(null);
+    }
+    return true;
+  };
+
   const handleNext = () => {
     switch (switchValue) {
       case 0:
@@ -121,8 +184,12 @@ const Register = () => {
         if (!checkUserInfos()) return;
         break;
 
+      case 2:
+        if (!checkCopyrightInfos()) return;
+        break;
+
       case 3:
-        router.replace("/apply/finish");
+        postTCPData();
         return;
 
       default:
@@ -132,20 +199,52 @@ const Register = () => {
     setSwitchValue(switchValue + 1);
   };
 
+  const postTCPData = async () => {
+    const data: TcpFormType = {
+      content: contentInfo,
+      user: userInfo,
+      copyright: copyrightInfo,
+    };
+    registerTcp(data);
+  };
+
   const handleBack = () => {
     switch (switchValue) {
       case 0:
         router.replace("/apply/terms");
         return;
+      case 2:
+        setError(null);
+        break;
+      case 3:
+        setError(null);
+        break;
     }
     setSwitchValue(switchValue - 1);
   };
 
   const toggleSwitchHandler = (value) => {
+    setError(null);
     if (value > 0 && value <= 2 && !checkContentInfos()) return false;
     if (value > 1 && value <= 3 && !checkUserInfos()) return false;
     setSwitchValue(value);
     return true;
+  };
+
+  const isButtonDisabled = () => {
+    if (switchValue === 2 && !checkCopyrightInfos()) {
+      return true;
+    } else if (switchValue === 3 && !originalContentDeclaration) {
+      return true;
+    }
+    return false;
+  };
+
+  const nextButtonColor = () => {
+    if (isButtonDisabled()) {
+      return "bg-inactive";
+    }
+    return "bg-primary";
   };
 
   return (
@@ -177,42 +276,79 @@ const Register = () => {
             <CopyrightInformation
               copyrightInfo={copyrightInfo}
               setCopyrightInfo={setCopyrightInfo}
+              refs={copyrightInfoInputRefs}
             />
           )}
           {switchValue === 3 && (
-            <ConfirmInformation userInfo={userInfo} contentInfo={contentInfo} />
+            <ConfirmInformation
+              userInfo={userInfo}
+              contentInfo={contentInfo}
+              copyrightInfo={copyrightInfo}
+              originalContentDeclaration={originalContentDeclaration}
+              setOriginalContentDeclaration={setOriginalContentDeclaration}
+            />
           )}
         </div>
 
-        <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-between">
-          <Button
-            type="button"
-            className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
+        <div
+          className={
+            "flex justify-center items-center font-medium h-10 text-[16px] text-attention"
+          }
+        >
+          {error}
+        </div>
+
+        <LoadingButton
+          nextLabel={
+            switchValue === 2 ? "確認する" : switchValue === 3 ? "申請" : "次へ"
+          }
+          color={nextButtonColor()}
+          disabled={isButtonDisabled()}
+          loading={loading}
+          handleBack={handleBack}
+          handleNext={handleNext}
+        />
+      </div>
+    </div>
+  );
+};
+
+const LoadingButton = ({
+  nextLabel,
+  color,
+  disabled,
+  loading,
+  handleBack,
+  handleNext,
+}) => {
+  if (loading) {
+    return (
+      <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-center">
+        <span className={"loading loading-spinner text-info loading-md"} />
+      </div>
+    );
+  }
+  return (
+    <div className="w-[568px] h-14 mx-auto flex flex-row justify-between">
+      <Button
+        type="button"
+        className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
               border border-[#1779DE] bg-transparent rounded-[30px] 
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
-            onClick={handleBack}
-          >
-            戻る
-          </Button>
-          <Button
-            type="button"
-            className={clsx(
-              "w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px]",
-              switchValue === 2 && !copyrightInfo.agreement
-                ? "bg-[#B3B3B3]"
-                : "bg-[#1779DE]",
-            )}
-            onClick={handleNext}
-            disabled={switchValue === 2 && !copyrightInfo.agreement}
-          >
-            {switchValue === 2
-              ? "確認する"
-              : switchValue === 3
-                ? "申請"
-                : "次へ"}
-          </Button>
-        </div>
-      </div>
+        onClick={handleBack}
+      >
+        戻る
+      </Button>
+      <Button
+        type="button"
+        className={clsx(
+          `w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px] ${color}`,
+        )}
+        onClick={handleNext}
+        disabled={disabled}
+      >
+        {nextLabel}
+      </Button>
     </div>
   );
 };
