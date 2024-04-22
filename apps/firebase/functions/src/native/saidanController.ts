@@ -76,13 +76,22 @@ export const getSaidansById = async (req: Request, res: Response) => {
         return;
       }
 
-      const digitalNFT = await prisma.tobiratory_digital_items.findMany({
+      const digitalNFT = await prisma.tobiratory_digital_item_nfts.findMany({
         where: {
           saidan_id: saidanData.id,
         },
       });
 
-      const items = digitalNFT.map((nft)=>nft.is_default_thumb?nft.default_thumb_url:nft.custom_thumb_url);
+      const items = await Promise.all(
+          digitalNFT.map(async (nft)=> {
+            const digitalData = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: nft.digital_item_id,
+              },
+            });
+            return digitalData?.is_default_thumb?digitalData?.default_thumb_url:digitalData?.custom_thumb_url;
+          })
+      );
 
       const resData = {
         id: saidanData.id,
@@ -559,7 +568,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
       });
       const items = await Promise.all(
           itemList.map(async (item)=>{
-            const updateItem = await prisma.tobiratory_digital_items.update({
+            const updateItem = await prisma.tobiratory_digital_item_nfts.update({
               where: {
                 id: item.itemId,
               },
@@ -581,7 +590,12 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                 scale: item.scale,
               },
             });
-            return updateItem;
+            const digitalData = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: updateItem.digital_item_id,
+              },
+            });
+            return {...updateItem, ...digitalData};
           })
       );
       const saidanItemList = items.map((saidanItem)=>{
@@ -685,33 +699,41 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
           saidan_id: saidanData.id,
         },
       });
-      const saidanItems = await prisma.tobiratory_digital_items.findMany({
+      const saidanItems = await prisma.tobiratory_digital_item_nfts.findMany({
         where: {
           saidan_id: saidanData.id,
         },
       });
-      const saidanItemList = saidanItems.map((saidanItem)=>{
-        return {
-          itemId: saidanItem.id,
-          modelType: saidanItem.type,
-          modelUrl: saidanItem.nft_model,
-          imageUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
-          stageType: saidanItem.state_type,
-          position: {
-            x: saidanItem.position[0],
-            y: saidanItem.position[1],
-            z: saidanItem.position[2],
-          },
-          rotation: {
-            x: saidanItem.rotation[0],
-            y: saidanItem.rotation[1],
-            z: saidanItem.rotation[2],
-          },
-          canScale: saidanItem.can_scale,
-          itemMeterHeight: saidanItem.meter_height,
-          scale: saidanItem.scale,
-        };
-      });
+      const saidanItemList = await Promise.all(
+          saidanItems.map(async (item)=>{
+            const digitalData = await prisma.tobiratory_digital_items.findUnique({
+              where: {
+                id: item.digital_item_id,
+              },
+            });
+            const saidanItem = {...digitalData, ...item};
+            return {
+              itemId: saidanItem.id,
+              modelType: saidanItem.type,
+              modelUrl: saidanItem.nft_model,
+              imageUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
+              stageType: saidanItem.state_type,
+              position: {
+                x: saidanItem.position[0],
+                y: saidanItem.position[1],
+                z: saidanItem.position[2],
+              },
+              rotation: {
+                x: saidanItem.rotation[0],
+                y: saidanItem.rotation[1],
+                z: saidanItem.rotation[2],
+              },
+              canScale: saidanItem.can_scale,
+              itemMeterHeight: saidanItem.meter_height,
+              scale: saidanItem.scale,
+            };
+          })
+      );
       const returnData = {
         saidanId: saidanData.id,
         saidanType: saidanTemplate.type,
@@ -775,7 +797,7 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.tobiratory_digital_items.update({
+      await prisma.tobiratory_digital_item_nfts.update({
         where: {
           id: itemId,
         },

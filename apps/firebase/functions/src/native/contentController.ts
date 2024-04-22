@@ -1,19 +1,7 @@
-import {Response} from "express";
+import {Request, Response} from "express";
 import {prisma} from "../prisma";
 
-type AllContentRequest = {
-    params: {
-        q: string,
-        sortBy: string,
-        sortOrder: "desc" | "asc"
-    }
-}
-
-type ContentRequest = {
-    params: { id: string }
-}
-
-export const getContents = async (req: AllContentRequest, res: Response) => {
+export const getContents = async (req: Request, res: Response) => {
   const {q, sortBy, sortOrder} = req.params;
   const orderValue = {};
   Object.defineProperty(orderValue, sortBy, {
@@ -46,7 +34,7 @@ export const getContents = async (req: AllContentRequest, res: Response) => {
   });
 };
 
-export const getContentById = async (req: ContentRequest, res: Response) => {
+export const getContentById = async (req: Request, res: Response) => {
   const {id} = req.params;
   const contentData = await prisma.tobiratory_contents.findUnique({
     where: {
