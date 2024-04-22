@@ -34,7 +34,7 @@ const Detail = () => {
     const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) {
       // upload to the server
-      uploadFileToFirestore(file);
+      uploadFileToFireStorage(file);
     }
   };
 
@@ -48,7 +48,7 @@ const Detail = () => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       // upload to the server
-      uploadFileToFirestore(file);
+      uploadFileToFireStorage(file);
     }
   };
 
@@ -56,7 +56,7 @@ const Detail = () => {
     event.target.style.backgroundColor = "#FFFFFF";
   };
 
-  const uploadFileToFirestore = async (file) => {
+  const uploadFileToFireStorage = async (file) => {
     try {
       // Get file extension
       const fileName = file.name;
