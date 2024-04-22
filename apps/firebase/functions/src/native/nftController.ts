@@ -415,9 +415,15 @@ export const getNftInfo = async (req: Request, res: Response) => {
                 uuid: ownership.owner_uuid,
               },
             });
+            const business = await prisma.tobiratory_businesses.findFirst({
+              where: {
+                uuid: ownership.owner_uuid,
+              },
+            });
             return {
               uid: ownership.owner_uuid,
               avatarUrl: userData==null?"":userData.icon_url,
+              isBusinnessAccount: business!=null,
             };
           })
       );
@@ -461,6 +467,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
         license: digitalData.license,
         acquiredDate: ownerships[0].created_date_time,
         certImageUrl: "",
+        sn: nftData.serial_no,
         owners: owners,
       };
       res.status(200).send({
