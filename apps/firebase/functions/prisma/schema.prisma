@@ -124,6 +124,7 @@ model tobiratory_digital_items {
   sample_item                      tobiratory_sample_items?
   digital_nft                      tobiratory_digital_item_nfts[]
   item_id                          Int?
+  tx_id                            String?                              @db.VarChar(255)
   status                           Int
   minted_count                     Int                                  @default(0)
   updated_date_time                DateTime                             @default(now()) @db.Timestamp(6)
