@@ -354,7 +354,7 @@ const CopyrightMultiSelect = ({
             </span>
             <div
               className={clsx(
-                "right-0, top-0 z-10",
+                "-right-52 top-0 z-10",
                 item.popup ? "absolute" : "hidden",
               )}
             >
