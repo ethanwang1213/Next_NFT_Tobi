@@ -1,5 +1,3 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   createUserWithEmailAndPassword,
   EmailAuthProvider,
@@ -114,35 +112,6 @@ const Login = () => {
     );
   };
 
-  // sign inボタンが押されたときに実行する関数
-  const signIn = (data: LoginFormType) => {
-    if (!data) return;
-    console.log("sign in");
-    const actionCodeSettings = {
-      // URL you want to redirect back to. The domain (www.example.com) for this
-      // URL must be in the authorized domains list in the Firebase Console.
-      url: `${window.location.origin}/journal/email/verify`,
-      // This must be true.
-      handleCodeInApp: true,
-    };
-    setIsEmailLoading(true);
-    sendSignInLinkToEmail(auth, data.email, actionCodeSettings)
-      .then(() => {
-        // The link was successfully sent. Inform the user.
-        // Save the email locally so you don't need to ask the user for it again
-        // if they open the link on the same device.
-        window.localStorage.setItem("emailForSignIn", data.email);
-        emailModalRef.current.showModal();
-        setIsEmailLoading(false);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ...
-        setIsEmailLoading(false);
-      });
-  };
-
   const withMailSignUp = async (email: string, password: string) => {
     setIsRegisteringWithMailAndPassword(true);
     try {
@@ -250,15 +219,9 @@ const Login = () => {
       // ログイン状態の変化を監視
       auth.onAuthStateChanged(async (user) => {
         if (user && user.email) {
-          // 非公開ドメインの場合はアカウント削除をし登録できないようにする
-          if (user.email.indexOf("privaterelay.appleid.com") !== -1) {
-            await user.delete();
-            appleErrModalRef.current.showModal();
-          } else {
-            console.log(`${user.email} としてログイン中です。`);
-            // ログイン済みの場合、リダイレクト処理を実行
-            await router.push("/"); // リダイレクト先のURLを指定
-          }
+          console.log(`${user.email} としてログイン中です。`);
+          // ログイン済みの場合、リダイレクト処理を実行
+          await router.push("/"); // リダイレクト先のURLを指定
         }
       });
     };
@@ -484,126 +447,6 @@ const Login = () => {
           fill
         />
       </div>
-      <dialog id="loginModal" className="modal" ref={emailModalRef}>
-        <form method="dialog" className="modal-box bg-secondary">
-          <h3 className="font-bold text-base sm:text-xl text-accent">
-            メールを送信しました
-          </h3>
-          <div className="text-xs sm:text-sm text-accent">
-            <p className="py-4">
-              ログイン認証のメールを記入されたアドレスへ送信しました。
-              <br />
-              メールをご確認いただき、記載されたURLからログインを完了させてください。
-            </p>
-            <p className="font-bold">メールが届かない場合</p>
-            <ul className="list-disc pl-6 mt-2">
-              <li>迷惑メールフォルダやフィルターの設定をご確認ください。</li>
-              <li>時間をあけてから、再度ログインをお試しください。</li>
-            </ul>
-          </div>
-          <div className="modal-action">
-            <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">
-              閉じる
-            </button>
-          </div>
-        </form>
-      </dialog>
-
-      <dialog id="appleModal" className="modal" ref={appleModalRef}>
-        <form method="dialog" className="modal-box bg-secondary">
-          <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2">
-            <FontAwesomeIcon
-              icon={faXmark}
-              fontSize={24}
-              className="text-accent"
-            />
-          </button>
-
-          <h3 className="font-bold text-base sm:text-xl text-accent text-center">
-            「Appleでサインイン」での注意
-          </h3>
-          <div className="text-sm sm:text-base text-accent grid gap-4 py-8">
-            <p>
-              初めて「Appleでサインイン」する場合、
-              <br />
-              メールアドレスを登録先サービス（今回の場合はJournal）へ共有するかどうかの選択が表示されます。
-            </p>
-            <p>
-              TOBIRA NEKOの受け取りのため、
-              <span className="inline-block">【メールを共有】</span>{" "}
-              を選択して、ログインをお願いします。
-            </p>
-            <div className="grid gap-2 leading-[13px] sm:leading-4 pl-4 text-[10px] sm:text-[12px]">
-              <p>
-                TOBIRA
-                NEKO購入時のメールアドレスとJournalアカウントのメールアドレスが同一でなければ、TOBIRA
-                NEKOを受け取ることができません。
-              </p>
-              <p>
-                非公開状態にすると、メールアドレスの@以降が（privaterelay.appleid.com）となり、受け取りができなくなります。
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-center mb-4 text-accent">
-            <label className="flex">
-              <input
-                type="checkbox"
-                checked={isAppleModalChecked}
-                className="checkbox checkbox-accent"
-                onClick={() => setAppleModalChecked(!isAppleModalChecked)}
-                onChange={() => {}}
-              />
-              <div className="grid content-center ml-2">
-                <span className="select-none sm:text-sm">確認しました</span>
-              </div>
-            </label>
-          </div>
-          <div className="flex justify-center">
-            {/* if there is a button in form, it will close the modal */}
-            <button
-              className="btn btn-sm sm:btn-md w-[30%] text-xs sm:text-base btn-outline btn-accent"
-              onClick={withApple}
-              disabled={!isAppleModalChecked}
-            >
-              進む
-            </button>
-          </div>
-        </form>
-      </dialog>
-      <dialog id="appleErrModal" className="modal" ref={appleErrModalRef}>
-        <form method="dialog" className="modal-box bg-secondary">
-          <h3 className="font-bold text-lg pb-5">
-            【メールを非公開】の設定でログインしようとしているようです
-          </h3>
-          <p>
-            Apple
-            IDでメールアドレスの非公開設定を有効にしていると、メールアドレスが@privaterelay.appleid.comというドメインで登録されてしまいTOBIRA
-            NEKOが受け取れないため、メールの非公開の設定でアカウント作成はできません。
-          </p>
-          <p className="py-3">
-            apple
-            IDとTobiratoryの紐づけを解除し、&ldquo;メールを共有&rdquo;を選択して、ログインをお願いします。
-          </p>
-          <a
-            href="https://support.apple.com/ja-jp/HT210426"
-            className="btn btn-link"
-          >
-            紐づけの解除方法はこちら
-          </a>
-          <a
-            href="https://support.apple.com/ja-jp/HT210425"
-            className="btn btn-link"
-          >
-            メールの非公開について詳しくはこちら
-          </a>
-
-          <div className="modal-action">
-            <button className="btn btn-sm sm:btn-md text-xs sm:text-base btn-outline btn-accent">
-              閉じる
-            </button>
-          </div>
-        </form>
-      </dialog>
     </>
   );
 };
