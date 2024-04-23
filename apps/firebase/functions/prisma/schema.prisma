@@ -166,6 +166,7 @@ model tobiratory_digital_item_nfts {
   nft_metadata      String                   @default("") @db.Text
   owner_uuid        String                   @db.VarChar(100)
   saidan_id         Int                      @default(0)
+  content_id        Int                      @default(0)
   state_type        Int                      @default(0)
   can_scale         Boolean                  @default(false)
   meter_height      Float                    @default(0)
@@ -272,10 +273,25 @@ model tobiratory_showcase {
   owner_uuid                       String                             @unique
   content_id                       Int
   status                           Int                                @default(0)
+  tobiratory_showcase_template     tobiratory_showcase_template?      @relation(fields: [template_id], references: [id])
+  template_id                      Int
+  thumb_url                        String                             @db.VarChar(255)
+  position                         Float[]                            @default([0, 0, 0])
+  rotation                         Float[]                            @default([0, 0, 0])
   reservation_time                 DateTime                           @default(now()) @db.Timestamp(6)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
+}
+
+model tobiratory_showcase_template {
+  id                Int                   @id @default(autoincrement())
+  showcase          tobiratory_showcase[]
+  cover_image       String                @db.VarChar(255)
+  model_url         String                @db.VarChar(255)
+  type              Int
+  updated_date_time DateTime              @default(now()) @db.Timestamp(6)
+  created_date_time DateTime              @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_showcase_sample_items {
@@ -284,6 +300,8 @@ model tobiratory_showcase_sample_items {
   showcase_id       Int
   sample            tobiratory_sample_items @relation(fields: [sample_id], references: [id])
   sample_id         Int
+  position          Float[]
+  rotation          Float[]
   updated_date_time DateTime                @default(now()) @db.Timestamp(6)
   created_date_time DateTime                @default(now()) @db.Timestamp(6)
 }
