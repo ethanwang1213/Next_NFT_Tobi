@@ -1,14 +1,21 @@
-import { faApple } from "@fortawesome/free-brands-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  createUserWithEmailAndPassword,
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
   GoogleAuthProvider,
   OAuthProvider,
+  sendEmailVerification,
   sendSignInLinkToEmail,
+  signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import gsap from "gsap";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
+import { ErrorMessage } from "journal-pkg/types/journal-types";
+import AuthTemplate from "journal-pkg/ui/templates/AuthTemplate";
+import EmailAndPasswordSignIn from "journal-pkg/ui/templates/journal/EmailAndPasswordSignIn";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -17,6 +24,16 @@ import { useForm } from "react-hook-form";
 type LoginFormType = {
   email: string;
 };
+
+const AuthStates = {
+  SignUp: 0,
+  SignIn: 1,
+  SignInWithEmailAndPassword: 2,
+  SignUpWithEmailAndPassword: 3,
+  PasswordReset: 4,
+  EmailSent: 5,
+} as const;
+type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
 const Login = () => {
   const loginRef = useRef<HTMLDivElement>(null);
@@ -29,9 +46,16 @@ const Login = () => {
   const router = useRouter();
   const emailModalRef = useRef<HTMLDialogElement>(null);
   const appleModalRef = useRef<HTMLDialogElement>(null);
+  const [email, setEmail] = useState("");
+  const [authError, setAuthError] = useState<ErrorMessage>(null);
   const [isAppleModalChecked, setAppleModalChecked] = useState(false);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
   const appleErrModalRef = useRef<HTMLDialogElement>(null);
+  const [authState, setAuthState] = useState<AuthState>(AuthStates.SignIn);
+  const [
+    isRegisteringWithMailAndPassword,
+    setIsRegisteringWithMailAndPassword,
+  ] = useState(false);
 
   const {
     register,
@@ -43,8 +67,55 @@ const Login = () => {
     },
   });
 
+  const startMailSignUp = async (data: LoginFormType) => {
+    if (!data) {
+      return;
+    }
+
+    const usedPasswordAuthenticationAlready = await usedPasswordAuthentication(
+      data.email,
+    );
+
+    setEmail(data.email);
+    if (usedPasswordAuthenticationAlready) {
+      setAuthState(AuthStates.SignInWithEmailAndPassword);
+    } else {
+      setAuthState(AuthStates.SignUpWithEmailAndPassword);
+    }
+  };
+
+  const startMailSignIn = async (data: LoginFormType) => {
+    if (!data) {
+      return;
+    }
+
+    const notSetPassword = await usedEmailLinkButNotSetPassword(data.email);
+
+    if (notSetPassword) {
+      sendEmailForPasswordReset(data.email, "journal/auth/password_reset");
+    } else {
+      setEmail(data.email);
+      setAuthState(AuthStates.SignInWithEmailAndPassword);
+    }
+  };
+
+  const usedPasswordAuthentication = async (email: string) => {
+    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    return signInMethods.includes(
+      EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
+    );
+  };
+
+  const usedEmailLinkButNotSetPassword = async (email: string) => {
+    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    return (
+      signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) &&
+      !signInMethods.includes(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
+    );
+  };
+
   // sign inボタンが押されたときに実行する関数
-  const signIn = handleSubmit(async (data: LoginFormType) => {
+  const signIn = (data: LoginFormType) => {
     if (!data) return;
     console.log("sign in");
     const actionCodeSettings = {
@@ -70,7 +141,42 @@ const Login = () => {
         // ...
         setIsEmailLoading(false);
       });
-  });
+  };
+
+  const withMailSignUp = async (email: string, password: string) => {
+    setIsRegisteringWithMailAndPassword(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailOwnershipVerification("admin/auth/email_auth");
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        setAuthState(AuthStates.SignInWithEmailAndPassword);
+        return;
+      }
+      setAuthError({ code: error.code, message: error.message });
+      setIsRegisteringWithMailAndPassword(false);
+    }
+  };
+
+  const withMailSignIn = async (email: string, password: string) => {
+    setIsEmailLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
+      if (!user.emailVerified) {
+        await sendEmailOwnershipVerification("admin/auth/sns_auth");
+      }
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      setAuthError({ code: errorCode, message: errorMessage });
+      setIsEmailLoading(false);
+    }
+  };
 
   // Googleアカウントでログインする関数
   const withGoogle = async () => {
@@ -92,6 +198,50 @@ const Login = () => {
     } catch (error) {
       console.error("Appleログインに失敗しました。", error);
     }
+  };
+
+  const sendEmailOwnershipVerification = async (path: string) => {
+    const actionCodeSettings = {
+      url: `${window.location.origin}/${path}`,
+      handleCodeInApp: true,
+    };
+    try {
+      await sendEmailVerification(auth.currentUser, actionCodeSettings);
+      setAuthState(AuthStates.EmailSent);
+    } catch (error) {
+      setAuthError({ code: error.code, message: error.message });
+      setIsEmailLoading(false);
+    }
+  };
+
+  const sendEmailForPasswordReset = async (email: string, path: string) => {
+    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    if (signInMethods.length === 0) {
+      setAuthError({
+        code: "auth/user-not-found",
+        message: "Tobiratoryアカウントが存在しません",
+      });
+      return;
+    }
+
+    const actionCodeSettings = {
+      url: `${window.location.origin}/${path}`,
+      handleCodeInApp: true,
+    };
+    try {
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      setAuthState(AuthStates.EmailSent);
+    } catch (error) {
+      setAuthError({ code: error.code, message: error.message });
+      setIsEmailLoading(false);
+    }
+  };
+
+  const handleClickBack = (authState: AuthState) => {
+    setIsRegisteringWithMailAndPassword(false);
+    setIsEmailLoading(false);
+    setAuthError(null);
+    setAuthState(authState);
   };
 
   useEffect(() => {
@@ -157,6 +307,85 @@ const Login = () => {
         "<",
       );
   }, []);
+
+  const AuthForm = () => {
+    switch (authState) {
+      case AuthStates.SignUp:
+        return (
+          <AuthTemplate
+            loading={isEmailLoading}
+            googleLabel={"Sign up with Google"}
+            appleLabel={"Sign up with Apple"}
+            mailLabel={"Sign up"}
+            prompt={"既にアカウントを持っていますか？ - サインイン"}
+            setAuthState={() => setAuthState(AuthStates.SignIn)}
+            withMail={startMailSignUp}
+            withGoogle={withGoogle}
+            withApple={withApple}
+          />
+        );
+      case AuthStates.SignIn:
+        return (
+          <AuthTemplate
+            loading={isEmailLoading}
+            googleLabel={"Login in with Google"}
+            appleLabel={"Login in with Apple"}
+            mailLabel={"Login in"}
+            prompt={"アカウントを持っていませんか？ - 新規登録"}
+            setAuthState={() => setAuthState(AuthStates.SignUp)}
+            withMail={startMailSignIn}
+            withGoogle={withGoogle}
+            withApple={withApple}
+          />
+        );
+      case AuthStates.SignInWithEmailAndPassword:
+        return (
+          <EmailAndPasswordSignIn
+            email={email}
+            loading={isEmailLoading}
+            error={authError}
+            onClickBack={() => handleClickBack(AuthStates.SignIn)}
+            onClickPasswordReset={(email) =>
+              sendEmailForPasswordReset(email, "admin/auth/password_reset")
+            }
+            withMailSignIn={withMailSignIn}
+          />
+        );
+      /*
+          case AuthStates.SignUpWithEmailAndPassword:
+            return (
+              <FlowAgreementWithEmailAndPassword
+                title={""}
+                buttonText={"登録"}
+                email={email}
+                isSubmitting={isRegisteringWithMailAndPassword}
+                isPasswordReset={false}
+                authError={authError}
+                onClickBack={() => handleClickBack(AuthStates.SignUp)}
+                onClickSubmit={withMailSignUp}
+              />
+            );
+          case AuthStates.SignInWithEmailAndPassword:
+            return (
+              <EmailAndPasswordSignIn
+                email={email}
+                loading={isEmailLoading}
+                error={authError}
+                onClickBack={() => handleClickBack(AuthStates.SignIn)}
+                onClickPasswordReset={(email) =>
+                  sendEmailForPasswordReset(email, "admin/auth/password_reset")
+                }
+                withMailSignIn={withMailSignIn}
+              />
+            );
+          case AuthStates.EmailSent:
+            return (
+              <ConfirmationSent
+                onClickBack={() => handleClickBack(AuthStates.SignIn)}
+              />
+            );*/
+    }
+  };
 
   return (
     <>
@@ -243,81 +472,7 @@ const Login = () => {
         className="flex items-center justify-center absolute left-0 w-[100dvw] h-[100dvh] p-8 sm:p-10"
         ref={loginRef}
       >
-        <form
-          className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
-          onSubmit={signIn}
-        >
-          <button
-            className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
-                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
-            type="button"
-            onClick={withGoogle}
-          >
-            <div className="relative h-[50%] aspect-square">
-              <Image
-                src="/journal/images/icon/google_journal.svg"
-                alt="google"
-                fill
-              />
-            </div>
-            Login with Google
-          </button>
-          <button
-            className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
-            drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
-            type="button"
-            onClick={() => {
-              appleModalRef.current.showModal();
-            }}
-          >
-            <FontAwesomeIcon icon={faApple} size="xl" />
-            Login with Apple
-          </button>
-          <div
-            className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black 
-                flex items-center text-center gap-5"
-          >
-            <p>or</p>
-          </div>
-          <div className="w-full">
-            <input
-              type="text"
-              placeholder="Email"
-              {...register("email", {
-                required: {
-                  value: true,
-                  message: "*メールアドレスを入力してください。",
-                },
-                pattern: {
-                  value: /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/,
-                  message: "*メールアドレスの形式で入力してください",
-                },
-              })}
-              className="input rounded-full bg-slate-100 w-full input-bordered 
-                text-md sm:text-lg placeholder:text-sm sm:placeholder:text-md sm:h-[56px] px-6"
-            />
-            <p className="pl-2 pt-1 text-[10px] text-error">
-              {errors.email && `${errors.email.message}`}
-            </p>
-          </div>
-          <button
-            className="btn btn-block rounded-full text-md sm:text-lg sm:h-[56px] 
-                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
-            type="submit"
-          >
-            Login
-          </button>
-          <p className="mt-2 w-full text-red-500 text-[10px] text-center">
-            ※TOBIRA NEKO購入済みの方
-            <br />
-            受取には購入時に使用したメールアドレスでのログインが必要です。
-          </p>
-          <div>
-            {isEmailLoading && (
-              <span className="loading loading-spinner text-info loading-md"></span>
-            )}
-          </div>
-        </form>
+        <AuthForm />
       </div>
       <div
         className="flex justify-center fixed -bottom-32 right-0 left-0 h-72"

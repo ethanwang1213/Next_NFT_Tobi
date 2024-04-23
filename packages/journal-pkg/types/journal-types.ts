@@ -152,3 +152,8 @@ export type StampRallyResultType = {
   status: "IN_PROGRESS";
   isComplete: boolean;
 };
+
+export type ErrorMessage = {
+  code: string;
+  message: string;
+};
