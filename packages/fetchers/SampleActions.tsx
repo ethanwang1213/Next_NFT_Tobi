@@ -124,12 +124,15 @@ export const updateSampleItem = async (data) => {
 export const fetchCopyrights = async () => {
   try {
     const token = await auth.currentUser.getIdToken();
-    const response = await fetch("/backend/api/functions/native/copyrights", {
-      method: "GET",
-      headers: {
-        Authorization: token,
+    const response = await fetch(
+      "/backend/api/functions/native/admin/copyrights",
+      {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
       },
-    });
+    );
     const result = await response.json();
     if (result.status == "success") {
       return result.data;
