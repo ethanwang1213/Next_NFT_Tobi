@@ -473,7 +473,7 @@ const Detail = () => {
                       width={24}
                       height={24}
                       alt="download"
-                      src="/admin/images/download-icon.svg"
+                      src="/admin/images/icon/download-icon.svg"
                     />
                   </a>
                 </div>
@@ -506,7 +506,7 @@ const Detail = () => {
                       width={24}
                       height={24}
                       alt="cancel"
-                      src="/admin/images/cancel-icon.svg"
+                      src="/admin/images/icon/cancel-icon.svg"
                       className="absolute right-3 bottom-3 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation(); // Stop event propagation
@@ -524,7 +524,7 @@ const Detail = () => {
                       width={24}
                       height={24}
                       alt="cancel"
-                      src="/admin/images/empty-image-icon.svg"
+                      src="/admin/images/icon/empty-image-icon.svg"
                       className="absolute top-12 left-12"
                     />
                   )}
@@ -551,7 +551,7 @@ const Detail = () => {
                     width={24}
                     height={24}
                     alt="upload"
-                    src="/admin/images/upload-icon.svg"
+                    src="/admin/images/icon/upload-icon.svg"
                     className="cursor-pointer"
                     onClick={handleImageClick}
                   />

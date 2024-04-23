@@ -83,7 +83,7 @@ const SelectItemEditMenu = ({
         <Image
           width={16}
           height={16}
-          src="/admin/images/delete-icon.svg"
+          src="/admin/images/icon/delete-icon.svg"
           alt="icon"
         />
         <span className="text-error text-[10px] font-normal">Delete</span>

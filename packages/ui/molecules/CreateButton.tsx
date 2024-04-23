@@ -18,7 +18,7 @@ export default function CreateButton({
           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600`}
       >
         <Image
-          src="/admin/images/plus-icon.svg"
+          src="/admin/images/icon/plus-icon.svg"
           alt="plus"
           width={26}
           height={26}
