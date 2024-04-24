@@ -28,7 +28,7 @@ export const flowTxSend = functions.region(REGION)
         "KMS_USER_KEYRING",
         "KMS_USER_KEY",
         "KMS_USER_KEY_LOCATION",
-        "FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESSES",
+        "FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS",
         "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID",
         "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH",
         "FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN",
@@ -243,9 +243,9 @@ transaction(
 const decryptUserBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
   if (
     !process.env.KMS_PROJECT_ID ||
-      !process.env.KMS_OPERATION_KEY_LOCATION ||
-      !process.env.KMS_OPERATION_KEYRING ||
-      !process.env.KMS_OPERATION_KEY
+      !process.env.KMS_USER_KEY_LOCATION ||
+      !process.env.KMS_USER_KEYRING ||
+      !process.env.KMS_USER_KEY
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
@@ -264,7 +264,7 @@ const decryptUserBase64PrivateKey = async (encryptedPrivateKeyBase64: string) =>
 };
 
 const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestore.DocumentData>) => async (account: any) => {
-  if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESSES ||
+  if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS ||
       !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID ||
       !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY ||
       !process.env.KMS_PROJECT_ID ||
@@ -274,14 +274,13 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
-  let privateKey: string | undefined;
   const doc = await flowAccountRef.get();
   const data = doc.data();
   if (!doc.exists || !data || !data.encryptedPrivateKeyBase64) {
     throw new Error("The private key of flow signer is not defined.");
   }
   const encryptedPrivateKey = data.encryptedPrivateKeyBase64;
-  privateKey = await decryptUserBase64PrivateKey(encryptedPrivateKey);
+  const privateKey = await decryptUserBase64PrivateKey(encryptedPrivateKey);
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
@@ -413,7 +412,10 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
           metadata.license === license &&
           arraysEqual(metadata.copyrightHolders, copyrightHolders)
       ) {
-        const signature = signWithKey({privateKey, msgHex: signable.message, hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "", sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
+        const signature = signWithKey({privateKey,
+          msgHex: signable.message,
+          hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "",
+          sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
         return {
           addr,
           keyId,
@@ -532,7 +534,10 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
         itemCreatorAddress === creatorAddress &&
           itemID == digitalItem.item_id
       ) {
-        const signature = signWithKey({privateKey, msgHex: signable.message, hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "", sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
+        const signature = signWithKey({privateKey,
+          msgHex: signable.message,
+          hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "",
+          sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
         return {
           addr,
           keyId,
@@ -656,7 +661,10 @@ const authz = async (account: any) => {
     addr: fcl.sansPrefix(addr),
     keyId,
     signingFunction: async (signable: any) => {
-      const signature = signWithKey({privateKey, msgHex: signable.message, hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "", sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
+      const signature = signWithKey({privateKey,
+        msgHex: signable.message,
+        hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "",
+        sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
       return {
         addr,
         keyId,
@@ -667,7 +675,7 @@ const authz = async (account: any) => {
 };
 
 const authzBase = async () => {
-  if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESSES ||
+  if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS ||
       !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID ||
       !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ENCRYPTED_PRIVATE_KEY ||
       !process.env.KMS_PROJECT_ID ||
@@ -695,7 +703,7 @@ const authzBase = async () => {
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESSES;
+  const addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
   const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
 
   return {addr: addr as string, keyId, privateKey: privateKey as string};
