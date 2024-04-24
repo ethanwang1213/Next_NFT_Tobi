@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import FilterPopupMenu from "ui/organisms/admin/FilterPopupMenu";
+import SampleFilterMenu from "./SampleFilterMenu";
 
 const FilterPopupButton = (props) => {
   // State to track whether the popup menu is open or closed
@@ -48,9 +49,9 @@ const FilterPopupButton = (props) => {
       {isPopupOpen && (
         <div
           ref={popupRef}
-          className="absolute bg-[#07396C] text-white rounded-xl p-2 z-10 w-36"
+          className="absolute bg-primary-900 text-white rounded-xl px-6 py-4 z-10"
         >
-          <FilterPopupMenu {...props} />
+          <SampleFilterMenu />
         </div>
       )}
     </div>

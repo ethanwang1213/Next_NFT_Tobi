@@ -1,9 +1,10 @@
 export type User = {
-  id: string;
+  uuid: string;
   name: string;
   email: string;
   emailVerified: boolean;
-  registeredFlowAccount: boolean;
+  hasFlowAccount: boolean;
+  hasBusinessAccount: boolean;
 };
 
 export enum FILTER_TYPE {
@@ -20,4 +21,59 @@ export interface FILTER {
 export type ErrorMessage = {
   code: string;
   message: string;
+};
+
+export type ApiProfileData = {
+  userId: string;
+  username: string;
+  email: string;
+  icon: string;
+  sns: string;
+  aboutMe: string;
+  socialLinks: string[];
+  gender: string;
+  birth: string;
+  flow: {
+    flowAddress: string;
+    publicKey: string;
+    txId: string;
+  },
+  createdAt: string;
+}
+
+export type TcpContent = {
+  name: string;
+  url: string;
+  description: string;
+};
+
+export type TcpUser = {
+  firstName: string;
+  lastName: string;
+  birthdayYear: number;
+  birthdayMonth: number;
+  birthdayDate: number;
+  email: string;
+  phone: string;
+  building: string;
+  street: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  country: string;
+};
+
+export type TcpCopyright = {
+  copyrightHolder: string;
+  license: string;
+  file1?: File;
+  file2?: File;
+  file3?: File;
+  file4?: File;
+};
+
+export type TcpFormType = {
+  content: TcpContent;
+  user: TcpUser;
+  copyright: TcpCopyright;
 };

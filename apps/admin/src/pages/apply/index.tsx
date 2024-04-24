@@ -16,12 +16,12 @@ const ConfirmModal = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
 }) => {
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   return (
     <AccountConfirmDialog
       title="このアカウントでTCPに参加する?"
-      account={null}
+      account={user}
       firstButtonProp={{
         caption: "別のアカウントで申請",
         isPrimary: false,

@@ -1,9 +1,10 @@
+import { fetchMyProfile } from "fetchers/adminUserAccount";
+import { checkBusinessAccount } from "fetchers/businessAccount";
 import { auth } from "fetchers/firebase/client";
 import {
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
   onAuthStateChanged,
-  User as FirebaseUser,
 } from "firebase/auth";
 import Router, { useRouter } from "next/router";
 import React, {
@@ -26,6 +27,7 @@ type ContextType = {
   user?: User;
   signOut: () => Promise<void>;
   finishFlowAccountRegistration: () => void;
+  finishBusinessAccountRegistration: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -52,11 +54,31 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (firebaseUser) {
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.
-        // TODO: check flow account by API
-        const isRegisteredFlowAccount = false;
-        if (isRegisteredFlowAccount) {
-          // already registered flow account
-          await createUser(firebaseUser, true);
+        const profile = await fetchMyProfile().catch((error) => {
+          console.error(error);
+          auth.signOut();
+        });
+        if (!profile) {
+          Router.push("/authentication");
+          return;
+        }
+
+        const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
+        if (hasFlowAccount) {
+          const hasBusinessAccount = await checkBusinessAccount().catch(
+            (error) => {
+              console.error(error);
+              auth.signOut();
+            },
+          );
+          await createUser(
+            profile.data.userId,
+            profile.data.email,
+            profile.data.username,
+            firebaseUser.emailVerified,
+            true,
+            hasBusinessAccount,
+          );
           const inaccessiblePaths = [
             "/authentication",
             "/auth/email_auth",
@@ -64,6 +86,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           ];
           if (inaccessiblePaths.includes(Router.pathname)) {
             Router.push("/");
+          } else if (hasBusinessAccount && isApplyPage(Router.pathname)) {
+            Router.push("/");
+          } else if (
+            !hasBusinessAccount &&
+            !isPageForNonBusinessAccount(Router.pathname)
+          ) {
+            Router.push("/apply");
           }
           return;
         }
@@ -90,7 +119,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             Router.push("/authentication");
             return;
           }
-          await createUser(firebaseUser, false);
+          await createUser(
+            firebaseUser.uid,
+            firebaseUser.email,
+            "",
+            firebaseUser.emailVerified,
+            false,
+            false,
+          );
           return;
         } else if (Router.pathname === "/auth/sns_auth") {
           if (emailLinkOnly(signInMethods) || !firebaseUser.emailVerified) {
@@ -105,7 +141,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         }
 
         // not registered flow account yet
-        await createUser(firebaseUser, false);
+        await createUser(
+          firebaseUser.uid,
+          firebaseUser.email,
+          "",
+          firebaseUser.emailVerified,
+          false,
+          false,
+        );
         Router.push("/auth/sns_auth");
       } else {
         setUser(null);
@@ -125,17 +168,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   const createUser = async (
-    firebaseUser: FirebaseUser,
-    registeredFlowAccount: boolean,
+    uuid: string,
+    email: string,
+    name: string,
+    emailVerified: boolean,
+    hasFlowAccount: boolean,
+    hasBusinessAccount: boolean,
   ) => {
-    const email = firebaseUser.email;
     try {
       const appUser: User = {
-        id: firebaseUser.uid,
-        name: email.split("@")[0].slice(0, maxNameLength) ?? "",
-        email: email,
-        emailVerified: firebaseUser.emailVerified,
-        registeredFlowAccount: registeredFlowAccount,
+        uuid,
+        name: name || email.split("@")[0],
+        email,
+        emailVerified,
+        hasFlowAccount,
+        hasBusinessAccount,
       };
       setUser(appUser);
     } catch (error) {
@@ -162,11 +209,24 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    if (user.registeredFlowAccount) {
+    if (user.hasFlowAccount) {
       return;
     }
 
-    setUser((prev) => ({ ...prev, registeredFlowAccount: true }));
+    setUser((prev) => ({ ...prev, hasFlowAccount: true }));
+  };
+
+  const finishBusinessAccountRegistration = () => {
+    if (!user) {
+      router.push("/authentication");
+      return;
+    }
+
+    if (user.hasBusinessAccount) {
+      return;
+    }
+
+    setUser((prev) => ({ ...prev, hasBusinessAccount: true }));
   };
 
   if (user || unrestrictedPaths.includes(router.pathname)) {
@@ -176,6 +236,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           user,
           signOut,
           finishFlowAccountRegistration: finishFlowAccountRegistration,
+          finishBusinessAccountRegistration: finishBusinessAccountRegistration,
         }}
       >
         {children}
@@ -188,6 +249,20 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       </div>
     );
   }
+};
+
+export const isApplyPage = (path: string) => {
+  return path === "/apply" || path.startsWith("/apply/");
+};
+
+export const isPageForNonBusinessAccount = (path: string) => {
+  return (
+    isApplyPage(path) ||
+    path === "/" ||
+    path.startsWith("/auth/") ||
+    path === "/account" ||
+    path.startsWith("/account/")
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

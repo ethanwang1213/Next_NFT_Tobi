@@ -18,14 +18,14 @@ const PriceInput = ({
   return (
     <div
       className={clsx(
-        "pl-5 pr-4 border-2 border-[#717171]/50 rounded-lg flex flex-row",
-        className
+        "pl-5 pr-4 border-2 border-secondary/50 rounded-lg flex flex-row",
+        className,
       )}
     >
       <input
         type="number"
         placeholder={placeholder}
-        className="w-full h-12 text-sm placeholder:text-[#717171]/50 placeholder:font-normal outline-none flex-grow"
+        className="w-full h-12 text-sm placeholder:text-secondary/50 placeholder:font-normal outline-none flex-grow"
         value={value ? value : undefined}
         step="0.01"
         min="0"

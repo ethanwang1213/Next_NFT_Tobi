@@ -1,38 +1,37 @@
 import { useAuth } from "contexts/AdminAuthProvider";
+import { useTobiratoryAndFlowAccountRegistration } from "fetchers/adminUserAccount";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Loading from "ui/atoms/Loading";
 import FlowRegister from "ui/templates/admin/FlowRegister";
 
 const EmailAuth = () => {
   const { user } = useAuth();
   const router = useRouter();
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [flowAccountRegistered, setFlowAccountRegistered] = useState(false);
+  const [register, response, registering, error] =
+    useTobiratoryAndFlowAccountRegistration();
 
   useEffect(() => {
     if (!user) {
       router.push("/authentication");
-    } else if (user.registeredFlowAccount) {
+    } else if (user.hasFlowAccount) {
       router.push("/");
     } else {
-      startRegistering();
+      register();
     }
-  }, [router, user]);
+    // When you put 'register' in the dependency, it causes an infinite loop.
+  }, [router, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const startRegistering = () => {
-    // TODO: Register Tobiratory account and Flow account
-    setIsRegistering(true);
-    const timer = setTimeout(() => {
-      setFlowAccountRegistered(true);
-    }, 3000);
-    return () => clearTimeout(timer);
-  };
-
-  if (user?.registeredFlowAccount) {
+  if (user?.hasFlowAccount) {
     return <div>redirect to top page</div>;
-  } else if (isRegistering) {
-    return <FlowRegister registered={flowAccountRegistered} />;
+  } else if (registering || response || error) {
+    return (
+      <FlowRegister
+        registered={!!response}
+        error={error}
+        onClickRegister={register}
+      />
+    );
   } else {
     return (
       <div className={"h-[100dvh] flex justify-center"}>

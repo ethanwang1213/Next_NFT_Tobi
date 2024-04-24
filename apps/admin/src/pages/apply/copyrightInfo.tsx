@@ -1,46 +1,58 @@
+import clsx from "clsx";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { ChangeEvent, MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
-import { OptionMark } from "ui/atoms/Marks";
+import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
-const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
-  const copyrightInfoChangeHandler = (field, e) => {
-    setCopyrightInfo({ ...copyrightInfo, [field]: e.target.checked });
+const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
+  const copyrightInfoChangeHandler = (field, value) => {
+    if (field === "copyrightHolder") {
+      setCopyrightInfo({
+        ...copyrightInfo,
+        [field]: value.replace(/^©/, "").substring(0, 255),
+      });
+    } else if (field === "license") {
+      setCopyrightInfo({
+        ...copyrightInfo,
+        [field]: value.substring(0, 255),
+      });
+    } else {
+      setCopyrightInfo({ ...copyrightInfo, [field]: value });
+    }
   };
 
-  const [filePath1, setFilePath1] = useState("");
-  const [filePath2, setFilePath2] = useState("");
-  const [filePath3, setFilePath3] = useState("");
-  const [filePath4, setFilePath4] = useState("");
+  const fileInputRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
 
-  // const [file1, setFile1] = useState(null);
-  // const [file2, setFile2] = useState(null);
-  // const [file3, setFile3] = useState(null);
-  // const [file4, setFile4] = useState(null);
+  const fileNames = [
+    copyrightInfo.file1?.name,
+    copyrightInfo.file2?.name,
+    copyrightInfo.file3?.name,
+    copyrightInfo.file4?.name,
+  ];
 
-  const file1InputRef = useRef(null);
-  const file2InputRef = useRef(null);
-  const file3InputRef = useRef(null);
-  const file4InputRef = useRef(null);
-
-  const handleFileChange = (field, e) => {
-    const selectedFile = e.target.files[0];
+  const handleFileChange = (
+    field: number,
+    clear: boolean,
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const selectedFile = clear ? null : e.target.files[0];
     switch (field) {
       case 1:
-        // setFile1(selectedFile);
-        setFilePath1(selectedFile.name);
+        copyrightInfoChangeHandler("file1", selectedFile);
         break;
       case 2:
-        // setFile2(selectedFile);
-        setFilePath2(selectedFile.name);
+        copyrightInfoChangeHandler("file2", selectedFile);
         break;
       case 3:
-        // setFile3(selectedFile);
-        setFilePath3(selectedFile.name);
+        copyrightInfoChangeHandler("file3", selectedFile);
         break;
       case 4:
-        // setFile4(selectedFile);
-        setFilePath4(selectedFile.name);
+        copyrightInfoChangeHandler("file4", selectedFile);
         break;
 
       default:
@@ -48,105 +60,126 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
     }
   };
 
-  // const handleUpload = () => {
-  //   // Handle file upload logic here
-  //   if (file) {
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-  //     // Make a POST request to your server with the formData
-  //     // Example: fetch('/api/upload', { method: 'POST', body: formData });
-  //   }
-  // };
-
   return (
     <div className="text-title-color">
       <div className="mb-16 ">
         <span className="text-2xl mr-10">著作権情報</span>
       </div>
-      <div className="mb-4 flex flex-row items-center">
-        <span className="text-base ml-4 mr-8">
-          所有している著作権やライセンス情報の提供
-        </span>
-        <OptionMark />
+      <div className="flex flex-row items-center">
+        <span className="text-base mr-[15px]">コピーライト（版権表記）</span>
+        <RequireMark />
       </div>
-      <div className="mb-12 flex flex-row items-center">
-        <Image
-          src="/admin/images/info-icon-2.svg"
-          width={16}
-          height={16}
-          alt="information"
-          className="ml-4"
-        />
-        <span className="text-[12px] ml-4">
-          著作権やライセンスを証明する公式文書を提出できます。
-        </span>
-      </div>
-      {/* TODO: ファイルアップロードのボタンはコンポーネント化する */}
-      <div className="flex flex-row items-center mb-6">
-        <input
-          className="hidden"
-          type="file"
-          ref={file1InputRef}
-          onChange={(e) => handleFileChange(1, e)}
-        />
-        <span className="flex-1 text-title-color">{filePath1}</span>
-        <Button
-          className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
-          onClick={() => file1InputRef.current.click()}
+      <div className="mb-[50px] flex flex-row justify-between items-center">
+        <div className="flex flex-row items-center">
+          <Image
+            src="/admin/images/info-icon-2.svg"
+            width={16}
+            height={16}
+            alt="information"
+          />
+          <span className="text-[12px] ml-4">
+            ここでは１つのみ提出してください。あとから追加・変更が可能です。
+          </span>
+        </div>
+        {/* Be sure to include 'sm:' and 'md:' like
+         'sm:focus-within:border-focus-color md:focus-within:border-focus-color'
+          to prevent 'hover:' from taking precedence. */}
+        <label
+          className={clsx(
+            "input flex items-center gap-1",
+            "w-[178px] h-8 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color",
+            "focus:outline-none focus-within:outline-none sm:focus-within:border-focus-color md:focus-within:border-focus-color",
+            "text-sm font-normal text-input-color",
+          )}
         >
-          ファイルアップロード
-        </Button>
+          ©
+          <input
+            id="copyright_holder"
+            className={clsx(
+              "w-full text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder="Tobiratory"
+            value={copyrightInfo.copyrightHolder}
+            onChange={(e) =>
+              copyrightInfoChangeHandler("copyrightHolder", e.target.value)
+            }
+            ref={refs["copyrightHolder"]}
+          />
+        </label>
       </div>
-      <div className="flex flex-row items-center mb-6">
-        <input
-          className="hidden"
-          type="file"
-          ref={file2InputRef}
-          onChange={(e) => handleFileChange(2, e)}
-        />
-        <span className="flex-1 text-title-color">{filePath2}</span>
-        <Button
-          className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
-          onClick={() => file2InputRef.current.click()}
-        >
-          ファイルアップロード
-        </Button>
+      <div className={"flex flex-row justify-between mb-[50px]"}>
+        <div className="flex flex-col text-nowrap">
+          <div className="mb-4 flex flex-row items-center">
+            <span className="text-base mr-8">
+              所有している著作権やライセンス情報の提供
+            </span>
+            <OptionMark />
+          </div>
+          <div className="mb-12 flex flex-row items-center">
+            <Image
+              src="/admin/images/info-icon-2.svg"
+              width={16}
+              height={16}
+              alt="information"
+            />
+            <span className="text-[12px] ml-4">
+              著作権やライセンスを証明する公式文書を提出できます。
+              <br />
+              20MB以内のJPEG、PNG、PDFファイルのみ対応しています。
+            </span>
+          </div>
+        </div>
+        <div className={"flex flex-col w-full pl-[10px]"}>
+          <FileUploadButtons
+            names={fileNames}
+            refs={fileInputRefs}
+            handleChange={handleFileChange}
+          />
+        </div>
       </div>
-      <div className="flex flex-row items-center mb-6">
-        <input
-          className="hidden"
-          type="file"
-          ref={file3InputRef}
-          onChange={(e) => handleFileChange(3, e)}
+      <div className="mb-[50px] flex flex-row justify-between">
+        <div className={"flex flex-col"}>
+          <div className="flex flex-row mb-4 items-center">
+            <span className="text-base mr-[15px]">
+              著作物に関するライセンス
+            </span>
+            <OptionMark />
+          </div>
+          <div className="flex flex-row items-center">
+            <Image
+              src="/admin/images/info-icon-2.svg"
+              width={16}
+              height={16}
+              alt="information"
+            />
+            <span className="text-[12px] ml-4">あとから変更可能です。</span>
+          </div>
+        </div>
+        <textarea
+          id="copyright_license"
+          className={clsx(
+            "w-[508px] h-[137px] pl-5 pt-4 resize-none",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
+          placeholder="CC0"
+          value={copyrightInfo.license}
+          onChange={(e) =>
+            copyrightInfoChangeHandler("license", e.target.value)
+          }
+          ref={refs["license"]}
         />
-        <span className="flex-1 text-title-color">{filePath3}</span>
-        <Button
-          className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
-          onClick={() => file3InputRef.current.click()}
-        >
-          ファイルアップロード
-        </Button>
-      </div>
-      <div className="flex flex-row items-center mb-6">
-        <input
-          className="hidden"
-          type="file"
-          ref={file4InputRef}
-          onChange={(e) => handleFileChange(4, e)}
-        />
-        <span className="flex-1 text-title-color">{filePath4}</span>
-        <Button
-          className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
-          onClick={() => file4InputRef.current.click()}
-        >
-          ファイルアップロード
-        </Button>
       </div>
       <div className="flex flex-row justify-center items-center mt-6">
         <input
           type="checkbox"
           className="w-6 h-6 mr-3 outline-none"
-          onChange={(e) => copyrightInfoChangeHandler("agreement", e)}
+          onChange={(e) =>
+            copyrightInfoChangeHandler("agreement", e.target.checked)
+          }
           id="checkbox"
           checked={copyrightInfo.agreement}
         />
@@ -159,7 +192,99 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo }) => {
           提供するコンテンツが著作権に違反していないことに同意します。
         </label>
       </div>
-      {/* <button onClick={handleUpload}>Upload</button> */}
+    </div>
+  );
+};
+
+type FileHandleChange = (
+  id: number,
+  clear: boolean,
+  e: ChangeEvent<HTMLInputElement>,
+) => void;
+
+const FileUploadButtons = ({
+  names,
+  refs,
+  handleChange,
+}: {
+  names: (string | undefined)[];
+  refs: MutableRefObject<HTMLInputElement>[];
+  handleChange: FileHandleChange;
+}) => {
+  return (
+    <div>
+      {names.map((name, index) => (
+        <FileUploadButton
+          key={`file-upload-button-${index}`}
+          index={index + 1}
+          name={name}
+          fileRef={refs[index]}
+          handleChange={handleChange}
+        />
+      ))}
+    </div>
+  );
+};
+
+const FileUploadButton = ({
+  index,
+  name,
+  fileRef,
+  handleChange,
+}: {
+  index: number;
+  name?: string;
+  fileRef: MutableRefObject<HTMLInputElement>;
+  handleChange: FileHandleChange;
+}) => {
+  const truncateString = (str?: string) => {
+    const num = 20;
+    if (str?.length > num) {
+      const prefix = str.substring(0, 10);
+      const suffix = str.substring(str.length - 10);
+      return prefix + "..." + suffix;
+    } else {
+      return str;
+    }
+  };
+
+  return (
+    <div className="flex flex-row items-center mb-6">
+      <input
+        className="hidden"
+        type="file"
+        ref={fileRef}
+        onChange={(e) => {
+          handleChange(index, false, e);
+        }}
+      />
+      <div className="flex-1 text-title-color text-left mr-[15px] h-[24px]">
+        {name && (
+          <>
+            <span className={"align-baseline"}>{truncateString(name)}</span>
+            <button
+              className="align-middle ml-[15px]"
+              onClick={() => {
+                fileRef.current.value = "";
+                handleChange(index, true, null);
+              }}
+            >
+              <Image
+                src={`/admin/images/icon/cross.svg`}
+                alt={"clear file"}
+                width={16}
+                height={16}
+              />
+            </button>
+          </>
+        )}
+      </div>
+      <Button
+        className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
+        onClick={() => fileRef.current.click()}
+      >
+        ファイルアップロード
+      </Button>
     </div>
   );
 };

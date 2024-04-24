@@ -1,45 +1,41 @@
 import { useAuth } from "contexts/AdminAuthProvider";
+import { useTobiratoryAndFlowAccountRegistration } from "fetchers/adminUserAccount";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import FlowAgreementWithSnsAccount from "ui/templates/admin/FlowAgreementWithSnsAccount";
 import FlowRegister from "ui/templates/admin/FlowRegister";
 
 const SnsAuth = () => {
   const { user } = useAuth();
   const router = useRouter();
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [flowAccountRegistered, setFlowAccountRegistered] = useState(false);
+  const [register, response, registering, error] =
+    useTobiratoryAndFlowAccountRegistration();
 
   useEffect(() => {
     if (!user) {
       router.push("/authentication");
-    } else if (user.registeredFlowAccount) {
+    } else if (user.hasFlowAccount) {
       router.push("/");
     }
   }, [router, user]);
-
-  const startRegistering = () => {
-    setIsRegistering(true);
-    const timer = setTimeout(() => {
-      setFlowAccountRegistered(true);
-    }, 3000);
-    return () => clearTimeout(timer);
-  };
 
   if (!user) {
     return <div>redirect to signin page</div>;
   }
 
-  if (user.registeredFlowAccount) {
+  if (user.hasFlowAccount) {
     return <div>redirect to top page</div>;
-  } else if (isRegistering) {
-    return <FlowRegister registered={flowAccountRegistered} />;
+  } else if (registering || response || error) {
+    return (
+      <FlowRegister
+        registered={!!response}
+        error={error}
+        onClickRegister={register}
+      />
+    );
   } else {
     return (
-      <FlowAgreementWithSnsAccount
-        user={user}
-        onClickRegister={startRegistering}
-      />
+      <FlowAgreementWithSnsAccount user={user} onClickRegister={register} />
     );
   }
 };
