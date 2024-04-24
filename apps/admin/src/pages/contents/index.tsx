@@ -9,14 +9,11 @@ export const metadata: Metadata = {
 
 export default function Index() {
   const [selectedTab, setSelectedTab] = useState("sample");
-  const [clickCount, setClickCount] = useState(0);
 
   const links = {
     showcase: {
       label: "new showcase",
-      clickHandler: () => {
-        setClickCount(clickCount + 1);
-      },
+      clickHandler: () => null,
     },
     brand: {
       label: "",
@@ -33,7 +30,7 @@ export default function Index() {
         <CreateButton {...(links[selectedTab] ?? links.showcase)} />
       </div>
       <div>
-        <ContentsManageTab onTabChange={setSelectedTab} refresh={clickCount} />
+        <ContentsManageTab onTabChange={setSelectedTab} />
       </div>
     </>
   );

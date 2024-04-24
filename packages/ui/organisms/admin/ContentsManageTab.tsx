@@ -6,10 +6,8 @@ import { ShowcasePanel } from "./ShowcasePanel";
 
 export default function ContentsManageTab({
   onTabChange,
-  refresh,
 }: {
   onTabChange: (value: string) => void;
-  refresh: number;
 }) {
   const [tab, setTab] = useTabs(["showcase", "brand", "settings"]);
 
@@ -43,7 +41,7 @@ export default function ContentsManageTab({
       </nav>
       <div>
         <TabPanel hidden={tab !== "showcase"}>
-          <ShowcasePanel refresh={refresh} />
+          <ShowcasePanel />
         </TabPanel>
         <TabPanel hidden={tab !== "brand"}>
           <ContentBrandPanel />

@@ -4,6 +4,9 @@ import Image from "next/image";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ShowcaseEditMenu from "./ShowcaseEditMenu";
+import ShowcaseNameEditDialog from "./ShowcaseNameEditDialog";
+
 registerLocale("ja", ja);
 
 enum ShowcaseStatus {
@@ -11,124 +14,6 @@ enum ShowcaseStatus {
   Public,
   ScheduledPublic,
 }
-
-const menuItems = [
-  {
-    type: "menu",
-    icon: "public-icon.svg",
-    text: "Public",
-    color: "secondary",
-  },
-  {
-    type: "menu",
-    icon: "private-icon.svg",
-    text: "Private",
-    color: "secondary",
-  },
-  {
-    type: "menu",
-    icon: "schedule-icon.svg",
-    text: "Schedule",
-    color: "secondary",
-  },
-  { type: "divider", icon: "", text: "", color: "secondary-200" },
-  { type: "menu", icon: "delete-icon.svg", text: "Delete", color: "error" },
-];
-
-const ShowcaseEditMenu = ({
-  clickHandler,
-}: {
-  clickHandler: (index: number) => void;
-}) => {
-  return (
-    <ul
-      className="w-24 rounded bg-white"
-      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
-    >
-      {menuItems.map((item, index) => {
-        return item.type == "menu" ? (
-          <li
-            key={`item-menu-${index}`}
-            className="h-4 flex items-center px-2 gap-2 cursor-pointer hover:bg-secondary-100"
-            onClick={() => clickHandler(index)}
-          >
-            <Image
-              src={`/admin/images/icon/${item.icon}`}
-              width={8}
-              height={8}
-              alt="icon"
-            />
-            <span
-              className={`text-${item.color} text-[8px] leading-4 font-normal`}
-            >
-              {item.text}
-            </span>
-          </li>
-        ) : (
-          <div
-            key={`item-menu-${index}`}
-            className={`w-full h-0 border-0 border-t-[0.5px] border-${item.color}`}
-          ></div>
-        );
-      })}
-    </ul>
-  );
-};
-
-const ShowcaseNameEditDialog = ({
-  initialValue,
-  dialogRef,
-  changeHandler,
-}: {
-  initialValue: string;
-  dialogRef: MutableRefObject<HTMLDialogElement>;
-  changeHandler: (value: string) => void;
-}) => {
-  const [name, setName] = useState(initialValue);
-
-  return (
-    <dialog ref={dialogRef} className="modal">
-      <div className="modal-box max-w-[875px] rounded-3xl flex flex-col gap-4">
-        <div className="flex justify-between items-center gap-4">
-          <span className="text-base-black text-sm font-semibold">
-            Showcase Name
-          </span>
-          <input
-            type="text"
-            className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
-            text-base-black text-sm leading-4 font-normal"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className="modal-action flex justify-end gap-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-primary rounded-[64px] 
-              text-base-white text-sm leading-4 font-semibold"
-            onClick={() => {
-              changeHandler(name);
-              dialogRef.current.close();
-            }}
-          >
-            Save changes
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-base-white rounded-[64px] border-2 border-primary
-              text-primary text-sm leading-4 font-semibold"
-            onClick={() => dialogRef.current.close()}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
-  );
-};
 
 type ShowcaseComponentProps = {
   status: ShowcaseStatus;
@@ -312,7 +197,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   );
 };
 
-const ShowcasePanel = ({ refresh }: { refresh: number }) => {
+const ShowcasePanel = () => {
   // showcase data
   const [showcases, setShowcases] = useState([]);
 
@@ -328,7 +213,7 @@ const ShowcasePanel = ({ refresh }: { refresh: number }) => {
     };
 
     fetchData();
-  }, [refresh]);
+  }, []);
 
   return (
     <div className="flow-root mx-[50px] my-[60px]">
