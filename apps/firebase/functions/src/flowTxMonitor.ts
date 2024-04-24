@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {PubSub} from "@google-cloud/pubsub";
-import {REGION, TOPIC_NAMES} from "./lib/constants";
+import {REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "./lib/constants";
 import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
@@ -120,7 +120,7 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
 };
 
 const fetchCreateItem = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "5e9ccdb91ff7ad93";
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   for (const event of tx.events) {
@@ -185,7 +185,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
 };
 
 const fetchMintNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_NETWORK == "mainnet" ? "TODO" : "5e9ccdb91ff7ad93";
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   for (const event of tx.events) {
