@@ -16,7 +16,7 @@ import
   checkExistBusinessAcc,
   checkPasswordSet,
 } from "./userController";
-import {createMyShocase, getContentById, getContents, getShowcaseTemplate, updateMyShowcase} from "./contentController";
+import {createMyShocase, deleteMyShowcase, getContentById, getContents, getShowcaseTemplate, updateMyShowcase} from "./contentController";
 import {
   createModel,
   createDigitalItem,
@@ -157,14 +157,16 @@ app.post("/admin/copyrights/:id", updateCopyrights);
 app.delete("/admin/copyrights/:id", deleteCopyrights);
 app.post("/admin/digital/status", adminChangeDigitalStatus);
 
-//management samples
+// management samples
 app.get("/admin/samples", adminGetAllSamples);
 app.delete("/admin/samples", adminDeleteSamples);
 app.get("/admin/samples/:sampleId", adminDetailOfSample);
 app.post("/admin/samples/:sampleId", adminUpdateSample);
 
-//management showcase
-app.get("/admin/showcase/template", getShowcaseTemplate);
-app.post("/admin/showcase", createMyShocase);
-app.put("/admin/showcase/:id", updateMyShowcase);
+// management showcase
+app.get("/admin/showcases/template", getShowcaseTemplate);
+app.post("/admin/showcases", createMyShocase);
+app.get("/admin/showcases", createMyShocase);
+app.put("/admin/showcases/:id", updateMyShowcase);
+app.delete("/admin/showcases/:id", deleteMyShowcase);
 export const native = functions.region(REGION).https.onRequest(app);

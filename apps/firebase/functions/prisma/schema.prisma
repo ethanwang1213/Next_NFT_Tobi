@@ -99,10 +99,10 @@ model tobiratory_contents {
   image             String                 @db.VarChar(255)
   url               String                 @db.VarChar(255)
   description       String                 @db.VarChar(255)
-  copyright_holders String[]               @default([]) @db.VarChar(255)
   license           String                 @db.VarChar(255)
   license_data      String[]               @default([]) @db.VarChar(255)
   copyrights        tobiratory_copyright[]
+  showcase          tobiratory_showcase[]
   updated_date_time DateTime               @default(now()) @db.Timestamp(6)
   created_date_time DateTime               @default(now()) @db.Timestamp(6)
 }
@@ -271,6 +271,7 @@ model tobiratory_showcase {
   description                      String                             @db.Text
   owner                            tobiratory_businesses              @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid                       String                             @unique
+  content                          tobiratory_contents                @relation(fields: [content_id], references: [id])
   content_id                       Int
   status                           Int                                @default(0)
   tobiratory_showcase_template     tobiratory_showcase_template?      @relation(fields: [template_id], references: [id])
@@ -278,7 +279,7 @@ model tobiratory_showcase {
   thumb_url                        String                             @db.VarChar(255)
   position                         Float[]                            @default([0, 0, 0])
   rotation                         Float[]                            @default([0, 0, 0])
-  reservation_time                 DateTime                           @default(now()) @db.Timestamp(6)
+  schedule_time                    DateTime                           @default(now()) @db.Timestamp(6)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
