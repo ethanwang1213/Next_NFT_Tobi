@@ -1,5 +1,10 @@
+import { format } from "date-fns";
+import ja from "date-fns/locale/ja";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+registerLocale("ja", ja);
 
 enum ShowcaseStatus {
   Private = 0,
@@ -7,17 +12,144 @@ enum ShowcaseStatus {
   ScheduledPublic,
 }
 
+const menuItems = [
+  {
+    type: "menu",
+    icon: "public-icon.svg",
+    text: "Public",
+    color: "secondary",
+  },
+  {
+    type: "menu",
+    icon: "private-icon.svg",
+    text: "Private",
+    color: "secondary",
+  },
+  {
+    type: "menu",
+    icon: "schedule-icon.svg",
+    text: "Schedule",
+    color: "secondary",
+  },
+  { type: "divider", icon: "", text: "", color: "secondary-200" },
+  { type: "menu", icon: "delete-icon.svg", text: "Delete", color: "error" },
+];
+
+const ShowcaseEditMenu = ({
+  clickHandler,
+}: {
+  clickHandler: (index: number) => void;
+}) => {
+  return (
+    <ul
+      className="w-24 rounded bg-white"
+      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
+    >
+      {menuItems.map((item, index) => {
+        return item.type == "menu" ? (
+          <li
+            key={`item-menu-${index}`}
+            className="h-4 flex items-center px-2 gap-2 cursor-pointer hover:bg-secondary-100"
+            onClick={() => clickHandler(index)}
+          >
+            <Image
+              src={`/admin/images/icon/${item.icon}`}
+              width={8}
+              height={8}
+              alt="icon"
+            />
+            <span
+              className={`text-${item.color} text-[8px] leading-4 font-normal`}
+            >
+              {item.text}
+            </span>
+          </li>
+        ) : (
+          <div
+            key={`item-menu-${index}`}
+            className={`w-full h-0 border-0 border-t-[0.5px] border-${item.color}`}
+          ></div>
+        );
+      })}
+    </ul>
+  );
+};
+
+const ShowcaseNameEditDialog = ({
+  initialValue,
+  dialogRef,
+  changeHandler,
+}: {
+  initialValue: string;
+  dialogRef: MutableRefObject<HTMLDialogElement>;
+  changeHandler: (value: string) => void;
+}) => {
+  const [name, setName] = useState(initialValue);
+
+  return (
+    <dialog ref={dialogRef} className="modal">
+      <div className="modal-box max-w-[875px] rounded-3xl flex flex-col gap-4">
+        <div className="flex justify-between items-center gap-4">
+          <span className="text-base-black text-sm font-semibold">
+            Showcase Name
+          </span>
+          <input
+            type="text"
+            className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
+            text-base-black text-sm leading-4 font-normal"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="modal-action flex justify-end gap-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-primary rounded-[64px] 
+              text-base-white text-sm leading-4 font-semibold"
+            onClick={() => {
+              changeHandler(name);
+              dialogRef.current.close();
+            }}
+          >
+            Save changes
+          </button>
+          <button
+            type="button"
+            className="px-4 py-2 bg-base-white rounded-[64px] border-2 border-primary
+              text-primary text-sm leading-4 font-semibold"
+            onClick={() => dialogRef.current.close()}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+  );
+};
+
 type ShowcaseComponentProps = {
   status: ShowcaseStatus;
-  title: string;
+  name: string;
+  schedule?: string;
+  lastModifiedDate: string;
 };
 
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [status, setStatus] = useState(props.status);
-  const [title, setTitle] = useState(props.title);
+  const [name, setName] = useState(props.name);
   const [isOpen, setIsOpen] = useState(false);
+  const [scheduleDate, setScheduleDate] = useState(
+    props.schedule && props.schedule.length
+      ? new Date(props.schedule)
+      : new Date(),
+  );
+
   const popupRef = useRef(null);
-  const textInputRef = useRef(null);
+  const datePickerRef = useRef(null);
+  const dialogRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -32,12 +164,39 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     };
   }, []);
 
+  const statusChangeHandler = (index: number) => {
+    setIsOpen(false);
+    switch (index) {
+      case 0:
+        setStatus(ShowcaseStatus.Public);
+        break;
+      case 1:
+        setStatus(ShowcaseStatus.Private);
+        break;
+      case 2:
+        setStatus(ShowcaseStatus.ScheduledPublic);
+        break;
+      case 3:
+        // delete showcase
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const datepickerChangeHandler = (date) => {
+    setScheduleDate(date);
+  };
+
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       <div
         className={`w-60 h-[360px] rounded-2xl
           ${
-            status == ShowcaseStatus.Public ? "border-4 border-success-200" : ""
+            status == ShowcaseStatus.Public
+              ? "outline outline-4 outline-success-200"
+              : ""
           }
         `}
         style={{ backgroundImage: `url(/admin/images/showcase.png)` }}
@@ -82,13 +241,20 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               />
               {isOpen && (
                 <div className="absolute left-0 top-3 z-10" ref={popupRef}>
-                  <ShowcaseEditMenu />
+                  <ShowcaseEditMenu clickHandler={statusChangeHandler} />
                 </div>
               )}
             </div>
           </div>
           {status == ShowcaseStatus.ScheduledPublic && (
-            <div className="w-[120px] h-4 bg-base-white rounded-[27px] px-1 flex items-center gap-2">
+            <div
+              className="w-[120px] h-4 bg-base-white rounded-[27px] px-1 flex items-center gap-2"
+              onClick={() => {
+                if (datePickerRef.current && datePickerRef.current.input) {
+                  datePickerRef.current.input.click();
+                }
+              }}
+            >
               <Image
                 src="/admin/images/icon/clock.svg"
                 width={8}
@@ -96,86 +262,53 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
                 alt="clock icon"
               />
               <span className="text-secondary-700 text-[8px] leading-4 font-normal">
-                2024/04/14　12：00
+                {format(scheduleDate, "yyyy/MM/dd")}&nbsp;
+                {scheduleDate.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
               </span>
+              <DatePicker
+                ref={datePickerRef}
+                selected={scheduleDate}
+                onChange={datepickerChangeHandler}
+                dateFormat="yyyy/MM/dd HH:mm"
+                showTimeSelect
+                showPopperArrow={false}
+                className="hidden"
+                popperPlacement="bottom"
+                popperClassName=""
+                locale="ja"
+              />
             </div>
           )}
         </div>
       </div>
       <div className="flex justify-between items-center gap-2">
-        <input
-          ref={textInputRef}
-          type="text"
-          value={title}
-          className="flex-1 text-secondary-700 text-[10px] leading-4 font-medium"
-        />
+        <span className="flex-1 text-secondary-700 text-[10px] leading-4 font-medium">
+          {name}
+        </span>
         <Image
           src="/admin/images/icon/pencil.svg"
           width={16}
           height={16}
           alt="edit icon"
           className="cursor-pointer"
+          onClick={(e) => {
+            dialogRef.current.showModal();
+          }}
+        />
+        <ShowcaseNameEditDialog
+          initialValue={name}
+          dialogRef={dialogRef}
+          changeHandler={setName}
         />
       </div>
       <div className="text-secondary-700 text-[10px] leading-4 font-light">
-        Last Updated Date： 2024/04/14 23:59
+        Last Updated Date： {props.lastModifiedDate}
       </div>
     </div>
-  );
-};
-
-const ShowcaseEditMenu = () => {
-  const items = [
-    {
-      type: "menu",
-      icon: "public-icon.svg",
-      title: "Public",
-      color: "secondary",
-    },
-    {
-      type: "menu",
-      icon: "private-icon.svg",
-      title: "Private",
-      color: "secondary",
-    },
-    {
-      type: "menu",
-      icon: "schedule-icon.svg",
-      title: "Schedule",
-      color: "secondary",
-    },
-    { type: "divider", icon: "", title: "", color: "secondary-200" },
-    { type: "menu", icon: "delete-icon.svg", title: "Delete", color: "error" },
-  ];
-
-  return (
-    <ul
-      className="w-24 rounded bg-white"
-      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
-    >
-      {items.map((item, index) => {
-        return item.type == "menu" ? (
-          <li className="h-4 flex items-center px-2 gap-2 cursor-pointer hover:bg-secondary-100">
-            <Image
-              src={`/admin/images/icon/${item.icon}`}
-              width={8}
-              height={8}
-              alt="icon"
-            />
-            <span
-              className={`text-${item.color} text-[8px] leading-4 font-normal`}
-            >
-              {item.title}
-            </span>
-          </li>
-        ) : (
-          <div
-            className={`w-full h-0 border-0 border-t-[0.5px] border-${item.color}`}
-          ></div>
-        );
-      })}
-      <li></li>
-    </ul>
   );
 };
 
@@ -202,23 +335,28 @@ const ShowcasePanel = ({ refresh }: { refresh: number }) => {
       <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
         <ShowcaseComponent
           status={ShowcaseStatus.Public}
-          title="THE TITLE OF SHOWCASE"
+          name="THE TITLE OF SHOWCASE"
+          lastModifiedDate="2024/04/14 22:50"
         />
         <ShowcaseComponent
           status={ShowcaseStatus.Private}
-          title="THE TITLE OF SHOWCASE"
+          name="THE TITLE OF SHOWCASE"
+          lastModifiedDate="2024/04/14 22:50"
         />
         <ShowcaseComponent
           status={ShowcaseStatus.ScheduledPublic}
-          title="THE TITLE OF SHOWCASE"
+          name="THE TITLE OF SHOWCASE"
+          lastModifiedDate="2024/04/14 22:50"
         />
         <ShowcaseComponent
           status={ShowcaseStatus.Private}
-          title="THE TITLE OF SHOWCASE"
+          name="THE TITLE OF SHOWCASE"
+          lastModifiedDate="2024/04/14 22:50"
         />
         <ShowcaseComponent
           status={ShowcaseStatus.Private}
-          title="THE TITLE OF SHOWCASE"
+          name="THE TITLE OF SHOWCASE"
+          lastModifiedDate="2024/04/14 22:50"
         />
       </div>
     </div>
