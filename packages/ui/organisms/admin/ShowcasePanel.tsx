@@ -216,34 +216,32 @@ const ShowcasePanel = () => {
   }, []);
 
   return (
-    <div className="flow-root mx-[50px] my-[60px]">
-      <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
-        <ShowcaseComponent
-          status={ShowcaseStatus.Public}
-          name="THE TITLE OF SHOWCASE"
-          lastModifiedDate="2024/04/14 22:50"
-        />
-        <ShowcaseComponent
-          status={ShowcaseStatus.Private}
-          name="THE TITLE OF SHOWCASE"
-          lastModifiedDate="2024/04/14 22:50"
-        />
-        <ShowcaseComponent
-          status={ShowcaseStatus.ScheduledPublic}
-          name="THE TITLE OF SHOWCASE"
-          lastModifiedDate="2024/04/14 22:50"
-        />
-        <ShowcaseComponent
-          status={ShowcaseStatus.Private}
-          name="THE TITLE OF SHOWCASE"
-          lastModifiedDate="2024/04/14 22:50"
-        />
-        <ShowcaseComponent
-          status={ShowcaseStatus.Private}
-          name="THE TITLE OF SHOWCASE"
-          lastModifiedDate="2024/04/14 22:50"
-        />
-      </div>
+    <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
+      <ShowcaseComponent
+        status={ShowcaseStatus.Public}
+        name="THE TITLE OF SHOWCASE"
+        lastModifiedDate="2024/04/14 22:50"
+      />
+      <ShowcaseComponent
+        status={ShowcaseStatus.Private}
+        name="THE TITLE OF SHOWCASE"
+        lastModifiedDate="2024/04/14 22:50"
+      />
+      <ShowcaseComponent
+        status={ShowcaseStatus.ScheduledPublic}
+        name="THE TITLE OF SHOWCASE"
+        lastModifiedDate="2024/04/14 22:50"
+      />
+      <ShowcaseComponent
+        status={ShowcaseStatus.Private}
+        name="THE TITLE OF SHOWCASE"
+        lastModifiedDate="2024/04/14 22:50"
+      />
+      <ShowcaseComponent
+        status={ShowcaseStatus.Private}
+        name="THE TITLE OF SHOWCASE"
+        lastModifiedDate="2024/04/14 22:50"
+      />
     </div>
   );
 };

@@ -39,7 +39,7 @@ export default function ContentsManageTab({
           SETTINGS
         </TabSelector>
       </nav>
-      <div>
+      <div className="flow-root px-[50px] pt-[60px]">
         <TabPanel hidden={tab !== "showcase"}>
           <ShowcasePanel />
         </TabPanel>
