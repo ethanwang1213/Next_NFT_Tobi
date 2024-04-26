@@ -119,7 +119,6 @@ export const getContentById = async (req: Request, res: Response) => {
         content: {
           id: content.id,
           name: content.name,
-
         },
         showcase: {
           id: showcase.id,
@@ -215,6 +214,11 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
           }),
         });
       }
+      const copyrights = await prisma.tobiratory_copyright.findMany({
+        where: {
+          content_id: updatedContent.id,
+        }
+      })
       const returnData = {
         id: updatedContent.id,
         name: updatedContent.name,
@@ -222,7 +226,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         license: updatedContent.license,
         image: updatedContent.image,
         sticker: updatedContent.sticker,
-        copyright: updatedContent.copyrights.map((copyright) => {
+        copyright: copyrights.map((copyright) => {
           return {
             id: copyright.id,
             name: copyright.copyright_name,
@@ -336,14 +340,20 @@ export const setFavoriteContent = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (favorite) {
+      const nowFavorStatus = await prisma.tobiratory_favorite_content.findMany({
+        where: {
+          favor_uuid: uid,
+          content_id: content.id,
+        }
+      })
+      if (favorite && nowFavorStatus.length==0) {
         await prisma.tobiratory_favorite_content.create({
           data: {
             content_id: content.id,
             favor_uuid: uid,
           },
         });
-      } else {
+      } else if (!favorite) {
         await prisma.tobiratory_favorite_content.deleteMany({
           where: {
             content_id: content.id,

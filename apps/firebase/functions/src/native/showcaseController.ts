@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {prisma} from "../prisma";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
+import { statusOfShowcase } from "./utils";
 
 export const getShowcaseTemplate = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -142,7 +143,7 @@ export const createMyShocase = async (req: Request, res: Response) => {
 export const updateMyShowcase = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  const {title, description, thumbUrl, status}: { title?: string, description?: string, thumbUrl?: string, status?: number } = req.body;
+  const {title, description, thumbUrl, status, scheduleTime}: { title?: string, description?: string, thumbUrl?: string, status?: number, scheduleTime: string} = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -170,6 +171,16 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
+      if (status == statusOfShowcase.public) {
+        await prisma.tobiratory_showcase.updateMany({
+            where: {
+                status: statusOfShowcase.public,
+            },
+            data: {
+                status: statusOfShowcase.private,
+            },
+        });
+      }
       const updateShowcase = await prisma.tobiratory_showcase.update({
         where: {
           id: parseInt(id),
@@ -178,12 +189,16 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
           title: title,
           description: description,
           thumb_url: thumbUrl,
+          schedule_time: new Date(scheduleTime),
           status: status,
         },
       });
       const returnData = {
         id: updateShowcase.id,
         title: updateShowcase.title,
+        status: updateShowcase.status,
+        scheduleTime: updateShowcase.schedule_time,
+        createTime: updateShowcase.created_date_time,
         description: updateShowcase.description,
       };
       res.status(200).send({

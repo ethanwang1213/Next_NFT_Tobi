@@ -115,8 +115,8 @@ model tobiratory_digital_items {
   user                             tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
   creator_uuid                     String                               @db.VarChar(100)
   name                             String                               @default("") @db.VarChar(255)
-  default_thumb_url                String                               @db.VarChar(255)
-  custom_thumb_url                 String                               @db.VarChar(255)
+  default_thumb_url                String                               @db.Text
+  custom_thumb_url                 String                               @db.Text
   is_default_thumb                 Boolean                              @default(true)
   material_id                      Int                                  @default(0)
   type                             Int
@@ -282,7 +282,7 @@ model tobiratory_showcase {
   thumb_url                        String                             @db.VarChar(255)
   position                         Float[]                            @default([0, 0, 0])
   rotation                         Float[]                            @default([0, 0, 0])
-  schedule_time                    DateTime                           @default(now()) @db.Timestamp(6)
+  schedule_time                    DateTime?                          @default(now()) @db.Timestamp(6)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
@@ -292,9 +292,9 @@ model tobiratory_showcase_template {
   id                Int                   @id @default(autoincrement())
   showcase          tobiratory_showcase[]
   cover_image       String                @db.VarChar(255)
-  model_url         String                @db.VarChar(255)
+  model_url         String                @db.Text
   type              Int
-  title             String                @db.VarChar
+  title             String                @db.VarChar(255)
   description       String                @db.Text
   updated_date_time DateTime              @default(now()) @db.Timestamp(6)
   created_date_time DateTime              @default(now()) @db.Timestamp(6)
