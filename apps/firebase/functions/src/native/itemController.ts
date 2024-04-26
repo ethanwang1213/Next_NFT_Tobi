@@ -633,3 +633,70 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     return;
   });
 };
+
+export const getSampleInfo = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  await getAuth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    try {
+      const sampleData = await prisma.tobiratory_sample_items.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+        include: {
+          digital_item: {
+            include: {
+              copyright: {
+                include: {
+                  copyright: true,
+                },
+              },
+            },
+          },
+          user: true,
+        },
+      });
+      if (!sampleData) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      const returnData = {
+        id: sampleData.id,
+        title: sampleData.digital_item.name,
+        description: sampleData.digital_item.description,
+        creator: {
+          uuid: sampleData.user.uuid,
+          username: sampleData.user.username,
+        },
+        copyrights: sampleData.digital_item.copyright.map((copy)=>{
+          return {
+            id: copy.copyright_id,
+            name: copy.copyright.copyright_name,
+          }
+        }),
+        license: sampleData.digital_item.license,
+        price: sampleData.price,
+        dateAcquired: sampleData.created_date_time,
+      };
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+    return;
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+}

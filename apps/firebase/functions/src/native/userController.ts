@@ -439,11 +439,11 @@ export const businessSubmission = async (req: Request, res: Response) => {
         return {
           copyright_name: copyright,
           content_id: savedContentData.id,
-        }
-      })
+        };
+      });
       await prisma.tobiratory_copyright.createMany({
         data: copyrights,
-      })
+      });
       res.status(200).send({
         status: "success",
         data: {...savedBusinessData, content: {...savedContentData}},
