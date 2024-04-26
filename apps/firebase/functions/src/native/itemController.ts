@@ -675,7 +675,7 @@ export const getSampleInfo = async (req: Request, res: Response) => {
           return {
             id: copy.copyright_id,
             name: copy.copyright.copyright_name,
-          }
+          };
         }),
         license: sampleData.digital_item.license,
         price: sampleData.price,
@@ -699,4 +699,4 @@ export const getSampleInfo = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};

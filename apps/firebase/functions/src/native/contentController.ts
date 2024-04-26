@@ -197,7 +197,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         },
         include: {
           copyrights: true,
-        }
+        },
       });
       await prisma.tobiratory_copyright.deleteMany({
         where: {
@@ -217,8 +217,8 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
       const copyrights = await prisma.tobiratory_copyright.findMany({
         where: {
           content_id: updatedContent.id,
-        }
-      })
+        },
+      });
       const returnData = {
         id: updatedContent.id,
         name: updatedContent.name,
@@ -344,8 +344,8 @@ export const setFavoriteContent = async (req: Request, res: Response) => {
         where: {
           favor_uuid: uid,
           content_id: content.id,
-        }
-      })
+        },
+      });
       if (favorite && nowFavorStatus.length==0) {
         await prisma.tobiratory_favorite_content.create({
           data: {

@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {prisma} from "../prisma";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-import { statusOfShowcase } from "./utils";
+import {statusOfShowcase} from "./utils";
 
 export const getShowcaseTemplate = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -173,12 +173,12 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
       }
       if (status == statusOfShowcase.public) {
         await prisma.tobiratory_showcase.updateMany({
-            where: {
-                status: statusOfShowcase.public,
-            },
-            data: {
-                status: statusOfShowcase.private,
-            },
+          where: {
+            status: statusOfShowcase.public,
+          },
+          data: {
+            status: statusOfShowcase.private,
+          },
         });
       }
       const updateShowcase = await prisma.tobiratory_showcase.update({
@@ -334,20 +334,20 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
       }
       await prisma.tobiratory_sample_items.updateMany({
         where: {
-            content_id: content.id,
+          content_id: content.id,
         },
         data: {
-            content_id: 0,
-        }
-      })
+          content_id: 0,
+        },
+      });
       await prisma.tobiratory_digital_item_nfts.updateMany({
         where: {
-            content_id: content.id,
+          content_id: content.id,
         },
         data: {
-            content_id: 0,
-        }
-      })
+          content_id: 0,
+        },
+      });
       const deleteShowcase = await prisma.tobiratory_showcase.delete({
         where: {
           id: parseInt(id),
