@@ -33,6 +33,8 @@ const config = {
       },
       colors: {
         brown: "#894400",
+        "secondary-main": "#3598AF",
+        "neutral-main": "#717171",
       },
     },
   },
@@ -54,7 +56,7 @@ const config = {
           info: "#137BB1",
           success: "#36D399",
           warning: "#B25748",
-          error: "#E5574B",
+          error: "#FF4747",
         },
       },
     ],

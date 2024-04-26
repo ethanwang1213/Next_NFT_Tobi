@@ -13,7 +13,9 @@ import gsap from "gsap";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
 import { ErrorMessage } from "journal-pkg/types/journal-types";
 import AuthTemplate from "journal-pkg/ui/templates/AuthTemplate";
+import ConfirmationSent from "journal-pkg/ui/templates/journal/ConfirmationSent";
 import EmailAndPasswordSignIn from "journal-pkg/ui/templates/journal/EmailAndPasswordSignIn";
+import EmailAndPasswordSignUp from "journal-pkg/ui/templates/journal/EmailAndPasswordSignUp";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -42,13 +44,9 @@ const Login = () => {
   const arcRef3 = useRef<HTMLDivElement>(null);
   const logoMobileRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const emailModalRef = useRef<HTMLDialogElement>(null);
-  const appleModalRef = useRef<HTMLDialogElement>(null);
   const [email, setEmail] = useState("");
   const [authError, setAuthError] = useState<ErrorMessage>(null);
-  const [isAppleModalChecked, setAppleModalChecked] = useState(false);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
-  const appleErrModalRef = useRef<HTMLDialogElement>(null);
   const [authState, setAuthState] = useState<AuthState>(AuthStates.SignIn);
   const [
     isRegisteringWithMailAndPassword,
@@ -116,7 +114,7 @@ const Login = () => {
     setIsRegisteringWithMailAndPassword(true);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailOwnershipVerification("admin/auth/email_auth");
+      await sendEmailOwnershipVerification("/");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setAuthState(AuthStates.SignInWithEmailAndPassword);
@@ -137,7 +135,7 @@ const Login = () => {
       );
       const user = userCredential.user;
       if (!user.emailVerified) {
-        await sendEmailOwnershipVerification("admin/auth/sns_auth");
+        await sendEmailOwnershipVerification("/");
       }
     } catch (error) {
       const errorCode = error.code;
@@ -220,8 +218,10 @@ const Login = () => {
       auth.onAuthStateChanged(async (user) => {
         if (user && user.email) {
           console.log(`${user.email} としてログイン中です。`);
-          // ログイン済みの場合、リダイレクト処理を実行
-          await router.push("/"); // リダイレクト先のURLを指定
+          if (user.emailVerified) {
+            // ログイン済みの場合、リダイレクト処理を実行
+            await router.push("/"); // リダイレクト先のURLを指定
+          }
         }
       });
     };
@@ -314,39 +314,25 @@ const Login = () => {
             withMailSignIn={withMailSignIn}
           />
         );
-      /*
-          case AuthStates.SignUpWithEmailAndPassword:
-            return (
-              <FlowAgreementWithEmailAndPassword
-                title={""}
-                buttonText={"登録"}
-                email={email}
-                isSubmitting={isRegisteringWithMailAndPassword}
-                isPasswordReset={false}
-                authError={authError}
-                onClickBack={() => handleClickBack(AuthStates.SignUp)}
-                onClickSubmit={withMailSignUp}
-              />
-            );
-          case AuthStates.SignInWithEmailAndPassword:
-            return (
-              <EmailAndPasswordSignIn
-                email={email}
-                loading={isEmailLoading}
-                error={authError}
-                onClickBack={() => handleClickBack(AuthStates.SignIn)}
-                onClickPasswordReset={(email) =>
-                  sendEmailForPasswordReset(email, "admin/auth/password_reset")
-                }
-                withMailSignIn={withMailSignIn}
-              />
-            );
-          case AuthStates.EmailSent:
-            return (
-              <ConfirmationSent
-                onClickBack={() => handleClickBack(AuthStates.SignIn)}
-              />
-            );*/
+      case AuthStates.SignUpWithEmailAndPassword:
+        return (
+          <EmailAndPasswordSignUp
+            title={"Password"}
+            buttonText={"Sign up"}
+            email={email}
+            isSubmitting={isRegisteringWithMailAndPassword}
+            isPasswordReset={false}
+            authError={authError}
+            onClickBack={() => handleClickBack(AuthStates.SignUp)}
+            onClickSubmit={withMailSignUp}
+          />
+        );
+      case AuthStates.EmailSent:
+        return (
+          <ConfirmationSent
+            onClickBack={() => handleClickBack(AuthStates.SignIn)}
+          />
+        );
     }
   };
 

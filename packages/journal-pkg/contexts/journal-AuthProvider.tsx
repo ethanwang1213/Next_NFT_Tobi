@@ -8,6 +8,13 @@ import {
   Timestamp,
 } from "firebase/firestore/lite";
 import { auth, db } from "journal-pkg/fetchers/firebase/journal-client";
+import {
+  Birthday,
+  MintStatusForSetMethod,
+  MintStatusType,
+  Tpf2023Complete,
+  User,
+} from "journal-pkg/types/journal-types";
 import _ from "lodash";
 import React, {
   createContext,
@@ -18,13 +25,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {
-  Birthday,
-  MintStatusForSetMethod,
-  MintStatusType,
-  Tpf2023Complete,
-  User,
-} from "journal-pkg/types/journal-types";
 
 type Props = {
   children: ReactNode;

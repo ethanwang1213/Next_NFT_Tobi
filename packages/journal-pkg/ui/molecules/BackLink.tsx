@@ -10,17 +10,12 @@ const BackLink = ({ onClickBack }: Props) => {
       className="btn-link no-underline text-base-content"
       onClick={onClickBack}
     >
-      <div className={"flex flex-row mb-[60px]"}>
-        <Image
-          src={"/journal/images/icon/left-arrow.svg"}
-          alt={"back"}
-          width={15}
-          height={26}
-        />
-        <div className={"font-medium text-[20px] ml-[10px] text-nowrap"}>
-          戻る
-        </div>
-      </div>
+      <Image
+        src={"/journal/images/icon/left-arrow.svg"}
+        alt={"back"}
+        width={15}
+        height={26}
+      />
     </button>
   );
 };

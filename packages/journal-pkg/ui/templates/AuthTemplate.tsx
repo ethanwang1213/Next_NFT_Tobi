@@ -42,7 +42,7 @@ const AuthTemplate = ({
   return (
     <>
       <form
-        className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10"
+        className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[496px] z-10"
         onSubmit={handleSubmit(withMail)}
       >
         <button
@@ -137,8 +137,8 @@ export const LoadingButton = ({
   return (
     <button
       type={type ?? "button"}
-      className="btn btn-block rounded-full text-md sm:text-lg sm:h-[56px]
-                drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
+      className="btn btn-block rounded-[66px] w-[176px] bg-secondary-main hover:bg-secondary-main text-neutral
+                text-[20px] font-bold drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
       disabled={disabled ?? false}
       onClick={onClick}
     >
