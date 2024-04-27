@@ -1,9 +1,12 @@
 import { auth } from "fetchers/firebase/client";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import clsx from "clsx";
 import { fetchSampleItem, updateSampleItem } from "fetchers/SampleActions";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
 import DateTimeInput from "ui/molecules/DateTimeInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
@@ -13,8 +16,6 @@ import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 import StatusDropdownSelect, {
   SampleStatus,
 } from "ui/organisms/admin/StatusDropdownSelect";
-import clsx from "clsx";
-import { Tooltip } from "react-tooltip";
 import { useDebouncedCallback } from "use-debounce";
 
 const Detail = () => {
@@ -24,37 +25,16 @@ const Detail = () => {
   const [changed, setChanged] = useState(false);
   const [errMsg, setErrMsg] = useState("");
 
-  const fileInputRef = useRef(null);
-  const imageDropButtonRef = useRef(null);
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    // Restore the background color when dropping
-    event.target.style.backgroundColor = "#FFFFFF";
-    const file = event.dataTransfer.files[0];
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the files
+    const file = acceptedFiles[0];
     if (file && file.type.startsWith("image/")) {
       // upload to the server
       uploadFileToFireStorage(file);
     }
-  };
+  }, []);
 
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    // Change the background color when dragging over
-    event.target.style.backgroundColor = "#B3B3B3";
-  };
-
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      // upload to the server
-      uploadFileToFireStorage(file);
-    }
-  };
-
-  const handleDragLeave = (event) => {
-    event.target.style.backgroundColor = "#FFFFFF";
-  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const uploadFileToFireStorage = async (file) => {
     try {
@@ -89,10 +69,6 @@ const Detail = () => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
     setChanged(true);
   }, 300);
-
-  const handleImageClick = () => {
-    fileInputRef.current.click(); // Trigger the click event of the file input
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -530,7 +506,7 @@ const Detail = () => {
                   )}
                 </div>
                 <div
-                  ref={imageDropButtonRef}
+                  {...getRootProps()}
                   style={{
                     width: 120,
                     height: 120,
@@ -538,12 +514,11 @@ const Detail = () => {
                     borderStyle: "dashed",
                     borderWidth: 2,
                     borderColor: "#B3B3B3",
+                    backgroundColor: isDragActive ? "#B3B3B3" : "transparent",
                   }}
-                  className="flex flex-col justify-center items-center gap-1 pt-2"
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
+                  className="flex flex-col justify-center items-center gap-1 pt-2 cursor-pointer"
                 >
+                  <input {...getInputProps()} />
                   <span className="h-14 text-secondary-500 text-base text-center">
                     Drop your Image here
                   </span>
@@ -552,15 +527,6 @@ const Detail = () => {
                     height={24}
                     alt="upload"
                     src="/admin/images/icon/upload-icon.svg"
-                    className="cursor-pointer"
-                    onClick={handleImageClick}
-                  />
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileInputChange}
-                    className="hidden"
                   />
                 </div>
               </div>
