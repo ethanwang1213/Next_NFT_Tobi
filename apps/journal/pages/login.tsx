@@ -309,7 +309,7 @@ const Login = () => {
             error={authError}
             onClickBack={() => handleClickBack(AuthStates.SignIn)}
             onClickPasswordReset={(email) =>
-              sendEmailForPasswordReset(email, "admin/auth/password_reset")
+              sendEmailForPasswordReset(email, "journal/auth/password_reset")
             }
             withMailSignIn={withMailSignIn}
           />

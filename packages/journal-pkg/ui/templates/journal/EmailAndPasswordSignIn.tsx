@@ -53,7 +53,7 @@ const EmailAndPasswordSignIn = ({
             }
             onClick={() => onClickPasswordReset(email)}
           >
-            パスワードを再設定する
+            I forgot my password!
           </button>
         </div>
         <div className={"mt-[10px]"}>
