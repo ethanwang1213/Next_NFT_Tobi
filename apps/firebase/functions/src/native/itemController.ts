@@ -517,7 +517,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     endDate: string | undefined,
     quantityLimit: number,
     license: string,
-    copyrights: string[],
+    copyrights: {id: number|null, name: string}[],
   }=req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
@@ -592,14 +592,14 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         },
       });
       await Promise.all(
-          copyrights.map(async (copyrightName)=>{
+          copyrights.map(async (copyright)=>{
             const selectedCopyright = await prisma.tobiratory_copyright.upsert({
               where: {
-                copyright_name: copyrightName,
+                id: copyright.id??0,
               },
               update: {},
               create: {
-                copyright_name: copyrightName,
+                copyright_name: copyright.name,
                 content_id: content.id,
               },
             });
