@@ -199,12 +199,12 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
           copyrights: true,
         },
       });
-      await prisma.tobiratory_copyright.deleteMany({
-        where: {
-          content_id: content.id,
-        },
-      });
       if (copyrightHolders) {
+        await prisma.tobiratory_copyright.deleteMany({
+          where: {
+            content_id: content.id,
+          },
+        });
         await prisma.tobiratory_copyright.createMany({
           data: copyrightHolders.map((copyright) => {
             return {

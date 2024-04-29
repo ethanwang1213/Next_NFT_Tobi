@@ -183,8 +183,8 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
       await prisma.tobiratory_digital_items_copyright.deleteMany({
         where: {
           copyright_id: copyright.id,
-        }
-      })
+        },
+      });
       const deletedCopyrights = await prisma.tobiratory_copyright.delete({
         where: {
           id: parseInt(id),
