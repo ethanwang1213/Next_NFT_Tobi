@@ -256,6 +256,9 @@ export const getMyShowcases = async (req: Request, res: Response) => {
         where: {
           owner_uuid: admin.uuid,
         },
+        orderBy: {
+          created_date_time: "desc",
+        },
       });
       const returnData = allShowcases.map((showcase) => {
         return {
