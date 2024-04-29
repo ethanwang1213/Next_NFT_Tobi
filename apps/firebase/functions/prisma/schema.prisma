@@ -250,7 +250,7 @@ model tobiratory_material_images {
 
 model tobiratory_copyright {
   id                Int                                  @id @default(autoincrement())
-  copyright_name    String                               @unique @db.VarChar(255)
+  copyright_name    String                               @db.VarChar(255)
   content           tobiratory_contents                  @relation(fields: [content_id], references: [id])
   content_id        Int
   digital_items     tobiratory_digital_items_copyright[]

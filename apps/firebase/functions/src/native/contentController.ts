@@ -156,7 +156,7 @@ export const getContentById = async (req: Request, res: Response) => {
 export const updateMyContentInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {name, description, license, copyrightHolders, image, sticker}:
-    { name?: string, description?: string, license?: string, copyrightHolders?: string[], image?: string, sticker?: string } = req.body;
+    { name?: string, description?: string, license?: string, copyrightHolders?: {id: number|null, name: string}[], image?: string, sticker?: string } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -200,18 +200,30 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         },
       });
       if (copyrightHolders) {
+        const copyrightIds = await Promise.all(
+          copyrightHolders.map(async (copyright)=>{
+            const upsertCopyright = await prisma.tobiratory_copyright.upsert({
+              where: {
+                id: copyright.id??0,
+              },
+              update: {
+                copyright_name: copyright.name,
+              },
+              create: {
+                copyright_name: copyright.name,
+                content_id: content.id,
+              }
+            });
+            return upsertCopyright.id;
+          })
+        );
         await prisma.tobiratory_copyright.deleteMany({
           where: {
+            id: {
+              notIn: copyrightIds,
+            },
             content_id: content.id,
           },
-        });
-        await prisma.tobiratory_copyright.createMany({
-          data: copyrightHolders.map((copyright) => {
-            return {
-              content_id: content.id,
-              copyright_name: copyright,
-            };
-          }),
         });
       }
       const copyrights = await prisma.tobiratory_copyright.findMany({
