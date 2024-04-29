@@ -189,7 +189,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
           title: title,
           description: description,
           thumb_url: thumbUrl,
-          schedule_time: new Date(scheduleTime),
+          schedule_time: scheduleTime==undefined?undefined:new Date(scheduleTime),
           status: status,
         },
       });

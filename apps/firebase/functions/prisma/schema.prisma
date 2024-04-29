@@ -223,7 +223,7 @@ model tobiratory_businesses {
   content             tobiratory_contents?
   updated_date_time   DateTime             @default(now()) @db.Timestamp(6)
   created_date_time   DateTime             @default(now()) @db.Timestamp(6)
-  tobiratory_showcase tobiratory_showcase?
+  tobiratory_showcase tobiratory_showcase[]
 }
 
 model tobiratory_sales {
@@ -273,7 +273,7 @@ model tobiratory_showcase {
   title                            String                             @db.VarChar(255)
   description                      String                             @db.Text
   owner                            tobiratory_businesses              @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid                       String                             @unique
+  owner_uuid                       String                             
   content                          tobiratory_contents                @relation(fields: [content_id], references: [id])
   content_id                       Int
   status                           Int                                @default(0)

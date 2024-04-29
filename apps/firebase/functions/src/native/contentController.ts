@@ -402,7 +402,7 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
         },
       });
       const returnData = favorContents.map((content) => {
-        const mainShowcase = content.content.showcase.filter((showcase) => showcase.status == statusOfShowcase.public ? showcase.thumb_url : undefined);
+        const mainShowcase = content.content.showcase.filter((showcase) => showcase.status == statusOfShowcase.public);
         return {
           id: content.content_id,
           name: content.content.name,
