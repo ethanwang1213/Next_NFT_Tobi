@@ -23,7 +23,7 @@ import {
   getFavoriteContents,
   getMyContentInfo,
   setFavoriteContent,
-  updateMyContentInfo
+  updateMyContentInfo,
 } from "./contentController";
 import {
   createModel,

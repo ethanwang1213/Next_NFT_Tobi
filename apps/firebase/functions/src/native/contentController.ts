@@ -161,7 +161,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
       const ownerBusiness = await prisma.tobiratory_businesses.findUnique({
         where: {
           uuid: uid,
-        }
+        },
       });
       if (!ownerBusiness) {
         res.status(404).send({
@@ -329,21 +329,21 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
       });
       if (copyrightHolders) {
         const copyrightIds = await Promise.all(
-          copyrightHolders.map(async (copyright)=>{
-            const upsertCopyright = await prisma.tobiratory_copyright.upsert({
-              where: {
-                id: copyright.id??0,
-              },
-              update: {
-                copyright_name: copyright.name,
-              },
-              create: {
-                copyright_name: copyright.name,
-                content_id: content.id,
-              }
-            });
-            return upsertCopyright.id;
-          })
+            copyrightHolders.map(async (copyright)=>{
+              const upsertCopyright = await prisma.tobiratory_copyright.upsert({
+                where: {
+                  id: copyright.id??0,
+                },
+                update: {
+                  copyright_name: copyright.name,
+                },
+                create: {
+                  copyright_name: copyright.name,
+                  content_id: content.id,
+                },
+              });
+              return upsertCopyright.id;
+            })
         );
         await prisma.tobiratory_copyright.deleteMany({
           where: {

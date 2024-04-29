@@ -120,6 +120,8 @@ export const createMyShocase = async (req: Request, res: Response) => {
         description: showcase.description,
         model: showcaseTemplate.model_url,
         thumbImage: showcase.thumb_url,
+        createTime: showcase.updated_date_time,
+        updateTime: showcase.updated_date_time,
       };
       res.status(200).send({
         status: "success",
@@ -198,8 +200,9 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         title: updateShowcase.title,
         status: updateShowcase.status,
         scheduleTime: updateShowcase.schedule_time,
-        createTime: updateShowcase.created_date_time,
         description: updateShowcase.description,
+        createTime: updateShowcase.created_date_time,
+        updateTime: updateShowcase.updated_date_time,
       };
       res.status(200).send({
         status: "success",
@@ -262,6 +265,7 @@ export const getMyShowcases = async (req: Request, res: Response) => {
           status: showcase.status,
           scheduleTime: showcase.schedule_time,
           createTime: showcase.created_date_time,
+          updateTime: showcase.updated_date_time,
         };
       });
       res.status(200).send({
