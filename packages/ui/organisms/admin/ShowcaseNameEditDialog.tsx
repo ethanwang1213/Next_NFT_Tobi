@@ -43,8 +43,8 @@ const ShowcaseNameEditDialog = ({
             className="px-4 py-2 bg-primary rounded-[64px] 
               text-base-white text-sm leading-4 font-semibold"
             onClick={() => {
-              changeHandler(showcaseName);
               dialogRef.current.close();
+              changeHandler(showcaseName);
             }}
           >
             Save changes

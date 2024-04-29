@@ -6,6 +6,12 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ShowcaseEditMenu from "./ShowcaseEditMenu";
 import ShowcaseNameEditDialog from "./ShowcaseNameEditDialog";
+import {
+  fetchShowcases,
+  deleteShowcase,
+  updateShowcase,
+} from "fetchers/ShowcaseActions";
+import { formatDateToLocal } from "../../atoms/Formatters";
 
 registerLocale("ja", ja);
 
@@ -16,21 +22,27 @@ enum ShowcaseStatus {
 }
 
 type ShowcaseComponentProps = {
+  id: number;
+  thumbImage: string;
   status: ShowcaseStatus;
-  name: string;
-  schedule?: string;
-  lastModifiedDate: string;
+  title: string;
+  scheduleTime?: string;
+  updateTime: string;
+  refreshHandler: () => void;
+  errorHandler: (value: string) => void;
 };
 
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
-  const [status, setStatus] = useState(props.status);
-  const [name, setName] = useState(props.name);
-  const [isOpen, setIsOpen] = useState(false);
-  const [scheduleDate, setScheduleDate] = useState(
-    props.schedule && props.schedule.length
-      ? new Date(props.schedule)
+  const [status, setStatus] = useState(ShowcaseStatus.Private);
+  const [title, setTitle] = useState(props.title);
+  const [scheduleTime, setScheduleTime] = useState(
+    props.scheduleTime && props.scheduleTime.length
+      ? new Date(props.scheduleTime)
       : new Date(),
   );
+  const [modifiedTime, setModifiedTime] = useState("");
+  const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const popupRef = useRef(null);
   const datePickerRef = useRef(null);
@@ -39,7 +51,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   useEffect(() => {
     function handleClickOutside(event) {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
-        setIsOpen(false);
+        setIsMenuOpen(false);
       }
     }
 
@@ -49,20 +61,28 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    setStatus(props.status);
+  }, [props.status]);
+
+  useEffect(() => {
+    setModifiedTime(props.updateTime);
+  }, [props.updateTime]);
+
   const statusChangeHandler = (index: number) => {
-    setIsOpen(false);
+    setIsMenuOpen(false);
     switch (index) {
       case 0:
-        setStatus(ShowcaseStatus.Public);
+        changeStatus(ShowcaseStatus.Public);
         break;
       case 1:
-        setStatus(ShowcaseStatus.Private);
+        changeStatus(ShowcaseStatus.Private);
         break;
       case 2:
-        setStatus(ShowcaseStatus.ScheduledPublic);
+        changeStatus(ShowcaseStatus.ScheduledPublic);
         break;
-      case 3:
-        // delete showcase
+      case 4:
+        deleteData();
         break;
 
       default:
@@ -70,8 +90,64 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     }
   };
 
-  const datepickerChangeHandler = (date) => {
-    setScheduleDate(date);
+  const deleteData = async () => {
+    const result = await deleteShowcase(props.id);
+    if (result) {
+      props.refreshHandler();
+    } else {
+      // show error message
+      props.errorHandler("Failed to delete the showcase");
+    }
+  };
+
+  const changeTitle = async (title: string) => {
+    const result = await updateShowcase(props.id, { title });
+    if (result != null) {
+      setTitle(title);
+      setModifiedTime(result.updateTime);
+      props.errorHandler("");
+    } else {
+      // show error message
+      props.errorHandler("Failed to change the title of the showcase");
+    }
+  };
+
+  const changeStatus = async (status) => {
+    setStatus(status);
+    const result = await updateShowcase(
+      props.id,
+      status == ShowcaseStatus.ScheduledPublic
+        ? { status, scheduleTime: scheduleTime }
+        : { status },
+    );
+    if (result != null) {
+      setModifiedTime(result.updateTime);
+      props.errorHandler("");
+      if (status == ShowcaseStatus.Public) {
+        props.refreshHandler();
+      }
+    } else {
+      // show error message
+      props.errorHandler("Failed to change the status of the showcase");
+    }
+  };
+
+  const changeScheduleTime = async () => {
+    if (!scheduleTimeChanged) {
+      return;
+    }
+
+    const result = await updateShowcase(props.id, {
+      scheduleTime: scheduleTime,
+    });
+    if (result != null) {
+      setModifiedTime(result.updateTime);
+      setScheduleTimeChanged(false);
+      props.errorHandler("");
+    } else {
+      // show error message
+      props.errorHandler("Failed to change the schedule time of the showcase");
+    }
   };
 
   return (
@@ -84,7 +160,12 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               : ""
           }
         `}
-        style={{ backgroundImage: `url(/admin/images/showcase.png)` }}
+        style={{
+          backgroundImage: `url(${props.thumbImage})`,
+          backgroundPosition: "center",
+          backgroundSize: "cover", // Ensure the image covers the entire div
+          backgroundRepeat: "no-repeat", // Prevent image repetition
+        }}
       >
         <div
           className="w-full mt-[331px] px-3 
@@ -122,9 +203,9 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
                 height={8}
                 alt="drop"
                 className="cursor-pointer"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
               />
-              {isOpen && (
+              {isMenuOpen && (
                 <div className="absolute left-0 top-3 z-10" ref={popupRef}>
                   <ShowcaseEditMenu clickHandler={statusChangeHandler} />
                 </div>
@@ -147,8 +228,8 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
                 alt="clock icon"
               />
               <span className="text-secondary-700 text-[8px] leading-4 font-normal">
-                {format(scheduleDate, "yyyy/MM/dd")}&nbsp;
-                {scheduleDate.toLocaleTimeString([], {
+                {format(scheduleTime, "yyyy/MM/dd")}&nbsp;
+                {scheduleTime.toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: false,
@@ -156,8 +237,12 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               </span>
               <DatePicker
                 ref={datePickerRef}
-                selected={scheduleDate}
-                onChange={datepickerChangeHandler}
+                selected={scheduleTime}
+                onChange={(date) => {
+                  setScheduleTime(date);
+                  setScheduleTimeChanged(true);
+                }}
+                onCalendarClose={changeScheduleTime}
                 dateFormat="yyyy/MM/dd HH:mm"
                 showTimeSelect
                 showPopperArrow={false}
@@ -172,7 +257,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       </div>
       <div className="flex justify-between items-center gap-2">
         <span className="flex-1 text-secondary-700 text-[10px] leading-4 font-medium">
-          {name}
+          {title}
         </span>
         <Image
           src="/admin/images/icon/pencil.svg"
@@ -185,13 +270,13 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           }}
         />
         <ShowcaseNameEditDialog
-          initialValue={name}
+          initialValue={title}
           dialogRef={dialogRef}
-          changeHandler={setName}
+          changeHandler={changeTitle}
         />
       </div>
       <div className="text-secondary-700 text-[10px] leading-4 font-light">
-        Last Updated Date： {props.lastModifiedDate}
+        Last Updated Date： {formatDateToLocal(modifiedTime, true)}
       </div>
     </div>
   );
@@ -200,49 +285,54 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 const ShowcasePanel = () => {
   // showcase data
   const [showcases, setShowcases] = useState([]);
+  const [reload, setReload] = useState(0);
+  const [error, setError] = useState("");
 
+  console.log("Showcase Panel is rendered", reload, error);
   // fetch showcases from server
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("fetch showcase data");
+        const data = await fetchShowcases();
+        if (data != null) {
+          setShowcases(data);
+          setError("");
+        } else {
+          setError("Failed to load showcase. Please check the error.");
+        }
       } catch (error) {
         // Handle errors here
         console.error("Error fetching data:", error);
+        setError(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [reload]);
 
   return (
-    <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
-      <ShowcaseComponent
-        status={ShowcaseStatus.Public}
-        name="THE TITLE OF SHOWCASE"
-        lastModifiedDate="2024/04/14 22:50"
-      />
-      <ShowcaseComponent
-        status={ShowcaseStatus.Private}
-        name="THE TITLE OF SHOWCASE"
-        lastModifiedDate="2024/04/14 22:50"
-      />
-      <ShowcaseComponent
-        status={ShowcaseStatus.ScheduledPublic}
-        name="THE TITLE OF SHOWCASE"
-        lastModifiedDate="2024/04/14 22:50"
-      />
-      <ShowcaseComponent
-        status={ShowcaseStatus.Private}
-        name="THE TITLE OF SHOWCASE"
-        lastModifiedDate="2024/04/14 22:50"
-      />
-      <ShowcaseComponent
-        status={ShowcaseStatus.Private}
-        name="THE TITLE OF SHOWCASE"
-        lastModifiedDate="2024/04/14 22:50"
-      />
-    </div>
+    <>
+      {error.length > 0 && <div className="text-error">{error}</div>}
+      <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
+        {showcases &&
+          showcases.length > 0 &&
+          showcases.map((showcase, index) => {
+            return (
+              <ShowcaseComponent
+                key={`showcase-${showcase.id}`}
+                id={showcase.id}
+                title={showcase.title}
+                status={showcase.status}
+                thumbImage={showcase.thumbImage}
+                scheduleTime={showcase.scheduleTime}
+                updateTime={showcase.updateTime}
+                refreshHandler={() => setReload(reload + 1)}
+                errorHandler={setError}
+              />
+            );
+          })}
+      </div>
+    </>
   );
 };
 

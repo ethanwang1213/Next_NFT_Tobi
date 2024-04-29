@@ -1,3 +1,4 @@
+import { createShowcase } from "fetchers/ShowcaseActions";
 import { Metadata } from "next";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
@@ -8,12 +9,19 @@ export const metadata: Metadata = {
 };
 
 export default function Index() {
-  const [selectedTab, setSelectedTab] = useState("sample");
+  const [selectedTab, setSelectedTab] = useState("showcase");
 
   const links = {
     showcase: {
       label: "new showcase",
-      clickHandler: () => null,
+      clickHandler: () => {
+        // This is temporary function. This function will be replaced by routing in next sprint.
+        createShowcase({
+          title: "The showcase title",
+          description: "",
+          templateId: 1,
+        });
+      },
     },
     brand: {
       label: "",
