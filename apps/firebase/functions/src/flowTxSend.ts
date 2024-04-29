@@ -394,7 +394,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
-        modelUrl: digitalItem.nft_model,
+        modelUrl: sampleItem?.model_url,
         creatorName: dbCreatorName,
         limit: digitalItem.limit,
         license: digitalItem.license,

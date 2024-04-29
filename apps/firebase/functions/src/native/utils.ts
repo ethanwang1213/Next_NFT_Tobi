@@ -12,3 +12,9 @@ export function isEmptyObject(obj: object): boolean {
     return false;
   }
 }
+
+export const statusOfShowcase = {
+  private: 0,
+  public: 1,
+  publicSchedule: 2,
+};

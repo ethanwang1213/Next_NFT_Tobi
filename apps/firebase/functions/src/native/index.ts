@@ -16,7 +16,7 @@ import
   checkExistBusinessAcc,
   checkPasswordSet,
 } from "./userController";
-import {getContentById, getContents} from "./contentController";
+import {getContentById, getContents, getFavoriteContents, getMyContentInfo, setFavoriteContent, updateMyContentInfo} from "./contentController";
 import {
   createModel,
   createDigitalItem,
@@ -27,6 +27,7 @@ import {
   adminDeleteSamples,
   adminDetailOfSample,
   adminUpdateSample,
+  getSampleInfo,
 } from "./itemController";
 import {
   createSaidan,
@@ -46,6 +47,7 @@ import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, op
 import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
+import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases} from "./showcaseController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -72,7 +74,9 @@ app.get("/accounts/:uid", getAccountById);
 app.get("/accounts/:uid/saidans", getOthersSaidans);
 
 app.get("/contents", getContents);
+app.get("/contents/favor", getFavoriteContents);
 app.get("/contents/:id", getContentById);
+app.post("/contents/:id", setFavoriteContent);
 
 app.get("/nfts/:id", dummyResponse);
 
@@ -139,6 +143,7 @@ app.post("/posts/:id/notinterested", dummyResponse);
 app.post("/my/nfts/open", openNFT);
 app.post("/my/items/:id/sale", dummyResponse);
 app.post("/my/nfts/:id/listing", dummyResponse);
+app.get("/items/:id", getSampleInfo);
 app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", dummyResponse);
@@ -157,8 +162,20 @@ app.post("/admin/copyrights/:id", updateCopyrights);
 app.delete("/admin/copyrights/:id", deleteCopyrights);
 app.post("/admin/digital/status", adminChangeDigitalStatus);
 
+// management samples
 app.get("/admin/samples", adminGetAllSamples);
 app.delete("/admin/samples", adminDeleteSamples);
 app.get("/admin/samples/:sampleId", adminDetailOfSample);
 app.post("/admin/samples/:sampleId", adminUpdateSample);
+
+// management showcase
+app.get("/admin/showcases/template", getShowcaseTemplate);
+app.post("/admin/showcases", createMyShocase);
+app.get("/admin/showcases", getMyShowcases);
+app.put("/admin/showcases/:id", updateMyShowcase);
+app.delete("/admin/showcases/:id", deleteMyShowcase);
+
+// management content
+app.get("/admin/content", getMyContentInfo);
+app.put("/admin/content", updateMyContentInfo);
 export const native = functions.region(REGION).https.onRequest(app);

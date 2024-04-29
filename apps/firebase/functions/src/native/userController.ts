@@ -423,7 +423,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
       image: "",
       url,
       description,
-      copyright_holders: [copyrightHolder],
       license,
       license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
     };
@@ -436,6 +435,15 @@ export const businessSubmission = async (req: Request, res: Response) => {
           data: contentData,
         })]
       );
+      const copyrights = copyrightHolder.map((copyright: string)=>{
+        return {
+          copyright_name: copyright,
+          content_id: savedContentData.id,
+        };
+      });
+      await prisma.tobiratory_copyright.createMany({
+        data: copyrights,
+      });
       res.status(200).send({
         status: "success",
         data: {...savedBusinessData, content: {...savedContentData}},
