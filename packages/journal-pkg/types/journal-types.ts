@@ -3,6 +3,10 @@
 import { Timestamp } from "firebase/firestore/lite";
 import { ReactElement } from "react";
 
+export type LoginFormType = {
+  email: string;
+};
+
 // journal 本のタグのデータ型
 export type tagType = {
   page: number | (() => void);

@@ -39,4 +39,18 @@
     font-family: hiragino-kaku-gothic-pron, sans-serif;
   }
 
+  // https://github.com/tailwindlabs/tailwindcss/discussions/9621
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    /* Revert text color */
+    -webkit-text-fill-color: #717171 !important;
+    color: #717171 !important;
+    caret-color: #717171 !important;
+
+    /* Revert background color */
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
 }

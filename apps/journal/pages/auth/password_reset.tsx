@@ -5,8 +5,10 @@ import {
 } from "firebase/auth";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
 import { ErrorMessage } from "journal-pkg/types/journal-types";
+import AuthBoxLayout from "journal-pkg/ui/organisms/journal/AuthBoxLayout";
+import AuthLayout from "journal-pkg/ui/organisms/journal/AuthLayout";
 import EmailAndPasswordSignUp from "journal-pkg/ui/templates/journal/EmailAndPasswordSignUp";
-import Image from "next/image";
+import PasswordResetFinished from "journal-pkg/ui/templates/journal/PasswordResetFinished";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -20,7 +22,7 @@ const PasswordReset = () => {
   useEffect(() => {
     const curHref = window.location.href;
     if (!isSignInWithEmailLink(auth, curHref)) {
-      router.push("/authentication");
+      router.push("/login");
       return;
     }
     setEmailLink(curHref);
@@ -41,43 +43,25 @@ const PasswordReset = () => {
     }
   };
 
-  if (updatedPassword) {
-    return (
-      <div className="flex flex-col items-center justify-center w-[100dvw] p-8">
-        <Image
-          src={"/journal/images/login/journal_book.svg"}
-          alt={"Tobiratory logo"}
-          width={296}
-          height={230}
-          className={"mt-[200px]"}
-        />
-        <div className={"mt-[40px]"}>パスワードをリセットしました</div>
-        <div>
-          <button
-            type={"button"}
-            className={
-              "btn-link font-medium text-[14px] text-primary mt-[20px]"
-            }
-            onClick={() => router.push("/login")}
-          >
-            認証画面へ
-          </button>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <EmailAndPasswordSignUp
-        title={"パスワードリセット"}
-        buttonText={"リセット"}
-        email={""}
-        isSubmitting={updatingPassword}
-        isPasswordReset={true}
-        authError={authError}
-        onClickSubmit={resetPassword}
-      />
-    );
-  }
+  return (
+    <AuthLayout>
+      <AuthBoxLayout>
+        {updatedPassword ? (
+          <PasswordResetFinished />
+        ) : (
+          <EmailAndPasswordSignUp
+            title={"Password Reset"}
+            buttonText={"Done"}
+            email={""}
+            isSubmitting={updatingPassword}
+            isPasswordReset={true}
+            authError={authError}
+            onClickSubmit={resetPassword}
+          />
+        )}
+      </AuthBoxLayout>
+    </AuthLayout>
+  );
 };
 
 export default PasswordReset;

@@ -9,21 +9,16 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import gsap from "gsap";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
-import { ErrorMessage } from "journal-pkg/types/journal-types";
+import { ErrorMessage, LoginFormType } from "journal-pkg/types/journal-types";
+import AuthBoxLayout from "journal-pkg/ui/organisms/journal/AuthBoxLayout";
+import AuthLayout from "journal-pkg/ui/organisms/journal/AuthLayout";
 import AuthTemplate from "journal-pkg/ui/templates/AuthTemplate";
 import ConfirmationSent from "journal-pkg/ui/templates/journal/ConfirmationSent";
 import EmailAndPasswordSignIn from "journal-pkg/ui/templates/journal/EmailAndPasswordSignIn";
 import EmailAndPasswordSignUp from "journal-pkg/ui/templates/journal/EmailAndPasswordSignUp";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-
-type LoginFormType = {
-  email: string;
-};
+import { useEffect, useState } from "react";
 
 const AuthStates = {
   SignUp: 0,
@@ -36,13 +31,6 @@ const AuthStates = {
 type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
 const Login = () => {
-  const loginRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
-  const bookRef = useRef<HTMLDivElement>(null);
-  const arcRef1 = useRef<HTMLDivElement>(null);
-  const arcRef2 = useRef<HTMLDivElement>(null);
-  const arcRef3 = useRef<HTMLDivElement>(null);
-  const logoMobileRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [authError, setAuthError] = useState<ErrorMessage>(null);
@@ -52,16 +40,6 @@ const Login = () => {
     isRegisteringWithMailAndPassword,
     setIsRegisteringWithMailAndPassword,
   ] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormType>({
-    defaultValues: {
-      email: "",
-    },
-  });
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
@@ -114,7 +92,7 @@ const Login = () => {
     setIsRegisteringWithMailAndPassword(true);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailOwnershipVerification("/");
+      await sendEmailOwnershipVerification("/journal");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setAuthState(AuthStates.SignInWithEmailAndPassword);
@@ -135,7 +113,7 @@ const Login = () => {
       );
       const user = userCredential.user;
       if (!user.emailVerified) {
-        await sendEmailOwnershipVerification("/");
+        await sendEmailOwnershipVerification("/journal");
       }
     } catch (error) {
       const errorCode = error.code;
@@ -229,48 +207,6 @@ const Login = () => {
     handleRedirect();
   }, []);
 
-  useEffect(() => {
-    gsap
-      .timeline()
-      .fromTo(
-        loginRef.current,
-        { top: "-100dvh", ease: "power4.inOut" },
-        { top: 0, duration: 1.5 },
-        "2",
-      )
-      .to(
-        logoRef.current,
-        { x: "-250px", ease: "power4.inOut", duration: 1.5 },
-        "<",
-      )
-      .from(
-        bookRef.current,
-        { y: "14rem", ease: "power4.inOut", duration: 1.5 },
-        "<",
-      )
-      .to(
-        arcRef1.current,
-        { left: "5dvw", top: "5dvh", ease: "power4.inOut", duration: 1.5 },
-        "<",
-      )
-      .to(
-        arcRef2.current,
-        { top: "-2dvh", ease: "power4.inOut", duration: 1.5 },
-        "<",
-      )
-      .to(
-        arcRef3.current,
-        { left: "-5dvw", ease: "power4.inOut", duration: 1.5 },
-        "<",
-      )
-      .fromTo(
-        logoMobileRef.current,
-        { y: 0, maxHeight: "100%" },
-        { y: "-40dvh", maxHeight: "15dvh" },
-        "<",
-      );
-  }, []);
-
   const AuthForm = () => {
     switch (authState) {
       case AuthStates.SignUp:
@@ -280,7 +216,7 @@ const Login = () => {
             googleLabel={"Sign up with Google"}
             appleLabel={"Sign up with Apple"}
             mailLabel={"Sign up"}
-            prompt={"既にアカウントを持っていますか？ - サインイン"}
+            prompt={"Do you already have an account?　- SIGN IN"}
             setAuthState={() => setAuthState(AuthStates.SignIn)}
             withMail={startMailSignUp}
             withGoogle={withGoogle}
@@ -294,7 +230,7 @@ const Login = () => {
             googleLabel={"Login in with Google"}
             appleLabel={"Login in with Apple"}
             mailLabel={"Login in"}
-            prompt={"アカウントを持っていませんか？ - 新規登録"}
+            prompt={"Dont’t have an account?　- SIGN UP"}
             setAuthState={() => setAuthState(AuthStates.SignUp)}
             withMail={startMailSignIn}
             withGoogle={withGoogle}
@@ -303,138 +239,46 @@ const Login = () => {
         );
       case AuthStates.SignInWithEmailAndPassword:
         return (
-          <EmailAndPasswordSignIn
-            email={email}
-            loading={isEmailLoading}
-            error={authError}
-            onClickBack={() => handleClickBack(AuthStates.SignIn)}
-            onClickPasswordReset={(email) =>
-              sendEmailForPasswordReset(email, "journal/auth/password_reset")
-            }
-            withMailSignIn={withMailSignIn}
-          />
+          <AuthBoxLayout>
+            <EmailAndPasswordSignIn
+              email={email}
+              loading={isEmailLoading}
+              error={authError}
+              onClickBack={() => handleClickBack(AuthStates.SignIn)}
+              onClickPasswordReset={(email) =>
+                sendEmailForPasswordReset(email, "journal/auth/password_reset")
+              }
+              withMailSignIn={withMailSignIn}
+            />
+          </AuthBoxLayout>
         );
       case AuthStates.SignUpWithEmailAndPassword:
         return (
-          <EmailAndPasswordSignUp
-            title={"Password"}
-            buttonText={"Sign up"}
-            email={email}
-            isSubmitting={isRegisteringWithMailAndPassword}
-            isPasswordReset={false}
-            authError={authError}
-            onClickBack={() => handleClickBack(AuthStates.SignUp)}
-            onClickSubmit={withMailSignUp}
-          />
+          <AuthBoxLayout>
+            <EmailAndPasswordSignUp
+              title={"Password"}
+              buttonText={"Sign up"}
+              email={email}
+              isSubmitting={isRegisteringWithMailAndPassword}
+              isPasswordReset={false}
+              authError={authError}
+              onClickBack={() => handleClickBack(AuthStates.SignUp)}
+              onClickSubmit={withMailSignUp}
+            />
+          </AuthBoxLayout>
         );
       case AuthStates.EmailSent:
         return (
-          <ConfirmationSent
-            onClickBack={() => handleClickBack(AuthStates.SignIn)}
-          />
+          <AuthBoxLayout>
+            <ConfirmationSent
+              onClickBack={() => handleClickBack(AuthStates.SignIn)}
+            />
+          </AuthBoxLayout>
         );
     }
   };
 
-  return (
-    <>
-      <div className="fixed -top-6 -left-6 -bottom-6 -right-6">
-        <Image
-          src="/journal/images/login/Journal_topbg.png"
-          alt="background image"
-          fill
-        />
-      </div>
-
-      <div
-        className="fixed top-[-3dvh] left-[20dvw] w-[30dvw] h-[30dvh] scale-75"
-        ref={arcRef1}
-      >
-        <Image
-          src="/journal/images/login/arc/arc1_journal.svg"
-          alt="logo"
-          fill
-          className="object-contain"
-        />
-      </div>
-      <div
-        className="fixed top-[30dvh] right-[3dvw] w-[30dvw] h-[30dvh] scale-125"
-        ref={arcRef2}
-      >
-        <Image
-          src="/journal/images/login/arc/arc2_journal.svg"
-          alt="logo"
-          fill
-          className="object-contain"
-        />
-      </div>
-      <div
-        className="fixed bottom-[-3dvh] left-[20dvw] w-[30dvw] h-[30dvh] scale-150 rotate-90"
-        ref={arcRef3}
-      >
-        <Image
-          src="/journal/images/login/arc/arc3_journal.svg"
-          alt="logo"
-          fill
-          className="object-contain"
-        />
-      </div>
-
-      <div
-        className="md:flex items-center justify-center relative top-0 left-0 w-[100dvw] h-[100dvh] hidden"
-        ref={logoRef}
-      >
-        <div className="absolute h-[400px] w-[400px]">
-          <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
-        </div>
-        <div className="absolute h-[300px] w-[300px]">
-          <Image
-            src="/journal/images/login/liner_journal.svg"
-            alt="logo"
-            fill
-          />
-        </div>
-        <div className="absolute h-[300px] w-[300px]">
-          <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
-        </div>
-      </div>
-      <div className="flex items-center justify-center p-5 w-[100dvw] h-[100dvh] md:hidden">
-        <div className="relative aspect-square w-full max-w-[500px] flex items-center justify-center">
-          <Image src="/journal/images/login/box_journal.svg" alt="logo" fill />
-          <div
-            className="absolute flex items-center justify-center h-[75%] w-[75%]"
-            ref={logoMobileRef}
-          >
-            <div className="absolute h-[80%] w-[80%] block md:hidden">
-              <Image
-                src="/journal/images/login/liner_journal.svg"
-                alt="logo"
-                fill
-              />
-            </div>
-            <Image src="/journal/images/login/Journal.svg" alt="logo" fill />
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="flex items-center justify-center absolute left-0 w-[100dvw] h-[100dvh] p-8 sm:p-10"
-        ref={loginRef}
-      >
-        <AuthForm />
-      </div>
-      <div
-        className="flex justify-center fixed -bottom-32 right-0 left-0 h-72"
-        ref={bookRef}
-      >
-        <Image
-          src="/journal/images/login/Journalbookangle_journal.svg"
-          alt="logo"
-          fill
-        />
-      </div>
-    </>
-  );
+  return <AuthLayout>{AuthForm()}</AuthLayout>;
 };
 
 export default Login;

@@ -134,71 +134,73 @@ const EmailAndPasswordSignUp = ({
 
   return (
     <>
-      <div className="bg-white p-7 sm:p-10 rounded-[66px] sm:rounded-[66px] flex flex-col items-center md:translate-x-[250px] max-w-[496px] z-10">
-        <div className="w-full">
-          <BackLinkBlock
-            title={title}
-            fontSize={"medium"}
-            visible={!isPasswordReset}
-            onClickBack={onClickBack}
-          />
-        </div>
-        <div className={"mt-[20px]"}>
-          <PasswordValidation {...passwordStatus} />
-        </div>
-        <div className={"mt-[30px]"}>
-          <EmailField
-            email={emailStatus.email}
-            visible={isPasswordReset}
-            validateEmail={validateEmail}
-          />
-        </div>
-        <div
-          className={
-            "w-[412px] mt-[10px] font-bold text-neutral-main text-[16px] text-left"
-          }
-        >
-          Password
-        </div>
-        <input
-          type={"password"}
-          value={passwordStatus.password}
-          className="rounded-[66px] bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] text-neutral-main placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-          onChange={(e) => {
-            validatePassword(e.target.value);
-          }}
+      <div className="w-full">
+        <BackLinkBlock
+          title={title}
+          fontSize={"medium"}
+          visible={!isPasswordReset}
+          onClickBack={onClickBack}
         />
-        <div
-          className={
-            "w-[412px] mt-[10px] font-bold text-neutral-main text-[16px] text-left"
-          }
-        >
-          Confirmation (Re-entry)
-        </div>
-        <input
-          type={"password"}
-          value={passwordConfirmationStatus.password}
-          className="rounded-[66px] bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] text-neutral-main placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-          onChange={(e) => {
-            validatePasswordConfirmation(
-              passwordStatus.password,
-              e.target.value,
-            );
-          }}
+      </div>
+      <div className={"mt-[20px]"}>
+        <PasswordValidation {...passwordStatus} />
+      </div>
+      <div className={"mt-[30px]"}>
+        <EmailField
+          email={emailStatus.email}
+          visible={isPasswordReset}
+          validateEmail={validateEmail}
         />
-        <div className={"h-[50px]"}>
-          <Error errors={getErrors()} />
-        </div>
-        <div className={""}>
-          <LoadingButton
-            label={buttonText}
-            loading={isSubmitting}
-            disabled={isSubmitButtonDisabled()}
-            onClick={() =>
-              onClickSubmit(emailStatus.email, passwordStatus.password)
-            }
-          />
-        </div>
+      </div>
+      <div
+        className={
+          "w-[412px] mt-[10px] font-bold text-neutral-main text-[16px] text-left"
+        }
+      >
+        Password
+      </div>
+      <input
+        type={"password"}
+        value={passwordStatus.password}
+        placeholder={"Password"}
+        className="input rounded-[56px] bg-slate-100 w-[408px] mt-[10px] pl-[15px]
+          text-sm sm:text-[16px] placeholder:text-sm sm:placeholder:text-[16px]
+          text-neutral-main  font-bold placeholder:font-bold h-[48px]"
+        onChange={(e) => {
+          validatePassword(e.target.value);
+        }}
+      />
+      <div
+        className={
+          "w-[412px] mt-[10px] font-bold text-neutral-main text-[16px] text-left"
+        }
+      >
+        Confirmation (Re-entry)
+      </div>
+      <input
+        type={"password"}
+        value={passwordConfirmationStatus.password}
+        placeholder={"Confirmation (Re-entry)"}
+        className="input rounded-[56px] bg-slate-100 w-[408px] mt-[10px] pl-[15px]
+          text-sm sm:text-[16px] placeholder:text-sm sm:placeholder:text-[16px]
+          text-neutral-main font-bold placeholder:font-bold h-[48px]"
+        onChange={(e) => {
+          validatePasswordConfirmation(passwordStatus.password, e.target.value);
+        }}
+      />
+      <div className={"h-[50px] mt-[5px]"}>
+        <Error errors={getErrors()} />
+      </div>
+      <div className={""}>
+        <LoadingButton
+          label={buttonText}
+          isPasswordReset={isPasswordReset}
+          loading={isSubmitting}
+          disabled={isSubmitButtonDisabled()}
+          onClick={() =>
+            onClickSubmit(emailStatus.email, passwordStatus.password)
+          }
+        />
       </div>
     </>
   );
@@ -219,11 +221,19 @@ const EmailField = ({
 
   return (
     <>
-      <div>メールアドレス</div>
+      <div
+        className={
+          "w-[412px] mt-[10px] font-bold text-neutral-main text-[16px] text-left"
+        }
+      >
+        Mail Address
+      </div>
       <input
         type={"text"}
         value={email}
-        className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+        className="input rounded-[56px] bg-slate-100 w-[408px] mt-[10px] pl-[15px] placeholder:text-center
+          text-sm sm:text-[16px] placeholder:text-sm sm:placeholder:text-[16px]
+          text-neutral-main placeholder:text-neutral-main font-bold placeholder:font-bold h-[48px]"
         onChange={(e) => {
           validateEmail(e.target.value);
         }}

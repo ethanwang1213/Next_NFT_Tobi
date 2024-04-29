@@ -13,8 +13,8 @@ const BackLinkBlock = ({
 }) => {
   const fontSizeClass = fontSize === "small" ? "text-[24px]" : "text-[32px]";
   return (
-    <div className={`flex flex-row ${visible ? "" : "hidden"}`}>
-      <BackLink onClickBack={onClickBack} />
+    <div className={"flex flex-row"}>
+      <BackLink visible={visible} onClickBack={onClickBack} />
       <div
         className={`w-full text-center ${fontSizeClass} font-bold text-neutral-main`}
       >

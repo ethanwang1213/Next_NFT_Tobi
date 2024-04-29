@@ -13,24 +13,24 @@ export const getFirebaseAuthErrorMessage = (error?: ErrorMessage) => {
     case undefined:
       return "";
     case "auth/invalid-action-code":
-      return "リンクの有効期限が切れているため、サインアップを再度行ってください";
+      return "The sign-up link has expired. Please sign up again.";
     case "auth/invalid-email":
-      return "リンクを送ったメールアドレスを入力してください";
+      return "Please enter the email address to which the link was sent.";
     case "auth/email-already-in-use":
-      return "このメールアドレスは既に使用されています";
+      return "This email address is already in use.";
     case "auth/user-not-found":
-      return "Tobiratoryアカウントが存在しません";
+      return "No Tobiratory account exists.";
     case "auth/missing-password":
     case "auth/wrong-password":
-      return "メールアドレス、又はパスワードが間違っています";
+      return "The email address or password is incorrect.";
     default:
-      return `エラーが発生しました: エラーコード: ${error.code}: ${error.message}`;
+      return `An error occurred: Error code: ${error.code}: ${error.message}`;
   }
 };
 
 const FirebaseAuthError = ({ error }: Props) => {
   return (
-    <div className={"font-bold text-[12px] text-error"}>
+    <div className={"font-bold text-[12px] text-error text-end"}>
       {getFirebaseAuthErrorMessage(error)}
     </div>
   );

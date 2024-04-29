@@ -33,8 +33,11 @@ const config = {
       },
       colors: {
         brown: "#894400",
+        "primary-main": "#BC632F",
         "secondary-main": "#3598AF",
         "neutral-main": "#717171",
+        "disabled-input": "#A1A1A1",
+        "disabled-input-content": "#5A5A5A",
       },
     },
   },

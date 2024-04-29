@@ -1,8 +1,8 @@
 import { ErrorMessage } from "journal-pkg/types/journal-types";
 import FirebaseAuthError from "journal-pkg/ui/atoms/FirebaseAuthError";
-import BackLink from "journal-pkg/ui/molecules/BackLink";
 import { LoadingButton } from "journal-pkg/ui/templates/AuthTemplate";
 import { useState } from "react";
+import BackLinkBlock from "../../molecules/BackLinkBlock";
 
 type Props = {
   email: string;
@@ -25,48 +25,55 @@ const EmailAndPasswordSignIn = ({
 
   return (
     <>
-      <div className="bg-white p-7 sm:p-10 rounded-[40px] sm:rounded-[50px] flex flex-col gap-5 items-center md:translate-x-[250px] max-w-[400px] z-10">
-        <div className={"w-full"}>
-          <BackLink onClickBack={onClickBack} />
-        </div>
-        <div className={"text-[32px] h-[80px] font-bold"}>パスワードを入力</div>
-        <div className="w-full">
-          <input
-            type={"text"}
-            value={email}
-            disabled={true}
-            className="rounded-lg bg-disabled-field base-200-content font-normal w-full h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-          />
-          <input
-            type={"password"}
-            value={password}
-            placeholder={"パスワード"}
-            className="rounded-lg base-content font-normal w-full h-[52px] mt-[40px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className={"w-full mt-[10px] text-right"}>
-          <button
-            type={"button"}
-            className={
-              "btn-link font-semibold text-[12px] no-underline text-primary"
-            }
-            onClick={() => onClickPasswordReset(email)}
-          >
-            I forgot my password!
-          </button>
-        </div>
-        <div className={"mt-[10px]"}>
-          <FirebaseAuthError error={error} />
-        </div>
-        <div className={"mt-[10px]"}>
-          <LoadingButton
-            label={"サインイン"}
-            disabled={!!!password}
-            loading={loading}
-            onClick={() => withMailSignIn(email, password)}
-          />
-        </div>
+      <div className={"w-full"}>
+        <BackLinkBlock
+          title={"Password"}
+          fontSize={"medium"}
+          visible={true}
+          onClickBack={onClickBack}
+        />
+      </div>
+      <div className="w-full">
+        <input
+          type={"text"}
+          value={email}
+          disabled={true}
+          className="input rounded-[56px] mt-[107px] disabled:bg-disabled-input w-[408px]
+          text-sm sm:text-[16px] placeholder:text-sm sm:placeholder:text-[16px]
+          text-neutral-main disabled:text-disabled-input-content placeholder:text-neutral-main font-bold placeholder:font-bold h-[48px] px-6"
+        />
+        <input
+          type={"password"}
+          value={password}
+          placeholder={"Password"}
+          className="input rounded-[56px] bg-slate-100 mt-[32px] w-[408px]
+          text-sm sm:text-[16px] placeholder:text-sm sm:placeholder:text-[16px]
+          text-neutral-main font-bold placeholder:font-bold h-[48px] px-6"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <div className={"w-full text-right"}>
+        <button
+          type={"button"}
+          className={
+            "btn-link font-semibold text-[12px] no-underline text-secondary-main"
+          }
+          onClick={() => onClickPasswordReset(email)}
+        >
+          I forgot my password!
+        </button>
+      </div>
+      <div className={"w-full mt-[10px]"}>
+        <FirebaseAuthError error={error} />
+      </div>
+      <div className={"mt-[90px]"}>
+        <LoadingButton
+          label={"Sign in"}
+          isPasswordReset={false}
+          disabled={!!!password}
+          loading={loading}
+          onClick={() => withMailSignIn(email, password)}
+        />
       </div>
     </>
   );

@@ -8,39 +8,37 @@ type Props = {
 const ConfirmationSent = ({ onClickBack }: Props) => {
   return (
     <>
-      <div className="bg-white p-7 sm:p-10 rounded-[66px] sm:rounded-[66px] flex flex-col items-center md:translate-x-[250px] max-w-[496px] z-10">
-        <div className="w-full">
-          <BackLinkBlock
-            title={"Sent a confirmation email!"}
-            visible={true}
-            fontSize={"small"}
-            onClickBack={onClickBack}
-          />
-        </div>
-        <Image
-          src={"/journal/images/login/mail.svg"}
-          alt={"sent mail"}
-          width={137}
-          height={137}
-          className={"mt-[40px]"}
+      <div className="w-full">
+        <BackLinkBlock
+          title={"Sent a confirmation email!"}
+          visible={true}
+          fontSize={"small"}
+          onClickBack={onClickBack}
         />
-        <div
-          className={
-            "mt-[40px] font-bold text-center text-[16px] text-neutral-main"
-          }
-        >
-          Please check your mailbox.
-        </div>
-        <div className={"font-bold text-center text-[16px] text-neutral-main"}>
-          Authentication will be completed by clicking the authentication link
-          in the email.
-        </div>
-        <div className={"mt-[25px]"}>
-          <InfoLink
-            url={"https://www.tobiratory.com/about"}
-            text={"Haven't received the email?"}
-          />
-        </div>
+      </div>
+      <Image
+        src={"/journal/images/login/mail.svg"}
+        alt={"sent mail"}
+        width={137}
+        height={137}
+        className={"mt-[40px]"}
+      />
+      <div
+        className={
+          "mt-[40px] font-bold text-center text-[16px] text-neutral-main"
+        }
+      >
+        Please check your mailbox.
+      </div>
+      <div className={"font-bold text-center text-[16px] text-neutral-main"}>
+        Authentication will be completed by clicking the authentication link in
+        the email.
+      </div>
+      <div className={"mt-[25px]"}>
+        <InfoLink
+          url={"https://www.tobiratory.com/about"}
+          text={"Haven't received the email?"}
+        />
       </div>
     </>
   );
