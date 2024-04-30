@@ -173,6 +173,25 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
+      const showcase = await prisma.tobiratory_showcase.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (!showcase) {
+        res.status(404).send({
+          status: "error",
+          data: "not-showcase",
+        });
+        return;
+      }
+      if (status&&status != statusOfShowcase.public&&status != statusOfShowcase.publicSchedule) {
+        res.status(401).send({
+          status: "error",
+          data: "invalid-status",
+        });
+        return;
+      }
       if (status == statusOfShowcase.public) {
         await prisma.tobiratory_showcase.updateMany({
           where: {
@@ -193,8 +212,20 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
           thumb_url: thumbUrl,
           schedule_time: scheduleTime==undefined?undefined:new Date(scheduleTime),
           status: status,
+          updated_date_time: new Date(),
         },
       });
+      if (status == statusOfShowcase.publicSchedule&&scheduleTime) {
+        const specificTime = new Date(scheduleTime);
+        const currentTime = new Date();
+        const timeDifference = specificTime.getTime() - currentTime.getTime();
+        
+        if (timeDifference > 0) {
+          updateShocaseSchedule(scheduleTime, timeDifference, updateShowcase.id);
+        } else {
+          console.log('Specific time has already passed.');
+        }
+      }
       const returnData = {
         id: updateShowcase.id,
         title: updateShowcase.title,
@@ -339,6 +370,13 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
+      if (showcase.status != statusOfShowcase.public) {
+        res.status(404).send({
+          status: "error",
+          data: "public-showcase",
+        });
+        return;
+      }
       await prisma.tobiratory_sample_items.updateMany({
         where: {
           content_id: content.id,
@@ -380,3 +418,39 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
     return;
   });
 };
+
+const updateShocaseSchedule = async (scheduleTime: string, timeDifference: number, id: number) => {
+  setTimeout(async () => {
+    try {
+      const showcase = await prisma.tobiratory_showcase.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      if (!showcase||showcase.schedule_time!=new Date(scheduleTime)) {
+        return;
+      }
+      await prisma.tobiratory_showcase.updateMany({
+        where: {
+          status: statusOfShowcase.public,
+        },
+        data: {
+          status: statusOfShowcase.private,
+        },
+      });
+      await prisma.tobiratory_showcase.updateMany({
+        where: {
+          id: id,
+          schedule_time: scheduleTime,
+          status: statusOfShowcase.publicSchedule,
+        },
+        data: {
+          status: statusOfShowcase.public,
+        },
+      });
+      console.log('Database updated at specific time.');
+    } catch (error) {
+      console.error('Error updating database:', error);
+    }
+  }, timeDifference);
+}
