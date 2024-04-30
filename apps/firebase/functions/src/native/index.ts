@@ -16,7 +16,15 @@ import
   checkExistBusinessAcc,
   checkPasswordSet,
 } from "./userController";
-import {getContentById, getContents, getFavoriteContents, getMyContentInfo, setFavoriteContent, updateMyContentInfo} from "./contentController";
+import {
+  getContentById,
+  getContentByUuid,
+  getContents,
+  getFavoriteContents,
+  getMyContentInfo,
+  setFavoriteContent,
+  updateMyContentInfo,
+} from "./contentController";
 import {
   createModel,
   createDigitalItem,
@@ -72,6 +80,7 @@ app.post("/create-flow", createFlowAcc);
 app.get("/accounts", getAccounts);
 app.get("/accounts/:uid", getAccountById);
 app.get("/accounts/:uid/saidans", getOthersSaidans);
+app.get("/business/:uid/content", getContentByUuid);
 
 app.get("/contents", getContents);
 app.get("/contents/favor", getFavoriteContents);
