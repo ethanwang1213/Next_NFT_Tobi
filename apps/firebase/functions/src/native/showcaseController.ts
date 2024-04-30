@@ -219,11 +219,11 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         const specificTime = new Date(scheduleTime);
         const currentTime = new Date();
         const timeDifference = specificTime.getTime() - currentTime.getTime();
-        
+
         if (timeDifference > 0) {
           updateShocaseSchedule(scheduleTime, timeDifference, updateShowcase.id);
         } else {
-          console.log('Specific time has already passed.');
+          console.log("Specific time has already passed.");
         }
       }
       const returnData = {
@@ -448,9 +448,9 @@ const updateShocaseSchedule = async (scheduleTime: string, timeDifference: numbe
           status: statusOfShowcase.public,
         },
       });
-      console.log('Database updated at specific time.');
+      console.log("Database updated at specific time.");
     } catch (error) {
-      console.error('Error updating database:', error);
+      console.error("Error updating database:", error);
     }
   }, timeDifference);
-}
+};

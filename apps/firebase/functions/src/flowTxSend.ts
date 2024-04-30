@@ -413,7 +413,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         creatorName,
         limit,
         license,
-        copyrightHolders
+        copyrightHolders,
       });
       console.log("true or false:");
       console.log("metadata.type === type: " + (metadata.type === type));
