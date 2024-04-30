@@ -324,7 +324,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const thumbnailUrl = args[3].value;
       const modelUrl = args[4].value ? args[4].value.value : args[4].value;
       const creatorName = args[5].value;
-      const limit = args[6].value ? args[6].value.value : args[6].value;
+      const limit = args[6].value ? Number(args[6].value.value) : args[6].value;
       const license = args[7].value ? args[7].value.value : args[7].value;
       const copyrightHolders = args[8].value;
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
@@ -396,10 +396,36 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
         modelUrl: sampleItem?.model_url,
         creatorName: dbCreatorName,
-        limit: digitalItem.limit,
+        limit: Number(digitalItem.limit),
         license: digitalItem.license,
         copyrightHolders: copyrights,
       };
+
+      console.log("Checking metadata: ");
+      console.log(metadata);
+      console.log("Checking arguments: ");
+      console.log({
+        type,
+        name,
+        description,
+        thumbnailUrl,
+        modelUrl,
+        creatorName,
+        limit,
+        license,
+        copyrightHolders
+      });
+      console.log("true or false:");
+      console.log("metadata.type === type: " + (metadata.type === type));
+      console.log("metadata.name === name: " + (metadata.name === name));
+      console.log("metadata.description === description: " + (metadata.description === description));
+      console.log("metadata.thumbnailUrl === thumbnailUrl: " + (metadata.thumbnailUrl === thumbnailUrl));
+      console.log("metadata.modelUrl === modelUrl: " + (metadata.modelUrl === modelUrl));
+      console.log("metadata.creatorName === creatorName: " + (metadata.creatorName === creatorName));
+      console.log("metadata.limit == limit: " + (metadata.limit == limit));
+      console.log("metadata.license === license: " + (metadata.license === license));
+      console.log("arraysEqual(metadata.copyrightHolders, copyrightHolders): " +
+          arraysEqual(metadata.copyrightHolders, copyrightHolders));
 
       if (
         metadata.type === type &&
