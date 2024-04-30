@@ -5,24 +5,43 @@ import EditProfileModal from "@/components/pages/ProfilePage/sub/EditProfile/Edi
 import { BookProvider } from "@/contexts/journal-BookProvider";
 import { EditProfileProvider } from "@/contexts/journal-EditProfileProvider";
 import { RedeemStatusProvider } from "@/contexts/journal-RedeemStatusProvider";
-import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import {
+  emailLinkOnly,
+  useAuth,
+} from "journal-pkg/contexts/journal-AuthProvider";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Mobile from "../components/Book/Mobile";
 import Pc from "../components/Book/Pc";
 
 const Index = () => {
+  const [authCheck, setAuthCheck] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!auth) return;
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" && !auth.currentUser) {
-      router.push("/login");
+    // When the user is no longer empty, it means that the onAuthStateChanged process has completed.
+    if (!auth || !user) return;
+    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "true") {
+      if (
+        !auth.currentUser?.email || // anonymous
+        !auth.currentUser?.emailVerified
+      ) {
+        router.push("/login");
+      } else {
+        emailLinkOnly(auth.currentUser.email).then((result) => {
+          if (result) {
+            auth.signOut();
+            router.push("/login");
+            return;
+          }
+          setAuthCheck(true);
+        });
+      }
     }
-  }, [auth]);
+  }, [auth, user]);
 
   return (
     <RedeemStatusProvider>
@@ -31,7 +50,7 @@ const Index = () => {
           <div
             className={
               process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" &&
-              (!user || !user.email)
+              (!user || !user.email || !authCheck)
                 ? "invisible"
                 : ""
             }

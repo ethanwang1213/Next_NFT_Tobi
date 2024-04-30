@@ -1,4 +1,9 @@
-import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
+  onAuthStateChanged,
+  signInAnonymously,
+} from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -55,6 +60,18 @@ type ContextType = {
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
+
+export const emailLinkOnly = async (email: string) => {
+  const idTokenResult = await auth.currentUser?.getIdTokenResult();
+  if (idTokenResult?.signInProvider !== EmailAuthProvider.PROVIDER_ID) {
+    return false;
+  }
+
+  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+  return !signInMethods.includes(
+    EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
+  );
+};
 
 /**
  * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー

@@ -9,6 +9,10 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
+import {
+  emailLinkOnly,
+  useAuth,
+} from "journal-pkg/contexts/journal-AuthProvider";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
 import { ErrorMessage, LoginFormType } from "journal-pkg/types/journal-types";
 import AuthBoxLayout from "journal-pkg/ui/organisms/journal/AuthBoxLayout";
@@ -32,6 +36,7 @@ type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
 const Login = () => {
   const router = useRouter();
+  const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [authError, setAuthError] = useState<ErrorMessage>(null);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
@@ -190,22 +195,17 @@ const Login = () => {
   };
 
   useEffect(() => {
-    // console.log(auth.currentUser);
-    const handleRedirect = async () => {
-      // ログイン状態の変化を監視
-      auth.onAuthStateChanged(async (user) => {
-        if (user && user.email) {
-          console.log(`${user.email} としてログイン中です。`);
-          if (user.emailVerified) {
-            // ログイン済みの場合、リダイレクト処理を実行
-            await router.push("/"); // リダイレクト先のURLを指定
-          }
+    // When the user is no longer empty, it means that the onAuthStateChanged process has completed.
+    if (user && auth.currentUser?.emailVerified) {
+      emailLinkOnly(auth.currentUser.email).then((result) => {
+        if (result) {
+          auth.signOut();
+        } else {
+          router.push("/");
         }
       });
-    };
-
-    handleRedirect();
-  }, []);
+    }
+  }, [user]);
 
   const AuthForm = () => {
     switch (authState) {
