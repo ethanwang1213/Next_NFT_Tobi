@@ -40,7 +40,8 @@ export const getContents = async (req: Request, res: Response) => {
 export const getContentById = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
     try {
       const content = await prisma.tobiratory_contents.findUnique({
         where: {
@@ -114,6 +115,12 @@ export const getContentById = async (req: Request, res: Response) => {
           thumbImage: nft.digital_item.is_default_thumb ? nft.digital_item.default_thumb_url : nft.digital_item.custom_thumb_url,
         };
       });
+      const favorite = await prisma.tobiratory_favorite_content.findFirst({
+        where: {
+          favor_uuid: uid,
+          content_id: content.id,
+        },
+      });
 
       const returnData = {
         content: {
@@ -132,6 +139,7 @@ export const getContentById = async (req: Request, res: Response) => {
         model: showcase.tobiratory_showcase_template?.model_url,
         thumbImage: showcase.thumb_url,
         items: [...sampleItems, ...nftItems],
+        favorite: favorite!=null,
       };
 
       res.status(200).send({
@@ -156,7 +164,7 @@ export const getContentById = async (req: Request, res: Response) => {
 export const getContentByUuid = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {uid} = req.params;
-  await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const ownerBusiness = await prisma.tobiratory_businesses.findUnique({
         where: {
@@ -242,6 +250,12 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           thumbImage: nft.digital_item.is_default_thumb ? nft.digital_item.default_thumb_url : nft.digital_item.custom_thumb_url,
         };
       });
+      const favorite = await prisma.tobiratory_favorite_content.findFirst({
+        where: {
+          favor_uuid: decodedToken.uid,
+          content_id: content.id,
+        },
+      });
 
       const returnData = {
         content: {
@@ -260,6 +274,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         model: showcase.tobiratory_showcase_template?.model_url,
         thumbImage: showcase.thumb_url,
         items: [...sampleItems, ...nftItems],
+        favorite: favorite!=null,
       };
 
       res.status(200).send({
