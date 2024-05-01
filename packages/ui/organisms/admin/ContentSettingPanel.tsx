@@ -1,3 +1,8 @@
+import {
+  fetchContentsInformation,
+  updateContentsInformation,
+} from "fetchers/ContentsActions";
+import { deleteCopyright, updateCopyright } from "fetchers/SampleActions";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -5,15 +10,23 @@ import StyledTextArea from "../../molecules/StyledTextArea";
 import ContentNameConfirmDialog from "./ContentNameConfirmDialog";
 import ContentNameEditDialog from "./ContentNameEditDialog";
 import CopyrightEditMenu from "./CopyrightEditMenu";
-import { updateCopyright, deleteCopyright } from "fetchers/SampleActions";
 
-const ContentSettingPanel = () => {
+const ContentSettingPanel = ({
+  cancelFlag,
+  publishFlag,
+  changeHandler,
+}: {
+  cancelFlag: number;
+  publishFlag: number;
+  changeHandler: () => void;
+}) => {
   // content setting data
+  const [contentsInfo, setContentsInfo] = useState(null);
   const [contentSetting, setContentSetting] = useState({
     name: "",
     description: "",
     license: "",
-    copyrights: [{ id: 0, title: "ゴラクバ！" }],
+    copyright: [],
   });
   const [popupMenuOpen, setPopupMenuOpen] = useState(false);
   const [popupMenuPosition, setPopupMenuPosition] = useState({
@@ -22,7 +35,7 @@ const ContentSettingPanel = () => {
     id: 0,
     text: "",
   });
-  const [changed, setChanged] = useState(false);
+  const [modified, setModified] = useState(false);
 
   const editDialogRef = useRef(null);
   const confirmDialogRef = useRef(null);
@@ -42,14 +55,14 @@ const ContentSettingPanel = () => {
 
     const fetchData = async () => {
       try {
-        // const data = await fetchContentSettings();
-        const data = {
-          name: "SETTING NAME",
-          description: "",
-          license: "CCO",
-          copyrights: [{ id: 0, title: "ゴラクバ！" }],
-        };
-        setContentSetting(data);
+        const data = await fetchContentsInformation();
+        if (data != null) {
+          setContentsInfo(data);
+          setContentSetting(data);
+          // setError("");
+        } else {
+          // setError("Failed to load showcase. Please check the error.");
+        }
       } catch (error) {
         // Handle errors here
         console.error("Error fetching data:", error);
@@ -71,15 +84,16 @@ const ContentSettingPanel = () => {
         confirmDialogRef.current.showModal();
       }
     }
-    setChanged(true);
+    setModified(true);
+    changeHandler();
   }, 300);
 
   const itemChangedHandler = async (type, id, prevValue, value) => {
-    let newElements = [...contentSetting.copyrights];
+    let newElements = [...contentSetting.copyright];
 
     // get indexes
     const elementIndex = newElements.findIndex(
-      (value) => value.title == prevValue,
+      (value) => value.name == prevValue,
     );
 
     if (type == "update") {
@@ -91,8 +105,8 @@ const ContentSettingPanel = () => {
       // update UI
       if (update) {
         // change element name
-        newElements[elementIndex].title = value;
-        fieldChangeHandler("copyrights", newElements);
+        newElements[elementIndex].name = value;
+        fieldChangeHandler("copyright", newElements);
       }
     }
 
@@ -108,12 +122,38 @@ const ContentSettingPanel = () => {
         newElements = newElements.filter(
           (value, index) => index != elementIndex,
         );
-        fieldChangeHandler("copyrights", newElements);
+        fieldChangeHandler("copyright", newElements);
       }
     }
 
     setPopupMenuOpen(false);
   };
+
+  const updateData = async () => {
+    const result = await updateContentsInformation({
+      name: contentSetting.name,
+      description: contentSetting.description,
+      license: contentSetting.license,
+      copyrightHolders: contentSetting.copyright,
+    });
+    if (result != null) {
+      setContentsInfo(contentSetting);
+    }
+  };
+
+  useEffect(() => {
+    if (modified) {
+      setContentSetting(contentsInfo);
+      setModified(false);
+    }
+  }, [cancelFlag]);
+
+  useEffect(() => {
+    if (modified) {
+      updateData();
+      setModified(false);
+    }
+  }, [publishFlag]);
 
   return (
     <div className="max-w-[800px] min-w-[480px] flex flex-col gap-8">
@@ -200,22 +240,27 @@ const ContentSettingPanel = () => {
             onKeyDown={(event) => {
               if (event.key === "Enter") {
                 // Handle the Enter key press event here
-                const value = (event.target as HTMLInputElement).value;
-                console.log("Enter key pressed:", value);
+                const inputElement = event.target as HTMLInputElement;
+                const value = inputElement.value;
+                const copyright = contentSetting.copyright;
+                copyright.push({ id: null, name: value });
+                fieldChangeHandler("copyright", copyright);
+
+                inputElement.value = "";
               }
             }}
           />
-          {contentSetting.copyrights.map((copyright, index) => {
+          {contentSetting.copyright.map((copyright, index) => {
             return (
               <div
-                key={`copyright-item-${copyright.id}`}
+                key={`copyright-item-${index}-${copyright.id}`}
                 className="flex justify-end items-center gap-1"
               >
                 <span
                   className="bg-[#009FF5] rounded px-2 min-w-[132px]
                       text-base-white text-sm leading-6 font-medium"
                 >
-                  ©{copyright.title}
+                  ©{copyright.name}
                 </span>
                 <Image
                   src="/admin/images/icon/more-vert-icon.png"
@@ -238,7 +283,7 @@ const ContentSettingPanel = () => {
                       x: targetDomRect.right - rootDomRect.left,
                       y: targetDomRect.top - rootDomRect.top,
                       id: copyright.id,
-                      text: copyright.title,
+                      text: copyright.name,
                     });
                     setPopupMenuOpen(true);
                   }}
