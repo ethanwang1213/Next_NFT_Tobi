@@ -6,11 +6,11 @@ import Cropper, { ReactCropperElement } from "react-cropper";
 const ImageCropDialog = ({
   initialValue,
   dialogRef,
-  changeHandler,
+  cropHandler,
 }: {
   initialValue: string;
   dialogRef: MutableRefObject<HTMLDialogElement>;
-  changeHandler: (value: string, width: number, height: number) => void;
+  cropHandler: (value: string, width: number, height: number) => void;
 }) => {
   const [imageURL, setImageURL] = useState("");
 
@@ -56,7 +56,7 @@ const ImageCropDialog = ({
               const cropper = cropperRef.current?.cropper;
               // Get the cropped canvas
               const croppedCanvas = cropper.getCroppedCanvas();
-              changeHandler(
+              cropHandler(
                 croppedCanvas.toDataURL(),
                 croppedCanvas.width,
                 croppedCanvas.height,
