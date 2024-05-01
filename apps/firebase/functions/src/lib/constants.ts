@@ -38,6 +38,11 @@ export const TOBIRATORY_DIGITAL_ITEMS_ADDRESS =
         process.env.FLOW_NETWORK === "testnet" ? "5e9ccdb91ff7ad93" :
             "f8d6e0586b0a20c7";
 
+export const FUNGIBLE_TOKEN_ADDRESS =
+    process.env.FLOW_NETWORK === "mainnet" ? "0xf233dcee88fe0abe" :
+        process.env.FLOW_NETWORK === "testnet" ? "0x9a0766d93b6608b7" :
+            "0xee82856bf20e2aa6";
+
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `
 <!DOCTYPE html>

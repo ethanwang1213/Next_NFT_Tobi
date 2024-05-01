@@ -2,7 +2,13 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {KeyManagementServiceClient} from "@google-cloud/kms";
 import {PubSub} from "@google-cloud/pubsub";
-import {NON_FUNGIBLE_TOKEN_ADDRESS, REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "./lib/constants";
+import {
+  FUNGIBLE_TOKEN_ADDRESS,
+  NON_FUNGIBLE_TOKEN_ADDRESS,
+  REGION,
+  TOBIRATORY_DIGITAL_ITEMS_ADDRESS,
+  TOPIC_NAMES
+} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as secp from "@noble/secp256k1";
 import {sha256} from "js-sha256";
@@ -145,6 +151,7 @@ type Metadata = {
 const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: number, metadata: Metadata) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const fungibleTokenAddress = FUNGIBLE_TOKEN_ADDRESS;
 
   const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
   if (!flowAccountDocRef) {
@@ -155,7 +162,7 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
 import NonFungibleToken from ${nonFungibleTokenAddress}
 import MetadataViews from ${nonFungibleTokenAddress}
 import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
-import FungibleToken from 0xee82856bf20e2aa6
+import FungibleToken from ${fungibleTokenAddress}
 
 transaction(
     type: String,
