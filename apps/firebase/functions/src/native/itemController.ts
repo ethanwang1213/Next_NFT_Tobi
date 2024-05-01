@@ -517,7 +517,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     endDate: string | undefined,
     quantityLimit: number,
     license: string,
-    copyrights: string[],
+    copyrights: {id: number|null, name: string}[],
   }=req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
@@ -592,14 +592,14 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         },
       });
       await Promise.all(
-          copyrights.map(async (copyrightName)=>{
+          copyrights.map(async (copyright)=>{
             const selectedCopyright = await prisma.tobiratory_copyright.upsert({
               where: {
-                copyright_name: copyrightName,
+                id: copyright.id??0,
               },
               update: {},
               create: {
-                copyright_name: copyrightName,
+                copyright_name: copyright.name,
                 content_id: content.id,
               },
             });
@@ -629,6 +629,73 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
       data: {
         result: error.code,
       },
+    });
+    return;
+  });
+};
+
+export const getSampleInfo = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  await getAuth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    try {
+      const sampleData = await prisma.tobiratory_sample_items.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+        include: {
+          digital_item: {
+            include: {
+              copyright: {
+                include: {
+                  copyright: true,
+                },
+              },
+            },
+          },
+          user: true,
+        },
+      });
+      if (!sampleData) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      const returnData = {
+        id: sampleData.id,
+        title: sampleData.digital_item.name,
+        description: sampleData.digital_item.description,
+        creator: {
+          uuid: sampleData.user.uuid,
+          username: sampleData.user.username,
+        },
+        copyrights: sampleData.digital_item.copyright.map((copy)=>{
+          return {
+            id: copy.copyright_id,
+            name: copy.copyright.copyright_name,
+          };
+        }),
+        license: sampleData.digital_item.license,
+        price: sampleData.price,
+        dateAcquired: sampleData.created_date_time,
+      };
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+    return;
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
     });
     return;
   });

@@ -3,7 +3,7 @@ import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
-import {isEmptyObject} from "./utils";
+import {isEmptyObject, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
@@ -423,7 +423,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
       image: "",
       url,
       description,
-      copyright_holders: [copyrightHolder],
       license,
       license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
     };
@@ -436,6 +435,34 @@ export const businessSubmission = async (req: Request, res: Response) => {
           data: contentData,
         })]
       );
+      const copyrights = copyrightHolder.map((copyright: string)=>{
+        return {
+          copyright_name: copyright,
+          content_id: savedContentData.id,
+        };
+      });
+      await prisma.tobiratory_copyright.createMany({
+        data: copyrights,
+      });
+      const showcaseTemplate = await prisma.tobiratory_showcase_template.findFirst();
+      if (!showcaseTemplate) {
+        res.status(401).send({
+          status: "error",
+          data: "not-template",
+        });
+        return;
+      }
+      await prisma.tobiratory_showcase.create({
+        data: {
+          title: contentName,
+          description: description,
+          owner_uuid: savedBusinessData.uuid,
+          content_id: savedContentData.id,
+          template_id: showcaseTemplate.id,
+          thumb_url: showcaseTemplate.cover_image,
+          status: statusOfShowcase.public,
+        },
+      });
       res.status(200).send({
         status: "success",
         data: {...savedBusinessData, content: {...savedContentData}},

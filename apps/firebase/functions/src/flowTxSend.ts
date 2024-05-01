@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {KeyManagementServiceClient} from "@google-cloud/kms";
 import {PubSub} from "@google-cloud/pubsub";
-import {REGION, TOPIC_NAMES} from "./lib/constants";
+import {NON_FUNGIBLE_TOKEN_ADDRESS, REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as secp from "@noble/secp256k1";
 import {sha256} from "js-sha256";
@@ -141,8 +141,8 @@ type Metadata = {
 };
 
 const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: number, metadata: Metadata) => {
-  const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
   if (!flowAccountDocRef) {
@@ -152,7 +152,7 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
   const cadence = `\
 import NonFungibleToken from ${nonFungibleTokenAddress}
 import MetadataViews from ${nonFungibleTokenAddress}
-import TobiratoryDigitalItems from ${tobiratoryDigitalItemsAddress}
+import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
 import FungibleToken from 0xee82856bf20e2aa6
 
 transaction(
@@ -240,17 +240,22 @@ transaction(
   return {txId};
 };
 
-const decryptBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
+const decryptUserBase64PrivateKey = async (encryptedPrivateKeyBase64: string) => {
   if (
     !process.env.KMS_PROJECT_ID ||
-      !process.env.KMS_OPERATION_KEY_LOCATION ||
-      !process.env.KMS_OPERATION_KEYRING ||
-      !process.env.KMS_OPERATION_KEY
+      !process.env.KMS_USER_KEY_LOCATION ||
+      !process.env.KMS_USER_KEYRING ||
+      !process.env.KMS_USER_KEY
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
-  const ciphertext = encryptedPrivateKeyBase64;
-  const keyName = kmsClient.cryptoKeyPath(process.env.KMS_PROJECT_ID, process.env.KMS_OPERATION_KEY_LOCATION, process.env.KMS_OPERATION_KEYRING, process.env.KMS_OPERATION_KEY);
+  const ciphertext = Buffer.from(encryptedPrivateKeyBase64, "base64");
+  const keyName = kmsClient.cryptoKeyPath(
+      process.env.KMS_PROJECT_ID,
+      process.env.KMS_USER_KEY_LOCATION,
+      process.env.KMS_USER_KEYRING,
+      process.env.KMS_USER_KEY
+  );
   const [decryptResponse] = await kmsClient.decrypt({
     name: keyName,
     ciphertext: ciphertext,
@@ -269,18 +274,13 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
   ) {
     throw new Error("The environment of flow signer is not defined.");
   }
-  let privateKey: string | undefined;
   const doc = await flowAccountRef.get();
   const data = doc.data();
   if (!doc.exists || !data || !data.encryptedPrivateKeyBase64) {
     throw new Error("The private key of flow signer is not defined.");
   }
-  if (process.env.PUBSUB_EMULATOR_HOST) {
-    privateKey = data.encryptedPrivateKeyBase64;
-  } else {
-    const encryptedPrivateKey = data.encryptedPrivateKeyBase64;
-    privateKey = await decryptBase64PrivateKey(encryptedPrivateKey);
-  }
+  const encryptedPrivateKey = data.encryptedPrivateKeyBase64;
+  const privateKey = await decryptUserBase64PrivateKey(encryptedPrivateKey);
 
   if (!privateKey) {
     throw new Error("The private key of flow signer is not defined.");
@@ -296,9 +296,9 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     addr: fcl.sansPrefix(address),
     keyId: 0,
     signingFunction: async (signable: any) => {
-      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message});
+      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message, hash: "sha3", sign: "ECDSA_secp256k1"});
       return {
-        address,
+        addr: address,
         keyId: 0,
         signature,
       };
@@ -324,7 +324,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const thumbnailUrl = args[3].value;
       const modelUrl = args[4].value ? args[4].value.value : args[4].value;
       const creatorName = args[5].value;
-      const limit = args[6].value ? args[6].value.value : args[6].value;
+      const limit = args[6].value ? Number(args[6].value.value) : args[6].value;
       const license = args[7].value ? args[7].value.value : args[7].value;
       const copyrightHolders = args[8].value;
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
@@ -394,12 +394,38 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
-        modelUrl: digitalItem.nft_model,
+        modelUrl: sampleItem?.model_url,
         creatorName: dbCreatorName,
-        limit: digitalItem.limit,
+        limit: Number(digitalItem.limit),
         license: digitalItem.license,
         copyrightHolders: copyrights,
       };
+
+      console.log("Checking metadata: ");
+      console.log(metadata);
+      console.log("Checking arguments: ");
+      console.log({
+        type,
+        name,
+        description,
+        thumbnailUrl,
+        modelUrl,
+        creatorName,
+        limit,
+        license,
+        copyrightHolders
+      });
+      console.log("true or false:");
+      console.log("metadata.type === type: " + (metadata.type === type));
+      console.log("metadata.name === name: " + (metadata.name === name));
+      console.log("metadata.description === description: " + (metadata.description === description));
+      console.log("metadata.thumbnailUrl === thumbnailUrl: " + (metadata.thumbnailUrl === thumbnailUrl));
+      console.log("metadata.modelUrl === modelUrl: " + (metadata.modelUrl === modelUrl));
+      console.log("metadata.creatorName === creatorName: " + (metadata.creatorName === creatorName));
+      console.log("metadata.limit == limit: " + (metadata.limit == limit));
+      console.log("metadata.license === license: " + (metadata.license === license));
+      console.log("arraysEqual(metadata.copyrightHolders, copyrightHolders): " +
+          arraysEqual(metadata.copyrightHolders, copyrightHolders));
 
       if (
         metadata.type === type &&
@@ -412,7 +438,10 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
           metadata.license === license &&
           arraysEqual(metadata.copyrightHolders, copyrightHolders)
       ) {
-        const signature = signWithKey({privateKey, msgHex: signable.message});
+        const signature = signWithKey({privateKey,
+          msgHex: signable.message,
+          hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "",
+          sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
         return {
           addr,
           keyId,
@@ -430,8 +459,8 @@ function arraysEqual(a: any[], b: any[]): boolean {
 }
 
 const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, id: number) => {
-  const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
   if (!flowAccountDocRef) {
@@ -441,7 +470,7 @@ const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: 
   const cadence = `\
 import NonFungibleToken from ${nonFungibleTokenAddress}
 import MetadataViews from ${nonFungibleTokenAddress}
-import TobiratoryDigitalItems from ${tobiratoryDigitalItemsAddress}
+import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
 
 transaction(
     itemCreatorAddress: Address,
@@ -509,7 +538,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
 
       const digitalItem = await prisma.tobiratory_digital_items.findFirst({
         where: {
-          item_id: itemId,
+          item_id: Number(itemId),
         },
       });
       if (!digitalItem) {
@@ -531,7 +560,10 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
         itemCreatorAddress === creatorAddress &&
           itemID == digitalItem.item_id
       ) {
-        const signature = signWithKey({privateKey, msgHex: signable.message});
+        const signature = signWithKey({privateKey,
+          msgHex: signable.message,
+          hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "",
+          sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
         return {
           addr,
           keyId,
@@ -596,14 +628,14 @@ const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
 const sendCreateAccountTx = async () => {
   const {privKey, pubKey} = generateKeyPair();
 
-  const nonFungibleTokenAddress = process.env.FLOW_NETWORK == "mainnet" ? "0x1d7e57aa55817448" : "0x631e88ae7f1d7c20";
-  const tobiratoryDigitalItemsAddress = process.env.FLOW_TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   // TODO: Add initialization for Tobiratory-related NFT Collection
   const cadence = `\
-// import NonFungibleToken from ${nonFungibleTokenAddress}
-// import MetadataViews from ${nonFungibleTokenAddress}
-// import TobiratoryDigitalItems from ${tobiratoryDigitalItemsAddress}
+import NonFungibleToken from ${nonFungibleTokenAddress}
+import MetadataViews from ${nonFungibleTokenAddress}
+import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
 
 transaction(publicKey: String) {
     prepare(signer: AuthAccount) {
@@ -655,7 +687,10 @@ const authz = async (account: any) => {
     addr: fcl.sansPrefix(addr),
     keyId,
     signingFunction: async (signable: any) => {
-      const signature = signWithKey({privateKey, msgHex: signable.message});
+      const signature = signWithKey({privateKey,
+        msgHex: signable.message,
+        hash: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH || "",
+        sign: process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN || ""});
       return {
         addr,
         keyId,
@@ -723,15 +758,9 @@ const getSignCurve = (signType: string) => {
   }
 };
 
-const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string}) => {
-  if (!process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH ||
-      !process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN
-  ) {
-    throw new Error("The environment of flow signer is not defined.");
-  }
-  const curve = getSignCurve(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_SIGN);
+const signWithKey = ({privateKey, msgHex, hash, sign}: {privateKey: string, msgHex: string, hash: string, sign: string}) => {
+  const curve = getSignCurve(sign);
   const key = curve.keyFromPrivate(Buffer.from(privateKey, "hex"));
-  const hash = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_HASH;
   const sig = key.sign(hashMessageHex(hash, msgHex));
   const n = 32;
   const r = sig.r.toArrayLike(Buffer, "be", n);

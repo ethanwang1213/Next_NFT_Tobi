@@ -190,7 +190,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
               id: item.id,
               name: itemInfo?.name,
               image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-              saidanId: itemInfo?.saidan_id,
+              saidanId: item.saidan_id,
               status: item?.mint_status,
             };
           })
@@ -257,7 +257,7 @@ export const getBoxData = async (req: Request, res: Response) => {
             id: item.id,
             name: itemInfo?.name,
             image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-            saidanId: itemInfo?.saidan_id,
+            saidanId: item?.saidan_id,
           };
         })
     );
@@ -382,7 +382,7 @@ export const openNFT = async (req: Request, res: Response) => {
           id: updatedNFT.id,
           name: itemData.name,
           image: itemData?.is_default_thumb?itemData.default_thumb_url:itemData?.custom_thumb_url,
-          saidanId: itemData.saidan_id,
+          saidanId: updatedNFT.saidan_id,
           status: updatedNFT.mint_status,
         },
       });
@@ -577,8 +577,8 @@ export const moveNFT = async (req: Request, res: Response) => {
               id: item.id,
               name: itemInfo?.name,
               image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-              saidanId: itemInfo?.saidan_id,
-              status: item?.mint_status,
+              saidanId: item.saidan_id,
+              status: item.mint_status,
             };
           })
       );
@@ -695,8 +695,8 @@ export const deleteNFT = async (req: Request, res: Response) => {
               id: item.id,
               name: itemInfo?.name,
               image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-              saidanId: itemInfo?.saidan_id,
-              status: item?.mint_status,
+              saidanId: item.saidan_id,
+              status: item.mint_status,
             };
           })
       );

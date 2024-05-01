@@ -167,7 +167,7 @@ export const mintNFT = async (req: Request, res: Response) => {
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
-        modelUrl: digitalItem.nft_model,
+        modelUrl: sampleItem.model_url,
         creatorName: creatorName,
         limit: digitalItem.limit,
         license: digitalItem.license,
@@ -177,7 +177,7 @@ export const mintNFT = async (req: Request, res: Response) => {
       const message = {flowJobId, txType: "createItem", params: {tobiratoryAccountUuid: uid, digitalItemId, metadata, fcmToken}};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
       console.log(`Message ${messageId} published.`);
-      await prisma.tobiratory_digital_items.update({
+      await prisma.tobiratory_digital_item_nfts.update({
         where: {
           id: digitalItemId,
         },
@@ -457,7 +457,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
           name: content.name,
         }:null,
         name: digitalData.name,
-        modelUrl: digitalData.nft_model,
+        modelUrl: nftData.nft_model,
         description: digitalData.description,
         creator: creatorData==null?null:{
           uid: creatorData.uuid,
