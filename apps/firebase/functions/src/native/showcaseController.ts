@@ -196,6 +196,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         await prisma.tobiratory_showcase.updateMany({
           where: {
             status: statusOfShowcase.public,
+            content_id: showcase.content_id,
           },
           data: {
             status: statusOfShowcase.private,
@@ -370,8 +371,8 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (showcase.status != statusOfShowcase.public) {
-        res.status(404).send({
+      if (showcase.status == statusOfShowcase.public) {
+        res.status(401).send({
           status: "error",
           data: "public-showcase",
         });
@@ -433,6 +434,7 @@ const updateShocaseSchedule = async (scheduleTime: string, timeDifference: numbe
       await prisma.tobiratory_showcase.updateMany({
         where: {
           status: statusOfShowcase.public,
+          content_id: showcase.content_id,
         },
         data: {
           status: statusOfShowcase.private,

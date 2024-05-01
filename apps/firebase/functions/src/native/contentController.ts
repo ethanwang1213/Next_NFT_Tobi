@@ -327,16 +327,25 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         });
         return;
       }
+      const timeDifference = new Date().getTime() - new Date(content.changed_name_time).getTime();
+      if (timeDifference<3*30*24*60*60*1000&&name) {// 3 months
+        res.status(401).send({
+          status: "error",
+          data: "can-not-change-name",
+        });
+        return;
+      }
       const updatedContent = await prisma.tobiratory_contents.update({
         where: {
           id: content.id,
         },
         data: {
-          name: name,
+          changed_name: name,
           description: description,
           license: license,
           image: image,
           sticker: sticker,
+          changed_name_time: name==undefined?undefined:new Date(),
         },
         include: {
           copyrights: true,
