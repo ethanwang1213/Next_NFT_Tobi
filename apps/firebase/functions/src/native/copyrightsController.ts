@@ -100,9 +100,9 @@ export const updateCopyrights = async (req: Request, res: Response) => {
         },
       });
       if (!copyright) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
-          data: "not-yours",
+          data: "not-exist",
         });
         return;
       }

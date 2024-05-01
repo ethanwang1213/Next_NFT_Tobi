@@ -328,7 +328,9 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const creatorName = args[5].value;
       const limit = args[6].value ? args[6].value.value : args[6].value;
       const license = args[7].value ? args[7].value.value : args[7].value;
-      const copyrightHolders = args[8].value;
+      const copyrightHolders = args[8].value.map((copyright: any)=>{
+        return copyright.value;
+      });
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: digitalItemId,
