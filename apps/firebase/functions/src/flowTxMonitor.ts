@@ -52,6 +52,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         itemCreatorAddress: flowAccount.flow_address,
         itemId: id,
         digitalItemId,
+        metadata: params.metadata,
         fcmToken: params.fcmToken,
       }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: mintMessage});
