@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import ja from "date-fns/locale/ja";
 import Image from "next/image";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ShowcaseEditMenu from "./ShowcaseEditMenu";
@@ -12,6 +12,8 @@ import {
   updateShowcase,
 } from "fetchers/ShowcaseActions";
 import { formatDateToLocal } from "../../atoms/Formatters";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 registerLocale("ja", ja);
 
@@ -105,7 +107,6 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     if (result != null) {
       setTitle(title);
       setModifiedTime(result.updateTime);
-      props.errorHandler("");
     } else {
       // show error message
       props.errorHandler("Failed to change the title of the showcase");
@@ -122,7 +123,6 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     );
     if (result != null) {
       setModifiedTime(result.updateTime);
-      props.errorHandler("");
       if (status == ShowcaseStatus.Public) {
         props.refreshHandler();
       }
@@ -143,7 +143,6 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     if (result != null) {
       setModifiedTime(result.updateTime);
       setScheduleTimeChanged(false);
-      props.errorHandler("");
     } else {
       // show error message
       props.errorHandler("Failed to change the schedule time of the showcase");
@@ -203,7 +202,10 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
                 height={8}
                 alt="drop"
                 className="cursor-pointer"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={() => {
+                  if (status == ShowcaseStatus.Public) return;
+                  setIsMenuOpen(!isMenuOpen);
+                }}
               />
               {isMenuOpen && (
                 <div className="absolute left-0 top-3 z-10" ref={popupRef}>
@@ -286,9 +288,7 @@ const ShowcasePanel = () => {
   // showcase data
   const [showcases, setShowcases] = useState([]);
   const [reload, setReload] = useState(0);
-  const [error, setError] = useState("");
 
-  console.log("Showcase Panel is rendered", reload, error);
   // fetch showcases from server
   useEffect(() => {
     const fetchData = async () => {
@@ -296,23 +296,34 @@ const ShowcasePanel = () => {
         const data = await fetchShowcases();
         if (data != null) {
           setShowcases(data);
-          setError("");
         } else {
-          setError("Failed to load showcase. Please check the error.");
+          toastErrorMessage("Failed to load showcase. Please check the error.");
         }
       } catch (error) {
         // Handle errors here
         console.error("Error fetching data:", error);
-        setError(error);
+        toastErrorMessage(error.toString());
       }
     };
 
     fetchData();
   }, [reload]);
 
+  const toastErrorMessage = (value: string) => {
+    toast(value, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   return (
     <>
-      {error.length > 0 && <div className="text-error">{error}</div>}
       <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
         {showcases &&
           showcases.length > 0 &&
@@ -327,11 +338,12 @@ const ShowcasePanel = () => {
                 scheduleTime={showcase.scheduleTime}
                 updateTime={showcase.updateTime}
                 refreshHandler={() => setReload(reload + 1)}
-                errorHandler={setError}
+                errorHandler={toastErrorMessage}
               />
             );
           })}
       </div>
+      <ToastContainer />
     </>
   );
 };
