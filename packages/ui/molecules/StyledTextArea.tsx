@@ -44,6 +44,10 @@ const StyledTextArea = ({
     setUniqueId(Math.random().toString(36).substring(2, 11));
   }, []);
 
+  useEffect(() => {
+    setInputValue(value);
+  }, [value]);
+
   return (
     <div className={clsx(className, "relative")}>
       <textarea
