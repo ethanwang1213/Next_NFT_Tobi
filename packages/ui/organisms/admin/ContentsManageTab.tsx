@@ -84,11 +84,13 @@ export default function ContentsManageTab({
           {tab !== "showcase" && (
             <>
               <button
-                className={`text-xl h-14 border-2 rounded-[30px] px-10 enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow ${
-                  changed
-                    ? "text-primary border-primary"
-                    : "text-inactive border-inactive"
-                }`}
+                className={`text-xl h-14 border-2 rounded-[30px] px-10 
+                  enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow 
+                  ${
+                    changed
+                      ? "text-primary border-primary"
+                      : "text-inactive border-inactive"
+                  }`}
                 disabled={!changed}
                 onClick={() => {
                   setChanged(null);
@@ -98,9 +100,9 @@ export default function ContentsManageTab({
                 Cancel
               </button>
               <button
-                className={`text-xl h-14 text-white rounded-[30px] px-10 enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow ${
-                  changed ? "bg-primary" : "bg-inactive"
-                }`}
+                className={`text-xl h-14 text-white rounded-[30px] px-10 
+                  enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow 
+                  ${changed ? "bg-primary" : "bg-inactive"}`}
                 disabled={!changed}
                 onClick={() => {
                   setChanged(null);

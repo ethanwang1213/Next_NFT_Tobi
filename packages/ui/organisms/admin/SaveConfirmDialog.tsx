@@ -43,7 +43,8 @@ const SaveConfirmDialog = ({
           </button>
           <button
             type="button"
-            className="px-4 py-2 bg-base-white rounded-[64px] border-2 border-primary
+            className="px-4 py-2 rounded-[64px] border-2 border-primary
+              hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
             onClick={() => {
               changeHandler("discard");
@@ -54,7 +55,8 @@ const SaveConfirmDialog = ({
           </button>
           <button
             type="button"
-            className="px-4 py-2 rounded-[64px] 
+            className="px-4 py-2 rounded-[64px] border-2 border-primary
+              hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
             onClick={() => {
               changeHandler("cancel");

@@ -51,6 +51,7 @@ const ImageCropDialog = ({
           <button
             type="button"
             className="px-4 py-2 bg-primary rounded-[64px] 
+              hover:shadow-xl hover:-top-[3px] transition-shadow  
               text-base-white text-sm leading-4 font-semibold"
             onClick={() => {
               const cropper = cropperRef.current?.cropper;
@@ -69,6 +70,7 @@ const ImageCropDialog = ({
           <button
             type="button"
             className="px-4 py-2 bg-base-white rounded-[64px] border-2 border-primary
+              hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
             onClick={() => dialogRef.current.close()}
           >
