@@ -5,7 +5,7 @@ import {
   updateCopyright,
   deleteCopyright,
 } from "fetchers/SampleActions";
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import CopyrightEditMenu from "./CopyrightEditMenu";
 
 const CopyrightMultiSelect = ({
@@ -23,29 +23,34 @@ const CopyrightMultiSelect = ({
     text: "",
   });
 
-  const items = useMemo(
-    () => getFilteredItems(selectedItems, elements),
-    [selectedItems, elements],
-  );
-
   const popupMenuRef = useRef(null);
   const rootElementRef = useRef(null);
 
-  function getFilteredItems(selItems, defaultItems) {
-    // Create a copy of the elements array to avoid mutating the original array
-    const updateElements = [...defaultItems];
-    selItems.forEach((item: string) => {
-      const found: boolean = elements.some((element) => element.name === item);
-      if (!found) {
-        updateElements.push({ id: 0, name: item });
+  const getFilteredItems = useCallback(
+    (selItems, defaultItems) => {
+      // Create a copy of the elements array to avoid mutating the original array
+      const updateElements = [...defaultItems];
+      selItems.forEach((item: string) => {
+        const found: boolean = elements.some(
+          (element) => element.name === item,
+        );
+        if (!found) {
+          updateElements.push({ id: 0, name: item });
+        }
+      });
+      if (updateElements.length != defaultItems.length) {
+        setElements(updateElements);
       }
-    });
-    if (updateElements.length != defaultItems.length) {
-      setElements(updateElements);
-    }
 
-    return updateElements.map((element) => element.name);
-  }
+      return updateElements.map((element) => element.name);
+    },
+    [elements],
+  );
+
+  const items = useMemo(
+    () => getFilteredItems(selectedItems, elements),
+    [selectedItems, elements, getFilteredItems],
+  );
 
   useEffect(() => {
     function handleClickOutside(event) {
