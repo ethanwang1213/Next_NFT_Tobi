@@ -463,6 +463,14 @@ export const businessSubmission = async (req: Request, res: Response) => {
           status: statusOfShowcase.public,
         },
       });
+      await prisma.tobiratory_sample_items.updateMany({
+        where: {
+          owner_uuid: uid,
+        },
+        data: {
+          content_id: savedContentData.id,
+        },
+      });
       res.status(200).send({
         status: "success",
         data: {...savedBusinessData, content: {...savedContentData}},

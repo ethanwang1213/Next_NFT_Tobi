@@ -7,7 +7,7 @@ import {
   NON_FUNGIBLE_TOKEN_ADDRESS,
   REGION,
   TOBIRATORY_DIGITAL_ITEMS_ADDRESS,
-  TOPIC_NAMES
+  TOPIC_NAMES,
 } from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as secp from "@noble/secp256k1";

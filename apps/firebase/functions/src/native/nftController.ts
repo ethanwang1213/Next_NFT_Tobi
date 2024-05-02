@@ -16,7 +16,7 @@ export const mintNFT = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
 
-    const sampleItem = await prisma.tobiratory_sample_items.findFirst({
+    const sampleItem = await prisma.tobiratory_sample_items.findUnique({
       where: {
         id: parseInt(id),
         is_deleted: false,
