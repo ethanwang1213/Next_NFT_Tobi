@@ -84,8 +84,10 @@ export default function ContentsManageTab({
           {tab !== "showcase" && (
             <>
               <button
-                className={`text-xl h-14 rounded-[30px] px-10 enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow ${
-                  changed ? "text-primary" : "text-inactive"
+                className={`text-xl h-14 border-2 rounded-[30px] px-10 enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow ${
+                  changed
+                    ? "text-primary border-primary"
+                    : "text-inactive border-inactive"
                 }`}
                 disabled={!changed}
                 onClick={() => {
