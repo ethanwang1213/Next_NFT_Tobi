@@ -24,7 +24,7 @@ const ContentNameConfirmDialog = ({
         </div>
         <div className="flex justify-center my-4">
           <Image
-            src="/admin/images/png/tobiratory-gray.png"
+            src="/admin/images/tobiratory-logo-gray.svg"
             width={74}
             height={79}
             alt="log image"
