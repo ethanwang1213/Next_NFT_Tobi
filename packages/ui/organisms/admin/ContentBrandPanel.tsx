@@ -24,7 +24,6 @@ const ContentBrandPanel = ({
   publishFlag: number;
   changeHandler: () => void;
 }) => {
-  const [contentsInfo, setContentsInfo] = useState(null);
   const [contentImage, setContentImage] = useState({
     image: null,
     w: emptyImageSize,
@@ -37,10 +36,12 @@ const ContentBrandPanel = ({
   });
   const [cropImage, setCropImage] = useState("");
   const [activeImageFlag, setActiveImageFlag] = useState(false);
-  const [modified, setModified] = useState(false);
 
   const imageFileRef = useRef(null);
   const imageCropDlgRef = useRef(null);
+  const contentImageRef = useRef(null);
+  const stickerImageRef = useRef(null);
+  const modifiedRef = useRef(false);
 
   // fetch showcases from server
   useEffect(() => {
@@ -48,7 +49,8 @@ const ContentBrandPanel = ({
       try {
         const data = await fetchContentsInformation();
         if (data != null) {
-          setContentsInfo(data);
+          contentImageRef.current = data.image;
+          stickerImageRef.current = data.sticker;
           setPreviewImage(true, data.image);
           setPreviewImage(false, data.sticker);
         } else {
@@ -64,6 +66,7 @@ const ContentBrandPanel = ({
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const uploadImageToFireStorage = async (image) => {
@@ -86,19 +89,20 @@ const ContentBrandPanel = ({
     } catch (error) {
       // Handle any errors that occur during the upload process
       console.error("Error uploading file:", error);
+      toastErrorMessage(error.toString());
       return "";
     }
   };
 
   const updateData = async () => {
-    let image1 = contentImage.image;
-    if (image1 != contentsInfo.image) {
-      image1 = await uploadImageToFireStorage(image1);
+    let image1 = contentImageRef.current;
+    if (contentImage.image != contentImageRef.current) {
+      image1 = await uploadImageToFireStorage(contentImage.image);
     }
 
-    let image2 = stickerImage.image;
-    if (image2 != contentsInfo.sticker) {
-      image2 = await uploadImageToFireStorage(image2);
+    let image2 = stickerImageRef.current;
+    if (stickerImage.image != stickerImageRef.current) {
+      image2 = await uploadImageToFireStorage(stickerImage.image);
     }
 
     const result = await updateContentsInformation({
@@ -106,27 +110,28 @@ const ContentBrandPanel = ({
       sticker: image2,
     });
     if (result != null) {
-      setContentsInfo({
-        ...contentsInfo,
-        ["image"]: image1,
-        ["sticker"]: image2,
-      });
+      contentImageRef.current = result.image;
+      stickerImageRef.current = result.sticker;
+    } else {
+      toastErrorMessage("Failed to update the content information. Please check error.");
     }
   };
 
   useEffect(() => {
-    if (modified) {
-      setPreviewImage(true, contentsInfo.image);
-      setPreviewImage(false, contentsInfo.sticker);
-      setModified(false);
+    if (cancelFlag > 0 && modifiedRef.current) {
+      setPreviewImage(true, contentImageRef.current);
+      setPreviewImage(false, stickerImageRef.current);
+      modifiedRef.current = false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancelFlag]);
 
   useEffect(() => {
-    if (modified) {
+    if (publishFlag > 0 && modifiedRef.current) {
       updateData();
-      setModified(false);
+      modifiedRef.current = false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publishFlag]);
 
   const calcPreviewImageSize = (width, height) => {
@@ -196,7 +201,7 @@ const ContentBrandPanel = ({
       }
     } else {
       if (width < 500 || height < 500) {
-        toastErrorMessage("Please select image at least 320x100 size.");
+        toastErrorMessage("Please select image at least 500x500 size.");
         return false;
       }
     }
@@ -214,7 +219,7 @@ const ContentBrandPanel = ({
       const imageUrl = URL.createObjectURL(file);
       setPreviewImage(activeImageFlag, imageUrl);
       changeHandler();
-      setModified(true);
+      modifiedRef.current = true;
     }
   };
 
@@ -285,7 +290,7 @@ const ContentBrandPanel = ({
             onClick={() => {
               setPreviewImage(true, "");
               changeHandler();
-              setModified(true);
+              modifiedRef.current = true;
             }}
           >
             delete
@@ -337,7 +342,7 @@ const ContentBrandPanel = ({
             onClick={() => {
               setPreviewImage(false, "");
               changeHandler();
-              setModified(true);
+              modifiedRef.current = true;
             }}
           >
             delete
@@ -357,7 +362,7 @@ const ContentBrandPanel = ({
         cropHandler={(image, width, height) => {
           onImageChangeHandler(activeImageFlag, image, width, height);
           changeHandler();
-          setModified(true);
+          modifiedRef.current = true;
         }}
       />
       <ToastContainer />

@@ -25,50 +25,56 @@ const Detail = () => {
   const [changed, setChanged] = useState(false);
   const [errMsg, setErrMsg] = useState("");
 
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
-    const file = acceptedFiles[0];
-    if (file && file.type.startsWith("image/")) {
-      // upload to the server
-      uploadFileToFireStorage(file);
-    }
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
-  const uploadFileToFireStorage = async (file) => {
-    try {
-      // Get file extension
-      const fileName = file.name;
-      const extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-      // Create a root reference
-      const storage = getStorage();
-
-      // Generate a unique filename for the file
-      const storageFileName = `${Date.now()}.${extension}`;
-
-      // Upload the file to Firebase Storage
-      const fileRef = ref(
-        storage,
-        `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
-      );
-
-      await uploadBytes(fileRef, file);
-
-      // Get the download URL of the uploaded file
-      const downloadURL = await getDownloadURL(fileRef);
-      fieldChangeHandler("customThumbnailUrl", downloadURL);
-    } catch (error) {
-      // Handle any errors that occur during the upload process
-      console.error("Error uploading file:", error);
-    }
-  };
-
   const fieldChangeHandler = useDebouncedCallback((field, value) => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
     setChanged(true);
   }, 300);
+
+  const uploadFileToFireStorage = useCallback(
+    async (file) => {
+      try {
+        // Get file extension
+        const fileName = file.name;
+        const extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        // Create a root reference
+        const storage = getStorage();
+
+        // Generate a unique filename for the file
+        const storageFileName = `${Date.now()}.${extension}`;
+
+        // Upload the file to Firebase Storage
+        const fileRef = ref(
+          storage,
+          `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
+        );
+
+        await uploadBytes(fileRef, file);
+
+        // Get the download URL of the uploaded file
+        const downloadURL = await getDownloadURL(fileRef);
+        fieldChangeHandler("customThumbnailUrl", downloadURL);
+      } catch (error) {
+        // Handle any errors that occur during the upload process
+        console.error("Error uploading file:", error);
+      }
+    },
+    [fieldChangeHandler],
+  );
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      // Do something with the files
+      const file = acceptedFiles[0];
+      if (file && file.type.startsWith("image/")) {
+        // upload to the server
+        uploadFileToFireStorage(file);
+      }
+    },
+    [uploadFileToFireStorage],
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,7 +93,6 @@ const Detail = () => {
   }, [id]);
 
   const submitData = async () => {
-    console.log("sampleItem", sampleItem);
     if (sampleItem.status != SampleStatus.Draft) {
       if (
         sampleItem.name == null ||

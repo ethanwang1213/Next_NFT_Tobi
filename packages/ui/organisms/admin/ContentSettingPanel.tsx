@@ -10,6 +10,8 @@ import StyledTextArea from "../../molecules/StyledTextArea";
 import ContentNameConfirmDialog from "./ContentNameConfirmDialog";
 import ContentNameEditDialog from "./ContentNameEditDialog";
 import CopyrightEditMenu from "./CopyrightEditMenu";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ContentSettingPanel = ({
   cancelFlag,
@@ -21,7 +23,6 @@ const ContentSettingPanel = ({
   changeHandler: () => void;
 }) => {
   // content setting data
-  const [contentsInfo, setContentsInfo] = useState(null);
   const [contentSetting, setContentSetting] = useState({
     name: "",
     description: "",
@@ -35,7 +36,9 @@ const ContentSettingPanel = ({
     id: 0,
     text: "",
   });
-  const [modified, setModified] = useState(false);
+
+  const contentSettingRef = useRef(contentSetting);
+  const modifiedRef = useRef(false);
 
   const editDialogRef = useRef(null);
   const confirmDialogRef = useRef(null);
@@ -57,15 +60,17 @@ const ContentSettingPanel = ({
       try {
         const data = await fetchContentsInformation();
         if (data != null) {
-          setContentsInfo(data);
+          contentSettingRef.current = data;
           setContentSetting(data);
-          // setError("");
         } else {
-          // setError("Failed to load showcase. Please check the error.");
+          toastErrorMessage(
+            "Failed to load content information. Please check the error.",
+          );
         }
       } catch (error) {
         // Handle errors here
         console.error("Error fetching data:", error);
+        toastErrorMessage(error.toString());
       }
     };
 
@@ -84,7 +89,7 @@ const ContentSettingPanel = ({
         confirmDialogRef.current.showModal();
       }
     }
-    setModified(true);
+    modifiedRef.current = true;
     changeHandler();
   }, 300);
 
@@ -130,30 +135,49 @@ const ContentSettingPanel = ({
   };
 
   const updateData = async () => {
-    const result = await updateContentsInformation({
+    const postData = {
       name: contentSetting.name,
       description: contentSetting.description,
       license: contentSetting.license,
       copyrightHolders: contentSetting.copyright,
-    });
+    };
+    if (postData.name == contentSettingRef.current.name) delete postData.name;
+
+    const result = await updateContentsInformation(postData);
     if (result != null) {
-      setContentsInfo(contentSetting);
+      contentSettingRef.current = contentSetting;
+    } else {
+      toastErrorMessage("Failed to update the content information. Please check error.");
     }
   };
 
   useEffect(() => {
-    if (modified) {
-      setContentSetting(contentsInfo);
-      setModified(false);
+    if (cancelFlag > 0 && modifiedRef.current) {
+      setContentSetting(contentSettingRef.current);
+      modifiedRef.current = false;
     }
   }, [cancelFlag]);
 
   useEffect(() => {
-    if (modified) {
+    if (publishFlag > 0 && modifiedRef.current) {
       updateData();
-      setModified(false);
+      modifiedRef.current = false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publishFlag]);
+
+  const toastErrorMessage = (value: string) => {
+    toast(value, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
 
   return (
     <div className="max-w-[800px] min-w-[480px] flex flex-col gap-8">
@@ -310,6 +334,7 @@ const ContentSettingPanel = ({
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
