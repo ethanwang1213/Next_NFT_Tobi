@@ -184,8 +184,12 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
             `}
           >
             <span
-              className="inline-block w-16 text-[10px] leading-4 font-medium text-center text-secondary-100
-                border-r border-white"
+              className={`inline-block text-[10px] leading-4 font-medium text-center text-secondary-100
+              ${
+                status == ShowcaseStatus.Public
+                  ? "w-20"
+                  : "w-16 border-r border-white"
+              }`}
             >
               {status == ShowcaseStatus.Public
                 ? "Public"
@@ -195,24 +199,25 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
                     ? "Scheduled"
                     : ""}
             </span>
-            <div className="w-6 flex justify-center items-center relative">
-              <Image
-                src="/admin/images/icon/down-arrow-icon.svg"
-                width={8}
-                height={8}
-                alt="drop"
-                className="cursor-pointer"
-                onClick={() => {
-                  if (status == ShowcaseStatus.Public) return;
-                  setIsMenuOpen(!isMenuOpen);
-                }}
-              />
-              {isMenuOpen && (
-                <div className="absolute left-0 top-3 z-10" ref={popupRef}>
-                  <ShowcaseEditMenu clickHandler={statusChangeHandler} />
-                </div>
-              )}
-            </div>
+            {status != ShowcaseStatus.Public && (
+              <div className="w-6 flex justify-center items-center relative">
+                <Image
+                  src="/admin/images/icon/down-arrow-icon.svg"
+                  width={8}
+                  height={8}
+                  alt="drop"
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setIsMenuOpen(!isMenuOpen);
+                  }}
+                />
+                {isMenuOpen && (
+                  <div className="absolute left-0 top-3 z-10" ref={popupRef}>
+                    <ShowcaseEditMenu clickHandler={statusChangeHandler} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           {status == ShowcaseStatus.ScheduledPublic && (
             <div
