@@ -129,7 +129,7 @@ const createNFTRecord = async (digitalItemId: number, ownerUuid: string, metadat
       digital_item_id: digitalItemId,
       owner_uuid: ownerUuid,
       nft_metadata: JSON.stringify(metadata),
-      nft_model: metadata.model_url,
+      nft_model: metadata.modelUrl,
     },
   });
 
