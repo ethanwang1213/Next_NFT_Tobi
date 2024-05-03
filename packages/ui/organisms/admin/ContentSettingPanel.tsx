@@ -10,8 +10,7 @@ import StyledTextArea from "../../molecules/StyledTextArea";
 import ContentNameConfirmDialog from "./ContentNameConfirmDialog";
 import ContentNameEditDialog from "./ContentNameEditDialog";
 import CopyrightEditMenu from "./CopyrightEditMenu";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const ContentSettingPanel = ({
   cancelFlag,
@@ -63,14 +62,12 @@ const ContentSettingPanel = ({
           contentSettingRef.current = data;
           setContentSetting(data);
         } else {
-          toastErrorMessage(
-            "Failed to load content information. Please check the error.",
-          );
+          toast("Failed to load content information. Please check the error.");
         }
       } catch (error) {
         // Handle errors here
         console.error("Error fetching data:", error);
-        toastErrorMessage(error.toString());
+        toast(error.toString());
       }
     };
 
@@ -147,7 +144,7 @@ const ContentSettingPanel = ({
     if (result != null) {
       contentSettingRef.current = contentSetting;
     } else {
-      toastErrorMessage("Failed to update the content information. Please check error.");
+      toast("Failed to update the content information. Please check error.");
     }
   };
 
@@ -165,19 +162,6 @@ const ContentSettingPanel = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publishFlag]);
-
-  const toastErrorMessage = (value: string) => {
-    toast(value, {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  };
 
   return (
     <div className="max-w-[800px] min-w-[480px] flex flex-col gap-8">
@@ -334,7 +318,6 @@ const ContentSettingPanel = ({
           )}
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

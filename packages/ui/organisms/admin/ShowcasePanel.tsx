@@ -12,8 +12,7 @@ import {
   updateShowcase,
 } from "fetchers/ShowcaseActions";
 import { formatDateToLocal } from "../../atoms/Formatters";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 registerLocale("ja", ja);
 
@@ -302,30 +301,17 @@ const ShowcasePanel = () => {
         if (data != null) {
           setShowcases(data);
         } else {
-          toastErrorMessage("Failed to load showcase. Please check the error.");
+          toast("Failed to load showcase. Please check the error.");
         }
       } catch (error) {
         // Handle errors here
         console.error("Error fetching data:", error);
-        toastErrorMessage(error.toString());
+        toast(error.toString());
       }
     };
 
     fetchData();
   }, [reload]);
-
-  const toastErrorMessage = (value: string) => {
-    toast(value, {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  };
 
   return (
     <>
@@ -343,12 +329,11 @@ const ShowcasePanel = () => {
                 scheduleTime={showcase.scheduleTime}
                 updateTime={showcase.updateTime}
                 refreshHandler={() => setReload(reload + 1)}
-                errorHandler={toastErrorMessage}
+                errorHandler={toast}
               />
             );
           })}
       </div>
-      <ToastContainer />
     </>
   );
 };
