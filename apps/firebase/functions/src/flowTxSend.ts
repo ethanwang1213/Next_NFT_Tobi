@@ -2,7 +2,13 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {KeyManagementServiceClient} from "@google-cloud/kms";
 import {PubSub} from "@google-cloud/pubsub";
-import {NON_FUNGIBLE_TOKEN_ADDRESS, REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "./lib/constants";
+import {
+  FUNGIBLE_TOKEN_ADDRESS,
+  NON_FUNGIBLE_TOKEN_ADDRESS,
+  REGION,
+  TOBIRATORY_DIGITAL_ITEMS_ADDRESS,
+  TOPIC_NAMES,
+} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as secp from "@noble/secp256k1";
 import {sha256} from "js-sha256";
@@ -70,7 +76,7 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
-        const {id} = await createNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid);
+        const {id} = await createNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata);
         const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, id);
         await flowJobDocRef.update({
           flowJobId,
@@ -117,11 +123,13 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const createNFTRecord = async (digitalItemId: number, ownerUuid: string) => {
+const createNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any) => {
   const nft = await prisma.tobiratory_digital_item_nfts.create({
     data: {
       digital_item_id: digitalItemId,
       owner_uuid: ownerUuid,
+      nft_metadata: JSON.stringify(metadata),
+      nft_model: metadata.modelUrl,
     },
   });
 
@@ -143,6 +151,7 @@ type Metadata = {
 const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: number, metadata: Metadata) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const fungibleTokenAddress = FUNGIBLE_TOKEN_ADDRESS;
 
   const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
   if (!flowAccountDocRef) {
@@ -153,7 +162,7 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
 import NonFungibleToken from ${nonFungibleTokenAddress}
 import MetadataViews from ${nonFungibleTokenAddress}
 import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
-import FungibleToken from 0xee82856bf20e2aa6
+import FungibleToken from ${fungibleTokenAddress}
 
 transaction(
     type: String,
@@ -324,9 +333,11 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       const thumbnailUrl = args[3].value;
       const modelUrl = args[4].value ? args[4].value.value : args[4].value;
       const creatorName = args[5].value;
-      const limit = args[6].value ? Number(args[6].value.value) : args[6].value;
+      const limit = args[6].value ? args[6].value.value : args[6].value;
       const license = args[7].value ? args[7].value.value : args[7].value;
-      const copyrightHolders = args[8].value;
+      const copyrightHolders = args[8].value.map((copyright: any)=>{
+        return copyright.value;
+      });
       const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: digitalItemId,
@@ -396,7 +407,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
         modelUrl: sampleItem?.model_url,
         creatorName: dbCreatorName,
-        limit: Number(digitalItem.limit),
+        limit: digitalItem.limit,
         license: digitalItem.license,
         copyrightHolders: copyrights,
       };
@@ -413,7 +424,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         creatorName,
         limit,
         license,
-        copyrightHolders
+        copyrightHolders,
       });
       console.log("true or false:");
       console.log("metadata.type === type: " + (metadata.type === type));

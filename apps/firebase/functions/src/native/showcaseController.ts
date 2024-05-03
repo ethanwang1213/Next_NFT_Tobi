@@ -196,6 +196,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         await prisma.tobiratory_showcase.updateMany({
           where: {
             status: statusOfShowcase.public,
+            content_id: showcase.content_id,
           },
           data: {
             status: statusOfShowcase.private,
@@ -219,11 +220,11 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         const specificTime = new Date(scheduleTime);
         const currentTime = new Date();
         const timeDifference = specificTime.getTime() - currentTime.getTime();
-        
+
         if (timeDifference > 0) {
           updateShocaseSchedule(scheduleTime, timeDifference, updateShowcase.id);
         } else {
-          console.log('Specific time has already passed.');
+          console.log("Specific time has already passed.");
         }
       }
       const returnData = {
@@ -370,8 +371,8 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (showcase.status != statusOfShowcase.public) {
-        res.status(404).send({
+      if (showcase.status == statusOfShowcase.public) {
+        res.status(401).send({
           status: "error",
           data: "public-showcase",
         });
@@ -433,6 +434,7 @@ const updateShocaseSchedule = async (scheduleTime: string, timeDifference: numbe
       await prisma.tobiratory_showcase.updateMany({
         where: {
           status: statusOfShowcase.public,
+          content_id: showcase.content_id,
         },
         data: {
           status: statusOfShowcase.private,
@@ -448,9 +450,9 @@ const updateShocaseSchedule = async (scheduleTime: string, timeDifference: numbe
           status: statusOfShowcase.public,
         },
       });
-      console.log('Database updated at specific time.');
+      console.log("Database updated at specific time.");
     } catch (error) {
-      console.error('Error updating database:', error);
+      console.error("Error updating database:", error);
     }
   }, timeDifference);
-}
+};

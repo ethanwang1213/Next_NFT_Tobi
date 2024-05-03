@@ -16,7 +16,7 @@ export const mintNFT = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
 
-    const sampleItem = await prisma.tobiratory_sample_items.findFirst({
+    const sampleItem = await prisma.tobiratory_sample_items.findUnique({
       where: {
         id: parseInt(id),
         is_deleted: false,
@@ -149,7 +149,7 @@ export const mintNFT = async (req: Request, res: Response) => {
       }
       const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
         where: {
-          id: digitalItem.id,
+          digital_item_id: digitalItem.id,
         },
       });
       const copyrights = await Promise.all(
@@ -177,15 +177,6 @@ export const mintNFT = async (req: Request, res: Response) => {
       const message = {flowJobId, txType: "createItem", params: {tobiratoryAccountUuid: uid, digitalItemId, metadata, fcmToken}};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
       console.log(`Message ${messageId} published.`);
-      await prisma.tobiratory_digital_item_nfts.update({
-        where: {
-          id: digitalItemId,
-        },
-        data: {
-          nft_metadata: JSON.stringify(metadata),
-          nft_model: sampleItem.model_url,
-        },
-      });
     }
 
     pushToDevice(fcmToken, {

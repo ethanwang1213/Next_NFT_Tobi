@@ -97,6 +97,8 @@ model tobiratory_contents {
   owner                       tobiratory_businesses?        @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid                  String                        @unique @db.VarChar(255)
   name                        String                        @db.VarChar(255)
+  changed_name                String?                       @db.VarChar(255)
+  changed_name_time           DateTime                      @default(now()) @db.Timestamp(6)
   image                       String                        @db.VarChar(255)
   sticker                     String?                       @db.VarChar(255)
   url                         String                        @db.VarChar(255)
@@ -204,25 +206,25 @@ model tobiratory_boxes {
 }
 
 model tobiratory_businesses {
-  id                  Int                  @id @default(autoincrement())
-  user                tobiratory_accounts  @relation(fields: [uuid], references: [uuid])
-  uuid                String               @unique @db.VarChar(255)
-  first_name          String               @db.VarChar(255)
-  last_name           String               @db.VarChar(255)
-  birth               DateTime             @db.Date()
-  email               String               @db.VarChar(255)
-  country             String               @db.VarChar(255)
-  postal_code         String               @db.VarChar(255)
-  province            String               @db.VarChar(255)
-  city                String               @db.VarChar(255)
-  street              String               @db.VarChar(255)
-  building            String               @db.VarChar(255)
-  phone               String               @db.VarChar(255)
-  bank_account        String               @db.VarChar(255)
-  balance             Int                  @default(0)
+  id                  Int                   @id @default(autoincrement())
+  user                tobiratory_accounts   @relation(fields: [uuid], references: [uuid])
+  uuid                String                @unique @db.VarChar(255)
+  first_name          String                @db.VarChar(255)
+  last_name           String                @db.VarChar(255)
+  birth               DateTime              @db.Date()
+  email               String                @db.VarChar(255)
+  country             String                @db.VarChar(255)
+  postal_code         String                @db.VarChar(255)
+  province            String                @db.VarChar(255)
+  city                String                @db.VarChar(255)
+  street              String                @db.VarChar(255)
+  building            String                @db.VarChar(255)
+  phone               String                @db.VarChar(255)
+  bank_account        String                @db.VarChar(255)
+  balance             Int                   @default(0)
   content             tobiratory_contents?
-  updated_date_time   DateTime             @default(now()) @db.Timestamp(6)
-  created_date_time   DateTime             @default(now()) @db.Timestamp(6)
+  updated_date_time   DateTime              @default(now()) @db.Timestamp(6)
+  created_date_time   DateTime              @default(now()) @db.Timestamp(6)
   tobiratory_showcase tobiratory_showcase[]
 }
 
@@ -273,7 +275,7 @@ model tobiratory_showcase {
   title                            String                             @db.VarChar(255)
   description                      String                             @db.Text
   owner                            tobiratory_businesses              @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid                       String                             
+  owner_uuid                       String
   content                          tobiratory_contents                @relation(fields: [content_id], references: [id])
   content_id                       Int
   status                           Int                                @default(0)
