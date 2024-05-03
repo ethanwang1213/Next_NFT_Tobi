@@ -54,6 +54,7 @@ import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
 import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases} from "./showcaseController";
+import {searchAll} from "./searchController";
 // import {fileMulter, uploadMaterial} from "./fileController";
 
 const app = express();
@@ -74,6 +75,8 @@ const dummyResponse = (_: express.Request, res: express.Response) => {
 app.post("/signup", signUp);
 app.post("/password-set", checkPasswordSet);
 app.post("/create-flow", createFlowAcc);
+
+app.get("/search", searchAll);
 
 app.get("/accounts/:uid", getAccountById);
 app.get("/accounts/:uid/saidans", getOthersSaidans);
