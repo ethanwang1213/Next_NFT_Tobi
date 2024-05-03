@@ -6,14 +6,9 @@ import { auth, firebaseConfig } from "fetchers/firebase/client";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import NextImage from "next/image";
 import { useEffect, useRef, useState } from "react";
-// import ImageCropDialog from "./ImageCropDialog";
 import { initializeApp } from "firebase/app";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import ImageCropDialog from "./ImageCropDialog";
-
-const emptyImageSize = 240;
-const maxImageSize = 400;
 
 const ContentBrandPanel = ({
   cancelFlag,
@@ -24,24 +19,25 @@ const ContentBrandPanel = ({
   publishFlag: number;
   changeHandler: () => void;
 }) => {
-  const [contentImage, setContentImage] = useState({
-    image: null,
-    w: emptyImageSize,
-    h: emptyImageSize,
-  });
-  const [stickerImage, setStickerImage] = useState({
-    image: null,
-    w: emptyImageSize,
-    h: emptyImageSize,
-  });
-  const [cropImage, setCropImage] = useState("");
-  const [activeImageFlag, setActiveImageFlag] = useState(false);
+  const [contentImage, setContentImage] = useState("");
+  const contentImageRef = useRef(contentImage);
+  const contentImageFileRef = useRef(null);
 
-  const imageFileRef = useRef(null);
+  const [stickerImage, setStickerImage] = useState("");
+  const stickerImageRef = useRef(stickerImage);
+  const stickerImageFileRef = useRef(null);
+
+  const [cropImage, setCropImage] = useState("");
   const imageCropDlgRef = useRef(null);
-  const contentImageRef = useRef(null);
-  const stickerImageRef = useRef(null);
+
+  const [activeImageFlag, setActiveImageFlag] = useState(false);
   const modifiedRef = useRef(false);
+
+  const initImages = () => {
+    setContentImage(contentImageRef.current);
+    setStickerImage(stickerImageRef.current);
+    modifiedRef.current = false;
+  };
 
   // fetch showcases from server
   useEffect(() => {
@@ -51,17 +47,14 @@ const ContentBrandPanel = ({
         if (data != null) {
           contentImageRef.current = data.image;
           stickerImageRef.current = data.sticker;
-          setPreviewImage(true, data.image);
-          setPreviewImage(false, data.sticker);
+          initImages();
         } else {
-          toastErrorMessage(
-            "Failed to load content information. Please check the error.",
-          );
+          toast("Failed to load content information. Please check the error.");
         }
       } catch (error) {
         // Handle errors here
         console.error("Error fetching data:", error);
-        toastErrorMessage(error.toString());
+        toast(error.toString());
       }
     };
 
@@ -71,8 +64,31 @@ const ContentBrandPanel = ({
 
   const uploadImageToFireStorage = async (image) => {
     try {
+      if (image == "") return "";
+
       // Generate a unique filename for the file
       const storageFileName = `${Date.now()}.png`;
+
+      let blob;
+      // Check if the image is a Blob object or a base64 string
+      if (typeof image === "string" && image.startsWith("blob:")) {
+        blob = await fetch(image).then((response) => response.blob());
+      } else if (image instanceof Blob) {
+        blob = image;
+      } else if (typeof image === "string" && image.startsWith("data:image")) {
+        // Convert base64 string to Blob
+        const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+        const byteCharacters = Buffer.from(base64Data, "base64");
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters[i];
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        blob = new Blob([byteArray], { type: "image/png" });
+      } else {
+        toast("Invalid image format");
+        return "";
+      }
 
       // Upload the file to Firebase Storage
       const app = initializeApp(firebaseConfig);
@@ -82,27 +98,27 @@ const ContentBrandPanel = ({
         `users/${auth.currentUser.uid}/contents/${storageFileName}`,
       );
 
-      await uploadBytes(storageRef, image);
+      await uploadBytes(storageRef, blob);
 
       // Get the download URL of the uploaded file
       return await getDownloadURL(storageRef);
     } catch (error) {
       // Handle any errors that occur during the upload process
       console.error("Error uploading file:", error);
-      toastErrorMessage(error.toString());
+      toast(error.toString());
       return "";
     }
   };
 
   const updateData = async () => {
     let image1 = contentImageRef.current;
-    if (contentImage.image != contentImageRef.current) {
-      image1 = await uploadImageToFireStorage(contentImage.image);
+    if (contentImage != contentImageRef.current) {
+      image1 = await uploadImageToFireStorage(contentImage);
     }
 
     let image2 = stickerImageRef.current;
-    if (stickerImage.image != stickerImageRef.current) {
-      image2 = await uploadImageToFireStorage(stickerImage.image);
+    if (stickerImage != stickerImageRef.current) {
+      image2 = await uploadImageToFireStorage(stickerImage);
     }
 
     const result = await updateContentsInformation({
@@ -112,16 +128,15 @@ const ContentBrandPanel = ({
     if (result != null) {
       contentImageRef.current = result.image;
       stickerImageRef.current = result.sticker;
+      initImages();
     } else {
-      toastErrorMessage("Failed to update the content information. Please check error.");
+      toast("Failed to update the content information. Please check error.");
     }
   };
 
   useEffect(() => {
     if (cancelFlag > 0 && modifiedRef.current) {
-      setPreviewImage(true, contentImageRef.current);
-      setPreviewImage(false, stickerImageRef.current);
-      modifiedRef.current = false;
+      initImages();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancelFlag]);
@@ -129,41 +144,9 @@ const ContentBrandPanel = ({
   useEffect(() => {
     if (publishFlag > 0 && modifiedRef.current) {
       updateData();
-      modifiedRef.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publishFlag]);
-
-  const calcPreviewImageSize = (width, height) => {
-    if (width > maxImageSize || height > maxImageSize) {
-      if (width > height) {
-        return {
-          w: maxImageSize,
-          h: (maxImageSize * height) / width,
-        };
-      } else {
-        return {
-          w: (maxImageSize * width) / height,
-          h: maxImageSize,
-        };
-      }
-    } else {
-      return { w: width, h: height };
-    }
-  };
-
-  const setPreviewImage = (flag, imageUrl) => {
-    if (imageUrl == "") {
-      onImageChangeHandler(flag, imageUrl, emptyImageSize, emptyImageSize);
-    } else {
-      const img = new Image();
-      img.onload = function () {
-        if (!checkUploadImage(img.width, img.height)) return;
-        onImageChangeHandler(flag, imageUrl, img.width, img.height);
-      };
-      img.src = imageUrl;
-    }
-  };
 
   const checkUploadFile = (file) => {
     // Get the file extension
@@ -175,33 +158,33 @@ const ContentBrandPanel = ({
         fileExtension !== "jpg" &&
         fileExtension !== "jpeg"
       ) {
-        toastErrorMessage("Please select PNG, JPEG or GIF(non-animated) file.");
+        toast("Please select PNG, JPEG or GIF(non-animated) file.");
         return false;
       }
     } else {
       if (fileExtension !== "png" && fileExtension !== "gif") {
-        toastErrorMessage("Please select PNG or GIF(non-animated) file.");
+        toast("Please select PNG or GIF(non-animated) file.");
         return false;
       }
     }
     if (file.size > 4 * 1024 * 1024) {
-      toastErrorMessage("Please select file smaller than 4MB.");
+      toast("Please select file smaller than 4MB.");
       return false;
     }
 
     return true;
   };
 
-  const checkUploadImage = (width, height) => {
+  const checkUploadImage = (flag, width, height) => {
     // Get the file extension
-    if (activeImageFlag) {
+    if (flag) {
       if (width < 320 || height < 100) {
-        toastErrorMessage("Please select image at least 320x100 size.");
+        toast("Please select image at least 320x100 size.");
         return false;
       }
     } else {
       if (width < 500 || height < 500) {
-        toastErrorMessage("Please select image at least 500x500 size.");
+        toast("Please select image at least 500x500 size.");
         return false;
       }
     }
@@ -213,36 +196,26 @@ const ContentBrandPanel = ({
     const file = event.target.files[0];
     // Check if a file is selected
     if (file) {
-      // Get the file extension
+      // check the file type
       if (!checkUploadFile(file)) return;
 
+      // check the image size
       const imageUrl = URL.createObjectURL(file);
-      setPreviewImage(activeImageFlag, imageUrl);
-      changeHandler();
-      modifiedRef.current = true;
+      const img = new Image();
+      img.onload = function () {
+        if (!checkUploadImage(activeImageFlag, img.width, img.height)) return;
+        if (activeImageFlag) {
+          setContentImage(imageUrl);
+        } else {
+          setStickerImage(imageUrl);
+        }
+        modifiedRef.current = true;
+        changeHandler();
+      };
+      img.src = imageUrl;
     }
-  };
-
-  const onImageChangeHandler = (flag, image, width, height) => {
-    if (flag) {
-      setContentImage({ image, ...calcPreviewImageSize(width, height) });
-    } else {
-      setStickerImage({ image, ...calcPreviewImageSize(width, height) });
-    }
-  };
-
-  const toastErrorMessage = (value: string) => {
-    toast(value, {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      // transition: Bounce,
-    });
+    // reset input tag value
+    event.target.value = null;
   };
 
   return (
@@ -255,42 +228,40 @@ const ContentBrandPanel = ({
           (non-animated)
         </span>
         <div className="flex items-end gap-12">
-          <div
-            style={{ width: contentImage.w, height: contentImage.h }}
-            className={`
-              rounded-2xl border-2 border-primary-400
-              ${contentImage.image ? "border-none" : "border-dashed"}`}
-          >
-            {contentImage.image && (
-              <NextImage
-                src={contentImage.image}
-                width={contentImage.w}
-                height={contentImage.h}
-                alt="Selected Image"
-                className={`rounded-2xl`}
-              />
-            )}
-          </div>
+          {contentImage ? (
+            <NextImage
+              src={contentImage}
+              width={260}
+              height={260}
+              alt="content image"
+              className={`rounded-2xl`}
+            />
+          ) : (
+            <div
+              style={{ width: 260, height: 260 }}
+              className={`rounded-2xl border-2 border-primary-400 border-dashed`}
+            ></div>
+          )}
           <button
             className="text-xs font-medium text-primary"
             onClick={() => {
               setActiveImageFlag(true);
-              if (!contentImage.image) {
-                imageFileRef.current.click();
-              } else {
-                setCropImage(contentImage.image);
+              if (contentImage) {
+                setCropImage(contentImage);
                 imageCropDlgRef.current.showModal();
+              } else {
+                contentImageFileRef.current.click();
               }
             }}
           >
-            {!contentImage.image ? "upload" : "change"}
+            {contentImage ? "change" : "upload"}
           </button>
           <button
             className="text-xs font-medium text-primary"
             onClick={() => {
-              setPreviewImage(true, "");
-              changeHandler();
+              setContentImage("");
               modifiedRef.current = true;
+              changeHandler();
             }}
           >
             delete
@@ -307,19 +278,39 @@ const ContentBrandPanel = ({
           (non-animated).
         </span>
         <div className="flex items-end gap-12">
+          <div style={{ width: 260 }}></div>
+          <span className="text-secondary text-xs font-medium">Preview</span>
+        </div>
+        <div className="flex items-end gap-12">
+          {stickerImage ? (
+            <NextImage
+              src={stickerImage}
+              width={260}
+              height={260}
+              alt="sticker image"
+              className={`rounded-2xl`}
+            />
+          ) : (
+            <div
+              style={{ width: 260, height: 260 }}
+              className={`rounded-2xl border-2 border-primary-400 border-dashed`}
+            ></div>
+          )}
           <div
-            style={{ width: stickerImage.w, height: stickerImage.h }}
-            className={`
-              rounded-2xl border-2 border-primary-400
-              ${stickerImage.image ? "border-none" : "border-dashed"}`}
+            style={{
+              width: 231,
+              height: 260,
+              background: `url('/admin/images/png/preview.png') top left no-repeat`,
+            }}
+            className="flex items-center"
           >
-            {stickerImage.image && (
+            {stickerImage && (
               <NextImage
-                src={stickerImage.image}
-                width={stickerImage.w}
-                height={stickerImage.h}
-                alt="Selected Image"
-                className={`rounded-2xl`}
+                width={231}
+                height={260}
+                src={stickerImage}
+                alt="sticker"
+                className="opacity-25"
               />
             )}
           </div>
@@ -327,22 +318,22 @@ const ContentBrandPanel = ({
             className="text-xs font-medium text-primary"
             onClick={() => {
               setActiveImageFlag(false);
-              if (!stickerImage.image) {
-                imageFileRef.current.click();
-              } else {
-                setCropImage(stickerImage.image);
+              if (stickerImage) {
+                setCropImage(stickerImage);
                 imageCropDlgRef.current.showModal();
+              } else {
+                stickerImageFileRef.current.click();
               }
             }}
           >
-            {!stickerImage.image ? "upload" : "change"}
+            {stickerImage ? "change" : "upload"}
           </button>
           <button
             className="text-xs font-medium text-primary"
             onClick={() => {
-              setPreviewImage(false, "");
-              changeHandler();
+              setStickerImage("");
               modifiedRef.current = true;
+              changeHandler();
             }}
           >
             delete
@@ -350,7 +341,14 @@ const ContentBrandPanel = ({
         </div>
       </div>
       <input
-        ref={imageFileRef}
+        ref={contentImageFileRef}
+        type="file"
+        accept=".png, .jpg, .jpeg, .gif"
+        onChange={(e) => handleFileInputChange(e)}
+        className="hidden"
+      />
+      <input
+        ref={stickerImageFileRef}
         type="file"
         accept=".png, .gif"
         onChange={(e) => handleFileInputChange(e)}
@@ -360,12 +358,15 @@ const ContentBrandPanel = ({
         initialValue={cropImage}
         dialogRef={imageCropDlgRef}
         cropHandler={(image, width, height) => {
-          onImageChangeHandler(activeImageFlag, image, width, height);
-          changeHandler();
+          if (activeImageFlag) {
+            setContentImage(image);
+          } else {
+            setStickerImage(image);
+          }
           modifiedRef.current = true;
+          changeHandler();
         }}
       />
-      <ToastContainer />
     </div>
   );
 };
