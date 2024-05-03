@@ -3,7 +3,7 @@ import * as cors from "cors";
 import * as express from "express";
 import {REGION} from "../lib/constants";
 
-import {getAccounts, getAccountById, getOthersSaidans} from "./accountController";
+import {getAccountById, getOthersSaidans} from "./accountController";
 import
 {
   signUp,
@@ -19,7 +19,6 @@ import
 import {
   getContentById,
   getContentByUuid,
-  getContents,
   getFavoriteContents,
   getMyContentInfo,
   setFavoriteContent,
@@ -45,7 +44,6 @@ import {
   getMySaidansById,
   getSaidanDecorationData,
   getSaidanTemplates,
-  getSaidans,
   getSaidansById,
   putAwayItemInSaidan,
   updateMySaidan,
@@ -77,19 +75,16 @@ app.post("/signup", signUp);
 app.post("/password-set", checkPasswordSet);
 app.post("/create-flow", createFlowAcc);
 
-app.get("/accounts", getAccounts);
 app.get("/accounts/:uid", getAccountById);
 app.get("/accounts/:uid/saidans", getOthersSaidans);
 app.get("/business/:uid/content", getContentByUuid);
 
-app.get("/contents", getContents);
 app.get("/contents/favor", getFavoriteContents);
 app.get("/contents/:id", getContentById);
 app.post("/contents/:id", setFavoriteContent);
 
 app.get("/nfts/:id", dummyResponse);
 
-app.get("/saidans", getSaidans);
 app.get("/saidans/:saidanId", getSaidansById);
 app.get("/posts", dummyResponse);
 app.get("/posts/:id", dummyResponse);
