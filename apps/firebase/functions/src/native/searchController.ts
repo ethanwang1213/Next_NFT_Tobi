@@ -6,7 +6,21 @@ import { statusOfSample, statusOfShowcase } from "./utils";
 
 export const searchAll = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {query} = req.params;
+  const {q} = req.query;
+  const searchValue = q?.toString()==""?undefined:q?.toString();
+  console.log(searchValue);
+  if (!searchValue) {
+    res.status(200).send({
+      status: "success",
+      data: {
+          users: [],
+          contents: [],
+          saidans: [],
+          digitalItems: [],
+      },
+    });
+    return;
+  }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
       const users = await prisma.tobiratory_accounts.findMany({
@@ -14,15 +28,18 @@ export const searchAll = async (req: Request, res: Response) => {
           OR: [
             {
               username: {
-                contains: query,
+                contains: searchValue,
               },
             },
             {
               user_id: {
-                contains: query,
+                contains: searchValue,
               },
             },
           ],
+        },
+        orderBy: {
+            username: "asc",
         },
         take: 5,
       });
@@ -36,7 +53,7 @@ export const searchAll = async (req: Request, res: Response) => {
       const contents = await prisma.tobiratory_contents.findMany({
         where: {
             name: {
-                contains: query,
+                contains: searchValue,
             },
         },
         take: 2,
@@ -50,6 +67,9 @@ export const searchAll = async (req: Request, res: Response) => {
                 },
             },
         },
+        orderBy: {
+            name: "asc",
+        },
       });
       const resultContents = contents.map((content)=> {
         return {
@@ -61,12 +81,15 @@ export const searchAll = async (req: Request, res: Response) => {
       const saidans = await prisma.tobiratory_saidans.findMany({
         where: {
             title: {
-                contains: query,
+                contains: searchValue,
             },
         },
         take: 2,
         include: {
             template: true,
+        },
+        orderBy: {
+            title: "asc",
         },
       });
       const resultSaidans = saidans.map((saidan)=>{
@@ -80,7 +103,7 @@ export const searchAll = async (req: Request, res: Response) => {
         where: {
             digital_item: {
                 name: {
-                    contains: query,
+                    contains: searchValue,
                 },
                 status: {
                     in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule]
@@ -90,6 +113,11 @@ export const searchAll = async (req: Request, res: Response) => {
         take: 10,
         include: {
             digital_item: true,
+        },
+        orderBy: {
+            digital_item: {
+                name: "asc",
+            },
         },
       });
       const resultDigitalItems = digitalItems.map((sample)=>{
