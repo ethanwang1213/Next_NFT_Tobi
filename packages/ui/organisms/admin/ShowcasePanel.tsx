@@ -234,10 +234,12 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
                 alt="clock icon"
               />
               <span className="text-secondary-700 text-[8px] leading-4 font-normal">
-                {format(scheduleTime, "yyyy/MM/dd")}&nbsp;
-                {scheduleTime.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
+                {scheduleTime.toLocaleString("ja-JP", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
                   hour12: false,
                 })}
               </span>
