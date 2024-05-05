@@ -80,7 +80,7 @@ const ContentSettingPanel = ({
   }, []);
 
   const fieldChangeHandler = useDebouncedCallback((field, value) => {
-    setContentSetting({ ...{ ...contentSetting, [field]: value } });
+    setContentSetting({ ...contentSetting, [field]: value });
     if (field == "name") {
       if (confirmDialogRef.current) {
         confirmDialogRef.current.showModal();
