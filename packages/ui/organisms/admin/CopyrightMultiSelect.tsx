@@ -26,31 +26,21 @@ const CopyrightMultiSelect = ({
   const popupMenuRef = useRef(null);
   const rootElementRef = useRef(null);
 
-  const getFilteredItems = useCallback(
-    (selItems, defaultItems) => {
-      // Create a copy of the elements array to avoid mutating the original array
-      const updateElements = [...defaultItems];
-      selItems.forEach((item: string) => {
-        const found: boolean = elements.some(
-          (element) => element.name === item,
-        );
-        if (!found) {
-          updateElements.push({ id: 0, name: item });
-        }
-      });
-      if (updateElements.length != defaultItems.length) {
-        setElements(updateElements);
+  const items = useMemo(() => {
+    // Create a copy of the elements array to avoid mutating the original array
+    const updateElements = [...elements];
+    selectedItems.forEach((item: string) => {
+      const found: boolean = elements.some((element) => element.name === item);
+      if (!found) {
+        updateElements.push({ id: 0, name: item });
       }
+    });
+    if (updateElements.length != elements.length) {
+      setElements(updateElements);
+    }
 
-      return updateElements.map((element) => element.name);
-    },
-    [elements],
-  );
-
-  const items = useMemo(
-    () => getFilteredItems(selectedItems, elements),
-    [selectedItems, elements, getFilteredItems],
-  );
+    return updateElements.map((element) => element.name);
+  }, [selectedItems, elements]);
 
   useEffect(() => {
     function handleClickOutside(event) {
