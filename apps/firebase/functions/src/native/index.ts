@@ -54,8 +54,7 @@ import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
 import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases} from "./showcaseController";
-import {searchAll} from "./searchController";
-// import {fileMulter, uploadMaterial} from "./fileController";
+import {searchAll, searchContents, searchDigitalItems, searchSaidans, searchUsers} from "./searchController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -77,6 +76,10 @@ app.post("/password-set", checkPasswordSet);
 app.post("/create-flow", createFlowAcc);
 
 app.get("/search", searchAll);
+app.get("/search/users", searchUsers);
+app.get("/search/contents", searchContents);
+app.get("/search/saidans", searchSaidans);
+app.get("/search/samples", searchDigitalItems);
 
 app.get("/accounts/:uid", getAccountById);
 app.get("/accounts/:uid/saidans", getOthersSaidans);
