@@ -96,42 +96,16 @@ export const mintNFT = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (itemId) {
-      const flowJobId = uuidv4();
-      const message = {flowJobId, txType: "mintNFT", params: {
-        tobiratoryAccountUuid: uid,
-        itemCreatorAddress: flowAccount.flow_address,
-        itemId,
-        digitalItemId,
-        fcmToken,
-      }};
-      const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
-      console.log(`Message ${messageId} published.`);
-    } else {
-      let creatorName;
-      if (sampleItem.content_id) {
-        const content = await prisma.tobiratory_contents.findUnique({
-          where: {
-            id: sampleItem.content_id,
-          },
-        });
-        if (content) {
-          creatorName = content.name;
-        } else {
-          const user = await prisma.tobiratory_accounts.findUnique({
-            where: {
-              uuid: digitalItem.creator_uuid,
-            },
-          });
-          if (!user) {
-            res.status(404).send({
-              status: "error",
-              data: "User does not found",
-            });
-            return;
-          }
-          creatorName = user.username;
-        }
+
+    let creatorName;
+    if (sampleItem.content_id) {
+      const content = await prisma.tobiratory_contents.findUnique({
+        where: {
+          id: sampleItem.content_id,
+        },
+      });
+      if (content) {
+        creatorName = content.name;
       } else {
         const user = await prisma.tobiratory_accounts.findUnique({
           where: {
@@ -147,32 +121,61 @@ export const mintNFT = async (req: Request, res: Response) => {
         }
         creatorName = user.username;
       }
-      const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
+    } else {
+      const user = await prisma.tobiratory_accounts.findUnique({
         where: {
-          digital_item_id: digitalItem.id,
+          uuid: digitalItem.creator_uuid,
         },
       });
-      const copyrights = await Promise.all(
-          copyrightRelate.map(async (relate)=>{
-            const copyrightData = await prisma.tobiratory_copyright.findUnique({
-              where: {
-                id: relate.copyright_id,
-              },
-            });
-            return copyrightData?.copyright_name;
-          })
-      );
-      const metadata = {
-        type: String(digitalItem.type),
-        name: digitalItem.name,
-        description: digitalItem.description,
-        thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
-        modelUrl: sampleItem.model_url,
-        creatorName: creatorName,
-        limit: digitalItem.limit,
-        license: digitalItem.license,
-        copyrightHolders: copyrights,
-      };
+      if (!user) {
+        res.status(404).send({
+          status: "error",
+          data: "User does not found",
+        });
+        return;
+      }
+      creatorName = user.username;
+    }
+    const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
+      where: {
+        digital_item_id: digitalItem.id,
+      },
+    });
+    const copyrights = await Promise.all(
+        copyrightRelate.map(async (relate)=>{
+          const copyrightData = await prisma.tobiratory_copyright.findUnique({
+            where: {
+              id: relate.copyright_id,
+            },
+          });
+          return copyrightData?.copyright_name;
+        })
+    );
+    const metadata = {
+      type: String(digitalItem.type),
+      name: digitalItem.name,
+      description: digitalItem.description,
+      thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
+      modelUrl: sampleItem.model_url,
+      creatorName: creatorName,
+      limit: digitalItem.limit,
+      license: digitalItem.license,
+      copyrightHolders: copyrights,
+    };
+
+    if (itemId) {
+      const flowJobId = uuidv4();
+      const message = {flowJobId, txType: "mintNFT", params: {
+        tobiratoryAccountUuid: uid,
+        itemCreatorAddress: flowAccount.flow_address,
+        itemId,
+        digitalItemId,
+        metadata,
+        fcmToken,
+      }};
+      const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
+      console.log(`Message ${messageId} published.`);
+    } else {
       const flowJobId = uuidv4();
       const message = {flowJobId, txType: "createItem", params: {tobiratoryAccountUuid: uid, digitalItemId, metadata, fcmToken}};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
