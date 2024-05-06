@@ -44,12 +44,16 @@ const StyledTextArea = ({
     setUniqueId(Math.random().toString(36).substring(2, 11));
   }, []);
 
+  useEffect(() => {
+    setInputValue(value);
+  }, [value]);
+
   return (
     <div className={clsx(className, "relative")}>
       <textarea
         className={clsx(
           "w-full h-[180px] pl-5 pt-4 pr-3 resize-none",
-          "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+          "outline-none border-2 rounded-lg border-secondary hover:border-hover-color focus:border-focus-color",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
         )}

@@ -5,8 +5,8 @@ import {
   updateCopyright,
   deleteCopyright,
 } from "fetchers/SampleActions";
-import { useState, useMemo, useEffect, useRef } from "react";
-import SelectItemEditMenu from "./SelectItemEditMenu";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import CopyrightEditMenu from "./CopyrightEditMenu";
 
 const CopyrightMultiSelect = ({
   initialSelectedItems,
@@ -15,37 +15,46 @@ const CopyrightMultiSelect = ({
   const [inputValue, setInputValue] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [elements, setElements] = useState([]);
-  const items = useMemo(
-    () => getFilteredItems(selectedItems, elements),
-    [selectedItems, elements],
-  );
-  const inputRef = useRef(null); // Add a ref for the input element
+  const [popupMenuOpen, setPopupMenuOpen] = useState(false);
+  const [popupMenuPosition, setPopupMenuPosition] = useState({
+    x: 0,
+    y: 0,
+    id: 0,
+    text: "",
+  });
 
-  function getFilteredItems(selItems, defaultItems) {
+  const popupMenuRef = useRef(null);
+  const rootElementRef = useRef(null);
+
+  const items = useMemo(() => {
     // Create a copy of the elements array to avoid mutating the original array
-    const updateElements = [...defaultItems];
-    selItems.forEach((item: string) => {
+    const updateElements = [...elements];
+    selectedItems.forEach((item: string) => {
       const found: boolean = elements.some((element) => element.name === item);
       if (!found) {
-        updateElements.push({ id: 0, name: item, popup: false });
+        updateElements.push({ id: 0, name: item });
       }
     });
-    if (updateElements.length != defaultItems.length) {
+    if (updateElements.length != elements.length) {
       setElements(updateElements);
     }
 
     return updateElements.map((element) => element.name);
-  }
+  }, [selectedItems, elements]);
 
   useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        popupMenuRef.current &&
+        !popupMenuRef.current.contains(event.target)
+      ) {
+        setPopupMenuOpen(false);
+      }
+    }
+
     const fetchData = async () => {
       try {
         const data = await fetchCopyrights();
-        if (data.length > 0) {
-          data.map((item, index) => {
-            item.popup = false;
-          });
-        }
         setElements(data);
       } catch (error) {
         // Handle errors here
@@ -54,6 +63,11 @@ const CopyrightMultiSelect = ({
     };
 
     fetchData();
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   useEffect(() => {
@@ -127,10 +141,6 @@ const CopyrightMultiSelect = ({
               setSelectedItems([...selectedItems, newSelectedItem]);
               handleSelectedItemChange([...selectedItems, newSelectedItem]);
             }
-            // close menu
-            let newElements = [...elements];
-            newElements.forEach((value) => (value.popup = false));
-            setElements(newElements);
           } else if (inputValue && inputValue.length > 0) {
             if (selectedItems.indexOf(inputValue) == -1) {
               // check duplicated
@@ -179,6 +189,7 @@ const CopyrightMultiSelect = ({
           // update selected items
           setSelectedItems(newSelectedItems);
         }
+        setElements(newElements);
       }
     }
 
@@ -200,29 +211,26 @@ const CopyrightMultiSelect = ({
             newSelectedItems.filter((value, index) => index != selItemIndex),
           );
         }
+        setElements(newElements);
       }
     }
 
-    // close all popup menu
-    newElements.forEach((value) => (value.popup = false));
-    setElements(newElements);
+    setPopupMenuOpen(false);
   };
 
   return (
     <div
       className={clsx(
         "flex flex-col w-full justify-center self-center min-h-[52px]",
-        "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+        "outline-none border-2 rounded-lg border-secondary hover:border-hover-color focus:border-focus-color",
+        "relative",
       )}
+      ref={rootElementRef}
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
 
         if (!isOpen) {
-          // close all opened popup menus
-          let newElements = [...elements];
-          newElements.forEach((value) => (value.popup = false));
-          setElements(newElements);
           // open items
           openMenu();
         }
@@ -307,7 +315,7 @@ const CopyrightMultiSelect = ({
               borderRadius: "8px",
             }}
             className="flex justify-between items-center 
-                cursor-pointer hover:bg-secondary-200 relative"
+                cursor-pointer hover:bg-secondary-200"
             key={`${item.name}${index}`}
             {...getItemProps({ item, index })}
           >
@@ -342,31 +350,43 @@ const CopyrightMultiSelect = ({
                 e.stopPropagation();
                 e.preventDefault();
 
-                // popup menu
-                let newElements = [...elements];
-                newElements.forEach((value, i) => {
-                  value.popup = i == index;
+                const rootDomRect = (
+                  rootElementRef.current as HTMLElement
+                ).getBoundingClientRect();
+                const targetDomRect = (
+                  e.target as HTMLElement
+                ).getBoundingClientRect();
+
+                setPopupMenuPosition({
+                  x: targetDomRect.right - rootDomRect.left,
+                  y: targetDomRect.top - rootDomRect.top,
+                  id: item.id,
+                  text: item.name,
                 });
-                setElements(newElements);
+                setPopupMenuOpen(true);
               }}
             >
               •••
             </span>
-            <div
-              className={clsx(
-                "-right-52 top-0 z-10",
-                item.popup ? "absolute" : "hidden",
-              )}
-            >
-              <SelectItemEditMenu
-                id={item.id}
-                name={item.name}
-                focusInput={item.popup}
-                nofityHandler={itemChangedHandler}
-              />
-            </div>
           </li>
         ))}
+        {popupMenuOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: popupMenuPosition.y,
+              left: popupMenuPosition.x,
+              zIndex: 1,
+            }}
+          >
+            <CopyrightEditMenu
+              menuRef={popupMenuRef}
+              id={popupMenuPosition.id}
+              name={popupMenuPosition.text}
+              nofityHandler={itemChangedHandler}
+            />
+          </div>
+        )}
       </ul>
     </div>
   );

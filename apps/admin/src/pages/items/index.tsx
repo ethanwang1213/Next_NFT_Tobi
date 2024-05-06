@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ItemsManageTab from "ui/organisms/admin/ItemsManageTab";
@@ -10,22 +11,24 @@ export const metadata: Metadata = {
 export default function Index() {
   const [selectedTab, setSelectedTab] = useState("sample");
 
+  const router = useRouter();
+
   const links = {
     sample: {
       label: "new sample",
-      href: "/workspace",
+      clickHandler: () => router.push("/workspace"),
     },
   };
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between pl-12 pr-7 pt-9">
+    <>
+      <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center">
         <h1 className="font-semibold text-secondary text-3xl">ITEMS</h1>
         <CreateButton {...(links[selectedTab] ?? links.sample)} />
       </div>
-      <div className="w-full items-center justify-between">
+      <div>
         <ItemsManageTab onTabChange={setSelectedTab} />
       </div>
-    </div>
+    </>
   );
 }

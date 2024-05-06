@@ -15,6 +15,7 @@ export const formatDateToLocal = (
   locale: string = "ja-JP",
 ) => {
   const date = new Date(dateStr);
+  if (date.toString() === "Invalid Date") return "";
   const optionsDateOnly: Intl.DateTimeFormatOptions = {
     day: "numeric",
     month: "numeric",

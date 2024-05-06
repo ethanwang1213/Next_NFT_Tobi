@@ -1,9 +1,12 @@
 import { auth } from "fetchers/firebase/client";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import clsx from "clsx";
 import { fetchSampleItem, updateSampleItem } from "fetchers/SampleActions";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
 import DateTimeInput from "ui/molecules/DateTimeInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
@@ -13,8 +16,6 @@ import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 import StatusDropdownSelect, {
   SampleStatus,
 } from "ui/organisms/admin/StatusDropdownSelect";
-import clsx from "clsx";
-import { Tooltip } from "react-tooltip";
 import { useDebouncedCallback } from "use-debounce";
 
 const Detail = () => {
@@ -24,75 +25,56 @@ const Detail = () => {
   const [changed, setChanged] = useState(false);
   const [errMsg, setErrMsg] = useState("");
 
-  const fileInputRef = useRef(null);
-  const imageDropButtonRef = useRef(null);
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    // Restore the background color when dropping
-    event.target.style.backgroundColor = "#FFFFFF";
-    const file = event.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      // upload to the server
-      uploadFileToFireStorage(file);
-    }
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    // Change the background color when dragging over
-    event.target.style.backgroundColor = "#B3B3B3";
-  };
-
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      // upload to the server
-      uploadFileToFireStorage(file);
-    }
-  };
-
-  const handleDragLeave = (event) => {
-    event.target.style.backgroundColor = "#FFFFFF";
-  };
-
-  const uploadFileToFireStorage = async (file) => {
-    try {
-      // Get file extension
-      const fileName = file.name;
-      const extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-      // Create a root reference
-      const storage = getStorage();
-
-      // Generate a unique filename for the file
-      const storageFileName = `${Date.now()}.${extension}`;
-
-      // Upload the file to Firebase Storage
-      const fileRef = ref(
-        storage,
-        `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
-      );
-
-      await uploadBytes(fileRef, file);
-
-      // Get the download URL of the uploaded file
-      const downloadURL = await getDownloadURL(fileRef);
-      fieldChangeHandler("customThumbnailUrl", downloadURL);
-    } catch (error) {
-      // Handle any errors that occur during the upload process
-      console.error("Error uploading file:", error);
-    }
-  };
-
   const fieldChangeHandler = useDebouncedCallback((field, value) => {
     setSampleItem({ ...{ ...sampleItem, [field]: value } });
     setChanged(true);
   }, 300);
 
-  const handleImageClick = () => {
-    fileInputRef.current.click(); // Trigger the click event of the file input
-  };
+  const uploadFileToFireStorage = useCallback(
+    async (file) => {
+      try {
+        // Get file extension
+        const fileName = file.name;
+        const extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        // Create a root reference
+        const storage = getStorage();
+
+        // Generate a unique filename for the file
+        const storageFileName = `${Date.now()}.${extension}`;
+
+        // Upload the file to Firebase Storage
+        const fileRef = ref(
+          storage,
+          `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
+        );
+
+        await uploadBytes(fileRef, file);
+
+        // Get the download URL of the uploaded file
+        const downloadURL = await getDownloadURL(fileRef);
+        fieldChangeHandler("customThumbnailUrl", downloadURL);
+      } catch (error) {
+        // Handle any errors that occur during the upload process
+        console.error("Error uploading file:", error);
+      }
+    },
+    [fieldChangeHandler],
+  );
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      // Do something with the files
+      const file = acceptedFiles[0];
+      if (file && file.type.startsWith("image/")) {
+        // upload to the server
+        uploadFileToFireStorage(file);
+      }
+    },
+    [uploadFileToFireStorage],
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,7 +93,6 @@ const Detail = () => {
   }, [id]);
 
   const submitData = async () => {
-    console.log("sampleItem", sampleItem);
     if (sampleItem.status != SampleStatus.Draft) {
       if (
         sampleItem.name == null ||
@@ -473,7 +454,7 @@ const Detail = () => {
                       width={24}
                       height={24}
                       alt="download"
-                      src="/admin/images/download-icon.svg"
+                      src="/admin/images/icon/download-icon.svg"
                     />
                   </a>
                 </div>
@@ -506,7 +487,7 @@ const Detail = () => {
                       width={24}
                       height={24}
                       alt="cancel"
-                      src="/admin/images/cancel-icon.svg"
+                      src="/admin/images/icon/cancel-icon.svg"
                       className="absolute right-3 bottom-3 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation(); // Stop event propagation
@@ -524,13 +505,13 @@ const Detail = () => {
                       width={24}
                       height={24}
                       alt="cancel"
-                      src="/admin/images/empty-image-icon.svg"
+                      src="/admin/images/icon/empty-image-icon.svg"
                       className="absolute top-12 left-12"
                     />
                   )}
                 </div>
                 <div
-                  ref={imageDropButtonRef}
+                  {...getRootProps()}
                   style={{
                     width: 120,
                     height: 120,
@@ -538,12 +519,11 @@ const Detail = () => {
                     borderStyle: "dashed",
                     borderWidth: 2,
                     borderColor: "#B3B3B3",
+                    backgroundColor: isDragActive ? "#B3B3B3" : "transparent",
                   }}
-                  className="flex flex-col justify-center items-center gap-1 pt-2"
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
+                  className="flex flex-col justify-center items-center gap-1 pt-2 cursor-pointer"
                 >
+                  <input {...getInputProps()} />
                   <span className="h-14 text-secondary-500 text-base text-center">
                     Drop your Image here
                   </span>
@@ -551,16 +531,7 @@ const Detail = () => {
                     width={24}
                     height={24}
                     alt="upload"
-                    src="/admin/images/upload-icon.svg"
-                    className="cursor-pointer"
-                    onClick={handleImageClick}
-                  />
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileInputChange}
-                    className="hidden"
+                    src="/admin/images/icon/upload-icon.svg"
                   />
                 </div>
               </div>

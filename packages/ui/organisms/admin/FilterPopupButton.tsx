@@ -38,7 +38,7 @@ const FilterPopupButton = (props) => {
     <div className="relative inline-block">
       <div className="flex items-center px-8">
         <Image
-          src="/admin/images/filter-icon.svg"
+          src="/admin/images/icon/filter-icon.svg"
           alt="Popup Image"
           onClick={openPopup}
           width={36}

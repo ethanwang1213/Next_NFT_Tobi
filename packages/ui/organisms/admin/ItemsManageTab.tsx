@@ -3,13 +3,14 @@ import React, { useState, useEffect } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
 import { SampleTable } from "./SampleTable";
-import PackageTable from "./PackageTable";
 import FilterPopupButton from "ui/organisms/admin/FilterPopupButton";
 
-export default function ItemsManageTab({ onTabChange }) {
-  // const [tab, setTab] = useTabs(["sample", "package"]);
+export default function ItemsManageTab({
+  onTabChange,
+}: {
+  onTabChange: (value: string) => void;
+}) {
   const [tab, setTab] = useTabs(["sample"]);
-
   const [filterArray, setFilterArray] = useState({});
 
   const handleTabChange = (tab) => {
@@ -30,17 +31,10 @@ export default function ItemsManageTab({ onTabChange }) {
         <TabSelector
           isActive={tab === "sample"}
           onClick={() => handleTabChange("sample")}
-          isFirst={true}
+          className="ml-12"
         >
           SAMPLE
         </TabSelector>
-        {/* <TabSelector
-          isActive={tab === "package"}
-          onClick={() => handleTabChange("package")}
-          isFirst={false}
-        >
-          PACKAGE
-        </TabSelector> */}
       </nav>
       <div className="flex justify-start">
         <FilterPopupButton />
@@ -49,13 +43,10 @@ export default function ItemsManageTab({ onTabChange }) {
           placeholder="Search for Samples"
         />
       </div>
-      <div className="">
+      <div>
         <TabPanel hidden={tab !== "sample"}>
           <SampleTable filters={filterArray} />
         </TabPanel>
-        {/* <TabPanel hidden={tab !== "package"}>
-          <PackageTable />
-        </TabPanel> */}
       </div>
     </>
   );

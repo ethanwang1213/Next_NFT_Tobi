@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 
 type NotifyHandlerType = (
   type: string,
@@ -8,16 +8,16 @@ type NotifyHandlerType = (
   name: string,
 ) => void;
 
-const SelectItemEditMenu = ({
+const CopyrightEditMenu = ({
   id,
   name,
-  focusInput,
   nofityHandler,
+  menuRef,
 }: {
   id: number;
   name: string;
-  focusInput: boolean;
   nofityHandler: NotifyHandlerType;
+  menuRef?: MutableRefObject<HTMLDivElement>;
 }) => {
   const [inputValue, setInputValue] = useState(name);
   const inputRef = useRef(null);
@@ -34,24 +34,12 @@ const SelectItemEditMenu = ({
     }
   };
 
-  // Focus on the input element when the component mounts or when focusInput is true
-  useEffect(() => {
-    if (focusInput && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [focusInput]);
-
-  const handleFocus = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
   return (
     <div
+      ref={menuRef}
       className="w-52 h-[104px] bg-base-white 
         border-[1px] border-neutral-200 rounded-2xl 
-        pt-4 flex flex-col gap-2"
+        pt-4 flex flex-col gap-2 z-10"
       style={{
         boxShadow:
           "0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1)",
@@ -83,7 +71,7 @@ const SelectItemEditMenu = ({
         <Image
           width={16}
           height={16}
-          src="/admin/images/delete-icon.svg"
+          src="/admin/images/icon/delete-icon.svg"
           alt="icon"
         />
         <span className="text-error text-[10px] font-normal">Delete</span>
@@ -106,4 +94,4 @@ const SelectItemEditMenu = ({
   );
 };
 
-export default SelectItemEditMenu;
+export default CopyrightEditMenu;
