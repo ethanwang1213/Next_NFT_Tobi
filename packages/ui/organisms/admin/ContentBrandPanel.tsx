@@ -1,12 +1,10 @@
 import {
   fetchContentsInformation,
   updateContentsInformation,
+  uploadImageToFireStorage,
 } from "fetchers/ContentsActions";
-import { auth, firebaseConfig } from "fetchers/firebase/client";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import NextImage from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { initializeApp } from "firebase/app";
 import { toast } from "react-toastify";
 import ImageCropDialog from "./ImageCropDialog";
 
@@ -61,54 +59,6 @@ const ContentBrandPanel = ({
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const uploadImageToFireStorage = async (image) => {
-    try {
-      if (image == "") return "";
-
-      // Generate a unique filename for the file
-      const storageFileName = `${Date.now()}.png`;
-
-      let blob;
-      // Check if the image is a Blob object or a base64 string
-      if (typeof image === "string" && image.startsWith("blob:")) {
-        blob = await fetch(image).then((response) => response.blob());
-      } else if (image instanceof Blob) {
-        blob = image;
-      } else if (typeof image === "string" && image.startsWith("data:image")) {
-        // Convert base64 string to Blob
-        const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-        const byteCharacters = Buffer.from(base64Data, "base64");
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters[i];
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        blob = new Blob([byteArray], { type: "image/png" });
-      } else {
-        toast("Invalid image format");
-        return "";
-      }
-
-      // Upload the file to Firebase Storage
-      const app = initializeApp(firebaseConfig);
-      const storage = getStorage(app);
-      const storageRef = ref(
-        storage,
-        `users/${auth.currentUser.uid}/contents/${storageFileName}`,
-      );
-
-      await uploadBytes(storageRef, blob);
-
-      // Get the download URL of the uploaded file
-      return await getDownloadURL(storageRef);
-    } catch (error) {
-      // Handle any errors that occur during the upload process
-      console.error("Error uploading file:", error);
-      toast(error.toString());
-      return "";
-    }
-  };
 
   const updateData = async () => {
     let image1 = contentImageRef.current;
