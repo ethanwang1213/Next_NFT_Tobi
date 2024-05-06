@@ -2,17 +2,19 @@ import Image from "next/image";
 import BackLinkBlock from "../../molecules/BackLinkBlock";
 
 type Props = {
+  title: string;
+  fontSize: "tiny" | "small" | "medium";
   onClickBack: () => void;
 };
 
-const ConfirmationSent = ({ onClickBack }: Props) => {
+const ConfirmationSent = ({ title, fontSize, onClickBack }: Props) => {
   return (
     <>
       <div className="w-full">
         <BackLinkBlock
-          title={"Sent a confirmation email!"}
+          title={title}
           visible={true}
-          fontSize={"small"}
+          fontSize={fontSize}
           onClickBack={onClickBack}
         />
       </div>
@@ -37,7 +39,7 @@ const ConfirmationSent = ({ onClickBack }: Props) => {
       <div className={"mt-[25px]"}>
         <InfoLink
           url={"https://www.tobiratory.com/about"}
-          text={"Haven't received the email?"}
+          text={"Haven't received the email? Click here."}
         />
       </div>
     </>

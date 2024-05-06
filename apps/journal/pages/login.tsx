@@ -30,7 +30,8 @@ const AuthStates = {
   SignInWithEmailAndPassword: 2,
   SignUpWithEmailAndPassword: 3,
   PasswordReset: 4,
-  EmailSent: 5,
+  ConfirmationEmailSent: 5,
+  PasswordResetConfirmationEmailSent: 6,
 } as const;
 type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
@@ -157,7 +158,7 @@ const Login = () => {
     };
     try {
       await sendEmailVerification(auth.currentUser, actionCodeSettings);
-      setAuthState(AuthStates.EmailSent);
+      setAuthState(AuthStates.ConfirmationEmailSent);
     } catch (error) {
       setAuthError({ code: error.code, message: error.message });
       setIsEmailLoading(false);
@@ -180,7 +181,7 @@ const Login = () => {
     };
     try {
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      setAuthState(AuthStates.EmailSent);
+      setAuthState(AuthStates.PasswordResetConfirmationEmailSent);
     } catch (error) {
       setAuthError({ code: error.code, message: error.message });
       setIsEmailLoading(false);
@@ -267,10 +268,22 @@ const Login = () => {
             />
           </AuthBoxLayout>
         );
-      case AuthStates.EmailSent:
+      case AuthStates.ConfirmationEmailSent:
         return (
           <AuthBoxLayout>
             <ConfirmationSent
+              title={"Sent a confirmation email!"}
+              fontSize={"small"}
+              onClickBack={() => handleClickBack(AuthStates.SignIn)}
+            />
+          </AuthBoxLayout>
+        );
+      case AuthStates.PasswordResetConfirmationEmailSent:
+        return (
+          <AuthBoxLayout>
+            <ConfirmationSent
+              title={"Password Reset Confirmation Email Sent!"}
+              fontSize={"tiny"}
               onClickBack={() => handleClickBack(AuthStates.SignIn)}
             />
           </AuthBoxLayout>
