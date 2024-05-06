@@ -269,12 +269,15 @@ const FileUploadButton = ({
                 handleChange(index, true, null);
               }}
             >
-              <Image
-                src={`/admin/images/icon/cross.svg`}
-                alt={"clear file"}
-                width={16}
-                height={16}
-              />
+              <div
+                className="w-[16px] h-[16px] bg-base-content"
+                style={{
+                  WebkitMaskImage: "url(/admin/images/icon/cross.svg)",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  WebkitMaskSize: "contain",
+                }}
+              ></div>
             </button>
           </>
         )}
