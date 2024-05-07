@@ -3,48 +3,6 @@ import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
 
-export const getAccounts = async (req: Request, res: Response) => {
-  const {q, sortBy, sortOrder} = req.params;
-  const orderValue = {};
-  Object.defineProperty(orderValue, sortBy, {
-    value: sortOrder,
-    writable: false,
-    enumerable: true,
-    configurable: true,
-  });
-  const accounts = await prisma.tobiratory_accounts.findMany({
-    where: {
-      username: {
-        in: [q],
-      },
-    },
-    orderBy: orderValue,
-  });
-  const resData = {
-    accounts: accounts.map(async (account) => {
-      const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
-        where: {
-          uuid: account.uuid,
-        },
-      });
-      return {
-        username: account.username,
-        icon: account.icon_url,
-        sns: account.sns,
-        flow: {
-          flowAddress: flowAccountData?.flow_address ?? "",
-        },
-        createdAt: account.created_date_time,
-      };
-    }),
-  };
-
-  res.status(200).send({
-    status: "success",
-    data: resData,
-  });
-};
-
 export const getAccountById = async (req: Request, res: Response) => {
   const {uid} = req.params;
   const {authorization} = req.headers;
@@ -66,7 +24,8 @@ export const getAccountById = async (req: Request, res: Response) => {
       }
 
       const resData = {
-        userId: accountData.uuid,
+        uuid: accountData.uuid,
+        userId: accountData.user_id,
         username: accountData.username,
         email: accountData.email,
         icon: accountData.icon_url,

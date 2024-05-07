@@ -69,7 +69,7 @@ export const signUp = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: {
-          userId: uid,
+          userId: savedUser.user_id,
           username: savedUser.username,
           email: savedUser.email,
           icon: savedUser.icon_url,
@@ -187,7 +187,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
       }
 
       const resData = {
-        userId: uid,
+        userId: accountData.user_id,
         username: accountData.username,
         email: accountData.email,
         icon: accountData.icon_url,
@@ -305,7 +305,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
       status: "success",
       data: {
         account: {
-          userId: accountData?.uuid,
+          userId: accountData?.user_id,
           username: accountData?.username,
           email: accountData?.email,
           icon: accountData?.icon_url,

@@ -3,42 +3,6 @@ import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken} from "firebase-admin/auth";
 import {prisma} from "../prisma";
 
-export const getSaidans = async (req: Request, res: Response) => {
-  const {q, sortBy, sortOrder} = req.params;
-  const orderValue = {};
-  Object.defineProperty(orderValue, sortBy, {
-    value: sortOrder,
-    writable: false,
-    enumerable: true,
-    configurable: true,
-  });
-  const saidans = await prisma.tobiratory_saidans.findMany({
-    where: {
-      title: {
-        in: [q],
-      },
-    },
-    orderBy: orderValue,
-  });
-  const resData = {
-    saidans: saidans.map(async (saidan) => {
-      return {
-        id: saidan.id,
-        title: saidan.title,
-        description: saidan.description,
-        owner: {
-          userId: saidan.owner_uuid,
-        },
-      };
-    }),
-  };
-
-  res.status(200).send({
-    status: "success",
-    data: resData,
-  });
-};
-
 export const getSaidansById = async (req: Request, res: Response) => {
   const {saidanId} = req.params;
   const {authorization} = req.headers;
@@ -287,7 +251,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
       title: saidanData.title,
       description: saidanData.description,
       owner: {
-        userId: saidanData.owner_uuid,
+        uuid: saidanData.owner_uuid,
       },
     };
     res.status(200).send({
