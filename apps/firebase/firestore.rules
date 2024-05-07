@@ -86,5 +86,17 @@ service cloud.firestore {
     match /tobiraneko/{nftId} {
       allow read, write: if isAdmin();
     }
+
+    // Collection to store codes used for validating email addresses for redeeming
+    match /redeemLinkCodes/{userId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Collection to store email addresses for redeeming.
+    // Users can view the email addresses used for redeeming.
+    match /redeemEmails/{userId} {
+      allow read: if isAdmin() || isCurrentUser(userId);
+      allow write: if isAdmin();
+    }
   }
 }
