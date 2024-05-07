@@ -5,7 +5,7 @@ import {
   updateCopyright,
   deleteCopyright,
 } from "fetchers/SampleActions";
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import CopyrightEditMenu from "./CopyrightEditMenu";
 
 const CopyrightMultiSelect = ({
@@ -23,7 +23,6 @@ const CopyrightMultiSelect = ({
     text: "",
   });
 
-  const popupMenuRef = useRef(null);
   const rootElementRef = useRef(null);
 
   const items = useMemo(() => {
@@ -43,15 +42,6 @@ const CopyrightMultiSelect = ({
   }, [selectedItems, elements]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        popupMenuRef.current &&
-        !popupMenuRef.current.contains(event.target)
-      ) {
-        setPopupMenuOpen(false);
-      }
-    }
-
     const fetchData = async () => {
       try {
         const data = await fetchCopyrights();
@@ -63,11 +53,6 @@ const CopyrightMultiSelect = ({
     };
 
     fetchData();
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
   useEffect(() => {
@@ -380,10 +365,10 @@ const CopyrightMultiSelect = ({
             }}
           >
             <CopyrightEditMenu
-              menuRef={popupMenuRef}
               id={popupMenuPosition.id}
               name={popupMenuPosition.text}
               nofityHandler={itemChangedHandler}
+              closeHandler={() => setPopupMenuOpen(false)}
             />
           </div>
         )}
