@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { User } from "types/adminTypes";
 import Button from "ui/atoms/Button";
-import BackLInk from "ui/organisms/admin/BackLink";
+import BackLInk from "ui/molecules/BackLink";
 import { TermsOfService } from "./FlowAgreementWithEmailAndPassword";
 
 type Props = {

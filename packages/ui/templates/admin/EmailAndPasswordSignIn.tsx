@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
-import BackLink from "ui/organisms/admin/BackLink";
+import BackLink from "ui/molecules/BackLink";
 import { LoadingSpinnerButton } from "ui/templates/AuthTemplate";
 
 type Props = {
