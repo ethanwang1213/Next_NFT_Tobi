@@ -541,8 +541,6 @@ transaction(
   });
   console.log({txId});
 
-  await updateDigitalItemNFT(id, txId);
-
   return {txId};
 };
 
@@ -810,16 +808,5 @@ const fillInFlowAccountCreattionInfo = async ({
     txId,
     sentAt: new Date(),
     address: "",
-  });
-};
-
-const updateDigitalItemNFT = async (id: number, txId: string) => {
-  prisma.tobiratory_digital_item_nfts.update({
-    where: {
-      id: id,
-    },
-    data: {
-      tx_id: txId,
-    },
   });
 };
