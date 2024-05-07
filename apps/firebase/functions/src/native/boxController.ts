@@ -427,7 +427,7 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
         res.status(200).send({
           status: "success",
           data: {
-            uuuid: receiverUserData.uuid,
+            uuid: receiverUserData.uuid,
             userId: receiverUserData.user_id,
             username: receiverUserData.username,
             icon: receiverUserData.icon_url,
