@@ -52,6 +52,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         itemCreatorAddress: flowAccount.flow_address,
         itemId: id,
         digitalItemId,
+        digitalItemNftId: params.digitalItemNftId,
         metadata: params.metadata,
         fcmToken: params.fcmToken,
       }};
