@@ -170,14 +170,28 @@ export const mintNFT = async (req: Request, res: Response) => {
         itemCreatorAddress: flowAccount.flow_address,
         itemId,
         digitalItemId,
+        digitalItemNftId: undefined,
         metadata,
         fcmToken,
       }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
       console.log(`Message ${messageId} published.`);
     } else {
+      const nft = await prisma.tobiratory_digital_item_nfts.create({
+        data: {
+          digital_item_id: digitalItem.id,
+          owner_uuid: uid,
+          mint_status: "minting",
+        }
+      });
       const flowJobId = uuidv4();
-      const message = {flowJobId, txType: "createItem", params: {tobiratoryAccountUuid: uid, digitalItemId, metadata, fcmToken}};
+      const message = {flowJobId, txType: "createItem", params: {
+        tobiratoryAccountUuid: uid,
+        digitalItemNftId: nft.id,
+        digitalItemId,
+        metadata,
+        fcmToken,
+      }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
       console.log(`Message ${messageId} published.`);
     }

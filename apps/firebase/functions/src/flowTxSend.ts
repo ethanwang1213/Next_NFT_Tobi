@@ -76,7 +76,7 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
-        const {id} = await createNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata);
+        const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata);
         const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, id);
         await flowJobDocRef.update({
           flowJobId,
@@ -123,17 +123,31 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const createNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any) => {
-  const nft = await prisma.tobiratory_digital_item_nfts.create({
-    data: {
-      digital_item_id: digitalItemId,
-      owner_uuid: ownerUuid,
-      nft_metadata: JSON.stringify(metadata),
-      nft_model: metadata.modelUrl,
-    },
-  });
-
-  return {id: nft.id};
+const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any) => {
+  const digitalItemNftId = metadata.digitalItemNftId;
+  if (digitalItemNftId) {
+    await prisma.tobiratory_digital_item_nfts.update({
+      where: {
+        id: digitalItemNftId,
+      },
+      data: {
+        nft_metadata: JSON.stringify(metadata),
+        nft_model: metadata.modelUrl,
+      },
+    });
+    return {id: digitalItemNftId}
+  } else {
+    const nft = await prisma.tobiratory_digital_item_nfts.create({
+      data: {
+        digital_item_id: digitalItemId,
+        owner_uuid: ownerUuid,
+        nft_metadata: JSON.stringify(metadata),
+        nft_model: metadata.modelUrl,
+        mint_status: "minting",
+      },
+    });
+    return {id: nft.id};
+  }
 };
 
 type Metadata = {
