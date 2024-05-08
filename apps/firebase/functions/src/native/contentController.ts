@@ -4,39 +4,6 @@ import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {statusOfShowcase} from "./utils";
 
-export const getContents = async (req: Request, res: Response) => {
-  const {q, sortBy, sortOrder} = req.params;
-  const orderValue = {};
-  Object.defineProperty(orderValue, sortBy, {
-    value: sortOrder,
-    writable: false,
-    enumerable: true,
-    configurable: true,
-  });
-  const contents = await prisma.tobiratory_contents.findMany({
-    where: {
-      name: {
-        in: [q],
-      },
-    },
-    orderBy: orderValue,
-  });
-  const resData = {
-    contents: contents.map(async (content) => {
-      return {
-        id: content.id,
-        name: content.name,
-        image: content.image,
-      };
-    }),
-  };
-
-  res.status(200).send({
-    status: "success",
-    data: resData,
-  });
-};
-
 export const getContentById = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;

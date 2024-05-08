@@ -427,7 +427,8 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
         res.status(200).send({
           status: "success",
           data: {
-            userId: receiverUserData.uuid,
+            uuid: receiverUserData.uuid,
+            userId: receiverUserData.user_id,
             username: receiverUserData.username,
             icon: receiverUserData.icon_url,
             boxName: receiverUserData.username + "'s Inventory",
@@ -449,7 +450,8 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
         res.status(200).send({
           status: "success",
           data: {
-            userId: receiverUserData.uuid,
+            uuid: receiverUserData.uuid,
+            userId: receiverUserData.user_id,
             username: receiverUserData.username,
             icon: receiverUserData.icon_url,
             boxName: receiverBoxData.name,

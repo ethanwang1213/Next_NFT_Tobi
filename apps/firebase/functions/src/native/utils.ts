@@ -18,3 +18,13 @@ export const statusOfShowcase = {
   public: 1,
   publicSchedule: 2,
 };
+
+export const statusOfSample = {
+  draft: 1,
+  private: 2,
+  public: 3,
+  onSale: 4,
+  unListed: 5,
+  publicSchedule: 6,
+  saleSchedule: 7,
+};

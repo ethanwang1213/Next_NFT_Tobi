@@ -69,7 +69,7 @@ export const signUp = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: {
-          userId: uid,
+          userId: savedUser.user_id,
           username: savedUser.username,
           email: savedUser.email,
           icon: savedUser.icon_url,
@@ -187,7 +187,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
       }
 
       const resData = {
-        userId: uid,
+        userId: accountData.user_id,
         username: accountData.username,
         email: accountData.email,
         icon: accountData.icon_url,
@@ -196,6 +196,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
         socialLinks: accountData.social_link,
         gender: accountData.gender,
         birth: accountData.birth,
+        giftPermission: accountData.gift_permission,
         flow: {
           flowAddress: flowAccountData.flow_address,
           publicKey: flowAccountData.public_key,
@@ -223,6 +224,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
 
 export const postMyProfile = async (req: Request, res: Response) => {
   type AccountType = {
+    userId?: string,
     username?: string,
     email?: string,
     icon?: string,
@@ -241,6 +243,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {account, flow}: { account?: AccountType; flow?: FlowType } = req.body;
   const accountUpdated = {
+    user_id: account?.userId,
     username: account?.username,
     email: account?.email,
     icon_url: account?.icon,
@@ -305,7 +308,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
       status: "success",
       data: {
         account: {
-          userId: accountData?.uuid,
+          userId: accountData?.user_id,
           username: accountData?.username,
           email: accountData?.email,
           icon: accountData?.icon_url,
@@ -314,6 +317,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
           socialLinks: accountData?.social_link,
           gender: accountData?.gender,
           birth: accountData?.birth,
+          giftPermission: accountData?.gift_permission,
           createdAt: accountData?.created_date_time,
         },
         flow: flowData==null ? undefined : {
