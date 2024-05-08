@@ -314,7 +314,7 @@ export default function Index() {
                 onChange={(e) => fieldChangeHandler("userId", e.target.value)}
               />
             </AccountFieldComponent>
-            <AccountFieldComponent label={"Biography"} alignTop={true}>
+            <AccountFieldComponent label={"About me"} alignTop={true}>
               <textarea
                 className={`${valueClass} h-[200px] outline-none resize-none`}
                 value={data.aboutMe}
