@@ -135,7 +135,7 @@ const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string,
         nft_model: metadata.modelUrl,
       },
     });
-    return {id: digitalItemNftId}
+    return {id: digitalItemNftId};
   } else {
     const nft = await prisma.tobiratory_digital_item_nfts.create({
       data: {

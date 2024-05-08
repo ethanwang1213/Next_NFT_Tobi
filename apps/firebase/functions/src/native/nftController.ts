@@ -182,7 +182,7 @@ export const mintNFT = async (req: Request, res: Response) => {
           digital_item_id: digitalItem.id,
           owner_uuid: uid,
           mint_status: "minting",
-        }
+        },
       });
       const flowJobId = uuidv4();
       const message = {flowJobId, txType: "createItem", params: {
