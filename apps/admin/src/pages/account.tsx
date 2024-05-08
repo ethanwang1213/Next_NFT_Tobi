@@ -244,7 +244,6 @@ export default function Index() {
   };
 
   const fieldChangeHandler = (field, value) => {
-    console.log("fieldChangeHandler:", field, value);
     setData({ ...data, [field]: value });
     setModified(true);
   };
