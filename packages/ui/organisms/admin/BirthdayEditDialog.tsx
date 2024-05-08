@@ -19,8 +19,8 @@ const BirthdayEditDialog = ({
   const datePickerRef = useRef(null);
 
   useEffect(() => {
-    // if (initialValue && initialValue.length > 0)
-    //   setBirthday(new Date(initialValue));
+    if (initialValue && initialValue.length > 0)
+      setBirthday(new Date(initialValue));
   }, [initialValue]);
 
   return (

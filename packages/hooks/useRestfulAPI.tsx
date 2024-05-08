@@ -39,7 +39,7 @@ const useRestfulAPI = (url) => {
     }
   };
 
-  const postData = async (url, data) => {
+  const postData = async (url, data, objectName = "") => {
     setLoading(true);
     setError(null);
 
@@ -60,7 +60,13 @@ const useRestfulAPI = (url) => {
 
       const jsonData = await response.json();
       if (jsonData.status === "success") {
-        return true;
+        const objectData = objectName
+          ? jsonData.data[objectName]
+          : jsonData.data;
+        setData(objectData);
+        dataRef.current = objectData;
+
+        return objectData;
       } else {
         setError(jsonData.data);
       }
@@ -73,7 +79,7 @@ const useRestfulAPI = (url) => {
     return false;
   };
 
-  const putData = async (url, data) => {
+  const putData = async (url, data, objectName = "") => {
     setLoading(true);
     setError(null);
 
@@ -94,10 +100,13 @@ const useRestfulAPI = (url) => {
 
       const jsonData = await response.json();
       if (jsonData.status === "success") {
-        setData(jsonData.data);
-        dataRef.current = jsonData.data;
+        const objectData = objectName
+          ? jsonData.data[objectName]
+          : jsonData.data;
+        setData(objectData);
+        dataRef.current = objectData;
 
-        return true;
+        return objectData;
       } else {
         setError(jsonData.data);
       }

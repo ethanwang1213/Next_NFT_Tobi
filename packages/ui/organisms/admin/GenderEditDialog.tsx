@@ -23,9 +23,12 @@ const GenderComponent = ({
       <input
         type="radio"
         id={`id-${name}-${value}`}
+        className="tobiratory-radio-2"
         name={name}
-        defaultChecked={initValue == value}
-        onClick={clickHandler}
+        checked={initValue == value}
+        onChange={(e) => {
+          if (e.target.checked) clickHandler();
+        }}
       />
     </div>
   );
@@ -95,7 +98,10 @@ const GenderEditDialog = ({
             className="px-4 py-2 rounded-[64px] border-2 border-primary
               hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
-            onClick={() => dialogRef.current.close()}
+            onClick={() => {
+              setGender(initialValue);
+              dialogRef.current.close();
+            }}
           >
             Cancel
           </button>

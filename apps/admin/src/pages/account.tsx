@@ -47,14 +47,13 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
   const layoutClass = "flex items-center gap-4 mb-4";
 
   useEffect(() => {
-    setUrls([]);
-
-    const twitterRegex = /^https?:\/\/(www\.)?twitter\.com\//i;
+    const twitterRegex = /^https?:\/\/(www\.)?x\.com\//i;
     const instagramRegex = /^https?:\/\/(www\.)?instagram\.com\//i;
     const facebookRegex = /^https?:\/\/(www\.)?facebook\.com\//i;
     const youtubeRegex = /^https?:\/\/(www\.)?youtube\.com\//i;
 
-    socialLinks.map((link) => {
+    const newUrls = [];
+    socialLinks.forEach((link) => {
       if (twitterRegex.test(link)) {
         setTwitterUrl(link);
       } else if (instagramRegex.test(link)) {
@@ -64,9 +63,11 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       } else if (youtubeRegex.test(link)) {
         setYoutubeUrl(link);
       } else {
-        setUrls([...urls, link]);
+        if (link != "") newUrls.push(link);
       }
     });
+    setUrls(newUrls);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -102,7 +103,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         newUrls[type] = url;
         break;
     }
-    changeHandler(newUrls.filter((value) => value !== null));
+    changeHandler(newUrls.filter((value) => value !== null && value !== ""));
   };
 
   return (
@@ -229,7 +230,7 @@ export default function Index() {
       fieldChangeHandler("icon", iconUrl);
     }
 
-    if (await postData(apiUrl, submitData)) {
+    if (await postData(apiUrl, { account: submitData }, "account")) {
       setModified(false);
     } else {
       if (error) {

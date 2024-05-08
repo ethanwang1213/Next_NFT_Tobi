@@ -63,6 +63,23 @@ input[type="radio"].tobiratory-radio:checked {
   background-size: cover;
 }
 
+input[type="radio"].tobiratory-radio-2 {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 12px; /* Set the width of your custom radio button */
+  height: 12px; /* Set the height of your custom radio button */
+  background: url("/admin/images/icon/radiobox-2.svg") no-repeat; /* Set the path to your custom image */
+  background-size: cover;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="radio"].tobiratory-radio-2:checked {
+  background: url("/admin/images/icon/radiobox-checked-2.svg") no-repeat; /* Set the path to your custom checked image */
+  background-size: cover;
+}
+
 input[type="checkbox"].tobiratory-checkbox {
   appearance: none;
   -webkit-appearance: none;
