@@ -50,6 +50,7 @@ export const searchAll = async (req: Request, res: Response) => {
           uuid: user.uuid,
           avatar: user.icon_url,
           username: user.username,
+          aboutMe: user.about_me,
         };
       });
       const contents = await prisma.tobiratory_contents.findMany({
