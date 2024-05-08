@@ -53,7 +53,7 @@ const CopyrightHolderComponent = ({ initialItems, changeHandler }) => {
     text: "",
   });
   const [items, setItems] = useState(null);
-  const { error, putData, deleteData } = useRestfulAPI(null);
+  const { error, postData, deleteData } = useRestfulAPI(null);
 
   const rootElementRef = useRef(null);
 
@@ -73,7 +73,7 @@ const CopyrightHolderComponent = ({ initialItems, changeHandler }) => {
       let update = true;
       // call API
       if (id > 0) {
-        update = await putData(`${apiUrl}/${id}`, value);
+        update = await postData(`${apiUrl}/${id}`, { name: value });
         if (!update) toast(error);
       }
       // update UI
@@ -216,6 +216,10 @@ const ContentSettingPanel = ({
 
   useEffect(() => {
     if (cancelFlag > 0 && modifiedRef.current) {
+      // remove new copyright items
+      dataRef.current.copyright = dataRef.current.copyright.filter(
+        (item) => item.id !== null,
+      );
       restoreData();
       modifiedRef.current = false;
     }
