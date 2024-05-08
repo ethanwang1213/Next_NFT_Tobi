@@ -1,9 +1,5 @@
 import ja from "date-fns/locale/ja";
-import {
-  deleteShowcase,
-  fetchShowcases,
-  updateShowcase,
-} from "fetchers/ShowcaseActions";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -29,7 +25,6 @@ type ShowcaseComponentProps = {
   scheduleTime?: string;
   updateTime: string;
   refreshHandler: () => void;
-  errorHandler: (value: string) => void;
 };
 
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
@@ -43,6 +38,9 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [modifiedTime, setModifiedTime] = useState("");
   const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const apiUrl = "/backend/api/functions/native/admin/showcases";
+  const { error, putData, deleteData } = useRestfulAPI(null);
 
   const popupRef = useRef(null);
   const datePickerRef = useRef(null);
@@ -82,7 +80,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         changeStatus(ShowcaseStatus.ScheduledPublic);
         break;
       case 4:
-        deleteData();
+        deleteHandler();
         break;
 
       default:
@@ -90,43 +88,58 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     }
   };
 
-  const deleteData = async () => {
-    const result = await deleteShowcase(props.id);
-    if (result) {
+  const deleteHandler = async () => {
+    if (await deleteData(`${apiUrl}/${props.id}`)) {
       props.refreshHandler();
     } else {
-      // show error message
-      props.errorHandler("Failed to delete the showcase");
+      if (error) {
+        if (error instanceof String) {
+          toast(error);
+        } else {
+          toast(error.toString());
+        }
+      }
     }
   };
 
   const changeTitle = async (title: string) => {
-    const result = await updateShowcase(props.id, { title });
-    if (result != null) {
-      setTitle(title);
-      setModifiedTime(result.updateTime);
+    const jsonData = await putData(`${apiUrl}/${props.id}`, { title });
+    if (jsonData) {
+      setTitle(jsonData.title);
+      setModifiedTime(jsonData.updateTime);
     } else {
-      // show error message
-      props.errorHandler("Failed to change the title of the showcase");
+      if (error) {
+        if (error instanceof String) {
+          toast(error);
+        } else {
+          toast(error.toString());
+        }
+      }
     }
   };
 
   const changeStatus = async (status) => {
     setStatus(status);
-    const result = await updateShowcase(
-      props.id,
+
+    const jsonData = await putData(
+      `${apiUrl}/${props.id}`,
       status == ShowcaseStatus.ScheduledPublic
         ? { status, scheduleTime: scheduleTime }
         : { status },
     );
-    if (result != null) {
-      setModifiedTime(result.updateTime);
+    if (jsonData) {
       if (status == ShowcaseStatus.Public) {
         props.refreshHandler();
       }
+      setModifiedTime(jsonData.updateTime);
     } else {
-      // show error message
-      props.errorHandler("Failed to change the status of the showcase");
+      if (error) {
+        if (error instanceof String) {
+          toast(error);
+        } else {
+          toast(error.toString());
+        }
+      }
     }
   };
 
@@ -135,15 +148,18 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       return;
     }
 
-    const result = await updateShowcase(props.id, {
-      scheduleTime: scheduleTime,
-    });
-    if (result != null) {
-      setModifiedTime(result.updateTime);
+    const jsonData = await putData(`${apiUrl}/${props.id}`, { scheduleTime });
+    if (jsonData) {
       setScheduleTimeChanged(false);
+      setModifiedTime(jsonData.updateTime);
     } else {
-      // show error message
-      props.errorHandler("Failed to change the schedule time of the showcase");
+      if (error) {
+        if (error instanceof String) {
+          toast(error);
+        } else {
+          toast(error.toString());
+        }
+      }
     }
   };
 
@@ -290,36 +306,24 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 };
 
 const ShowcasePanel = () => {
-  // showcase data
-  const [showcases, setShowcases] = useState([]);
+  const apiUrl = "/backend/api/functions/native/admin/showcases";
+  const { data, getData } = useRestfulAPI(apiUrl);
+
   const [reload, setReload] = useState(0);
 
-  // fetch showcases from server
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchShowcases();
-        if (data != null) {
-          setShowcases(data);
-        } else {
-          toast("Failed to load showcase. Please check the error.");
-        }
-      } catch (error) {
-        // Handle errors here
-        console.error("Error fetching data:", error);
-        toast(error.toString());
-      }
-    };
-
-    fetchData();
+    if (reload > 0) {
+      getData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload]);
 
   return (
     <>
       <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
-        {showcases &&
-          showcases.length > 0 &&
-          showcases.map((showcase, index) => {
+        {data &&
+          data.length > 0 &&
+          data.map((showcase, index) => {
             return (
               <ShowcaseComponent
                 key={`showcase-${showcase.id}`}
@@ -330,7 +334,6 @@ const ShowcasePanel = () => {
                 scheduleTime={showcase.scheduleTime}
                 updateTime={showcase.updateTime}
                 refreshHandler={() => setReload(reload + 1)}
-                errorHandler={toast}
               />
             );
           })}
