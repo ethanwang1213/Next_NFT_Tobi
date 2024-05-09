@@ -158,11 +158,15 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
 
   const {serialNumber} = await fetchMintNFT(txId);
   const itemId = digitalItem.item_id;
+  const creatorAddress = digitalItem.creator_flow_address;
   if (!itemId) {
     throw new Error("ITEM_ID_NOT_FOUND");
   }
-  const limit = await fetchMintLimit(itemId, digitalItem.creator_flow_address);
-  const mintedCount = await fetchMintedCount(itemId, digitalItem.creator_flow_address);
+  if (!creatorAddress) {
+    throw new Error("CREATOR_ADDRESS_NOT_FOUND");
+  }
+  const limit = await fetchMintLimit(itemId, creatorAddress);
+  const mintedCount = await fetchMintedCount(itemId, creatorAddress);
 
   await prisma.tobiratory_digital_item_nfts.update({
     where: {
