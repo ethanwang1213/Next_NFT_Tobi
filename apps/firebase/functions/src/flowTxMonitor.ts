@@ -109,12 +109,13 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
   if (!txId) {
     throw new Error("TX_NOT_FOUND");
   }
-  const {id} = await fetchCreateItem(txId);
+  const {id, creatorAddress} = await fetchCreateItem(txId);
   await prisma.tobiratory_digital_items.update({
     where: {
       id: digitalItemId,
     },
     data: {
+      creator_flow_address: creatorAddress,
       item_id: Number(id),
     },
   });
@@ -156,6 +157,12 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   }
 
   const {serialNumber} = await fetchMintNFT(txId);
+  const itemId = digitalItem.item_id;
+  if (!itemId) {
+    throw new Error("ITEM_ID_NOT_FOUND");
+  }
+  const limit = await fetchMintLimit(itemId, digitalItem.creator_flow_address);
+  const mintedCount = await fetchMintedCount(itemId, digitalItem.creator_flow_address);
 
   await prisma.tobiratory_digital_item_nfts.update({
     where: {
@@ -172,7 +179,8 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       id: digitalItemId,
     },
     data: {
-      limit: digitalItem.limit ? digitalItem.limit - 1 : null,
+      limit: limit,
+      minted_count: mintedCount,
     },
   });
   pushToDevice(fcmToken, {
@@ -196,6 +204,45 @@ const fetchMintNFT = async (txId: string) => {
     }
   }
   throw Error("TX_FAILED");
+};
+
+const fetchMintLimit = async (itemId: number, creatorFlowAccount: string) => {
+  const cadence = `
+import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
+    
+pub fun main(address: Address, itemID: UInt64): UInt32? {
+    let items = getAccount(address)
+        .getCapability(TobiratoryDigitalItems.ItemsPublicPath)
+        .borrow<&TobiratoryDigitalItems.Items{TobiratoryDigitalItems.ItemsPublic}>()
+        ?? panic("Could not borrow the NFT collection reference")
+    let item = items.borrowItem(itemID: itemID)
+
+    return item?.limit;
+}`;
+  return await fcl.query({
+    cadence,
+    args: (arg: any, t: any) => [arg(creatorFlowAccount, t.Address), arg(itemId, t.UInt64)],
+  });
+};
+
+const fetchMintedCount = async (itemId: number, creatorFlowAccount: string) => {
+  const cadence = `
+import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
+
+pub fun main(address: Address, itemID: UInt64): UInt32? {
+    let items = getAccount(address)
+        .getCapability(TobiratoryDigitalItems.ItemsPublicPath)
+        .borrow<&TobiratoryDigitalItems.Items{TobiratoryDigitalItems.ItemsPublic}>()
+        ?? panic("Could not borrow the NFT collection reference")
+    let item = items.borrowItem(itemID: itemID)
+
+    return item?.mintedCount;
+}`
+
+  return await fcl.query({
+    cadence,
+    args: (arg: any, t: any) => [arg(creatorFlowAccount, t.Address), arg(itemId, t.UInt64)],
+  });
 };
 
 const createOrGetFlowJobDocRef = async (flowJobId: string) => {
