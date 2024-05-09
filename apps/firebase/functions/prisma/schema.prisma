@@ -117,6 +117,7 @@ model tobiratory_digital_items {
   id                               Int                                  @id @default(autoincrement())
   user                             tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
   creator_uuid                     String                               @db.VarChar(100)
+  creator_flow_address             String                               @db.VarChar(255)
   name                             String                               @default("") @db.VarChar(255)
   default_thumb_url                String                               @db.Text
   custom_thumb_url                 String                               @db.Text
