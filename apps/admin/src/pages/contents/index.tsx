@@ -17,7 +17,7 @@ export default function Index() {
       label: "new showcase",
       clickHandler: () => {
         // This is temporary function. This function will be replaced by routing in next sprint.
-        postData("/backend/api/functions/native/admin/showcases", {
+        postData("native/admin/showcases", {
           title: "The showcase title",
           description: "",
           templateId: 1,

@@ -204,7 +204,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 };
 
 export default function Index() {
-  const apiUrl = "/backend/api/functions/native/my/profile";
+  const apiUrl = "native/my/profile";
   const [modified, setModified] = useState(false);
   const { data, dataRef, error, setData, postData } = useRestfulAPI(apiUrl);
 

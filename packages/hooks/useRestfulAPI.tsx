@@ -2,19 +2,20 @@ import { auth } from "fetchers/firebase/client";
 import { useEffect, useRef, useState } from "react";
 
 const useRestfulAPI = (url) => {
+  const apiUrlPrefix = "/backend/api/functions/";
   const [data, setData] = useState(null); // State for data
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for error handling
 
   const dataRef = useRef(null);
 
-  const getData = async () => {
+  const getData = async (url) => {
     setLoading(true);
     setError(null);
 
     try {
       const token = await auth.currentUser!.getIdToken();
-      const response = await fetch(url, {
+      const response = await fetch(`${apiUrlPrefix}${url}`, {
         method: "GET",
         headers: {
           Authorization: token,
@@ -45,7 +46,7 @@ const useRestfulAPI = (url) => {
 
     try {
       const token = await auth.currentUser!.getIdToken();
-      const response = await fetch(url, {
+      const response = await fetch(`${apiUrlPrefix}${url}`, {
         method: "POST",
         headers: {
           Authorization: token,
@@ -85,7 +86,7 @@ const useRestfulAPI = (url) => {
 
     try {
       const token = await auth.currentUser!.getIdToken();
-      const response = await fetch(url, {
+      const response = await fetch(`${apiUrlPrefix}${url}`, {
         method: "PUT",
         headers: {
           Authorization: token,
@@ -125,7 +126,7 @@ const useRestfulAPI = (url) => {
 
     try {
       const token = await auth.currentUser!.getIdToken();
-      const response = await fetch(url, {
+      const response = await fetch(`${apiUrlPrefix}${url}`, {
         method: "DELETE",
         headers: {
           Authorization: token,
@@ -157,7 +158,7 @@ const useRestfulAPI = (url) => {
 
   useEffect(() => {
     if (url == null || url == "") return;
-    getData();
+    getData(url);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 

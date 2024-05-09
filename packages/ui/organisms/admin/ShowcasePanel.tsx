@@ -39,7 +39,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const apiUrl = "/backend/api/functions/native/admin/showcases";
+  const apiUrl = "native/admin/showcases";
   const { error, putData, deleteData } = useRestfulAPI(null);
 
   const popupRef = useRef(null);
@@ -306,14 +306,14 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 };
 
 const ShowcasePanel = () => {
-  const apiUrl = "/backend/api/functions/native/admin/showcases";
+  const apiUrl = "native/admin/showcases";
   const { data, getData } = useRestfulAPI(apiUrl);
 
   const [reload, setReload] = useState(0);
 
   useEffect(() => {
     if (reload > 0) {
-      getData();
+      getData(apiUrl);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload]);

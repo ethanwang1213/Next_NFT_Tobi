@@ -44,7 +44,7 @@ const ContentNameEditComponent = ({ initialValue, changeHandler }) => {
 };
 
 const CopyrightHolderComponent = ({ initialItems, changeHandler }) => {
-  const apiUrl = "/backend/api/functions/native/admin/copyrights";
+  const apiUrl = "native/admin/copyrights";
   const [popupMenuOpen, setPopupMenuOpen] = useState(false);
   const [popupMenuPosition, setPopupMenuPosition] = useState({
     x: 0,
@@ -196,7 +196,7 @@ const ContentSettingPanel = ({
   publishFlag: number;
   changeHandler: () => void;
 }) => {
-  const apiUrl = "/backend/api/functions/native/admin/content";
+  const apiUrl = "native/admin/content";
   const { data, dataRef, error, setData, putData, restoreData } =
     useRestfulAPI(apiUrl);
 
