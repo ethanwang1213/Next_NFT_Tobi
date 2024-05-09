@@ -4,6 +4,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 export enum ImageType {
   AccountAvatar = 0,
   ContentBrand,
+  SampleThumbnail,
 }
 
 export const uploadImage = async (image, type) => {
@@ -36,12 +37,23 @@ export const uploadImage = async (image, type) => {
 
     // Upload the file to Firebase Storage
     let path = "";
-    if (type == ImageType.AccountAvatar) {
-      path = `avatars/${auth.currentUser.uid}/${storageFileName}`;
+    switch (type) {
+      case ImageType.AccountAvatar:
+        path = `avatars/${auth.currentUser.uid}/${storageFileName}`;
+        break;
+
+      case ImageType.ContentBrand:
+        path = `users/${auth.currentUser.uid}/contents/${storageFileName}`;
+        break;
+
+      case ImageType.SampleThumbnail:
+        path = `thumbnails/${auth.currentUser.uid}/${storageFileName}`;
+        break;
+
+      default:
+        break;
     }
-    if (type == ImageType.ContentBrand) {
-      path = `users/${auth.currentUser.uid}/contents/${storageFileName}`;
-    }
+
     const storageRef = ref(storage, path);
     await uploadBytes(storageRef, blob);
 
