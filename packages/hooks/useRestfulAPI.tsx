@@ -40,7 +40,7 @@ const useRestfulAPI = (url) => {
     }
   };
 
-  const postData = async (url, data, objectName = "") => {
+  const postData = async (url, data, dataObjectNames = null) => {
     setLoading(true);
     setError(null);
 
@@ -61,13 +61,18 @@ const useRestfulAPI = (url) => {
 
       const jsonData = await response.json();
       if (jsonData.status === "success") {
-        const objectData = objectName
-          ? jsonData.data[objectName]
-          : jsonData.data;
-        setData(objectData);
-        dataRef.current = objectData;
+        if (dataObjectNames == null) {
+          return true;
+        } else {
+          let returnData = jsonData.data;
+          dataObjectNames.forEach((objectName) => {
+            returnData = returnData[objectName];
+          });
+          setData(returnData);
+          dataRef.current = returnData;
 
-        return objectData;
+          return returnData;
+        }
       } else {
         setError(jsonData.data);
       }
@@ -80,7 +85,7 @@ const useRestfulAPI = (url) => {
     return false;
   };
 
-  const putData = async (url, data, objectName = "") => {
+  const putData = async (url, data, dataObjectNames = null) => {
     setLoading(true);
     setError(null);
 
@@ -101,13 +106,18 @@ const useRestfulAPI = (url) => {
 
       const jsonData = await response.json();
       if (jsonData.status === "success") {
-        const objectData = objectName
-          ? jsonData.data[objectName]
-          : jsonData.data;
-        setData(objectData);
-        dataRef.current = objectData;
+        if (dataObjectNames == null) {
+          return true;
+        } else {
+          let returnData = jsonData.data;
+          dataObjectNames.forEach((objectName) => {
+            returnData = returnData[objectName];
+          });
+          setData(returnData);
+          dataRef.current = returnData;
 
-        return objectData;
+          return returnData;
+        }
       } else {
         setError(jsonData.data);
       }

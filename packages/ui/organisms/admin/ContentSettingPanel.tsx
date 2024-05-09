@@ -237,7 +237,7 @@ const ContentSettingPanel = ({
       if (dataRef.current) {
         if (dataRef.current.name == submitData.name) delete submitData.name;
       }
-      if (await putData(apiUrl, submitData)) {
+      if (await putData(apiUrl, submitData, [])) {
         modifiedRef.current = false;
       } else {
         if (error) {

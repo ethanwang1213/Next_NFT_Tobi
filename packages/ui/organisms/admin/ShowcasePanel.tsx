@@ -103,7 +103,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   };
 
   const changeTitle = async (title: string) => {
-    const jsonData = await putData(`${apiUrl}/${props.id}`, { title });
+    const jsonData = await putData(`${apiUrl}/${props.id}`, { title }, []);
     if (jsonData) {
       setTitle(jsonData.title);
       setModifiedTime(jsonData.updateTime);
@@ -126,6 +126,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       status == ShowcaseStatus.ScheduledPublic
         ? { status, scheduleTime: scheduleTime }
         : { status },
+      [],
     );
     if (jsonData) {
       if (status == ShowcaseStatus.Public) {
@@ -148,7 +149,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       return;
     }
 
-    const jsonData = await putData(`${apiUrl}/${props.id}`, { scheduleTime });
+    const jsonData = await putData(
+      `${apiUrl}/${props.id}`,
+      { scheduleTime },
+      [],
+    );
     if (jsonData) {
       setScheduleTimeChanged(false);
       setModifiedTime(jsonData.updateTime);

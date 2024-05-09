@@ -53,7 +53,7 @@ const ContentBrandPanel = ({
           ImageType.ContentBrand,
         );
       }
-      if (await putData(apiUrl, submitData)) {
+      if (await putData(apiUrl, submitData, [])) {
         modifiedRef.current = false;
       } else {
         if (error) {

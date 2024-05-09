@@ -230,7 +230,7 @@ export default function Index() {
       fieldChangeHandler("icon", iconUrl);
     }
 
-    if (await postData(apiUrl, { account: submitData }, "account")) {
+    if (await postData(apiUrl, { account: submitData }, ["account"])) {
       setModified(false);
     } else {
       if (error) {
