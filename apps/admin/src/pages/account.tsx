@@ -206,7 +206,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 export default function Index() {
   const apiUrl = "/backend/api/functions/native/my/profile";
   const [modified, setModified] = useState(false);
-  const { data, dataRef, error, setData, postData } = useRestfulAPI(apiUrl);
+  const { data, dataRef, error, loading, setData, postData } =
+    useRestfulAPI(apiUrl);
 
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
@@ -259,9 +260,14 @@ export default function Index() {
   return (
     <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
       <div className="flex justify-between items-start">
-        <span className="text-3xl text-secondary-600 font-semibold">
-          ACCOUNT
-        </span>
+        <div className="flex items-center">
+          <span className={`text-3xl text-secondary-600 font-semibold`}>
+            ACCOUNT
+          </span>
+          {loading && (
+            <span className="loading loading-spinner loading-md ml-4 text-secondary-600"></span>
+          )}
+        </div>
         <button
           className={`text-xl h-14 text-white rounded-[30px] px-10
             ${modified ? "bg-primary" : "bg-inactive"}
