@@ -2,7 +2,13 @@ import Link from "next/link";
 import Button from "ui/atoms/Button";
 import Breadcrumbs from "ui/molecules/Breadcrumbs";
 
-const ItemEditHeader = ({ activeName }: { activeName: string }) => {
+const ItemEditHeader = ({
+  activeName,
+  saveHandler,
+}: {
+  activeName: string;
+  saveHandler: () => void;
+}) => {
   return (
     <div className="flex pt-9 pl-12 pr-7 h-28">
       <div className="flex-grow">
@@ -29,6 +35,7 @@ const ItemEditHeader = ({ activeName }: { activeName: string }) => {
         <Button
           type="submit"
           className="text-xl h-14 bg-primary text-white rounded-[30px] px-10"
+          onClick={saveHandler}
         >
           SAVE
         </Button>

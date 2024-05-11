@@ -1,12 +1,8 @@
 import clsx from "clsx";
 import { useCombobox, useMultipleSelection } from "downshift";
-import {
-  fetchCopyrights,
-  updateCopyright,
-  deleteCopyright,
-} from "fetchers/SampleActions";
 import { useState, useMemo, useEffect, useRef } from "react";
 import CopyrightEditMenu from "./CopyrightEditMenu";
+import useRestfulAPI from "hooks/useRestfulAPI";
 
 const CopyrightMultiSelect = ({
   initialSelectedItems,
@@ -14,7 +10,6 @@ const CopyrightMultiSelect = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
-  const [elements, setElements] = useState([]);
   const [popupMenuOpen, setPopupMenuOpen] = useState(false);
   const [popupMenuPosition, setPopupMenuPosition] = useState({
     x: 0,
@@ -23,37 +18,35 @@ const CopyrightMultiSelect = ({
     text: "",
   });
 
+  const apiUrl = "native/admin/copyrights";
+  const {
+    data: elements,
+    setData,
+    postData,
+    deleteData,
+  } = useRestfulAPI(apiUrl);
+
   const rootElementRef = useRef(null);
 
   const items = useMemo(() => {
     // Create a copy of the elements array to avoid mutating the original array
+    if (!elements) return [];
     const updateElements = [...elements];
-    selectedItems.forEach((item: string) => {
-      const found: boolean = elements.some((element) => element.name === item);
+    selectedItems.forEach((item) => {
+      const found: boolean = elements.some(
+        (element) => element.name === item.name,
+      );
       if (!found) {
-        updateElements.push({ id: 0, name: item });
+        updateElements.push({ id: null, name: item.name });
       }
     });
     if (updateElements.length != elements.length) {
-      setElements(updateElements);
+      setData(updateElements);
     }
 
-    return updateElements.map((element) => element.name);
+    return updateElements;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItems, elements]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchCopyrights();
-        setElements(data);
-      } catch (error) {
-        // Handle errors here
-        console.error("Error fetching copyrights:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     setSelectedItems(initialSelectedItems);
@@ -127,10 +120,20 @@ const CopyrightMultiSelect = ({
               handleSelectedItemChange([...selectedItems, newSelectedItem]);
             }
           } else if (inputValue && inputValue.length > 0) {
-            if (selectedItems.indexOf(inputValue) == -1) {
+            if (
+              selectedItems.findIndex(
+                (value, index) => value.name == inputValue,
+              ) == -1
+            ) {
               // check duplicated
-              setSelectedItems([...selectedItems, inputValue]);
-              handleSelectedItemChange([...selectedItems, inputValue]);
+              setSelectedItems([
+                ...selectedItems,
+                { id: null, name: inputValue },
+              ]);
+              handleSelectedItemChange([
+                ...selectedItems,
+                { id: null, name: inputValue },
+              ]);
             }
             setInputValue("");
             openMenu();
@@ -149,6 +152,8 @@ const CopyrightMultiSelect = ({
   });
 
   const itemChangedHandler = async (type, id, prevValue, value) => {
+    setPopupMenuOpen(false);
+
     let newElements = [...elements];
     let newSelectedItems = [...selectedItems];
 
@@ -156,13 +161,15 @@ const CopyrightMultiSelect = ({
     const elementIndex = newElements.findIndex(
       (value) => value.name == prevValue,
     );
-    const selItemIndex = newSelectedItems.indexOf(prevValue);
+    const selItemIndex = newSelectedItems.findIndex(
+      (value) => value.name == prevValue,
+    );
 
     if (type == "update") {
       let update = true;
       // call API
       if (id > 0) {
-        update = await updateCopyright(id, value);
+        update = await postData(`${apiUrl}/${id}`, { name: value });
       }
       // update UI
       if (update) {
@@ -170,11 +177,11 @@ const CopyrightMultiSelect = ({
         newElements[elementIndex].name = value;
         // change selected itam name
         if (selItemIndex > -1) {
-          newSelectedItems[selItemIndex] = value;
+          newSelectedItems[selItemIndex].name = value;
           // update selected items
           setSelectedItems(newSelectedItems);
         }
-        setElements(newElements);
+        setData(newElements);
       }
     }
 
@@ -182,7 +189,7 @@ const CopyrightMultiSelect = ({
       let update = true;
       // call API
       if (id > 0) {
-        update = await deleteCopyright(id);
+        update = await deleteData(`${apiUrl}/${id}`);
       }
       // update UI
       if (update) {
@@ -196,11 +203,9 @@ const CopyrightMultiSelect = ({
             newSelectedItems.filter((value, index) => index != selItemIndex),
           );
         }
-        setElements(newElements);
+        setData(newElements);
       }
     }
-
-    setPopupMenuOpen(false);
   };
 
   return (
@@ -246,7 +251,7 @@ const CopyrightMultiSelect = ({
             key={`selected-item-${index}`}
             {...getSelectedItemProps({ selectedItem, index })}
           >
-            ©{selectedItem}
+            ©{selectedItem.name}
             <span
               style={{
                 cursor: "pointer",
@@ -291,70 +296,73 @@ const CopyrightMultiSelect = ({
           padding: "4px",
           margin: "4px 0 0 0",
         }}
-        className={clsx(isOpen && elements.length > 0 ? "" : "hidden")}
+        className={clsx(
+          isOpen && elements && elements.length > 0 ? "" : "hidden",
+        )}
       >
-        {elements.map((item, index) => (
-          <li
-            style={{
-              padding: "4px 8px",
-              borderRadius: "8px",
-            }}
-            className="flex justify-between items-center 
+        {elements &&
+          elements.map((item, index) => (
+            <li
+              style={{
+                padding: "4px 8px",
+                borderRadius: "8px",
+              }}
+              className="flex justify-between items-center 
                 cursor-pointer hover:bg-secondary-200"
-            key={`${item.name}${index}`}
-            {...getItemProps({ item, index })}
-          >
-            <span
-              style={{
-                backgroundColor: "#1779DE",
-                color: "#FFFFFF",
-                paddingLeft: "8px",
-                paddingRight: "8px",
-                paddingTop: "4px",
-                paddingBottom: "4px",
-                borderRadius: "6px",
-                fontWeight: 400,
-                fontSize: "14px",
-              }}
+              key={`${item.name}${index}`}
+              {...getItemProps({ item, index })}
             >
-              ©{item.name}
-            </span>
-            <span
-              className="hover:bg-secondary-400"
-              style={{
-                color: "#FFFFFF",
-                paddingLeft: "12px",
-                paddingRight: "12px",
-                paddingTop: "4px",
-                paddingBottom: "4px",
-                borderRadius: "6px",
-                fontWeight: 400,
-                fontSize: "14px",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
+              <span
+                style={{
+                  backgroundColor: "#1779DE",
+                  color: "#FFFFFF",
+                  paddingLeft: "8px",
+                  paddingRight: "8px",
+                  paddingTop: "4px",
+                  paddingBottom: "4px",
+                  borderRadius: "6px",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                }}
+              >
+                ©{item.name}
+              </span>
+              <span
+                className="hover:bg-secondary-400"
+                style={{
+                  color: "#FFFFFF",
+                  paddingLeft: "12px",
+                  paddingRight: "12px",
+                  paddingTop: "4px",
+                  paddingBottom: "4px",
+                  borderRadius: "6px",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
 
-                const rootDomRect = (
-                  rootElementRef.current as HTMLElement
-                ).getBoundingClientRect();
-                const targetDomRect = (
-                  e.target as HTMLElement
-                ).getBoundingClientRect();
+                  const rootDomRect = (
+                    rootElementRef.current as HTMLElement
+                  ).getBoundingClientRect();
+                  const targetDomRect = (
+                    e.target as HTMLElement
+                  ).getBoundingClientRect();
 
-                setPopupMenuPosition({
-                  x: targetDomRect.right - rootDomRect.left,
-                  y: targetDomRect.top - rootDomRect.top,
-                  id: item.id,
-                  text: item.name,
-                });
-                setPopupMenuOpen(true);
-              }}
-            >
-              •••
-            </span>
-          </li>
-        ))}
+                  setPopupMenuPosition({
+                    x: targetDomRect.right - rootDomRect.left,
+                    y: targetDomRect.top - rootDomRect.top,
+                    id: item.id,
+                    text: item.name,
+                  });
+                  setPopupMenuOpen(true);
+                }}
+              >
+                •••
+              </span>
+            </li>
+          ))}
         {popupMenuOpen && (
           <div
             style={{
