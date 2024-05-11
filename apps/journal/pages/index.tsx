@@ -41,7 +41,7 @@ const Index = () => {
         });
       }
     }
-  }, [auth, user]);
+  }, [router, user]);
 
   return (
     <RedeemStatusProvider>

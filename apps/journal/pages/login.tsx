@@ -206,7 +206,7 @@ const Login = () => {
         }
       });
     }
-  }, [user]);
+  }, [router, user]);
 
   const AuthForm = () => {
     switch (authState) {

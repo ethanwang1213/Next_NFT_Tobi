@@ -32,7 +32,7 @@ const Logout = () => {
     };
 
     handleLogout();
-  }, [user]);
+  }, [initActivityContext, initNftsContext, initDiscordContext, router, user]);
 
   return (
     <>
