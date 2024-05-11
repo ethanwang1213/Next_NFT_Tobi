@@ -156,7 +156,7 @@ export const LoadingButton = ({
       <div className="hidden hover:bg-primary-main hover:bg-secondary-main" />
       <button
         type={type ?? "button"}
-        className={`btn btn-block rounded-[66px] border-0 w-[176px] ${buttonColor} hover:${buttonColor} text-neutral
+        className={`btn btn-block rounded-[66px] border-0 w-[176px] h-[48px] ${buttonColor} hover:${buttonColor} disabled:bg-disabled-input disabled:text-disabled-input-content text-neutral
                 text-[20px] font-bold shadow-[0_5px_5.4px_0_rgba(0,0,0,0.25)]`}
         disabled={disabled ?? false}
         onClick={onClick}
