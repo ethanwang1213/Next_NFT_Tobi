@@ -6,6 +6,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 
 const CopyrightMultiSelect = ({
   initialSelectedItems,
+  readOnly,
   handleSelectedItemChange,
 }) => {
   const [inputValue, setInputValue] = useState("");
@@ -212,7 +213,8 @@ const CopyrightMultiSelect = ({
     <div
       className={clsx(
         "flex flex-col w-full justify-center self-center min-h-[52px]",
-        "outline-none border-2 rounded-lg border-secondary hover:border-hover-color focus:border-focus-color",
+        "outline-none border-2 rounded-lg border-secondary",
+        readOnly ? "" : "hover:border-hover-color focus:border-focus-color",
         "relative",
       )}
       ref={rootElementRef}
@@ -220,7 +222,7 @@ const CopyrightMultiSelect = ({
         e.stopPropagation();
         e.preventDefault();
 
-        if (!isOpen) {
+        if (!isOpen && !readOnly) {
           // open items
           openMenu();
         }
@@ -252,18 +254,22 @@ const CopyrightMultiSelect = ({
             {...getSelectedItemProps({ selectedItem, index })}
           >
             ©{selectedItem.name}
-            <span
-              style={{
-                cursor: "pointer",
-                padding: "4px",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                removeSelectedItem(selectedItem);
-              }}
-            >
-              &#10005;
-            </span>
+            {!readOnly ? (
+              <span
+                style={{
+                  cursor: "pointer",
+                  padding: "4px",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeSelectedItem(selectedItem);
+                }}
+              >
+                &#10005;
+              </span>
+            ) : (
+              <></>
+            )}
           </span>
         ))}
         <div
