@@ -1,16 +1,13 @@
 import Image from "next/image";
 
 type Props = {
-  visible: boolean;
   onClickBack: () => void;
 };
 
-const BackLink = ({ visible, onClickBack }: Props) => {
+const BackLink = ({ onClickBack }: Props) => {
   return (
     <button
-      className={`btn-link no-underline text-base-content ${
-        visible ? "" : "hidden"
-      }`}
+      className={`btn-link no-underline text-base-content`}
       onClick={onClickBack}
     >
       <Image

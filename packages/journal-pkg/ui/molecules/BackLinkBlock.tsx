@@ -18,7 +18,7 @@ const BackLinkBlock = ({
   };
   return (
     <div className={"flex flex-row"}>
-      <BackLink visible={visible} onClickBack={onClickBack} />
+      {visible && <BackLink onClickBack={onClickBack} />}
       <div
         className={`w-full text-center ${fontSizes[fontSize]} font-bold text-neutral-main`}
       >
