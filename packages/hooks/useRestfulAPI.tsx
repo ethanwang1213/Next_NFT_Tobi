@@ -178,6 +178,7 @@ const useRestfulAPI = (url) => {
     loading,
     error,
     setData,
+    setLoading,
     getData,
     postData,
     putData,

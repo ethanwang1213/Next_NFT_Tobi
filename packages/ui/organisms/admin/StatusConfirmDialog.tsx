@@ -58,7 +58,7 @@ const StatusConfirmDialog = ({
           )}
           <div>
             {disabled ? (
-              <span className="text-sm font-normal text-neutral-700">
+              <span className="text-sm font-normal text-error">
                 There are required fields that have not been filled. Please
                 check.
               </span>
@@ -81,9 +81,13 @@ const StatusConfirmDialog = ({
           </button>
           <button
             type="button"
-            className="px-4 py-2 bg-primary rounded-[64px] 
-              hover:shadow-xl hover:-top-[3px] transition-shadow
-              text-base-white text-sm leading-4 font-semibold"
+            className={`px-4 py-2 rounded-[64px] 
+            text-base-white text-sm leading-4 font-semibold
+            ${
+              disabled
+                ? "bg-inactive"
+                : "bg-primary hover:shadow-xl hover:-top-[3px] transition-shadow"
+            }`}
             onClick={() => {
               dialogRef.current.close();
               saveHandler();

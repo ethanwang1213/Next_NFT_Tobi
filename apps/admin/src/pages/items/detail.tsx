@@ -37,8 +37,10 @@ const Detail = () => {
   const {
     data: sampleItem,
     dataRef,
+    loading,
     error,
     setData,
+    setLoading,
     postData,
   } = useRestfulAPI(`${apiUrl}/${id}`);
 
@@ -65,14 +67,21 @@ const Detail = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const checkMandatoryFields = () => {
-    if (sampleItem.status != SampleStatus.Draft) {
+    if (
+      sampleItem.status == SampleStatus.ViewingOnly ||
+      sampleItem.status == SampleStatus.OnSale ||
+      sampleItem.status == SampleStatus.ScheduledPublishing ||
+      sampleItem.status == SampleStatus.ScheduledforSale
+    ) {
       if (
         sampleItem.name == null ||
-        sampleItem.name.length == 0 ||
+        sampleItem.name == "" ||
+        sampleItem.description == null ||
+        sampleItem.description == "" ||
         sampleItem.quantityLimit == null ||
         sampleItem.quantityLimit == 0 ||
         sampleItem.license == null ||
-        sampleItem.license.length == 0 ||
+        sampleItem.license == "" ||
         sampleItem.copyrights == null ||
         sampleItem.copyrights.length == 0
       ) {
@@ -249,6 +258,8 @@ const Detail = () => {
   };
 
   const submitHandler = async () => {
+    setLoading(true);
+
     const submitData = {
       name: sampleItem.name,
       description: sampleItem.description,
@@ -280,6 +291,7 @@ const Detail = () => {
 
     if (await postData(`${apiUrl}/${sampleItem.id}`, submitData)) {
       setModified(false);
+      dataRef.current = sampleItem;
     } else {
       if (error) {
         if (error instanceof String) {
@@ -292,17 +304,26 @@ const Detail = () => {
   };
 
   const isReadOnly = useCallback(() => {
-    if (dataRef.current.status == SampleStatus.Draft) {
-      return false;
-    } else {
+    if (
+      dataRef.current.status == SampleStatus.ViewingOnly ||
+      dataRef.current.status == SampleStatus.OnSale ||
+      dataRef.current.status == SampleStatus.ScheduledPublishing ||
+      dataRef.current.status == SampleStatus.ScheduledforSale
+    ) {
       return true;
     }
+    return false;
   }, [dataRef]);
 
   return (
     <div>
       <ItemEditHeader
-        activeName={sampleItem && sampleItem.name ? sampleItem.name : "No Name"}
+        activeName={
+          dataRef.current && dataRef.current.name
+            ? dataRef.current.name
+            : "No Name"
+        }
+        loading={loading}
         saveHandler={saveButtonHandler}
       />
 
@@ -392,7 +413,6 @@ const Detail = () => {
                     changeHandler={(value) =>
                       fieldChangeHandler("price", value)
                     }
-                    readOnly={true}
                   />
                   <div className="flex">
                     <Image
@@ -450,11 +470,10 @@ const Detail = () => {
                       className="w-6 h-6"
                       checked={sampleItem.quantityLimit == -1}
                       onChange={(e) => {
-                        if (e.target.checked) {
+                        if (!isReadOnly() && e.target.checked) {
                           fieldChangeHandler("quantityLimit", -1);
                         }
                       }}
-                      readOnly={isReadOnly()}
                     />
                     <label
                       className="text-sm text-secondary font-normal"
@@ -504,6 +523,7 @@ const Detail = () => {
                       handleSelectedItemChange={(changes) => {
                         fieldChangeHandler("copyrights", changes);
                       }}
+                      readOnly={isReadOnly()}
                     />
                     <Image
                       src="/admin/images/info-icon-2.svg"
@@ -708,18 +728,22 @@ const Detail = () => {
               </div>
             </div>
           </div>
-          <div className="text-center">
-            <Button
-              type="submit"
-              className={clsx(
-                "text-xl h-14 text-white rounded-[30px] px-10",
-                modified ? "bg-primary" : "bg-inactive",
-              )}
-              disabled={!modified}
-              onClick={saveButtonHandler}
-            >
-              SAVE
-            </Button>
+          <div className="text-center mt-10 h-14">
+            {loading ? (
+              <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
+            ) : (
+              <Button
+                type="submit"
+                className={clsx(
+                  "text-xl h-14 text-white rounded-[30px] px-10",
+                  modified ? "bg-primary" : "bg-inactive",
+                )}
+                disabled={!modified}
+                onClick={saveButtonHandler}
+              >
+                SAVE
+              </Button>
+            )}
           </div>
         </div>
       )}
