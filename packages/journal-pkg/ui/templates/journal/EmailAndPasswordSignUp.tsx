@@ -146,11 +146,9 @@ const EmailAndPasswordSignUp = ({
         <PasswordValidation {...passwordStatus} />
       </div>
       <div className={"mt-[30px]"}>
-        <EmailField
-          email={emailStatus.email}
-          visible={isPasswordReset}
-          validateEmail={validateEmail}
-        />
+        {isPasswordReset && (
+          <EmailField email={emailStatus.email} validateEmail={validateEmail} />
+        )}
       </div>
       <div
         className={
@@ -191,7 +189,7 @@ const EmailAndPasswordSignUp = ({
       <div className={"h-[50px] mt-[5px]"}>
         <Error errors={getErrors()} />
       </div>
-      <div className={""}>
+      <div>
         <LoadingButton
           label={buttonText}
           isPasswordReset={isPasswordReset}
@@ -208,17 +206,11 @@ const EmailAndPasswordSignUp = ({
 
 const EmailField = ({
   email,
-  visible,
   validateEmail,
 }: {
   email: string;
-  visible: boolean;
   validateEmail: (email: string) => void;
 }) => {
-  if (!visible) {
-    return <></>;
-  }
-
   return (
     <>
       <div
