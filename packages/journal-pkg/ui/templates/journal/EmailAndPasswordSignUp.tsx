@@ -120,7 +120,7 @@ const EmailAndPasswordSignUp = ({
         setPasswordConfirmationStatus({
           password: passwordConfirmation,
           valid: false,
-          error: "The passwords do not match.",
+          error: "The password do not match.",
         });
       }
     } else {
