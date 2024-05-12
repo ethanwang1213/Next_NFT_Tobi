@@ -32,7 +32,8 @@ const Logout = () => {
     };
 
     handleLogout();
-  }, [initActivityContext, initNftsContext, initDiscordContext, router, user]);
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [router, user]);
 
   return (
     <>
