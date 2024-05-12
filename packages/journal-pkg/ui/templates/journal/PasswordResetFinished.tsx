@@ -1,6 +1,6 @@
+import BackLinkBlock from "journal-pkg/ui/molecules/BackLinkBlock";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import BackLinkBlock from "../../molecules/BackLinkBlock";
 
 const PasswordResetFinished = () => {
   const router = useRouter();
