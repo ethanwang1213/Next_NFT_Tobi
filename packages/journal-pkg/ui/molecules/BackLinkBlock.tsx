@@ -1,16 +1,13 @@
 import BackLink from "./BackLink";
 
-const BackLinkBlock = ({
-  title,
-  fontSize,
-  visible,
-  onClickBack,
-}: {
+type Props = {
   title: string;
   fontSize: "tiny" | "small" | "medium";
   visible: boolean;
   onClickBack?: () => void;
-}) => {
+};
+
+const BackLinkBlock = ({ title, fontSize, visible, onClickBack }: Props) => {
   const fontSizes = {
     tiny: "text-[20px]",
     small: "text-[24px]",
