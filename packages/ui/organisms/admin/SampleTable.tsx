@@ -174,7 +174,7 @@ const SampleTable = (filters) => {
         });
         break;
 
-      case 5: // Creation Date
+      case 4: // Creation Date
         newData = filterData.filter((value) => {
           if (value.createDate === null) return false;
           const dateValue = new Date(value.createDate);

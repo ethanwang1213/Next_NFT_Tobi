@@ -248,62 +248,15 @@ const SampleFilterMenu = (props) => {
           <input
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
-            id="chkUnitsSold"
+            id="chkCreationDate"
             checked={props.filterArray[4]}
             onChange={(e) => props.toggleFilter(4)}
-          />
-          <label htmlFor="chkUnitsSold" className="ml-2 text-base/8">
-            Units Sold
-          </label>
-        </div>
-        {props.filterArray[4] ? (
-          <div className="flex items-center ml-6">
-            <NumericFormat
-              defaultValue={props.soldCount.from}
-              thousandSeparator=","
-              decimalScale={0}
-              allowNegative={false}
-              onValueChange={(values, sourceInfo) =>
-                props.setSoldCount({
-                  ...props.soldCount,
-                  from: values.floatValue,
-                })
-              }
-              className="w-[60px] h-8 text-xs text-center bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
-            />
-            <span className="w-10 text-center">~</span>
-            <NumericFormat
-              defaultValue={props.soldCount.to}
-              thousandSeparator=","
-              decimalScale={0}
-              allowNegative={false}
-              onValueChange={(values, sourceInfo) =>
-                props.setSoldCount({
-                  ...props.soldCount,
-                  to: values.floatValue,
-                })
-              }
-              className="w-[60px] h-8 text-xs text-center bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
-            />
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
-      <div className="flex flex-col items-start justify-center gap-1">
-        <div className="flex items-center h-8">
-          <input
-            type="checkbox"
-            className="tobiratory-checkbox w-3 h-3"
-            id="chkCreationDate"
-            checked={props.filterArray[5]}
-            onChange={(e) => props.toggleFilter(5)}
           />
           <label htmlFor="chkCreationDate" className="ml-2 text-base/8">
             Creation Date
           </label>
         </div>
-        {props.filterArray[5] ? (
+        {props.filterArray[4] ? (
           <div className="flex items-center ml-6">
             <DatePicker
               selected={props.createDate.from}

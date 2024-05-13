@@ -30,7 +30,6 @@ export default function ItemsManageTab({
     false,
     false,
     false,
-    false,
   ]);
 
   const [price, setPrice] = useState({ from: 0, to: 0 });
@@ -51,7 +50,6 @@ export default function ItemsManageTab({
     from: new Date(),
     to: new Date(),
   });
-  const [soldCount, setSoldCount] = useState({ from: 0, to: 0 });
   const [createDate, setCreateDate] = useState({
     from: new Date(),
     to: new Date(),
@@ -85,8 +83,6 @@ export default function ItemsManageTab({
           setSaleStartDate={setSaleStartDate}
           saleEndDate={saleEndDate}
           setSaleEndDate={setSaleEndDate}
-          soldCount={soldCount}
-          setSoldCount={setSoldCount}
           createDate={createDate}
           setCreateDate={setCreateDate}
         />
@@ -103,7 +99,6 @@ export default function ItemsManageTab({
             statusArray={statusArray}
             saleStartDate={saleStartDate}
             saleEndDate={saleEndDate}
-            soldCount={soldCount}
             createDate={createDate}
           />
         </TabPanel>
