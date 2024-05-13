@@ -1,36 +1,21 @@
 import clsx from "clsx";
-import { fetchSamples, deleteSamples } from "fetchers/SampleActions";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "../../atoms/Button";
 import { getSampleStatusTitle } from "./StatusDropdownSelect";
 
-const SampleTable = ({ filters }) => {
-  // sample data
-  const [samples, setSamples] = useState([]);
+const SampleTable = (filters) => {
+  const apiUrl = "native/admin/samples";
+  const { data: samples, getData, deleteData } = useRestfulAPI(apiUrl);
 
   // active sorting column
   const [sortOrder, setSortOrder] = useState(0);
 
   // selected sample id array
   const [selSampleIds, setSelSampleIds] = useState([]);
-
-  // fetch samples from server
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchSamples();
-        setSamples(data);
-      } catch (error) {
-        // Handle errors here
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const toggleSortingDirection = (index) => {
     // determine sorting direction
@@ -372,11 +357,12 @@ const SampleTable = ({ filters }) => {
               <Button
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
-                  const result = await deleteSamples(selSampleIds);
-                  if (result == true) {
-                    const data = await fetchSamples();
+                  const result = await deleteData(apiUrl, {
+                    sampleIds: selSampleIds,
+                  });
+                  if (result) {
                     setSelSampleIds([]);
-                    setSamples(data);
+                    getData(apiUrl);
                   }
                 }}
               >
