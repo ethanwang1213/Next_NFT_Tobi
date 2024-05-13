@@ -208,7 +208,7 @@ const Detail = () => {
 
           case SampleStatus.Unlisted:
             setConfirmDialogDescriptions([
-              "This item will once again be visible to all users.",
+              "This item will be hidden from the content page.",
             ]);
             setConfirmDialogNotes([]);
             break;
@@ -223,7 +223,7 @@ const Detail = () => {
           case SampleStatus.ViewingOnly:
           case SampleStatus.ScheduledPublishing:
             setConfirmDialogDescriptions([
-              "The item will be published and available for sale and distribution.",
+              "This item will once again be visible to all users.",
             ]);
             setConfirmDialogNotes([]);
             break;
@@ -231,7 +231,7 @@ const Detail = () => {
           case SampleStatus.OnSale:
           case SampleStatus.ScheduledforSale:
             setConfirmDialogDescriptions([
-              "This item will once again be visible to all users.",
+              "The item will be published and will also be available for sale and distribution.",
             ]);
             setConfirmDialogNotes([]);
             break;

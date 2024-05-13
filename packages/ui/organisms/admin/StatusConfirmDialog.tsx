@@ -30,7 +30,6 @@ const StatusConfirmDialog = ({
           </button>
         </form>
         <div className="flex flex-col">
-          <div className="text-error text-lg font-semibold">注意！</div>
           <div className="text-neutral-700 text-base font-bold">{title}</div>
         </div>
         <div className="flex flex-col gap-2">
