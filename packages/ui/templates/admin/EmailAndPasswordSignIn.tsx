@@ -66,7 +66,7 @@ const EmailAndPasswordSignIn = ({
           </button>
         </div>
         <div className={"mt-[150px]"}>
-          <FirebaseAuthError error={error} />
+          {error && <FirebaseAuthError error={error} />}
         </div>
         <div className={"mt-[10px]"}>
           <LoadingSpinnerButton

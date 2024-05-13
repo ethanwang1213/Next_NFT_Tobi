@@ -49,7 +49,7 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
           }
         />
         <div className={"mt-[30px]"}>
-          <AboutFlowAccount visible={true} />
+          <AboutFlowAccount />
         </div>
         <div className={"mt-[100px]"}>
           <TermsOfService
@@ -70,11 +70,7 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
   );
 };
 
-const AboutFlowAccount = ({ visible }: { visible: boolean }) => {
-  if (!visible) {
-    return <></>;
-  }
-
+const AboutFlowAccount = () => {
   return (
     <InfoLink
       url={"https://www.tobiratory.com/about"}

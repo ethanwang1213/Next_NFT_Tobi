@@ -195,7 +195,7 @@ const FlowAgreementWithEmailAndPassword = ({
           />
         </div>
         <div className={"mt-[10px]"}>
-          <FirebaseAuthError error={authError} />
+          {authError && <FirebaseAuthError error={authError} />}
         </div>
         <div className={"mt-[20px]"}>
           <LoadingSpinnerButton
