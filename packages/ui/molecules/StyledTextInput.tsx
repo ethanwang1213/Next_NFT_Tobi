@@ -18,7 +18,7 @@ const StyledTextInput = ({
   tooltip,
   maxLen,
   inputRef,
-  readOnly = false,
+  readOnly,
 }: {
   className: string;
   value: string;
@@ -40,7 +40,7 @@ const StyledTextInput = ({
   }, [value]);
 
   const handleFocus = () => {
-    setIsFocused(true);
+    if (!readOnly) setIsFocused(true);
   };
 
   const handleBlur = () => {
@@ -76,7 +76,8 @@ const StyledTextInput = ({
         className={clsx(
           "w-full h-12 pl-5 pt-4",
           tooltip && tooltip.length ? "pr-8" : "pr-3",
-          "outline-none border-2 rounded-lg border-secondary hover:border-hover-color focus:border-focus-color",
+          "outline-none border-2 rounded-lg border-secondary",
+          !readOnly ? "hover:border-hover-color focus:border-focus-color" : "",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
         )}

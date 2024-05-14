@@ -14,7 +14,7 @@ const ContentBrandPanel = ({
   publishFlag: number;
   changeHandler: () => void;
 }) => {
-  const apiUrl = "/backend/api/functions/native/admin/content";
+  const apiUrl = "native/admin/content";
   const { data, dataRef, error, setData, putData, restoreData } =
     useRestfulAPI(apiUrl);
 
@@ -53,7 +53,7 @@ const ContentBrandPanel = ({
           ImageType.ContentBrand,
         );
       }
-      if (await putData(apiUrl, submitData)) {
+      if (await putData(apiUrl, submitData, [])) {
         modifiedRef.current = false;
       } else {
         if (error) {

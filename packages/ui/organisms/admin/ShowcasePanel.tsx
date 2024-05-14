@@ -39,7 +39,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const apiUrl = "/backend/api/functions/native/admin/showcases";
+  const apiUrl = "native/admin/showcases";
   const { error, putData, deleteData } = useRestfulAPI(null);
 
   const popupRef = useRef(null);
@@ -103,7 +103,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   };
 
   const changeTitle = async (title: string) => {
-    const jsonData = await putData(`${apiUrl}/${props.id}`, { title });
+    const jsonData = await putData(`${apiUrl}/${props.id}`, { title }, []);
     if (jsonData) {
       setTitle(jsonData.title);
       setModifiedTime(jsonData.updateTime);
@@ -126,6 +126,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       status == ShowcaseStatus.ScheduledPublic
         ? { status, scheduleTime: scheduleTime }
         : { status },
+      [],
     );
     if (jsonData) {
       if (status == ShowcaseStatus.Public) {
@@ -148,7 +149,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       return;
     }
 
-    const jsonData = await putData(`${apiUrl}/${props.id}`, { scheduleTime });
+    const jsonData = await putData(
+      `${apiUrl}/${props.id}`,
+      { scheduleTime },
+      [],
+    );
     if (jsonData) {
       setScheduleTimeChanged(false);
       setModifiedTime(jsonData.updateTime);
@@ -306,14 +311,14 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 };
 
 const ShowcasePanel = () => {
-  const apiUrl = "/backend/api/functions/native/admin/showcases";
+  const apiUrl = "native/admin/showcases";
   const { data, getData } = useRestfulAPI(apiUrl);
 
   const [reload, setReload] = useState(0);
 
   useEffect(() => {
     if (reload > 0) {
-      getData();
+      getData(apiUrl);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload]);

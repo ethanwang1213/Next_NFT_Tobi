@@ -9,6 +9,7 @@ const StyledTextArea = ({
   changeHandler,
   maxLen,
   inputRef,
+  readOnly,
 }: {
   className: string;
   value: string;
@@ -17,13 +18,14 @@ const StyledTextArea = ({
   placeholder: string;
   maxLen?: number;
   inputRef?: MutableRefObject<HTMLTextAreaElement>;
+  readOnly?: boolean;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value);
   const [uniqueId, setUniqueId] = useState("");
 
   const handleFocus = () => {
-    setIsFocused(true);
+    if (!readOnly) setIsFocused(true);
   };
 
   const handleBlur = () => {
@@ -53,7 +55,8 @@ const StyledTextArea = ({
       <textarea
         className={clsx(
           "w-full h-[180px] pl-5 pt-4 pr-3 resize-none",
-          "outline-none border-2 rounded-lg border-secondary hover:border-hover-color focus:border-focus-color",
+          "outline-none border-2 rounded-lg border-secondary",
+          !readOnly ? "hover:border-hover-color focus:border-focus-color" : "",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
         )}
@@ -64,6 +67,7 @@ const StyledTextArea = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         ref={inputRef ? inputRef : null}
+        readOnly={readOnly}
       />
       <label
         className={`absolute cursor-text left-5 font-normal transition-all duration-300 z-[1] ${

@@ -204,7 +204,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 };
 
 export default function Index() {
-  const apiUrl = "/backend/api/functions/native/my/profile";
+  const apiUrl = "native/my/profile";
   const [modified, setModified] = useState(false);
   const { data, dataRef, error, loading, setData, setLoading, postData } =
     useRestfulAPI(apiUrl);
@@ -231,7 +231,7 @@ export default function Index() {
       submitData.icon = iconUrl;
     }
 
-    if (await postData(apiUrl, { account: submitData }, "account")) {
+    if (await postData(apiUrl, { account: submitData }, ["account"])) {
       setModified(false);
     } else {
       if (error) {

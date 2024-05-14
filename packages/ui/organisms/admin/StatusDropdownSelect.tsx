@@ -12,7 +12,7 @@ export enum SampleStatus {
   SampleStatusCount,
 }
 
-export const formatSampleStatus = (status) => {
+export const getSampleStatusTitle = (status) => {
   let value;
   switch (status) {
     case SampleStatus.Draft:
@@ -53,7 +53,75 @@ const statusValues = [
   { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
 ];
 
-const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
+const availableStatusValues = (status) => {
+  switch (status) {
+    case SampleStatus.Draft:
+      return [
+        { value: SampleStatus.Draft, color: "#093159" },
+        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
+        { value: SampleStatus.OnSale, color: "#DB6100" },
+        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+      ];
+
+    case SampleStatus.Private:
+      return [
+        { value: SampleStatus.Private, color: "#505050" },
+        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
+        { value: SampleStatus.OnSale, color: "#DB6100" },
+        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+      ];
+
+    case SampleStatus.ViewingOnly:
+      return [
+        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
+        { value: SampleStatus.OnSale, color: "#DB6100" },
+        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
+        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+      ];
+
+    case SampleStatus.OnSale:
+      return [
+        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
+        { value: SampleStatus.OnSale, color: "#DB6100" },
+        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
+        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+      ];
+
+    case SampleStatus.Unlisted:
+      return [
+        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
+        { value: SampleStatus.OnSale, color: "#DB6100" },
+        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
+        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+      ];
+
+    case SampleStatus.ScheduledPublishing:
+      return [
+        { value: SampleStatus.OnSale, color: "#DB6100" },
+        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
+        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+      ];
+
+    case SampleStatus.ScheduledforSale:
+      return [
+        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
+        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
+        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+      ];
+
+    default:
+      break;
+  }
+
+  return [];
+};
+
+const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
   const {
     isOpen,
     selectedItem,
@@ -63,8 +131,8 @@ const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
     highlightedIndex,
     getItemProps,
   } = useSelect({
-    items: statusValues,
-    initialSelectedItem: statusValues[initialIndex],
+    items: availableStatusValues(initialStatus),
+    initialSelectedItem: statusValues[initialStatus - 1],
     onSelectedItemChange: handleSelectedItemChange,
   });
 
@@ -77,7 +145,7 @@ const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
         }}
         {...getToggleButtonProps()}
       >
-        <span>{formatSampleStatus(selectedItem.value)}</span>
+        <span>{getSampleStatusTitle(selectedItem.value)}</span>
         <span>{isOpen ? <>▲</> : <>▼</>}</span>
       </div>
       <ul
@@ -87,7 +155,7 @@ const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
         {...getMenuProps()}
       >
         {isOpen &&
-          statusValues.map((item, index) => (
+          availableStatusValues(initialStatus).map((item, index) => (
             <li
               className={clsx(
                 highlightedIndex === index && "bg-blue-300",
@@ -97,7 +165,7 @@ const StatusDropdownSelect = ({ initialIndex, handleSelectedItemChange }) => {
               key={item.value}
               {...getItemProps({ item, index })}
             >
-              <span>{formatSampleStatus(item.value)}</span>
+              <span>{getSampleStatusTitle(item.value)}</span>
             </li>
           ))}
       </ul>

@@ -1,11 +1,12 @@
-import { auth } from "fetchers/firebase/client";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import clsx from "clsx";
-import { fetchSampleItem, updateSampleItem } from "fetchers/SampleActions";
+import { ImageType, uploadImage } from "fetchers/UploadActions";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
 import DateTimeInput from "ui/molecules/DateTimeInput";
@@ -13,53 +14,43 @@ import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
+import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect, {
+  getSampleStatusTitle,
   SampleStatus,
 } from "ui/organisms/admin/StatusDropdownSelect";
-import { useDebouncedCallback } from "use-debounce";
 
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [sampleItem, setSampleItem] = useState(null);
-  const [changed, setChanged] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
+  const [modified, setModified] = useState(false);
 
-  const fieldChangeHandler = useDebouncedCallback((field, value) => {
-    setSampleItem({ ...{ ...sampleItem, [field]: value } });
-    setChanged(true);
-  }, 300);
+  const [confirmDialogTitle, setConfirmDialogTitle] = useState("");
+  const [confirmDialogDescriptions, setConfirmDialogDescriptions] = useState(
+    [],
+  );
+  const [confirmDialogNotes, setConfirmDialogNotes] = useState([]);
+  const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
+  const statusConfirmDialogRef = useRef(null);
 
-  const uploadFileToFireStorage = useCallback(
-    async (file) => {
-      try {
-        // Get file extension
-        const fileName = file.name;
-        const extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+  const apiUrl = "native/admin/samples";
+  const {
+    data: sampleItem,
+    dataRef,
+    loading,
+    error,
+    setData,
+    setLoading,
+    postData,
+  } = useRestfulAPI(`${apiUrl}/${id}`);
 
-        // Create a root reference
-        const storage = getStorage();
-
-        // Generate a unique filename for the file
-        const storageFileName = `${Date.now()}.${extension}`;
-
-        // Upload the file to Firebase Storage
-        const fileRef = ref(
-          storage,
-          `thumbnails/${auth.currentUser.uid}/${storageFileName}`,
-        );
-
-        await uploadBytes(fileRef, file);
-
-        // Get the download URL of the uploaded file
-        const downloadURL = await getDownloadURL(fileRef);
-        fieldChangeHandler("customThumbnailUrl", downloadURL);
-      } catch (error) {
-        // Handle any errors that occur during the upload process
-        console.error("Error uploading file:", error);
-      }
+  const fieldChangeHandler = useCallback(
+    (field, value) => {
+      setData({ ...sampleItem, [field]: value });
+      setModified(true);
     },
-    [fieldChangeHandler],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sampleItem],
   );
 
   const onDrop = useCallback(
@@ -67,75 +58,273 @@ const Detail = () => {
       // Do something with the files
       const file = acceptedFiles[0];
       if (file && file.type.startsWith("image/")) {
-        // upload to the server
-        uploadFileToFireStorage(file);
+        fieldChangeHandler("customThumbnailUrl", URL.createObjectURL(file));
       }
     },
-    [uploadFileToFireStorage],
+    [fieldChangeHandler],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchSampleItem(id);
-        setSampleItem(data);
-      } catch (error) {
-        // Handle errors here
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    if (id) {
-      fetchData();
-    }
-  }, [id]);
-
-  const submitData = async () => {
-    if (sampleItem.status != SampleStatus.Draft) {
+  const checkMandatoryFields = () => {
+    if (
+      sampleItem.status == SampleStatus.ViewingOnly ||
+      sampleItem.status == SampleStatus.OnSale ||
+      sampleItem.status == SampleStatus.ScheduledPublishing ||
+      sampleItem.status == SampleStatus.ScheduledforSale
+    ) {
       if (
         sampleItem.name == null ||
-        sampleItem.name.length == 0 ||
+        sampleItem.name == "" ||
+        sampleItem.description == null ||
+        sampleItem.description == "" ||
         sampleItem.quantityLimit == null ||
         sampleItem.quantityLimit == 0 ||
         sampleItem.license == null ||
-        sampleItem.license.length == 0 ||
+        sampleItem.license == "" ||
         sampleItem.copyrights == null ||
-        sampleItem.license.copyrights == 0
+        sampleItem.copyrights.length == 0
       ) {
-        setErrMsg(
-          "You cannot set it to 'Viewing Only' if mandatory fields are not filled in.",
-        );
-        return;
+        return false;
       }
       if (
         sampleItem.status == SampleStatus.ScheduledPublishing ||
         sampleItem.status == SampleStatus.ScheduledforSale
       ) {
         if (sampleItem.startDate == null || sampleItem.endDate == null) {
-          setErrMsg(
-            "You cannot set it to 'Viewing Only' if mandatory fields are not filled in.",
-          );
-          return;
+          return false;
         }
       }
     }
 
-    if (errMsg.length > 0) {
-      setErrMsg("");
+    return true;
+  };
+
+  const showStatusConfirmDialog = () => {
+    // check submit
+    setConfirmDialogDisabled(!checkMandatoryFields());
+
+    // set title
+    setConfirmDialogTitle(
+      `Changing from ${getSampleStatusTitle(
+        dataRef.current.status,
+      ).toLowerCase()} to ${getSampleStatusTitle(
+        sampleItem.status,
+      ).toLowerCase()}`,
+    );
+
+    // set content
+    switch (dataRef.current.status) {
+      case SampleStatus.Draft:
+        switch (sampleItem.status) {
+          case SampleStatus.ViewingOnly:
+          case SampleStatus.ScheduledPublishing:
+            setConfirmDialogDescriptions([
+              "Once published, this item will be visible to all users.",
+            ]);
+            setConfirmDialogNotes([
+              "Settings cannot be changed afterward (except for price).",
+            ]);
+            break;
+
+          case SampleStatus.OnSale:
+          case SampleStatus.ScheduledforSale:
+            setConfirmDialogDescriptions([
+              "In sales status, the item can be sold and distributed.",
+            ]);
+            setConfirmDialogNotes([
+              "Settings cannot be changed afterward (except for price).",
+            ]);
+            break;
+
+          default:
+            return;
+        }
+        break;
+
+      case SampleStatus.Private:
+        switch (sampleItem.status) {
+          case SampleStatus.ViewingOnly:
+          case SampleStatus.ScheduledPublishing:
+            setConfirmDialogDescriptions([
+              "Once published, this item will be visible to all users.",
+              "If intended for sale/distribution, please select the sales status (On Sale).",
+            ]);
+            setConfirmDialogNotes([
+              "Settings cannot be changed afterward (except for price).",
+              "You cannot revert to private status.",
+            ]);
+            break;
+
+          case SampleStatus.OnSale:
+          case SampleStatus.ScheduledforSale:
+            setConfirmDialogDescriptions([
+              "The item will be published and available for sale and distribution.",
+            ]);
+            setConfirmDialogNotes([
+              "Settings cannot be changed afterward (except for price).",
+              "You cannot revert to private status.",
+            ]);
+            break;
+
+          default:
+            return;
+        }
+        break;
+
+      case SampleStatus.ViewingOnly:
+      case SampleStatus.ScheduledPublishing:
+        switch (sampleItem.status) {
+          case SampleStatus.Unlisted:
+            setConfirmDialogDescriptions([
+              "This item will be hidden from the content page.",
+            ]);
+            setConfirmDialogNotes([]);
+            break;
+
+          case SampleStatus.OnSale:
+          case SampleStatus.ScheduledforSale:
+            setConfirmDialogDescriptions([
+              "The item will be available for sale and distribution.",
+            ]);
+            setConfirmDialogNotes([]);
+            break;
+
+          default:
+            return;
+        }
+        break;
+
+      case SampleStatus.OnSale:
+      case SampleStatus.ScheduledforSale:
+        switch (sampleItem.status) {
+          case SampleStatus.ViewingOnly:
+          case SampleStatus.ScheduledPublishing:
+            setConfirmDialogDescriptions([
+              "The item will continue to be displayed to all users, but it will be sold or distributed.",
+            ]);
+            setConfirmDialogNotes([]);
+            break;
+
+          case SampleStatus.Unlisted:
+            setConfirmDialogDescriptions([
+              "This item will be hidden from the content page.",
+            ]);
+            setConfirmDialogNotes([]);
+            break;
+
+          default:
+            return;
+        }
+        break;
+
+      case SampleStatus.Unlisted:
+        switch (sampleItem.status) {
+          case SampleStatus.ViewingOnly:
+          case SampleStatus.ScheduledPublishing:
+            setConfirmDialogDescriptions([
+              "This item will once again be visible to all users.",
+            ]);
+            setConfirmDialogNotes([]);
+            break;
+
+          case SampleStatus.OnSale:
+          case SampleStatus.ScheduledforSale:
+            setConfirmDialogDescriptions([
+              "The item will be published and will also be available for sale and distribution.",
+            ]);
+            setConfirmDialogNotes([]);
+            break;
+
+          default:
+            return;
+        }
+        break;
+
+      default:
+        return;
     }
 
-    const result = await updateSampleItem(sampleItem);
-    if (result) {
-      setChanged(false);
+    statusConfirmDialogRef.current.showModal();
+  };
+
+  const saveButtonHandler = async () => {
+    if (dataRef.current.status != sampleItem.status) {
+      showStatusConfirmDialog();
+      return;
+    }
+
+    submitHandler();
+  };
+
+  const submitHandler = async () => {
+    setLoading(true);
+
+    const submitData = {
+      name: sampleItem.name,
+      description: sampleItem.description,
+      customThumbnailUrl: sampleItem.customThumbnailUrl,
+      isCustomThumbnailSelected: sampleItem.isCustomThumbnailSelected,
+      price: sampleItem.price ?? 0,
+      status: sampleItem.status,
+      startDate: sampleItem.startDate,
+      endDate: sampleItem.endDate,
+      quantityLimit: parseInt(sampleItem.quantityLimit),
+      license: sampleItem.license,
+      copyrights: sampleItem.copyrights,
+    };
+
+    if (submitData.customThumbnailUrl != dataRef.current.customThumbnailUrl) {
+      submitData.customThumbnailUrl = await uploadImage(
+        submitData.customThumbnailUrl,
+        ImageType.SampleThumbnail,
+      );
+    }
+
+    if (
+      submitData.status != SampleStatus.ScheduledPublishing &&
+      submitData.status != SampleStatus.ScheduledforSale
+    ) {
+      delete submitData.startDate;
+      delete submitData.endDate;
+    }
+
+    if (await postData(`${apiUrl}/${sampleItem.id}`, submitData)) {
+      setModified(false);
+      dataRef.current = sampleItem;
+    } else {
+      if (error) {
+        if (error instanceof String) {
+          toast(error.toString());
+        } else {
+          toast(error.toString());
+        }
+      }
     }
   };
+
+  const isReadOnly = useCallback(() => {
+    if (
+      dataRef.current.status == SampleStatus.ViewingOnly ||
+      dataRef.current.status == SampleStatus.OnSale ||
+      dataRef.current.status == SampleStatus.ScheduledPublishing ||
+      dataRef.current.status == SampleStatus.ScheduledforSale
+    ) {
+      return true;
+    }
+    return false;
+  }, [dataRef]);
 
   return (
     <div>
       <ItemEditHeader
-        activeName={sampleItem && sampleItem.name ? sampleItem.name : "No Name"}
+        activeName={
+          dataRef.current && dataRef.current.name
+            ? dataRef.current.name
+            : "No Name"
+        }
+        loading={loading}
+        saveHandler={saveButtonHandler}
       />
 
       {sampleItem && (
@@ -152,6 +341,7 @@ const Detail = () => {
                     value={sampleItem.name}
                     changeHandler={(value) => fieldChangeHandler("name", value)}
                     maxLen={50}
+                    readOnly={isReadOnly()}
                   />
                   <StyledTextArea
                     className=""
@@ -162,6 +352,7 @@ const Detail = () => {
                       fieldChangeHandler("description", value)
                     }
                     maxLen={1300}
+                    readOnly={isReadOnly()}
                   />
                 </div>
               </div>
@@ -169,7 +360,7 @@ const Detail = () => {
                 <div className="flex justify-between items-center">
                   <h3 className="text-xl text-secondary">SAMPLE STATUS</h3>
                   <StatusDropdownSelect
-                    initialIndex={sampleItem.status - 1}
+                    initialStatus={dataRef.current.status}
                     handleSelectedItemChange={(changes) => {
                       fieldChangeHandler("status", changes.selectedItem.value);
                     }}
@@ -222,7 +413,6 @@ const Detail = () => {
                     changeHandler={(value) =>
                       fieldChangeHandler("price", value)
                     }
-                    readOnly={true}
                   />
                   <div className="flex">
                     <Image
@@ -271,6 +461,7 @@ const Detail = () => {
                     changeHandler={(value) =>
                       fieldChangeHandler("quantityLimit", value)
                     }
+                    readOnly={isReadOnly()}
                   />
                   <div className="flex justify-start items-center gap-2">
                     <input
@@ -279,7 +470,7 @@ const Detail = () => {
                       className="w-6 h-6"
                       checked={sampleItem.quantityLimit == -1}
                       onChange={(e) => {
-                        if (e.target.checked) {
+                        if (!isReadOnly() && e.target.checked) {
                           fieldChangeHandler("quantityLimit", -1);
                         }
                       }}
@@ -332,6 +523,7 @@ const Detail = () => {
                       handleSelectedItemChange={(changes) => {
                         fieldChangeHandler("copyrights", changes);
                       }}
+                      readOnly={isReadOnly()}
                     />
                     <Image
                       src="/admin/images/info-icon-2.svg"
@@ -373,6 +565,7 @@ const Detail = () => {
                       changeHandler={(value) =>
                         fieldChangeHandler("license", value)
                       }
+                      readOnly={isReadOnly()}
                     />
                     <Image
                       src="/admin/images/info-icon-2.svg"
@@ -491,12 +684,10 @@ const Detail = () => {
                       className="absolute right-3 bottom-3 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation(); // Stop event propagation
-                        setSampleItem({
-                          ...{
-                            ...sampleItem,
-                            ["isCustomThumbnailSelected"]: false,
-                            ["customThumbnailUrl"]: "",
-                          },
+                        setData({
+                          ...sampleItem,
+                          ["isCustomThumbnailSelected"]: false,
+                          ["customThumbnailUrl"]: "",
                         });
                       }}
                     />
@@ -537,22 +728,43 @@ const Detail = () => {
               </div>
             </div>
           </div>
-          <div className="text-center">
-            <div className="text-xl text-[#FF4747] py-8">{errMsg}</div>
-            <Button
-              type="submit"
-              className={clsx(
-                "text-xl h-14 text-white rounded-[30px] px-10",
-                changed ? "bg-primary" : "bg-inactive",
-              )}
-              disabled={!changed}
-              onClick={submitData}
-            >
-              SAVE
-            </Button>
+          <div className="text-center mt-10 h-14">
+            {loading ? (
+              <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
+            ) : (
+              <Button
+                type="submit"
+                className={clsx(
+                  "text-xl h-14 text-white rounded-[30px] px-10",
+                  modified ? "bg-primary" : "bg-inactive",
+                )}
+                disabled={!modified}
+                onClick={saveButtonHandler}
+              >
+                SAVE
+              </Button>
+            )}
           </div>
         </div>
       )}
+      <StatusConfirmDialog
+        dialogRef={statusConfirmDialogRef}
+        title={confirmDialogTitle}
+        descriptions={confirmDialogDescriptions}
+        notes={confirmDialogNotes}
+        disabled={confirmDialogDisabled}
+        saveHandler={submitHandler}
+      />
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        theme="dark"
+      />
     </div>
   );
 };

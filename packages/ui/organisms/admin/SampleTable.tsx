@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "../../atoms/Button";
-import { formatSampleStatus } from "./StatusDropdownSelect";
+import { getSampleStatusTitle } from "./StatusDropdownSelect";
 
 const SampleTable = ({ filters }) => {
   // sample data
@@ -331,7 +331,7 @@ const SampleTable = ({ filters }) => {
                     {formatCurrency(sample.price)}
                   </td>
                   <td className="p-3 text-center justify-center">
-                    {formatSampleStatus(sample.status)}
+                    {getSampleStatusTitle(sample.status)}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
                     {!!sample.saleStartDate && sample.saleStartDate.length
