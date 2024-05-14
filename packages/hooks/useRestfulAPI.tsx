@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 const useRestfulAPI = (url) => {
   const apiUrlPrefix = "/backend/api/functions/";
   const [data, setData] = useState(null); // State for data
-  const [loading, setLoading] = useState(true); // State for loading
+  const [loading, setLoading] = useState(false); // State for loading
   const [error, setError] = useState(null); // State for error handling
 
   const dataRef = useRef(null);

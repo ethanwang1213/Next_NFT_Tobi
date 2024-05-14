@@ -104,7 +104,7 @@ const BirthdayEditDialog = ({
               dialogRef.current.close();
             }}
           >
-            Save changes
+            OK
           </button>
         </div>
       </div>

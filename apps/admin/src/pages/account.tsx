@@ -206,7 +206,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 export default function Index() {
   const apiUrl = "native/my/profile";
   const [modified, setModified] = useState(false);
-  const { data, dataRef, error, setData, postData } = useRestfulAPI(apiUrl);
+  const { data, dataRef, error, loading, setData, setLoading, postData } =
+    useRestfulAPI(apiUrl);
 
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
@@ -225,9 +226,9 @@ export default function Index() {
     };
     if (data.icon != dataRef.current.icon) {
       // upload image
+      setLoading(true);
       const iconUrl = await uploadImage(data.icon, ImageType.AccountAvatar);
       submitData.icon = iconUrl;
-      fieldChangeHandler("icon", iconUrl);
     }
 
     if (await postData(apiUrl, { account: submitData }, ["account"])) {
@@ -258,19 +259,23 @@ export default function Index() {
 
   return (
     <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
-      <div className="flex justify-between items-start">
+      <div className="h-14 flex justify-between items-start">
         <span className="text-3xl text-secondary-600 font-semibold">
           ACCOUNT
         </span>
-        <button
-          className={`text-xl h-14 text-white rounded-[30px] px-10
-            ${modified ? "bg-primary" : "bg-inactive"}
-          `}
-          disabled={!modified}
-          onClick={submitHandler}
-        >
-          SAVE
-        </button>
+        {loading ? (
+          <span className="loading loading-spinner loading-md mr-14 mt-4 text-secondary-600"></span>
+        ) : (
+          <button
+            className={`text-xl h-14 text-white rounded-[30px] px-10
+              ${modified ? "bg-primary" : "bg-inactive"}
+            `}
+            disabled={!modified}
+            onClick={submitHandler}
+          >
+            SAVE
+          </button>
+        )}
       </div>
       {data && (
         <div className="flex gap-10">
