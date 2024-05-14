@@ -61,6 +61,11 @@ type ContextType = {
 
 const AuthContext = createContext<ContextType>({} as ContextType);
 
+/**
+ * We initially used email links for sign-in, but the specification changed to use passwords instead.
+ * If a user is signed in using an email link, we want to sign them out.
+ * Therefore, we need to check if the user is signed in using an email link.
+ */
 export const emailLinkOnly = async (email: string) => {
   const idTokenResult = await auth.currentUser?.getIdTokenResult();
   if (idTokenResult?.signInProvider !== EmailAuthProvider.PROVIDER_ID) {
