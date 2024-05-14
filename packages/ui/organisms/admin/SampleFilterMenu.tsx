@@ -15,7 +15,20 @@ const useFilterControl = (initialFilters) => {
   return [filters, toggleFilter];
 };
 
-const SampleFilterMenu = (props) => {
+const SampleFilterMenu = (props: {
+  filterArray: boolean[];
+  toggleFilter: (index: number) => void;
+  price: { from: number; to: number };
+  setPrice: (price: { from: number; to: number }) => void;
+  statusArray: boolean[];
+  toggleStatus: (index: number) => void;
+  saleStartDate: { from: Date; to: Date };
+  setSaleStartDate: (date: { from: Date; to: Date }) => void;
+  saleEndDate: { from: Date; to: Date };
+  setSaleEndDate: (date: { from: Date; to: Date }) => void;
+  createDate: { from: Date; to: Date };
+  setCreateDate: (date: { from: Date; to: Date }) => void;
+}) => {
   return (
     <div className="w-80 flex flex-col items-start justify-center gap-2">
       <div className="flex flex-col items-start justify-center gap-1">

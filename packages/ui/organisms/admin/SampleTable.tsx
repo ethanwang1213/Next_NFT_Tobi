@@ -7,7 +7,14 @@ import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "../../atoms/Button";
 import { getSampleStatusTitle } from "./StatusDropdownSelect";
 
-const SampleTable = (filters) => {
+const SampleTable = (filters: {
+  filterArray: boolean[];
+  price: { from: number; to: number };
+  statusArray: boolean[];
+  saleStartDate: { from: Date; to: Date };
+  saleEndDate: { from: Date; to: Date };
+  createDate: { from: Date; to: Date };
+}) => {
   const apiUrl = "native/admin/samples";
   const {
     data: samples,
