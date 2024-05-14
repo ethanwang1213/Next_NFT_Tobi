@@ -51,7 +51,7 @@ const FilterPopupButton = (props) => {
           ref={popupRef}
           className="absolute bg-primary-900 text-white rounded-xl px-6 py-4 z-10"
         >
-          <SampleFilterMenu />
+          <SampleFilterMenu {...props} />
         </div>
       )}
     </div>

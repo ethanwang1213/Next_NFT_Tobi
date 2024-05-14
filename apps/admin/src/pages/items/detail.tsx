@@ -265,7 +265,7 @@ const Detail = () => {
       description: sampleItem.description,
       customThumbnailUrl: sampleItem.customThumbnailUrl,
       isCustomThumbnailSelected: sampleItem.isCustomThumbnailSelected,
-      price: sampleItem.price ?? 0,
+      price: parseInt(sampleItem.price ?? 0),
       status: sampleItem.status,
       startDate: sampleItem.startDate,
       endDate: sampleItem.endDate,

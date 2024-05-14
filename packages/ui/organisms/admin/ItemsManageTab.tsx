@@ -5,25 +5,60 @@ import { TabSelector } from "ui/atoms/tab-selector";
 import { SampleTable } from "./SampleTable";
 import FilterPopupButton from "ui/organisms/admin/FilterPopupButton";
 
+const useFilterControl = (initialFilters) => {
+  const [filters, setFilters] = useState(initialFilters);
+
+  const toggleFilter = (index) => {
+    const newFilters = [...filters];
+    newFilters[index] = !newFilters[index];
+    setFilters(newFilters);
+  };
+
+  return [filters, toggleFilter];
+};
+
 export default function ItemsManageTab({
   onTabChange,
 }: {
   onTabChange: (value: string) => void;
 }) {
   const [tab, setTab] = useTabs(["sample"]);
-  const [filterArray, setFilterArray] = useState({});
+
+  const [filterArray, toggleFilter] = useFilterControl([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+
+  const [price, setPrice] = useState({ from: 0, to: 0 });
+  const [statusArray, toggleStatus] = useFilterControl([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+  const [saleStartDate, setSaleStartDate] = useState({
+    from: new Date(),
+    to: new Date(),
+  });
+  const [saleEndDate, setSaleEndDate] = useState({
+    from: new Date(),
+    to: new Date(),
+  });
+  const [createDate, setCreateDate] = useState({
+    from: new Date(),
+    to: new Date(),
+  });
 
   const handleTabChange = (tab) => {
     setTab(tab);
     onTabChange(tab);
   };
-
-  // Function to toggle a specific index in the array
-  const toggleAtIndex = (index) =>
-    setFilterArray((prevArray) => ({
-      ...prevArray,
-      [index]: !prevArray[index],
-    }));
 
   return (
     <>
@@ -37,7 +72,20 @@ export default function ItemsManageTab({
         </TabSelector>
       </nav>
       <div className="flex justify-start">
-        <FilterPopupButton />
+        <FilterPopupButton
+          filterArray={filterArray}
+          toggleFilter={toggleFilter}
+          price={price}
+          setPrice={setPrice}
+          statusArray={statusArray}
+          toggleStatus={toggleStatus}
+          saleStartDate={saleStartDate}
+          setSaleStartDate={setSaleStartDate}
+          saleEndDate={saleEndDate}
+          setSaleEndDate={setSaleEndDate}
+          createDate={createDate}
+          setCreateDate={setCreateDate}
+        />
         <input
           className="text-base text-secondary/[76] outline-none"
           placeholder="Search for Samples"
@@ -45,7 +93,14 @@ export default function ItemsManageTab({
       </div>
       <div>
         <TabPanel hidden={tab !== "sample"}>
-          <SampleTable filters={filterArray} />
+          <SampleTable
+            filterArray={filterArray}
+            price={price}
+            statusArray={statusArray}
+            saleStartDate={saleStartDate}
+            saleEndDate={saleEndDate}
+            createDate={createDate}
+          />
         </TabPanel>
       </div>
     </>

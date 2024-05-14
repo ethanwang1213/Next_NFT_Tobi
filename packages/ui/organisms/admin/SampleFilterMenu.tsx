@@ -15,40 +15,20 @@ const useFilterControl = (initialFilters) => {
   return [filters, toggleFilter];
 };
 
-const SampleFilterMenu = () => {
-  const [filterArray, toggleFilter] = useFilterControl([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
-
-  const [price, setPrice] = useState({ from: 0, to: 0 });
-  const [statusArray, toggleStatus] = useFilterControl([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
-  const [saleStartDate, setSaleStartDate] = useState({
-    from: new Date(),
-    to: new Date(),
-  });
-  const [saleEndDate, setSaleEndDate] = useState({
-    from: new Date(),
-    to: new Date(),
-  });
-  const [soldCount, setSoldCount] = useState({ from: 0, to: 0 });
-  const [createDate, setCreateDate] = useState({
-    from: new Date(),
-    to: new Date(),
-  });
-
+const SampleFilterMenu = (props: {
+  filterArray: boolean[];
+  toggleFilter: (index: number) => void;
+  price: { from: number; to: number };
+  setPrice: (price: { from: number; to: number }) => void;
+  statusArray: boolean[];
+  toggleStatus: (index: number) => void;
+  saleStartDate: { from: Date; to: Date };
+  setSaleStartDate: (date: { from: Date; to: Date }) => void;
+  saleEndDate: { from: Date; to: Date };
+  setSaleEndDate: (date: { from: Date; to: Date }) => void;
+  createDate: { from: Date; to: Date };
+  setCreateDate: (date: { from: Date; to: Date }) => void;
+}) => {
   return (
     <div className="w-80 flex flex-col items-start justify-center gap-2">
       <div className="flex flex-col items-start justify-center gap-1">
@@ -57,35 +37,35 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkPrice"
-            checked={filterArray[0]}
-            onChange={(e) => toggleFilter(0)}
+            checked={props.filterArray[0]}
+            onChange={(e) => props.toggleFilter(0)}
           />
           <label htmlFor="chkPrice" className="ml-2 text-base/8">
             Price
           </label>
         </div>
-        {filterArray[0] ? (
+        {props.filterArray[0] ? (
           <div className="flex items-center ml-6">
             <NumericFormat
-              defaultValue={price.from}
+              defaultValue={props.price.from}
               prefix="￥"
               thousandSeparator=","
               decimalScale={0}
               allowNegative={false}
               onValueChange={(values, sourceInfo) =>
-                setPrice({ ...price, from: values.floatValue })
+                props.setPrice({ ...props.price, from: values.floatValue })
               }
               className="w-[104px] h-8 text-xs text-right bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
             />
             <span className="w-10 text-center">~</span>
             <NumericFormat
-              defaultValue={price.to}
+              defaultValue={props.price.to}
               prefix="￥"
               thousandSeparator=","
               decimalScale={0}
               allowNegative={false}
               onValueChange={(values, sourceInfo) =>
-                setPrice({ ...price, to: values.floatValue })
+                props.setPrice({ ...props.price, to: values.floatValue })
               }
               className="w-[104px] h-8 text-xs text-right bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
             />
@@ -100,22 +80,22 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkStatus"
-            checked={filterArray[1]}
-            onChange={(e) => toggleFilter(1)}
+            checked={props.filterArray[1]}
+            onChange={(e) => props.toggleFilter(1)}
           />
           <label htmlFor="chkStatus" className="ml-2 text-base/8">
             Status
           </label>
         </div>
-        {filterArray[1] ? (
+        {props.filterArray[1] ? (
           <div className="flex flex-col items-start justify-center gap-2 ml-6">
             <div>
               <input
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkDraft"
-                checked={statusArray[0]}
-                onChange={(e) => toggleStatus(0)}
+                checked={props.statusArray[0]}
+                onChange={(e) => props.toggleStatus(0)}
               />
               <label htmlFor="chkDraft" className="ml-2 text-sm">
                 Draft
@@ -126,8 +106,8 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkPrivate"
-                checked={statusArray[1]}
-                onChange={(e) => toggleStatus(1)}
+                checked={props.statusArray[1]}
+                onChange={(e) => props.toggleStatus(1)}
               />
               <label htmlFor="chkPrivate" className="ml-2 text-sm">
                 Private
@@ -138,8 +118,8 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkViewingOnly"
-                checked={statusArray[2]}
-                onChange={(e) => toggleStatus(2)}
+                checked={props.statusArray[2]}
+                onChange={(e) => props.toggleStatus(2)}
               />
               <label htmlFor="chkViewingOnly" className="ml-2 text-sm">
                 Viewing Only
@@ -150,8 +130,8 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkOnSale"
-                checked={statusArray[3]}
-                onChange={(e) => toggleStatus(3)}
+                checked={props.statusArray[3]}
+                onChange={(e) => props.toggleStatus(3)}
               />
               <label htmlFor="chkOnSale" className="ml-2 text-sm">
                 On Sale
@@ -162,8 +142,8 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkUnlisted"
-                checked={statusArray[4]}
-                onChange={(e) => toggleStatus(4)}
+                checked={props.statusArray[4]}
+                onChange={(e) => props.toggleStatus(4)}
               />
               <label htmlFor="chkUnlisted" className="ml-2 text-sm">
                 Unlisted
@@ -174,8 +154,8 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkScheduledPublishing"
-                checked={statusArray[5]}
-                onChange={(e) => toggleStatus(5)}
+                checked={props.statusArray[5]}
+                onChange={(e) => props.toggleStatus(5)}
               />
               <label htmlFor="chkScheduledPublishing" className="ml-2 text-sm">
                 Scheduled Publishing
@@ -186,8 +166,8 @@ const SampleFilterMenu = () => {
                 type="checkbox"
                 className="tobiratory-checkbox w-3 h-3"
                 id="chkScheduledSale"
-                checked={statusArray[6]}
-                onChange={(e) => toggleStatus(6)}
+                checked={props.statusArray[6]}
+                onChange={(e) => props.toggleStatus(6)}
               />
               <label htmlFor="chkScheduledSale" className="ml-2 text-sm">
                 Scheduled for Sale
@@ -204,19 +184,19 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkSaleStartDate"
-            checked={filterArray[2]}
-            onChange={(e) => toggleFilter(2)}
+            checked={props.filterArray[2]}
+            onChange={(e) => props.toggleFilter(2)}
           />
           <label htmlFor="chkSaleStartDate" className="ml-2 text-base/8">
             Sale Start Date
           </label>
         </div>
-        {filterArray[2] ? (
+        {props.filterArray[2] ? (
           <div className="flex items-center ml-6">
             <DatePicker
-              selected={saleStartDate.from}
+              selected={props.saleStartDate.from}
               onChange={(date) =>
-                setSaleStartDate({ ...saleStartDate, from: date })
+                props.setSaleStartDate({ ...props.saleStartDate, from: date })
               }
               dateFormat="yyyy/MM/dd"
               showPopperArrow={false}
@@ -224,9 +204,9 @@ const SampleFilterMenu = () => {
             />
             <span className="w-10 text-center">~</span>
             <DatePicker
-              selected={saleStartDate.to}
+              selected={props.saleStartDate.to}
               onChange={(date) =>
-                setSaleStartDate({ ...saleStartDate, to: date })
+                props.setSaleStartDate({ ...props.saleStartDate, to: date })
               }
               dateFormat="yyyy/MM/dd"
               showPopperArrow={false}
@@ -243,19 +223,19 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkSaleEndDate"
-            checked={filterArray[3]}
-            onChange={(e) => toggleFilter(3)}
+            checked={props.filterArray[3]}
+            onChange={(e) => props.toggleFilter(3)}
           />
           <label htmlFor="chkSaleEndDate" className="ml-2 text-base/8">
             Sale End Date
           </label>
         </div>
-        {filterArray[3] ? (
+        {props.filterArray[3] ? (
           <div className="flex items-center ml-6">
             <DatePicker
-              selected={saleEndDate.from}
+              selected={props.saleEndDate.from}
               onChange={(date) =>
-                setSaleEndDate({ ...saleEndDate, from: date })
+                props.setSaleEndDate({ ...props.saleEndDate, from: date })
               }
               dateFormat="yyyy/MM/dd"
               showPopperArrow={false}
@@ -263,52 +243,13 @@ const SampleFilterMenu = () => {
             />
             <span className="w-10 text-center">~</span>
             <DatePicker
-              selected={saleEndDate.to}
-              onChange={(date) => setSaleEndDate({ ...saleEndDate, to: date })}
+              selected={props.saleEndDate.to}
+              onChange={(date) =>
+                props.setSaleEndDate({ ...props.saleEndDate, to: date })
+              }
               dateFormat="yyyy/MM/dd"
               showPopperArrow={false}
               className="w-[104px] h-8 text-xs text-center bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
-            />
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
-      <div className="flex flex-col items-start justify-center gap-1">
-        <div className="flex items-center h-8">
-          <input
-            type="checkbox"
-            className="tobiratory-checkbox w-3 h-3"
-            id="chkUnitsSold"
-            checked={filterArray[4]}
-            onChange={(e) => toggleFilter(4)}
-          />
-          <label htmlFor="chkUnitsSold" className="ml-2 text-base/8">
-            Units Sold
-          </label>
-        </div>
-        {filterArray[4] ? (
-          <div className="flex items-center ml-6">
-            <NumericFormat
-              defaultValue={soldCount.from}
-              thousandSeparator=","
-              decimalScale={0}
-              allowNegative={false}
-              onValueChange={(values, sourceInfo) =>
-                setSoldCount({ ...soldCount, from: values.floatValue })
-              }
-              className="w-[60px] h-8 text-xs text-center bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
-            />
-            <span className="w-10 text-center">~</span>
-            <NumericFormat
-              defaultValue={soldCount.to}
-              thousandSeparator=","
-              decimalScale={0}
-              allowNegative={false}
-              onValueChange={(values, sourceInfo) =>
-                setSoldCount({ ...soldCount, to: values.floatValue })
-              }
-              className="w-[60px] h-8 text-xs text-center bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
             />
           </div>
         ) : (
@@ -321,26 +262,30 @@ const SampleFilterMenu = () => {
             type="checkbox"
             className="tobiratory-checkbox w-3 h-3"
             id="chkCreationDate"
-            checked={filterArray[5]}
-            onChange={(e) => toggleFilter(5)}
+            checked={props.filterArray[4]}
+            onChange={(e) => props.toggleFilter(4)}
           />
           <label htmlFor="chkCreationDate" className="ml-2 text-base/8">
             Creation Date
           </label>
         </div>
-        {filterArray[5] ? (
+        {props.filterArray[4] ? (
           <div className="flex items-center ml-6">
             <DatePicker
-              selected={createDate.from}
-              onChange={(date) => setCreateDate({ ...createDate, from: date })}
+              selected={props.createDate.from}
+              onChange={(date) =>
+                props.setCreateDate({ ...props.createDate, from: date })
+              }
               dateFormat="yyyy/MM/dd"
               showPopperArrow={false}
               className="w-[104px] h-8 text-xs text-center bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"
             />
             <span className="w-10 text-center">~</span>
             <DatePicker
-              selected={createDate.to}
-              onChange={(date) => setCreateDate({ ...createDate, to: date })}
+              selected={props.createDate.to}
+              onChange={(date) =>
+                props.setCreateDate({ ...props.createDate, to: date })
+              }
               dateFormat="yyyy/MM/dd"
               showPopperArrow={false}
               className="w-[104px] h-8 text-xs text-center bg-[#093159] border border-white rounded-[3px] px-3 py-1 inline-block outline-none"

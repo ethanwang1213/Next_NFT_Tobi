@@ -26,17 +26,26 @@ const DateTimeInput = ({
   const [selectedDate, setSelectedDate] = useState(
     value && value.length ? new Date(value) : undefined,
   );
-  const [dateValue, setDateValue] = useState(
-    value && value.length ? value.split(" ")[0] : "",
-  );
-  const [timeValue, setTimeValue] = useState(
-    value && value.length ? value.split(" ")[1] : "",
-  );
+  const [dateValue, setDateValue] = useState("");
+  const [timeValue, setTimeValue] = useState("");
   const [uniqueId, setUniqueId] = useState("");
 
   useEffect(() => {
     setUniqueId(Math.random().toString(36).substring(2, 11));
   }, []);
+
+  useEffect(() => {
+    if (selectedDate !== undefined) {
+      setDateValue(format(selectedDate, "yyyy/MM/dd"));
+      setTimeValue(
+        selectedDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }),
+      );
+    }
+  }, [selectedDate]);
 
   const handleDateFocus = () => {
     setIsDateFocused(true);
@@ -66,16 +75,6 @@ const DateTimeInput = ({
 
   const datepickerChangeHandler = (date) => {
     setSelectedDate(date);
-    setDateValue(format(date, "yyyy/MM/dd"));
-    setTimeValue(
-      date
-        ? date.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          })
-        : "",
-    );
     changeHandler(formatDateToLocal(date, true));
   };
 
@@ -125,7 +124,7 @@ const DateTimeInput = ({
         />
         <label
           className={`absolute cursor-text font-normal transition-all duration-300 z-[1] ${
-            isDateFocused || dateValue.length
+            isDateFocused || (dateValue && dateValue.length)
               ? "text-xs top-1 text-input-color"
               : "text-sm top-3 text-placeholder-color"
           }`}
@@ -165,7 +164,7 @@ const DateTimeInput = ({
         />
         <label
           className={`absolute cursor-text font-normal transition-all duration-300 z-[1] ${
-            isTimeFocused || timeValue.length
+            isTimeFocused || (timeValue && timeValue.length)
               ? "text-xs top-1 text-input-color"
               : "text-sm top-3 text-placeholder-color"
           }`}

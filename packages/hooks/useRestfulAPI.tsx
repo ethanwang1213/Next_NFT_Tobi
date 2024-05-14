@@ -130,19 +130,25 @@ const useRestfulAPI = (url) => {
     return false;
   };
 
-  const deleteData = async (url) => {
+  const deleteData = async (url, body = null) => {
     setLoading(true);
     setError(null);
 
     try {
       const token = await auth.currentUser!.getIdToken();
-      const response = await fetch(`${apiUrlPrefix}${url}`, {
+      const requestOptions = {
         method: "DELETE",
         headers: {
           Authorization: token,
         },
-      });
-
+        body: null,
+      };
+      if (body !== null) {
+        requestOptions.headers["Content-Type"] = "application/json";
+        // Assuming `body` is a JSON object, convert it to a JSON string
+        requestOptions.body = JSON.stringify(body);
+      }
+      const response = await fetch(`${apiUrlPrefix}${url}`, requestOptions);
       if (!response.ok) {
         throw new Error(`An error occurred: ${response.statusText}`);
       }

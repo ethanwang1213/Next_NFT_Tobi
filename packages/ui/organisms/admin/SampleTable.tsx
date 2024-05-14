@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { fetchSamples, deleteSamples } from "fetchers/SampleActions";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -7,9 +7,22 @@ import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "../../atoms/Button";
 import { getSampleStatusTitle } from "./StatusDropdownSelect";
 
-const SampleTable = ({ filters }) => {
-  // sample data
-  const [samples, setSamples] = useState([]);
+const SampleTable = (filters: {
+  filterArray: boolean[];
+  price: { from: number; to: number };
+  statusArray: boolean[];
+  saleStartDate: { from: Date; to: Date };
+  saleEndDate: { from: Date; to: Date };
+  createDate: { from: Date; to: Date };
+}) => {
+  const apiUrl = "native/admin/samples";
+  const {
+    data: samples,
+    dataRef,
+    setData,
+    getData,
+    deleteData,
+  } = useRestfulAPI(apiUrl);
 
   // active sorting column
   const [sortOrder, setSortOrder] = useState(0);
@@ -17,56 +30,36 @@ const SampleTable = ({ filters }) => {
   // selected sample id array
   const [selSampleIds, setSelSampleIds] = useState([]);
 
-  // fetch samples from server
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchSamples();
-        setSamples(data);
-      } catch (error) {
-        // Handle errors here
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const toggleSortingDirection = (index) => {
-    // determine sorting direction
-    let order = index;
-    if (Math.abs(sortOrder) == index) {
-      order = -sortOrder;
-    }
-
+  const applySort = (sortKey, sortData) => {
     // sort sample data
-    switch (order) {
+    const newData = [...sortData];
+    switch (sortKey) {
       case -1:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.name < b.name ? -1 : a.name > b.name ? 1 : a.status - b.status,
         );
         break;
 
       case 1:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.name < b.name ? 1 : a.name > b.name ? -1 : a.status - b.status,
         );
         break;
 
       case -2:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.price != b.price ? a.price - b.price : a.status - b.status,
         );
         break;
 
       case 2:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           b.price != a.price ? b.price - a.price : a.status - b.status,
         );
         break;
 
       case -4:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.saleStartDate < b.saleStartDate
             ? -1
             : a.saleStartDate > b.saleStartDate
@@ -76,7 +69,7 @@ const SampleTable = ({ filters }) => {
         break;
 
       case 4:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.saleStartDate < b.saleStartDate
             ? 1
             : a.saleStartDate > b.saleStartDate
@@ -86,7 +79,7 @@ const SampleTable = ({ filters }) => {
         break;
 
       case -5:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.saleEndDate < b.saleEndDate
             ? -1
             : a.saleEndDate > b.saleEndDate
@@ -96,7 +89,7 @@ const SampleTable = ({ filters }) => {
         break;
 
       case 5:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.saleEndDate < b.saleEndDate
             ? 1
             : a.saleEndDate > b.saleEndDate
@@ -106,7 +99,7 @@ const SampleTable = ({ filters }) => {
         break;
 
       case -6:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.saleQuantity != b.saleQuantity
             ? a.saleQuantity - b.saleQuantity
             : a.status - b.status,
@@ -114,7 +107,7 @@ const SampleTable = ({ filters }) => {
         break;
 
       case 6:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           b.saleQuantity != a.saleQuantity
             ? b.saleQuantity - a.saleQuantity
             : a.status - b.status,
@@ -122,7 +115,7 @@ const SampleTable = ({ filters }) => {
         break;
 
       case -7:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.createDate < b.createDate
             ? -1
             : a.createDate > b.createDate
@@ -132,7 +125,7 @@ const SampleTable = ({ filters }) => {
         break;
 
       case 7:
-        samples.sort((a, b) =>
+        newData.sort((a, b) =>
           a.createDate < b.createDate
             ? 1
             : a.createDate > b.createDate
@@ -145,9 +138,92 @@ const SampleTable = ({ filters }) => {
         break;
     }
 
+    return newData;
+  };
+
+  const applyFilter = (filterKey: number, filterData: any[]) => {
+    let newData = [];
+    switch (filterKey) {
+      case 0: // price
+        newData = filterData.filter((value) => {
+          if (value.price === null) return false;
+          return (
+            value.price >= filters.price.from && value.price <= filters.price.to
+          );
+        });
+        break;
+
+      case 1: // status
+        newData = filterData.filter((value) => {
+          return filters.statusArray[value.status - 1];
+        });
+        break;
+
+      case 2: // Sale Start Date
+        newData = filterData.filter((value) => {
+          if (value.saleStartDate === null) return false;
+          const dateValue = new Date(value.saleStartDate);
+          return (
+            dateValue >= filters.saleStartDate.from &&
+            dateValue <= filters.saleStartDate.to
+          );
+        });
+        break;
+
+      case 3: // Sale End Date
+        newData = filterData.filter((value) => {
+          if (value.saleEndDate === null) return false;
+          const dateValue = new Date(value.saleEndDate);
+          return (
+            dateValue >= filters.saleEndDate.from &&
+            dateValue <= filters.saleEndDate.to
+          );
+        });
+        break;
+
+      case 4: // Creation Date
+        newData = filterData.filter((value) => {
+          if (value.createDate === null) return false;
+          const dateValue = new Date(value.createDate);
+          return (
+            dateValue >= filters.createDate.from &&
+            dateValue <= filters.createDate.to
+          );
+        });
+        break;
+
+      default:
+        newData = [...filterData];
+        break;
+    }
+
+    return newData;
+  };
+
+  const toggleSortingDirection = (index) => {
+    // determine sorting direction
+    let order = index;
+    if (Math.abs(sortOrder) == index) {
+      order = -sortOrder;
+    }
+
     // set state
     setSortOrder(order);
   };
+
+  useEffect(() => {
+    if (!dataRef.current) return;
+
+    let newData = [...dataRef.current];
+    filters.filterArray.forEach((element, index) => {
+      if (element) {
+        newData = applyFilter(index, newData);
+      }
+    });
+    newData = applySort(sortOrder, newData);
+    setData(newData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, sortOrder]);
 
   return (
     <div className="flow-root">
@@ -372,11 +448,12 @@ const SampleTable = ({ filters }) => {
               <Button
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
-                  const result = await deleteSamples(selSampleIds);
-                  if (result == true) {
-                    const data = await fetchSamples();
+                  const result = await deleteData(apiUrl, {
+                    sampleIds: selSampleIds,
+                  });
+                  if (result) {
                     setSelSampleIds([]);
-                    setSamples(data);
+                    getData(apiUrl);
                   }
                 }}
               >
