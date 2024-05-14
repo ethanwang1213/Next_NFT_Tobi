@@ -1,4 +1,4 @@
-import { createShowcase } from "fetchers/ShowcaseActions";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
@@ -10,13 +10,14 @@ export const metadata: Metadata = {
 
 export default function Index() {
   const [selectedTab, setSelectedTab] = useState("showcase");
+  const { postData } = useRestfulAPI(null);
 
   const links = {
     showcase: {
       label: "new showcase",
       clickHandler: () => {
         // This is temporary function. This function will be replaced by routing in next sprint.
-        createShowcase({
+        postData("/backend/api/functions/native/admin/showcases", {
           title: "The showcase title",
           description: "",
           templateId: 1,

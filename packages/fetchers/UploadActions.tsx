@@ -1,59 +1,12 @@
 import { auth, storage } from "fetchers/firebase/client";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-export const fetchContentsInformation = async () => {
-  try {
-    const token = await auth.currentUser.getIdToken();
-    const response = await fetch(
-      "/backend/api/functions/native/admin/content",
-      {
-        method: "GET",
-        headers: {
-          Authorization: token,
-        },
-      },
-    );
-    const result = await response.json();
-    if (result.status == "success") {
-      return result.data;
-    } else {
-      console.log("Error:", result);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    return null;
-  }
-};
+export enum ImageType {
+  AccountAvatar = 0,
+  ContentBrand,
+}
 
-export const updateContentsInformation = async (data) => {
-  try {
-    const token = await auth.currentUser.getIdToken();
-    const response = await fetch(
-      `/backend/api/functions/native/admin/content`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      },
-    );
-    const result = await response.json();
-    if (result.status == "success") {
-      return result.data;
-    } else {
-      console.error("Error:", result);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    return null;
-  }
-};
-
-export const uploadImageToFireStorage = async (image) => {
+export const uploadImage = async (image, type) => {
   try {
     if (image == "") return "";
 
@@ -77,15 +30,19 @@ export const uploadImageToFireStorage = async (image) => {
       const byteArray = new Uint8Array(byteNumbers);
       blob = new Blob([byteArray], { type: "image/png" });
     } else {
+      console.log("invalid image type");
       return "";
     }
 
     // Upload the file to Firebase Storage
-    const storageRef = ref(
-      storage,
-      `users/${auth.currentUser.uid}/contents/${storageFileName}`,
-    );
-
+    let path = "";
+    if (type == ImageType.AccountAvatar) {
+      path = `avatars/${auth.currentUser.uid}/${storageFileName}`;
+    }
+    if (type == ImageType.ContentBrand) {
+      path = `users/${auth.currentUser.uid}/contents/${storageFileName}`;
+    }
+    const storageRef = ref(storage, path);
     await uploadBytes(storageRef, blob);
 
     // Get the download URL of the uploaded file

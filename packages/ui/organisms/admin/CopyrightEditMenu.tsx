@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MutableRefObject, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
 type NotifyHandlerType = (
   type: string,
@@ -12,15 +12,16 @@ const CopyrightEditMenu = ({
   id,
   name,
   nofityHandler,
-  menuRef,
+  closeHandler,
 }: {
   id: number;
   name: string;
   nofityHandler: NotifyHandlerType;
-  menuRef?: MutableRefObject<HTMLDivElement>;
+  closeHandler: () => void;
 }) => {
   const [inputValue, setInputValue] = useState(name);
   const inputRef = useRef(null);
+  const menuRef = useRef(null);
 
   const deleteHandler = () => {
     nofityHandler("delete", id, name, "");
@@ -33,6 +34,20 @@ const CopyrightEditMenu = ({
       nofityHandler("close", id, name, "");
     }
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        closeHandler();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
