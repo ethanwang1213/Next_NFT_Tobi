@@ -39,12 +39,6 @@ export const useCustomUnityContextBase = ({ sceneType }: Props) => {
     codeUrl: `${buildFilePath}.wasm`,
   });
 
-  // In Flutter environment, initial switching scene is executed on SceneIsLoaded message received.
-  // However, in this WebGL environment, it can't work correctly at that time because Unity is not ready to execute it.
-  // At that time, `isLoaded` is false, and following warning message is output:
-  // "Unable to Send Message while Unity is not Instantiated."
-  //
-  // Therefore, in this environment, initial switching scene is executed at the time when `isLoaded` turns true as an alternative.
   useEffect(() => {
     if (!isLoaded) return;
     postMessageToSwitchScene(sceneType);
