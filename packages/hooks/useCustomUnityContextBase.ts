@@ -25,14 +25,30 @@ type UnityMessageType =
 type MessageDestination = "SwitchSceneMessageReceiver";
 
 export const useCustomUnityContextBase = ({ sceneType }: Props) => {
-  const buildFilePath = "/unity/build/webgl";
-  const { unityProvider, addEventListener, removeEventListener, sendMessage } =
-    useUnityContext({
-      loaderUrl: `${buildFilePath}.loader.js`,
-      dataUrl: `${buildFilePath}.data`,
-      frameworkUrl: `${buildFilePath}.framework.js`,
-      codeUrl: `${buildFilePath}.wasm`,
-    });
+  const buildFilePath = "/admin/unity/build/webgl";
+  const {
+    unityProvider,
+    isLoaded,
+    addEventListener,
+    removeEventListener,
+    sendMessage,
+  } = useUnityContext({
+    loaderUrl: `${buildFilePath}.loader.js`,
+    dataUrl: `${buildFilePath}.data`,
+    frameworkUrl: `${buildFilePath}.framework.js`,
+    codeUrl: `${buildFilePath}.wasm`,
+  });
+
+  // In Flutter environment, initial switching scene is executed on SceneIsLoaded message received.
+  // However, in this WebGL environment, it can't work correctly at that time because Unity is not ready to execute it.
+  // At that time, `isLoaded` is false, and following warning message is output:
+  // "Unable to Send Message while Unity is not Instantiated."
+  //
+  // Therefore, in this environment, initial switching scene is executed at the time when `isLoaded` turns true as an alternative.
+  useEffect(() => {
+    if (!isLoaded) return;
+    postMessageToSwitchScene(sceneType);
+  }, [isLoaded]);
 
   // We use only `onUnityMessage` event to receive messages from Unity side.
   useEffect(() => {
@@ -59,12 +75,9 @@ export const useCustomUnityContextBase = ({ sceneType }: Props) => {
           `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
         );
         return;
-      case UnityMessageType.SceneIsLoaded:
-        if (msgObj.sceneType === UnitySceneType.Standby) {
-          postMessageToSwitchScene(sceneType);
-        }
-        return;
       // execute event handlers along with message type
+      default:
+        return;
     }
   };
 
@@ -78,7 +91,9 @@ export const useCustomUnityContextBase = ({ sceneType }: Props) => {
   };
 
   const postMessageToSwitchScene = (destSceneType: UnitySceneType) => {
-    const json = `{ sceneType: ${destSceneType} }`;
+    const json = JSON.stringify({
+      sceneType: destSceneType,
+    });
     postMessageToUnity("SwitchSceneMessageReceiver", json);
   };
 
