@@ -77,7 +77,7 @@ export const flowTxSend = functions.region(REGION)
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
         const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata);
-        const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, id);
+        const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, params.digitalItemId);
         await flowJobDocRef.update({
           flowJobId,
           txType,
@@ -167,7 +167,16 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const fungibleTokenAddress = FUNGIBLE_TOKEN_ADDRESS;
 
-  const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
+  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+    where: {
+      id: digitalItemId,
+    }
+  });
+  if (!digitalItem) {
+    throw new functions.https.HttpsError("not-found", "The digital item does not exist.");
+  }
+  const creatorUuid = digitalItem.creator_uuid;
+  const flowAccountDocRef = await getFlowAccountDocRef(creatorUuid);
   if (!flowAccountDocRef) {
     throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
   }
@@ -483,12 +492,38 @@ function arraysEqual(a: any[], b: any[]): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
-const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, id: number) => {
+const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, digitalItemId: number) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
-  const flowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
-  if (!flowAccountDocRef) {
+  const sampleItem = await prisma.tobiratory_sample_items.findUnique({
+    where: {
+      digital_item_id: digitalItemId
+    }
+  });
+  if (!sampleItem) {
+    throw new functions.https.HttpsError("not-found", "The sample item does not exist.");
+  }
+  const contentId = sampleItem.content_id;
+  let creatorUuid = tobiratoryAccountUuid;
+  if (contentId) {
+    const content = await prisma.tobiratory_contents.findUnique({
+      where: {
+        id: contentId,
+      },
+    });
+    if (!content) {
+      throw new functions.https.HttpsError("not-found", "The content does not exist.");
+    }
+    creatorUuid = content.owner_uuid;
+  }
+
+  const creatorAccountDocRef = await getFlowAccountDocRef(creatorUuid);
+  const requestAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
+  if (!creatorAccountDocRef) {
+    throw new functions.https.HttpsError("not-found", "The creator account does not exist.");
+  }
+  if (!requestAccountDocRef) {
     throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
   }
 
@@ -534,9 +569,9 @@ transaction(
   const txId = await fcl.mutate({
     cadence,
     args,
-    proposer: createCreatorAuthz(flowAccountDocRef),
+    proposer: createCreatorAuthz(creatorAccountDocRef),
     payer: createMintAuthz(itemId),
-    authorizations: [createCreatorAuthz(flowAccountDocRef), createMintAuthz(itemId)],
+    authorizations: [createCreatorAuthz(requestAccountDocRef), createMintAuthz(itemId)],
     limit: 9999,
   });
   console.log({txId});
