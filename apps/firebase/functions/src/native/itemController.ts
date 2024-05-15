@@ -450,7 +450,10 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
                 id: relate.copyright_id,
               },
             });
-            return copyrightData?.copyright_name;
+            return {
+              id: copyrightData?.id,
+              name: copyrightData?.copyright_name
+            };
           })
       );
       const returnData = {
