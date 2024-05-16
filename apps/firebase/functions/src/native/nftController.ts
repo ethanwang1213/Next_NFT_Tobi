@@ -10,206 +10,32 @@ import {prisma} from "../prisma";
 const pubsub = new PubSub();
 
 export const mintNFT = async (req: Request, res: Response) => {
-  const {id} = req.params;
+  const {id, amount} = req.params;
   const {authorization} = req.headers;
   const {fcmToken} = req.body;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-
-    const sampleItem = await prisma.tobiratory_sample_items.findUnique({
-      where: {
-        id: parseInt(id),
-        is_deleted: false,
-      },
-    });
-    if (!sampleItem) {
-      res.status(404).send({
-        status: "error",
-        data: "SampleItem does not found",
-      });
-      return;
-    }
-
-    const digitalItem = await prisma.tobiratory_digital_items.findUnique({
-      where: {
-        id: sampleItem.digital_item_id,
-      },
-    });
-    if (!digitalItem) {
-      res.status(404).send({
-        status: "error",
-        data: "DigitalItem does not found",
-      });
-      return;
-    }
-
-    if (sampleItem.content_id) {
-      const content = await prisma.tobiratory_contents.findUnique({
-        where: {
-          id: sampleItem.content_id,
-        },
-      });
-      if (!content) {
-        res.status(404).send({
-          status: "error",
-          data: "Content does not found",
-        });
-        return;
+    try {
+      for (let i = 0; i < parseInt(amount); i++) {
+        await mint(id, uid, fcmToken);
       }
-      if (content.owner_uuid !== uid) {
-        res.status(401).send({
+      res.status(200).send({
+        status: "success",
+        data: "NFT is minting",
+      });
+    } catch (err) {
+      if (err instanceof MintError) {
+        res.status(err.status).send({
           status: "error",
-          data: "You are not owner of this content",
+          data: err.message,
         });
-        return;
-      }
-    } else {
-      if (digitalItem.creator_uuid !== uid) {
-        res.status(401).send({
-          status: "error",
-          data: "You are not creator of this digital item",
-        });
-        return;
-      }
-    }
-
-    if (digitalItem.limit && digitalItem.limit <= 0) {
-      res.status(401).send({
-        status: "error",
-        data: "Minting limit reached",
-      });
-      return;
-    }
-
-    const itemId = digitalItem.item_id;
-    const digitalItemId = digitalItem.id;
-    const creatorUuid = digitalItem.creator_uuid;
-    const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
-      where: {
-        uuid: creatorUuid,
-      },
-    });
-    if (!flowAccount) {
-      res.status(404).send({
-        status: "error",
-        data: "FlowAccount does not found",
-      });
-      return;
-    }
-
-    let creatorName;
-    if (sampleItem.content_id) {
-      const content = await prisma.tobiratory_contents.findUnique({
-        where: {
-          id: sampleItem.content_id,
-        },
-      });
-      if (content) {
-        creatorName = content.name;
       } else {
-        const user = await prisma.tobiratory_accounts.findUnique({
-          where: {
-            uuid: digitalItem.creator_uuid,
-          },
-        });
-        if (!user) {
-          res.status(404).send({
-            status: "error",
-            data: "User does not found",
-          });
-          return;
-        }
-        creatorName = user.username;
-      }
-    } else {
-      const user = await prisma.tobiratory_accounts.findUnique({
-        where: {
-          uuid: digitalItem.creator_uuid,
-        },
-      });
-      if (!user) {
-        res.status(404).send({
+        res.status(401).send({
           status: "error",
-          data: "User does not found",
+          data: err,
         });
-        return;
       }
-      creatorName = user.username;
     }
-    const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
-      where: {
-        digital_item_id: digitalItem.id,
-      },
-    });
-    const copyrights = await Promise.all(
-        copyrightRelate.map(async (relate)=>{
-          const copyrightData = await prisma.tobiratory_copyright.findUnique({
-            where: {
-              id: relate.copyright_id,
-            },
-          });
-          return copyrightData?.copyright_name;
-        })
-    );
-    const metadata = {
-      type: String(digitalItem.type),
-      name: digitalItem.name,
-      description: digitalItem.description,
-      thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
-      modelUrl: sampleItem.model_url,
-      creatorName: creatorName,
-      limit: digitalItem.limit,
-      license: digitalItem.license,
-      copyrightHolders: copyrights,
-    };
-
-    if (itemId) {
-      const flowJobId = uuidv4();
-      const message = {flowJobId, txType: "mintNFT", params: {
-        tobiratoryAccountUuid: uid,
-        itemCreatorAddress: flowAccount.flow_address,
-        itemId,
-        digitalItemId,
-        digitalItemNftId: undefined,
-        metadata,
-        fcmToken,
-      }};
-      const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
-      console.log(`Message ${messageId} published.`);
-    } else {
-      const nft = await prisma.tobiratory_digital_item_nfts.create({
-        data: {
-          digital_item_id: digitalItem.id,
-          owner_uuid: uid,
-          mint_status: "minting",
-        },
-      });
-      const flowJobId = uuidv4();
-      const message = {flowJobId, txType: "createItem", params: {
-        tobiratoryAccountUuid: uid,
-        digitalItemNftId: nft.id,
-        digitalItemId,
-        metadata,
-        fcmToken,
-      }};
-      const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
-      console.log(`Message ${messageId} published.`);
-    }
-
-    pushToDevice(fcmToken, {
-      title: "NFTの作成を開始しました",
-      body: "作成完了までしばらくお待ちください",
-    }, {
-      body: JSON.stringify({
-        type: "mintBegan",
-        data: {id: digitalItemId},
-      }),
-    });
-
-    res.status(200).send({
-      status: "success",
-      data: "NFT is minting",
-    });
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
@@ -218,6 +44,167 @@ export const mintNFT = async (req: Request, res: Response) => {
     throw error;
   });
 };
+
+class MintError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export const mint = async (id: string, uid: string, fcmToken: string) => {
+  const sampleItem = await prisma.tobiratory_sample_items.findUnique({
+    where: {
+      id: parseInt(id),
+      is_deleted: false,
+    },
+  });
+  if (!sampleItem) {
+    throw new MintError(404, "SampleItem does not found");
+  }
+
+  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+    where: {
+      id: sampleItem.digital_item_id,
+    },
+  });
+  if (!digitalItem) {
+    throw new MintError(404, "DigitalItem does not found");
+  }
+
+  if (sampleItem.content_id) {
+    const content = await prisma.tobiratory_contents.findUnique({
+      where: {
+        id: sampleItem.content_id,
+      },
+    });
+    if (!content) {
+        throw new MintError(404, "Content does not found");
+    }
+  } else {
+    if (digitalItem.creator_uuid !== uid) {
+        throw new MintError(401, "You are not creator of this digital item");
+    }
+  }
+
+  if (digitalItem.limit && digitalItem.limit <= 0) {
+    throw new MintError(401, "Minting limit reached");
+  }
+
+  const itemId = digitalItem.item_id;
+  const digitalItemId = digitalItem.id;
+  const creatorUuid = digitalItem.creator_uuid;
+  const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
+    where: {
+      uuid: creatorUuid,
+    },
+  });
+  if (!flowAccount) {
+    throw new MintError(404, "FlowAccount does not found");
+  }
+
+  let creatorName;
+  if (sampleItem.content_id) {
+    const content = await prisma.tobiratory_contents.findUnique({
+      where: {
+        id: sampleItem.content_id,
+      },
+    });
+    if (content) {
+      creatorName = content.name;
+    } else {
+      const user = await prisma.tobiratory_accounts.findUnique({
+        where: {
+          uuid: digitalItem.creator_uuid,
+        },
+      });
+      if (!user) {
+        throw new MintError(404, "User does not found");
+      }
+      creatorName = user.username;
+    }
+  } else {
+    const user = await prisma.tobiratory_accounts.findUnique({
+      where: {
+        uuid: digitalItem.creator_uuid,
+      },
+    });
+    if (!user) {
+        throw new MintError(404, "User does not found");
+    }
+    creatorName = user.username;
+  }
+  const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
+    where: {
+      digital_item_id: digitalItem.id,
+    },
+  });
+  const copyrights = await Promise.all(
+      copyrightRelate.map(async (relate)=>{
+        const copyrightData = await prisma.tobiratory_copyright.findUnique({
+          where: {
+            id: relate.copyright_id,
+          },
+        });
+        return copyrightData?.copyright_name;
+      })
+  );
+  const metadata = {
+    type: String(digitalItem.type),
+    name: digitalItem.name,
+    description: digitalItem.description,
+    thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
+    modelUrl: sampleItem.model_url,
+    creatorName: creatorName,
+    limit: digitalItem.limit,
+    license: digitalItem.license,
+    copyrightHolders: copyrights,
+  };
+
+  if (itemId) {
+    const flowJobId = uuidv4();
+    const message = {flowJobId, txType: "mintNFT", params: {
+        tobiratoryAccountUuid: uid,
+        itemCreatorAddress: flowAccount.flow_address,
+        itemId,
+        digitalItemId,
+        digitalItemNftId: undefined,
+        metadata,
+        fcmToken,
+      }};
+    const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
+    console.log(`Message ${messageId} published.`);
+  } else {
+    const nft = await prisma.tobiratory_digital_item_nfts.create({
+      data: {
+        digital_item_id: digitalItem.id,
+        owner_uuid: uid,
+        mint_status: "minting",
+      },
+    });
+    const flowJobId = uuidv4();
+    const message = {flowJobId, txType: "createItem", params: {
+        tobiratoryAccountUuid: uid,
+        digitalItemNftId: nft.id,
+        digitalItemId,
+        metadata,
+        fcmToken,
+      }};
+    const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
+    console.log(`Message ${messageId} published.`);
+  }
+
+  pushToDevice(fcmToken, {
+    title: "NFTの作成を開始しました",
+    body: "作成完了までしばらくお待ちください",
+  }, {
+    body: JSON.stringify({
+      type: "mintBegan",
+      data: {id: digitalItemId},
+    }),
+  });
+}
 
 export const fetchNftThumb = async (req: Request, res: Response) => {
   const {authorization} = req.headers;

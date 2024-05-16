@@ -362,7 +362,7 @@ export const searchSaidans = async (req: Request, res: Response) => {
             mode: "insensitive",
           },
         },
-        take: 2,
+        // take: 2,
         include: {
           template: true,
         },
