@@ -21,8 +21,8 @@ const ContentBrandPanel = ({
   const contentImageFileRef = useRef(null);
   const stickerImageFileRef = useRef(null);
 
-  const [cropImage, setCropImage] = useState("");
   const imageCropDlgRef = useRef(null);
+  const stickerCropDlgRef = useRef(null);
 
   const [activeImageFlag, setActiveImageFlag] = useState(false);
   const modifiedRef = useRef(false);
@@ -154,16 +154,18 @@ const ContentBrandPanel = ({
           </span>
           <div className="flex items-end gap-12">
             {data.image ? (
-              <NextImage
-                src={data.image}
-                width={260}
-                height={260}
-                alt="content image"
-                className={`rounded-2xl`}
-              />
+              <div className="w-[320px] h-[100px] overflow-hidden">
+                <NextImage
+                  src={data.image}
+                  width={320}
+                  height={100}
+                  alt="content image"
+                  className={`rounded-2xl`}
+                />
+              </div>
             ) : (
               <div
-                style={{ width: 260, height: 260 }}
+                style={{ width: 320, height: 100 }}
                 className={`rounded-2xl border-2 border-primary-400 border-dashed`}
               ></div>
             )}
@@ -172,7 +174,6 @@ const ContentBrandPanel = ({
               onClick={() => {
                 setActiveImageFlag(true);
                 if (data.image) {
-                  setCropImage(data.image);
                   imageCropDlgRef.current.showModal();
                 } else {
                   contentImageFileRef.current.click();
@@ -244,8 +245,7 @@ const ContentBrandPanel = ({
               onClick={() => {
                 setActiveImageFlag(false);
                 if (data.sticker) {
-                  setCropImage(data.sticker);
-                  imageCropDlgRef.current.showModal();
+                  stickerCropDlgRef.current.showModal();
                 } else {
                   stickerImageFileRef.current.click();
                 }
@@ -280,14 +280,23 @@ const ContentBrandPanel = ({
           className="hidden"
         />
         <ImageCropDialog
-          initialValue={cropImage}
+          initialValue={data.image}
           dialogRef={imageCropDlgRef}
+          initialAspectRatio={16 / 5}
+          aspectRatio={16 / 5}
           cropHandler={(image, width, height) => {
-            if (activeImageFlag) {
-              setData({ ...data, ["image"]: image });
-            } else {
-              setData({ ...data, ["sticker"]: image });
-            }
+            setData({ ...data, ["image"]: image });
+            modifiedRef.current = true;
+            changeHandler();
+          }}
+        />
+        <ImageCropDialog
+          initialValue={data.sticker}
+          dialogRef={stickerCropDlgRef}
+          initialAspectRatio={1}
+          aspectRatio={null}
+          cropHandler={(image, width, height) => {
+            setData({ ...data, ["sticker"]: image });
             modifiedRef.current = true;
             changeHandler();
           }}
