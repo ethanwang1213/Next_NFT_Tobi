@@ -13,6 +13,7 @@ const DateTimeInput = ({
   labelTime,
   placeholder,
   changeHandler,
+  readOnly,
 }: {
   className: string;
   value?: string;
@@ -20,6 +21,7 @@ const DateTimeInput = ({
   labelTime?: string;
   placeholder?: string;
   changeHandler?: (value) => void;
+  readOnly?: boolean;
 }) => {
   const [isDateFocused, setIsDateFocused] = useState(false);
   const [isTimeFocused, setIsTimeFocused] = useState(false);
@@ -64,11 +66,13 @@ const DateTimeInput = ({
   };
 
   const openDatePicker = () => {
+    if (readOnly) return;
     const datePicker = document.getElementById(`date-picker_${uniqueId}`);
     datePicker?.click();
   };
 
   const openTimePicker = () => {
+    if (readOnly) return;
     const timePicker = document.getElementById(`time-picker_${uniqueId}`);
     timePicker?.click();
   };
@@ -98,8 +102,10 @@ const DateTimeInput = ({
   return (
     <div
       className={clsx(
-        "h-12 border-2 rounded-lg border-input-color",
-        "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
+        "h-12 border-2 rounded-lg",
+        readOnly
+          ? "border-secondary/50"
+          : "border-secondary hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
         "flex flex-row",
         className,
       )}
@@ -121,6 +127,7 @@ const DateTimeInput = ({
           onFocus={handleDateFocus}
           onBlur={handleDateBlur}
           onChange={dateInputChangeHandler}
+          readOnly={readOnly}
         />
         <label
           className={`absolute cursor-text font-normal transition-all duration-300 z-[1] ${
@@ -161,6 +168,7 @@ const DateTimeInput = ({
           onFocus={handleTimeFocus}
           onBlur={handleTimeBlur}
           onChange={timeInputChangeHandler}
+          readOnly={readOnly}
         />
         <label
           className={`absolute cursor-text font-normal transition-all duration-300 z-[1] ${
