@@ -1,30 +1,13 @@
-import { useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
+import { MessageDestination, UnityMessageJson, UnityMessageType, UnitySceneType } from "./unityType";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { UnitySceneType } from "types/adminTypes";
 
-type Props = {
+export const useCustomUnityContextBase = ({
+  sceneType,
+}: {
   sceneType: UnitySceneType;
   // add optional event handlers along with message type
-};
-
-type UnityMessageJson = {
-  sceneType: UnitySceneType;
-  messageType: UnityMessageType;
-  messageBody: string;
-};
-
-const UnityMessageType = {
-  SimpleMessage: 0,
-  SceneIsLoaded: 1,
-} as const;
-
-type UnityMessageType =
-  (typeof UnityMessageType)[keyof typeof UnityMessageType];
-
-type MessageDestination = "SwitchSceneMessageReceiver";
-
-export const useCustomUnityContextBase = ({ sceneType }: Props) => {
+}) => {
   const buildFilePath = "/admin/unity/build/webgl";
   const {
     unityProvider,
@@ -98,5 +81,9 @@ export const useCustomUnityContextBase = ({ sceneType }: Props) => {
     sendMessage(gameObject, "OnMessageReceived", message);
   };
 
-  return { unityProvider };
+  return { unityProvider, postMessageToUnity };
 };
+function useEffect(arg0: () => void, arg1: boolean[]) {
+  throw new Error("Function not implemented.");
+}
+
