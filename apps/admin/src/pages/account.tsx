@@ -289,6 +289,7 @@ export default function Index() {
                   : "/admin/images/png/account-place.png"
               }
               alt="avatar image"
+              className="rounded-full"
             />
             <button
               className="text-[22px] text-primary font-normal"

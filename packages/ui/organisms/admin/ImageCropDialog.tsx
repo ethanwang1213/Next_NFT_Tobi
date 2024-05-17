@@ -7,10 +7,14 @@ const ImageCropDialog = ({
   initialValue,
   dialogRef,
   cropHandler,
+  initialAspectRatio,
+  aspectRatio,
 }: {
   initialValue: string;
   dialogRef: MutableRefObject<HTMLDialogElement>;
   cropHandler: (value: string, width: number, height: number) => void;
+  initialAspectRatio: number;
+  aspectRatio: number;
 }) => {
   const [imageURL, setImageURL] = useState("");
 
@@ -42,12 +46,22 @@ const ImageCropDialog = ({
           src={imageURL}
           style={{ height: 400, width: "100%" }}
           // Cropper.js options
-          initialAspectRatio={16 / 9}
+          initialAspectRatio={initialAspectRatio}
+          aspectRatio={aspectRatio}
           guides={false}
           crop={onCrop}
           ref={cropperRef}
         />
         <div className="modal-action flex justify-end gap-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-base-white rounded-[64px] border-2 border-primary
+              hover:shadow-xl hover:-top-[3px] transition-shadow
+              text-primary text-sm leading-4 font-semibold"
+            onClick={() => dialogRef.current.close()}
+          >
+            Cancel
+          </button>
           <button
             type="button"
             className="px-4 py-2 bg-primary rounded-[64px] 
@@ -66,15 +80,6 @@ const ImageCropDialog = ({
             }}
           >
             Save changes
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-base-white rounded-[64px] border-2 border-primary
-              hover:shadow-xl hover:-top-[3px] transition-shadow
-              text-primary text-sm leading-4 font-semibold"
-            onClick={() => dialogRef.current.close()}
-          >
-            Cancel
           </button>
         </div>
       </div>

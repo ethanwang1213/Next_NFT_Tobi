@@ -76,8 +76,10 @@ const StyledTextInput = ({
         className={clsx(
           "w-full h-12 pl-5 pt-4",
           tooltip && tooltip.length ? "pr-8" : "pr-3",
-          "outline-none border-2 rounded-lg border-secondary",
-          !readOnly ? "hover:border-hover-color focus:border-focus-color" : "",
+          "outline-none border-2 rounded-lg",
+          !readOnly
+            ? "hover:border-hover-color focus:border-focus-color border-secondary"
+            : "border-secondary/50",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
         )}
