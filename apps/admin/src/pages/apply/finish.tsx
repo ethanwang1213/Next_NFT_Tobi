@@ -1,36 +1,92 @@
-import clsx from "clsx";
-import { useAuth } from "contexts/AdminAuthProvider";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "ui/atoms/Button";
 
 const Finish = () => {
-  const { finishBusinessAccountRegistration } = useAuth();
   const router = useRouter();
   return (
-    <div className="container h-full mx-auto py-20 text-center font-normal text-base text-[#5A5A5A] flex-1">
-      <Image
-        src="/admin/images/png/tobiratory.png"
-        width={594}
-        height={603}
-        alt="Tobiratory"
-        className="mx-auto"
-      />
-      <div className="text-[40px] mt-28">申請が完了しました！</div>
-      <div className="text-xl mt-10 mb-3">
-        承認されると登録メールアドレスへ通知され、コンテンツ管理などの機能が使用できます。
+    <div className="w-full h-full flex flex-col justify-center">
+      <div className="w-full h-[202px] bg-warning flex flex-col justify-center text-[48px] text-primary-content text-center font-semibold">
+        Welcome to Tobiratory Creator Program!
       </div>
-      <Button
-        className={clsx(
-          `w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px] bg-primary`,
-        )}
-        onClick={() => {
-          finishBusinessAccountRegistration();
-          router.push("/items");
-        }}
-      >
-        次へ
-      </Button>
+      <div className="w-full mt-[38px] flex flex-col justify-center text-[16px] text-base-200-content text-center font-normal">
+        I have completed the application to join the Tobiratory Creator Program.
+        <br />
+        If there are any issues with the contents of the application, the TCP
+        features may be temporarily suspended.
+      </div>
+      <div className="flex justify-center">
+        <div className="mt-[56px] w-[816px] inline-flex items-start gap-[12px]">
+          <div className="w-[331px] h-[474px] flex-shrink-0 rounded-[16px] bg-primary">
+            <div className="w-[248px] h-[176px] flex-shrink-0">
+              <div className="inline-flex flex-col items-start gap-[24px]">
+                <div className="mt-[187px] ml-[42px] text-[18px] text-base-white font-bold leading-[21.6px]">
+                  Let&apos;s create
+                  <br /> your own fantastic content!
+                </div>
+                <div className="ml-[42px] text-[14px] text-base-white font-light leading-[16.8px]">
+                  SAMPLE TEXTSAMPLE TEXTSAMPLE TEXTSAMPLE TEXTSAMPLE TEXTSAMPLE
+                  TEXT
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-start gap-[12px]">
+            <div className="w-[473px] h-[474px] flex flex-col items-start gap-[12px]">
+              <Navigation title={"BRANDING"} colorDepth={"thin"}>
+                SAMPLE TEXTSAMPLE
+                <br />
+                TEXTSAMPLE TEXT
+              </Navigation>
+              <Navigation title={"SHOWCASE"} colorDepth={"middle"}>
+                SAMPLE TEXTSAMPLE
+                <br />
+                TEXTSAMPLE TEXT
+              </Navigation>
+              <Navigation title={"WORKSPACE"} colorDepth={"thick"}>
+                SAMPLE TEXTSAMPLE
+                <br />
+                TEXTSAMPLE TEXT
+              </Navigation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-center">
+        <Button
+          className="w-[608px] h-[71px] rounded-[88px] mt-[80px] bg-primary text-[32px] text-center text-primary-content"
+          onClick={() => {
+            router.push("/items");
+          }}
+        >
+          Now, let&apos;s create your world !!
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const Navigation = ({
+  title,
+  colorDepth,
+  children,
+}: {
+  title: string;
+  colorDepth: "thin" | "middle" | "thick";
+  children: React.ReactNode;
+}) => {
+  const colorCodes = {
+    thin: "primary-100",
+    middle: "[#D9F1FD]",
+    thick: "primary-300",
+  };
+  return (
+    <div
+      className={`w-[473px] h-[149px] rounded-[16px] bg-${colorCodes[colorDepth]} flex flex-col items-start gap-[8px] p-[12px]`}
+    >
+      <div className="flex flex-col items-start gap-[4px]">
+        <div className="text-neutral-900">{title}</div>
+        <div className="text-[14px] text-secondary font-light">{children}</div>
+      </div>
     </div>
   );
 };

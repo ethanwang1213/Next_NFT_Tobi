@@ -26,7 +26,7 @@ const Register = () => {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
-  const { user } = useAuth();
+  const { finishBusinessAccountRegistration, user } = useAuth();
 
   const [contentInfo, setContentInfo] = useState<TcpContent>({
     name: user.name,
@@ -73,6 +73,7 @@ const Register = () => {
       return;
     }
 
+    finishBusinessAccountRegistration();
     router.replace("/apply/finish");
   }, [response, router]);
 
