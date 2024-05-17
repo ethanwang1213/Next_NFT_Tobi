@@ -107,9 +107,11 @@ const Detail = () => {
     // set title
     setConfirmDialogTitle(
       `Changing from ${getSampleStatusTitle(
-        dataRef.current.status,
+        dataRef.current.status > 5
+          ? dataRef.current.status - 2
+          : dataRef.current.status,
       ).toLowerCase()} to ${getSampleStatusTitle(
-        sampleItem.status,
+        sampleItem.status > 5 ? sampleItem.status - 2 : sampleItem.status,
       ).toLowerCase()}`,
     );
 
@@ -379,6 +381,7 @@ const Detail = () => {
                         changeHandler={(v) => {
                           fieldChangeHandler("startDate", v);
                         }}
+                        readOnly={isReadOnly()}
                       />
                     </div>
                     <div className="flex items-center justify-between">
@@ -392,6 +395,7 @@ const Detail = () => {
                         changeHandler={(v) => {
                           fieldChangeHandler("endDate", v);
                         }}
+                        readOnly={isReadOnly()}
                       />
                     </div>
                   </div>

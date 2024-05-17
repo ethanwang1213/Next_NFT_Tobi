@@ -42,7 +42,7 @@ const BirthdayEditDialog = ({
         <div className="text-neutral-700 text-sm font-normal mb-2">
           Your birthday will not be displayed on public profile.
         </div>
-        <div className="my-2 flex justify-between items-center gap-4">
+        <div className="my-12 flex justify-between items-center gap-4">
           <span className="text-base-black text-sm font-semibold">
             Birthday
           </span>
@@ -61,22 +61,30 @@ const BirthdayEditDialog = ({
               day: "numeric",
             })}
           </span>
-          <DatePicker
-            ref={datePickerRef}
-            selected={birthday}
-            onChange={(date) => {
-              setBirthday(date);
+          <div
+            style={{
+              position: "relative",
+              top: "-20px",
+              left: "-70px",
             }}
-            dateFormat="yyyy/MM/dd"
-            showPopperArrow={false}
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            className="hidden"
-            popperPlacement="auto"
-            popperClassName=""
-            locale="ja"
-          />
+          >
+            <DatePicker
+              ref={datePickerRef}
+              selected={birthday}
+              onChange={(date) => {
+                setBirthday(date);
+              }}
+              dateFormat="yyyy/MM/dd"
+              showPopperArrow={false}
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              className="hidden"
+              popperPlacement="auto"
+              popperClassName=""
+              locale="ja"
+            />
+          </div>
         </div>
         <div className="modal-action flex justify-end gap-4">
           <button

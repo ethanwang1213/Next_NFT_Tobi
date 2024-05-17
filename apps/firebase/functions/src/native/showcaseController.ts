@@ -456,3 +456,109 @@ const updateShocaseSchedule = async (scheduleTime: string, timeDifference: numbe
     }
   }, timeDifference);
 };
+
+export const putItemToShowcase = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  const {sampleIds, nftIds}:{sampleIds: number[], nftIds: number[]} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    try {
+      const uid = decodedToken.uid;
+      const admin = await prisma.tobiratory_businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (!admin) {
+        res.status(401).send({
+          status: "error",
+          data: "not-admin",
+        });
+        return;
+      }
+      const content = await prisma.tobiratory_contents.findFirst({
+        where: {
+          owner_uuid: uid,
+        },
+      });
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-content",
+        });
+        return;
+      }
+      const showcase = await prisma.tobiratory_showcase.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (!showcase) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist-showcase",
+        });
+        return;
+      }
+      for (const nftId of nftIds) {
+        await prisma.tobiratory_showcase_nft_items.upsert({
+          where: {
+            nft_id: nftId,
+          },
+          update: {
+          },
+          create: {
+            nft_id: nftId,
+            showcase_id: showcase.id,
+          }
+        })
+      }
+      await prisma.tobiratory_showcase_nft_items.deleteMany({
+        where: {
+          nft_id: {
+            notIn: nftIds,
+          },
+        },
+      });
+      for (const sampleId of sampleIds) {
+        const existFlag = await prisma.tobiratory_showcase_sample_items.findFirst({
+          where: {
+            sample_id: sampleId,
+            showcase_id: showcase.id,
+          },
+        });
+        if (!existFlag) {
+          await prisma.tobiratory_showcase_sample_items.create({
+            data: {
+              sample_id: sampleId,
+              showcase_id: showcase.id,
+            },
+          });
+        }
+      }
+      await prisma.tobiratory_showcase_sample_items.deleteMany({
+        where: {
+          sample_id: {
+            notIn: nftIds,
+          },
+          showcase_id: showcase.id,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: "success-added",
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+}

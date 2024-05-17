@@ -139,7 +139,7 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
   return (
     <div>
       <div
-        className="w-64 h-12 px-6 text-[#000000] flex justify-between items-center cursor-pointer rounded-[48px]"
+        className="w-64 h-12 px-6 text-white flex justify-between items-center cursor-pointer rounded-[48px]"
         style={{
           backgroundColor: `${selectedItem.color}`,
         }}

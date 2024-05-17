@@ -55,8 +55,10 @@ const StyledTextArea = ({
       <textarea
         className={clsx(
           "w-full h-[180px] pl-5 pt-4 pr-3 resize-none",
-          "outline-none border-2 rounded-lg border-secondary",
-          !readOnly ? "hover:border-hover-color focus:border-focus-color" : "",
+          "outline-none border-2 rounded-lg",
+          !readOnly
+            ? "hover:border-hover-color focus:border-focus-color border-secondary"
+            : "border-secondary/50",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
         )}
