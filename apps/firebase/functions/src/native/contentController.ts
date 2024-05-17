@@ -68,18 +68,22 @@ export const getContentById = async (req: Request, res: Response) => {
         };
       });
 
-      const nftItemInfos = await prisma.tobiratory_digital_item_nfts.findMany({
+      const nftItemInfos = await prisma.tobiratory_showcase_nft_items.findMany({
         where: {
-          content_id: content.id,
+          showcase_id: showcase.id,
         },
         include: {
-          digital_item: true,
+          nft: {
+            include: {
+              digital_item: true
+            }
+          },
         },
       });
       const nftItems = nftItemInfos.map((nft) => {
         return {
-          nftId: nft.id,
-          thumbImage: nft.digital_item.is_default_thumb ? nft.digital_item.default_thumb_url : nft.digital_item.custom_thumb_url,
+          nftId: nft.nft.id,
+          thumbImage: nft.nft.digital_item.is_default_thumb ? nft.nft.digital_item.default_thumb_url : nft.nft.digital_item.custom_thumb_url,
         };
       });
       const favorite = await prisma.tobiratory_favorite_content.findFirst({
