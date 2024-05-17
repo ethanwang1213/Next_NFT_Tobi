@@ -1,6 +1,12 @@
+import { useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
-import { MessageDestination, UnityMessageJson, UnityMessageType, UnitySceneType } from "./unityType";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
+import {
+  MessageDestination,
+  UnityMessageJson,
+  UnityMessageType,
+  UnitySceneType,
+} from "./unityType";
 
 export const useCustomUnityContextBase = ({
   sceneType,
@@ -83,7 +89,3 @@ export const useCustomUnityContextBase = ({
 
   return { unityProvider, postMessageToUnity };
 };
-function useEffect(arg0: () => void, arg1: boolean[]) {
-  throw new Error("Function not implemented.");
-}
-
