@@ -174,7 +174,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     },
     data: {
       mint_status: "minted",
-      serial_no: serialNumber,
+      serial_no: Number(serialNumber),
       box_id: 0,
     },
   });

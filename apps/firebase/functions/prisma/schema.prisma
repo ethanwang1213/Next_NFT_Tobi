@@ -164,27 +164,28 @@ model tobiratory_sample_items {
 }
 
 model tobiratory_digital_item_nfts {
-  id                Int                      @id @default(autoincrement())
-  serial_no         String?                  @unique
-  digital_item      tobiratory_digital_items @relation(fields: [digital_item_id], references: [id])
-  digital_item_id   Int
-  user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
-  nft_model         String                   @default("") @db.VarChar(255)
-  nft_metadata      String                   @default("") @db.Text
-  owner_uuid        String                   @db.VarChar(100)
-  saidan_id         Int                      @default(0)
-  content_id        Int                      @default(0)
-  state_type        Int                      @default(0)
-  can_scale         Boolean                  @default(false)
-  meter_height      Float                    @default(0)
-  scale             Float                    @default(0)
-  position          Float[]                  @default([0, 0, 0])
-  rotation          Float[]                  @default([0, 0, 0])
-  box_id            Int                      @default(0)
-  mint_status       String                   @default("minting") // "minted", "opened"
-  tx_id             String?                  @db.VarChar(255)
-  updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                 @default(now()) @db.Timestamp(6)
+  id                       Int                             @id @default(autoincrement())
+  serial_no                Int?
+  digital_item             tobiratory_digital_items        @relation(fields: [digital_item_id], references: [id])
+  digital_item_id          Int
+  user                     tobiratory_accounts             @relation(fields: [owner_uuid], references: [uuid])
+  nft_model                String                          @default("") @db.VarChar(255)
+  nft_metadata             String                          @default("") @db.Text
+  owner_uuid               String                          @db.VarChar(100)
+  saidan_id                Int                             @default(0)
+  content_id               Int                             @default(0)
+  state_type               Int                             @default(0)
+  can_scale                Boolean                         @default(false)
+  meter_height             Float                           @default(0)
+  scale                    Float                           @default(0)
+  position                 Float[]                         @default([0, 0, 0])
+  rotation                 Float[]                         @default([0, 0, 0])
+  box_id                   Int                             @default(0)
+  mint_status              String                          @default("minting") // "minted", "opened"
+  tx_id                    String?                         @db.VarChar(255)
+  updated_date_time        DateTime                        @default(now()) @db.Timestamp(6)
+  created_date_time        DateTime                        @default(now()) @db.Timestamp(6)
+  tobiratory_showcase_nfts tobiratory_showcase_nft_items[]
 }
 
 model tobiratory_digital_nft_ownership {
@@ -290,6 +291,7 @@ model tobiratory_showcase {
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
+  tobiratory_showcase_nfts         tobiratory_showcase_nft_items[]
 }
 
 model tobiratory_showcase_template {
@@ -314,6 +316,18 @@ model tobiratory_showcase_sample_items {
   rotation          Float[]
   updated_date_time DateTime                @default(now()) @db.Timestamp(6)
   created_date_time DateTime                @default(now()) @db.Timestamp(6)
+}
+
+model tobiratory_showcase_nft_items {
+  id                Int                          @id @default(autoincrement())
+  showcase          tobiratory_showcase          @relation(fields: [showcase_id], references: [id])
+  showcase_id       Int
+  nft               tobiratory_digital_item_nfts @relation(fields: [nft_id], references: [id])
+  nft_id            Int                          @unique
+  position          Float[]
+  rotation          Float[]
+  updated_date_time DateTime                     @default(now()) @db.Timestamp(6)
+  created_date_time DateTime                     @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_favorite_content {
