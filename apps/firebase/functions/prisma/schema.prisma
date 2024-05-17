@@ -165,7 +165,7 @@ model tobiratory_sample_items {
 
 model tobiratory_digital_item_nfts {
   id                Int                      @id @default(autoincrement())
-  serial_no         String?                  @unique
+  serial_no         String?
   digital_item      tobiratory_digital_items @relation(fields: [digital_item_id], references: [id])
   digital_item_id   Int
   user              tobiratory_accounts      @relation(fields: [owner_uuid], references: [uuid])
