@@ -293,7 +293,7 @@ export const deleteBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.creator_uuid == uid) {
+    if (box.creator_uuid != uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
