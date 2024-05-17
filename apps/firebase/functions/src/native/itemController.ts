@@ -452,7 +452,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
             });
             return {
               id: copyrightData?.id,
-              name: copyrightData?.copyright_name
+              name: copyrightData?.copyright_name,
             };
           })
       );

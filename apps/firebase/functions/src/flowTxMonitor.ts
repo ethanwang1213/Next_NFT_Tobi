@@ -241,7 +241,7 @@ pub fun main(address: Address, itemID: UInt64): UInt32? {
     let item = items.borrowItem(itemID: itemID)
 
     return item?.mintedCount;
-}`
+}`;
 
   return await fcl.query({
     cadence,
