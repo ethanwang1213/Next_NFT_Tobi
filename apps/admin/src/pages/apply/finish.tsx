@@ -74,14 +74,14 @@ const Navigation = ({
   colorDepth: "thin" | "middle" | "thick";
   children: React.ReactNode;
 }) => {
-  const colorCodes = {
-    thin: "primary-100",
-    middle: "[#D9F1FD]",
-    thick: "primary-300",
+  const bgColors = {
+    thin: "bg-primary-100",
+    middle: "bg-[#D9F1FD]",
+    thick: "bg-primary-300",
   };
   return (
     <div
-      className={`w-[473px] h-[149px] rounded-[16px] bg-${colorCodes[colorDepth]} flex flex-col items-start gap-[8px] p-[12px]`}
+      className={`w-[473px] h-[149px] rounded-[16px] ${bgColors[colorDepth]} flex flex-col items-start gap-[8px] p-[12px]`}
     >
       <div className="flex flex-col items-start gap-[4px]">
         <div className="text-neutral-900">{title}</div>
