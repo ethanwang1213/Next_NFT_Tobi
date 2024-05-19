@@ -32,7 +32,7 @@ export const WorkspaceUnity = ({
 }: WorkspaceProps) => {
   useEffect(() => {
     customUnityProvider.postMessageToLoadData(loadData);
-  }, []);
+  }, [customUnityProvider, loadData]);
 
   return (
     <SaidanLikeUnityBase
@@ -48,7 +48,7 @@ export const ShowcaseEditUnity = ({
 }: ShowcaseEditProps) => {
   useEffect(() => {
     customUnityProvider.postMessageToLoadData(loadData);
-  }, []);
+  }, [customUnityProvider, loadData]);
 
   return (
     <SaidanLikeUnityBase
@@ -58,9 +58,7 @@ export const ShowcaseEditUnity = ({
   );
 };
 
-const SaidanLikeUnityBase = ({
-  customUnityProvider,
-}: SaidanLikeProps) => {
+const SaidanLikeUnityBase = ({ customUnityProvider }: SaidanLikeProps) => {
   return (
     <Unity
       unityProvider={customUnityProvider.unityProvider}

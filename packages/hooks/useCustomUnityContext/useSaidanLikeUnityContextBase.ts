@@ -19,6 +19,7 @@ export const useSaidanLikeUnityContextBase = ({
     var result = loadData; // TODO(toruto): process data
     return result;
   };
+
   const postMessageToLoadData = (loadData: any) => {
     const processedLoadData = processLoadData(loadData);
     // TODO(toruto): post message to Unity side

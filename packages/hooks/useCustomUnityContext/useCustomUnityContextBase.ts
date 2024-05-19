@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
 import {
@@ -28,42 +28,6 @@ export const useCustomUnityContextBase = ({
     codeUrl: `${buildFilePath}.wasm`,
   });
 
-  useEffect(() => {
-    if (!isLoaded) return;
-    postMessageToSwitchScene(sceneType);
-  }, [isLoaded]);
-
-  // We use only `onUnityMessage` event to receive messages from Unity side.
-  useEffect(() => {
-    addEventListener("onUnityMessage", handleUnityMessage);
-    return () => {
-      removeEventListener("onUnityMessage", handleUnityMessage);
-    };
-  }, []);
-
-  // `message` is JSON string formed in Unity side like following:
-  // {
-  //   "messageType": string,
-  //   "sceneType": number,
-  //   "messageBody": string or JSON string
-  // }
-  const handleUnityMessage = (message: ReactUnityEventParameter) => {
-    if (typeof message !== "string") return;
-    const msgObj = resolveUnityMessage(message);
-    if (!msgObj) return;
-
-    switch (msgObj.messageType) {
-      case UnityMessageType.SimpleMessage:
-        console.log(
-          `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
-        );
-        return;
-      // execute event handlers along with message type
-      default:
-        return;
-    }
-  };
-
   const resolveUnityMessage = (json: string) => {
     try {
       return JSON.parse(json) as UnityMessageJson;
@@ -73,19 +37,61 @@ export const useCustomUnityContextBase = ({
     }
   };
 
-  const postMessageToSwitchScene = (destSceneType: UnitySceneType) => {
-    const json = JSON.stringify({
-      sceneType: destSceneType,
-    });
-    postMessageToUnity("SwitchSceneMessageReceiver", json);
-  };
+  // `message` is JSON string formed in Unity side like following:
+  // {
+  //   "messageType": string,
+  //   "sceneType": number,
+  //   "messageBody": string or JSON string
+  // }
+  const handleUnityMessage = useCallback(
+    (message: ReactUnityEventParameter) => {
+      if (typeof message !== "string") return;
+      const msgObj = resolveUnityMessage(message);
+      if (!msgObj) return;
 
-  const postMessageToUnity = (
-    gameObject: MessageDestination,
-    message: string,
-  ) => {
-    sendMessage(gameObject, "OnMessageReceived", message);
-  };
+      switch (msgObj.messageType) {
+        case UnityMessageType.SimpleMessage:
+          console.log(
+            `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
+          );
+          return;
+        // execute event handlers along with message type
+        default:
+          return;
+      }
+    },
+    [],
+  );
+
+  const postMessageToUnity = useCallback(
+    (gameObject: MessageDestination, message: string) => {
+      sendMessage(gameObject, "OnMessageReceived", message);
+    },
+    [sendMessage],
+  );
+
+  const postMessageToSwitchScene = useCallback(
+    (destSceneType: UnitySceneType) => {
+      const json = JSON.stringify({
+        sceneType: destSceneType,
+      });
+      postMessageToUnity("SwitchSceneMessageReceiver", json);
+    },
+    [postMessageToUnity],
+  );
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    postMessageToSwitchScene(sceneType);
+  }, [isLoaded, sceneType, postMessageToSwitchScene]);
+
+  // We use only `onUnityMessage` event to receive messages from Unity side.
+  useEffect(() => {
+    addEventListener("onUnityMessage", handleUnityMessage);
+    return () => {
+      removeEventListener("onUnityMessage", handleUnityMessage);
+    };
+  }, [addEventListener, removeEventListener, handleUnityMessage]);
 
   return { unityProvider, postMessageToUnity };
 };
