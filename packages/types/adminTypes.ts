@@ -77,12 +77,3 @@ export type TcpFormType = {
   user: TcpUser;
   copyright: TcpCopyright;
 };
-
-export const UnitySceneType = {
-  Standby: 0,
-  Workspace: 1,
-  Showcase: 2,
-} as const;
-
-export type UnitySceneType =
-  (typeof UnitySceneType)[keyof typeof UnitySceneType];
