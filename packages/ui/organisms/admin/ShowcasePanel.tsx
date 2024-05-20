@@ -1,6 +1,7 @@
 import ja from "date-fns/locale/ja";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -38,7 +39,13 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [modifiedTime, setModifiedTime] = useState("");
   const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [isHovered, setIsHovered] = useState(false);
+  const handleHoverEnter = () => {
+    setIsHovered(true);
+  };
+  const handleHoverLeave = () => {
+    setIsHovered(false);
+  };
   const apiUrl = "native/admin/showcases";
   const { error, putData, deleteData } = useRestfulAPI(null);
 
@@ -171,7 +178,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   return (
     <div className="flex flex-col gap-2">
       <div
-        className={`w-60 h-[360px] rounded-2xl
+        className={`w-60 h-[360px] rounded-2xl relative
           ${
             status == ShowcaseStatus.Public
               ? "outline outline-4 outline-success-200"
@@ -184,10 +191,29 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           backgroundSize: "cover", // Ensure the image covers the entire div
           backgroundRepeat: "no-repeat", // Prevent image repetition
         }}
+        onMouseEnter={handleHoverEnter}
+        onMouseLeave={handleHoverLeave}
       >
+        {isHovered && (
+          <Link href={`/contents/showcase?id=${props.id}`}>
+            <div
+              className={`absolute left-0 top-0 w-60 h-[360px] z-10 rounded-2xl
+              bg-black bg-opacity-50 flex flex-col justify-center items-center`}
+            >
+              <span className="text-white text-[10px]">Click to Edit</span>
+              <Image
+                src="/admin/images/icon/magic-icon.svg"
+                width={36}
+                height={36}
+                alt="magic-icon"
+                className="cursor-pointer"
+              />
+            </div>
+          </Link>
+        )}
         <div
-          className="w-full mt-[331px] px-3 
-            flex flex-row-reverse justify-between"
+          className="absolute bottom-[12px] right-[13px]
+            flex flex-row-reverse justify-between z-20"
         >
           <div
             className={`rounded-[27px] p-0 flex justify-between items-center
