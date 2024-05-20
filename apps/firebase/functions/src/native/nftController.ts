@@ -80,11 +80,11 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
       },
     });
     if (!content) {
-        throw new MintError(404, "Content does not found");
+      throw new MintError(404, "Content does not found");
     }
   } else {
     if (digitalItem.creator_uuid !== uid) {
-        throw new MintError(401, "You are not creator of this digital item");
+      throw new MintError(401, "You are not creator of this digital item");
     }
   }
 
@@ -131,7 +131,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
       },
     });
     if (!user) {
-        throw new MintError(404, "User does not found");
+      throw new MintError(404, "User does not found");
     }
     creatorName = user.username;
   }
@@ -166,14 +166,14 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
   if (itemId) {
     const flowJobId = uuidv4();
     const message = {flowJobId, txType: "mintNFT", params: {
-        tobiratoryAccountUuid: uid,
-        itemCreatorAddress: flowAccount.flow_address,
-        itemId,
-        digitalItemId,
-        digitalItemNftId: undefined,
-        metadata,
-        fcmToken,
-      }};
+      tobiratoryAccountUuid: uid,
+      itemCreatorAddress: flowAccount.flow_address,
+      itemId,
+      digitalItemId,
+      digitalItemNftId: undefined,
+      metadata,
+      fcmToken,
+    }};
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   } else {
@@ -194,12 +194,12 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
     });
     const flowJobId = uuidv4();
     const message = {flowJobId, txType: "createItem", params: {
-        tobiratoryAccountUuid: uid,
-        digitalItemNftId: nft.id,
-        digitalItemId,
-        metadata,
-        fcmToken,
-      }};
+      tobiratoryAccountUuid: uid,
+      digitalItemNftId: nft.id,
+      digitalItemId,
+      metadata,
+      fcmToken,
+    }};
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   }
@@ -213,7 +213,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
       data: {id: digitalItemId},
     }),
   });
-}
+};
 
 export const fetchNftThumb = async (req: Request, res: Response) => {
   const {authorization} = req.headers;

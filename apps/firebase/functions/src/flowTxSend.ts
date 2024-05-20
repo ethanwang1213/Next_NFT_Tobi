@@ -170,7 +170,7 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
   const digitalItem = await prisma.tobiratory_digital_items.findUnique({
     where: {
       id: digitalItemId,
-    }
+    },
   });
   if (!digitalItem) {
     throw new functions.https.HttpsError("not-found", "The digital item does not exist.");
@@ -498,8 +498,8 @@ const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: 
 
   const sampleItem = await prisma.tobiratory_sample_items.findUnique({
     where: {
-      digital_item_id: digitalItemId
-    }
+      digital_item_id: digitalItemId,
+    },
   });
   if (!sampleItem) {
     throw new functions.https.HttpsError("not-found", "The sample item does not exist.");
