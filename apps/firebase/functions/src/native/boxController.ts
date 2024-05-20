@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import { getBoxAddress } from "./utils";
+import {getBoxAddress} from "./utils";
 
 export const updateBoxInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -80,8 +80,8 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
     const box = await prisma.tobiratory_boxes.findUnique({
       where: {
         id: boxId,
-      }
-    })
+      },
+    });
     const address = getBoxAddress(userData?.id??0, boxId);
     res.status(200).send({
       status: "success",
@@ -779,10 +779,10 @@ export const adminGetBoxList = async (req: Request, res: Response) => {
             id: box.id,
             name: box.name,
             giftPermission: box.gift_permission,
-            address: getBoxAddress(inventory?.id??0, box.id)
-          }
-        })
-      }
+            address: getBoxAddress(inventory?.id??0, box.id),
+          };
+        }),
+      };
       res.status(200).send({
         status: "success",
         data: returnData,
@@ -800,4 +800,4 @@ export const adminGetBoxList = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
