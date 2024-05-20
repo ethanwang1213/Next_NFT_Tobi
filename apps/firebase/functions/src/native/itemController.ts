@@ -6,11 +6,11 @@ import {prisma} from "../prisma";
 
 export const createModel = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {materialId, type}:{materialId: number, type: number} = req.body;
+  const {materialId, type, imageUrl}:{materialId: number, type: number, imageUrl: string} = req.body;
   const predefinedModel = "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    console.log(uid, materialId, type);
+    console.log(uid, materialId, type, imageUrl);
 
     // const modelData = await createModelCloud(materialId, type);
     res.status(200).send({

@@ -52,7 +52,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
           return;
         }
         if (boxData.creator_uuid != uid) {
-          res.status(404).send({
+          res.status(403).send({
             status: "error",
             data: {
               msg: "not-yours",
