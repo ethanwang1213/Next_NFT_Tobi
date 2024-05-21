@@ -20,14 +20,15 @@ const ShowcaseSampleTab = () => {
         data.length > 0 &&
         data.map((sample, index) => {
           return (
-            <div key={sample.id} className="w-1/4 p-4">
+            <div key={sample.id} className="w-1/4 p-2">
               <div
-                className={"w-20 h-20 rounded-[8px]"}
+                className={"rounded-[8px]"}
                 style={{
-                  backgroundImage: `url(${sample.thumbImage})`,
+                  backgroundImage: `url(${sample.thumbnail})`,
                   backgroundPosition: "center",
-                  backgroundSize: "cover", // Ensure the image covers the entire div
                   backgroundRepeat: "no-repeat", // Prevent image repetition
+                  backgroundSize: "contain",
+                  paddingTop: "100%",
                 }}
               ></div>
             </div>

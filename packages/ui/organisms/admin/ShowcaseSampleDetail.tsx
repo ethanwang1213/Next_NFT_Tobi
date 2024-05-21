@@ -1,6 +1,11 @@
 import Image from "next/image";
+import { useRef } from "react";
+import Button from "../../atoms/Button";
+import SampleDetailDialog from "./SampleDetailDialog";
 
 const ShowcaseSampleDetail = () => {
+  const dialogRef = useRef(null);
+
   return (
     <div
       className="w-[316px] bg-gray-800 bg-opacity-50 min-h-full
@@ -8,12 +13,14 @@ const ShowcaseSampleDetail = () => {
     >
       <span className="text-base font-semibold ">Content Name</span>
       <span className="text-2xl font-bold">Item Title</span>
-      <Image
-        width={160}
-        height={160}
-        src="/admin/images/png/empty-image.png"
-        alt="image"
-      />
+      <Button onClick={() => dialogRef.current.showModal()}>
+        <Image
+          width={160}
+          height={160}
+          src="/admin/images/png/empty-image.png"
+          alt="image"
+        />
+      </Button>
       <span className="text-[10px] font-normal text-center">
         Lorem Ipsum is simply dummy text of the printing and typesetting
         industry. Lorem Ipsum has been the industry's standard dummy text ever
@@ -98,6 +105,12 @@ const ShowcaseSampleDetail = () => {
           </span>
           <span className="text-[10px] font-medium">TBR0123456789</span>
         </div>
+        <SampleDetailDialog
+          thumbnail=""
+          content="Content Name"
+          item="Item Title"
+          dialogRef={dialogRef}
+        />
       </div>
     </div>
   );

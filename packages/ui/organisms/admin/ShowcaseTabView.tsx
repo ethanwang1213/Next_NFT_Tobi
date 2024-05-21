@@ -62,7 +62,7 @@ const ShowcaseTabView = () => {
           <span className="text-sm font-semibold leading-6">Settings</span>
         </ShowcaseTabSelector>
       </nav>
-      <div className="flow-root px-[50px] pt-[60px] pb-[40px]">
+      <div className="flow-root pl-[68px] pr-[68px] pt-[52px] pb-[52px] w-full">
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab></ShowcaseSampleTab>
         </TabPanel>
