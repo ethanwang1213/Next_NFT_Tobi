@@ -8,7 +8,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
   const boxId = Number(id);
-  const {name, permission}:{name?: string, permission?: boolean} = req.body;
+  const {name, giftPermission}:{name?: string, giftPermission?: boolean} = req.body;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const userData = await prisma.tobiratory_accounts.findUnique({
@@ -17,7 +17,6 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
       },
     });
 
-    const giftPermission = permission;
     if (!boxId) {
       try {
         await prisma.tobiratory_accounts.update({
