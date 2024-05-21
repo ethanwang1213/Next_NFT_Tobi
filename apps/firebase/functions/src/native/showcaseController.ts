@@ -510,8 +510,8 @@ export const putItemToShowcase = async (req: Request, res: Response) => {
           create: {
             nft_id: nftId,
             showcase_id: showcase.id,
-          }
-        })
+          },
+        });
       }
       await prisma.tobiratory_showcase_nft_items.deleteMany({
         where: {
@@ -561,4 +561,4 @@ export const putItemToShowcase = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};

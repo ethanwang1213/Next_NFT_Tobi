@@ -49,7 +49,7 @@ import {
   updateMySaidan,
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
-import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
 import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
@@ -107,7 +107,7 @@ app.post("/my/inventory", dummyResponse);
 app.post("/my/inventory/box", makeBox);
 app.get("/my/inventory/box/:id", getBoxData);
 app.delete("/my/inventory/box/:id", deleteBoxData);
-app.post("/my/inventory/gift-permission", permissionGift);
+app.put("/my/box/:id", updateBoxInfo);
 
 app.get("/my/nfts/:id", getNftInfo);
 app.post("/my/contents", dummyResponse);
@@ -189,4 +189,7 @@ app.delete("/admin/showcases/:id", deleteMyShowcase);
 // management content
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
+
+// management boxes
+app.get("/admin/boxes", adminGetBoxList);
 export const native = functions.region(REGION).https.onRequest(app);
