@@ -8,7 +8,7 @@ const ShowcaseSampleDetail = () => {
 
   return (
     <div
-      className="w-[316px] bg-gray-800 bg-opacity-50 min-h-full
+      className="w-[316px] bg-gray-800 bg-opacity-50 min-h-full absolute left-0
     flex flex-col justify-center items-center gap-6 text-base-white px-4 pt-6 pb-10"
     >
       <span className="text-base font-semibold ">Content Name</span>
