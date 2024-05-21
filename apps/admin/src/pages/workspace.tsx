@@ -5,6 +5,8 @@ import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreat
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceMaterialDialog from "ui/organisms/admin/WorkspaceMaterialDialog";
 import Image from "next/image";
+import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+import { WorkspaceUnity } from "ui/molecules/CustomUnity";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -16,9 +18,15 @@ export default function Index() {
   const sampleCreateDialogRef = useRef(null);
   const materialDialogRef = useRef(null);
 
+  const { customUnityProvider } = useWorkspaceUnityContext();
+
   return (
-    <div className="w-full h-full">
-      <div className="unity-view w-full h-full flex relative">
+    <div className="w-full h-full relative">
+      <WorkspaceUnity
+        customUnityProvider={customUnityProvider}
+        loadData={null}
+      />
+      <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
         <WorkspaceSampleCreateDialog
           dialogRef={sampleCreateDialogRef}
           changeHandler={null}
@@ -28,14 +36,17 @@ export default function Index() {
           changeHandler={null}
         />
         {showDetailView && <WorkspaceSampleDetailPanel />}
-        {
-          <WorkspaceSampleListPanel
-            closeHandler={() => setShowListView(false)}
-            isOpen={showListView}
-          />
-        }
+        <WorkspaceSampleListPanel
+          closeHandler={() => setShowListView(false)}
+          isOpen={showListView}
+        />
 
-        <div className="flex-grow h-12 flex justify-center">
+        <div
+          className="absolute left-[50%] bottom-12 h-12 flex justify-center"
+          style={{
+            transform: "translateX(-50%)",
+          }}
+        >
           <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8">
             <Image
               width={32}
@@ -92,7 +103,7 @@ export default function Index() {
           </div>
         </div>
         <div
-          className="fixed bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
+          className="absolute bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
             flex justify-center items-center cursor-pointer"
           onClick={() => {
             if (sampleCreateDialogRef.current) {
@@ -108,7 +119,7 @@ export default function Index() {
           />
         </div>
         <div
-          className="fixed bottom-[178px] right-16 w-18 h-[72px] rounded-full bg-secondary 
+          className="absolute bottom-[178px] right-16 w-18 h-[72px] rounded-full bg-secondary 
             flex justify-center items-center cursor-pointer"
           onClick={() => {
             setShowListView(!showListView);
