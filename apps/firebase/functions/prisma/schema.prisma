@@ -312,6 +312,8 @@ model tobiratory_showcase_sample_items {
   showcase_id       Int
   sample            tobiratory_sample_items @relation(fields: [sample_id], references: [id])
   sample_id         Int
+  stage_type        Int?
+  scale             Float?
   position          Float[]
   rotation          Float[]
   updated_date_time DateTime                @default(now()) @db.Timestamp(6)
@@ -324,6 +326,9 @@ model tobiratory_showcase_nft_items {
   showcase_id       Int
   nft               tobiratory_digital_item_nfts @relation(fields: [nft_id], references: [id])
   nft_id            Int                          @unique
+  stage_type        Int?
+  scale             Float?
+  meter_height      Float                        @default(0)
   position          Float[]
   rotation          Float[]
   updated_date_time DateTime                     @default(now()) @db.Timestamp(6)

@@ -459,6 +459,11 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
       const returnData = {
         id: sample.id,
         name: digitalItemData.name,
+        content: {
+          id: content?.id,
+          name: content?.name,
+          description: content?.description,
+        },
         description: digitalItemData.description,
         defaultThumbnailUrl: digitalItemData.default_thumb_url,
         customThumbnailUrl: digitalItemData.custom_thumb_url,
