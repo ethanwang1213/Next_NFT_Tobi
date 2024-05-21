@@ -198,7 +198,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           <Link href={`/contents/showcase?id=${props.id}`}>
             <div
               className={`absolute left-0 top-0 w-60 h-[360px] z-10 rounded-2xl
-              bg-black bg-opacity-50 flex flex-col justify-center items-center`}
+              bg-black bg-opacity-50 flex flex-col justify-center items-center transition-opacity duration-300 opacity-0 hover:opacity-100`}
             >
               <span className="text-white text-[10px]">Click to Edit</span>
               <Image
