@@ -39,6 +39,11 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
+      const content = await prisma.tobiratory_contents.findUnique({
+        where: {
+          owner_uuid: uid,
+        }
+      });
       const digitalItem = await prisma.tobiratory_digital_items.create({
         data: {
           creator_uuid: uid,
@@ -54,6 +59,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           digital_item_id: digitalItem.id,
           model_url: modelUrl,
           owner_uuid: uid,
+          content_id: content?content.id:0,
         },
       });
       res.status(200).send({
