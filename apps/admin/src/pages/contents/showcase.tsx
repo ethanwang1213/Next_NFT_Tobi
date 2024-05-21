@@ -1,19 +1,31 @@
+import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
+import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 
 const Showcase = () => {
   const [sampleDetailView, setSampleDetailView] = useState(true);
   const [showcaseTabView, setShowcaseTabView] = useState(true);
+  const { customUnityProvider } = useShowcaseEditUnityContext();
 
   return (
     <div className="w-full h-full">
-      <div className="unity-view w-full h-full flex justify-between">
+      <div className="unity-view w-full h-full relative">
+        <ShowcaseEditUnity
+          customUnityProvider={customUnityProvider}
+          loadData={null}
+        />
         {sampleDetailView && <ShowcaseSampleDetail />}
-        <div className="flex-1 relative">
+        {/* Align component in the center */}
+        {/* 318px: width of left component. 504px: width of right component. */}
+        <div
+          className="w-[336px] bottom-0 absolute"
+          style={{ left: "calc(318px + (100% - 318px - 504px - 336px) / 2)" }}
+        >
           <div className="absolute bottom-12 w-full flex justify-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8">
               <Image

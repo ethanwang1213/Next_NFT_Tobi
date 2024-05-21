@@ -62,7 +62,7 @@ const SaidanLikeUnityBase = ({ customUnityProvider }: SaidanLikeProps) => {
   return (
     <Unity
       unityProvider={customUnityProvider.unityProvider}
-      className="w-full h-full"
+      className="w-full h-full absolute"
     />
   );
 };
