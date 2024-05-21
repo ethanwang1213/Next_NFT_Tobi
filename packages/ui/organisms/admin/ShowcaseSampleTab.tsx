@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 const ShowcaseSampleTab = () => {
   const apiUrl = "native/admin/samples";
-  const { data, getData } = useRestfulAPI(apiUrl);
+  const { data, loading, getData } = useRestfulAPI(apiUrl);
 
   const [reload, setReload] = useState(0);
 
@@ -16,6 +16,12 @@ const ShowcaseSampleTab = () => {
 
   return (
     <div className="flex flex-wrap">
+      {loading && (
+        <span className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75">
+          <span className="loading loading-spinner loading-md"></span>
+        </span>
+      )}
+
       {data &&
         data.length > 0 &&
         data.map((sample, index) => {
