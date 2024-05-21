@@ -6,11 +6,11 @@ import {prisma} from "../prisma";
 
 export const createModel = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {materialId, type}:{materialId: number, type: number} = req.body;
+  const {materialId, type, imageUrl}:{materialId: number, type: number, imageUrl: string} = req.body;
   const predefinedModel = "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    console.log(uid, materialId, type);
+    console.log(uid, materialId, type, imageUrl);
 
     // const modelData = await createModelCloud(materialId, type);
     res.status(200).send({
@@ -39,6 +39,11 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
+      const content = await prisma.tobiratory_contents.findUnique({
+        where: {
+          owner_uuid: uid,
+        }
+      });
       const digitalItem = await prisma.tobiratory_digital_items.create({
         data: {
           creator_uuid: uid,
@@ -54,6 +59,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           digital_item_id: digitalItem.id,
           model_url: modelUrl,
           owner_uuid: uid,
+          content_id: content?content.id:0,
         },
       });
       res.status(200).send({
@@ -452,13 +458,18 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
             });
             return {
               id: copyrightData?.id,
-              name: copyrightData?.copyright_name
+              name: copyrightData?.copyright_name,
             };
           })
       );
       const returnData = {
         id: sample.id,
         name: digitalItemData.name,
+        content: {
+          id: content?.id,
+          name: content?.name,
+          description: content?.description,
+        },
         description: digitalItemData.description,
         defaultThumbnailUrl: digitalItemData.default_thumb_url,
         customThumbnailUrl: digitalItemData.custom_thumb_url,

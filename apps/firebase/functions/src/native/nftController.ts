@@ -10,14 +10,14 @@ import {prisma} from "../prisma";
 const pubsub = new PubSub();
 
 export const mintNFT = async (req: Request, res: Response) => {
-  const {id, amount} = req.params;
+  const {id, amount, modelUrl} = req.params;
   const {authorization} = req.headers;
   const {fcmToken} = req.body;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       for (let i = 0; i < parseInt(amount); i++) {
-        await mint(id, uid, fcmToken);
+        await mint(id, uid, fcmToken, modelUrl);
       }
       res.status(200).send({
         status: "success",
@@ -53,7 +53,7 @@ class MintError extends Error {
   }
 }
 
-export const mint = async (id: string, uid: string, fcmToken: string) => {
+export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: string) => {
   const sampleItem = await prisma.tobiratory_sample_items.findUnique({
     where: {
       id: parseInt(id),
@@ -80,11 +80,11 @@ export const mint = async (id: string, uid: string, fcmToken: string) => {
       },
     });
     if (!content) {
-        throw new MintError(404, "Content does not found");
+      throw new MintError(404, "Content does not found");
     }
   } else {
     if (digitalItem.creator_uuid !== uid) {
-        throw new MintError(401, "You are not creator of this digital item");
+      throw new MintError(401, "You are not creator of this digital item");
     }
   }
 
@@ -131,7 +131,7 @@ export const mint = async (id: string, uid: string, fcmToken: string) => {
       },
     });
     if (!user) {
-        throw new MintError(404, "User does not found");
+      throw new MintError(404, "User does not found");
     }
     creatorName = user.username;
   }
@@ -150,12 +150,13 @@ export const mint = async (id: string, uid: string, fcmToken: string) => {
         return copyrightData?.copyright_name;
       })
   );
+
   const metadata = {
     type: String(digitalItem.type),
     name: digitalItem.name,
     description: digitalItem.description,
     thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
-    modelUrl: sampleItem.model_url,
+    modelUrl: modelUrl,
     creatorName: creatorName,
     limit: digitalItem.limit,
     license: digitalItem.license,
@@ -165,17 +166,25 @@ export const mint = async (id: string, uid: string, fcmToken: string) => {
   if (itemId) {
     const flowJobId = uuidv4();
     const message = {flowJobId, txType: "mintNFT", params: {
-        tobiratoryAccountUuid: uid,
-        itemCreatorAddress: flowAccount.flow_address,
-        itemId,
-        digitalItemId,
-        digitalItemNftId: undefined,
-        metadata,
-        fcmToken,
-      }};
+      tobiratoryAccountUuid: uid,
+      itemCreatorAddress: flowAccount.flow_address,
+      itemId,
+      digitalItemId,
+      digitalItemNftId: undefined,
+      metadata,
+      fcmToken,
+    }};
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   } else {
+    await prisma.tobiratory_sample_items.update({
+      where: {
+        id: digitalItemId,
+      },
+      data: {
+        model_url: modelUrl
+      }
+    });
     const nft = await prisma.tobiratory_digital_item_nfts.create({
       data: {
         digital_item_id: digitalItem.id,
@@ -185,12 +194,12 @@ export const mint = async (id: string, uid: string, fcmToken: string) => {
     });
     const flowJobId = uuidv4();
     const message = {flowJobId, txType: "createItem", params: {
-        tobiratoryAccountUuid: uid,
-        digitalItemNftId: nft.id,
-        digitalItemId,
-        metadata,
-        fcmToken,
-      }};
+      tobiratoryAccountUuid: uid,
+      digitalItemNftId: nft.id,
+      digitalItemId,
+      metadata,
+      fcmToken,
+    }};
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   }
@@ -204,7 +213,7 @@ export const mint = async (id: string, uid: string, fcmToken: string) => {
       data: {id: digitalItemId},
     }),
   });
-}
+};
 
 export const fetchNftThumb = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
