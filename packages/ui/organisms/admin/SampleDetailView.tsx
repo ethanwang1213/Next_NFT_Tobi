@@ -1,11 +1,8 @@
 import Image from "next/image";
 
-const SampleDetailViewPanel = () => {
+const SampleDetailView = () => {
   return (
-    <div
-      className="absolute top-0 left-0 w-[316px] bg-[#001327] min-h-full
-    flex flex-col justify-center items-center gap-6 text-base-white px-4 pt-6 pb-10"
-    >
+    <div className="flex flex-col items-center gap-6 text-base-white">
       <span className="text-base font-semibold ">Content Name</span>
       <span className="text-2xl font-bold">Item Title</span>
       <Image
@@ -98,18 +95,9 @@ const SampleDetailViewPanel = () => {
           </span>
           <span className="text-[10px] font-medium">TBR0123456789</span>
         </div>
-        <div className="absolute bottom-3 right-3">
-          <Image
-            width={21}
-            height={24}
-            src="/admin/images/icon/delete-icon.svg"
-            alt="delete icon"
-            className="cursor-pointer"
-          />
-        </div>
       </div>
     </div>
   );
 };
 
-export default SampleDetailViewPanel;
+export default SampleDetailView;
