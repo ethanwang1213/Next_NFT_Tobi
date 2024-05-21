@@ -11,8 +11,8 @@ const ShowcaseSampleTab = () => {
     if (reload > 0) {
       getData(apiUrl);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload]);
-  console.log(data);
 
   return (
     <div className="flex flex-wrap">
