@@ -789,7 +789,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         })
       }
       for (const nft of nftItemList) {
-        await prisma.tobiratory_showcase_nft_items.updateMany({
+        await prisma.tobiratory_showcase_nft_items.update({
           where: {
             showcase_id: isShowcase.id,
             nft_id: nft.itemId,
