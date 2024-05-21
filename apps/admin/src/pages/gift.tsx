@@ -2,7 +2,13 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
-import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CreateButton from "ui/molecules/CreateButton";
@@ -128,8 +134,11 @@ const BoxComponent = (props: {
   giftPermission: boolean;
   deleteBoxHandler: () => void;
 }) => {
-  const apiUrl = "native/admin//box";
-  const { data, setData, postData } = useRestfulAPI(null);
+  const apiUrl = "native/my/box";
+  const { data, setData, putData } = useRestfulAPI(null);
+  const [loadingChangePerm, setLoadingChangePerm] = useState(false);
+  const [loadingChangeName, setLoadingChangeName] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const editNameDialogRef = useRef(null);
   const qrcodeDialogRef = useRef(null);
@@ -144,8 +153,10 @@ const BoxComponent = (props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const changePermissionHandler = useCallback((perm: boolean) => {
-    postData(`${apiUrl}/${props.id}`, { giftPermission: perm }, []);
+  const changePermissionHandler = useCallback(async (perm: boolean) => {
+    setLoadingChangePerm(true);
+    await putData(`${apiUrl}/${props.id}`, { giftPermission: perm }, []);
+    setLoadingChangePerm(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -155,8 +166,10 @@ const BoxComponent = (props: {
     }
   }, []);
 
-  const changeNameHandler = useCallback((name: string) => {
-    postData(`${apiUrl}/${props.id}`, { name: name }, []);
+  const changeNameHandler = useCallback(async (name: string) => {
+    setLoadingChangeName(true);
+    await putData(`${apiUrl}/${props.id}`, { name: name }, []);
+    setLoadingChangeName(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -175,26 +188,34 @@ const BoxComponent = (props: {
     data && (
       <div className="h-14 border-b border-neutral-100 pl-4 pr-1 hover:bg-neutral-100 flex items-center gap-4">
         <span className="flex-1">{data.name}</span>
-        <input
-          type="checkbox"
-          className={`toggle w-[50px] h-[26px]
+        {loadingChangePerm ? (
+          <span className="loading loading-spinner loading-md mr-3 text-secondary-600" />
+        ) : (
+          <input
+            type="checkbox"
+            className={`toggle w-[50px] h-[26px]
           ${
             data.giftPermission ? "[--tglbg:#1779DE]" : "[--tglbg:#B5B3B3]"
           } bg-base-white`}
-          checked={data.giftPermission}
-          onChange={async (e) => changePermissionHandler(e.target.checked)}
-        />
+            checked={data.giftPermission}
+            onChange={async (e) => changePermissionHandler(e.target.checked)}
+          />
+        )}
         <span className="w-20 text-sm font-normal text-base-black">
           {data.giftPermission ? "Permitted" : "Blocked"}
         </span>
-        <Image
-          width={16}
-          height={16}
-          alt="edit"
-          src="/admin/images/icon/pencil.svg"
-          className="mx-2 my-2 cursor-pointer"
-          onClick={editIconClickHandler}
-        />
+        {loadingChangeName ? (
+          <span className="loading loading-spinner loading-md mx-1 text-secondary-600" />
+        ) : (
+          <Image
+            width={16}
+            height={16}
+            alt="edit"
+            src="/admin/images/icon/pencil.svg"
+            className="mx-2 my-2 cursor-pointer"
+            onClick={editIconClickHandler}
+          />
+        )}
         {data.giftPermission ? (
           <Image
             width={16}
@@ -219,14 +240,21 @@ const BoxComponent = (props: {
         ) : (
           <div className="w-8"></div>
         )}
-        <Image
-          width={16}
-          height={16}
-          alt="delete"
-          src="/admin/images/icon/delete-icon.svg"
-          className="mx-2 my-2 cursor-pointer"
-          onClick={props.deleteBoxHandler}
-        />
+        {loadingDelete ? (
+          <span className="loading loading-spinner loading-md mx-1 text-secondary-600" />
+        ) : (
+          <Image
+            width={16}
+            height={16}
+            alt="delete"
+            src="/admin/images/icon/delete-icon.svg"
+            className="mx-2 my-2 cursor-pointer"
+            onClick={() => {
+              setLoadingDelete(true);
+              props.deleteBoxHandler();
+            }}
+          />
+        )}
         <BoxNameEditDialog
           initialValue={data.name}
           dialogRef={editNameDialogRef}
@@ -239,19 +267,23 @@ const BoxComponent = (props: {
 };
 
 export default function Index() {
-  const apiUrl = "native/admin/box";
+  const apiUrl = "native/admin/boxes";
   const { data, setData, getData, postData, deleteData } =
     useRestfulAPI(apiUrl);
-
+  const [loadingNewBox, setLoadingNewBox] = useState(false);
   const dialogRef = useRef(null);
 
-  const deleteBoxHandler = useCallback(async (boxId) => {
-    const result = await deleteData(`${apiUrl}/${boxId}`);
-    if (result) {
-      setData(data.filter((data) => data.id !== boxId));
-    }
+  const deleteBoxHandler = useCallback(
+    async (boxId) => {
+      const result = await deleteData(`native/my/inventory/box/${boxId}`);
+      if (result) {
+        const newBoxes = data.boxes.filter((item) => item.id !== boxId);
+        setData({ ...data, ["boxes"]: newBoxes });
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [data],
+  );
 
   const newBtnClickHandler = useCallback(() => {
     if (dialogRef.current) {
@@ -264,10 +296,12 @@ export default function Index() {
       toast("Please fill a box name");
       return;
     }
+    setLoadingNewBox(true);
     const result = await postData("native/my/inventory/box", { name: name });
     if (result) {
-      getData(apiUrl);
+      await getData(apiUrl);
     }
+    setLoadingNewBox(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -282,11 +316,15 @@ export default function Index() {
         times when gifts can be accepted.
       </div>
       <div className="flex justify-end mt-8">
-        <CreateButton
-          label="NEW BOX"
-          height={48}
-          clickHandler={newBtnClickHandler}
-        />
+        {loadingNewBox ? (
+          <span className="loading loading-spinner loading-md my-3 text-secondary-600" />
+        ) : (
+          <CreateButton
+            label="NEW BOX"
+            height={48}
+            clickHandler={newBtnClickHandler}
+          />
+        )}
       </div>
       {data && (
         <div className="rounded-2xl border border-[#CCCBCB ] ml-8 mt-4">
