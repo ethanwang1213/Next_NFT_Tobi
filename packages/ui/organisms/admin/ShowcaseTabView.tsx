@@ -2,8 +2,8 @@ import Image from "next/image";
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
-import { ShowcaseTabSelector } from "../../atoms/ShowcaseTabSelector";
 
 const ShowcaseTabView = () => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);

@@ -22,11 +22,9 @@ const ShowcaseSampleTab = () => {
           return (
             <div key={sample.id} className="w-1/4 p-2">
               <div
-                className={"rounded-[8px]"}
+                className={"rounded-[8px] bg-no-repeat bg-center"}
                 style={{
                   backgroundImage: `url(${sample.thumbnail})`,
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat", // Prevent image repetition
                   backgroundSize: "contain",
                   paddingTop: "100%",
                 }}
