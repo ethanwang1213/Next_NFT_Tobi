@@ -49,7 +49,7 @@ const Showcase = () => {
               <Image
                 width={32}
                 height={32}
-                alt="undo button"
+                alt="toggle button"
                 src="/admin/images/icon/visibility-icon.svg"
                 className="cursor-pointer"
                 onClick={() => {
