@@ -80,6 +80,20 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         throw e;
       }
     }
+  } else if (txType == "giftNFT") {
+try {
+      await fetchAndUpdateGiftNFT(params.nftId, params.receiverAddress);
+      await flowJobDocRef.update({status: "done", updatedAt: new Date()});
+    } catch (e) {
+      if (e instanceof Error && e.message === "TX_FAILED") {
+        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
+        console.log(`Message ${messageId} published.`);
+        await flowJobDocRef.update({status: "retrying", updatedAt: new Date()});
+      } else {
+        throw e;
+      }
+    }
+
   }
 });
 
@@ -248,6 +262,33 @@ pub fun main(address: Address, itemID: UInt64): UInt32? {
     args: (arg: any, t: any) => [arg(creatorFlowAccount, t.Address), arg(itemId, t.UInt64)],
   });
 };
+
+const fetchAndUpdateGiftNFT = async (nftId: number, receiverAddress: string) => {
+  const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
+    where: {
+      id: nftId,
+    },
+  });
+  if (!nft) {
+    throw new Error("NFT_NOT_FOUND");
+  }
+  const txId = nft.tx_id;
+  if (!txId) {
+    throw new Error("TX_NOT_FOUND");
+  }
+  const {serialNumber} = await fetchGiftNFT(txId);
+  await prisma.tobiratory_digital_item_nfts.update({
+    where: {
+      id: nftId,
+    },
+    data: {
+      mint_status: "minted",
+      serial_no: Number(serialNumber),
+      box_id: 0,
+      owner_flow_address: receiverAddress,
+    },
+  });
+}
 
 const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   const existingFlowJobs = await firestore().collection("flowJobs").where("flowJobId", "==", flowJobId).get();
