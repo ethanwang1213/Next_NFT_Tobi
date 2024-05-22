@@ -76,6 +76,11 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
         return;
       }
     }
+    const updateUserData = await prisma.tobiratory_accounts.findUnique({
+      where: {
+        uuid: uid,
+      },
+    });
     const box = await prisma.tobiratory_boxes.findUnique({
       where: {
         id: boxId,
@@ -86,9 +91,9 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
       status: "success",
       data: {
         id: boxId,
-        name: box?.name,
+        name: !boxId?updateUserData?.username+"'s Inventory":box?.name,
         address: address,
-        giftPermission: box?.gift_permission,
+        giftPermission: !boxId?updateUserData?.gift_permission:box?.gift_permission,
       },
     });
   }).catch((error: FirebaseError) => {

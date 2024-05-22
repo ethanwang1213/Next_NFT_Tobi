@@ -297,6 +297,7 @@ export const getMyShowcases = async (req: Request, res: Response) => {
           id: showcase.id,
           thumbImage: showcase.thumb_url,
           title: showcase.title,
+          desciption: showcase.description,
           status: showcase.status,
           scheduleTime: showcase.schedule_time,
           createTime: showcase.created_date_time,
@@ -610,21 +611,21 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
               sample: {
                 include: {
                   digital_item: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           tobiratory_showcase_nfts: {
             include: {
               nft: {
                 include: {
                   digital_item: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           tobiratory_showcase_template: true,
-        }
+        },
       });
       if (!showcase) {
         res.status(404).send({
@@ -660,7 +661,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
             y: relationSample.rotation[1]??0,
             z: relationSample.rotation[2]??0,
           },
-        }
+        };
       });
       const nftItemList = showcase.tobiratory_showcase_nfts.map((relationNft)=>{
         const nftData = relationNft.nft;
@@ -682,14 +683,21 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
             y: relationNft.rotation[1]??0,
             z: relationNft.rotation[2]??0,
           },
-        }
+        };
       });
       const returnData = {
         showcaseId: showcase.id,
+        thumbImage: showcase.thumb_url,
+        title: showcase.title,
+        desciption: showcase.description,
+        status: showcase.status,
+        scheduleTime: showcase.schedule_time,
         showcaseType: showcase.tobiratory_showcase_template?.type,
         showcaseUrl: showcase.tobiratory_showcase_template?.model_url,
         sampleItemList: sampleItemList,
         nftItemList: nftItemList,
+        createTime: showcase.created_date_time,
+        updateTime: showcase.updated_date_time,
       };
       res.status(200).send({
         status: "success",
@@ -708,7 +716,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
 
 export const saveMyShowcase = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -784,9 +792,9 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           data: {
             stage_type: sample.stageType,
             position: [sample.position.x, sample.position.y, sample.position.z],
-            rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z]
-          }
-        })
+            rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
+          },
+        });
       }
       for (const nft of nftItemList) {
         await prisma.tobiratory_showcase_nft_items.update({
@@ -797,9 +805,9 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           data: {
             stage_type: nft.stageType,
             position: [nft.position.x, nft.position.y, nft.position.z],
-            rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z]
-          }
-        })
+            rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
+          },
+        });
       }
       await prisma.tobiratory_showcase.update({
         where: {
@@ -807,8 +815,8 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         },
         data: {
           thumb_url: thumbnailImage,
-        }
-      })
+        },
+      });
       const showcase = await prisma.tobiratory_showcase.findUnique({
         where: {
           id: parseInt(id),
@@ -819,21 +827,21 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
               sample: {
                 include: {
                   digital_item: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           tobiratory_showcase_nfts: {
             include: {
               nft: {
                 include: {
                   digital_item: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           tobiratory_showcase_template: true,
-        }
+        },
       });
 
       const updatedSampleItemList = showcase?.tobiratory_showcase_sample_items.map((relationSample)=>{
@@ -856,7 +864,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             y: relationSample.rotation[1]??0,
             z: relationSample.rotation[2]??0,
           },
-        }
+        };
       });
       const updatedNftItemList = showcase?.tobiratory_showcase_nfts.map((relationNft)=>{
         const nftData = relationNft.nft;
@@ -878,14 +886,21 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             y: relationNft.rotation[1]??0,
             z: relationNft.rotation[2]??0,
           },
-        }
+        };
       });
       const returnData = {
         showcaseId: showcase?.id,
+        thumbImage: showcase?.thumb_url,
+        title: showcase?.title,
+        desciption: showcase?.description,
+        status: showcase?.status,
+        scheduleTime: showcase?.schedule_time,
         showcaseType: showcase?.tobiratory_showcase_template?.type,
         showcaseUrl: showcase?.tobiratory_showcase_template?.model_url,
         sampleItemList: updatedSampleItemList,
         nftItemList: updatedNftItemList,
+        createTime: showcase?.created_date_time,
+        updateTime: showcase?.updated_date_time,
       };
       res.status(200).send({
         status: "success",
@@ -904,4 +919,4 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};

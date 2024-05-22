@@ -50,7 +50,7 @@ import {
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
-import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
+import {adminGetAllNFTs, fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
 import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases, putItemToShowcase, loadMyShowcase, saveMyShowcase} from "./showcaseController";
@@ -177,6 +177,9 @@ app.get("/admin/samples", adminGetAllSamples);
 app.delete("/admin/samples", adminDeleteSamples);
 app.get("/admin/samples/:sampleId", adminDetailOfSample);
 app.post("/admin/samples/:sampleId", adminUpdateSample);
+
+// management nfts
+app.get("/admin/nfts", adminGetAllNFTs);
 
 // management showcase
 app.get("/admin/showcases/template", getShowcaseTemplate);
