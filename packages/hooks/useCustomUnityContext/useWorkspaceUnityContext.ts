@@ -65,7 +65,7 @@ export const useWorkspaceUnityContext = () => {
           return;
       }
     },
-    [],
+    [resolveUnityMessage, handleSimpleMessage, handleSceneIsLoaded],
   );
 
   // We use only `onUnityMessage` event to receive messages from Unity side.

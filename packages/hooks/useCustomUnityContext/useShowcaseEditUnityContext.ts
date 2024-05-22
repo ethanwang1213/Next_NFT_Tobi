@@ -63,7 +63,7 @@ export const useShowcaseEditUnityContext = () => {
           return;
       }
     },
-    [],
+    [resolveUnityMessage, handleSimpleMessage, handleSceneIsLoaded],
   );
 
   // We use only `onUnityMessage` event to receive messages from Unity side.

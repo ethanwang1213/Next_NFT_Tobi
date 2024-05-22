@@ -32,7 +32,7 @@ export const useSaidanLikeUnityContextBase = ({
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
-  }, [postMessageToUnity, loadData, currentSaidanId]);
+  }, [loadData, currentSaidanId, postMessageToUnity]);
 
   // TODO(toruto): const placeNewItem = () => {};
   // TODO(toruto): const removeItems = () => {};
@@ -42,7 +42,7 @@ export const useSaidanLikeUnityContextBase = ({
   useEffect(() => {
     if (!isLoaded) return;
     postMessageToLoadData();
-  }, [postMessageToLoadData]);
+  }, [isLoaded, postMessageToLoadData]);
 
   return {
     unityProvider,
