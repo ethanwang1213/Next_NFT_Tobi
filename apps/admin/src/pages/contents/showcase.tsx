@@ -1,7 +1,7 @@
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
@@ -9,11 +9,12 @@ import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 
 const Showcase = () => {
-  const [sampleDetailView, setSampleDetailView] = useState(true);
-  const [showcaseTabView, setShowcaseTabView] = useState(true);
+  const [showDetailView, setShowDetailView] = useState(true);
+  const [showSmartFrame, setShowSmartFrame] = useState(true);
   const { customUnityProvider } = useShowcaseEditUnityContext();
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
+  const [containerWidth, setContainerWidth] = useState(0);
   const handleButtonClick = (msg) => {
     setMessage(msg);
     setShowToast(true);
@@ -22,6 +23,22 @@ const Showcase = () => {
     }, 3000);
   };
 
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      const height = document.querySelector(".w-full.h-full").clientHeight;
+      const width = Math.ceil((height / 16) * 9);
+      setContainerWidth(width);
+    };
+
+    // Update container width on mount and window resize
+    updateContainerWidth();
+    window.addEventListener("resize", updateContainerWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateContainerWidth);
+    };
+  }, []);
+
   return (
     <div className="w-full h-full">
       <div className="unity-view w-full h-full relative">
@@ -29,7 +46,20 @@ const Showcase = () => {
           customUnityProvider={customUnityProvider}
           loadData={null}
         />
-        {sampleDetailView && <ShowcaseSampleDetail />}
+        {showSmartFrame && (
+          <div
+            className="absolute top-0 left-0 right-0 flex justify-center h-[100%] bg-transparent"
+            style={{
+              width: `${containerWidth}px`,
+              margin: "0 auto",
+              borderColor: "#009FF5",
+              borderWidth: "2px",
+              borderStyle: "solid",
+              left: `${318 - 504}px`,
+            }}
+          ></div>
+        )}
+        {showDetailView && <ShowcaseSampleDetail />}
         {/* Align component in the center */}
         {/* 318px: width of left component. 504px: width of right component. */}
         <div
@@ -68,19 +98,36 @@ const Showcase = () => {
                 width={32}
                 height={32}
                 alt="undo button"
-                src="/admin/images/icon/crop-icon.svg"
+                src={
+                  showSmartFrame
+                    ? "/admin/images/icon/crop-on-icon.svg"
+                    : "/admin/images/icon/crop-off-icon.svg"
+                }
                 className="cursor-pointer"
-                onClick={() => handleButtonClick("crop button is clicked")}
+                onClick={() => {
+                  setShowSmartFrame(!showSmartFrame);
+                  handleButtonClick(
+                    showSmartFrame
+                      ? "The smarphone frame is visibly"
+                      : "The smarphone frame is disable",
+                  );
+                }}
               />
               <Image
                 width={32}
                 height={32}
                 alt="toggle button"
-                src="/admin/images/icon/visibility-icon.svg"
+                src={
+                  showDetailView
+                    ? "/admin/images/icon/visibility-on-icon.svg"
+                    : "/admin/images/icon/visibility-off-icon.svg"
+                }
                 className="cursor-pointer"
                 onClick={() => {
-                  setSampleDetailView(!sampleDetailView);
-                  setShowcaseTabView(!showcaseTabView);
+                  setShowDetailView(!showDetailView);
+                  handleButtonClick(
+                    showDetailView ? "The UI is hidden" : "The UI is shown",
+                  );
                 }}
               />
               <Image
@@ -94,7 +141,7 @@ const Showcase = () => {
             </div>
           </div>
         </div>
-        {showcaseTabView && <ShowcaseTabView />}
+        {showDetailView && <ShowcaseTabView />}
         <div className="fixed mt-[24px] ml-[38px]">
           <Link
             href="/contents"

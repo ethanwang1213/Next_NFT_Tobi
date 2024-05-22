@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
+import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
 
 const ShowcaseTabView = () => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
@@ -62,7 +63,7 @@ const ShowcaseTabView = () => {
           <span className="text-sm font-semibold leading-6">Settings</span>
         </ShowcaseTabSelector>
       </nav>
-      <div className="flow-root pl-[68px] pr-[68px] pt-[52px] pb-[52px] w-full">
+      <div className="pl-[68px] pr-[68px] pt-[52px] pb-[52px] w-full flex-1">
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab></ShowcaseSampleTab>
         </TabPanel>
@@ -79,6 +80,7 @@ const ShowcaseTabView = () => {
           theme="dark"
         />
       </div>
+      <ShowcaseUnityUISetting></ShowcaseUnityUISetting>
     </div>
   );
 };
