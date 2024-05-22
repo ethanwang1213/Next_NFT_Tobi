@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
+import { SaidanLikeData } from "types/adminTypes";
 import {
   MessageDestination,
   UnityMessageJson,
@@ -80,6 +81,15 @@ export const useCustomUnityContextBase = ({
     [postMessageToUnity],
   );
 
+  const postMessageToLoadData = (loadData: SaidanLikeData) => {
+    if (!isLoaded) return;
+    if (loadData == null) return;
+
+    // TODO(toruto): post message to Unity side
+    const json = JSON.stringify(loadData);
+    console.log(json);
+  };
+
   useEffect(() => {
     if (!isLoaded) return;
     postMessageToSwitchScene(sceneType);
@@ -93,5 +103,5 @@ export const useCustomUnityContextBase = ({
     };
   }, [addEventListener, removeEventListener, handleUnityMessage]);
 
-  return { unityProvider, postMessageToUnity };
+  return { unityProvider, postMessageToUnity, postMessageToLoadData };
 };

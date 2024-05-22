@@ -1,3 +1,5 @@
+import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
+
 export type User = {
   uuid: string;
   name: string;
@@ -79,7 +81,12 @@ export type TcpFormType = {
 };
 
 // Unity data types
-const SaidanType = {
+export type CustomUnityProvider = {
+  unityProvider: UnityProvider;
+  postMessageToLoadData: (loadData: SaidanLikeData) => void;
+};
+
+export const SaidanType = {
   Workspace: 0,
   SaidanFirst: 1,
   SaidanSecond: 2,
@@ -88,27 +95,28 @@ const SaidanType = {
   ShowcaseSecond: 5,
   ShowcaseThird: 6,
 } as const;
-type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
+export type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
 
-const ItemType = {
+export const ItemType = {
   Sample: 0,
   DigitalItemNft: 1,
 } as const;
-type ItemType = (typeof ItemType)[keyof typeof ItemType];
+export type ItemType = (typeof ItemType)[keyof typeof ItemType];
 
-const ModelType = {
+export const ModelType = {
   Poster: 1,
   AcrylicStand: 2,
 } as const;
-type ModelType = (typeof ModelType)[keyof typeof ModelType];
+export type ModelType = (typeof ModelType)[keyof typeof ModelType];
 
-const UnityStageType = {
+export const UnityStageType = {
   Floor: 0,
   BackWall: 1,
   LeftWall: 2,
   RightWall: 3,
 } as const;
-type UnityStageType = (typeof UnityStageType)[keyof typeof UnityStageType];
+export type UnityStageType =
+  (typeof UnityStageType)[keyof typeof UnityStageType];
 
 type Vector3 = {
   x: number;
@@ -129,7 +137,7 @@ type SaidanItemData = {
 };
 
 export type SaidanLikeData = {
-  saidanId: string;
+  saidanId: number;
   saidanType: SaidanType;
   saidanUrl: string;
   saidanItemList: Array<SaidanItemData>;

@@ -1,24 +1,17 @@
+import { CustomUnityProvider } from "types/adminTypes";
 import { UnitySceneType } from "./unityType";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 
 export const useWorkspaceUnityContext = () => {
-  const processLoadData = (loadData: any) => {
-    if (loadData == null) return null;
-
-    var result = loadData; // TODO(toruto): process data
-    return result;
-  };
-
-  const { unityProvider, postMessageToUnity, postMessageToLoadData } =
+  const { unityProvider, postMessageToLoadData } =
     useSaidanLikeUnityContextBase({
       sceneType: UnitySceneType.Workspace,
     });
 
   // TODO(toruto): const requestItemThumbnail = () => {};
 
-  const customUnityProvider = {
+  const customUnityProvider: CustomUnityProvider = {
     unityProvider,
-    processLoadData,
     postMessageToLoadData,
   };
 
@@ -26,23 +19,21 @@ export const useWorkspaceUnityContext = () => {
 };
 
 export const useShowcaseEditUnityContext = () => {
-  const processLoadData = (loadData: any) => {
-    if (loadData == null) return null;
-
-    var result = loadData; // TODO(toruto): process data
-    return result;
-  };
-
   const { unityProvider, postMessageToLoadData } =
     useSaidanLikeUnityContextBase({
       sceneType: UnitySceneType.ShowcaseEdit,
     });
 
-  const customUnityProvider = {
+  const customUnityProvider: CustomUnityProvider = {
     unityProvider,
-    processLoadData,
     postMessageToLoadData,
   };
 
   return { customUnityProvider };
 };
+
+export {
+  useInternalShowcaseEditContext,
+  useInternalUnityContext,
+  useInternalWorkspaceContext,
+} from "./useInternalUnityContext";

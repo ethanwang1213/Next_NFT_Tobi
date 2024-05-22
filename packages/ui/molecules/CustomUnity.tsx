@@ -1,42 +1,40 @@
-import { useEffect } from "react";
+import {
+  useInternalShowcaseEditContext,
+  useInternalUnityContext,
+  useInternalWorkspaceContext,
+} from "hooks/useCustomUnityContext";
 import { Unity } from "react-unity-webgl";
 import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
-import { SaidanLikeData } from "types/adminTypes";
+import { CustomUnityProvider, SaidanLikeData } from "types/adminTypes";
 
 type WorkspaceProps = {
-  customUnityProvider: {
-    unityProvider: UnityProvider;
-    processLoadData: (loadData: any) => SaidanLikeData | null;
-    postMessageToLoadData: (processedLoadData: SaidanLikeData) => void;
-  };
+  customUnityProvider: CustomUnityProvider;
   loadData: any; // TODO(toruto): define type
 };
 
 type ShowcaseEditProps = {
-  customUnityProvider: {
-    unityProvider: UnityProvider;
-    processLoadData: (loadData: any) => SaidanLikeData | null;
-    postMessageToLoadData: (processedLoadData: SaidanLikeData) => void;
-  };
+  customUnityProvider: CustomUnityProvider;
   loadData: any; // TODO(toruto): define type
 };
 
 type SaidanLikeProps = {
-  customUnityProvider: {
-    unityProvider: UnityProvider;
-    postMessageToLoadData: (loadData: any) => void;
-  };
-  processedLoadData?: SaidanLikeData;
+  id: string;
+  unityProvider: UnityProvider;
+  loadData: SaidanLikeData | null;
+  postMessageToLoadData: (loadData: SaidanLikeData) => void;
 };
 
 export const WorkspaceUnity = ({
   customUnityProvider,
   loadData,
 }: WorkspaceProps) => {
+  const { processedLoadData } = useInternalWorkspaceContext({ loadData });
   return (
     <SaidanLikeUnityBase
-      customUnityProvider={customUnityProvider}
-      processedLoadData={customUnityProvider.processLoadData(loadData)}
+      id="workspace"
+      unityProvider={customUnityProvider.unityProvider}
+      loadData={processedLoadData}
+      postMessageToLoadData={customUnityProvider.postMessageToLoadData}
     />
   );
 };
@@ -45,26 +43,25 @@ export const ShowcaseEditUnity = ({
   customUnityProvider,
   loadData,
 }: ShowcaseEditProps) => {
+  const { processedLoadData } = useInternalShowcaseEditContext({ loadData });
   return (
     <SaidanLikeUnityBase
-      customUnityProvider={customUnityProvider}
-      processedLoadData={customUnityProvider.processLoadData(loadData)}
+      id="showcaseEdit"
+      unityProvider={customUnityProvider.unityProvider}
+      postMessageToLoadData={customUnityProvider.postMessageToLoadData}
+      loadData={processedLoadData}
     />
   );
 };
 
 const SaidanLikeUnityBase = ({
-  customUnityProvider,
-  processedLoadData,
+  id,
+  unityProvider,
+  loadData,
+  postMessageToLoadData,
 }: SaidanLikeProps) => {
-  useEffect(() => {
-    customUnityProvider.postMessageToLoadData(processedLoadData);
-  }, [customUnityProvider, processedLoadData]);
-
+  useInternalUnityContext({ loadData, postMessageToLoadData });
   return (
-    <Unity
-      unityProvider={customUnityProvider.unityProvider}
-      className="w-full h-full"
-    />
+    <Unity id={id} unityProvider={unityProvider} className="w-full h-full" />
   );
 };
