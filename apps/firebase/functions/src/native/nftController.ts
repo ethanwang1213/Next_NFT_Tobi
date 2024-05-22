@@ -179,7 +179,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
   } else {
     await prisma.tobiratory_sample_items.update({
       where: {
-        id: digitalItemId,
+        id: parseInt(id),
       },
       data: {
         model_url: modelUrl
