@@ -1,6 +1,5 @@
-import { useCallback, useState } from "react";
-import { SaidanLikeData } from "types/adminTypes";
-import { UnitySceneType } from "./unityType";
+import { useCallback, useEffect, useState } from "react";
+import { SaidanLikeData, UnitySceneType } from "./unityType";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
@@ -8,43 +7,51 @@ export const useSaidanLikeUnityContextBase = ({
 }: {
   sceneType: UnitySceneType;
 }) => {
+  const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
 
-  const privatePostMessageToLoadData = useCallback(
-    (loadData: SaidanLikeData) => {
-      console.log("pri");
-      if (loadData == null || loadData.saidanId === currentSaidanId) {
-        console.log("loadData is null or same saidanId" + currentSaidanId);
-        return;
-      }
+  const {
+    unityProvider,
+    isLoaded,
+    addEventListener,
+    removeEventListener,
+    postMessageToUnity,
+    resolveUnityMessage,
+    handleSimpleMessage,
+  } = useCustomUnityContextBase({ sceneType });
 
-      // TODO(toruto): post message to Unity side
-      const json = JSON.stringify(loadData);
-      console.log(json);
-      setCurrentSaidanId(loadData.saidanId);
-    },
-    [currentSaidanId],
-  );
+  const postMessageToLoadData = useCallback(() => {
+    if (!loadData || loadData.saidanId === currentSaidanId) {
+      console.log("loadData is null or same saidanId" + currentSaidanId);
+      return;
+    }
 
-  const { unityProvider, isLoaded, postMessageToUnity } =
-    useCustomUnityContextBase({
-      sceneType,
-      postMessageToLoadData: privatePostMessageToLoadData,
-    });
+    const json = JSON.stringify(loadData);
+    console.log(json);
+    postMessageToUnity("LoadSaidanDataMessageReceiver", json);
+
+    setCurrentSaidanId(loadData.saidanId);
+    setLoadData(null);
+  }, [postMessageToUnity, loadData, currentSaidanId]);
 
   // TODO(toruto): const placeNewItem = () => {};
   // TODO(toruto): const removeItems = () => {};
   // TODO(toruto): const requestSaveData = () => {};
   // TODO(toruto): const processLoadData = () => {};
 
-  const postMessageToLoadData = (loadData: SaidanLikeData) => {
+  useEffect(() => {
     if (!isLoaded) return;
-    privatePostMessageToLoadData(loadData);
-  };
+    postMessageToLoadData();
+  }, [postMessageToLoadData]);
 
   return {
     unityProvider,
+    addEventListener,
+    removeEventListener,
     postMessageToUnity,
-    postMessageToLoadData,
+    resolveUnityMessage,
+    setLoadData,
+    handleSimpleMessage,
+    handleSceneIsLoaded: postMessageToLoadData,
   };
 };
