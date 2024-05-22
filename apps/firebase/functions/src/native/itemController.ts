@@ -42,7 +42,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
       const content = await prisma.tobiratory_contents.findUnique({
         where: {
           owner_uuid: uid,
-        }
+        },
       });
       const digitalItem = await prisma.tobiratory_digital_items.create({
         data: {
