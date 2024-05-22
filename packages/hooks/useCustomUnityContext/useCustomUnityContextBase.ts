@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { SaidanLikeData } from "types/adminTypes";
 import {
   MessageDestination,
   UnityMessageJson,
@@ -11,9 +10,11 @@ import {
 
 export const useCustomUnityContextBase = ({
   sceneType,
+  postMessageToLoadData,
 }: {
   sceneType: UnitySceneType;
   // add optional event handlers along with message type
+  postMessageToLoadData: (loadData: any) => void;
 }) => {
   const buildFilePath = "/admin/unity/build/webgl";
   const {
@@ -66,9 +67,10 @@ export const useCustomUnityContextBase = ({
 
   const postMessageToUnity = useCallback(
     (gameObject: MessageDestination, message: string) => {
+      if (!isLoaded) return;
       sendMessage(gameObject, "OnMessageReceived", message);
     },
-    [sendMessage],
+    [isLoaded, sendMessage],
   );
 
   const postMessageToSwitchScene = useCallback(
@@ -80,15 +82,6 @@ export const useCustomUnityContextBase = ({
     },
     [postMessageToUnity],
   );
-
-  const postMessageToLoadData = (loadData: SaidanLikeData) => {
-    if (!isLoaded) return;
-    if (loadData == null) return;
-
-    // TODO(toruto): post message to Unity side
-    const json = JSON.stringify(loadData);
-    console.log(json);
-  };
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -103,5 +96,5 @@ export const useCustomUnityContextBase = ({
     };
   }, [addEventListener, removeEventListener, handleUnityMessage]);
 
-  return { unityProvider, postMessageToUnity, postMessageToLoadData };
+  return { unityProvider, isLoaded, postMessageToUnity };
 };

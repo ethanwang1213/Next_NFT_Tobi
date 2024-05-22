@@ -12,9 +12,11 @@ export const useInternalWorkspaceContext = ({ loadData }) => {
     console.log(loadData);
     if (loadData == null) return null;
 
-    if (loadData === "hoge") {
+    // TODO(toruto): implement to process loadData
+    // return dummy data
+    if (loadData === "hoge" || loadData === "hogehoge") {
       return dummyLoadData[0];
-    } else if (loadData === "fuga") {
+    } else if (loadData === "fuga" || loadData === "piyo") {
       return dummyLoadData[1];
     } else {
       return null;
@@ -28,9 +30,11 @@ export const useInternalShowcaseEditContext = ({ loadData }) => {
     console.log(loadData);
     if (loadData == null) return null;
 
-    if (loadData === "hoge") {
+    // TODO(toruto): implement to process loadData
+    // return dummy data
+    if (loadData === "hoge" || loadData === "hogehoge") {
       return dummyLoadData[0];
-    } else if (loadData === "fuga") {
+    } else if (loadData === "fuga" || loadData === "piyo") {
       return dummyLoadData[1];
     } else {
       return null;
