@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { Unity } from "react-unity-webgl";
 import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
+import { SaidanLikeData } from "types/adminTypes";
 
 type WorkspaceProps = {
   customUnityProvider: {
     unityProvider: UnityProvider;
-    postMessageToLoadData: (loadData: any) => void;
+    processLoadData: (loadData: any) => SaidanLikeData | null;
+    postMessageToLoadData: (processedLoadData: SaidanLikeData) => void;
   };
   loadData: any; // TODO(toruto): define type
 };
@@ -13,7 +15,8 @@ type WorkspaceProps = {
 type ShowcaseEditProps = {
   customUnityProvider: {
     unityProvider: UnityProvider;
-    postMessageToLoadData: (loadData: any) => void;
+    processLoadData: (loadData: any) => SaidanLikeData | null;
+    postMessageToLoadData: (processedLoadData: SaidanLikeData) => void;
   };
   loadData: any; // TODO(toruto): define type
 };
@@ -23,21 +26,17 @@ type SaidanLikeProps = {
     unityProvider: UnityProvider;
     postMessageToLoadData: (loadData: any) => void;
   };
-  loadData: any; // TODO(toruto): define type
+  processedLoadData?: SaidanLikeData;
 };
 
 export const WorkspaceUnity = ({
   customUnityProvider,
   loadData,
 }: WorkspaceProps) => {
-  useEffect(() => {
-    customUnityProvider.postMessageToLoadData(loadData);
-  }, [customUnityProvider, loadData]);
-
   return (
     <SaidanLikeUnityBase
       customUnityProvider={customUnityProvider}
-      loadData={loadData}
+      processedLoadData={customUnityProvider.processLoadData(loadData)}
     />
   );
 };
@@ -46,19 +45,22 @@ export const ShowcaseEditUnity = ({
   customUnityProvider,
   loadData,
 }: ShowcaseEditProps) => {
-  useEffect(() => {
-    customUnityProvider.postMessageToLoadData(loadData);
-  }, [customUnityProvider, loadData]);
-
   return (
     <SaidanLikeUnityBase
       customUnityProvider={customUnityProvider}
-      loadData={loadData}
+      processedLoadData={customUnityProvider.processLoadData(loadData)}
     />
   );
 };
 
-const SaidanLikeUnityBase = ({ customUnityProvider }: SaidanLikeProps) => {
+const SaidanLikeUnityBase = ({
+  customUnityProvider,
+  processedLoadData,
+}: SaidanLikeProps) => {
+  useEffect(() => {
+    customUnityProvider.postMessageToLoadData(processedLoadData);
+  }, [customUnityProvider, processedLoadData]);
+
   return (
     <Unity
       unityProvider={customUnityProvider.unityProvider}
