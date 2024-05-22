@@ -297,6 +297,7 @@ export const getMyShowcases = async (req: Request, res: Response) => {
           id: showcase.id,
           thumbImage: showcase.thumb_url,
           title: showcase.title,
+          desciption: showcase.description,
           status: showcase.status,
           scheduleTime: showcase.schedule_time,
           createTime: showcase.created_date_time,
@@ -686,10 +687,17 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       });
       const returnData = {
         showcaseId: showcase.id,
+        thumbImage: showcase.thumb_url,
+        title: showcase.title,
+        desciption: showcase.description,
+        status: showcase.status,
+        scheduleTime: showcase.schedule_time,
         showcaseType: showcase.tobiratory_showcase_template?.type,
         showcaseUrl: showcase.tobiratory_showcase_template?.model_url,
         sampleItemList: sampleItemList,
         nftItemList: nftItemList,
+        createTime: showcase.created_date_time,
+        updateTime: showcase.updated_date_time,
       };
       res.status(200).send({
         status: "success",
@@ -882,10 +890,17 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
       });
       const returnData = {
         showcaseId: showcase?.id,
+        thumbImage: showcase?.thumb_url,
+        title: showcase?.title,
+        desciption: showcase?.description,
+        status: showcase?.status,
+        scheduleTime: showcase?.schedule_time,
         showcaseType: showcase?.tobiratory_showcase_template?.type,
         showcaseUrl: showcase?.tobiratory_showcase_template?.model_url,
         sampleItemList: updatedSampleItemList,
         nftItemList: updatedNftItemList,
+        createTime: showcase?.created_date_time,
+        updateTime: showcase?.updated_date_time,
       };
       res.status(200).send({
         status: "success",
