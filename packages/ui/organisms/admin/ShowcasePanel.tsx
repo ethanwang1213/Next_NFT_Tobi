@@ -23,6 +23,7 @@ type ShowcaseComponentProps = {
   thumbImage: string;
   status: ShowcaseStatus;
   title: string;
+  description: string;
   scheduleTime?: string;
   updateTime: string;
   refreshHandler: () => void;
@@ -31,6 +32,7 @@ type ShowcaseComponentProps = {
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [status, setStatus] = useState(ShowcaseStatus.Private);
   const [title, setTitle] = useState(props.title);
+  const [description, setDescription] = useState(props.description);
   const [scheduleTime, setScheduleTime] = useState(
     props.scheduleTime && props.scheduleTime.length
       ? new Date(props.scheduleTime)
@@ -109,10 +111,15 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     }
   };
 
-  const changeTitle = async (title: string) => {
-    const jsonData = await putData(`${apiUrl}/${props.id}`, { title }, []);
+  const changeShowcaseDetail = async (title: string, description: string) => {
+    const jsonData = await putData(
+      `${apiUrl}/${props.id}`,
+      { title, description },
+      [],
+    );
     if (jsonData) {
       setTitle(jsonData.title);
+      setDescription(jsonData.description);
       setModifiedTime(jsonData.updateTime);
     } else {
       if (error) {
@@ -324,9 +331,10 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           }}
         />
         <ShowcaseNameEditDialog
-          initialValue={title}
+          showcaseTitle={title}
+          showcaseDescription={description}
           dialogRef={dialogRef}
-          changeHandler={changeTitle}
+          changeHandler={changeShowcaseDetail}
         />
       </div>
       <div className="text-secondary-700 text-[10px] leading-4 font-light">
@@ -360,6 +368,7 @@ const ShowcasePanel = () => {
                 key={`showcase-${showcase.id}`}
                 id={showcase.id}
                 title={showcase.title}
+                description={showcase.description}
                 status={showcase.status}
                 thumbImage={showcase.thumbImage}
                 scheduleTime={showcase.scheduleTime}

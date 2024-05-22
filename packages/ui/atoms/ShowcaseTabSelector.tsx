@@ -10,11 +10,10 @@ export const ShowcaseTabSelector = ({
   onClick: () => void;
 }) => (
   <button
-    className={
-      "flex-1 flex items-center justify-center cursor-pointer bg-gray-800 bg-opacity-50 mr-[1px] mb-[1px]"
-    }
+    className={`flex-1 flex items-center justify-center cursor-pointer bg-opacity-50 mr-[1px] mb-[1px] ${
+      isActive ? "bg-gray-800" : "bg-[#B3B3B3]"
+    }`}
     style={{
-      backgroundColor: isActive ? "" : "#B3B3B3",
       borderTopLeftRadius: "10px",
       borderTopRightRadius: "10px",
     }}

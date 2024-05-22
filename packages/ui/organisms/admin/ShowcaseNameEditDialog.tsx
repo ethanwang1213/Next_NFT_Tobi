@@ -2,15 +2,18 @@ import Image from "next/image";
 import { MutableRefObject, useState } from "react";
 
 const ShowcaseNameEditDialog = ({
-  initialValue,
+  showcaseTitle,
+  showcaseDescription,
   dialogRef,
   changeHandler,
 }: {
-  initialValue: string;
+  showcaseTitle: string;
+  showcaseDescription: string;
   dialogRef: MutableRefObject<HTMLDialogElement>;
-  changeHandler: (value: string) => void;
+  changeHandler: (title: string, description: string) => void;
 }) => {
-  const [showcaseName, setShowcaseName] = useState(initialValue);
+  const [title, setTitle] = useState(showcaseTitle);
+  const [description, setDescription] = useState(showcaseDescription);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -25,31 +28,30 @@ const ShowcaseNameEditDialog = ({
             />
           </button>
         </form>
-        <div className="flex justify-between items-center gap-4">
-          <span className="text-base-black text-sm font-semibold">
+        <div className="flex justify-between items-center gap-4 mb-[20px]">
+          <span className="text-base-black text-sm font-semibold w-[159px] text-right">
             Showcase Name
           </span>
           <input
             type="text"
             className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
             text-base-black text-sm leading-4 font-normal"
-            value={showcaseName}
-            onChange={(e) => setShowcaseName(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="flex justify-between items-center gap-4">
+          <span className="text-base-black text-sm font-semibold w-[159px] text-right">
+            Showcase Description
+          </span>
+          <textarea
+            className="flex-1 rounded-[16px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
+            text-base-black text-sm leading-4 font-normal resize-none h-[95px]"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <div className="modal-action flex justify-end gap-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-primary rounded-[64px] 
-              hover:shadow-xl hover:-top-[3px] transition-shadow
-              text-base-white text-sm leading-4 font-semibold"
-            onClick={() => {
-              dialogRef.current.close();
-              changeHandler(showcaseName);
-            }}
-          >
-            Save changes
-          </button>
           <button
             type="button"
             className="px-4 py-2 rounded-[64px] border-2 border-primary
@@ -58,6 +60,18 @@ const ShowcaseNameEditDialog = ({
             onClick={() => dialogRef.current.close()}
           >
             Cancel
+          </button>
+          <button
+            type="button"
+            className="px-4 py-2 bg-primary rounded-[64px] 
+              hover:shadow-xl hover:-top-[3px] transition-shadow
+              text-base-white text-sm leading-4 font-semibold"
+            onClick={() => {
+              dialogRef.current.close();
+              changeHandler(title, description);
+            }}
+          >
+            Save changes
           </button>
         </div>
       </div>

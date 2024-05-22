@@ -1,26 +1,59 @@
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Button from "ui/atoms/Button";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
+import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 
 const Showcase = () => {
+  const router = useRouter();
+  const { id } = router.query;
   const [showDetailView, setShowDetailView] = useState(true);
   const [showSmartFrame, setShowSmartFrame] = useState(true);
   const { customUnityProvider } = useShowcaseEditUnityContext();
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [containerWidth, setContainerWidth] = useState(0);
+  const [title, setTitle] = useState("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  const [description, setDescription] = useState("");
+  const dialogRef = useRef(null);
+  const apiUrl = "native/admin/showcases";
+  const { error, putData, deleteData } = useRestfulAPI(null);
+
   const handleButtonClick = (msg) => {
     setMessage(msg);
     setShowToast(true);
     setTimeout(() => {
       setShowToast(false);
     }, 3000);
+  };
+
+  const changeShowcaseDetail = async (title: string, description: string) => {
+    const jsonData = await putData(
+      `${apiUrl}/${id}`,
+      { title, description },
+      [],
+    );
+    if (jsonData) {
+      setTitle(jsonData.title);
+      setDescription(jsonData.description);
+    } else {
+      if (error) {
+        if (error instanceof String) {
+          toast(error);
+        } else {
+          toast(error.toString());
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -48,17 +81,32 @@ const Showcase = () => {
         />
         {showSmartFrame && (
           <div
-            className="absolute top-0 left-0 right-0 flex justify-center h-[100%] bg-transparent"
+            className="absolute top-0 right-0 flex justify-center h-[100%] bg-transparent border-2 border-solid border-[#009FF5] mx-auto"
             style={{
               width: `${containerWidth}px`,
-              margin: "0 auto",
-              borderColor: "#009FF5",
-              borderWidth: "2px",
-              borderStyle: "solid",
               left: `${318 - 504}px`,
             }}
           ></div>
         )}
+        <div
+          className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
+          style={{
+            width: `${containerWidth}px`,
+            left: `${318 - 504}px`,
+          }}
+        >
+          <span className="text-xl font-semibold text-[#858585] text-center mr-1">
+            {title}
+          </span>
+          <Button onClick={() => dialogRef.current.showModal()}>
+            <Image
+              width={24}
+              height={24}
+              src="/admin/images/icon/pencil.svg"
+              alt="image"
+            />
+          </Button>
+        </div>
         {showDetailView && <ShowcaseSampleDetail />}
         {/* Align component in the center */}
         {/* 318px: width of left component. 504px: width of right component. */}
@@ -156,6 +204,12 @@ const Showcase = () => {
             <span>Exit</span>
           </Link>
         </div>
+        <ShowcaseNameEditDialog
+          showcaseTitle={title}
+          showcaseDescription={description}
+          dialogRef={dialogRef}
+          changeHandler={changeShowcaseDetail}
+        />
       </div>
     </div>
   );
