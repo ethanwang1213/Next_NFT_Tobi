@@ -1,6 +1,10 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { WorkspaceItemData, WorkspaceSaveData } from "types/adminTypes";
+import {
+  ModelType,
+  WorkspaceItemData,
+  WorkspaceSaveData,
+} from "types/adminTypes";
 import { dummyLoadData } from "./dummyData";
 import {
   MessageBodyForSavingSaidanData,
@@ -10,15 +14,30 @@ import {
 } from "./unityType";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 
-type Props = {
-  onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
+type ItemThumbnailParams = {
+  modelType: ModelType;
+  modelUrl: string;
+  imageUrl: string;
 };
 
-export const useWorkspaceUnityContext = ({ onSaveDataGenerated }: Props) => {
+type MessageBodyForGeneratingItemThumbnail = {
+  thumbnailBase64: string;
+};
+
+type Props = {
+  onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
+  onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
+};
+
+export const useWorkspaceUnityContext = ({
+  onSaveDataGenerated,
+  onItemThumbnailGenerated,
+}: Props) => {
   const {
     unityProvider,
     addEventListener,
     removeEventListener,
+    postMessageToUnity,
     resolveUnityMessage,
     setLoadData,
     requestSaveData,
@@ -50,24 +69,56 @@ export const useWorkspaceUnityContext = ({ onSaveDataGenerated }: Props) => {
     [setLoadData, processLoadData],
   );
 
-  // TODO(toruto): const requestItemThumbnail = () => {};
-
-  const handleSaveDataGenerated = (
-    msgObj: UnityMessageJson,
-    onSaveDataGenerated: (workspaceSaveData: WorkspaceSaveData) => void,
-  ) => {
-    const messageBody = JSON.parse(
-      msgObj.messageBody,
-    ) as MessageBodyForSavingSaidanData;
-    if (!messageBody) return;
-
-    var workspaceItemList =
-      messageBody.saidanData.saidanItemList.map<WorkspaceItemData>((v) => {
-        delete v.itemType;
-        return v;
+  const requestItemThumbnail = useCallback(
+    ({ modelType, modelUrl, imageUrl }: ItemThumbnailParams) => {
+      const json = JSON.stringify({
+        modelType,
+        modelUrl,
+        imageUrl,
       });
-    onSaveDataGenerated({ workspaceItemList });
-  };
+      postMessageToUnity("ItemThumbnailGenerationMessageReceiver", json);
+    },
+    [postMessageToUnity],
+  );
+
+  const handleSaveDataGenerated = useCallback(
+    (
+      msgObj: UnityMessageJson,
+      onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void,
+    ) => {
+      if (!onSaveDataGenerated) return;
+
+      const messageBody = JSON.parse(
+        msgObj.messageBody,
+      ) as MessageBodyForSavingSaidanData;
+      if (!messageBody) return;
+
+      var workspaceItemList =
+        messageBody.saidanData.saidanItemList.map<WorkspaceItemData>((v) => {
+          delete v.itemType;
+          return v;
+        });
+      onSaveDataGenerated({ workspaceItemList });
+    },
+    [],
+  );
+
+  const handleItemThumbnailGenerated = useCallback(
+    (
+      msgObj: UnityMessageJson,
+      onItemThumbnailGenerated?: (thumbnailBase64: string) => void,
+    ) => {
+      if (!onItemThumbnailGenerated) return;
+
+      const messageBody = JSON.parse(
+        msgObj.messageBody,
+      ) as MessageBodyForGeneratingItemThumbnail;
+      if (!messageBody) return;
+
+      onItemThumbnailGenerated(messageBody.thumbnailBase64);
+    },
+    [],
+  );
 
   // `message` is JSON string formed in Unity side like following:
   // {
@@ -89,14 +140,25 @@ export const useWorkspaceUnityContext = ({ onSaveDataGenerated }: Props) => {
         case UnityMessageType.SceneIsLoaded:
           handleSceneIsLoaded();
           return;
-        case UnityMessageType.SavingSaidanData:
+        case UnityMessageType.SaidanSaveDataIsGenerated:
           handleSaveDataGenerated(msgObj, onSaveDataGenerated);
+          return;
+        case UnityMessageType.ItemThumbnailIsGenerated:
+          handleItemThumbnailGenerated(msgObj, onItemThumbnailGenerated);
           return;
         default:
           return;
       }
     },
-    [resolveUnityMessage, handleSimpleMessage, handleSceneIsLoaded],
+    [
+      resolveUnityMessage,
+      handleSimpleMessage,
+      handleSceneIsLoaded,
+      handleSaveDataGenerated,
+      onSaveDataGenerated,
+      handleItemThumbnailGenerated,
+      onItemThumbnailGenerated,
+    ],
   );
 
   // We use only `onUnityMessage` event to receive messages from Unity side.
@@ -107,5 +169,10 @@ export const useWorkspaceUnityContext = ({ onSaveDataGenerated }: Props) => {
     };
   }, [addEventListener, removeEventListener, handleUnityMessage]);
 
-  return { unityProvider, setLoadData: processAndSetLoadData, requestSaveData };
+  return {
+    unityProvider,
+    setLoadData: processAndSetLoadData,
+    requestSaveData,
+    requestItemThumbnail,
+  };
 };

@@ -54,35 +54,40 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     [setLoadData, processLoadData],
   );
 
-  const handleSaveDataGenerated = (
-    msgObj: UnityMessageJson,
-    onSaveDataGenerated: (showcaseSaveData: ShowcaseSaveDataFromUnity) => void,
-  ) => {
-    const messageBody = JSON.parse(
-      msgObj.messageBody,
-    ) as MessageBodyForSavingSaidanData;
-    if (!messageBody) return;
+  const handleSaveDataGenerated = useCallback(
+    (
+      msgObj: UnityMessageJson,
+      onSaveDataGenerated: (
+        showcaseSaveData: ShowcaseSaveDataFromUnity,
+      ) => void,
+    ) => {
+      const messageBody = JSON.parse(
+        msgObj.messageBody,
+      ) as MessageBodyForSavingSaidanData;
+      if (!messageBody) return;
 
-    var sampleItemList = messageBody.saidanData.saidanItemList
-      .filter((v) => v.itemType === ItemType.Sample)
-      .map<ShowcaseItemData>((v) => {
-        delete v.itemType;
-        return v;
+      var sampleItemList = messageBody.saidanData.saidanItemList
+        .filter((v) => v.itemType === ItemType.Sample)
+        .map<ShowcaseItemData>((v) => {
+          delete v.itemType;
+          return v;
+        });
+
+      var nftItemList = messageBody.saidanData.saidanItemList
+        .filter((v) => v.itemType === ItemType.DigitalItemNft)
+        .map<ShowcaseItemData>((v) => {
+          delete v.itemType;
+          return v;
+        });
+
+      onSaveDataGenerated({
+        sampleItemList,
+        nftItemList,
+        thumbnailImageBase64: messageBody.saidanThumbnailBase64,
       });
-
-    var nftItemList = messageBody.saidanData.saidanItemList
-      .filter((v) => v.itemType === ItemType.DigitalItemNft)
-      .map<ShowcaseItemData>((v) => {
-        delete v.itemType;
-        return v;
-      });
-
-    onSaveDataGenerated({
-      sampleItemList,
-      nftItemList,
-      thumbnailImageBase64: messageBody.saidanThumbnailBase64,
-    });
-  };
+    },
+    [],
+  );
 
   // `message` is JSON string formed in Unity side like following:
   // {
@@ -104,14 +109,20 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
         case UnityMessageType.SceneIsLoaded:
           handleSceneIsLoaded();
           return;
-        case UnityMessageType.SavingSaidanData:
+        case UnityMessageType.SaidanSaveDataIsGenerated:
           handleSaveDataGenerated(msgObj, onSaveDataGenerated);
           return;
         default:
           return;
       }
     },
-    [resolveUnityMessage, handleSimpleMessage, handleSceneIsLoaded],
+    [
+      resolveUnityMessage,
+      handleSimpleMessage,
+      handleSceneIsLoaded,
+      handleSaveDataGenerated,
+      onSaveDataGenerated,
+    ],
   );
 
   // We use only `onUnityMessage` event to receive messages from Unity side.

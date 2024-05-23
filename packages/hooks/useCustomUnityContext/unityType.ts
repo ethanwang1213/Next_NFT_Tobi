@@ -12,7 +12,15 @@ export type UnitySceneType =
 export const UnityMessageType = {
   SimpleMessage: 0,
   SceneIsLoaded: 1,
-  SavingSaidanData: 2,
+  SaidanSaveDataIsGenerated: 2,
+  ItemIsSelected: 3,
+  RequestToDisplayClearingUI: 4,
+  RequestToHideClearingUI: 5,
+  RequestToClearItem: 6,
+  RequestToFlipOperation: 7,
+  ItemThumbnailIsGenerated: 8,
+  NftModelIsGenerated: 9,
+  RequestToOpenItemDetail: 10,
 } as const;
 
 export type UnityMessageType =

@@ -1,13 +1,12 @@
 import { useCallback, useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
-import { UnityMessageJson, UnityMessageType, UnitySceneType } from "./unityType";
-
-
+import { UnityMessageJson, UnitySceneType } from "./unityType";
 
 type MessageDestination =
   | "SwitchSceneMessageReceiver"
   | "LoadSaidanDataMessageReceiver"
-  | "SaveSaidanDataMessageReceiver";
+  | "SaveSaidanDataMessageReceiver"
+  | "ItemThumbnailGenerationMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,
