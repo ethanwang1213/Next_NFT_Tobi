@@ -1,4 +1,3 @@
-import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,7 +23,6 @@ const Showcase = () => {
   const dialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
   const { data, error, getData, putData } = useRestfulAPI(null);
-  const { unityProvider } = useShowcaseEditUnityContext();
 
   const handleButtonClick = (msg) => {
     setMessage(msg);
