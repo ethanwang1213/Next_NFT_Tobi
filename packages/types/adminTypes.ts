@@ -106,12 +106,15 @@ type Vector3 = {
   z: number;
 };
 
-export type SaidanItemData = {
+export type ItemBaseData = {
   itemType: ItemType;
   itemId: number;
   modelType: ModelType;
   modelUrl: string;
   imageUrl: string;
+};
+
+export type SaidanItemData = ItemBaseData & {
   stageType: UnityStageType;
   position: Vector3;
   rotation: Vector3;

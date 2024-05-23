@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
 import {
-  ModelType,
+  ItemBaseData,
+  ItemType,
   WorkspaceItemData,
   WorkspaceSaveData,
 } from "types/adminTypes";
@@ -14,11 +15,7 @@ import {
 } from "./unityType";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 
-type ItemThumbnailParams = {
-  modelType: ModelType;
-  modelUrl: string;
-  imageUrl: string;
-};
+type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
 type MessageBodyForGeneratingItemThumbnail = {
   thumbnailBase64: string;
@@ -41,6 +38,7 @@ export const useWorkspaceUnityContext = ({
     resolveUnityMessage,
     setLoadData,
     requestSaveData,
+    placeNewItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
@@ -69,14 +67,24 @@ export const useWorkspaceUnityContext = ({
     [setLoadData, processLoadData],
   );
 
-  const requestItemThumbnail = useCallback(
-    ({ modelType, modelUrl, imageUrl }: ItemThumbnailParams) => {
-      const json = JSON.stringify({
-        modelType,
-        modelUrl,
-        imageUrl,
+  const placeNewItemInWorkspace = useCallback(
+    (params: Omit<ItemBaseData, "itemType">) => {
+      placeNewItem({
+        itemType: ItemType.Sample,
+        ...params,
       });
-      postMessageToUnity("ItemThumbnailGenerationMessageReceiver", json);
+    },
+    [],
+  );
+
+  const requestItemThumbnail = useCallback(
+    (params: ItemThumbnailParams) => {
+      postMessageToUnity(
+        "ItemThumbnailGenerationMessageReceiver",
+        JSON.stringify({
+          ...params,
+        }),
+      );
     },
     [postMessageToUnity],
   );
@@ -173,6 +181,7 @@ export const useWorkspaceUnityContext = ({
     unityProvider,
     setLoadData: processAndSetLoadData,
     requestSaveData,
+    placeNewItem: placeNewItemInWorkspace,
     requestItemThumbnail,
   };
 };

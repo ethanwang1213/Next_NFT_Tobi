@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { ItemBaseData } from "types/adminTypes";
 import { SaidanLikeData, UnitySceneType } from "./unityType";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
@@ -34,12 +35,19 @@ export const useSaidanLikeUnityContextBase = ({
     setLoadData(null);
   }, [loadData, currentSaidanId, postMessageToUnity]);
 
-  // TODO(toruto): const placeNewItem = () => {};
+  const placeNewItem = useCallback((params: ItemBaseData) => {
+    postMessageToUnity(
+      "NewItemMessageReceiver",
+      JSON.stringify({
+        ...params,
+        isDebug: false,
+      }),
+    );
+  }, []);
   // TODO(toruto): const removeItems = () => {};
   const requestSaveData = () => {
     postMessageToUnity("SaveSaidanDataMessageReceiver", "");
   };
-  // TODO(toruto): const processLoadData = () => {};
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -54,6 +62,7 @@ export const useSaidanLikeUnityContextBase = ({
     resolveUnityMessage,
     setLoadData,
     requestSaveData,
+    placeNewItem,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
   };
