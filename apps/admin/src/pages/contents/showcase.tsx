@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "ui/atoms/Button";
+import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
@@ -21,8 +22,6 @@ const Showcase = () => {
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [containerWidth, setContainerWidth] = useState(0);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
   const dialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
@@ -43,8 +42,8 @@ const Showcase = () => {
       [],
     );
     if (jsonData) {
-      setTitle(jsonData.title);
-      setDescription(jsonData.description);
+      data.title = jsonData.title;
+      data.description = jsonData.description;
     } else {
       if (error) {
         if (error instanceof String) {
@@ -80,10 +79,10 @@ const Showcase = () => {
   return (
     <div className="w-full h-full">
       <div className="unity-view w-full h-full relative">
-        {/* <ShowcaseEditUnity
+        <ShowcaseEditUnity
           customUnityProvider={customUnityProvider}
           loadData={null}
-        /> */}
+        />
         <div
           className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
           style={{
