@@ -72,16 +72,6 @@ export default function Index() {
               width={32}
               height={32}
               alt="undo button"
-              src="/admin/images/icon/crop-icon.svg"
-              className="cursor-pointer"
-              onClick={() => {
-                console.log("crop button is clicked");
-              }}
-            />
-            <Image
-              width={32}
-              height={32}
-              alt="undo button"
               src="/admin/images/icon/visibility-icon.svg"
               className="cursor-pointer"
               onClick={() => {
