@@ -1,7 +1,7 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import Button from "../../atoms/Button";
+import Button from "ui/atoms/Button";
 import SampleDetailDialog from "./SampleDetailDialog";
 
 const ShowcaseSampleDetail = ({ id }: { id: number }) => {

@@ -86,7 +86,7 @@ const ShowcaseTabView = ({
           theme="dark"
         />
       </div>
-      <ShowcaseUnityUISetting></ShowcaseUnityUISetting>
+      <ShowcaseUnityUISetting />
     </div>
   );
 };

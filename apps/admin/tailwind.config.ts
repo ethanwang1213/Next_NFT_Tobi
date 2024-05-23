@@ -14,6 +14,15 @@ const config = {
       md: "992px", // desktops
     },
     extend: {
+      animation: {
+        "fade-in-out": "fadeInOut 6s ease-in-out",
+      },
+      keyframes: {
+        fadeInOut: {
+          "0%, 100%": { opacity: "0" },
+          "50%": { opacity: "1" },
+        },
+      },
       fontSize: {
         redeemStatus: {
           pc: {

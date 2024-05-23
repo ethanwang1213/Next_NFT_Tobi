@@ -34,11 +34,7 @@ const SampleDetailDialog = ({
         </span>
         <div className="mb-[56px]">
           <Image
-            src={
-              thumbnail == undefined
-                ? "/admin/images/png/empty-image.png"
-                : thumbnail
-            }
+            src={thumbnail ?? "/admin/images/png/empty-image.png"}
             width={400}
             height={400}
             alt="Thumbnail Image"
