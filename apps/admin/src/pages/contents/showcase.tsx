@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "ui/atoms/Button";
-import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
@@ -22,11 +21,12 @@ const Showcase = () => {
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [containerWidth, setContainerWidth] = useState(0);
-  const [title, setTitle] = useState("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
   const dialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
-  const { error, putData, deleteData } = useRestfulAPI(null);
+  const { data, error, getData, putData, deleteData } = useRestfulAPI(null);
 
   const handleButtonClick = (msg) => {
     setMessage(msg);
@@ -57,6 +57,11 @@ const Showcase = () => {
   };
 
   useEffect(() => {
+    getData(`${apiUrl}/${id}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  useEffect(() => {
     const updateContainerWidth = () => {
       const height = document.querySelector(".w-full.h-full").clientHeight;
       const width = Math.ceil((height / 16) * 9);
@@ -75,19 +80,10 @@ const Showcase = () => {
   return (
     <div className="w-full h-full">
       <div className="unity-view w-full h-full relative">
-        <ShowcaseEditUnity
+        {/* <ShowcaseEditUnity
           customUnityProvider={customUnityProvider}
           loadData={null}
-        />
-        {showSmartFrame && (
-          <div
-            className="absolute top-0 right-0 flex justify-center h-[100%] bg-transparent border-2 border-solid border-[#009FF5] mx-auto"
-            style={{
-              width: `${containerWidth}px`,
-              left: `${318 - 504}px`,
-            }}
-          ></div>
-        )}
+        /> */}
         <div
           className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
           style={{
@@ -96,7 +92,7 @@ const Showcase = () => {
           }}
         >
           <span className="text-xl font-semibold text-[#858585] text-center mr-1">
-            {title}
+            {data?.title}
           </span>
           <Button onClick={() => dialogRef.current.showModal()}>
             <Image
@@ -107,7 +103,7 @@ const Showcase = () => {
             />
           </Button>
         </div>
-        {showDetailView && <ShowcaseSampleDetail />}
+        {showDetailView && <ShowcaseSampleDetail id={selectedSampleItem} />}
         {/* Align component in the center */}
         {/* 318px: width of left component. 504px: width of right component. */}
         <div
@@ -156,8 +152,8 @@ const Showcase = () => {
                   setShowSmartFrame(!showSmartFrame);
                   handleButtonClick(
                     showSmartFrame
-                      ? "The smarphone frame is visibly"
-                      : "The smarphone frame is disable",
+                      ? "The smartphone frame is visibly"
+                      : "The smartphone frame is disable",
                   );
                 }}
               />
@@ -189,7 +185,11 @@ const Showcase = () => {
             </div>
           </div>
         </div>
-        {showDetailView && <ShowcaseTabView />}
+        {showDetailView && (
+          <ShowcaseTabView
+            clickSampleItem={(id: number) => setSelectedSampleItem(id)}
+          />
+        )}
         <div className="fixed mt-[24px] ml-[38px]">
           <Link
             href="/contents"
@@ -205,8 +205,8 @@ const Showcase = () => {
           </Link>
         </div>
         <ShowcaseNameEditDialog
-          showcaseTitle={title}
-          showcaseDescription={description}
+          showcaseTitle={data?.title}
+          showcaseDescription={data?.description}
           dialogRef={dialogRef}
           changeHandler={changeShowcaseDetail}
         />

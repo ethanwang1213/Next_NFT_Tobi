@@ -18,7 +18,7 @@ const SampleDetailDialog = ({
         <form method="dialog">
           <button className="absolute w-4 h-4 top-3 right-3">
             <Image
-              src="/admin/images/icon/close2.svg"
+              src={"/admin/images/icon/close2.svg"}
               width={16}
               height={16}
               alt="close icon"
@@ -29,21 +29,23 @@ const SampleDetailDialog = ({
             />
           </button>
         </form>
+        <span className="text-base-black text-base font-semibold text-gray-100">
+          {content}
+        </span>
+        <span className="text-base-black text-2xl font-bold text-gray-100">
+          {item ? item : "Unnamed Sample Item"}
+        </span>
         <div className="mb-[56px]">
           <Image
-            src="/admin/images/png/empty-image.png"
+            src={
+              thumbnail == undefined
+                ? "/admin/images/png/empty-image.png"
+                : thumbnail
+            }
             width={400}
             height={400}
             alt="Thumbnail Image"
           />
-        </div>
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-base-black text-base font-semibold text-gray-100 mr-8">
-            {content}
-          </span>
-          <span className="text-base-black text-2xl font-bold text-gray-100">
-            {item}
-          </span>
         </div>
       </div>
     </dialog>

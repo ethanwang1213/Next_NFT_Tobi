@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MutableRefObject, useState } from "react";
+import { MutableRefObject, useEffect, useState } from "react";
 
 const ShowcaseNameEditDialog = ({
   showcaseTitle,
@@ -14,6 +14,14 @@ const ShowcaseNameEditDialog = ({
 }) => {
   const [title, setTitle] = useState(showcaseTitle);
   const [description, setDescription] = useState(showcaseDescription);
+
+  useEffect(() => {
+    setTitle(showcaseTitle);
+  }, [showcaseTitle]);
+
+  useEffect(() => {
+    setDescription(showcaseDescription);
+  }, [showcaseDescription]);
 
   return (
     <dialog ref={dialogRef} className="modal">

@@ -1,55 +1,77 @@
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Button from "../../atoms/Button";
 import SampleDetailDialog from "./SampleDetailDialog";
 
-const ShowcaseSampleDetail = () => {
+const ShowcaseSampleDetail = ({ id }: { id: number }) => {
   const dialogRef = useRef(null);
+  const apiUrl = `native/admin/samples/${id}`;
+  const { data, loading, getData } = useRestfulAPI(null);
+
+  useEffect(() => {
+    if (id !== -1) {
+      getData(apiUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const calculateTotalDays = (startDate: string, endDate: string): number => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const differenceInMs: number = end.getTime() - start.getTime();
+    const daysDifference: number = differenceInMs / (1000 * 60 * 60 * 24);
+
+    return Math.floor(daysDifference);
+  };
 
   return (
     <div
       className="w-[316px] bg-gray-800 bg-opacity-50 min-h-full absolute left-0
     flex flex-col justify-center items-center gap-6 text-base-white px-4 pt-6 pb-10"
     >
-      <span className="text-base font-semibold ">Content Name</span>
-      <span className="text-2xl font-bold">Item Title</span>
+      <span className="text-base font-semibold ">{data?.content.name}</span>
+      <span className="text-2xl font-bold">
+        {data?.name ? data.name : "Unnamed Sample item"}
+      </span>
       <Button onClick={() => dialogRef.current.showModal()}>
         <Image
           width={160}
           height={160}
-          src="/admin/images/png/empty-image.png"
+          src={
+            data?.customThumbnailUrl
+              ? data?.customThumbnailUrl
+              : "/admin/images/png/empty-image.png"
+          }
           alt="image"
         />
       </Button>
       <span className="text-[10px] font-normal text-center">
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived not only five
-        centuries, but also
+        {data?.description}
       </span>
       <div className="flex flex-col gap-2">
         <div className="flex gap-4">
           <span className="text-[10px] font-medium w-[116px] text-right">
             Creator
           </span>
-          <span className="text-[10px] font-medium">sample</span>
+          <span className="text-[10px] font-medium">
+            {data?.content.name ? data?.content.name : "-"}
+          </span>
         </div>
         <div className="flex gap-4">
           <span className="text-[10px] font-medium w-[116px] text-right">
             Copyright
           </span>
-          <span className="text-[10px] font-medium">©sample</span>
+          <span className="text-[10px] font-medium">
+            {data?.copyrights.length ? `@${data?.copyrights.join(" @")}` : "-"}
+          </span>
         </div>
         <div className="flex gap-4">
           <span className="text-[10px] font-medium w-[116px] text-right">
             License
           </span>
           <span className="text-[10px] font-medium flex-1">
-            sample sample sample sample sample sample sample sample sample
-            sample sample sample sample sample sample sample sample sample
-            sample sample sample sample sample sample sample sample sample
-            sample
+            {data?.license ? data.license : "-"}
           </span>
         </div>
         <div className="flex gap-4">
@@ -57,9 +79,9 @@ const ShowcaseSampleDetail = () => {
             Date Acquired
           </span>
           <div className="text-[10px] font-medium">
-            2023/08/02
+            {data?.startDate ? data.startDate : "-"}
             <br />
-            Owned for 366 days
+            Owned for {calculateTotalDays(data?.startDate, data?.endDate)} days
           </div>
         </div>
         <div className="flex gap-4">
@@ -67,48 +89,19 @@ const ShowcaseSampleDetail = () => {
             History
           </span>
           <div className="flex-1 flex gap-1">
-            <Image
-              width={12}
-              height={12}
-              src="/admin/images/icon/account-gray.svg"
-              alt="account"
-            />
-            <Image
-              width={12}
-              height={12}
-              src="/admin/images/icon/account-gray.svg"
-              alt="account"
-            />
-            <Image
-              width={12}
-              height={12}
-              src="/admin/images/icon/account-gray.svg"
-              alt="account"
-            />
-            <Image
-              width={12}
-              height={12}
-              src="/admin/images/icon/account-gray.svg"
-              alt="account"
-            />
-            <Image
-              width={12}
-              height={12}
-              src="/admin/images/icon/account-gray.svg"
-              alt="account"
-            />
+            <span className="text-[10px] font-medium">-</span>
           </div>
         </div>
         <div className="flex gap-4">
           <span className="text-[10px] font-medium w-[116px] text-right">
             Serial Number
           </span>
-          <span className="text-[10px] font-medium">TBR0123456789</span>
+          <span className="text-[10px] font-medium">-</span>
         </div>
         <SampleDetailDialog
-          thumbnail=""
-          content="Content Name"
-          item="Item Title"
+          thumbnail={data?.customThumbnailUrl}
+          content={data?.content.name}
+          item={data?.name}
           dialogRef={dialogRef}
         />
       </div>

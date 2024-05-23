@@ -50,9 +50,15 @@ const ShowcaseUnityUISetting = () => {
             type="text"
             placeholder="scale"
             className="input input-bordered max-w-xs w-20 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[16px] rounded-[5px] text-right pl-[7px] pr-[10px]"
-            value={"1.0"}
+            defaultValue={"1.0"}
           />
-          <input type="range" min={0} max={1} value={0.5} className="range" />
+          <input
+            type="range"
+            min={0}
+            max="100"
+            defaultValue="40"
+            className="range range-sm range-success bg-[#565656]"
+          />
         </div>
       </div>
     </div>

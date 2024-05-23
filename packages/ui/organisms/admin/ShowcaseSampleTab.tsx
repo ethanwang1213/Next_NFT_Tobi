@@ -1,7 +1,11 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useEffect, useState } from "react";
 
-const ShowcaseSampleTab = () => {
+const ShowcaseSampleTab = ({
+  clickSampleItem,
+}: {
+  clickSampleItem: (id: number) => void;
+}) => {
   const apiUrl = "native/admin/samples";
   const { data, loading, getData } = useRestfulAPI(apiUrl);
 
@@ -28,12 +32,15 @@ const ShowcaseSampleTab = () => {
           return (
             <div key={sample.id} className="w-1/4 p-2">
               <div
-                className={"rounded-[8px] bg-no-repeat bg-center"}
+                className={
+                  "rounded-[8px] bg-no-repeat bg-center cursor-pointer"
+                }
                 style={{
                   backgroundImage: `url(${sample.thumbnail})`,
                   backgroundSize: "contain",
                   paddingTop: "100%",
                 }}
+                onClick={() => clickSampleItem(sample.id)}
               ></div>
             </div>
           );

@@ -6,7 +6,11 @@ import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
 import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
 
-const ShowcaseTabView = () => {
+const ShowcaseTabView = ({
+  clickSampleItem,
+}: {
+  clickSampleItem: (id: number) => void;
+}) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
 
   const handleTabChange = (active) => {
@@ -65,7 +69,9 @@ const ShowcaseTabView = () => {
       </nav>
       <div className="pl-[68px] pr-[68px] pt-[52px] pb-[52px] w-full flex-1">
         <TabPanel hidden={tab !== "Sample Items"}>
-          <ShowcaseSampleTab></ShowcaseSampleTab>
+          <ShowcaseSampleTab
+            clickSampleItem={(id: number) => clickSampleItem(id)}
+          ></ShowcaseSampleTab>
         </TabPanel>
         <TabPanel hidden={tab !== "Inventory"}></TabPanel>
         <TabPanel hidden={tab !== "Settings"}></TabPanel>
