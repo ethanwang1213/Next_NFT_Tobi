@@ -381,9 +381,9 @@ export const getNftInfo = async (req: Request, res: Response) => {
               copyright: {
                 include: {
                   copyright: true,
-                }
+                },
               },
-            }
+            },
           },
           tobiratory_digital_nft_ownership: true,
           user: true,
