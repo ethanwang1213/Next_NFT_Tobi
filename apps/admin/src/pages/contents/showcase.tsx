@@ -25,7 +25,7 @@ const Showcase = () => {
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
   const dialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
-  const { data, error, getData, putData, deleteData } = useRestfulAPI(null);
+  const { data, error, getData, putData } = useRestfulAPI(null);
 
   const handleButtonClick = (msg) => {
     setMessage(msg);
