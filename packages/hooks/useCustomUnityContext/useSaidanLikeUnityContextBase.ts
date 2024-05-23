@@ -1,4 +1,5 @@
-import { UnitySceneType } from "./unityType";
+import { useCallback, useEffect, useState } from "react";
+import { SaidanLikeData, UnitySceneType } from "./unityType";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
@@ -6,29 +7,51 @@ export const useSaidanLikeUnityContextBase = ({
 }: {
   sceneType: UnitySceneType;
 }) => {
-  const { unityProvider, postMessageToUnity } = useCustomUnityContextBase({
-    sceneType,
-  });
+  const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
+  const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
+
+  const {
+    unityProvider,
+    isLoaded,
+    addEventListener,
+    removeEventListener,
+    postMessageToUnity,
+    resolveUnityMessage,
+    handleSimpleMessage,
+  } = useCustomUnityContextBase({ sceneType });
+
+  const postMessageToLoadData = useCallback(() => {
+    if (!loadData || loadData.saidanId === currentSaidanId) {
+      console.log("loadData is null or same saidanId" + currentSaidanId);
+      return;
+    }
+
+    const json = JSON.stringify(loadData);
+    console.log(json);
+    postMessageToUnity("LoadSaidanDataMessageReceiver", json);
+
+    setCurrentSaidanId(loadData.saidanId);
+    setLoadData(null);
+  }, [loadData, currentSaidanId, postMessageToUnity]);
 
   // TODO(toruto): const placeNewItem = () => {};
   // TODO(toruto): const removeItems = () => {};
   // TODO(toruto): const requestSaveData = () => {};
   // TODO(toruto): const processLoadData = () => {};
 
-  const processLoadData = (loadData: any) => {
-    var result = loadData; // TODO(toruto): process data
-    return result;
-  };
+  useEffect(() => {
+    if (!isLoaded) return;
+    postMessageToLoadData();
+  }, [isLoaded, postMessageToLoadData]);
 
-  const postMessageToLoadData = (loadData: any) => {
-    const processedLoadData = processLoadData(loadData);
-    // TODO(toruto): post message to Unity side
-  };
-
-  const customUnityProvider = {
+  return {
     unityProvider,
-    postMessageToLoadData,
+    addEventListener,
+    removeEventListener,
+    postMessageToUnity,
+    resolveUnityMessage,
+    setLoadData,
+    handleSimpleMessage,
+    handleSceneIsLoaded: postMessageToLoadData,
   };
-
-  return { customUnityProvider, postMessageToUnity };
 };
