@@ -22,10 +22,7 @@ const SampleDetailDialog = ({
               width={16}
               height={16}
               alt="close icon"
-              style={{
-                filter:
-                  "opacity(0.7) brightness(0) saturate(100%) invert(100%)",
-              }}
+              className="opacity-70 filter brightness-0 saturate-100 invert-100"
             />
           </button>
         </form>
