@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "ui/atoms/Button";
-import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
@@ -18,7 +17,6 @@ const Showcase = () => {
   const { id } = router.query;
   const [showDetailView, setShowDetailView] = useState(true);
   const [showSmartFrame, setShowSmartFrame] = useState(true);
-  const { customUnityProvider } = useShowcaseEditUnityContext();
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
   const [containerWidth, setContainerWidth] = useState(0);
@@ -26,6 +24,7 @@ const Showcase = () => {
   const dialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
   const { data, error, getData, putData } = useRestfulAPI(null);
+  const { unityProvider } = useShowcaseEditUnityContext();
 
   const handleButtonClick = (msg) => {
     setMessage(msg);
@@ -79,10 +78,6 @@ const Showcase = () => {
   return (
     <div className="w-full h-full">
       <div className="unity-view w-full h-full relative">
-        <ShowcaseEditUnity
-          customUnityProvider={customUnityProvider}
-          loadData={null}
-        />
         <div
           className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
           style={{
