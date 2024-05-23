@@ -185,11 +185,17 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         model_url: modelUrl,
       },
     });
+    const content = await prisma.tobiratory_contents.findUnique({
+      where: {
+        owner_uuid: uid,
+      },
+    });
     const nft = await prisma.tobiratory_digital_item_nfts.create({
       data: {
         digital_item_id: digitalItem.id,
         owner_uuid: uid,
         mint_status: "minting",
+        content_id: content?.id,
       },
     });
     const flowJobId = uuidv4();
@@ -369,51 +375,30 @@ export const getNftInfo = async (req: Request, res: Response) => {
         where: {
           id: parseInt(id),
         },
+        include: {
+          digital_item: {
+            include: {
+              copyright: {
+                include: {
+                  copyright: true,
+                },
+              },
+            },
+          },
+          tobiratory_digital_nft_ownership: true,
+          user: true,
+        },
       });
       if (!nftData) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
           data: "not-exist",
         });
         return;
       }
-      if (nftData.owner_uuid!=uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-yours",
-        });
-        return;
-      }
-      const digitalData = await prisma.tobiratory_digital_items.findUnique({
-        where: {
-          id: nftData.digital_item_id,
-        },
-      });
-      if (!digitalData) {
-        res.status(401).send({
-          status: "error",
-          data: "digital-not-exist",
-        });
-        return;
-      }
-      const ownerships = await prisma.tobiratory_digital_nft_ownership.findMany({
-        where: {
-          nft_id: nftData.id,
-        },
-        orderBy: {
-          created_date_time: "desc",
-        },
-      });
 
-      if (!ownerships.length||ownerships[0].owner_uuid!=uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-owner",
-        });
-        return;
-      }
       const owners = await Promise.all(
-          ownerships.map(async (ownership)=>{
+          nftData.tobiratory_digital_nft_ownership.map(async (ownership)=>{
             const userData = await prisma.tobiratory_accounts.findUnique({
               where: {
                 uuid: ownership.owner_uuid,
@@ -431,46 +416,29 @@ export const getNftInfo = async (req: Request, res: Response) => {
             };
           })
       );
-      const creatorData = await prisma.tobiratory_accounts.findUnique({
-        where: {
-          uuid: digitalData.creator_uuid,
-        },
-      });
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
           owner_uuid: uid,
         },
       });
-      const copyrightRelate = await prisma.tobiratory_digital_items_copyright.findMany({
-        where: {
-          digital_item_id: digitalData.id,
-        },
+      const copyrights = nftData.digital_item.copyright.map(async (relate)=>{
+        return relate.copyright?.copyright_name;
       });
-      const copyrights = await Promise.all(
-          copyrightRelate.map(async (relate)=>{
-            const copyrightData = await prisma.tobiratory_copyright.findUnique({
-              where: {
-                id: relate.copyright_id,
-              },
-            });
-            return copyrightData?.copyright_name;
-          })
-      );
       const returnData = {
         content: content!=null?{
           name: content.name,
           sticker: content.sticker,
         }:null,
-        name: digitalData.name,
+        name: nftData.digital_item.name,
         modelUrl: nftData.nft_model,
-        description: digitalData.description,
-        creator: creatorData==null?null:{
-          uid: creatorData.uuid,
-          name: creatorData.username,
+        description: nftData.digital_item.description,
+        creator: nftData.user==null?null:{
+          uid: nftData.user.uuid,
+          name: nftData.user.username,
         },
         copyrights: copyrights,
-        license: digitalData.license,
-        acquiredDate: ownerships[0].created_date_time,
+        license: nftData.digital_item.license,
+        acquiredDate: nftData.tobiratory_digital_nft_ownership[0].created_date_time,
         certImageUrl: "",
         sn: nftData.serial_no,
         owners: owners,
@@ -539,7 +507,7 @@ export const adminGetAllNFTs = async (req: Request, res: Response) => {
           thumbnail: nft.digital_item?.is_default_thumb?nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
           status: nft.mint_status,
           createDate: nft.created_date_time,
-          canAdd: nft.tobiratory_showcase_nfts.length==0
+          canAdd: nft.tobiratory_showcase_nfts.length==0,
         };
       });
       res.status(200).send({

@@ -89,7 +89,7 @@ app.get("/contents/favor", getFavoriteContents);
 app.get("/contents/:id", getContentById);
 app.post("/contents/:id", setFavoriteContent);
 
-app.get("/nfts/:id", dummyResponse);
+app.get("/nfts/:id", getNftInfo);
 
 app.get("/saidans/:saidanId", getSaidansById);
 app.get("/posts", dummyResponse);
@@ -160,9 +160,9 @@ app.post("/my/nfts/:id/gift", dummyResponse);
 app.post("/my/nfts/move", moveNFT);
 app.post("/my/nfts/delete", deleteNFT);
 app.post("/address/decoder", userInfoFromAddress);
-app.post("/material/save", uploadMaterial);
-app.post("/material/get", getMaterial);
-app.post("/material/remove", removeMaterials);
+app.post("/materials", uploadMaterial);
+app.get("/materials", getMaterial);
+app.delete("/materials", removeMaterials);
 app.post("/nfts/fetch-thumb", fetchNftThumb);
 app.post("/nfts/fetch-model", fetchNftModel);
 
