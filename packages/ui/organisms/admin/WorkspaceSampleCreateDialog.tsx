@@ -1,64 +1,10 @@
-import Image from "next/image";
-import { MutableRefObject, useEffect, useState } from "react";
+import useRestfulAPI from "hooks/useRestfulAPI";
+import NextImage from "next/image";
+import { MutableRefObject, useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import Button from "../../atoms/Button";
 
-const SampleTypeComponent = (props: {
-  name: string;
-  clickHandler: (value: string) => void;
-}) => {
-  return (
-    <div
-      className="h-[80px] px-4 py-3 rounded-2xl hover:bg-neutral-200 flex items-center gap-2 cursor-pointer"
-      onClick={() => props.clickHandler(props.name)}
-    >
-      <Image
-        width={56}
-        height={56}
-        src="/admin/images/png/empty-image.png"
-        alt="sample type icon"
-        className="rounded-lg"
-      />
-      <div className="flex flex-col gap-1">
-        <span className="text-neutral-900 text-sm font-semibold leading-4">
-          {props.name}
-        </span>
-        <span className="text-neutral-900 text-sm font-normal leading-4">
-          Re-usable components built using Figr Design System
-        </span>
-      </div>
-    </div>
-  );
-};
-
-const SampleTypeListComponent = (props: {
-  selectTypeHandler: (value: string) => void;
-}) => {
-  return (
-    <div className="flex flex-col">
-      <SampleTypeComponent
-        name="Acrylic Stand"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Poster"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Message Card"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Acrylic Keyholder"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Can Badge"
-        clickHandler={props.selectTypeHandler}
-      />
-    </div>
-  );
-};
-
-const loadmapTitles = {
+const roadmapTitles = {
   acrylicstand: [
     {
       title: "Select a material",
@@ -114,14 +60,14 @@ const loadmapTitles = {
   ],
 };
 
-const LoadMapComponent = (props: {
+const RoadMapComponent = (props: {
   sampleType: string | null;
   step: number;
 }) => {
-  console.log("LoadMapComponent", props.step);
+  console.log("RoadMapComponent", props.step);
   return (
     <div className="flex flex-col py-5 px-6">
-      <Image
+      <NextImage
         width={24}
         height={24}
         alt="logo icon"
@@ -142,11 +88,11 @@ const LoadMapComponent = (props: {
         </span>
       ) : (
         <div className="mt-5 flex flex-col">
-          {loadmapTitles[
+          {roadmapTitles[
             props.sampleType.toLocaleLowerCase().split(" ").join("")
-          ].map((loadmap, index) => {
+          ].map((roadmap, index) => {
             return (
-              <div key={`loadmap-${index}`} className="flex flex-col">
+              <div key={`roadmap-${index}`} className="flex flex-col">
                 <span
                   className={`text-base-white text-sm font-normal
                     ${
@@ -163,10 +109,10 @@ const LoadMapComponent = (props: {
                         : index === 2
                           ? "③"
                           : "④"
-                  } ${loadmap.title}`}
+                  } ${roadmap.title}`}
                 </span>
                 {index <
-                  loadmapTitles[
+                  roadmapTitles[
                     props.sampleType.toLocaleLowerCase().split(" ").join("")
                   ].length -
                     1 && (
@@ -178,7 +124,7 @@ const LoadMapComponent = (props: {
                         : "text-base-white/25 border-base-white/25"
                     } `}
                   >
-                    {loadmap.description}
+                    {roadmap.description}
                   </span>
                 )}
               </div>
@@ -186,6 +132,146 @@ const LoadMapComponent = (props: {
           })}
         </div>
       )}
+    </div>
+  );
+};
+
+const SampleTypeComponent = (props: {
+  name: string;
+  clickHandler: (value: string) => void;
+}) => {
+  return (
+    <div
+      className="h-[80px] px-4 py-3 rounded-2xl hover:bg-neutral-200 flex items-center gap-2 cursor-pointer"
+      onClick={() => props.clickHandler(props.name)}
+    >
+      <NextImage
+        width={56}
+        height={56}
+        src="/admin/images/png/empty-image.png"
+        alt="sample type icon"
+        className="rounded-lg"
+      />
+      <div className="flex flex-col gap-1">
+        <span className="text-neutral-900 text-sm font-semibold leading-4">
+          {props.name}
+        </span>
+        <span className="text-neutral-900 text-sm font-normal leading-4">
+          Re-usable components built using Figr Design System
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const SampleTypeSelectComponent = (props: {
+  selectTypeHandler: (value: string) => void;
+}) => {
+  return (
+    <div className="flex flex-col">
+      <SampleTypeComponent
+        name="Acrylic Stand"
+        clickHandler={props.selectTypeHandler}
+      />
+      <SampleTypeComponent
+        name="Poster"
+        clickHandler={props.selectTypeHandler}
+      />
+      <SampleTypeComponent
+        name="Message Card"
+        clickHandler={props.selectTypeHandler}
+      />
+      <SampleTypeComponent
+        name="Acrylic Keyholder"
+        clickHandler={props.selectTypeHandler}
+      />
+      <SampleTypeComponent
+        name="Can Badge"
+        clickHandler={props.selectTypeHandler}
+      />
+    </div>
+  );
+};
+
+const MaterialImageSelectComponent = (props) => {
+  const apiUrl = "native/materials";
+  const { data } = useRestfulAPI(apiUrl);
+
+  const [selectedId, setSelectedId] = useState(0);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the files
+    const file = acceptedFiles[0];
+    if (file && file.type.startsWith("image/")) {
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  return (
+    <div className="flex flex-col h-full gap-[18px]">
+      <div
+        {...getRootProps()}
+        style={{
+          width: 400,
+          height: 80,
+          borderRadius: 13,
+          borderStyle: "dashed",
+          borderWidth: 2,
+          borderColor: "#B3B3B3",
+          backgroundColor: isDragActive ? "#B3B3B3" : "transparent",
+        }}
+        className="flex justify-center items-center gap-3 cursor-pointer"
+      >
+        <span className="text-secondary-500 text-base font-medium">
+          Add New Material
+        </span>
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/upload-icon.svg"
+          alt="upload icon"
+        />
+      </div>
+      <div className="flex-1 flex flex-wrap gap-4 overflow-y-auto">
+        {data &&
+          data.map((image) => (
+            <NextImage
+              key={`material-image-${image.id}`}
+              width={88}
+              height={88}
+              style={{ maxWidth: 88, maxHeight: 88 }}
+              src={image.image}
+              alt="material image"
+              className={`${
+                selectedId === image.id
+                  ? "rounded-lg border-2 border-[#009FF5]"
+                  : ""
+              }`}
+              onClick={() => setSelectedId(image.id)}
+            />
+          ))}
+      </div>
+      <div className="flex justify-between">
+        <Button className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1">
+          <NextImage
+            width={20}
+            height={20}
+            src="/admin/images/icon/arrow-left-s-line.svg"
+            alt="left arrow"
+          />
+          <span className="text-primary text-sm font-medium">Back</span>
+        </Button>
+        <Button className="w-[72px] h-8 rounded-lg bg-primary flex items-center justify-center gap-1">
+          <span className="text-base-white text-sm font-medium">Next</span>
+          <NextImage
+            width={20}
+            height={20}
+            src="/admin/images/icon/arrow-right-s-line.svg"
+            alt="left arrow"
+          />
+        </Button>
+      </div>
     </div>
   );
 };
@@ -212,7 +298,7 @@ const WorkspaceSampleCreateDialog = ({
       <div className="modal-box max-w-[650px] rounded-3xl p-4 pt-8 flex gap-3">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
-            <Image
+            <NextImage
               src="/admin/images/icon/close2.svg"
               width={16}
               height={16}
@@ -221,15 +307,19 @@ const WorkspaceSampleCreateDialog = ({
           </button>
         </form>
         <div className="w-[188px] rounded-2xl bg-primary ">
-          <LoadMapComponent sampleType={sampleType} step={creationStep} />
+          <RoadMapComponent sampleType={sampleType} step={creationStep} />
         </div>
         <div className="w-[400px] h-[400px]">
-          <SampleTypeListComponent
-            selectTypeHandler={(value) => {
-              setSampleType(value);
-              setCreationStep(1);
-            }}
-          />
+          {creationStep === 0 ? (
+            <SampleTypeSelectComponent
+              selectTypeHandler={(value) => {
+                setSampleType(value);
+                setCreationStep(1);
+              }}
+            />
+          ) : (
+            <MaterialImageSelectComponent />
+          )}
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">
