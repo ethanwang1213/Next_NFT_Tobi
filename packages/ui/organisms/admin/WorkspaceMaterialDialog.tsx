@@ -35,7 +35,7 @@ const WorkspaceMaterialDialog = ({
 }) => {
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box w-[440px] h-[680px] rounded-3xl p-4 pt-10 relative">
+      <div className="modal-box w-[440px] rounded-3xl p-4 pt-10 pb-6 relative">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
             <Image
