@@ -1,16 +1,31 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
+import {
+  ItemType,
+  ShowcaseItemData,
+  ShowcaseSaveDataFromUnity,
+} from "types/adminTypes";
 import { dummyLoadData } from "./dummyData";
-import { UnityMessageType, UnitySceneType } from "./unityType";
+import {
+  MessageBodyForSavingSaidanData,
+  UnityMessageJson,
+  UnityMessageType,
+  UnitySceneType,
+} from "./unityType";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 
-export const useShowcaseEditUnityContext = () => {
+type Props = {
+  onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveDataFromUnity) => void;
+};
+
+export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
   const {
     unityProvider,
     addEventListener,
     removeEventListener,
     resolveUnityMessage,
     setLoadData,
+    requestSaveData,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
@@ -39,6 +54,36 @@ export const useShowcaseEditUnityContext = () => {
     [setLoadData, processLoadData],
   );
 
+  const handleSaveDataGenerated = (
+    msgObj: UnityMessageJson,
+    onSaveDataGenerated: (showcaseSaveData: ShowcaseSaveDataFromUnity) => void,
+  ) => {
+    const messageBody = JSON.parse(
+      msgObj.messageBody,
+    ) as MessageBodyForSavingSaidanData;
+    if (!messageBody) return;
+
+    var sampleItemList = messageBody.saidanData.saidanItemList
+      .filter((v) => v.itemType === ItemType.Sample)
+      .map<ShowcaseItemData>((v) => {
+        delete v.itemType;
+        return v;
+      });
+
+    var nftItemList = messageBody.saidanData.saidanItemList
+      .filter((v) => v.itemType === ItemType.DigitalItemNft)
+      .map<ShowcaseItemData>((v) => {
+        delete v.itemType;
+        return v;
+      });
+
+    onSaveDataGenerated({
+      sampleItemList,
+      nftItemList,
+      thumbnailImageBase64: messageBody.saidanThumbnailBase64,
+    });
+  };
+
   // `message` is JSON string formed in Unity side like following:
   // {
   //   "messageType": string,
@@ -59,6 +104,9 @@ export const useShowcaseEditUnityContext = () => {
         case UnityMessageType.SceneIsLoaded:
           handleSceneIsLoaded();
           return;
+        case UnityMessageType.SavingSaidanData:
+          handleSaveDataGenerated(msgObj, onSaveDataGenerated);
+          return;
         default:
           return;
       }
@@ -74,5 +122,9 @@ export const useShowcaseEditUnityContext = () => {
     };
   }, [addEventListener, removeEventListener, handleUnityMessage]);
 
-  return { unityProvider, setLoadData: processAndSetLoadData };
+  return {
+    unityProvider,
+    setLoadData: processAndSetLoadData,
+    requestSaveData,
+  };
 };

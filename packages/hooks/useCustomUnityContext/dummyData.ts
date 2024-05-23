@@ -1,4 +1,5 @@
-import { SaidanLikeData, SaidanType, ItemType, ModelType, UnityStageType } from "./unityType";
+import { ItemType, ModelType, UnityStageType } from "types/adminTypes";
+import { SaidanLikeData, SaidanType } from "./unityType";
 
 export const dummyLoadData: SaidanLikeData[] = [
   {

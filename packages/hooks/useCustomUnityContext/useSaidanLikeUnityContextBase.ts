@@ -36,7 +36,9 @@ export const useSaidanLikeUnityContextBase = ({
 
   // TODO(toruto): const placeNewItem = () => {};
   // TODO(toruto): const removeItems = () => {};
-  // TODO(toruto): const requestSaveData = () => {};
+  const requestSaveData = () => {
+    postMessageToUnity("SaveSaidanDataMessageReceiver", "");
+  };
   // TODO(toruto): const processLoadData = () => {};
 
   useEffect(() => {
@@ -51,6 +53,7 @@ export const useSaidanLikeUnityContextBase = ({
     postMessageToUnity,
     resolveUnityMessage,
     setLoadData,
+    requestSaveData,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
   };

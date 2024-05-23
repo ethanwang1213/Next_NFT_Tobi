@@ -1,16 +1,27 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
+import { WorkspaceItemData, WorkspaceSaveData } from "types/adminTypes";
 import { dummyLoadData } from "./dummyData";
-import { UnityMessageType, UnitySceneType } from "./unityType";
+import {
+  MessageBodyForSavingSaidanData,
+  UnityMessageJson,
+  UnityMessageType,
+  UnitySceneType,
+} from "./unityType";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 
-export const useWorkspaceUnityContext = () => {
+type Props = {
+  onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
+};
+
+export const useWorkspaceUnityContext = ({ onSaveDataGenerated }: Props) => {
   const {
     unityProvider,
     addEventListener,
     removeEventListener,
     resolveUnityMessage,
     setLoadData,
+    requestSaveData,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
@@ -41,6 +52,23 @@ export const useWorkspaceUnityContext = () => {
 
   // TODO(toruto): const requestItemThumbnail = () => {};
 
+  const handleSaveDataGenerated = (
+    msgObj: UnityMessageJson,
+    onSaveDataGenerated: (workspaceSaveData: WorkspaceSaveData) => void,
+  ) => {
+    const messageBody = JSON.parse(
+      msgObj.messageBody,
+    ) as MessageBodyForSavingSaidanData;
+    if (!messageBody) return;
+
+    var workspaceItemList =
+      messageBody.saidanData.saidanItemList.map<WorkspaceItemData>((v) => {
+        delete v.itemType;
+        return v;
+      });
+    onSaveDataGenerated({ workspaceItemList });
+  };
+
   // `message` is JSON string formed in Unity side like following:
   // {
   //   "messageType": string,
@@ -61,6 +89,9 @@ export const useWorkspaceUnityContext = () => {
         case UnityMessageType.SceneIsLoaded:
           handleSceneIsLoaded();
           return;
+        case UnityMessageType.SavingSaidanData:
+          handleSaveDataGenerated(msgObj, onSaveDataGenerated);
+          return;
         default:
           return;
       }
@@ -76,5 +107,5 @@ export const useWorkspaceUnityContext = () => {
     };
   }, [addEventListener, removeEventListener, handleUnityMessage]);
 
-  return { unityProvider, setLoadData: processAndSetLoadData };
+  return { unityProvider, setLoadData: processAndSetLoadData, requestSaveData };
 };
