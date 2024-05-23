@@ -75,8 +75,8 @@ export const getContentById = async (req: Request, res: Response) => {
         include: {
           nft: {
             include: {
-              digital_item: true
-            }
+              digital_item: true,
+            },
           },
         },
       });

@@ -1,3 +1,5 @@
+import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
+
 export type User = {
   uuid: string;
   name: string;
