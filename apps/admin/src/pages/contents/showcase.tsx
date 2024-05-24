@@ -5,18 +5,19 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useToggle } from "react-use";
 import Button from "ui/atoms/Button";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
-
 const Showcase = () => {
   const router = useRouter();
   const { id } = router.query;
   const [showDetailView, setShowDetailView] = useState(true);
   const [showSmartFrame, setShowSmartFrame] = useState(true);
   const [showToast, setShowToast] = useState(false);
+  const [mainToast, toggleMainToast] = useToggle(true);
   const [message, setMessage] = useState("");
   const [containerWidth, setContainerWidth] = useState(0);
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
@@ -28,6 +29,7 @@ const Showcase = () => {
 
   const handleButtonClick = (msg) => {
     setShowToast(false);
+    toggleMainToast();
     if (timerId.current) {
       clearTimeout(timerId.current);
     }
@@ -134,7 +136,8 @@ const Showcase = () => {
           className="w-[336px] mt-[72px] absolute"
           style={{ left: "calc(318px + (100% - 318px - 504px - 336px) / 2)" }}
         >
-          <CustomToast show={showToast} message={message} />
+          {mainToast && <CustomToast show={showToast} message={message} />}
+          {!mainToast && <CustomToast show={showToast} message={message} />}
         </div>
         <div
           className="w-[336px] bottom-0 absolute"
