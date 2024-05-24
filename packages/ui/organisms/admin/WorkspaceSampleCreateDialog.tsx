@@ -1,7 +1,12 @@
 import "cropperjs/dist/cropper.css";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
-import { MutableRefObject, useCallback, useEffect, useState } from "react";
+import React, {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import Cropper from "react-cropper";
 import { useDropzone } from "react-dropzone";
 import Button from "../../atoms/Button";
@@ -443,4 +448,4 @@ const WorkspaceSampleCreateDialog = ({
   );
 };
 
-export default WorkspaceSampleCreateDialog;
+export default React.memo(WorkspaceSampleCreateDialog);

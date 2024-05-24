@@ -1,6 +1,12 @@
 import Image from "next/image";
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../../atoms/Button";
+
+type SampleItem = {
+  id: number;
+  name: string;
+  thumbnail: string;
+};
 
 const SampleItemComponent = (props: {
   thumbnail: string;
@@ -32,9 +38,30 @@ const SampleItemComponent = (props: {
 const WorkspaceSampleListPanel = (props: {
   isOpen: boolean;
   closeHandler: () => void;
+  data: SampleItem[];
+  createHandler: () => void;
+  deleteHandler: (ids: number[]) => void;
 }) => {
   const [selectState, setSelectState] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const panelRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        props.isOpen &&
+        panelRef.current &&
+        !panelRef.current.contains(event.target)
+      ) {
+        props.closeHandler();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [props]);
 
   const selectionChangeHandler = (selId: number, checked: boolean) => {
     const prevIndex = selectedItems.findIndex((value) => value === selId);
@@ -52,11 +79,17 @@ const WorkspaceSampleListPanel = (props: {
     }
   };
 
+  // reset selected items array when the data is updated
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [props.data]);
+
   return (
     <div
       className="absolute top-0 w-[448px] bg-[#001327] h-full py-8 
       flex flex-col gap-6 z-20"
       style={{ transition: "right 0.3s ease", right: props.isOpen ? 0 : -448 }}
+      ref={panelRef}
     >
       <div className="w-full pr-4 flex justify-end gap-4">
         <Image
@@ -81,6 +114,7 @@ const WorkspaceSampleListPanel = (props: {
         flex justify-center items-center gap-2
         ${selectState ? "bg-[#BAB8B8]" : "bg-primary"}`}
         disabled={selectState}
+        onClick={props.createHandler}
       >
         <Image
           width={10}
@@ -94,41 +128,31 @@ const WorkspaceSampleListPanel = (props: {
       </Button>
       <div className="flex-1 overflow-y-auto">
         <div className="w-full flex flex-col">
-          <SampleItemComponent
-            thumbnail="/admin/images/sample-thumnail/Rectangle-58.png"
-            name="Inutanuki - GORAKUBA! Highschool"
-            selectState={selectState}
-            checked={selectedItems.findIndex((value) => value == 1) > -1}
-            changeHandler={(value) => selectionChangeHandler(1, value)}
-          />
-          <SampleItemComponent
-            thumbnail="/admin/images/sample-thumnail/Rectangle-59.png"
-            name="Pento - GORAKUBA! Highschool"
-            selectState={selectState}
-            checked={selectedItems.findIndex((value) => value == 2) > -1}
-            changeHandler={(value) => selectionChangeHandler(2, value)}
-          />
-          <SampleItemComponent
-            thumbnail="/admin/images/sample-thumnail/Rectangle-60.png"
-            name="Encho. - GORAKUBA! Highschool"
-            selectState={selectState}
-            checked={selectedItems.findIndex((value) => value == 3) > -1}
-            changeHandler={(value) => selectionChangeHandler(3, value)}
-          />
-          <SampleItemComponent
-            thumbnail="/admin/images/sample-thumnail/Rectangle-61.png"
-            name="Tenri Kannagi 2023"
-            selectState={selectState}
-            checked={selectedItems.findIndex((value) => value == 4) > -1}
-            changeHandler={(value) => selectionChangeHandler(4, value)}
-          />
+          {props.data &&
+            props.data.map((sample) => (
+              <SampleItemComponent
+                key={`sample-${sample.id}`}
+                thumbnail={sample.thumbnail}
+                name={sample.name}
+                selectState={selectState}
+                checked={
+                  selectedItems.findIndex((value) => value == sample.id) > -1
+                }
+                changeHandler={(value) =>
+                  selectionChangeHandler(sample.id, value)
+                }
+              />
+            ))}
         </div>
       </div>
       {selectState && (
         <div className="flex justify-center">
           <Button
             className="bg-[#EA1010] rounded-[88px] w-[160px] h-[48px]
-        text-xl font-normal text-white text-center"
+              text-xl font-normal text-white text-center"
+            onClick={() => {
+              props.deleteHandler(selectedItems);
+            }}
           >
             DELETE
           </Button>
@@ -143,4 +167,4 @@ const WorkspaceSampleListPanel = (props: {
   );
 };
 
-export default WorkspaceSampleListPanel;
+export default React.memo(WorkspaceSampleListPanel);

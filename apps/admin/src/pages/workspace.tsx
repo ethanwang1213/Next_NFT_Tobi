@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
@@ -7,6 +7,7 @@ import WorkspaceMaterialDialog from "ui/organisms/admin/WorkspaceMaterialDialog"
 import Image from "next/image";
 // import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 // import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import useRestfulAPI from "hooks/useRestfulAPI";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -20,7 +21,38 @@ export default function Index() {
 
   const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
 
+  const workspaceAPIUrl = "native/my/workspace";
+  const { data: workspaceData } = useRestfulAPI(workspaceAPIUrl);
+
+  const sampleAPIUrl = "native/admin/samples";
+  const {
+    data: samples,
+    setData: setSamples,
+    deleteData: deleteSamples,
+  } = useRestfulAPI(sampleAPIUrl);
+
   // const { customUnityProvider } = useWorkspaceUnityContext();
+
+  const createSampleHandler = useCallback(() => {
+    if (sampleCreateDialogRef.current) {
+      setInitSampleCreateDialog(initSampleCreateDialog + 1);
+      sampleCreateDialogRef.current.showModal();
+    }
+  }, [initSampleCreateDialog]);
+
+  const deleteSamplesHandler = useCallback(
+    async (ids: number[]) => {
+      const success = await deleteSamples(sampleAPIUrl, { sampleIds: ids });
+      if (success) {
+        const newSamples = samples.filter(
+          (sample) => ids.findIndex((id) => id === sample.id) === -1,
+        );
+        setSamples(newSamples);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [samples],
+  );
 
   return (
     <div className="w-full h-full relative">
@@ -42,6 +74,12 @@ export default function Index() {
         <WorkspaceSampleListPanel
           closeHandler={() => setShowListView(false)}
           isOpen={showListView}
+          data={samples}
+          createHandler={() => {
+            setShowListView(false);
+            createSampleHandler();
+          }}
+          deleteHandler={deleteSamplesHandler}
         />
 
         <div
@@ -98,12 +136,7 @@ export default function Index() {
         <div
           className="absolute bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
             flex justify-center items-center cursor-pointer"
-          onClick={() => {
-            if (sampleCreateDialogRef.current) {
-              setInitSampleCreateDialog(initSampleCreateDialog + 1);
-              sampleCreateDialogRef.current.showModal();
-            }
-          }}
+          onClick={createSampleHandler}
         >
           <Image
             width={48}
