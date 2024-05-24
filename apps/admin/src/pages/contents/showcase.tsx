@@ -115,12 +115,7 @@ const Showcase = () => {
               </div>
             )}
           </div> */}
-          {loading && (
-            <div
-              className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-              role="status"
-            ></div>
-          )}
+          {loading && <span className="loading loading-spinner"></span>}
           {!loading && (
             <Button onClick={() => dialogRef.current.showModal()}>
               <Image
