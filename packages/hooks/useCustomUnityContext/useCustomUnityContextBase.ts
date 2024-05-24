@@ -30,15 +30,6 @@ export const useCustomUnityContextBase = ({
     codeUrl: `${buildFilePath}.wasm`,
   });
 
-  const resolveUnityMessage = (json: string) => {
-    try {
-      return JSON.parse(json) as UnityMessageJson;
-    } catch (e) {
-      console.log(e);
-      return null;
-    }
-  };
-
   const handleSimpleMessage = (msgObj: UnityMessageJson) => {
     console.log(
       `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
@@ -74,7 +65,6 @@ export const useCustomUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     handleSimpleMessage,
   };
 };

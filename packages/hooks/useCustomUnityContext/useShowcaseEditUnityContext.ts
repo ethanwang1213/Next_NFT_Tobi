@@ -1,5 +1,4 @@
-import { useCallback, useEffect } from "react";
-import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
+import { useCallback } from "react";
 import {
   ItemType,
   ShowcaseItemData,
@@ -9,10 +8,10 @@ import { dummyLoadData } from "./dummyData";
 import {
   MessageBodyForSavingSaidanData,
   UnityMessageJson,
-  UnityMessageType,
   UnitySceneType,
 } from "./unityType";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
+import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type Props = {
   onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveDataFromUnity) => void;
@@ -23,7 +22,6 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     unityProvider,
     addEventListener,
     removeEventListener,
-    resolveUnityMessage,
     setLoadData,
     requestSaveData,
     placeNewItem,
@@ -57,12 +55,7 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
   );
 
   const handleSaveDataGenerated = useCallback(
-    (
-      msgObj: UnityMessageJson,
-      onSaveDataGenerated: (
-        showcaseSaveData: ShowcaseSaveDataFromUnity,
-      ) => void,
-    ) => {
+    (msgObj: UnityMessageJson) => {
       const messageBody = JSON.parse(
         msgObj.messageBody,
       ) as MessageBodyForSavingSaidanData;
@@ -88,52 +81,16 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
         thumbnailImageBase64: messageBody.saidanThumbnailBase64,
       });
     },
-    [],
+    [onSaveDataGenerated],
   );
 
-  // `message` is JSON string formed in Unity side like following:
-  // {
-  //   "messageType": string,
-  //   "sceneType": number,
-  //   "messageBody": string or JSON string
-  // }
-  const handleUnityMessage = useCallback(
-    (message: ReactUnityEventParameter) => {
-      if (typeof message !== "string") return;
-      const msgObj = resolveUnityMessage(message);
-      if (!msgObj) return;
-
-      // execute event handlers along with message type
-      switch (msgObj.messageType) {
-        case UnityMessageType.SimpleMessage:
-          handleSimpleMessage(msgObj);
-          return;
-        case UnityMessageType.SceneIsLoaded:
-          handleSceneIsLoaded();
-          return;
-        case UnityMessageType.SaidanSaveDataIsGenerated:
-          handleSaveDataGenerated(msgObj, onSaveDataGenerated);
-          return;
-        default:
-          return;
-      }
-    },
-    [
-      resolveUnityMessage,
-      handleSimpleMessage,
-      handleSceneIsLoaded,
-      handleSaveDataGenerated,
-      onSaveDataGenerated,
-    ],
-  );
-
-  // We use only `onUnityMessage` event to receive messages from Unity side.
-  useEffect(() => {
-    addEventListener("onUnityMessage", handleUnityMessage);
-    return () => {
-      removeEventListener("onUnityMessage", handleUnityMessage);
-    };
-  }, [addEventListener, removeEventListener, handleUnityMessage]);
+  useUnityMessageHandler({
+    addEventListener,
+    removeEventListener,
+    handleSimpleMessage,
+    handleSceneIsLoaded,
+    handleSaveDataGenerated,
+  });
 
   return {
     unityProvider,

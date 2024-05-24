@@ -17,7 +17,6 @@ export const useSaidanLikeUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     handleSimpleMessage,
   } = useCustomUnityContextBase({ sceneType });
 
@@ -84,7 +83,6 @@ export const useSaidanLikeUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     setLoadData,
     requestSaveData,
     placeNewItem,

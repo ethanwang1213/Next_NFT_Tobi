@@ -1,5 +1,4 @@
-import { useCallback, useEffect } from "react";
-import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
+import { useCallback } from "react";
 import {
   ItemBaseData,
   ItemType,
@@ -10,10 +9,10 @@ import { dummyLoadData } from "./dummyData";
 import {
   MessageBodyForSavingSaidanData,
   UnityMessageJson,
-  UnityMessageType,
   UnitySceneType,
 } from "./unityType";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
+import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
@@ -35,7 +34,6 @@ export const useWorkspaceUnityContext = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     setLoadData: privateSetLoadData,
     requestSaveData,
     placeNewItem,
@@ -116,10 +114,7 @@ export const useWorkspaceUnityContext = ({
   );
 
   const handleSaveDataGenerated = useCallback(
-    (
-      msgObj: UnityMessageJson,
-      onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void,
-    ) => {
+    (msgObj: UnityMessageJson) => {
       if (!onSaveDataGenerated) return;
 
       const messageBody = JSON.parse(
@@ -134,14 +129,11 @@ export const useWorkspaceUnityContext = ({
         });
       onSaveDataGenerated({ workspaceItemList });
     },
-    [],
+    [onSaveDataGenerated],
   );
 
   const handleItemThumbnailGenerated = useCallback(
-    (
-      msgObj: UnityMessageJson,
-      onItemThumbnailGenerated?: (thumbnailBase64: string) => void,
-    ) => {
+    (msgObj: UnityMessageJson) => {
       if (!onItemThumbnailGenerated) return;
 
       const messageBody = JSON.parse(
@@ -151,57 +143,17 @@ export const useWorkspaceUnityContext = ({
 
       onItemThumbnailGenerated(messageBody.thumbnailBase64);
     },
-    [],
+    [onItemThumbnailGenerated],
   );
 
-  // `message` is JSON string formed in Unity side like following:
-  // {
-  //   "messageType": string,
-  //   "sceneType": number,
-  //   "messageBody": string or JSON string
-  // }
-  const handleUnityMessage = useCallback(
-    (message: ReactUnityEventParameter) => {
-      if (typeof message !== "string") return;
-      const msgObj = resolveUnityMessage(message);
-      if (!msgObj) return;
-
-      // execute event handlers along with message type
-      switch (msgObj.messageType) {
-        case UnityMessageType.SimpleMessage:
-          handleSimpleMessage(msgObj);
-          return;
-        case UnityMessageType.SceneIsLoaded:
-          handleSceneIsLoaded();
-          return;
-        case UnityMessageType.SaidanSaveDataIsGenerated:
-          handleSaveDataGenerated(msgObj, onSaveDataGenerated);
-          return;
-        case UnityMessageType.ItemThumbnailIsGenerated:
-          handleItemThumbnailGenerated(msgObj, onItemThumbnailGenerated);
-          return;
-        default:
-          return;
-      }
-    },
-    [
-      resolveUnityMessage,
-      handleSimpleMessage,
-      handleSceneIsLoaded,
-      handleSaveDataGenerated,
-      onSaveDataGenerated,
-      handleItemThumbnailGenerated,
-      onItemThumbnailGenerated,
-    ],
-  );
-
-  // We use only `onUnityMessage` event to receive messages from Unity side.
-  useEffect(() => {
-    addEventListener("onUnityMessage", handleUnityMessage);
-    return () => {
-      removeEventListener("onUnityMessage", handleUnityMessage);
-    };
-  }, [addEventListener, removeEventListener, handleUnityMessage]);
+  useUnityMessageHandler({
+    addEventListener,
+    removeEventListener,
+    handleSimpleMessage,
+    handleSceneIsLoaded,
+    handleSaveDataGenerated,
+    handleItemThumbnailGenerated,
+  });
 
   return {
     unityProvider,
