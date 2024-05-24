@@ -124,13 +124,25 @@ export type SaidanItemData = ItemBaseData & {
 
 export type WorkspaceItemData = Omit<SaidanItemData, "itemType">;
 
+export type WorkspaceLoadData = {
+  workspaceItemList: WorkspaceItemData[];
+};
+
 export type WorkspaceSaveData = {
   workspaceItemList: WorkspaceItemData[];
 };
 
 export type ShowcaseItemData = Omit<SaidanItemData, "itemType">;
 
-export type ShowcaseSaveDataFromUnity = {
+export type ShowcaseLoadData = {
+  showcaseId: number;
+  showcaseType: number;
+  showcaseUrl: string;
+  sampleItemList: ShowcaseItemData[];
+  nftItemList: ShowcaseItemData[];
+};
+
+export type ShowcaseSaveData = {
   sampleItemList: ShowcaseItemData[];
   nftItemList: ShowcaseItemData[];
   thumbnailImageBase64: string;

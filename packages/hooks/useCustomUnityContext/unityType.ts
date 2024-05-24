@@ -39,12 +39,12 @@ export type MessageBodyForSavingSaidanData = {
 
 export const SaidanType = {
   Workspace: 0,
-  SaidanFirst: 1,
-  SaidanSecond: 2,
-  SaidanThird: 3,
-  ShowcaseFirst: 4,
-  ShowcaseSecond: 5,
-  ShowcaseThird: 6,
+  SaidanFirst: 10001,
+  SaidanSecond: 10002,
+  SaidanThird: 10003,
+  ShowcaseFirst: 20001,
+  ShowcaseSecond: 20002,
+  ShowcaseThird: 20003,
 } as const;
 export type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
 
@@ -52,5 +52,5 @@ export type SaidanLikeData = {
   saidanId: number;
   saidanType: SaidanType;
   saidanUrl: string;
-  saidanItemList: Array<SaidanItemData>;
+  saidanItemList: SaidanItemData[];
 };

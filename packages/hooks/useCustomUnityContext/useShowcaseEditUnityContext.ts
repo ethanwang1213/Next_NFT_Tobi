@@ -1,12 +1,15 @@
 import { useCallback } from "react";
 import {
   ItemType,
+  SaidanItemData,
   ShowcaseItemData,
-  ShowcaseSaveDataFromUnity,
+  ShowcaseLoadData,
+  ShowcaseSaveData,
 } from "types/adminTypes";
-import { dummyLoadData } from "./dummyData";
 import {
   MessageBodyForSavingSaidanData,
+  SaidanLikeData,
+  SaidanType,
   UnityMessageJson,
   UnitySceneType,
 } from "./unityType";
@@ -14,7 +17,7 @@ import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type Props = {
-  onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveDataFromUnity) => void;
+  onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveData) => void;
 };
 
 export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
@@ -32,20 +35,32 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     sceneType: UnitySceneType.ShowcaseEdit,
   });
 
-  const processLoadData = useCallback((loadData: any) => {
-    console.log(loadData);
-    if (loadData == null) return null;
+  const processLoadData: (loadData: ShowcaseLoadData) => SaidanLikeData =
+    useCallback((loadData: ShowcaseLoadData) => {
+      console.log(loadData);
+      if (loadData == null) return null;
 
-    // TODO(toruto): implement to process loadData
-    // return dummy data
-    if (loadData === 0) {
-      return dummyLoadData[0];
-    } else if (loadData === 1 || loadData === 2) {
-      return dummyLoadData[1];
-    } else {
-      return null;
-    }
-  }, []);
+      const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
+        return {
+          ...v,
+          itemType: ItemType.Sample,
+        };
+      });
+      const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
+        return {
+          ...v,
+          itemType: ItemType.DigitalItemNft,
+        };
+      });
+      const saidanItemList = sampleList.concat(nftList);
+
+      return {
+        saidanId: loadData.showcaseId,
+        saidanType: (loadData.showcaseType + 20000) as SaidanType,
+        saidanUrl: loadData.showcaseUrl,
+        saidanItemList,
+      };
+    }, []);
 
   const processAndSetLoadData = useCallback(
     (loadData: any) => {

@@ -3,11 +3,12 @@ import {
   ItemBaseData,
   ItemType,
   WorkspaceItemData,
+  WorkspaceLoadData,
   WorkspaceSaveData,
 } from "types/adminTypes";
-import { dummyLoadData } from "./dummyData";
 import {
   MessageBodyForSavingSaidanData,
+  SaidanType,
   UnityMessageJson,
   UnitySceneType,
 } from "./unityType";
@@ -44,19 +45,23 @@ export const useWorkspaceUnityContext = ({
     sceneType: UnitySceneType.Workspace,
   });
 
-  const processLoadData = useCallback((loadData: any) => {
+  const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
     console.log(loadData);
     if (loadData == null) return null;
 
-    // TODO(toruto): implement to process loadData
-    // return dummy data
-    if (loadData === 0) {
-      return dummyLoadData[0];
-    } else if (loadData === 1 || loadData === 2) {
-      return dummyLoadData[1];
-    } else {
-      return null;
-    }
+    var saidanItemList = loadData.workspaceItemList.map((v) => {
+      return {
+        ...v,
+        itemType: ItemType.Sample,
+      };
+    });
+
+    return {
+      saidanId: -2,
+      saidanType: SaidanType.Workspace,
+      saidanUrl: "",
+      saidanItemList,
+    };
   }, []);
 
   const setLoadData = useCallback(
