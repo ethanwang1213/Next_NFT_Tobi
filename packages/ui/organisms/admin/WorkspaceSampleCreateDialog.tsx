@@ -342,6 +342,7 @@ const ImageSelectComponent = (props: {
 
 const ImageCropComponent = (props: { imageUrl: string }) => {
   const onCrop = () => null;
+  const [aspectRatio, setAspectRatio] = useState(null);
 
   return (
     <div className="h-full flex flex-col justify-center gap-4">
@@ -349,8 +350,7 @@ const ImageCropComponent = (props: { imageUrl: string }) => {
         src={props.imageUrl}
         style={{ height: 300, width: "100%" }}
         // Cropper.js options
-        // initialAspectRatio={initialAspectRatio}
-        // aspectRatio={aspectRatio}
+        aspectRatio={aspectRatio}
         guides={true}
         crop={onCrop}
       />
@@ -368,6 +368,9 @@ const ImageCropComponent = (props: { imageUrl: string }) => {
           src="/admin/images/icon/crop_16_9.svg"
           alt="crop 16:9"
           className="cursor-pointer"
+          onClick={() => {
+            setAspectRatio(16 / 9);
+          }}
         />
         <NextImage
           width={24}
@@ -375,6 +378,9 @@ const ImageCropComponent = (props: { imageUrl: string }) => {
           src="/admin/images/icon/crop_3_2.svg"
           alt="crop 3:2"
           className="cursor-pointer"
+          onClick={() => {
+            setAspectRatio(3 / 2);
+          }}
         />
         <NextImage
           width={24}
@@ -382,6 +388,9 @@ const ImageCropComponent = (props: { imageUrl: string }) => {
           src="/admin/images/icon/crop_square.svg"
           alt="crop square"
           className="cursor-pointer"
+          onClick={() => {
+            setAspectRatio(1);
+          }}
         />
         <NextImage
           width={24}
@@ -461,7 +470,7 @@ const WorkspaceSampleCreateDialog = ({
               }}
             />
           )}
-          {creationStep === 1 && sampleType === "Poster" && (
+          {creationStep === 1 && (
             <ImageSelectComponent
               data={materials}
               selectedImage={materialImage}
