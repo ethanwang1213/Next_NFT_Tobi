@@ -24,13 +24,22 @@ const Showcase = () => {
   const dialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
   const { data, error, getData, putData } = useRestfulAPI(null);
+  const timerId = useRef(null);
 
   const handleButtonClick = (msg) => {
+    setShowToast(false);
+    if (timerId.current) {
+      clearTimeout(timerId.current);
+    }
+    createToast(msg);
+  };
+
+  const createToast = (msg) => {
     setMessage(msg);
     setShowToast(true);
-    setTimeout(() => {
+    timerId.current = setTimeout(() => {
       setShowToast(false);
-    }, 5800);
+    }, 3000);
   };
 
   const changeShowcaseDetail = async (title: string, description: string) => {
@@ -124,7 +133,7 @@ const Showcase = () => {
           className="w-[336px] mt-[72px] absolute"
           style={{ left: "calc(318px + (100% - 318px - 504px - 336px) / 2)" }}
         >
-          {showToast && <CustomToast message={message}></CustomToast>}
+          <CustomToast show={showToast} message={message} />
         </div>
         <div
           className="w-[336px] bottom-0 absolute"

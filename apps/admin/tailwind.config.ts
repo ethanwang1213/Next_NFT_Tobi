@@ -15,12 +15,14 @@ const config = {
     },
     extend: {
       animation: {
-        "fade-in-out": "fadeInOut 6s ease-in-out",
+        "fade-in-out": "fadeInOut 3s ease-in-out",
       },
       keyframes: {
         fadeInOut: {
-          "0%, 100%": { opacity: "0" },
-          "50%": { opacity: "1" },
+          "0%": { opacity: "0" },
+          "20%": { opacity: "1" },
+          "80%": { opacity: "1" },
+          "100%": { opacity: "0" },
         },
       },
       fontSize: {
