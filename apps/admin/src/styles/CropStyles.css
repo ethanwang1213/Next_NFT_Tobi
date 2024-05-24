@@ -1,0 +1,33 @@
+.ReactCrop__crop-selection {
+  border: 2px solid #1779DE; /* Change to your desired color */
+  box-shadow: none !important; /* Remove any shadow effects */
+  transition: none !important; /* Remove any transition effects */
+  background: none !important; /* Ensure no background animation */
+}
+
+.ReactCrop__drag-handle {
+  background-color: #1779DE; /* Change to your desired color */
+  /*border: none; /* Remove any border from the handles */
+  transition: none !important; /* Remove any transition effects */
+  
+}
+
+.ReactCrop__drag-handle.ord-e, 
+.ReactCrop__drag-handle.ord-w, 
+.ReactCrop__drag-handle.ord-n, 
+.ReactCrop__drag-handle.ord-s,
+.ReactCrop__drag-handle.ord-ne, 
+.ReactCrop__drag-handle.ord-nw, 
+.ReactCrop__drag-handle.ord-se, 
+.ReactCrop__drag-handle.ord-sw {
+  width: 9px;
+  height: 6px;
+  border-color: #1779DE;
+  background-color: white;
+}
+
+.ReactCrop__drag-handle.ord-e, 
+.ReactCrop__drag-handle.ord-w {
+  width: 6px;
+  height: 9px;
+}
