@@ -7,7 +7,8 @@ type MessageDestination =
   | "LoadSaidanDataMessageReceiver"
   | "SaveSaidanDataMessageReceiver"
   | "ItemThumbnailGenerationMessageReceiver"
-  | "NewItemMessageReceiver";
+  | "NewItemMessageReceiver"
+  | "RemoveItemsMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
 import {
   ItemBaseData,
@@ -39,6 +39,7 @@ export const useWorkspaceUnityContext = ({
     setLoadData,
     requestSaveData,
     placeNewItem,
+    removeItems,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
@@ -74,7 +75,7 @@ export const useWorkspaceUnityContext = ({
         ...params,
       });
     },
-    [],
+    [placeNewItem],
   );
 
   const requestItemThumbnail = useCallback(
@@ -182,6 +183,7 @@ export const useWorkspaceUnityContext = ({
     setLoadData: processAndSetLoadData,
     requestSaveData,
     placeNewItem: placeNewItemInWorkspace,
+    removeItems,
     requestItemThumbnail,
   };
 };

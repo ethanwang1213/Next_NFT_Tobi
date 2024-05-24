@@ -35,19 +35,34 @@ export const useSaidanLikeUnityContextBase = ({
     setLoadData(null);
   }, [loadData, currentSaidanId, postMessageToUnity]);
 
-  const placeNewItem = useCallback((params: ItemBaseData) => {
-    postMessageToUnity(
-      "NewItemMessageReceiver",
-      JSON.stringify({
-        ...params,
-        isDebug: false,
-      }),
-    );
-  }, []);
-  // TODO(toruto): const removeItems = () => {};
   const requestSaveData = () => {
     postMessageToUnity("SaveSaidanDataMessageReceiver", "");
   };
+
+  const placeNewItem = useCallback(
+    (params: ItemBaseData) => {
+      postMessageToUnity(
+        "NewItemMessageReceiver",
+        JSON.stringify({
+          ...params,
+          isDebug: false,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const removeItems = useCallback(
+    (itemIdList: number[]) => {
+      postMessageToUnity(
+        "RemoveItemsMessageReceiver",
+        JSON.stringify({
+          itemIdList,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -63,6 +78,7 @@ export const useSaidanLikeUnityContextBase = ({
     setLoadData,
     requestSaveData,
     placeNewItem,
+    removeItems,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
   };
