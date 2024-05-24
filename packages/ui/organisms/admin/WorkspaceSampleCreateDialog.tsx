@@ -10,6 +10,7 @@ import React, {
 import Cropper from "react-cropper";
 import { useDropzone } from "react-dropzone";
 import Button from "../../atoms/Button";
+import { ImageType, uploadImage } from "fetchers/UploadActions";
 
 const roadmapTitles = {
   acrylicstand: [
@@ -243,13 +244,49 @@ const ImageSelectComponent = (props: {
   data: MaterialItem[];
   selectedImage: MaterialItem | null;
   selectImageHandler: (value: MaterialItem) => void;
+  uploadedImageHandler: () => void;
 }) => {
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
-    const file = acceptedFiles[0];
-    if (file && file.type.startsWith("image/")) {
+  const { postData } = useRestfulAPI(null);
+
+  const uploadImageHandler = useCallback(async (image: string) => {
+    const uploadedImageUrl = await uploadImage(image, ImageType.MaterialImage);
+    const success = await postData("native/materials", {
+      image: uploadedImageUrl,
+    });
+    if (success) {
+      props.uploadedImageHandler();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      // Do something with the files
+      const file = acceptedFiles[0];
+      if (file && file.type.startsWith("image/png")) {
+        uploadImageHandler(file);
+      } else {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const imageDataUrl = reader.result;
+          // Remove EXIF data
+          const img = new Image();
+          img.onload = async () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            const dataUrlWithoutExif = canvas.toDataURL("image/jpeg"); // strip the EXIF data
+            uploadImageHandler(dataUrlWithoutExif);
+          };
+          img.src = imageDataUrl.toString();
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [uploadImageHandler],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -288,9 +325,9 @@ const ImageSelectComponent = (props: {
               style={{ maxWidth: 88, maxHeight: 88 }}
               src={image.image}
               alt="material image"
-              className={`${
+              className={`rounded-lg ${
                 props.selectedImage && props.selectedImage.id === image.id
-                  ? "rounded-lg border-2 border-[#009FF5]"
+                  ? "border-2 border-[#009FF5]"
                   : ""
               }`}
               onClick={() => {
@@ -379,7 +416,8 @@ const WorkspaceSampleCreateDialog = ({
   const [materialImage, setMaterialImage] = useState(null);
 
   const materialAPIUrl = "native/materials";
-  const { data: materials } = useRestfulAPI(materialAPIUrl);
+  const { data: materials, getData: loadMaterials } =
+    useRestfulAPI(materialAPIUrl);
 
   useEffect(() => {
     setSampleType(null);
@@ -428,6 +466,7 @@ const WorkspaceSampleCreateDialog = ({
               data={materials}
               selectedImage={materialImage}
               selectImageHandler={(value) => setMaterialImage(value)}
+              uploadedImageHandler={() => loadMaterials(materialAPIUrl)}
             />
           )}
           {creationStep === 2 && sampleType === "Poster" && (
