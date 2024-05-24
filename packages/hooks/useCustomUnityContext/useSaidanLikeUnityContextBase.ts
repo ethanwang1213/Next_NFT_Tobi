@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { ItemBaseData, ItemType } from "types/adminTypes";
-import { SaidanLikeData, UnitySceneType } from "./unityType";
+import { ItemBaseData, ItemType } from "types/unityTypes";
+import { SaidanLikeData, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({

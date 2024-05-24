@@ -1,17 +1,12 @@
 import { useCallback } from "react";
-import {
-  ItemBaseData,
-  ItemType,
-  WorkspaceItemData,
-  WorkspaceLoadData,
-  WorkspaceSaveData,
-} from "types/adminTypes";
+import { WorkspaceLoadData, WorkspaceSaveData } from "types/adminTypes";
+import { ItemBaseData, ItemType, WorkspaceItemData } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
   UnityMessageJson,
   UnitySceneType,
-} from "./unityType";
+} from "./types";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
 

@@ -1,4 +1,4 @@
-import { SaidanItemData } from "types/adminTypes";
+import { SaidanItemData } from "types/unityTypes";
 
 export const UnitySceneType = {
   Standby: 0,

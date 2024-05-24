@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
-import { UnityMessageJson, UnitySceneType } from "./unityType";
+import { UnityMessageJson, UnitySceneType } from "./types";
 
 type MessageDestination =
   | "SwitchSceneMessageReceiver"

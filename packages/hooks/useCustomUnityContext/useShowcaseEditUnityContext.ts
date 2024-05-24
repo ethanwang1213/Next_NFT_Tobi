@@ -1,18 +1,13 @@
 import { useCallback } from "react";
-import {
-  ItemType,
-  SaidanItemData,
-  ShowcaseItemData,
-  ShowcaseLoadData,
-  ShowcaseSaveData,
-} from "types/adminTypes";
+import { ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
+import { ItemType, SaidanItemData, ShowcaseItemData } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
   SaidanType,
   UnityMessageJson,
   UnitySceneType,
-} from "./unityType";
+} from "./types";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
 

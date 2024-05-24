@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { UnityMessageJson, UnityMessageType } from "./unityType";
+import { UnityMessageJson, UnityMessageType } from "./types";
 
 export const useUnityMessageHandler = ({
   addEventListener,
