@@ -33,6 +33,7 @@ model tobiratory_accounts {
   tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
   tobiratory_businesses            tobiratory_businesses?
   tobiratory_favorite_content      tobiratory_favorite_content[]
+  tobiratory_workspace_items       tobiratory_workspace_items[]
 }
 
 model tobiratory_flow_accounts {
@@ -145,21 +146,31 @@ model tobiratory_sample_items {
   user                             tobiratory_accounts                @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid                       String                             @db.VarChar(100)
   model_url                        String                             @db.VarChar(255)
-  position                         Float[]
-  rotation                         Float[]
-  scale                            Float?
-  stage_type                       Int?
   content_id                       Int                                @default(0)
   price                            Int?
   start_date                       DateTime?                          @db.Timestamp(6)
   end_date                         DateTime?                          @db.Timestamp(6)
   sale_quantity                    Int?
   quantity_limit                   Int?
-  in_workspace                     Boolean                            @default(false)
   is_deleted                       Boolean                            @default(false)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
+  tobiratory_workspace             tobiratory_workspace_items[]
+}
+
+model tobiratory_workspace_items {
+  id                Int                     @id @default(autoincrement())
+  owner_uuid        String
+  user              tobiratory_accounts     @relation(fields: [owner_uuid], references: [uuid])
+  sample_id         Int
+  sample            tobiratory_sample_items @relation(fields: [sample_id], references: [id])
+  position          Float[]
+  rotation          Float[]
+  scale             Float?
+  stage_type        Int?
+  updated_date_time DateTime                @default(now()) @db.Timestamp(6)
+  created_date_time DateTime                @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_digital_item_nfts {
