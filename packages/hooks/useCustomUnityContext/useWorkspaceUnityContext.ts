@@ -120,13 +120,12 @@ export const useWorkspaceUnityContext = ({
       const messageBody = JSON.parse(
         msgObj.messageBody,
       ) as MessageBodyForSavingSaidanData;
+
       if (!messageBody) return;
 
-      var workspaceItemList =
-        messageBody.saidanData.saidanItemList.map<WorkspaceItemData>((v) => {
-          delete v.itemType;
-          return v;
-        });
+      var workspaceItemList: WorkspaceItemData[] =
+        messageBody.saidanData.saidanItemList;
+
       onSaveDataGenerated({ workspaceItemList });
     },
     [onSaveDataGenerated],
@@ -139,6 +138,7 @@ export const useWorkspaceUnityContext = ({
       const messageBody = JSON.parse(
         msgObj.messageBody,
       ) as MessageBodyForGeneratingItemThumbnail;
+
       if (!messageBody) return;
 
       onItemThumbnailGenerated(messageBody.thumbnailBase64);

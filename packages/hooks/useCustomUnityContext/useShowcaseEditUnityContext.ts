@@ -30,7 +30,7 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     sceneType: UnitySceneType.ShowcaseEdit,
   });
 
-  const processLoadData: (loadData: ShowcaseLoadData) => SaidanLikeData =
+  const processLoadData: (loadData: ShowcaseLoadData) => SaidanLikeData | null =
     useCallback((loadData: ShowcaseLoadData) => {
       console.log(loadData);
       if (loadData == null) return null;
@@ -66,24 +66,22 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
 
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
+      if (!onSaveDataGenerated) return;
+
       const messageBody = JSON.parse(
         msgObj.messageBody,
       ) as MessageBodyForSavingSaidanData;
+
       if (!messageBody) return;
 
-      var sampleItemList = messageBody.saidanData.saidanItemList
-        .filter((v) => v.itemType === ItemType.Sample)
-        .map<ShowcaseItemData>((v) => {
-          delete v.itemType;
-          return v;
-        });
-
-      var nftItemList = messageBody.saidanData.saidanItemList
-        .filter((v) => v.itemType === ItemType.DigitalItemNft)
-        .map<ShowcaseItemData>((v) => {
-          delete v.itemType;
-          return v;
-        });
+      var sampleItemList: ShowcaseItemData[] =
+        messageBody.saidanData.saidanItemList.filter(
+          (v) => v.itemType === ItemType.Sample,
+        );
+      var nftItemList: ShowcaseItemData[] =
+        messageBody.saidanData.saidanItemList.filter(
+          (v) => v.itemType === ItemType.DigitalItemNft,
+        );
 
       onSaveDataGenerated({
         sampleItemList,

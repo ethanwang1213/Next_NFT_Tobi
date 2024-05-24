@@ -62,7 +62,7 @@ export const useUnityMessageHandler = ({
           }
           return;
         case UnityMessageType.ItemThumbnailIsGenerated:
-          if (!handleItemThumbnailGenerated) {
+          if (handleItemThumbnailGenerated) {
             handleItemThumbnailGenerated(msgObj);
           }
           return;
