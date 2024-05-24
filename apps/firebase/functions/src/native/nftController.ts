@@ -374,8 +374,7 @@ export const fetchNftModel = async (req: Request, res: Response) => {
 export const getNftInfo = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
+  await getAuth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
     try {
       const nftData = await prisma.tobiratory_digital_item_nfts.findUnique({
         where: {
@@ -424,7 +423,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       );
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          owner_uuid: uid,
+          owner_uuid: nftData.owner_uuid,
         },
       });
       const copyrights = nftData.digital_item.copyright.map(async (relate)=>{
