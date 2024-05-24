@@ -202,8 +202,8 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
       data: {
         owner_uuid: uid,
         nft_id: nft.id,
-      }
-    })
+      },
+    });
     const flowJobId = uuidv4();
     const message = {flowJobId, txType: "createItem", params: {
       tobiratoryAccountUuid: uid,
