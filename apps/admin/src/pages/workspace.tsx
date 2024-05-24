@@ -5,8 +5,8 @@ import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreat
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceMaterialDialog from "ui/organisms/admin/WorkspaceMaterialDialog";
 import Image from "next/image";
-import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
-import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+// import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+// import { WorkspaceUnity } from "ui/molecules/CustomUnity";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -18,18 +18,21 @@ export default function Index() {
   const sampleCreateDialogRef = useRef(null);
   const materialDialogRef = useRef(null);
 
-  const { customUnityProvider } = useWorkspaceUnityContext();
+  const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
+
+  // const { customUnityProvider } = useWorkspaceUnityContext();
 
   return (
     <div className="w-full h-full relative">
-      <WorkspaceUnity
+      {/* <WorkspaceUnity
         customUnityProvider={customUnityProvider}
         loadData={null}
-      />
+      /> */}
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
         <WorkspaceSampleCreateDialog
           dialogRef={sampleCreateDialogRef}
           changeHandler={null}
+          initDialog={initSampleCreateDialog}
         />
         <WorkspaceMaterialDialog
           dialogRef={materialDialogRef}
@@ -97,6 +100,7 @@ export default function Index() {
             flex justify-center items-center cursor-pointer"
           onClick={() => {
             if (sampleCreateDialogRef.current) {
+              setInitSampleCreateDialog(initSampleCreateDialog + 1);
               sampleCreateDialogRef.current.showModal();
             }
           }}

@@ -1,6 +1,8 @@
+import "cropperjs/dist/cropper.css";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
 import { MutableRefObject, useCallback, useEffect, useState } from "react";
+import Cropper from "react-cropper";
 import { useDropzone } from "react-dropzone";
 import Button from "../../atoms/Button";
 
@@ -193,12 +195,50 @@ const SampleTypeSelectComponent = (props: {
   );
 };
 
-const MaterialImageSelectComponent = (props) => {
-  const apiUrl = "native/materials";
-  const { data } = useRestfulAPI(apiUrl);
+const ButtonGroupComponent = (props: {
+  backButtonHandler: () => void;
+  nextButtonHandler: () => void;
+}) => {
+  return (
+    <div className="flex justify-between">
+      <Button
+        className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1"
+        onClick={props.backButtonHandler}
+      >
+        <NextImage
+          width={20}
+          height={20}
+          src="/admin/images/icon/arrow-left-s-line.svg"
+          alt="left arrow"
+        />
+        <span className="text-primary text-sm font-medium">Back</span>
+      </Button>
+      <Button
+        className="w-[72px] h-8 rounded-lg bg-primary flex items-center justify-center gap-1"
+        onClick={props.nextButtonHandler}
+      >
+        <span className="text-base-white text-sm font-medium">Next</span>
+        <NextImage
+          width={20}
+          height={20}
+          src="/admin/images/icon/arrow-right-s-line.svg"
+          alt="left arrow"
+        />
+      </Button>
+    </div>
+  );
+};
 
-  const [selectedId, setSelectedId] = useState(0);
+type MaterialItem = {
+  id: number;
+  image: string;
+};
 
+const ImageSelectComponent = (props: {
+  data: MaterialItem[];
+  selectedImage: MaterialItem | null;
+  selectImageHandler: (value: MaterialItem) => void;
+}) => {
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the files
     const file = acceptedFiles[0];
@@ -209,7 +249,7 @@ const MaterialImageSelectComponent = (props) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <div className="flex flex-col h-full gap-[18px]">
+    <div className="flex flex-col h-full gap-4">
       <div
         {...getRootProps()}
         style={{
@@ -234,8 +274,8 @@ const MaterialImageSelectComponent = (props) => {
         />
       </div>
       <div className="flex-1 flex flex-wrap gap-4 overflow-y-auto">
-        {data &&
-          data.map((image) => (
+        {props.data &&
+          props.data.map((image) => (
             <NextImage
               key={`material-image-${image.id}`}
               width={88}
@@ -244,33 +284,77 @@ const MaterialImageSelectComponent = (props) => {
               src={image.image}
               alt="material image"
               className={`${
-                selectedId === image.id
+                props.selectedImage && props.selectedImage.id === image.id
                   ? "rounded-lg border-2 border-[#009FF5]"
                   : ""
               }`}
-              onClick={() => setSelectedId(image.id)}
+              onClick={() => {
+                props.selectImageHandler(image);
+              }}
             />
           ))}
       </div>
-      <div className="flex justify-between">
-        <Button className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1">
-          <NextImage
-            width={20}
-            height={20}
-            src="/admin/images/icon/arrow-left-s-line.svg"
-            alt="left arrow"
-          />
-          <span className="text-primary text-sm font-medium">Back</span>
-        </Button>
-        <Button className="w-[72px] h-8 rounded-lg bg-primary flex items-center justify-center gap-1">
-          <span className="text-base-white text-sm font-medium">Next</span>
-          <NextImage
-            width={20}
-            height={20}
-            src="/admin/images/icon/arrow-right-s-line.svg"
-            alt="left arrow"
-          />
-        </Button>
+    </div>
+  );
+};
+
+const ImageCropComponent = (props: { imageUrl: string }) => {
+  const onCrop = () => null;
+
+  return (
+    <div className="h-full flex flex-col justify-center gap-4">
+      <Cropper
+        src={props.imageUrl}
+        style={{ height: 300, width: "100%" }}
+        // Cropper.js options
+        // initialAspectRatio={initialAspectRatio}
+        // aspectRatio={aspectRatio}
+        guides={true}
+        crop={onCrop}
+      />
+      <div className="flex justify-center items-center gap-4">
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/crop.svg"
+          alt="crop"
+          className="cursor-pointer"
+        />
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/crop_16_9.svg"
+          alt="crop 16:9"
+          className="cursor-pointer"
+        />
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/crop_3_2.svg"
+          alt="crop 3:2"
+          className="cursor-pointer"
+        />
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/crop_square.svg"
+          alt="crop square"
+          className="cursor-pointer"
+        />
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/crop_free.svg"
+          alt="crop free"
+          className="cursor-pointer"
+        />
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/rotate_right.svg"
+          alt="rotate right"
+          className="cursor-pointer"
+        />
       </div>
     </div>
   );
@@ -287,11 +371,27 @@ const WorkspaceSampleCreateDialog = ({
 }) => {
   const [sampleType, setSampleType] = useState(null);
   const [creationStep, setCreationStep] = useState(0);
+  const [materialImage, setMaterialImage] = useState(null);
+
+  const materialAPIUrl = "native/materials";
+  const { data: materials } = useRestfulAPI(materialAPIUrl);
 
   useEffect(() => {
     setSampleType(null);
     setCreationStep(0);
   }, [initDialog]);
+
+  const nextStepHandler = () => {
+    if (creationStep === 1) {
+      if (sampleType === "Poster") {
+        if (materialImage) {
+          setCreationStep(creationStep + 1);
+        } else {
+          console.log("material image is not set");
+        }
+      }
+    }
+  };
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -309,16 +409,30 @@ const WorkspaceSampleCreateDialog = ({
         <div className="w-[188px] rounded-2xl bg-primary ">
           <RoadMapComponent sampleType={sampleType} step={creationStep} />
         </div>
-        <div className="w-[400px] h-[400px]">
-          {creationStep === 0 ? (
+        <div className="w-[400px] h-[400px] flex flex-col gap-4">
+          {creationStep === 0 && (
             <SampleTypeSelectComponent
               selectTypeHandler={(value) => {
                 setSampleType(value);
                 setCreationStep(1);
               }}
             />
-          ) : (
-            <MaterialImageSelectComponent />
+          )}
+          {creationStep === 1 && sampleType === "Poster" && (
+            <ImageSelectComponent
+              data={materials}
+              selectedImage={materialImage}
+              selectImageHandler={(value) => setMaterialImage(value)}
+            />
+          )}
+          {creationStep === 2 && sampleType === "Poster" && (
+            <ImageCropComponent imageUrl={materialImage.image} />
+          )}
+          {creationStep > 0 && (
+            <ButtonGroupComponent
+              backButtonHandler={() => setCreationStep(creationStep - 1)}
+              nextButtonHandler={nextStepHandler}
+            />
           )}
         </div>
       </div>
