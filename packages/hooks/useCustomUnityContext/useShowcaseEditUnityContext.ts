@@ -27,7 +27,7 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     setLoadData,
     requestSaveData,
     placeNewItem,
-    removeItems,
+    removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
@@ -140,6 +140,6 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     setLoadData: processAndSetLoadData,
     requestSaveData,
     placeNewItem,
-    removeItems,
+    removeItem,
   };
 };

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ItemBaseData } from "types/adminTypes";
+import { ItemBaseData, ItemType } from "types/adminTypes";
 import { SaidanLikeData, UnitySceneType } from "./unityType";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
@@ -52,12 +52,22 @@ export const useSaidanLikeUnityContextBase = ({
     [postMessageToUnity],
   );
 
-  const removeItems = useCallback(
-    (itemIdList: number[]) => {
+  const removeItem = useCallback(
+    ({
+      itemType,
+      itemId,
+      tableId,
+    }: {
+      itemType: ItemType;
+      itemId: number;
+      tableId: number;
+    }) => {
       postMessageToUnity(
-        "RemoveItemsMessageReceiver",
+        "RemoveSingleItemMessageReceiver",
         JSON.stringify({
-          itemIdList,
+          itemType,
+          itemId,
+          tableId,
         }),
       );
     },
@@ -78,7 +88,7 @@ export const useSaidanLikeUnityContextBase = ({
     setLoadData,
     requestSaveData,
     placeNewItem,
-    removeItems,
+    removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
   };

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
 import {
   ItemBaseData,
@@ -36,10 +36,10 @@ export const useWorkspaceUnityContext = ({
     removeEventListener,
     postMessageToUnity,
     resolveUnityMessage,
-    setLoadData,
+    setLoadData: privateSetLoadData,
     requestSaveData,
     placeNewItem,
-    removeItems,
+    removeItem: internalRemoveItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
@@ -61,14 +61,14 @@ export const useWorkspaceUnityContext = ({
     }
   }, []);
 
-  const processAndSetLoadData = useCallback(
+  const setLoadData = useCallback(
     (loadData: any) => {
-      setLoadData(processLoadData(loadData));
+      privateSetLoadData(processLoadData(loadData));
     },
-    [setLoadData, processLoadData],
+    [privateSetLoadData, processLoadData],
   );
 
-  const placeNewItemInWorkspace = useCallback(
+  const placeNewSample = useCallback(
     (params: Omit<ItemBaseData, "itemType">) => {
       placeNewItem({
         itemType: ItemType.Sample,
@@ -76,6 +76,31 @@ export const useWorkspaceUnityContext = ({
       });
     },
     [placeNewItem],
+  );
+
+  const removeSample = useCallback(
+    ({ itemId, tableId }: { itemId: number; tableId: number }) => {
+      internalRemoveItem({
+        itemType: ItemType.Sample,
+        itemId,
+        tableId,
+      });
+    },
+    [internalRemoveItem],
+  );
+
+  const removeSamplesByItemId = useCallback(
+    (itemIdList: number[]) => {
+      const list = itemIdList.map((itemId) => ({
+        itemType: ItemType.Sample,
+        itemId,
+      }));
+      postMessageToUnity(
+        "RemoveItemsByIdMessageReceiver",
+        JSON.stringify({ list }),
+      );
+    },
+    [postMessageToUnity],
   );
 
   const requestItemThumbnail = useCallback(
@@ -180,10 +205,11 @@ export const useWorkspaceUnityContext = ({
 
   return {
     unityProvider,
-    setLoadData: processAndSetLoadData,
+    setLoadData,
     requestSaveData,
-    placeNewItem: placeNewItemInWorkspace,
-    removeItems,
+    placeNewSample,
+    removeSample,
+    removeSamplesByItemId,
     requestItemThumbnail,
   };
 };
