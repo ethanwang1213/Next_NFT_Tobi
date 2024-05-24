@@ -1,0 +1,245 @@
+import useRestfulAPI from "hooks/useRestfulAPI";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useToggle } from "react-use";
+import Button from "ui/atoms/Button";
+import CustomToast from "ui/organisms/admin/CustomToast";
+import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
+import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
+import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
+const Showcase = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const [showDetailView, setShowDetailView] = useState(true);
+  const [showSmartFrame, setShowSmartFrame] = useState(true);
+  const [showToast, setShowToast] = useState(false);
+  const [mainToast, toggleMainToast] = useToggle(true);
+  const [message, setMessage] = useState("");
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
+  const [loading, setLoading] = useState(false);
+  const dialogRef = useRef(null);
+  const apiUrl = "native/admin/showcases";
+  const { data, error, getData, putData } = useRestfulAPI(null);
+  const timerId = useRef(null);
+
+  const handleButtonClick = (msg) => {
+    setShowToast(false);
+    toggleMainToast();
+    if (timerId.current) {
+      clearTimeout(timerId.current);
+    }
+    createToast(msg);
+  };
+
+  const createToast = (msg) => {
+    setMessage(msg);
+    setShowToast(true);
+    timerId.current = setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
+
+  const changeShowcaseDetail = async (title: string, description: string) => {
+    setLoading(true);
+    const jsonData = await putData(
+      `${apiUrl}/${id}`,
+      { title, description },
+      [],
+    );
+    if (jsonData) {
+      data.title = jsonData.title;
+      data.description = jsonData.description;
+    } else {
+      if (error) {
+        if (error instanceof String) {
+          toast(error);
+        } else {
+          toast(error.toString());
+        }
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getData(`${apiUrl}/${id}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      const height = document.querySelector(".w-full.h-full").clientHeight;
+      const width = Math.ceil((height / 16) * 9);
+      setContainerWidth(width);
+    };
+
+    // Update container width on mount and window resize
+    updateContainerWidth();
+    window.addEventListener("resize", updateContainerWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateContainerWidth);
+    };
+  }, []);
+
+  return (
+    <div className="w-full h-full">
+      <div className="unity-view w-full h-full relative">
+        <div
+          className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
+          style={{
+            width: `${containerWidth}px`,
+            left: `${318 - 504}px`,
+          }}
+        >
+          <span className="text-xl font-semibold text-[#858585] text-center mr-1">
+            {data?.title}
+          </span>
+          {/* <div className="relative">
+            <button
+              className={`${
+                loading
+                  ? "opacity-0 pointer-events-none"
+                  : "opacity-100 pointer-events-auto"
+              } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
+              onClick={() => dialogRef.current.showModal()}
+            >
+              Submit
+            </button>
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-12 w-12"></div>
+              </div>
+            )}
+          </div> */}
+          {loading && <span className="loading loading-spinner"></span>}
+          {!loading && (
+            <Button onClick={() => dialogRef.current.showModal()}>
+              <Image
+                width={24}
+                height={24}
+                src="/admin/images/icon/pencil.svg"
+                alt="pencil icon"
+              />
+            </Button>
+          )}
+        </div>
+        {showDetailView && <ShowcaseSampleDetail id={selectedSampleItem} />}
+        {/* Align component in the center */}
+        {/* 318px: width of left component. 504px: width of right component. */}
+        <div
+          className="w-[336px] mt-[72px] absolute"
+          style={{ left: "calc(318px + (100% - 318px - 504px - 336px) / 2)" }}
+        >
+          {mainToast && <CustomToast show={showToast} message={message} />}
+          {!mainToast && <CustomToast show={showToast} message={message} />}
+        </div>
+        <div
+          className="w-[336px] bottom-0 absolute"
+          style={{ left: "calc(318px + (100% - 318px - 504px - 336px) / 2)" }}
+        >
+          <div className="absolute bottom-12 w-full flex justify-center">
+            <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8">
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src="/admin/images/icon/undo-icon.svg"
+                className="cursor-pointer"
+                onClick={() =>
+                  handleButtonClick("undo: Deleted Sample Item A ")
+                }
+              />
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src="/admin/images/icon/redo-icon.svg"
+                className="cursor-pointer"
+                onClick={() =>
+                  handleButtonClick("redo: Deleted Sample Item A ")
+                }
+              />
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src={
+                  showSmartFrame
+                    ? "/admin/images/icon/crop-on-icon.svg"
+                    : "/admin/images/icon/crop-off-icon.svg"
+                }
+                className="cursor-pointer"
+                onClick={() => {
+                  setShowSmartFrame(!showSmartFrame);
+                  handleButtonClick(
+                    showSmartFrame
+                      ? "The smartphone frame is visibly"
+                      : "The smartphone frame is disable",
+                  );
+                }}
+              />
+              <Image
+                width={32}
+                height={32}
+                alt="toggle button"
+                src={
+                  showDetailView
+                    ? "/admin/images/icon/visibility-on-icon.svg"
+                    : "/admin/images/icon/visibility-off-icon.svg"
+                }
+                className="cursor-pointer"
+                onClick={() => {
+                  setShowDetailView(!showDetailView);
+                  handleButtonClick(
+                    showDetailView ? "The UI is hidden" : "The UI is shown",
+                  );
+                }}
+              />
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src="/admin/images/icon/help-icon.svg"
+                className="cursor-pointer"
+                onClick={() => handleButtonClick("help button is clicked")}
+              />
+            </div>
+          </div>
+        </div>
+        {showDetailView && (
+          <ShowcaseTabView
+            clickSampleItem={(id: number) => setSelectedSampleItem(id)}
+          />
+        )}
+        <div className="fixed mt-[24px] ml-[38px]">
+          <Link
+            href="/contents"
+            className="rounded-lg bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-md p-2"
+          >
+            <Image
+              width={32}
+              height={32}
+              alt="Link back Icon"
+              src="/admin/images/icon/arrow-back-icon.svg"
+            />
+            <span>Exit</span>
+          </Link>
+        </div>
+        <ShowcaseNameEditDialog
+          showcaseTitle={data?.title}
+          showcaseDescription={data?.description}
+          dialogRef={dialogRef}
+          changeHandler={changeShowcaseDetail}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Showcase;
