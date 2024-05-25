@@ -13,10 +13,27 @@ export const mintNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
   const {fcmToken, amount, modelUrl} = req.body;
+  if (!fcmToken || !modelUrl) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  }
+  let intAmount = parseInt(amount);
+  if (amount && intAmount <= 0) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-amount",
+    });
+    return;
+  } else if (!amount) {
+    intAmount = 1;
+  }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
-      for (let i = 0; i < parseInt(amount); i++) {
+      for (let i = 0; i < intAmount; i++) {
         await mint(id, uid, fcmToken, modelUrl);
       }
       res.status(200).send({
