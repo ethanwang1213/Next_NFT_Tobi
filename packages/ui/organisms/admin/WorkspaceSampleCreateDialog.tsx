@@ -251,27 +251,17 @@ const ImageSelectComponent = (props: {
   data: MaterialItem[];
   selectedImage: MaterialItem | null;
   selectImageHandler: (value: MaterialItem) => void;
-  uploadedImageHandler: () => void;
+  backHandler: () => void;
+  nextHandler: () => void;
 }) => {
-  const { postData } = useRestfulAPI(null);
-
-  const uploadImageHandler = useCallback(async (image: string) => {
-    const uploadedImageUrl = await uploadImage(image, ImageType.MaterialImage);
-    const success = await postData("native/materials", {
-      image: uploadedImageUrl,
-    });
-    if (success) {
-      props.uploadedImageHandler();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  console.log("ImageSelectComponent is rendered");
   const onDrop = useCallback(
     async (acceptedFiles) => {
       // Do something with the files
       const file = acceptedFiles[0];
       if (file && file.type.startsWith("image/png")) {
-        uploadImageHandler(file);
+        props.selectImageHandler({ id: 0, image: URL.createObjectURL(file) });
+        props.nextHandler();
       } else {
         const reader = new FileReader();
         reader.onload = () => {
@@ -285,14 +275,16 @@ const ImageSelectComponent = (props: {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             const dataUrlWithoutExif = canvas.toDataURL("image/jpeg"); // strip the EXIF data
-            uploadImageHandler(dataUrlWithoutExif);
+            props.selectImageHandler({ id: 0, image: dataUrlWithoutExif });
+            props.nextHandler();
           };
           img.src = imageDataUrl.toString();
         };
         reader.readAsDataURL(file);
       }
     },
-    [uploadImageHandler],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -329,7 +321,7 @@ const ImageSelectComponent = (props: {
               key={`material-image-${image.id}`}
               width={88}
               height={88}
-              style={{ maxWidth: 88, maxHeight: 88 }}
+              style={{ maxWidth: 88, maxHeight: 88, objectFit: "contain" }}
               src={image.image}
               alt="material image"
               className={`rounded-lg ${
@@ -343,6 +335,16 @@ const ImageSelectComponent = (props: {
             />
           ))}
       </div>
+      <ButtonGroupComponent
+        backButtonHandler={props.backHandler}
+        nextButtonHandler={() => {
+          if (props.selectedImage === null) {
+            console.log("material image is not set");
+          } else {
+            props.nextHandler();
+          }
+        }}
+      />
     </div>
   );
 };
@@ -370,7 +372,10 @@ function centerAspectCrop(
 const ImageCropComponent = (props: {
   imageUrl: string;
   cropHandler: (image: string) => void;
+  backHandler: () => void;
+  nextHandler: () => void;
 }) => {
+  console.log("ImageCropComponent is rendered");
   const imgRef = useRef<HTMLImageElement>(null);
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>({
@@ -450,6 +455,7 @@ const ImageCropComponent = (props: {
             maxWidth: 400,
             maxHeight: 300,
             transform: `rotate(${rotate}deg)`,
+            objectFit: "contain",
           }}
           onLoad={onImageLoad}
         />
@@ -519,6 +525,42 @@ const ImageCropComponent = (props: {
           className={`cursor-pointer rounded hover:bg-neutral-200`}
         />
       </div>
+      <ButtonGroupComponent
+        backButtonHandler={props.backHandler}
+        nextButtonHandler={props.nextHandler}
+      />
+    </div>
+  );
+};
+
+const GenerateComponent = (props: { completed: boolean }) => {
+  console.log("GenerateComponent is rendered");
+  return (
+    <div className="flex flex-col items-center">
+      {props.completed ? (
+        <NextImage
+          width={80}
+          height={80}
+          src="/admin/images/icon/task-complete.svg"
+          alt="task complete"
+          className="mt-[128px]"
+        />
+      ) : (
+        <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C] mt-[128px]"></span>
+      )}
+      <span className="text-primary text-sm font-semibold mt-6">
+        {props.completed ? "Generated!" : "Generating..."}
+      </span>
+      {props.completed && (
+        <span className="text-primary text-xs font-light mt-2">
+          Please check your SAMPLE ITEM LIST
+        </span>
+      )}
+      {props.completed && (
+        <Button className="bg-primary rounded-lg text-base-white text-sm font-medium mt-10 px-2 py-[6px]">
+          Done
+        </Button>
+      )}
     </div>
   );
 };
@@ -532,31 +574,60 @@ const WorkspaceSampleCreateDialog = ({
   changeHandler: (value: string) => void;
   initDialog: number;
 }) => {
-  const [sampleType, setSampleType] = useState(null);
   const [creationStep, setCreationStep] = useState(0);
+  const [sampleType, setSampleType] = useState(null);
   const [materialImage, setMaterialImage] = useState(null);
-  const [cropImage, setCropImage] = useState(null);
+  const [completed, setCompleted] = useState(false);
 
   const materialAPIUrl = "native/materials";
-  const { data: materials, getData: loadMaterials } =
-    useRestfulAPI(materialAPIUrl);
+  const {
+    data: materials,
+    setData: setMaterials,
+    postData: saveMaterial,
+  } = useRestfulAPI(materialAPIUrl);
 
   useEffect(() => {
-    setSampleType(null);
     setCreationStep(0);
+    setSampleType(null);
+    setMaterialImage(null);
+    setCompleted(false);
   }, [initDialog]);
 
-  const nextStepHandler = () => {
-    if (creationStep === 1) {
-      if (sampleType === "Poster") {
-        if (materialImage) {
-          setCreationStep(creationStep + 1);
-        } else {
-          console.log("material image is not set");
-        }
+  console.log("dialog is rendered", materialImage);
+
+  const uploadMaterialImage = useCallback(
+    async (imageUrl: string) => {
+      const uploadedImageUrl = await uploadImage(
+        imageUrl,
+        ImageType.MaterialImage,
+      );
+      const newMaterials = await saveMaterial(
+        "native/materials",
+        {
+          image: uploadedImageUrl,
+        },
+        [],
+      );
+      console.log("newMaterials", newMaterials);
+      if (newMaterials) {
+        setMaterialImage(newMaterials[newMaterials.leading - 1]);
+        setCompleted(true);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [materials],
+  );
+
+  useEffect(() => {
+    console.log("useeffect is called", sampleType, creationStep, materialImage);
+    if (sampleType === "Poster" && creationStep === 3) {
+      if (materialImage.id === 0) {
+        uploadMaterialImage(materialImage.image);
+      } else {
+        setCompleted(true);
       }
     }
-  };
+  }, [materialImage, sampleType, creationStep, uploadMaterialImage]);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -588,20 +659,22 @@ const WorkspaceSampleCreateDialog = ({
               data={materials}
               selectedImage={materialImage}
               selectImageHandler={(value) => setMaterialImage(value)}
-              uploadedImageHandler={() => loadMaterials(materialAPIUrl)}
+              backHandler={() => setCreationStep(creationStep - 1)}
+              nextHandler={() => setCreationStep(creationStep + 1)}
             />
           )}
           {creationStep === 2 && sampleType === "Poster" && (
             <ImageCropComponent
               imageUrl={materialImage.image}
-              cropHandler={setCropImage}
+              cropHandler={(image: string) =>
+                setMaterialImage({ id: 0, image: image })
+              }
+              backHandler={() => setCreationStep(creationStep - 1)}
+              nextHandler={() => setCreationStep(creationStep + 1)}
             />
           )}
-          {creationStep > 0 && (
-            <ButtonGroupComponent
-              backButtonHandler={() => setCreationStep(creationStep - 1)}
-              nextButtonHandler={nextStepHandler}
-            />
+          {creationStep === 3 && sampleType === "Poster" && (
+            <GenerateComponent completed={completed} />
           )}
         </div>
       </div>
