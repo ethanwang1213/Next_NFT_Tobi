@@ -370,7 +370,7 @@ function centerAspectCrop(
 }
 
 const ImageCropComponent = (props: {
-  imageUrl: string;
+  materialImage: MaterialItem;
   cropHandler: (image: string) => void;
   backHandler: () => void;
   nextHandler: () => void;
@@ -447,7 +447,7 @@ const ImageCropComponent = (props: {
       <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={aspect}>
         <NextImage
           ref={imgRef}
-          src={props.imageUrl}
+          src={props.materialImage.image}
           alt="crop image"
           width={400}
           height={300}
@@ -533,67 +533,15 @@ const ImageCropComponent = (props: {
   );
 };
 
-const GenerateComponent = (props: { completed: boolean }) => {
-  console.log("GenerateComponent is rendered");
-  return (
-    <div className="flex flex-col items-center">
-      {props.completed ? (
-        <NextImage
-          width={80}
-          height={80}
-          src="/admin/images/icon/task-complete.svg"
-          alt="task complete"
-          className="mt-[128px]"
-        />
-      ) : (
-        <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C] mt-[128px]"></span>
-      )}
-      <span className="text-primary text-sm font-semibold mt-6">
-        {props.completed ? "Generated!" : "Generating..."}
-      </span>
-      {props.completed && (
-        <span className="text-primary text-xs font-light mt-2">
-          Please check your SAMPLE ITEM LIST
-        </span>
-      )}
-      {props.completed && (
-        <Button className="bg-primary rounded-lg text-base-white text-sm font-medium mt-10 px-2 py-[6px]">
-          Done
-        </Button>
-      )}
-    </div>
-  );
-};
-
-const WorkspaceSampleCreateDialog = ({
-  dialogRef,
-  changeHandler,
-  initDialog,
-}: {
-  dialogRef: MutableRefObject<HTMLDialogElement>;
-  changeHandler: (value: string) => void;
-  initDialog: number;
+const GenerateComponent = (props: {
+  material: MaterialItem;
+  sampleType: string;
 }) => {
-  const [creationStep, setCreationStep] = useState(0);
-  const [sampleType, setSampleType] = useState(null);
-  const [materialImage, setMaterialImage] = useState(null);
+  console.log("GenerateComponent is rendered");
   const [completed, setCompleted] = useState(false);
 
   const materialAPIUrl = "native/materials";
-  const {
-    data: materials,
-    setData: setMaterials,
-    postData: saveMaterial,
-  } = useRestfulAPI(materialAPIUrl);
-
-  useEffect(() => {
-    setCreationStep(0);
-    setSampleType(null);
-    setMaterialImage(null);
-    setCompleted(false);
-  }, [initDialog]);
-
-  console.log("dialog is rendered", materialImage);
+  const { postData: saveMaterial } = useRestfulAPI(null);
 
   const uploadMaterialImage = useCallback(
     async (imageUrl: string) => {
@@ -610,24 +558,82 @@ const WorkspaceSampleCreateDialog = ({
       );
       console.log("newMaterials", newMaterials);
       if (newMaterials) {
-        setMaterialImage(newMaterials[newMaterials.leading - 1]);
         setCompleted(true);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [materials],
+    [],
   );
 
   useEffect(() => {
-    console.log("useeffect is called", sampleType, creationStep, materialImage);
-    if (sampleType === "Poster" && creationStep === 3) {
-      if (materialImage.id === 0) {
-        uploadMaterialImage(materialImage.image);
+    console.log(
+      "Generate component use effect is called",
+      props,
+      props.material,
+      props.sampleType,
+    );
+    if (props.sampleType === "Poster") {
+      if (props.material.id === 0) {
+        uploadMaterialImage(props.material.image);
       } else {
         setCompleted(true);
       }
     }
-  }, [materialImage, sampleType, creationStep, uploadMaterialImage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center">
+      {completed ? (
+        <NextImage
+          width={80}
+          height={80}
+          src="/admin/images/icon/task-complete.svg"
+          alt="task complete"
+          className="mt-[128px]"
+        />
+      ) : (
+        <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C] mt-[128px]"></span>
+      )}
+      <span className="text-primary text-sm font-semibold mt-6">
+        {completed ? "Generated!" : "Generating..."}
+      </span>
+      {completed && (
+        <span className="text-primary text-xs font-light mt-2">
+          Please check your SAMPLE ITEM LIST
+        </span>
+      )}
+      {completed && (
+        <Button className="bg-primary rounded-lg text-base-white text-sm font-medium mt-10 px-2 py-[6px]">
+          Done
+        </Button>
+      )}
+    </div>
+  );
+};
+const WorkspaceSampleCreateDialog = ({
+  dialogRef,
+  changeHandler,
+  initDialog,
+}: {
+  dialogRef: MutableRefObject<HTMLDialogElement>;
+  changeHandler: (value: string) => void;
+  initDialog: number;
+}) => {
+  const [creationStep, setCreationStep] = useState(0);
+  const [sampleType, setSampleType] = useState(null);
+  const [materialImage, setMaterialImage] = useState(null);
+
+  const materialAPIUrl = "native/materials";
+  const { data: materials } = useRestfulAPI(materialAPIUrl);
+
+  useEffect(() => {
+    setCreationStep(0);
+    setSampleType(null);
+    setMaterialImage(null);
+  }, [initDialog]);
+
+  console.log("dialog is rendered", materialImage);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -665,7 +671,7 @@ const WorkspaceSampleCreateDialog = ({
           )}
           {creationStep === 2 && sampleType === "Poster" && (
             <ImageCropComponent
-              imageUrl={materialImage.image}
+              materialImage={materialImage}
               cropHandler={(image: string) =>
                 setMaterialImage({ id: 0, image: image })
               }
@@ -674,7 +680,10 @@ const WorkspaceSampleCreateDialog = ({
             />
           )}
           {creationStep === 3 && sampleType === "Poster" && (
-            <GenerateComponent completed={completed} />
+            <GenerateComponent
+              material={materialImage}
+              sampleType={sampleType}
+            />
           )}
         </div>
       </div>
