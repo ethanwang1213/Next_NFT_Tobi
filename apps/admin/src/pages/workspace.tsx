@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from "react";
 import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
-import WorkspaceMaterialDialog from "ui/organisms/admin/WorkspaceMaterialDialog";
+import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
 import Image from "next/image";
 // import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 // import { WorkspaceUnity } from "ui/molecules/CustomUnity";
@@ -17,7 +17,7 @@ export default function Index() {
   const [showDetailView, setShowDetailView] = useState(false);
   const [showListView, setShowListView] = useState(false);
   const sampleCreateDialogRef = useRef(null);
-  const materialDialogRef = useRef(null);
+  const shortcutDialogRef = useRef(null);
 
   const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
 
@@ -66,8 +66,8 @@ export default function Index() {
           changeHandler={null}
           initDialog={initSampleCreateDialog}
         />
-        <WorkspaceMaterialDialog
-          dialogRef={materialDialogRef}
+        <WorkspaceShortcutDialog
+          dialogRef={shortcutDialogRef}
           changeHandler={null}
         />
         {showDetailView && <WorkspaceSampleDetailPanel />}
@@ -126,8 +126,8 @@ export default function Index() {
               src="/admin/images/icon/help-icon.svg"
               className="cursor-pointer"
               onClick={() => {
-                if (materialDialogRef.current) {
-                  materialDialogRef.current.showModal();
+                if (shortcutDialogRef.current) {
+                  shortcutDialogRef.current.showModal();
                 }
               }}
             />

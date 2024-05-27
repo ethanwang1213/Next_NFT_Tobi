@@ -1,11 +1,13 @@
 import Image from "next/image";
-import { MutableRefObject } from "react";
+import { MutableRefObject, useState } from "react";
 
-const MaterialComponent = () => {
+const ShortcutComponent = () => {
+  const [showDeleteButton, setShowDeleteButton] = useState(false);
+
   return (
     <div
-      className="ml-2 pl-4 pr-4 py-3 rounded-2xl hover:bg-neutral-200 
-      flex justify-between items-center gap-2 cursor-pointer"
+      className="ml-2 pl-4 pr-4 py-3 rounded-2xl
+      flex justify-between items-center gap-2 cursor-pointer relative"
     >
       <div className="flex flex-col gap-1">
         <span className="text-neutral-900 text-sm font-semibold leading-4">
@@ -20,13 +22,25 @@ const MaterialComponent = () => {
         height={56}
         src="/admin/images/png/empty-image.png"
         alt="sample type icon"
-        className="rounded-lg"
+        className="rounded-lg transition-opacity"
+        style={{ opacity: showDeleteButton ? 0.25 : 1 }}
+        onClick={() => setShowDeleteButton(true)}
       />
+      {showDeleteButton && (
+        <Image
+          width={17}
+          height={17}
+          src="/admin/images/icon/do-not-disturb.svg"
+          alt="delete icon"
+          className="absolute right-2 bottom-2"
+          onClick={() => setShowDeleteButton(false)}
+        />
+      )}
     </div>
   );
 };
 
-const WorkspaceMaterialDialog = ({
+const WorkspaceShortcutDialog = ({
   dialogRef,
   changeHandler,
 }: {
@@ -47,16 +61,16 @@ const WorkspaceMaterialDialog = ({
           </button>
         </form>
         <div className="h-[440px] flex flex-col gap-1 overflow-y-auto">
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
-          <MaterialComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
+          <ShortcutComponent />
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">
@@ -66,4 +80,4 @@ const WorkspaceMaterialDialog = ({
   );
 };
 
-export default WorkspaceMaterialDialog;
+export default WorkspaceShortcutDialog;
