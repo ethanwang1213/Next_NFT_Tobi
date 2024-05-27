@@ -99,8 +99,8 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
           is_deleted: false,
         },
         include: {
-          digital_item: true
-        }
+          digital_item: true,
+        },
       });
       const returnData = samples.map((sample)=>{
         return {
