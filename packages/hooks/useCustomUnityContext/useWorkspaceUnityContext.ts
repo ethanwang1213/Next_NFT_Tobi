@@ -1,80 +1,171 @@
-import { useCallback, useEffect } from "react";
-import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { dummyLoadData } from "./dummyData";
-import { UnityMessageType, UnitySceneType } from "./unityType";
+import { useCallback } from "react";
+import {
+  ItemType,
+  WorkspaceLoadData,
+  WorkspaceSaveData,
+} from "types/adminTypes";
+import { ItemBaseData, WorkspaceItemData } from "types/unityTypes";
+import {
+  MessageBodyForSavingSaidanData,
+  SaidanType,
+  UnityMessageJson,
+  UnitySceneType,
+} from "./types";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
+import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
-export const useWorkspaceUnityContext = () => {
+type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
+
+type MessageBodyForGeneratingItemThumbnail = {
+  thumbnailBase64: string;
+};
+
+type Props = {
+  onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
+  onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
+};
+
+export const useWorkspaceUnityContext = ({
+  onSaveDataGenerated,
+  onItemThumbnailGenerated,
+}: Props) => {
   const {
     unityProvider,
     addEventListener,
     removeEventListener,
-    resolveUnityMessage,
-    setLoadData,
+    postMessageToUnity,
+    setLoadData: privateSetLoadData,
+    requestSaveData,
+    placeNewItem,
+    removeItem: internalRemoveItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
   });
 
-  const processLoadData = useCallback((loadData: any) => {
+  const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
     console.log(loadData);
     if (loadData == null) return null;
 
-    // TODO(toruto): implement to process loadData
-    // return dummy data
-    if (loadData === 0) {
-      return dummyLoadData[0];
-    } else if (loadData === 1 || loadData === 2) {
-      return dummyLoadData[1];
-    } else {
-      return null;
-    }
+    var saidanItemList = loadData.workspaceItemList.map((v) => {
+      return {
+        ...v,
+        itemType: ItemType.Sample,
+      };
+    });
+
+    return {
+      saidanId: -2,
+      saidanType: SaidanType.Workspace,
+      saidanUrl: "",
+      saidanItemList,
+    };
   }, []);
 
-  const processAndSetLoadData = useCallback(
-    (loadData: any) => {
-      setLoadData(processLoadData(loadData));
+  const setLoadData = useCallback(
+    (loadData: WorkspaceLoadData) => {
+      privateSetLoadData(processLoadData(loadData));
     },
-    [setLoadData, processLoadData],
+    [privateSetLoadData, processLoadData],
   );
 
-  // TODO(toruto): const requestItemThumbnail = () => {};
-
-  // `message` is JSON string formed in Unity side like following:
-  // {
-  //   "messageType": string,
-  //   "sceneType": number,
-  //   "messageBody": string or JSON string
-  // }
-  const handleUnityMessage = useCallback(
-    (message: ReactUnityEventParameter) => {
-      if (typeof message !== "string") return;
-      const msgObj = resolveUnityMessage(message);
-      if (!msgObj) return;
-
-      // execute event handlers along with message type
-      switch (msgObj.messageType) {
-        case UnityMessageType.SimpleMessage:
-          handleSimpleMessage(msgObj);
-          return;
-        case UnityMessageType.SceneIsLoaded:
-          handleSceneIsLoaded();
-          return;
-        default:
-          return;
-      }
+  const placeNewSample = useCallback(
+    (params: Omit<ItemBaseData, "itemType">) => {
+      placeNewItem({
+        itemType: ItemType.Sample,
+        ...params,
+      });
     },
-    [resolveUnityMessage, handleSimpleMessage, handleSceneIsLoaded],
+    [placeNewItem],
   );
 
-  // We use only `onUnityMessage` event to receive messages from Unity side.
-  useEffect(() => {
-    addEventListener("onUnityMessage", handleUnityMessage);
-    return () => {
-      removeEventListener("onUnityMessage", handleUnityMessage);
-    };
-  }, [addEventListener, removeEventListener, handleUnityMessage]);
+  const removeSample = useCallback(
+    ({ itemId, tableId }: { itemId: number; tableId: number }) => {
+      internalRemoveItem({
+        itemType: ItemType.Sample,
+        itemId,
+        tableId,
+      });
+    },
+    [internalRemoveItem],
+  );
 
-  return { unityProvider, setLoadData: processAndSetLoadData };
+  const removeSamplesByItemId = useCallback(
+    (itemIdList: number[]) => {
+      const list = itemIdList.map((itemId) => ({
+        itemType: ItemType.Sample,
+        itemId,
+      }));
+      postMessageToUnity(
+        "RemoveItemsByIdMessageReceiver",
+        JSON.stringify({ list }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const requestItemThumbnail = useCallback(
+    (params: ItemThumbnailParams) => {
+      postMessageToUnity(
+        "ItemThumbnailGenerationMessageReceiver",
+        JSON.stringify({
+          ...params,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const handleSaveDataGenerated = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onSaveDataGenerated) return;
+
+      const messageBody = JSON.parse(
+        msgObj.messageBody,
+      ) as MessageBodyForSavingSaidanData;
+
+      if (!messageBody) return;
+
+      var workspaceItemList: WorkspaceItemData[] =
+        messageBody.saidanData.saidanItemList;
+
+      onSaveDataGenerated({ workspaceItemList });
+    },
+    [onSaveDataGenerated],
+  );
+
+  const handleItemThumbnailGenerated = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onItemThumbnailGenerated) return;
+
+      const messageBody = JSON.parse(
+        msgObj.messageBody,
+      ) as MessageBodyForGeneratingItemThumbnail;
+
+      if (!messageBody) return;
+
+      onItemThumbnailGenerated(messageBody.thumbnailBase64);
+    },
+    [onItemThumbnailGenerated],
+  );
+
+  useUnityMessageHandler({
+    addEventListener,
+    removeEventListener,
+    handleSimpleMessage,
+    handleSceneIsLoaded,
+    handleSaveDataGenerated,
+    handleItemThumbnailGenerated,
+  });
+
+  return {
+    unityProvider,
+    setLoadData,
+    requestSaveData,
+    placeNewSample,
+    removeSample,
+    removeSamplesByItemId,
+    requestItemThumbnail,
+  };
 };

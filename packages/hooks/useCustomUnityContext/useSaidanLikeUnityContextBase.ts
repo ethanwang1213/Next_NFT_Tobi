@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { SaidanLikeData, UnitySceneType } from "./unityType";
+import { ItemBaseData } from "types/unityTypes";
+import { SaidanLikeData, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
+import { ItemType } from "types/adminTypes";
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
@@ -16,7 +18,6 @@ export const useSaidanLikeUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     handleSimpleMessage,
   } = useCustomUnityContextBase({ sceneType });
 
@@ -34,10 +35,44 @@ export const useSaidanLikeUnityContextBase = ({
     setLoadData(null);
   }, [loadData, currentSaidanId, postMessageToUnity]);
 
-  // TODO(toruto): const placeNewItem = () => {};
-  // TODO(toruto): const removeItems = () => {};
-  // TODO(toruto): const requestSaveData = () => {};
-  // TODO(toruto): const processLoadData = () => {};
+  const requestSaveData = () => {
+    postMessageToUnity("SaveSaidanDataMessageReceiver", "");
+  };
+
+  const placeNewItem = useCallback(
+    (params: ItemBaseData) => {
+      postMessageToUnity(
+        "NewItemMessageReceiver",
+        JSON.stringify({
+          ...params,
+          isDebug: false,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const removeItem = useCallback(
+    ({
+      itemType,
+      itemId,
+      tableId,
+    }: {
+      itemType: ItemType;
+      itemId: number;
+      tableId: number;
+    }) => {
+      postMessageToUnity(
+        "RemoveSingleItemMessageReceiver",
+        JSON.stringify({
+          itemType,
+          itemId,
+          tableId,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -49,8 +84,10 @@ export const useSaidanLikeUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     setLoadData,
+    requestSaveData,
+    placeNewItem,
+    removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
   };

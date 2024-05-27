@@ -1,4 +1,5 @@
-import { SaidanLikeData, SaidanType, ItemType, ModelType, UnityStageType } from "./unityType";
+import { ItemType, ModelType, UnityStageType } from "types/adminTypes";
+import { SaidanLikeData, SaidanType } from "./unityType";
 
 export const dummyLoadData: SaidanLikeData[] = [
   {
@@ -9,6 +10,7 @@ export const dummyLoadData: SaidanLikeData[] = [
       {
         itemType: ItemType.Sample,
         itemId: 0,
+        tableId: 0,
         modelType: ModelType.Poster,
         modelUrl: "",
         imageUrl: "",
@@ -27,6 +29,7 @@ export const dummyLoadData: SaidanLikeData[] = [
       {
         itemType: ItemType.DigitalItemNft,
         itemId: 99,
+        tableId: 200,
         modelType: ModelType.AcrylicStand,
         modelUrl: "",
         imageUrl: "",
@@ -38,6 +41,7 @@ export const dummyLoadData: SaidanLikeData[] = [
       {
         itemType: ItemType.Sample,
         itemId: 88,
+        tableId: 102,
         modelType: ModelType.Poster,
         modelUrl: "",
         imageUrl: "",
