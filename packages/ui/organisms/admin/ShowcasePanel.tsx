@@ -1,6 +1,7 @@
 import ja from "date-fns/locale/ja";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -22,6 +23,7 @@ type ShowcaseComponentProps = {
   thumbImage: string;
   status: ShowcaseStatus;
   title: string;
+  description: string;
   scheduleTime?: string;
   updateTime: string;
   refreshHandler: () => void;
@@ -30,6 +32,7 @@ type ShowcaseComponentProps = {
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [status, setStatus] = useState(ShowcaseStatus.Private);
   const [title, setTitle] = useState(props.title);
+  const [description, setDescription] = useState(props.description);
   const [scheduleTime, setScheduleTime] = useState(
     props.scheduleTime && props.scheduleTime.length
       ? new Date(props.scheduleTime)
@@ -38,7 +41,13 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [modifiedTime, setModifiedTime] = useState("");
   const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [isHovered, setIsHovered] = useState(false);
+  const handleHoverEnter = () => {
+    setIsHovered(true);
+  };
+  const handleHoverLeave = () => {
+    setIsHovered(false);
+  };
   const apiUrl = "native/admin/showcases";
   const { error, putData, deleteData } = useRestfulAPI(null);
 
@@ -102,10 +111,15 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     }
   };
 
-  const changeTitle = async (title: string) => {
-    const jsonData = await putData(`${apiUrl}/${props.id}`, { title }, []);
+  const changeShowcaseDetail = async (title: string, description: string) => {
+    const jsonData = await putData(
+      `${apiUrl}/${props.id}`,
+      { title, description },
+      [],
+    );
     if (jsonData) {
       setTitle(jsonData.title);
+      setDescription(jsonData.description);
       setModifiedTime(jsonData.updateTime);
     } else {
       if (error) {
@@ -171,7 +185,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   return (
     <div className="flex flex-col gap-2">
       <div
-        className={`w-60 h-[360px] rounded-2xl
+        className={`w-60 h-[360px] rounded-2xl relative
           ${
             status == ShowcaseStatus.Public
               ? "outline outline-4 outline-success-200"
@@ -184,10 +198,29 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           backgroundSize: "cover", // Ensure the image covers the entire div
           backgroundRepeat: "no-repeat", // Prevent image repetition
         }}
+        onMouseEnter={handleHoverEnter}
+        onMouseLeave={handleHoverLeave}
       >
+        {isHovered && (
+          <Link href={`/contents/showcase?id=${props.id}`}>
+            <div
+              className={`absolute left-0 top-0 w-60 h-[360px] z-10 rounded-2xl
+              bg-black bg-opacity-50 flex flex-col justify-center items-center transition-opacity duration-[450ms] ease-out opacity-0 hover:opacity-100`}
+            >
+              <span className="text-white text-[10px]">Click to Edit</span>
+              <Image
+                src="/admin/images/icon/magic-icon.svg"
+                width={36}
+                height={36}
+                alt="magic-icon"
+                className="cursor-pointer"
+              />
+            </div>
+          </Link>
+        )}
         <div
-          className="w-full mt-[331px] px-3 
-            flex flex-row-reverse justify-between"
+          className="absolute bottom-[12px] right-[13px]
+            flex flex-row-reverse justify-between z-20"
         >
           <div
             className={`rounded-[27px] p-0 flex justify-between items-center
@@ -298,9 +331,10 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           }}
         />
         <ShowcaseNameEditDialog
-          initialValue={title}
+          showcaseTitle={title}
+          showcaseDescription={description}
           dialogRef={dialogRef}
-          changeHandler={changeTitle}
+          changeHandler={changeShowcaseDetail}
         />
       </div>
       <div className="text-secondary-700 text-[10px] leading-4 font-light">
@@ -334,6 +368,7 @@ const ShowcasePanel = () => {
                 key={`showcase-${showcase.id}`}
                 id={showcase.id}
                 title={showcase.title}
+                description={showcase.description}
                 status={showcase.status}
                 thumbImage={showcase.thumbImage}
                 scheduleTime={showcase.scheduleTime}
