@@ -2,6 +2,24 @@ import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
 import { UnityMessageJson, UnityMessageType } from "./types";
 
+type EventListener = (
+  eventName: string,
+  callback: (
+    ...parameters: ReactUnityEventParameter[]
+  ) => ReactUnityEventParameter,
+) => void;
+
+type MessageHandler = (msgObj: UnityMessageJson) => void;
+
+type Props = {
+  addEventListener: EventListener;
+  removeEventListener: EventListener;
+  handleSimpleMessage: MessageHandler;
+  handleSceneIsLoaded: () => void;
+  handleSaveDataGenerated?: MessageHandler;
+  handleItemThumbnailGenerated?: MessageHandler;
+};
+
 export const useUnityMessageHandler = ({
   addEventListener,
   removeEventListener,
@@ -9,24 +27,7 @@ export const useUnityMessageHandler = ({
   handleSceneIsLoaded,
   handleSaveDataGenerated,
   handleItemThumbnailGenerated,
-}: {
-  addEventListener: (
-    eventName: string,
-    callback: (
-      ...parameters: ReactUnityEventParameter[]
-    ) => ReactUnityEventParameter,
-  ) => void;
-  removeEventListener: (
-    eventName: string,
-    callback: (
-      ...parameters: ReactUnityEventParameter[]
-    ) => ReactUnityEventParameter,
-  ) => void;
-  handleSimpleMessage: (msgObj: UnityMessageJson) => void;
-  handleSceneIsLoaded: () => void;
-  handleSaveDataGenerated?: (msgObj: UnityMessageJson) => void;
-  handleItemThumbnailGenerated?: (msgObj: UnityMessageJson) => void;
-}) => {
+}: Props) => {
   const resolveUnityMessage = useCallback((json: string) => {
     try {
       return JSON.parse(json) as UnityMessageJson;
