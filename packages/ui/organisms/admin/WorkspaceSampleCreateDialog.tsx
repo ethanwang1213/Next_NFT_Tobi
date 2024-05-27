@@ -18,6 +18,8 @@ import ReactCrop, {
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import Button from "ui/atoms/Button";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 const roadmapTitles = {
   acrylicstand: [
@@ -182,28 +184,66 @@ const SampleTypeComponent = (props: {
 const SampleTypeSelectComponent = (props: {
   selectTypeHandler: (value: string) => void;
 }) => {
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      // Do something with the files
+      const file = acceptedFiles[0];
+      console.log("a file is selected:", URL.createObjectURL(file));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   return (
     <div className="flex flex-col">
-      <SampleTypeComponent
-        name="Acrylic Stand"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Poster"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Message Card"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Acrylic Keyholder"
-        clickHandler={props.selectTypeHandler}
-      />
-      <SampleTypeComponent
-        name="Can Badge"
-        clickHandler={props.selectTypeHandler}
-      />
+      <div className="h-[400px] flex flex-col overflow-y-auto">
+        <SampleTypeComponent
+          name="Acrylic Stand"
+          clickHandler={props.selectTypeHandler}
+        />
+        <SampleTypeComponent
+          name="Poster"
+          clickHandler={props.selectTypeHandler}
+        />
+        <SampleTypeComponent
+          name="Message Card"
+          clickHandler={props.selectTypeHandler}
+        />
+        <SampleTypeComponent
+          name="Acrylic Keyholder"
+          clickHandler={props.selectTypeHandler}
+        />
+        <SampleTypeComponent
+          name="Can Badge"
+          clickHandler={props.selectTypeHandler}
+        />
+      </div>
+      <div
+        {...getRootProps()}
+        style={{
+          width: 400,
+          height: 80,
+          marginTop: 12,
+          borderRadius: 13,
+          borderStyle: "dashed",
+          borderWidth: 2,
+          borderColor: "#B3B3B3",
+          backgroundColor: isDragActive ? "#B3B3B3" : "transparent",
+        }}
+        className="flex justify-center items-center gap-3 cursor-pointer"
+      >
+        <span className="text-secondary-500 text-base font-medium">
+          Upload 3D Digital Item model
+        </span>
+        <NextImage
+          width={24}
+          height={24}
+          src="/admin/images/icon/upload-icon.svg"
+          alt="upload icon"
+        />
+      </div>
     </div>
   );
 };
@@ -442,87 +482,123 @@ const ImageCropComponent = (props: {
     }
   }
 
+  const handleStyle = {
+    borderColor: "#1779DE",
+    height: 8,
+    width: 8,
+    marginLeft: 0,
+    marginTop: -3,
+    backgroundColor: "#1779DE",
+  };
+
+  const trackStyle = {
+    backgroundColor: "#1779DE",
+    height: 2,
+  };
+
+  const railStyle = {
+    backgroundColor: "#1779DE",
+    height: 2,
+  };
+
   return (
-    <div className="h-full flex flex-col justify-center gap-4">
+    <div className="h-full">
       <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={aspect}>
         <NextImage
           ref={imgRef}
           src={props.materialImage.image}
           alt="crop image"
           width={400}
-          height={300}
+          height={352}
           style={{
             maxWidth: 400,
-            maxHeight: 300,
+            maxHeight: 352,
             transform: `rotate(${rotate}deg)`,
             objectFit: "contain",
           }}
           onLoad={onImageLoad}
         />
       </ReactCrop>
-      <div className="flex justify-center items-center gap-4">
-        <NextImage
-          width={24}
-          height={24}
-          src="/admin/images/icon/crop.svg"
-          alt="crop"
-          className={`cursor-pointer rounded hover:bg-neutral-200`}
-          onClick={onCropClick}
-        />
-        <NextImage
-          width={24}
-          height={24}
-          src="/admin/images/icon/crop_16_9.svg"
-          alt="crop 16:9"
-          className={`cursor-pointer rounded hover:bg-neutral-200
+      <div className="mt-6 flex flex-col items-center">
+        <div className="flex gap-4">
+          <NextImage
+            width={24}
+            height={24}
+            src="/admin/images/icon/crop.svg"
+            alt="crop"
+            className={`cursor-pointer rounded hover:bg-neutral-200`}
+            onClick={onCropClick}
+          />
+          <NextImage
+            width={24}
+            height={24}
+            src="/admin/images/icon/crop_16_9.svg"
+            alt="crop 16:9"
+            className={`cursor-pointer rounded hover:bg-neutral-200
             ${aspect === 9 / 16 ? "bg-neutral-200" : ""}`}
-          onClick={() => {
-            handleToggleAspectClick(9 / 16);
-          }}
-        />
-        <NextImage
-          width={24}
-          height={24}
-          src="/admin/images/icon/crop_3_2.svg"
-          alt="crop 3:2"
-          className={`cursor-pointer rounded hover:bg-neutral-200
+            onClick={() => {
+              handleToggleAspectClick(9 / 16);
+            }}
+          />
+          <NextImage
+            width={24}
+            height={24}
+            src="/admin/images/icon/crop_3_2.svg"
+            alt="crop 3:2"
+            className={`cursor-pointer rounded hover:bg-neutral-200
             ${
               Math.floor(aspect * 100) === Math.floor(200 / 3)
                 ? "bg-neutral-200"
                 : ""
             }`}
-          onClick={() => {
-            handleToggleAspectClick(2 / 3);
-          }}
-        />
-        <NextImage
-          width={24}
-          height={24}
-          src="/admin/images/icon/crop_square.svg"
-          alt="crop square"
-          className={`cursor-pointer rounded hover:bg-neutral-200
+            onClick={() => {
+              handleToggleAspectClick(2 / 3);
+            }}
+          />
+          <NextImage
+            width={24}
+            height={24}
+            src="/admin/images/icon/crop_square.svg"
+            alt="crop square"
+            className={`cursor-pointer rounded hover:bg-neutral-200
             ${aspect === 1 ? "bg-neutral-200" : ""}`}
-          onClick={() => {
-            handleToggleAspectClick(1);
-          }}
-        />
-        <NextImage
-          width={24}
-          height={24}
-          src="/admin/images/icon/crop_free.svg"
-          alt="crop free"
-          className={`cursor-pointer rounded hover:bg-neutral-200
+            onClick={() => {
+              handleToggleAspectClick(1);
+            }}
+          />
+          <NextImage
+            width={24}
+            height={24}
+            src="/admin/images/icon/crop_free.svg"
+            alt="crop free"
+            className={`cursor-pointer rounded hover:bg-neutral-200
             ${aspect === undefined ? "bg-neutral-200" : ""}`}
-          onClick={() => {
-            handleToggleAspectClick(undefined);
-          }}
-        />
+            onClick={() => {
+              handleToggleAspectClick(undefined);
+            }}
+          />
+        </div>
+        <div className="w-[220px] relative mt-[18px] mb-[6px]">
+          <Slider
+            min={-180}
+            max={180}
+            styles={{ handle: handleStyle, track: trackStyle, rail: railStyle }}
+            value={rotate}
+            onChange={(value: number) => setRotate(value)}
+          />
+          <span className="absolute left-0 -top-2 text-primary-400 text-[8px] font-medium">
+            -180
+          </span>
+          <span className="absolute right-0 -top-2 text-primary-400 text-[8px] font-medium">
+            180
+          </span>
+        </div>
         <NextImage
-          width={24}
-          height={24}
+          width={16}
+          height={16}
           src="/admin/images/icon/rotate_right.svg"
           alt="rotate right"
-          className={`cursor-pointer rounded hover:bg-neutral-200`}
+          className={`cursor-pointer rounded`}
         />
       </div>
       <ButtonGroupComponent
@@ -651,7 +727,7 @@ const WorkspaceSampleCreateDialog = ({
         <div className="w-[188px] rounded-2xl bg-primary ">
           <RoadMapComponent sampleType={sampleType} step={creationStep} />
         </div>
-        <div className="w-[400px] h-[400px] flex flex-col gap-4">
+        <div className="w-[400px] h-[492px] flex flex-col gap-4">
           {creationStep === 0 && (
             <SampleTypeSelectComponent
               selectTypeHandler={(value) => {

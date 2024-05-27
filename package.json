@@ -32,6 +32,7 @@
     "firebase": "^10.11.0",
     "numeral": "^2.0.6",
     "qrcode.react": "^3.1.0",
+    "rc-slider": "^10.6.2",
     "rc-switch": "^4.1.0",
     "react-cropper": "^2.3.3",
     "react-datepicker": "^4.25.0",
