@@ -1,10 +1,11 @@
 import { useCallback } from "react";
-import { ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, SaidanItemData, ShowcaseItemData } from "types/unityTypes";
+import { ItemType, ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
+import { SaidanItemData, ShowcaseItemData } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
   SaidanType,
+  showcaseOffset,
   UnityMessageJson,
   UnitySceneType,
 } from "./types";
@@ -51,14 +52,14 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
 
       return {
         saidanId: loadData.showcaseId,
-        saidanType: (loadData.showcaseType + 20000) as SaidanType,
+        saidanType: (loadData.showcaseType + showcaseOffset) as SaidanType,
         saidanUrl: loadData.showcaseUrl,
         saidanItemList,
       };
     }, []);
 
   const processAndSetLoadData = useCallback(
-    (loadData: any) => {
+    (loadData: ShowcaseLoadData) => {
       setLoadData(processLoadData(loadData));
     },
     [setLoadData, processLoadData],

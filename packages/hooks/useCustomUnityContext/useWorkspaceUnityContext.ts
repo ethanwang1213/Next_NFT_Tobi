@@ -1,6 +1,10 @@
 import { useCallback } from "react";
-import { WorkspaceLoadData, WorkspaceSaveData } from "types/adminTypes";
-import { ItemBaseData, ItemType, WorkspaceItemData } from "types/unityTypes";
+import {
+  ItemType,
+  WorkspaceLoadData,
+  WorkspaceSaveData,
+} from "types/adminTypes";
+import { ItemBaseData, WorkspaceItemData } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
@@ -60,7 +64,7 @@ export const useWorkspaceUnityContext = ({
   }, []);
 
   const setLoadData = useCallback(
-    (loadData: any) => {
+    (loadData: WorkspaceLoadData) => {
       privateSetLoadData(processLoadData(loadData));
     },
     [privateSetLoadData, processLoadData],

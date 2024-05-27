@@ -1,14 +1,5 @@
-export const ItemType = {
-  Sample: 0,
-  DigitalItemNft: 1,
-} as const;
-export type ItemType = (typeof ItemType)[keyof typeof ItemType];
+import { ItemType, ModelType } from "./adminTypes";
 
-export const ModelType = {
-  Poster: 1,
-  AcrylicStand: 2,
-} as const;
-export type ModelType = (typeof ModelType)[keyof typeof ModelType];
 
 export const UnityStageType = {
   Floor: 0,

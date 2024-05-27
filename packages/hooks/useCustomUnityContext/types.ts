@@ -37,14 +37,16 @@ export type MessageBodyForSavingSaidanData = {
   saidanThumbnailBase64: string;
 };
 
+export const saidanOffset = 10000;
+export const showcaseOffset = 20000;
 export const SaidanType = {
   Workspace: 0,
-  SaidanFirst: 10001,
-  SaidanSecond: 10002,
-  SaidanThird: 10003,
-  ShowcaseFirst: 20001,
-  ShowcaseSecond: 20002,
-  ShowcaseThird: 20003,
+  SaidanFirst: 1 + saidanOffset,
+  SaidanSecond: 2 + saidanOffset,
+  SaidanThird: 3 + saidanOffset,
+  ShowcaseFirst: 1 + showcaseOffset,
+  ShowcaseSecond: 2 + showcaseOffset,
+  ShowcaseThird: 3 + showcaseOffset,
 } as const;
 export type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
 
