@@ -13,6 +13,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CreateButton from "ui/molecules/CreateButton";
 import BoxNameEditDialog from "ui/organisms/admin/BoxNameEditDialog";
+import DeleteConfirmDialog from "ui/organisms/admin/DeleteConfirmDialog";
 
 export const metadata: Metadata = {
   title: "ギフト受け取り設定",
@@ -148,6 +149,7 @@ const BoxComponent = (props: {
 
   const editNameDialogRef = useRef(null);
   const qrcodeDialogRef = useRef(null);
+  const deleteConfirmDialogRef = useRef(null);
 
   useEffect(() => {
     setData({
@@ -187,6 +189,22 @@ const BoxComponent = (props: {
   const qrcodeIconClickHandler = useCallback(() => {
     if (qrcodeDialogRef.current) {
       qrcodeDialogRef.current.showModal();
+    }
+  }, []);
+
+  const deleteBoxDialogHandler = useCallback(
+    (value: string) => {
+      if (value == "delete") {
+        setLoadingDelete(true);
+        props.deleteBoxHandler();
+      }
+    },
+    [props],
+  );
+
+  const showDeleteConfirmDialog = useCallback(() => {
+    if (deleteConfirmDialogRef.current) {
+      deleteConfirmDialogRef.current.showModal();
     }
   }, []);
 
@@ -255,10 +273,7 @@ const BoxComponent = (props: {
             alt="delete"
             src="/admin/images/icon/delete-icon.svg"
             className="mx-2 my-2 cursor-pointer"
-            onClick={() => {
-              setLoadingDelete(true);
-              props.deleteBoxHandler();
-            }}
+            onClick={showDeleteConfirmDialog}
           />
         )}
         <BoxNameEditDialog
@@ -267,6 +282,10 @@ const BoxComponent = (props: {
           changeHandler={(value) => changeNameHandler(value)}
         />
         <QRCodeDialog initialValue={data.address} dialogRef={qrcodeDialogRef} />
+        <DeleteConfirmDialog
+          dialogRef={deleteConfirmDialogRef}
+          changeHandler={deleteBoxDialogHandler}
+        />
       </div>
     )
   );
