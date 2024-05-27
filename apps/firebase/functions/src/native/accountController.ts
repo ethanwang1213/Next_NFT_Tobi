@@ -63,6 +63,9 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
         where: {
           uuid: uid,
         },
+        include: {
+          saidans: true,
+        },
       });
 
       if (accountData == null) {
@@ -73,13 +76,7 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
         return;
       }
 
-      const saidans = await prisma.tobiratory_saidans.findMany({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-
-      const resData = saidans.map((saidan)=>{
+      const resData = accountData.saidans.map((saidan)=>{
         return {
           id: saidan.id,
           thumbImage: saidan.thumbnail_image,
