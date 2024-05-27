@@ -40,18 +40,14 @@ export const getSaidansById = async (req: Request, res: Response) => {
         where: {
           saidan_id: saidanData.id,
         },
+        include: {
+          digital_item: true,
+        },
       });
 
-      const items = await Promise.all(
-          digitalNFT.map(async (nft)=> {
-            const digitalData = await prisma.tobiratory_digital_items.findUnique({
-              where: {
-                id: nft.digital_item_id,
-              },
-            });
-            return digitalData?.is_default_thumb?digitalData?.default_thumb_url:digitalData?.custom_thumb_url;
-          })
-      );
+      const items = digitalNFT.map((nft)=> {
+        return nft.digital_item.is_default_thumb?nft.digital_item.default_thumb_url:nft.digital_item.custom_thumb_url;
+      });
 
       const resData = {
         id: saidanData.id,
@@ -182,29 +178,23 @@ export const getMySaidans = async (req: Request, res: Response) => {
       where: {
         owner_uuid: uid,
       },
+      include: {
+        favorite_user: true,
+        template: true,
+      },
     });
-    const saidanTemplates = await prisma.tobiratory_saidans_template.findMany();
-    const returnData = await Promise.all(
-        mySaidans.map(async (saidan)=>{
-          const template = saidanTemplates.filter((template)=>template.id==saidan.template_id)[0];
-          const favorite = await prisma.tobiratory_saidans_favorite.findMany({
-            where: {
-              saidan_id: saidan.id,
-              favorite_user_id: uid,
-            },
-          });
-          return {
-            saidanId: saidan.id,
-            title: saidan.title,
-            modelUrl: template.model_url,
-            imageUrl: saidan.thumbnail_image,
-            modelType: template.type,
-            description: saidan.description,
-            isPublic: saidan.is_public,
-            favorite: favorite.length!=0,
-          };
-        })
-    );
+    const returnData = mySaidans.map((saidan)=>{
+      return {
+        saidanId: saidan.id,
+        title: saidan.title,
+        modelUrl: saidan.template.model_url,
+        imageUrl: saidan.thumbnail_image,
+        modelType: saidan.template.type,
+        description: saidan.description,
+        isPublic: saidan.is_public,
+        favorite: saidan.favorite_user.length!=0,
+      };
+    })
 
     res.status(200).send({
       status: "success",

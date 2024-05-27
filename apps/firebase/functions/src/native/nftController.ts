@@ -407,7 +407,15 @@ export const getNftInfo = async (req: Request, res: Response) => {
               },
             },
           },
-          tobiratory_digital_nft_ownership: true,
+          tobiratory_digital_nft_ownership: {
+            include: {
+              tobiratory_accounts: {
+                include: {
+                  tobiratory_businesses: true,
+                }
+              },
+            }
+          },
           user: true,
         },
       });
@@ -419,31 +427,19 @@ export const getNftInfo = async (req: Request, res: Response) => {
         return;
       }
 
-      const owners = await Promise.all(
-          nftData.tobiratory_digital_nft_ownership.map(async (ownership)=>{
-            const userData = await prisma.tobiratory_accounts.findUnique({
-              where: {
-                uuid: ownership.owner_uuid,
-              },
-            });
-            const business = await prisma.tobiratory_businesses.findFirst({
-              where: {
-                uuid: ownership.owner_uuid,
-              },
-            });
-            return {
-              uid: ownership.owner_uuid,
-              avatarUrl: userData==null?"":userData.icon_url,
-              isBusinnessAccount: business!=null,
-            };
-          })
-      );
+      const owners = nftData.tobiratory_digital_nft_ownership.map((ownership)=>{
+        return {
+          uid: ownership.owner_uuid,
+          avatarUrl: ownership.tobiratory_accounts==null?"":ownership.tobiratory_accounts.icon_url,
+          isBusinnessAccount: ownership.tobiratory_accounts?.tobiratory_businesses!=null,
+        };
+      })
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
           owner_uuid: nftData.owner_uuid,
         },
       });
-      const copyrights = nftData.digital_item.copyright.map(async (relate)=>{
+      const copyrights = nftData.digital_item.copyright.map((relate)=>{
         return relate.copyright.copyright_name;
       });
       const returnData = {
