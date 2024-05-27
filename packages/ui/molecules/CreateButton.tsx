@@ -3,14 +3,17 @@ import Button from "ui/atoms/Button";
 
 export default function CreateButton({
   label,
+  height,
   clickHandler,
 }: {
   label: string;
+  height: number;
   clickHandler?: () => void;
 }) {
   return (
     label.length > 0 && (
       <Button
+        style={{ height: height }}
         onClick={clickHandler ?? null}
         className={`h-14 rounded-[30px] bg-primary
           px-6 flex items-center gap-4 text-white

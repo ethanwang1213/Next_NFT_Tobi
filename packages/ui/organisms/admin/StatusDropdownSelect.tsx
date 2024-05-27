@@ -145,7 +145,9 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
         }}
         {...getToggleButtonProps()}
       >
-        <span>{getSampleStatusTitle(selectedItem.value)}</span>
+        <span style={{ fontSize: 18 }}>
+          {getSampleStatusTitle(selectedItem.value)}
+        </span>
         <span>{isOpen ? <>▲</> : <>▼</>}</span>
       </div>
       <ul
@@ -158,8 +160,8 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
           availableStatusValues(initialStatus).map((item, index) => (
             <li
               className={clsx(
-                highlightedIndex === index && "bg-blue-300",
-                selectedItem === item && "font-bold",
+                highlightedIndex === index && "bg-blue-300 text-white",
+                selectedItem.value === item.value && "font-bold",
                 "py-1 px-3 flex flex-col rounded-[20px] my-1",
               )}
               key={item.value}
