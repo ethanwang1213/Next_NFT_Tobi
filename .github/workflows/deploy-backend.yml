@@ -11,7 +11,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Config Greensock and Install Dependency
-        run: npm config set //npm.greensock.com/:_authToken=24895aec-e04d-45a8-a7fc-ec13ae6a33d0 && npm config set @gsap:registry=https://npm.greensock.com && ls && npm i
+        run: npm config set //npm.greensock.com/:_authToken=${{secrets.GREENSOCK_TOKEN}} && npm config set @gsap:registry=https://npm.greensock.com && ls && npm i
       - name: Build and Deploy
         run: npm i -g firebase-tools && cd apps && cd firebase && cd functions && npm i && npm run build && firebase deploy -P tobiratory-f6ae1 --only functions:native,functions:flowTxSend,functions:flowTxMonitor --token "$FIREBASE_TOKEN"
         env:
