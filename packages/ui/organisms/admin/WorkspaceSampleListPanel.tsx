@@ -1,6 +1,6 @@
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
-import Button from "../../atoms/Button";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import Button from "ui/atoms/Button";
 
 type SampleItem = {
   id: number;
@@ -14,14 +14,34 @@ const SampleItemComponent = (props: {
   selectState: boolean;
   checked: boolean;
   changeHandler: (value: boolean) => void;
+  selectHandler: () => void;
 }) => {
+  const checkboxRef = useRef(null);
+
+  const clickHandler = useCallback(() => {
+    if (props.selectState) {
+      if (checkboxRef.current) {
+        checkboxRef.current.click();
+      }
+    } else {
+      props.selectHandler();
+    }
+  }, [props]);
+
   return (
-    <div className="flex items-center gap-8 py-3 pl-10 pr-6 hover:bg-[#787878]">
+    <div
+      className="flex items-center gap-8 py-3 pl-10 pr-6 hover:bg-[#787878]"
+      onClick={clickHandler}
+    >
       {props.selectState && (
         <input
+          ref={checkboxRef}
           type="checkbox"
           checked={props.checked}
           onChange={(e) => props.changeHandler(e.target.checked)}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         />
       )}
       <Image
@@ -40,6 +60,7 @@ const WorkspaceSampleListPanel = (props: {
   closeHandler: () => void;
   data: SampleItem[];
   createHandler: () => void;
+  selectHandler: (id: number) => void;
   deleteHandler: (ids: number[]) => void;
 }) => {
   const [selectState, setSelectState] = useState(false);
@@ -141,6 +162,7 @@ const WorkspaceSampleListPanel = (props: {
                 changeHandler={(value) =>
                   selectionChangeHandler(sample.id, value)
                 }
+                selectHandler={() => props.selectHandler(sample.id)}
               />
             ))}
         </div>
@@ -167,4 +189,4 @@ const WorkspaceSampleListPanel = (props: {
   );
 };
 
-export default React.memo(WorkspaceSampleListPanel);
+export default WorkspaceSampleListPanel;
