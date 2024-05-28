@@ -21,7 +21,7 @@ const ShowcaseSampleTab = ({
   return (
     <div className="flex flex-wrap">
       {loading && (
-        <span className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75">
+        <span className="absolute inset-0 flex items-center justify-center">
           <span className="loading loading-spinner loading-md"></span>
         </span>
       )}
