@@ -183,8 +183,8 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       id: digitalItemId,
     },
     data: {
-      limit: limit,
-      minted_count: mintedCount,
+      limit: Number(limit),
+      minted_count: Number(mintedCount),
     },
   });
   pushToDevice(fcmToken, {
