@@ -165,13 +165,13 @@ export const getInventoryData = async (req: Request, res: Response) => {
           },
         });
         const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-        .map((item)=>{
-          return {
-            id: item.id,
-            name: item.digital_item.name,
-            image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
-          };
-        });
+            .map((item)=>{
+              return {
+                id: item.id,
+                name: item.digital_item.name,
+                image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+              };
+            });
         return {
           id: box.id,
           name: box.name,
@@ -260,7 +260,7 @@ export const getBoxData = async (req: Request, res: Response) => {
         image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
         saidanId: item?.saidan_id,
       };
-    })
+    });
     res.status(200).send({
       status: "success",
       data: {

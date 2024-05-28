@@ -474,9 +474,9 @@ export const businessSubmission = async (req: Request, res: Response) => {
             content_id: savedContentData.id,
           },
         });
-        return {...savedBusinessData, content: {...savedContentData}}
+        return {...savedBusinessData, content: {...savedContentData}};
       });
-      
+
       res.status(200).send({
         status: "success",
         data: returnData,

@@ -194,7 +194,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
         isPublic: saidan.is_public,
         favorite: saidan.favorite_user.length!=0,
       };
-    })
+    });
 
     res.status(200).send({
       status: "success",
