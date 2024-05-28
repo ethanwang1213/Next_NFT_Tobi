@@ -21,8 +21,10 @@ export default function Index() {
 
   const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
 
-  const workspaceAPIUrl = "native/my/workspace";
-  const { data: workspaceData } = useRestfulAPI(workspaceAPIUrl);
+  // const workspaceAPIUrl = "native/my/workspace";
+  // const { data: workspaceData } = useRestfulAPI(workspaceAPIUrl);
+
+  const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
 
   const sampleAPIUrl = "native/admin/samples";
   const {
@@ -63,14 +65,15 @@ export default function Index() {
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
         <WorkspaceSampleCreateDialog
           dialogRef={sampleCreateDialogRef}
-          changeHandler={null}
           initDialog={initSampleCreateDialog}
         />
         <WorkspaceShortcutDialog
           dialogRef={shortcutDialogRef}
           changeHandler={null}
         />
-        {showDetailView && <WorkspaceSampleDetailPanel />}
+        {showDetailView && (
+          <WorkspaceSampleDetailPanel id={selectedSampleItem} />
+        )}
         <WorkspaceSampleListPanel
           closeHandler={() => setShowListView(false)}
           isOpen={showListView}
@@ -79,9 +82,9 @@ export default function Index() {
             setShowListView(false);
             createSampleHandler();
           }}
+          selectHandler={setSelectedSampleItem}
           deleteHandler={deleteSamplesHandler}
         />
-
         <div
           className="absolute left-[50%] bottom-12 h-12 flex justify-center"
           style={{
