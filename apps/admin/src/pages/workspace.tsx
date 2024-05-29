@@ -58,18 +58,21 @@ export default function Index() {
     }
   }, [initSampleCreateDialog]);
 
-  const sampleSelectHandler = (index: number) => {
-    setSelectedSampleItem(samples[index].id);
-    const materialIndex = materials.findIndex(
-      (value) => value.id === samples[index].materialId,
-    );
-    placeNewSample({
-      itemId: samples[index].id,
-      modelUrl: samples[index].modelUrl,
-      imageUrl: materials[materialIndex].image,
-      modelType: samples[index].type,
-    });
-  };
+  const sampleSelectHandler = useCallback(
+    (index: number) => {
+      setSelectedSampleItem(samples[index].id);
+      const materialIndex = materials.findIndex(
+        (value) => value.id === samples[index].materialId,
+      );
+      placeNewSample({
+        itemId: samples[index].id,
+        modelUrl: samples[index].modelUrl,
+        imageUrl: materials[materialIndex].image,
+        modelType: samples[index].type,
+      });
+    },
+    [materials, samples, placeNewSample],
+  );
 
   const deleteSamplesHandler = useCallback(
     async (ids: number[]) => {
@@ -81,10 +84,13 @@ export default function Index() {
           (sample) => ids.findIndex((id) => id === sample.id) === -1,
         );
         setSamples(newSamples);
+
+        // remove sample items in unity view
+        removeSamplesByItemId(ids);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [samples],
+    [samples, removeSamplesByItemId],
   );
 
   return (
