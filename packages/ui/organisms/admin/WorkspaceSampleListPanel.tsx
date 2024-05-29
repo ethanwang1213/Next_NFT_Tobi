@@ -1,12 +1,7 @@
 import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
-
-type SampleItem = {
-  id: number;
-  name: string;
-  thumbnail: string;
-};
+import { SampleItem } from "ui/types/DigitalItems";
 
 const SampleItemComponent = (props: {
   thumbnail: string;
@@ -150,10 +145,10 @@ const WorkspaceSampleListPanel = (props: {
       <div className="flex-1 overflow-y-auto">
         <div className="w-full flex flex-col">
           {props.data &&
-            props.data.map((sample) => (
+            props.data.map((sample, index) => (
               <SampleItemComponent
                 key={`sample-${sample.id}`}
-                thumbnail={sample.thumbnail}
+                thumbnail={sample.thumbUrl}
                 name={sample.name}
                 selectState={selectState}
                 checked={
@@ -162,7 +157,7 @@ const WorkspaceSampleListPanel = (props: {
                 changeHandler={(value) =>
                   selectionChangeHandler(sample.id, value)
                 }
-                selectHandler={() => props.selectHandler(sample.id)}
+                selectHandler={() => props.selectHandler(index)}
               />
             ))}
         </div>

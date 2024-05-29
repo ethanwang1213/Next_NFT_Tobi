@@ -5,8 +5,8 @@ import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreat
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
 import Image from "next/image";
-// import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
-// import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+import { WorkspaceUnity } from "ui/molecules/CustomUnity";
 import useRestfulAPI from "hooks/useRestfulAPI";
 
 export const metadata: Metadata = {
@@ -26,14 +26,30 @@ export default function Index() {
 
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
 
-  const sampleAPIUrl = "native/admin/samples";
   const {
     data: samples,
     setData: setSamples,
     deleteData: deleteSamples,
-  } = useRestfulAPI(sampleAPIUrl);
+  } = useRestfulAPI("native/my/samples");
 
-  // const { customUnityProvider } = useWorkspaceUnityContext();
+  const { data: materials } = useRestfulAPI("native/materials");
+
+  const onSaveDataGenerated = (workspaceSaveData: WorkspaceSaveData) => {};
+
+  const onItemThumbnailGenerated = (thumbnailBase64: string) => {};
+
+  const {
+    unityProvider,
+    setLoadData,
+    requestSaveData,
+    placeNewSample,
+    removeSample,
+    removeSamplesByItemId,
+    requestItemThumbnail,
+  } = useWorkspaceUnityContext({
+    onSaveDataGenerated,
+    onItemThumbnailGenerated,
+  });
 
   const createSampleHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
@@ -42,9 +58,24 @@ export default function Index() {
     }
   }, [initSampleCreateDialog]);
 
+  const sampleSelectHandler = (index: number) => {
+    setSelectedSampleItem(samples[index].id);
+    const materialIndex = materials.findIndex(
+      (value) => value.id === samples[index].materialId,
+    );
+    placeNewSample({
+      itemId: samples[index].id,
+      modelUrl: samples[index].modelUrl,
+      imageUrl: materials[materialIndex].image,
+      modelType: samples[index].modelType,
+    });
+  };
+
   const deleteSamplesHandler = useCallback(
     async (ids: number[]) => {
-      const success = await deleteSamples(sampleAPIUrl, { sampleIds: ids });
+      const success = await deleteSamples("native/admin/samples", {
+        sampleIds: ids,
+      });
       if (success) {
         const newSamples = samples.filter(
           (sample) => ids.findIndex((id) => id === sample.id) === -1,
@@ -58,14 +89,12 @@ export default function Index() {
 
   return (
     <div className="w-full h-full relative">
-      {/* <WorkspaceUnity
-        customUnityProvider={customUnityProvider}
-        loadData={null}
-      /> */}
+      <WorkspaceUnity unityProvider={unityProvider} />
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
         <WorkspaceSampleCreateDialog
           dialogRef={sampleCreateDialogRef}
           initDialog={initSampleCreateDialog}
+          materials={materials}
         />
         <WorkspaceShortcutDialog
           dialogRef={shortcutDialogRef}
@@ -82,7 +111,7 @@ export default function Index() {
             setShowListView(false);
             createSampleHandler();
           }}
-          selectHandler={setSelectedSampleItem}
+          selectHandler={sampleSelectHandler}
           deleteHandler={deleteSamplesHandler}
         />
         <div

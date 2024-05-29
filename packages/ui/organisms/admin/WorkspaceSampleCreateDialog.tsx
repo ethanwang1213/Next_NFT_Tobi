@@ -8,20 +8,20 @@ import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect
 import MaterialImageCircleCropComponent from "ui/organisms/admin/MaterialImageCircleCrop";
 import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
 import SampleGenerateComponent from "ui/organisms/admin/SampleGenerate";
+import { MaterialItem } from "ui/types/DigitalItems";
 
 const WorkspaceSampleCreateDialog = ({
   dialogRef,
   initDialog,
+  materials,
 }: {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   initDialog: number;
+  materials: MaterialItem[];
 }) => {
   const [creationStep, setCreationStep] = useState(0);
   const [sampleType, setSampleType] = useState(null);
   const [materialImage, setMaterialImage] = useState(null);
-
-  const materialAPIUrl = "native/materials";
-  const { data: materials } = useRestfulAPI(materialAPIUrl);
 
   useEffect(() => {
     setCreationStep(0);
