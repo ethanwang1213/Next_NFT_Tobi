@@ -13,7 +13,7 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
 type MessageBodyForGeneratingItemThumbnail = {
-  thumbnailBase64: string;
+  base64Image: string;
 };
 
 type Props = {
@@ -110,8 +110,8 @@ export const useWorkspaceUnityContext = ({
         itemId,
       }));
       postMessageToUnity(
-        "RemoveItemsByIdMessageReceiver",
-        JSON.stringify({ list }),
+        "RemoveItemsMessageReceiver",
+        JSON.stringify({ itemRefList: list }),
       );
     },
     [postMessageToUnity],
@@ -163,7 +163,7 @@ export const useWorkspaceUnityContext = ({
 
       if (!messageBody) return;
 
-      onItemThumbnailGenerated(messageBody.thumbnailBase64);
+      onItemThumbnailGenerated(messageBody.base64Image);
     },
     [onItemThumbnailGenerated],
   );
