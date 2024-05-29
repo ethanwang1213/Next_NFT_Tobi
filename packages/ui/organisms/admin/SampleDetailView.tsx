@@ -31,7 +31,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
     <div className="flex flex-col items-center gap-6 text-base-white">
       <span className="text-base font-semibold ">{data?.content.name}</span>
       <span className="text-2xl font-bold text-center">
-        {data ? (data.name ? data.name : "Unnamed Sample item") : ""}
+        {data ? data.name || "Unnamed Sample item" : ""}
       </span>
       <Image
         width={160}
@@ -59,7 +59,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
             Creator
           </span>
           <span className="text-[10px] font-medium">
-            {data ? (data.name ? data.name : "Unnamed Sample item") : ""}
+            {data?.content.name ? data?.content.name : "-"}
           </span>
         </div>
         <div className="flex gap-4">
