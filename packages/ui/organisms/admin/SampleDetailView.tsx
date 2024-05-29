@@ -59,7 +59,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
             Creator
           </span>
           <span className="text-[10px] font-medium">
-            {data?.content.name ? data?.content.name : "-"}
+            {data ? (data.name ? data.name : "Unnamed Sample item") : ""}
           </span>
         </div>
         <div className="flex gap-4">

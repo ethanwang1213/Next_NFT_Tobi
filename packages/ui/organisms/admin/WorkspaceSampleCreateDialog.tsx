@@ -29,8 +29,6 @@ const WorkspaceSampleCreateDialog = ({
     setMaterialImage(null);
   }, [initDialog]);
 
-  console.log("WorkspaceSampleCreateDialog is rendered", materialImage);
-
   return (
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[650px] max-h-[540px] rounded-3xl p-4 pt-8 flex gap-3">

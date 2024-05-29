@@ -4,7 +4,7 @@ import "rc-slider/assets/index.css";
 import React, { useRef, useState } from "react";
 import { centerCrop, Crop, makeAspectCrop, PixelCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { MaterialItem } from "ui/types/DigitalItems";
+import { MaterialItem } from "ui/types/adminTypes";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 
 function centerAspectCrop(

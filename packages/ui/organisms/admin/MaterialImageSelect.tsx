@@ -1,7 +1,7 @@
 import NextImage from "next/image";
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { MaterialItem } from "ui/types/DigitalItems";
+import { MaterialItem } from "ui/types/adminTypes";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 
 const MaterialImageSelectComponent = (props: {

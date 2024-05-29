@@ -3,7 +3,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import Button from "ui/atoms/Button";
-import { MaterialItem } from "ui/types/DigitalItems";
+import { MaterialItem } from "ui/types/adminTypes";
 
 const SampleGenerateComponent = (props: {
   material: MaterialItem;

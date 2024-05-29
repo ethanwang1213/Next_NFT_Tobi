@@ -10,7 +10,7 @@ import ReactCrop, {
   PixelCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { MaterialItem } from "ui/types/DigitalItems";
+import { MaterialItem } from "ui/types/adminTypes";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 
 function centerAspectCrop(
