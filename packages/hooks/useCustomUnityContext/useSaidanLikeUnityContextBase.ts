@@ -78,7 +78,7 @@ export const useSaidanLikeUnityContextBase = ({
   useEffect(() => {
     if (!isLoaded || !isSaidanSceneLoaded) return;
     postMessageToLoadData();
-  }, [isLoaded, postMessageToLoadData]);
+  }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
   return {
     unityProvider,
