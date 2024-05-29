@@ -1,11 +1,10 @@
-import { SaidanItemData } from "types/unityTypes";
+import { SaidanItemData, Vector3 } from "types/unityTypes";
 
 export const UnitySceneType = {
   Standby: 0,
   Workspace: 1,
   ShowcaseEdit: 2,
 } as const;
-
 export type UnitySceneType =
   (typeof UnitySceneType)[keyof typeof UnitySceneType];
 
@@ -22,7 +21,6 @@ export const UnityMessageType = {
   NftModelIsGenerated: 9,
   RequestToOpenItemDetail: 10,
 } as const;
-
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];
 
@@ -37,22 +35,34 @@ export type MessageBodyForSavingSaidanData = {
   saidanThumbnailBase64: string;
 };
 
-export const saidanOffset = 10000;
+// export const saidanOffset = 10000;
 export const showcaseOffset = 20000;
 export const SaidanType = {
   Workspace: 0,
-  SaidanFirst: 1 + saidanOffset,
-  SaidanSecond: 2 + saidanOffset,
-  SaidanThird: 3 + saidanOffset,
-  ShowcaseFirst: 1 + showcaseOffset,
-  ShowcaseSecond: 2 + showcaseOffset,
-  ShowcaseThird: 3 + showcaseOffset,
+  SaidanFirst: 10001,
+  SaidanSecond: 10002,
+  SaidanThird: 10003,
+  ShowcaseFirst: 20001,
+  ShowcaseSecond: 20002,
+  ShowcaseThird: 20003,
 } as const;
 export type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
+
+export const ShowcaseType = {
+  First: 1,
+  Second: 2,
+  Third: 3,
+} as const;
+export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
 
 export type SaidanLikeData = {
   saidanId: number;
   saidanType: SaidanType;
   saidanUrl: string;
   saidanItemList: SaidanItemData[];
+  saidanCameraData: {
+    position: Vector3;
+    rotation: Vector3;
+  };
+  isDebug: boolean;
 };

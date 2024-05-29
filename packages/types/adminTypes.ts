@@ -1,4 +1,5 @@
-import { ShowcaseItemData, WorkspaceItemData } from "./unityTypes";
+import { ShowcaseType } from "hooks/useCustomUnityContext/types";
+import { ItemLoadData, ItemSaveData } from "./unityTypes";
 
 export type User = {
   uuid: string;
@@ -81,42 +82,25 @@ export type TcpFormType = {
 };
 
 export type WorkspaceLoadData = {
-  workspaceItemList: WorkspaceItemData[];
+  workspaceItemList: ItemLoadData[];
+  isDebug?: boolean;
 };
 
 export type WorkspaceSaveData = {
-  workspaceItemList: WorkspaceItemData[];
+  workspaceItemList: ItemSaveData[];
 };
 
 export type ShowcaseLoadData = {
   showcaseId: number;
-  showcaseType: number;
+  showcaseType: ShowcaseType;
   showcaseUrl: string;
-  sampleItemList: ShowcaseItemData[];
-  nftItemList: ShowcaseItemData[];
+  sampleItemList: ItemLoadData[];
+  nftItemList: ItemLoadData[];
+  isDebug?: boolean;
 };
 
 export type ShowcaseSaveData = {
-  sampleItemList: ShowcaseItemData[];
-  nftItemList: ShowcaseItemData[];
+  sampleItemList: ItemSaveData[];
+  nftItemList: ItemSaveData[];
   thumbnailImageBase64: string;
 };
-
-export const ShowcaseType = {
-  ShowcaseFirst: 1,
-  ShowcaseSecond: 2,
-  ShowcaseThird: 3,
-};
-export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
-
-export const ItemType = {
-  Sample: 0,
-  DigitalItemNft: 1,
-} as const;
-export type ItemType = (typeof ItemType)[keyof typeof ItemType];
-
-export const ModelType = {
-  Poster: 1,
-  AcrylicStand: 2,
-} as const;
-export type ModelType = (typeof ModelType)[keyof typeof ModelType];
