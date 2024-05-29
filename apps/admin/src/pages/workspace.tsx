@@ -67,7 +67,7 @@ export default function Index() {
       itemId: samples[index].id,
       modelUrl: samples[index].modelUrl,
       imageUrl: materials[materialIndex].image,
-      modelType: samples[index].modelType,
+      modelType: samples[index].type,
     });
   };
 
