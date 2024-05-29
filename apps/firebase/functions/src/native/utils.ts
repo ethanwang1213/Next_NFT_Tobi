@@ -13,6 +13,14 @@ export function isEmptyObject(obj: object): boolean {
   }
 }
 
+export function getBoxAddress(userId: number, boxId: number): string {
+  const userIdPad = userId.toString().padStart(4, "0");
+  const boxIdPad = boxId.toString().padStart(5, "0");
+  let address = Buffer.from(userIdPad+"_"+boxIdPad, "ascii").toString("base64");
+  address = "TB"+address.replace("==", "");
+  return address;
+}
+
 export const statusOfShowcase = {
   private: 0,
   public: 1,

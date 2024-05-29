@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { MutableRefObject } from "react";
+import Button from "ui/atoms/Button";
 
 const SaveConfirmDialog = ({
   dialogRef,
@@ -30,7 +31,7 @@ const SaveConfirmDialog = ({
           review is completed.
         </div>
         <div className="modal-action flex justify-end gap-4">
-          <button
+          <Button
             type="button"
             className="px-4 py-2 bg-primary rounded-[64px] 
               text-base-white text-sm leading-4 font-semibold"
@@ -40,11 +41,10 @@ const SaveConfirmDialog = ({
             }}
           >
             Save
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             className="px-4 py-2 rounded-[64px] border-2 border-primary
-              hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
             onClick={() => {
               changeHandler("discard");
@@ -52,11 +52,10 @@ const SaveConfirmDialog = ({
             }}
           >
             Discard
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             className="px-4 py-2 rounded-[64px] border-2 border-primary
-              hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
             onClick={() => {
               changeHandler("cancel");
@@ -64,7 +63,7 @@ const SaveConfirmDialog = ({
             }}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">

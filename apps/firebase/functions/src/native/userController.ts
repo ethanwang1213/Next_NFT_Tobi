@@ -431,53 +431,55 @@ export const businessSubmission = async (req: Request, res: Response) => {
       license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
     };
     try {
-      const [savedBusinessData, savedContentData] = await prisma.$transaction([
-        prisma.tobiratory_businesses.create({
+      const returnData = await prisma.$transaction(async (tx) => {
+        const savedBusinessData = await tx.tobiratory_businesses.create({
           data: businessData,
-        }),
-        prisma.tobiratory_contents.create({
-          data: contentData,
-        })]
-      );
-      const copyrights = copyrightHolder.map((copyright: string)=>{
-        return {
-          copyright_name: copyright,
-          content_id: savedContentData.id,
-        };
-      });
-      await prisma.tobiratory_copyright.createMany({
-        data: copyrights,
-      });
-      const showcaseTemplate = await prisma.tobiratory_showcase_template.findFirst();
-      if (!showcaseTemplate) {
-        res.status(401).send({
-          status: "error",
-          data: "not-template",
         });
-        return;
-      }
-      await prisma.tobiratory_showcase.create({
-        data: {
-          title: contentName,
-          description: description,
-          owner_uuid: savedBusinessData.uuid,
-          content_id: savedContentData.id,
-          template_id: showcaseTemplate.id,
-          thumb_url: showcaseTemplate.cover_image,
-          status: statusOfShowcase.public,
-        },
+        const savedContentData = await tx.tobiratory_contents.create({
+          data: contentData,
+        });
+        const copyrights = copyrightHolder.map((copyright: string)=>{
+          return {
+            copyright_name: copyright,
+            content_id: savedContentData.id,
+          };
+        });
+        await tx.tobiratory_copyright.createMany({
+          data: copyrights,
+        });
+        const showcaseTemplate = await tx.tobiratory_showcase_template.findFirst();
+        if (!showcaseTemplate) {
+          res.status(401).send({
+            status: "error",
+            data: "not-template",
+          });
+          return;
+        }
+        await tx.tobiratory_showcase.create({
+          data: {
+            title: contentName,
+            description: description,
+            owner_uuid: savedBusinessData.uuid,
+            content_id: savedContentData.id,
+            template_id: showcaseTemplate.id,
+            thumb_url: showcaseTemplate.cover_image,
+            status: statusOfShowcase.public,
+          },
+        });
+        await tx.tobiratory_sample_items.updateMany({
+          where: {
+            owner_uuid: uid,
+          },
+          data: {
+            content_id: savedContentData.id,
+          },
+        });
+        return {...savedBusinessData, content: {...savedContentData}};
       });
-      await prisma.tobiratory_sample_items.updateMany({
-        where: {
-          owner_uuid: uid,
-        },
-        data: {
-          content_id: savedContentData.id,
-        },
-      });
+
       res.status(200).send({
         status: "success",
-        data: {...savedBusinessData, content: {...savedContentData}},
+        data: returnData,
       });
     } catch (error) {
       res.status(500).send({

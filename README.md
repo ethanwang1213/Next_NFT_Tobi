@@ -164,6 +164,11 @@ The build data of Unity WebGL is stored in Google Drive.
 
 https://drive.google.com/drive/folders/1q11x7_riHmzbJDZWoitjWs51Jjdi8F9k?usp=drive_link
 
+Please put it like following:
+
+![スクリーンショット 2024-05-21 20 17 55](https://github.com/tobira-project/tobiratory-web/assets/105419588/a66b0a66-93e4-475d-b6de-3030618f1c87)
+
+
 ## Useful Links
 
 Learn more about the power of Turborepo:

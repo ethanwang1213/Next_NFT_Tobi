@@ -2,10 +2,13 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
+import {getBoxAddress} from "./utils";
 
-export const permissionGift = async (req: Request, res: Response) => {
+export const updateBoxInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {boxId, permission}:{boxId: number, permission: boolean} = req.body;
+  const {id} = req.params;
+  const boxId = Number(id);
+  const {name, giftPermission}:{name?: string, giftPermission?: boolean} = req.body;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const userData = await prisma.tobiratory_accounts.findUnique({
@@ -14,7 +17,6 @@ export const permissionGift = async (req: Request, res: Response) => {
       },
     });
 
-    const giftPermission = permission;
     if (!boxId) {
       try {
         await prisma.tobiratory_accounts.update({
@@ -40,7 +42,7 @@ export const permissionGift = async (req: Request, res: Response) => {
           },
         });
         if (boxData == null) {
-          res.status(401).send({
+          res.status(404).send({
             status: "error",
             data: {
               msg: "not-exist",
@@ -49,7 +51,7 @@ export const permissionGift = async (req: Request, res: Response) => {
           return;
         }
         if (boxData.creator_uuid != uid) {
-          res.status(401).send({
+          res.status(403).send({
             status: "error",
             data: {
               msg: "not-yours",
@@ -63,6 +65,7 @@ export const permissionGift = async (req: Request, res: Response) => {
           },
           data: {
             gift_permission: giftPermission,
+            name: name,
           },
         });
       } catch (error) {
@@ -73,15 +76,24 @@ export const permissionGift = async (req: Request, res: Response) => {
         return;
       }
     }
-    const userIdPad = userData?.id.toString().padStart(4, "0");
-    const boxIdPad = boxId.toString().padStart(5, "0");
-    let address = Buffer.from(userIdPad+"_"+boxIdPad, "ascii").toString("base64");
-    address = "TB"+address.replace("==", "");
+    const updateUserData = await prisma.tobiratory_accounts.findUnique({
+      where: {
+        uuid: uid,
+      },
+    });
+    const box = await prisma.tobiratory_boxes.findUnique({
+      where: {
+        id: boxId,
+      },
+    });
+    const address = getBoxAddress(userData?.id??0, boxId);
     res.status(200).send({
       status: "success",
       data: {
+        id: boxId,
+        name: !boxId?updateUserData?.username+"'s Inventory":box?.name,
         address: address,
-        giftPermission: giftPermission,
+        giftPermission: !boxId?updateUserData?.gift_permission:box?.gift_permission,
       },
     });
   }).catch((error: FirebaseError) => {
@@ -145,25 +157,21 @@ export const getInventoryData = async (req: Request, res: Response) => {
           where: {
             box_id: box.id,
           },
+          include: {
+            digital_item: true,
+          },
           orderBy: {
             updated_date_time: "desc",
           },
         });
-        const items4 = await Promise.all(
-            itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-                .map(async (item)=>{
-                  const itemInfo = await prisma.tobiratory_digital_items.findUnique({
-                    where: {
-                      id: item.digital_item_id,
-                    },
-                  });
-                  return {
-                    id: item.id,
-                    name: itemInfo?.name,
-                    image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-                  };
-                })
-        );
+        const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+            .map((item)=>{
+              return {
+                id: item.id,
+                name: item.digital_item.name,
+                image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+              };
+            });
         return {
           id: box.id,
           name: box.name,
@@ -175,26 +183,22 @@ export const getInventoryData = async (req: Request, res: Response) => {
           owner_uuid: uid,
           box_id: 0,
         },
+        include: {
+          digital_item: true,
+        },
         orderBy: {
           updated_date_time: "desc",
         },
       });
-      const returnItems = await Promise.all(
-          items.map(async (item)=>{
-            const itemInfo = await prisma.tobiratory_digital_items.findUnique({
-              where: {
-                id: item.digital_item_id,
-              },
-            });
-            return {
-              id: item.id,
-              name: itemInfo?.name,
-              image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-              saidanId: item.saidan_id,
-              status: item?.mint_status,
-            };
-          })
-      );
+      const returnItems = items.map((item)=>{
+        return {
+          id: item.id,
+          name: item.digital_item.name,
+          image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+          saidanId: item.saidan_id,
+          status: item?.mint_status,
+        };
+      });
       res.status(200).send({
         status: "success",
         data: {
@@ -245,22 +249,18 @@ export const getBoxData = async (req: Request, res: Response) => {
       where: {
         box_id: parseInt(id),
       },
+      include: {
+        digital_item: true,
+      },
     });
-    const returnItem = await Promise.all(
-        items.map(async (item)=>{
-          const itemInfo = await prisma.tobiratory_digital_items.findUnique({
-            where: {
-              id: item.digital_item_id,
-            },
-          });
-          return {
-            id: item.id,
-            name: itemInfo?.name,
-            image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-            saidanId: item?.saidan_id,
-          };
-        })
-    );
+    const returnItem = items.map((item)=>{
+      return {
+        id: item.id,
+        name: item.digital_item.name,
+        image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+        saidanId: item?.saidan_id,
+      };
+    });
     res.status(200).send({
       status: "success",
       data: {
@@ -720,5 +720,76 @@ export const deleteNFT = async (req: Request, res: Response) => {
       status: "error",
       data: error.code,
     });
+  });
+};
+
+export const adminGetBoxList = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    try {
+      const uid = decodedToken.uid;
+      const admin = await prisma.tobiratory_businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (!admin) {
+        res.status(401).send({
+          status: "error",
+          data: "not-admin",
+        });
+        return;
+      }
+      const content = await prisma.tobiratory_contents.findFirst({
+        where: {
+          owner_uuid: uid,
+        },
+      });
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-content",
+        });
+        return;
+      }
+      const inventory = await prisma.tobiratory_accounts.findUnique({
+        where: {
+          uuid: uid,
+        },
+      });
+      const boxes = await prisma.tobiratory_boxes.findMany({
+        where: {
+          creator_uuid: uid,
+        },
+      });
+      const inventoryAddress = getBoxAddress(inventory?.id??0, 0);
+      const returnData = {
+        giftPermission: inventory?.gift_permission,
+        address: inventoryAddress,
+        boxes: boxes.map((box)=>{
+          return {
+            id: box.id,
+            name: box.name,
+            giftPermission: box.gift_permission,
+            address: getBoxAddress(inventory?.id??0, box.id),
+          };
+        }),
+      };
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
   });
 };

@@ -1,3 +1,5 @@
+import { ShowcaseItemData, WorkspaceItemData } from "./unityTypes";
+
 export type User = {
   uuid: string;
   name: string;
@@ -78,11 +80,43 @@ export type TcpFormType = {
   copyright: TcpCopyright;
 };
 
-export const UnitySceneType = {
-  Standby: 0,
-  Workspace: 1,
-  Showcase: 2,
-} as const;
+export type WorkspaceLoadData = {
+  workspaceItemList: WorkspaceItemData[];
+};
 
-export type UnitySceneType =
-  (typeof UnitySceneType)[keyof typeof UnitySceneType];
+export type WorkspaceSaveData = {
+  workspaceItemList: WorkspaceItemData[];
+};
+
+export type ShowcaseLoadData = {
+  showcaseId: number;
+  showcaseType: number;
+  showcaseUrl: string;
+  sampleItemList: ShowcaseItemData[];
+  nftItemList: ShowcaseItemData[];
+};
+
+export type ShowcaseSaveData = {
+  sampleItemList: ShowcaseItemData[];
+  nftItemList: ShowcaseItemData[];
+  thumbnailImageBase64: string;
+};
+
+export const ShowcaseType = {
+  ShowcaseFirst: 1,
+  ShowcaseSecond: 2,
+  ShowcaseThird: 3,
+};
+export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
+
+export const ItemType = {
+  Sample: 0,
+  DigitalItemNft: 1,
+} as const;
+export type ItemType = (typeof ItemType)[keyof typeof ItemType];
+
+export const ModelType = {
+  Poster: 1,
+  AcrylicStand: 2,
+} as const;
+export type ModelType = (typeof ModelType)[keyof typeof ModelType];

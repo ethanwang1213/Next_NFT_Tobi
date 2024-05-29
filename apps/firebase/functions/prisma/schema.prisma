@@ -33,6 +33,7 @@ model tobiratory_accounts {
   tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
   tobiratory_businesses            tobiratory_businesses?
   tobiratory_favorite_content      tobiratory_favorite_content[]
+  tobiratory_workspace_items       tobiratory_workspace_items[]
 }
 
 model tobiratory_flow_accounts {
@@ -114,29 +115,28 @@ model tobiratory_contents {
 }
 
 model tobiratory_digital_items {
-  id                               Int                                  @id @default(autoincrement())
-  user                             tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
-  creator_uuid                     String                               @db.VarChar(100)
-  creator_flow_address             String?                              @db.VarChar(255)
-  name                             String                               @default("") @db.VarChar(255)
-  default_thumb_url                String                               @db.Text
-  custom_thumb_url                 String                               @db.Text
-  is_default_thumb                 Boolean                              @default(true)
-  material_id                      Int                                  @default(0)
-  type                             Int
-  description                      String                               @default("") @db.VarChar(255)
-  limit                            Int?
-  license                          String                               @default("") @db.VarChar(255)
-  copyright                        tobiratory_digital_items_copyright[]
-  sample_item                      tobiratory_sample_items?
-  digital_nft                      tobiratory_digital_item_nfts[]
-  item_id                          Int?
-  tx_id                            String?                              @db.VarChar(255)
-  status                           Int
-  minted_count                     Int                                  @default(0)
-  updated_date_time                DateTime                             @default(now()) @db.Timestamp(6)
-  created_date_time                DateTime                             @default(now()) @db.Timestamp(6)
-  tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
+  id                   Int                                  @id @default(autoincrement())
+  user                 tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
+  creator_uuid         String                               @db.VarChar(100)
+  creator_flow_address String?                              @db.VarChar(255)
+  name                 String                               @default("") @db.VarChar(255)
+  default_thumb_url    String                               @db.Text
+  custom_thumb_url     String                               @db.Text
+  is_default_thumb     Boolean                              @default(true)
+  material_id          Int                                  @default(0)
+  type                 Int
+  description          String                               @default("") @db.VarChar(255)
+  limit                Int?
+  license              String                               @default("") @db.VarChar(255)
+  copyright            tobiratory_digital_items_copyright[]
+  sample_item          tobiratory_sample_items?
+  digital_nft          tobiratory_digital_item_nfts[]
+  item_id              Int?
+  tx_id                String?                              @db.VarChar(255)
+  status               Int
+  minted_count         Int                                  @default(0)
+  updated_date_time    DateTime                             @default(now()) @db.Timestamp(6)
+  created_date_time    DateTime                             @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_sample_items {
@@ -146,57 +146,68 @@ model tobiratory_sample_items {
   user                             tobiratory_accounts                @relation(fields: [owner_uuid], references: [uuid])
   owner_uuid                       String                             @db.VarChar(100)
   model_url                        String                             @db.VarChar(255)
-  position                         Float[]
-  rotation                         Float[]
-  scale                            Float?
-  stage_type                       Int?
   content_id                       Int                                @default(0)
   price                            Int?
   start_date                       DateTime?                          @db.Timestamp(6)
   end_date                         DateTime?                          @db.Timestamp(6)
   sale_quantity                    Int?
   quantity_limit                   Int?
-  in_workspace                     Boolean                            @default(false)
   is_deleted                       Boolean                            @default(false)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
+  tobiratory_workspace             tobiratory_workspace_items[]
+}
+
+model tobiratory_workspace_items {
+  id                Int                     @id @default(autoincrement())
+  owner_uuid        String
+  user              tobiratory_accounts     @relation(fields: [owner_uuid], references: [uuid])
+  sample_id         Int
+  sample            tobiratory_sample_items @relation(fields: [sample_id], references: [id])
+  position          Float[]
+  rotation          Float[]
+  scale             Float?
+  stage_type        Int?
+  updated_date_time DateTime                @default(now()) @db.Timestamp(6)
+  created_date_time DateTime                @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_digital_item_nfts {
-  id                       Int                             @id @default(autoincrement())
-  serial_no                Int?
-  digital_item             tobiratory_digital_items        @relation(fields: [digital_item_id], references: [id])
-  digital_item_id          Int
-  user                     tobiratory_accounts             @relation(fields: [owner_uuid], references: [uuid])
-  nft_model                String                          @default("") @db.VarChar(255)
-  nft_metadata             String                          @default("") @db.Text
-  owner_uuid               String                          @db.VarChar(100)
-  saidan_id                Int                             @default(0)
-  content_id               Int                             @default(0)
-  state_type               Int                             @default(0)
-  can_scale                Boolean                         @default(false)
-  meter_height             Float                           @default(0)
-  scale                    Float                           @default(0)
-  position                 Float[]                         @default([0, 0, 0])
-  rotation                 Float[]                         @default([0, 0, 0])
-  box_id                   Int                             @default(0)
-  mint_status              String                          @default("minting") // "minted", "opened"
-  tx_id                    String?                         @db.VarChar(255)
-  updated_date_time        DateTime                        @default(now()) @db.Timestamp(6)
-  created_date_time        DateTime                        @default(now()) @db.Timestamp(6)
-  tobiratory_showcase_nfts tobiratory_showcase_nft_items[]
+  id                               Int                                @id @default(autoincrement())
+  serial_no                        Int?
+  digital_item                     tobiratory_digital_items           @relation(fields: [digital_item_id], references: [id])
+  digital_item_id                  Int
+  user                             tobiratory_accounts                @relation(fields: [owner_uuid], references: [uuid])
+  nft_model                        String                             @default("") @db.VarChar(255)
+  nft_metadata                     String                             @default("") @db.Text
+  owner_uuid                       String                             @db.VarChar(100)
+  saidan_id                        Int                                @default(0)
+  content_id                       Int                                @default(0)
+  state_type                       Int                                @default(0)
+  can_scale                        Boolean                            @default(false)
+  meter_height                     Float                              @default(0)
+  scale                            Float                              @default(0)
+  position                         Float[]                            @default([0, 0, 0])
+  rotation                         Float[]                            @default([0, 0, 0])
+  box_id                           Int                                @default(0)
+  mint_status                      String                             @default("minting") // "minted", "opened"
+  tx_id                            String?                            @db.VarChar(255)
+  updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
+  created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
+  tobiratory_showcase_nfts         tobiratory_showcase_nft_items[]
+  tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
 }
 
 model tobiratory_digital_nft_ownership {
-  id                       Int                       @id @default(autoincrement())
-  tobiratory_accounts      tobiratory_accounts?      @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid               String                    @db.VarChar(100)
-  tobiratory_digital_items tobiratory_digital_items? @relation(fields: [nft_id], references: [id])
+  id                       Int                           @id @default(autoincrement())
+  tobiratory_accounts      tobiratory_accounts?          @relation(fields: [owner_uuid], references: [uuid])
+  owner_uuid               String                        @db.VarChar(100)
+  tobiratory_digital_items tobiratory_digital_item_nfts? @relation(fields: [nft_id], references: [id])
   nft_id                   Int
-  tx_id                    String?                   @db.VarChar(255)
-  updated_date_time        DateTime                  @default(now()) @db.Timestamp(6)
-  created_date_time        DateTime                  @default(now()) @db.Timestamp(6)
+  tx_id                    String?                       @db.VarChar(255)
+  updated_date_time        DateTime                      @default(now()) @db.Timestamp(6)
+  created_date_time        DateTime                      @default(now()) @db.Timestamp(6)
 }
 
 model tobiratory_boxes {
@@ -313,6 +324,8 @@ model tobiratory_showcase_sample_items {
   showcase_id       Int
   sample            tobiratory_sample_items @relation(fields: [sample_id], references: [id])
   sample_id         Int
+  stage_type        Int                     @default(0)
+  scale             Float                   @default(1)
   position          Float[]
   rotation          Float[]
   updated_date_time DateTime                @default(now()) @db.Timestamp(6)
@@ -325,6 +338,9 @@ model tobiratory_showcase_nft_items {
   showcase_id       Int
   nft               tobiratory_digital_item_nfts @relation(fields: [nft_id], references: [id])
   nft_id            Int                          @unique
+  stage_type        Int                          @default(0)
+  scale             Float                        @default(1)
+  meter_height      Float                        @default(0)
   position          Float[]
   rotation          Float[]
   updated_date_time DateTime                     @default(now()) @db.Timestamp(6)

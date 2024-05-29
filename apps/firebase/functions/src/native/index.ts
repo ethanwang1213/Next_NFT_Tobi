@@ -49,11 +49,11 @@ import {
   updateMySaidan,
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
-import {makeBox, getBoxData, deleteBoxData, getInventoryData, permissionGift, openNFT, userInfoFromAddress, moveNFT, deleteNFT} from "./boxController";
-import {fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
+import {adminGetAllNFTs, adminGetBoxData, fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
-import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases, putItemToShowcase} from "./showcaseController";
+import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases, putItemToShowcase, loadMyShowcase, saveMyShowcase} from "./showcaseController";
 import {searchAll, searchContents, searchDigitalItems, searchSaidans, searchUsers} from "./searchController";
 
 const app = express();
@@ -89,7 +89,7 @@ app.get("/contents/favor", getFavoriteContents);
 app.get("/contents/:id", getContentById);
 app.post("/contents/:id", setFavoriteContent);
 
-app.get("/nfts/:id", dummyResponse);
+app.get("/nfts/:id", getNftInfo);
 
 app.get("/saidans/:saidanId", getSaidansById);
 app.get("/posts", dummyResponse);
@@ -107,7 +107,7 @@ app.post("/my/inventory", dummyResponse);
 app.post("/my/inventory/box", makeBox);
 app.get("/my/inventory/box/:id", getBoxData);
 app.delete("/my/inventory/box/:id", deleteBoxData);
-app.post("/my/inventory/gift-permission", permissionGift);
+app.put("/my/box/:id", updateBoxInfo);
 
 app.get("/my/nfts/:id", getNftInfo);
 app.post("/my/contents", dummyResponse);
@@ -160,9 +160,9 @@ app.post("/my/nfts/:id/gift", dummyResponse);
 app.post("/my/nfts/move", moveNFT);
 app.post("/my/nfts/delete", deleteNFT);
 app.post("/address/decoder", userInfoFromAddress);
-app.post("/material/save", uploadMaterial);
-app.post("/material/get", getMaterial);
-app.post("/material/remove", removeMaterials);
+app.post("/materials", uploadMaterial);
+app.get("/materials", getMaterial);
+app.delete("/materials", removeMaterials);
 app.post("/nfts/fetch-thumb", fetchNftThumb);
 app.post("/nfts/fetch-model", fetchNftModel);
 
@@ -178,6 +178,9 @@ app.delete("/admin/samples", adminDeleteSamples);
 app.get("/admin/samples/:sampleId", adminDetailOfSample);
 app.post("/admin/samples/:sampleId", adminUpdateSample);
 
+app.get("/admin/nfts", adminGetAllNFTs);
+app.get("/admin/boxes/:id", adminGetBoxData);
+
 // management showcase
 app.get("/admin/showcases/template", getShowcaseTemplate);
 app.post("/admin/showcases", createMyShocase);
@@ -185,8 +188,13 @@ app.get("/admin/showcases", getMyShowcases);
 app.put("/admin/showcases/:id", updateMyShowcase);
 app.put("/admin/showcases/:id/put-item", putItemToShowcase);
 app.delete("/admin/showcases/:id", deleteMyShowcase);
+app.get("/admin/showcases/:id", loadMyShowcase);
+app.post("/admin/showcases/:id", saveMyShowcase);
 
 // management content
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
+
+// management boxes
+app.get("/admin/boxes", adminGetBoxList);
 export const native = functions.region(REGION).https.onRequest(app);
