@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
-import Button from "../../atoms/Button";
+import Button from "ui/atoms/Button";
 import { getSampleStatusTitle } from "./StatusDropdownSelect";
 
 const SampleTable = (filters: {

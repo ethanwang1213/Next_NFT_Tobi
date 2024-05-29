@@ -4,6 +4,8 @@ import { default as NextApp } from "next/app";
 import "@/styles/global.scss";
 import "@/styles/PublicSwitch.css";
 import "@/styles/TripleToggleSwitch.scss";
+import "@/styles/CropStyles.css";
+import "@/styles/Spinner.css";
 import "react-easy-crop/react-easy-crop.css";
 import "swiper/css";
 import "swiper/css/effect-cards";
