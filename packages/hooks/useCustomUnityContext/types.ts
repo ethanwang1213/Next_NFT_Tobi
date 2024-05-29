@@ -48,13 +48,6 @@ export const SaidanType = {
 } as const;
 export type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
 
-export const ShowcaseType = {
-  First: 1,
-  Second: 2,
-  Third: 3,
-} as const;
-export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
-
 export type SaidanLikeData = {
   saidanId: number;
   saidanType: SaidanType;

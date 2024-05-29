@@ -61,7 +61,8 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
       return {
         saidanId: loadData.showcaseId,
         saidanType: (loadData.showcaseType + showcaseOffset) as SaidanType,
-        saidanUrl: loadData.showcaseUrl,
+        // saidanUrl: loadData.showcaseUrl,
+        saidanUrl: "dummy",
         saidanItemList,
         saidanCameraData: {
           position: { x: 0, y: 0, z: 0 },
