@@ -62,7 +62,7 @@ const useRestfulAPI = (url) => {
       const jsonData = await response.json();
       if (jsonData.status === "success") {
         if (dataObjectNames == null) {
-          return true;
+          return jsonData.data;
         } else {
           let returnData = jsonData.data;
           dataObjectNames.forEach((objectName) => {
@@ -107,7 +107,7 @@ const useRestfulAPI = (url) => {
       const jsonData = await response.json();
       if (jsonData.status === "success") {
         if (dataObjectNames == null) {
-          return true;
+          return jsonData.data;
         } else {
           let returnData = jsonData.data;
           dataObjectNames.forEach((objectName) => {

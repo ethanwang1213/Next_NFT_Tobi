@@ -1,0 +1,107 @@
+import { ImageType, uploadImage } from "fetchers/UploadActions";
+import useRestfulAPI from "hooks/useRestfulAPI";
+import NextImage from "next/image";
+import React, { MutableRefObject, useEffect, useState } from "react";
+import RoadMapComponent from "ui/organisms/admin/SampleCreateRoadmap";
+import SampleTypeSelectComponent from "ui/organisms/admin/SampleTypeSelect";
+import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect";
+import MaterialImageCircleCropComponent from "ui/organisms/admin/MaterialImageCircleCrop";
+import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
+import SampleGenerateComponent from "ui/organisms/admin/SampleGenerate";
+
+const WorkspaceSampleCreateDialog = ({
+  dialogRef,
+  initDialog,
+}: {
+  dialogRef: MutableRefObject<HTMLDialogElement>;
+  initDialog: number;
+}) => {
+  const [creationStep, setCreationStep] = useState(0);
+  const [sampleType, setSampleType] = useState(null);
+  const [materialImage, setMaterialImage] = useState(null);
+
+  const materialAPIUrl = "native/materials";
+  const { data: materials } = useRestfulAPI(materialAPIUrl);
+
+  useEffect(() => {
+    setCreationStep(0);
+    setSampleType(null);
+    setMaterialImage(null);
+  }, [initDialog]);
+
+  return (
+    <dialog ref={dialogRef} className="modal">
+      <div className="modal-box max-w-[650px] max-h-[540px] rounded-3xl p-4 pt-8 flex gap-3">
+        <form method="dialog">
+          <button className="absolute w-4 h-4 top-4 right-4">
+            <NextImage
+              src="/admin/images/icon/close2.svg"
+              width={16}
+              height={16}
+              alt="close icon"
+            />
+          </button>
+        </form>
+        <div className="w-[188px] rounded-2xl bg-primary ">
+          <RoadMapComponent sampleType={sampleType} step={creationStep} />
+        </div>
+        <div className="w-[400px] h-[492px] flex flex-col gap-4">
+          {creationStep === 0 && (
+            <SampleTypeSelectComponent
+              selectTypeHandler={(value) => {
+                setSampleType(value);
+                setCreationStep(1);
+              }}
+            />
+          )}
+          {creationStep === 1 && (
+            <MaterialImageSelectComponent
+              data={materials}
+              selectedImage={materialImage}
+              selectImageHandler={(value) => setMaterialImage(value)}
+              backHandler={() => setCreationStep(creationStep - 1)}
+              nextHandler={() => setCreationStep(creationStep + 1)}
+            />
+          )}
+          {creationStep === 2 && sampleType === "Poster" && (
+            <MaterialImageCropComponent
+              materialImage={materialImage}
+              cropHandler={(image: string) =>
+                setMaterialImage({ id: 0, image: image })
+              }
+              backHandler={() => setCreationStep(creationStep - 1)}
+              nextHandler={() => setCreationStep(creationStep + 1)}
+            />
+          )}
+          {creationStep === 2 && sampleType === "Can Badge" && (
+            <MaterialImageCircleCropComponent
+              materialImage={materialImage}
+              cropHandler={(image: string) =>
+                setMaterialImage({ id: 0, image: image })
+              }
+              backHandler={() => setCreationStep(creationStep - 1)}
+              nextHandler={() => setCreationStep(creationStep + 1)}
+            />
+          )}
+          {creationStep === 3 &&
+            (sampleType === "Poster" || sampleType === "Can Badge") && (
+              <SampleGenerateComponent
+                material={materialImage}
+                sampleType={sampleType}
+                closeHandler={() => {
+                  if (dialogRef.current) {
+                    dialogRef.current.close();
+                  }
+                }}
+              />
+            )}
+        </div>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+  );
+};
+
+export default React.memo(WorkspaceSampleCreateDialog);

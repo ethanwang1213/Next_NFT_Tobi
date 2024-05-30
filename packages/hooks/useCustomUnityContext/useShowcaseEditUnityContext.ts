@@ -1,78 +1,139 @@
-import { useCallback, useEffect } from "react";
-import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { dummyLoadData } from "./dummyData";
-import { UnityMessageType, UnitySceneType } from "./unityType";
+import { useCallback } from "react";
+import { ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
+import { ItemSaveData, ItemType, SaidanItemData } from "types/unityTypes";
+import {
+  MessageBodyForSavingSaidanData,
+  SaidanLikeData,
+  SaidanType,
+  showcaseOffset,
+  UnityMessageJson,
+  UnitySceneType,
+} from "./types";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
+import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
-export const useShowcaseEditUnityContext = () => {
+type Props = {
+  onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveData) => void;
+};
+
+type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
+
+export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
   const {
     unityProvider,
     addEventListener,
     removeEventListener,
-    resolveUnityMessage,
     setLoadData,
+    requestSaveData,
+    placeNewItem,
+    removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
   });
 
-  const processLoadData = useCallback((loadData: any) => {
-    console.log(loadData);
-    if (loadData == null) return null;
+  const processLoadData: ProcessLoadData = useCallback(
+    (loadData: ShowcaseLoadData) => {
+      console.log(loadData);
+      if (loadData == null) return null;
 
-    // TODO(toruto): implement to process loadData
-    // return dummy data
-    if (loadData === 0) {
-      return dummyLoadData[0];
-    } else if (loadData === 1 || loadData === 2) {
-      return dummyLoadData[1];
-    } else {
-      return null;
-    }
-  }, []);
+      const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
+        return {
+          ...v,
+          itemType: ItemType.Sample,
+          canScale: true,
+          itemMeterHeight: 0.3,
+          isDebug: false, // not used in loading
+        };
+      });
+      const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
+        return {
+          ...v,
+          itemType: ItemType.DigitalItemNft,
+          canScale: true,
+          itemMeterHeight: 0.3,
+          isDebug: false, // not used in loading
+        };
+      });
+      const saidanItemList = sampleList.concat(nftList);
+
+      return {
+        saidanId: loadData.showcaseId,
+        saidanType: (loadData.showcaseType + showcaseOffset) as SaidanType,
+        // saidanUrl: loadData.showcaseUrl,
+        saidanUrl: "dummy",
+        saidanItemList,
+        saidanCameraData: {
+          position: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+        },
+        isDebug: loadData.isDebug ? loadData.isDebug : false,
+      };
+    },
+    [],
+  );
 
   const processAndSetLoadData = useCallback(
-    (loadData: any) => {
+    (loadData: ShowcaseLoadData) => {
       setLoadData(processLoadData(loadData));
     },
     [setLoadData, processLoadData],
   );
 
-  // `message` is JSON string formed in Unity side like following:
-  // {
-  //   "messageType": string,
-  //   "sceneType": number,
-  //   "messageBody": string or JSON string
-  // }
-  const handleUnityMessage = useCallback(
-    (message: ReactUnityEventParameter) => {
-      if (typeof message !== "string") return;
-      const msgObj = resolveUnityMessage(message);
-      if (!msgObj) return;
+  const handleSaveDataGenerated = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onSaveDataGenerated) return;
 
-      // execute event handlers along with message type
-      switch (msgObj.messageType) {
-        case UnityMessageType.SimpleMessage:
-          handleSimpleMessage(msgObj);
-          return;
-        case UnityMessageType.SceneIsLoaded:
-          handleSceneIsLoaded();
-          return;
-        default:
-          return;
-      }
+      const messageBody = JSON.parse(
+        msgObj.messageBody,
+      ) as MessageBodyForSavingSaidanData;
+
+      if (!messageBody) return;
+
+      var sampleItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
+        .filter((v) => v.itemType === ItemType.Sample)
+        .map((v) => ({
+          itemId: v.itemId,
+          tableId: v.tableId,
+          stageType: v.stageType,
+          position: v.position,
+          rotation: v.rotation,
+          scale: v.scale,
+        }));
+      var nftItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
+        .filter((v) => v.itemType === ItemType.DigitalItemNft)
+        .map((v) => ({
+          itemId: v.itemId,
+          tableId: v.tableId,
+          stageType: v.stageType,
+          position: v.position,
+          rotation: v.rotation,
+          scale: v.scale,
+        }));
+
+      onSaveDataGenerated({
+        sampleItemList,
+        nftItemList,
+        thumbnailImageBase64: messageBody.saidanThumbnailBase64,
+      });
     },
-    [resolveUnityMessage, handleSimpleMessage, handleSceneIsLoaded],
+    [onSaveDataGenerated],
   );
 
-  // We use only `onUnityMessage` event to receive messages from Unity side.
-  useEffect(() => {
-    addEventListener("onUnityMessage", handleUnityMessage);
-    return () => {
-      removeEventListener("onUnityMessage", handleUnityMessage);
-    };
-  }, [addEventListener, removeEventListener, handleUnityMessage]);
+  useUnityMessageHandler({
+    addEventListener,
+    removeEventListener,
+    handleSimpleMessage,
+    handleSceneIsLoaded,
+    handleSaveDataGenerated,
+  });
 
-  return { unityProvider, setLoadData: processAndSetLoadData };
+  return {
+    unityProvider,
+    setLoadData: processAndSetLoadData,
+    requestSaveData,
+    placeNewItem,
+    removeItem,
+  };
 };

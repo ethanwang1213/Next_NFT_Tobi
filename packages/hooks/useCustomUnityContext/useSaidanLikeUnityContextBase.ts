@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { SaidanLikeData, UnitySceneType } from "./unityType";
+import { ItemBaseData, ItemType } from "types/unityTypes";
+import { SaidanLikeData, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
@@ -9,6 +10,8 @@ export const useSaidanLikeUnityContextBase = ({
 }) => {
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
+  const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
+    useState<boolean>(false);
 
   const {
     unityProvider,
@@ -16,7 +19,6 @@ export const useSaidanLikeUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     handleSimpleMessage,
   } = useCustomUnityContextBase({ sceneType });
 
@@ -26,31 +28,67 @@ export const useSaidanLikeUnityContextBase = ({
       return;
     }
 
-    const json = JSON.stringify(loadData);
-    console.log(json);
+    const json = JSON.stringify({ ...loadData });
     postMessageToUnity("LoadSaidanDataMessageReceiver", json);
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
+    setIsSaidanSceneLoaded(true);
   }, [loadData, currentSaidanId, postMessageToUnity]);
 
-  // TODO(toruto): const placeNewItem = () => {};
-  // TODO(toruto): const removeItems = () => {};
-  // TODO(toruto): const requestSaveData = () => {};
-  // TODO(toruto): const processLoadData = () => {};
+  const requestSaveData = () => {
+    postMessageToUnity("SaveSaidanDataMessageReceiver", "");
+  };
+
+  const placeNewItem = useCallback(
+    (params: ItemBaseData) => {
+      postMessageToUnity(
+        "NewItemMessageReceiver",
+        JSON.stringify({
+          ...params,
+          isDebug: params.isDebug ? params.isDebug : false,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const removeItem = useCallback(
+    ({
+      itemType,
+      itemId,
+      tableId,
+    }: {
+      itemType: ItemType;
+      itemId: number;
+      tableId: number;
+    }) => {
+      postMessageToUnity(
+        "RemoveSingleItemMessageReceiver",
+        JSON.stringify({
+          itemType,
+          itemId,
+          tableId,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
 
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || !isSaidanSceneLoaded) return;
     postMessageToLoadData();
-  }, [isLoaded, postMessageToLoadData]);
+  }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
   return {
     unityProvider,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     setLoadData,
+    requestSaveData,
+    placeNewItem,
+    removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
   };

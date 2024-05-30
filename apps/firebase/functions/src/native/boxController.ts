@@ -157,25 +157,21 @@ export const getInventoryData = async (req: Request, res: Response) => {
           where: {
             box_id: box.id,
           },
+          include: {
+            digital_item: true,
+          },
           orderBy: {
             updated_date_time: "desc",
           },
         });
-        const items4 = await Promise.all(
-            itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-                .map(async (item)=>{
-                  const itemInfo = await prisma.tobiratory_digital_items.findUnique({
-                    where: {
-                      id: item.digital_item_id,
-                    },
-                  });
-                  return {
-                    id: item.id,
-                    name: itemInfo?.name,
-                    image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-                  };
-                })
-        );
+        const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+            .map((item)=>{
+              return {
+                id: item.id,
+                name: item.digital_item.name,
+                image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+              };
+            });
         return {
           id: box.id,
           name: box.name,
@@ -187,26 +183,22 @@ export const getInventoryData = async (req: Request, res: Response) => {
           owner_uuid: uid,
           box_id: 0,
         },
+        include: {
+          digital_item: true,
+        },
         orderBy: {
           updated_date_time: "desc",
         },
       });
-      const returnItems = await Promise.all(
-          items.map(async (item)=>{
-            const itemInfo = await prisma.tobiratory_digital_items.findUnique({
-              where: {
-                id: item.digital_item_id,
-              },
-            });
-            return {
-              id: item.id,
-              name: itemInfo?.name,
-              image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-              saidanId: item.saidan_id,
-              status: item?.mint_status,
-            };
-          })
-      );
+      const returnItems = items.map((item)=>{
+        return {
+          id: item.id,
+          name: item.digital_item.name,
+          image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+          saidanId: item.saidan_id,
+          status: item?.mint_status,
+        };
+      });
       res.status(200).send({
         status: "success",
         data: {
@@ -257,22 +249,18 @@ export const getBoxData = async (req: Request, res: Response) => {
       where: {
         box_id: parseInt(id),
       },
+      include: {
+        digital_item: true,
+      },
     });
-    const returnItem = await Promise.all(
-        items.map(async (item)=>{
-          const itemInfo = await prisma.tobiratory_digital_items.findUnique({
-            where: {
-              id: item.digital_item_id,
-            },
-          });
-          return {
-            id: item.id,
-            name: itemInfo?.name,
-            image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-            saidanId: item?.saidan_id,
-          };
-        })
-    );
+    const returnItem = items.map((item)=>{
+      return {
+        id: item.id,
+        name: item.digital_item.name,
+        image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+        saidanId: item?.saidan_id,
+      };
+    });
     res.status(200).send({
       status: "success",
       data: {

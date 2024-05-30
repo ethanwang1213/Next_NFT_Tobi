@@ -1,4 +1,4 @@
-import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
+import { ItemLoadData, ItemSaveData, ShowcaseType } from "./unityTypes";
 
 export type User = {
   uuid: string;
@@ -78,4 +78,28 @@ export type TcpFormType = {
   content: TcpContent;
   user: TcpUser;
   copyright: TcpCopyright;
+};
+
+export type WorkspaceLoadData = {
+  workspaceItemList: ItemLoadData[];
+  isDebug?: boolean;
+};
+
+export type WorkspaceSaveData = {
+  workspaceItemList: ItemSaveData[];
+};
+
+export type ShowcaseLoadData = {
+  showcaseId: number;
+  showcaseType: ShowcaseType;
+  showcaseUrl: string;
+  sampleItemList: ItemLoadData[];
+  nftItemList: ItemLoadData[];
+  isDebug?: boolean;
+};
+
+export type ShowcaseSaveData = {
+  sampleItemList: ItemSaveData[];
+  nftItemList: ItemSaveData[];
+  thumbnailImageBase64: string;
 };

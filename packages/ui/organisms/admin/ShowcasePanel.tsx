@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
-import { formatDateToLocal } from "../../atoms/Formatters";
+import { formatDateToLocal } from "ui/atoms/Formatters";
 import ShowcaseEditMenu from "./ShowcaseEditMenu";
 import ShowcaseNameEditDialog from "./ShowcaseNameEditDialog";
 

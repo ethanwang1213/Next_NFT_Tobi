@@ -5,6 +5,7 @@ export enum ImageType {
   AccountAvatar = 0,
   ContentBrand,
   SampleThumbnail,
+  MaterialImage,
 }
 
 export const uploadImage = async (image, type) => {
@@ -48,6 +49,10 @@ export const uploadImage = async (image, type) => {
 
       case ImageType.SampleThumbnail:
         path = `thumbnails/${auth.currentUser.uid}/${storageFileName}`;
+        break;
+
+      case ImageType.MaterialImage:
+        path = `materials/${auth.currentUser.uid}/${storageFileName}`;
         break;
 
       default:

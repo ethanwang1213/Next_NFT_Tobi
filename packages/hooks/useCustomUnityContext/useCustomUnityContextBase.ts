@@ -1,16 +1,15 @@
 import { useCallback, useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
-import { UnityMessageType, UnitySceneType } from "./unityType";
-
-type UnityMessageJson = {
-  sceneType: UnitySceneType;
-  messageType: UnityMessageType;
-  messageBody: string;
-};
+import { UnityMessageJson, UnitySceneType } from "./types";
 
 type MessageDestination =
   | "SwitchSceneMessageReceiver"
-  | "LoadSaidanDataMessageReceiver";
+  | "LoadSaidanDataMessageReceiver"
+  | "SaveSaidanDataMessageReceiver"
+  | "ItemThumbnailGenerationMessageReceiver"
+  | "NewItemMessageReceiver"
+  | "RemoveSingleItemMessageReceiver"
+  | "RemoveItemsMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,
@@ -30,15 +29,6 @@ export const useCustomUnityContextBase = ({
     frameworkUrl: `${buildFilePath}.framework.js`,
     codeUrl: `${buildFilePath}.wasm`,
   });
-
-  const resolveUnityMessage = (json: string) => {
-    try {
-      return JSON.parse(json) as UnityMessageJson;
-    } catch (e) {
-      console.log(e);
-      return null;
-    }
-  };
 
   const handleSimpleMessage = (msgObj: UnityMessageJson) => {
     console.log(
@@ -75,7 +65,6 @@ export const useCustomUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    resolveUnityMessage,
     handleSimpleMessage,
   };
 };

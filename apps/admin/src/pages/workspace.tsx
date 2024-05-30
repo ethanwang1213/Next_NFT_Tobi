@@ -1,13 +1,168 @@
 import { Metadata } from "next";
+import { useCallback, useRef, useState } from "react";
+import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
+import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
+import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
+import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
+import Image from "next/image";
+// import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+// import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import useRestfulAPI from "hooks/useRestfulAPI";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
 };
 
 export default function Index() {
+  const [showDetailView, setShowDetailView] = useState(false);
+  const [showListView, setShowListView] = useState(false);
+  const sampleCreateDialogRef = useRef(null);
+  const shortcutDialogRef = useRef(null);
+
+  const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
+
+  // const workspaceAPIUrl = "native/my/workspace";
+  // const { data: workspaceData } = useRestfulAPI(workspaceAPIUrl);
+
+  const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
+
+  const sampleAPIUrl = "native/admin/samples";
+  const {
+    data: samples,
+    setData: setSamples,
+    deleteData: deleteSamples,
+  } = useRestfulAPI(sampleAPIUrl);
+
+  // const { customUnityProvider } = useWorkspaceUnityContext();
+
+  const createSampleHandler = useCallback(() => {
+    if (sampleCreateDialogRef.current) {
+      setInitSampleCreateDialog(initSampleCreateDialog + 1);
+      sampleCreateDialogRef.current.showModal();
+    }
+  }, [initSampleCreateDialog]);
+
+  const deleteSamplesHandler = useCallback(
+    async (ids: number[]) => {
+      const success = await deleteSamples(sampleAPIUrl, { sampleIds: ids });
+      if (success) {
+        const newSamples = samples.filter(
+          (sample) => ids.findIndex((id) => id === sample.id) === -1,
+        );
+        setSamples(newSamples);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [samples],
+  );
+
   return (
-    <div className="w-full">
-    ワークスペース ページ
+    <div className="w-full h-full relative">
+      {/* <WorkspaceUnity
+        customUnityProvider={customUnityProvider}
+        loadData={null}
+      /> */}
+      <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
+        <WorkspaceSampleCreateDialog
+          dialogRef={sampleCreateDialogRef}
+          initDialog={initSampleCreateDialog}
+        />
+        <WorkspaceShortcutDialog
+          dialogRef={shortcutDialogRef}
+          changeHandler={null}
+        />
+        {showDetailView && (
+          <WorkspaceSampleDetailPanel id={selectedSampleItem} />
+        )}
+        <WorkspaceSampleListPanel
+          closeHandler={() => setShowListView(false)}
+          isOpen={showListView}
+          data={samples}
+          createHandler={() => {
+            setShowListView(false);
+            createSampleHandler();
+          }}
+          selectHandler={setSelectedSampleItem}
+          deleteHandler={deleteSamplesHandler}
+        />
+        <div
+          className="absolute left-[50%] bottom-12 h-12 flex justify-center"
+          style={{
+            transform: "translateX(-50%)",
+          }}
+        >
+          <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8">
+            <Image
+              width={32}
+              height={32}
+              alt="undo button"
+              src="/admin/images/icon/undo-icon.svg"
+              className="cursor-pointer"
+              onClick={() => {
+                console.log("undo button is clicked");
+              }}
+            />
+            <Image
+              width={32}
+              height={32}
+              alt="undo button"
+              src="/admin/images/icon/redo-icon.svg"
+              className="cursor-pointer"
+              onClick={() => {
+                console.log("redo button is clicked");
+              }}
+            />
+            <Image
+              width={32}
+              height={32}
+              alt="undo button"
+              src="/admin/images/icon/visibility-icon.svg"
+              className="cursor-pointer"
+              onClick={() => {
+                setShowDetailView(!showDetailView);
+              }}
+            />
+            <Image
+              width={32}
+              height={32}
+              alt="undo button"
+              src="/admin/images/icon/help-icon.svg"
+              className="cursor-pointer"
+              onClick={() => {
+                if (shortcutDialogRef.current) {
+                  shortcutDialogRef.current.showModal();
+                }
+              }}
+            />
+          </div>
+        </div>
+        <div
+          className="absolute bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
+            flex justify-center items-center cursor-pointer"
+          onClick={createSampleHandler}
+        >
+          <Image
+            width={48}
+            height={48}
+            src="/admin/images/icon/add-icon.svg"
+            alt="icon button"
+          />
+        </div>
+        <div
+          className="absolute bottom-[178px] right-16 w-18 h-[72px] rounded-full bg-secondary 
+            flex justify-center items-center cursor-pointer"
+          onClick={() => {
+            setShowListView(!showListView);
+          }}
+        >
+          <Image
+            width={48}
+            height={48}
+            src="/admin/images/icon/list-icon.svg"
+            alt="icon button"
+          />
+        </div>
+      </div>
     </div>
   );
 }
