@@ -46,16 +46,15 @@ const BoxInventoryTab = ({
             <span className="loading loading-spinner loading-md"></span>
           </span>
         )}
-        {data &&
-          data.items &&
-          data.items.length > 0 &&
-          data.items.map((item, index) => {
-            return (
-              <div key={item.id} className="w-1/4 p-2">
-                <InventoryItemComponent item={item}></InventoryItemComponent>
-              </div>
-            );
-          })}
+        {data?.items?.map((item, index) => {
+          return (
+            <div key={item.id} className="w-1/4 p-2">
+              <InventoryItemComponent
+                imageUrl={item.image}
+              ></InventoryItemComponent>
+            </div>
+          );
+        })}
       </div>
     </>
   );
