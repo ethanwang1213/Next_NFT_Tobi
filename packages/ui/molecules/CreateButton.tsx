@@ -15,7 +15,7 @@ export default function CreateButton({
       <Button
         style={{ height: height }}
         onClick={clickHandler ?? null}
-        className={`h-14 rounded-[30px] bg-primary
+        className={`rounded-[30px] bg-primary
           px-6 flex items-center gap-4 text-white
           transition-colors hover:bg-blue-500 
           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600`}
@@ -26,7 +26,7 @@ export default function CreateButton({
           width={26}
           height={26}
         />
-        <span className="text-xl font-semibold uppercase text-center">
+        <span className="text-xl leading-[26px] font-semibold uppercase text-center pb-0.5">
           {label}
         </span>
       </Button>
