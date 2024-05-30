@@ -32,32 +32,28 @@ const ShowcaseInventoryTab = ({
               <span className="loading loading-spinner loading-md"></span>
             </span>
           )}
-          {data &&
-            data.boxes &&
-            data.boxes.length > 0 &&
-            data.boxes.map((box, index) => {
-              return (
-                <div key={box.id} className="w-1/4 p-2">
-                  <BoxComponent
-                    box={box}
-                    clickBox={(id, title) => {
-                      setBoxid(id);
-                      setBoxName(title);
-                    }}
-                  ></BoxComponent>
-                </div>
-              );
-            })}
-          {data &&
-            data.items &&
-            data.items.length > 0 &&
-            data.items.map((item, index) => {
-              return (
-                <div key={item.id} className="w-1/4 p-2">
-                  <InventoryItemComponent item={item}></InventoryItemComponent>
-                </div>
-              );
-            })}
+          {data?.boxes?.map((box, index) => {
+            return (
+              <div key={box.id} className="w-1/4 p-2">
+                <BoxComponent
+                  box={box}
+                  clickBox={(id, title) => {
+                    setBoxid(id);
+                    setBoxName(title);
+                  }}
+                ></BoxComponent>
+              </div>
+            );
+          })}
+          {data?.items?.map((item, index) => {
+            return (
+              <div key={item.id} className="w-1/4 p-2">
+                <InventoryItemComponent
+                  imageUrl={item.image}
+                ></InventoryItemComponent>
+              </div>
+            );
+          })}
         </div>
       )}
       {boxid != -1 && (
