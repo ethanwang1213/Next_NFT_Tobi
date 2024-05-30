@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { ItemType, ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
-import { SaidanItemData, ShowcaseItemData } from "types/unityTypes";
+import { ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
+import { ItemSaveData, ItemType, SaidanItemData } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -15,6 +15,8 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 type Props = {
   onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveData) => void;
 };
+
+type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
 export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
   const {
@@ -31,8 +33,8 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     sceneType: UnitySceneType.ShowcaseEdit,
   });
 
-  const processLoadData: (loadData: ShowcaseLoadData) => SaidanLikeData | null =
-    useCallback((loadData: ShowcaseLoadData) => {
+  const processLoadData: ProcessLoadData = useCallback(
+    (loadData: ShowcaseLoadData) => {
       console.log(loadData);
       if (loadData == null) return null;
 
@@ -40,12 +42,18 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
         return {
           ...v,
           itemType: ItemType.Sample,
+          canScale: true,
+          itemMeterHeight: 0.3,
+          isDebug: false, // not used in loading
         };
       });
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
         return {
           ...v,
           itemType: ItemType.DigitalItemNft,
+          canScale: true,
+          itemMeterHeight: 0.3,
+          isDebug: false, // not used in loading
         };
       });
       const saidanItemList = sampleList.concat(nftList);
@@ -53,10 +61,18 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
       return {
         saidanId: loadData.showcaseId,
         saidanType: (loadData.showcaseType + showcaseOffset) as SaidanType,
-        saidanUrl: loadData.showcaseUrl,
+        // saidanUrl: loadData.showcaseUrl,
+        saidanUrl: "dummy",
         saidanItemList,
+        saidanCameraData: {
+          position: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+        },
+        isDebug: loadData.isDebug ? loadData.isDebug : false,
       };
-    }, []);
+    },
+    [],
+  );
 
   const processAndSetLoadData = useCallback(
     (loadData: ShowcaseLoadData) => {
@@ -75,14 +91,26 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
 
       if (!messageBody) return;
 
-      var sampleItemList: ShowcaseItemData[] =
-        messageBody.saidanData.saidanItemList.filter(
-          (v) => v.itemType === ItemType.Sample,
-        );
-      var nftItemList: ShowcaseItemData[] =
-        messageBody.saidanData.saidanItemList.filter(
-          (v) => v.itemType === ItemType.DigitalItemNft,
-        );
+      var sampleItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
+        .filter((v) => v.itemType === ItemType.Sample)
+        .map((v) => ({
+          itemId: v.itemId,
+          tableId: v.tableId,
+          stageType: v.stageType,
+          position: v.position,
+          rotation: v.rotation,
+          scale: v.scale,
+        }));
+      var nftItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
+        .filter((v) => v.itemType === ItemType.DigitalItemNft)
+        .map((v) => ({
+          itemId: v.itemId,
+          tableId: v.tableId,
+          stageType: v.stageType,
+          position: v.position,
+          rotation: v.rotation,
+          scale: v.scale,
+        }));
 
       onSaveDataGenerated({
         sampleItemList,

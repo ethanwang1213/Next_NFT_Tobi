@@ -9,7 +9,7 @@ type MessageDestination =
   | "ItemThumbnailGenerationMessageReceiver"
   | "NewItemMessageReceiver"
   | "RemoveSingleItemMessageReceiver"
-  | "RemoveItemsByIdMessageReceiver";
+  | "RemoveItemsMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,

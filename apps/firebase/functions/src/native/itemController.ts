@@ -105,6 +105,8 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
       const returnData = samples.map((sample)=>{
         return {
           id: sample.id,
+          name: sample.digital_item.name,
+          description: sample.digital_item.description,
           thumbUrl: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
           modelUrl: sample?.model_url,
           materialId: sample.digital_item.material_id,

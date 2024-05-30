@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { ItemBaseData } from "types/unityTypes";
+import { ItemBaseData, ItemType } from "types/unityTypes";
 import { SaidanLikeData, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
-import { ItemType } from "types/adminTypes";
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
@@ -11,6 +10,8 @@ export const useSaidanLikeUnityContextBase = ({
 }) => {
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
+  const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
+    useState<boolean>(false);
 
   const {
     unityProvider,
@@ -27,12 +28,12 @@ export const useSaidanLikeUnityContextBase = ({
       return;
     }
 
-    const json = JSON.stringify(loadData);
-    console.log(json);
+    const json = JSON.stringify({ ...loadData });
     postMessageToUnity("LoadSaidanDataMessageReceiver", json);
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
+    setIsSaidanSceneLoaded(true);
   }, [loadData, currentSaidanId, postMessageToUnity]);
 
   const requestSaveData = () => {
@@ -45,7 +46,7 @@ export const useSaidanLikeUnityContextBase = ({
         "NewItemMessageReceiver",
         JSON.stringify({
           ...params,
-          isDebug: false,
+          isDebug: params.isDebug ? params.isDebug : false,
         }),
       );
     },
@@ -75,9 +76,9 @@ export const useSaidanLikeUnityContextBase = ({
   );
 
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || !isSaidanSceneLoaded) return;
     postMessageToLoadData();
-  }, [isLoaded, postMessageToLoadData]);
+  }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
   return {
     unityProvider,
