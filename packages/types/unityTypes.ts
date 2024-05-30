@@ -1,5 +1,21 @@
-import { ItemType, ModelType } from "./adminTypes";
+export const ShowcaseType = {
+  First: 1,
+  Second: 2,
+  Third: 3,
+} as const;
+export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
 
+export const ItemType = {
+  Sample: 0,
+  DigitalItemNft: 1,
+} as const;
+export type ItemType = (typeof ItemType)[keyof typeof ItemType];
+
+export const ModelType = {
+  Poster: 1,
+  AcrylicStand: 2,
+} as const;
+export type ModelType = (typeof ModelType)[keyof typeof ModelType];
 
 export const UnityStageType = {
   Floor: 0,
@@ -10,7 +26,7 @@ export const UnityStageType = {
 export type UnityStageType =
   (typeof UnityStageType)[keyof typeof UnityStageType];
 
-type Vector3 = {
+export type Vector3 = {
   x: number;
   y: number;
   z: number;
@@ -22,6 +38,7 @@ export type ItemBaseData = {
   modelType: ModelType;
   modelUrl: string;
   imageUrl: string;
+  isDebug?: boolean;
 };
 
 export type SaidanItemData = ItemBaseData & {
@@ -29,9 +46,22 @@ export type SaidanItemData = ItemBaseData & {
   stageType: UnityStageType;
   position: Vector3;
   rotation: Vector3;
+  canScale: boolean;
+  itemMeterHeight: number;
   scale: number;
 };
 
-export type WorkspaceItemData = Omit<SaidanItemData, "itemType">;
-
-export type ShowcaseItemData = Omit<SaidanItemData, "itemType">;
+export type ItemLoadData = Omit<
+  SaidanItemData,
+  "itemType" | "canScale" | "itemMeterHeight"
+>;
+export type ItemSaveData = Omit<
+  SaidanItemData,
+  | "itemType"
+  | "modelType"
+  | "modelUrl"
+  | "imageUrl"
+  | "canScale"
+  | "itemMeterHeight"
+  | "isDebug"
+>;

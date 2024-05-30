@@ -1,10 +1,6 @@
 import { useCallback } from "react";
-import {
-  ItemType,
-  WorkspaceLoadData,
-  WorkspaceSaveData,
-} from "types/adminTypes";
-import { ItemBaseData, WorkspaceItemData } from "types/unityTypes";
+import { WorkspaceLoadData, WorkspaceSaveData } from "types/adminTypes";
+import { ItemBaseData, ItemSaveData, ItemType } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
@@ -17,7 +13,7 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
 type MessageBodyForGeneratingItemThumbnail = {
-  thumbnailBase64: string;
+  base64Image: string;
 };
 
 type Props = {
@@ -52,14 +48,30 @@ export const useWorkspaceUnityContext = ({
       return {
         ...v,
         itemType: ItemType.Sample,
+        canScale: true,
+        itemMeterHeight: 0.3,
+        isDebug: false, // not used in loading
       };
     });
 
     return {
       saidanId: -2,
       saidanType: SaidanType.Workspace,
-      saidanUrl: "",
+      saidanUrl: "todo:set-url-here",
       saidanItemList,
+      saidanCameraData: {
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        rotation: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+      },
+      isDebug: loadData.isDebug ? loadData.isDebug : false,
     };
   }, []);
 
@@ -98,8 +110,8 @@ export const useWorkspaceUnityContext = ({
         itemId,
       }));
       postMessageToUnity(
-        "RemoveItemsByIdMessageReceiver",
-        JSON.stringify({ list }),
+        "RemoveItemsMessageReceiver",
+        JSON.stringify({ itemRefList: list }),
       );
     },
     [postMessageToUnity],
@@ -127,9 +139,15 @@ export const useWorkspaceUnityContext = ({
 
       if (!messageBody) return;
 
-      var workspaceItemList: WorkspaceItemData[] =
-        messageBody.saidanData.saidanItemList;
-
+      var workspaceItemList: ItemSaveData[] =
+        messageBody.saidanData.saidanItemList.map((v) => ({
+          itemId: v.itemId,
+          tableId: v.tableId,
+          stageType: v.stageType,
+          position: v.position,
+          rotation: v.rotation,
+          scale: v.scale,
+        }));
       onSaveDataGenerated({ workspaceItemList });
     },
     [onSaveDataGenerated],
@@ -145,7 +163,7 @@ export const useWorkspaceUnityContext = ({
 
       if (!messageBody) return;
 
-      onItemThumbnailGenerated(messageBody.thumbnailBase64);
+      onItemThumbnailGenerated(messageBody.base64Image);
     },
     [onItemThumbnailGenerated],
   );
