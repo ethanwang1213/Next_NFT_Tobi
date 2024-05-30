@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const InventoryItemComponent = (data) => {
+const InventoryItemComponent = (data: { imageUrl: string }) => {
   return (
     <div className="rounded-[8px] bg-no-repeat bg-center cursor-pointer bg-contain flex flex-wrap w-20 h-20">
       <Image
