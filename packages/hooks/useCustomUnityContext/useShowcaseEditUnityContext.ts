@@ -13,24 +13,46 @@ import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type Props = {
+  itemMenuX: number;
   onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveData) => void;
+  onRemoveItemEnabled?: () => void;
+  onRemoveItemDisabled?: () => void;
+  onRemoveItemRequested?: (
+    itemType: ItemType,
+    itemId: number,
+    tableId: number,
+  ) => void;
 };
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
-export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
+export const useShowcaseEditUnityContext = ({
+  itemMenuX,
+  onSaveDataGenerated,
+  onRemoveItemEnabled,
+  onRemoveItemDisabled,
+  onRemoveItemRequested,
+}: Props) => {
   const {
     unityProvider,
     addEventListener,
     removeEventListener,
+    postMessageToUnity,
     setLoadData,
     requestSaveData,
     placeNewItem,
+    placeNewItemWithDrag,
     removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
+    handleItemMenuXRequested,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
+    itemMenuX,
+    onRemoveItemEnabled,
+    onRemoveItemDisabled,
   });
 
   const processLoadData: ProcessLoadData = useCallback(
@@ -81,6 +103,19 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     [setLoadData, processLoadData],
   );
 
+  const removeRecentItem = useCallback(
+    ({ itemType, itemId }) => {
+      postMessageToUnity(
+        "RemoveRecentItemMessageReceiver",
+        JSON.stringify({
+          itemType,
+          itemId,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
       if (!onSaveDataGenerated) return;
@@ -121,12 +156,37 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     [onSaveDataGenerated],
   );
 
+  const handleRemoveItemRequested = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onRemoveItemRequested) return;
+
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemType: ItemType;
+        itemId: number;
+        tableId: number;
+      };
+
+      if (!messageBody) return;
+
+      onRemoveItemRequested(
+        messageBody.itemType,
+        messageBody.itemId,
+        messageBody.tableId,
+      );
+    },
+    [onRemoveItemRequested],
+  );
+
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
+    handleRemoveItemRequested,
+    handleItemMenuXRequested,
   });
 
   return {
@@ -134,6 +194,8 @@ export const useShowcaseEditUnityContext = ({ onSaveDataGenerated }: Props) => {
     setLoadData: processAndSetLoadData,
     requestSaveData,
     placeNewItem,
+    placeNewItemWithDrag,
     removeItem,
+    removeRecentItem,
   };
 };

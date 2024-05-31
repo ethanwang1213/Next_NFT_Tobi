@@ -18,6 +18,10 @@ type Props = {
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;
   handleItemThumbnailGenerated?: MessageHandler;
+  handleRemoveItemEnabled?: () => void;
+  handleRemoveItemDisabled?: () => void;
+  handleRemoveItemRequested?: MessageHandler;
+  handleItemMenuXRequested?: () => void;
 };
 
 export const useUnityMessageHandler = ({
@@ -27,6 +31,10 @@ export const useUnityMessageHandler = ({
   handleSceneIsLoaded,
   handleSaveDataGenerated,
   handleItemThumbnailGenerated,
+  handleRemoveItemEnabled,
+  handleRemoveItemDisabled,
+  handleRemoveItemRequested,
+  handleItemMenuXRequested,
 }: Props) => {
   const resolveUnityMessage = useCallback((json: string) => {
     try {
@@ -67,6 +75,26 @@ export const useUnityMessageHandler = ({
             handleItemThumbnailGenerated(msgObj);
           }
           return;
+        case UnityMessageType.RemoveItemEnabled:
+          if (handleRemoveItemEnabled) {
+            handleRemoveItemEnabled();
+          }
+          return;
+        case UnityMessageType.RemoveItemDisabled:
+          if (handleRemoveItemDisabled) {
+            handleRemoveItemDisabled();
+          }
+          return;
+        case UnityMessageType.RemoveItemRequested:
+          if (handleRemoveItemRequested) {
+            handleRemoveItemRequested(msgObj);
+          }
+          return;
+        case UnityMessageType.ItemMenuXRequested:
+          if (handleItemMenuXRequested) {
+            handleItemMenuXRequested();
+          }
+          return;
         default:
           return;
       }
@@ -77,6 +105,10 @@ export const useUnityMessageHandler = ({
       handleSceneIsLoaded,
       handleSaveDataGenerated,
       handleItemThumbnailGenerated,
+      handleRemoveItemEnabled,
+      handleRemoveItemDisabled,
+      handleRemoveItemRequested,
+      handleItemMenuXRequested,
     ],
   );
 

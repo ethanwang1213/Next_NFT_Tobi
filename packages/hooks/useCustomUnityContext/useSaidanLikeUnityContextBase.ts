@@ -5,8 +5,14 @@ import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
+  itemMenuX,
+  onRemoveItemEnabled,
+  onRemoveItemDisabled,
 }: {
   sceneType: UnitySceneType;
+  itemMenuX: number;
+  onRemoveItemEnabled?: () => void;
+  onRemoveItemDisabled?: () => void;
 }) => {
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
@@ -53,6 +59,19 @@ export const useSaidanLikeUnityContextBase = ({
     [postMessageToUnity],
   );
 
+  const placeNewItemWithDrag = useCallback(
+    (itemData: ItemBaseData) => {
+      postMessageToUnity(
+        "NewItemWithDragMessageReceiver",
+        JSON.stringify({
+          ...itemData,
+          itemMenuX,
+        }),
+      );
+    },
+    [postMessageToUnity, itemMenuX],
+  );
+
   const removeItem = useCallback(
     ({
       itemType,
@@ -80,6 +99,20 @@ export const useSaidanLikeUnityContextBase = ({
     postMessageToLoadData();
   }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
+  const handleRemoveItemEnabled = useCallback(() => {
+    if (!onRemoveItemEnabled) return;
+    onRemoveItemEnabled();
+  }, [onRemoveItemEnabled]);
+
+  const handleRemoveItemDisabled = useCallback(() => {
+    if (!onRemoveItemDisabled) return;
+    onRemoveItemDisabled();
+  }, [onRemoveItemDisabled]);
+
+  const handleItemMenuXRequested = useCallback(() => {
+    postMessageToUnity("ItemMenuXMessageReceiver", "");
+  }, [postMessageToUnity]);
+
   return {
     unityProvider,
     addEventListener,
@@ -88,8 +121,12 @@ export const useSaidanLikeUnityContextBase = ({
     setLoadData,
     requestSaveData,
     placeNewItem,
+    placeNewItemWithDrag,
     removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
+    handleItemMenuXRequested,
   };
 };
