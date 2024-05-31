@@ -43,7 +43,6 @@ export const useWorkspaceUnityContext = ({
     handleSceneIsLoaded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
-    handleItemMenuXRequested,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
@@ -215,7 +214,6 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
-    handleItemMenuXRequested,
   });
 
   return {

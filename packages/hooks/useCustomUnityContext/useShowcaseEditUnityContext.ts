@@ -47,7 +47,6 @@ export const useShowcaseEditUnityContext = ({
     handleSceneIsLoaded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
-    handleItemMenuXRequested,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
@@ -186,7 +185,6 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
-    handleItemMenuXRequested,
   });
 
   return {

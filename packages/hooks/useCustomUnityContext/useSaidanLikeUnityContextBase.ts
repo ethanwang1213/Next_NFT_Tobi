@@ -99,6 +99,15 @@ export const useSaidanLikeUnityContextBase = ({
     postMessageToLoadData();
   }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
+  useEffect(() => {
+    if (!isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
+      return;
+    postMessageToUnity(
+      "ItemMenuXMessageReceiver",
+      JSON.stringify({ itemMenuX }),
+    );
+  }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
+
   const handleRemoveItemEnabled = useCallback(() => {
     if (!onRemoveItemEnabled) return;
     onRemoveItemEnabled();
@@ -108,10 +117,6 @@ export const useSaidanLikeUnityContextBase = ({
     if (!onRemoveItemDisabled) return;
     onRemoveItemDisabled();
   }, [onRemoveItemDisabled]);
-
-  const handleItemMenuXRequested = useCallback(() => {
-    postMessageToUnity("ItemMenuXMessageReceiver", "");
-  }, [postMessageToUnity]);
 
   return {
     unityProvider,
@@ -127,6 +132,5 @@ export const useSaidanLikeUnityContextBase = ({
     handleSceneIsLoaded: postMessageToLoadData,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
-    handleItemMenuXRequested,
   };
 };
