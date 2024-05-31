@@ -3,6 +3,7 @@ import { TabPanel, useTabs } from "react-headless-tabs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
+import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
 import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
 
@@ -67,13 +68,20 @@ const ShowcaseTabView = ({
           <span className="text-sm font-semibold leading-6">Settings</span>
         </ShowcaseTabSelector>
       </nav>
-      <div className="pl-[68px] pr-[68px] pt-[52px] pb-[52px] w-full flex-1">
+      <div className="p-[30px] w-full flex-1 flex flex-col">
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab
             clickSampleItem={(id: number) => clickSampleItem(id)}
           ></ShowcaseSampleTab>
         </TabPanel>
-        <TabPanel hidden={tab !== "Inventory"}></TabPanel>
+        <TabPanel
+          hidden={tab !== "Inventory"}
+          className={tab === "Inventory" ? "flex-1 flex flex-col" : ""}
+        >
+          <ShowcaseInventoryTab
+            clickSampleItem={(id: number) => clickSampleItem(id)}
+          ></ShowcaseInventoryTab>
+        </TabPanel>
         <TabPanel hidden={tab !== "Settings"}></TabPanel>
         <ToastContainer
           position="bottom-center"
