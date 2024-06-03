@@ -27,6 +27,8 @@ const ContentBrandPanel = ({
   const [activeImageFlag, setActiveImageFlag] = useState(false);
   const modifiedRef = useRef(false);
 
+  const [initCropDialog, setInitCropDialog] = useState(0);
+
   useEffect(() => {
     if (cancelFlag > 0 && modifiedRef.current) {
       restoreData();
@@ -174,6 +176,7 @@ const ContentBrandPanel = ({
               onClick={() => {
                 setActiveImageFlag(true);
                 if (data.image) {
+                  setInitCropDialog(initCropDialog + 1);
                   imageCropDlgRef.current.showModal();
                 } else {
                   contentImageFileRef.current.click();
@@ -245,6 +248,7 @@ const ContentBrandPanel = ({
               onClick={() => {
                 setActiveImageFlag(false);
                 if (data.sticker) {
+                  setInitCropDialog(initCropDialog + 1);
                   stickerCropDlgRef.current.showModal();
                 } else {
                   stickerImageFileRef.current.click();
@@ -282,24 +286,24 @@ const ContentBrandPanel = ({
         <ImageCropDialog
           initialValue={data.image}
           dialogRef={imageCropDlgRef}
-          initialAspectRatio={16 / 5}
           aspectRatio={16 / 5}
-          cropHandler={(image, width, height) => {
+          cropHandler={(image) => {
             setData({ ...data, ["image"]: image });
             modifiedRef.current = true;
             changeHandler();
           }}
+          initFlag={initCropDialog}
         />
         <ImageCropDialog
           initialValue={data.sticker}
           dialogRef={stickerCropDlgRef}
-          initialAspectRatio={1}
           aspectRatio={null}
-          cropHandler={(image, width, height) => {
+          cropHandler={(image) => {
             setData({ ...data, ["sticker"]: image });
             modifiedRef.current = true;
             changeHandler();
           }}
+          initFlag={initCropDialog}
         />
       </div>
     )
