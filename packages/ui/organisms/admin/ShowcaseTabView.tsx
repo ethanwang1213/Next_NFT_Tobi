@@ -10,7 +10,12 @@ import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
 const ShowcaseTabView = ({
   clickSampleItem,
 }: {
-  clickSampleItem: (id: number) => void;
+  clickSampleItem: (
+    sampleId: number,
+    modelUrl: string,
+    modelType: number,
+    materialId: number,
+  ) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
 
@@ -71,16 +76,19 @@ const ShowcaseTabView = ({
       <div className="p-[30px] w-full flex-1 flex flex-col">
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab
-            clickSampleItem={(id: number) => clickSampleItem(id)}
+            clickSampleItem={(
+              sampleId: number,
+              modelUrl: string,
+              modelType: number,
+              materialId: number,
+            ) => clickSampleItem(sampleId, modelUrl, modelType, materialId)}
           ></ShowcaseSampleTab>
         </TabPanel>
         <TabPanel
           hidden={tab !== "Inventory"}
           className={tab === "Inventory" ? "flex-1 flex flex-col" : ""}
         >
-          <ShowcaseInventoryTab
-            clickSampleItem={(id: number) => clickSampleItem(id)}
-          ></ShowcaseInventoryTab>
+          <ShowcaseInventoryTab clickSampleItem={null}></ShowcaseInventoryTab>
         </TabPanel>
         <TabPanel hidden={tab !== "Settings"}></TabPanel>
         <ToastContainer
