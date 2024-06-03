@@ -35,6 +35,10 @@ import {
   adminDetailOfSample,
   adminUpdateSample,
   getSampleInfo,
+  adminGetAllDigitalItems,
+  adminDeleteDigitalItems,
+  adminDetailOfDigitalItem,
+  adminUpdateDigitalItem,
 } from "./itemController";
 import {
   createSaidan,
@@ -177,6 +181,12 @@ app.get("/admin/samples", adminGetAllSamples);
 app.delete("/admin/samples", adminDeleteSamples);
 app.get("/admin/samples/:sampleId", adminDetailOfSample);
 app.post("/admin/samples/:sampleId", adminUpdateSample);
+
+// management digital items
+app.get("/admin/digital_items", adminGetAllDigitalItems);
+app.delete("/admin/digital_items", adminDeleteDigitalItems);
+app.get("/admin/digital_items/:digitalId", adminDetailOfDigitalItem);
+app.post("/admin/digital_items/:digitalId", adminUpdateDigitalItem);
 
 app.get("/admin/nfts", adminGetAllNFTs);
 app.get("/admin/boxes/:id", adminGetBoxData);
