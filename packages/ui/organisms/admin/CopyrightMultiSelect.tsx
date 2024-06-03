@@ -213,10 +213,10 @@ const CopyrightMultiSelect = ({
     <div
       className={clsx(
         "flex flex-col w-full justify-center self-center min-h-[52px]",
-        "outline-none border-2 rounded-lg",
+        "outline-none border-2 rounded-lg border-secondary",
         readOnly
-          ? "border-secondary/50"
-          : "hover:border-hover-color focus:border-focus-color border-secondary",
+          ? "bg-secondary-100"
+          : "hover:border-hover-color focus:border-focus-color",
         "relative",
       )}
       ref={rootElementRef}
