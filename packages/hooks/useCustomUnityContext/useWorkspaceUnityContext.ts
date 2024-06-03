@@ -13,7 +13,7 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
 type Props = {
-  sampleMenuX: number;
+  sampleMenuX?: number;
   onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
   onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
   onRemoveSampleEnabled?: () => void;
@@ -22,7 +22,7 @@ type Props = {
 };
 
 export const useWorkspaceUnityContext = ({
-  sampleMenuX,
+  sampleMenuX = -1,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
   onRemoveSampleEnabled,

@@ -98,6 +98,8 @@ export const useUnityMessageHandler = ({
       handleSceneIsLoaded,
       handleSaveDataGenerated,
       handleItemThumbnailGenerated,
+      handleDragStarted,
+      handleDragEnded,
       handleRemoveItemEnabled,
       handleRemoveItemDisabled,
       handleRemoveItemRequested,

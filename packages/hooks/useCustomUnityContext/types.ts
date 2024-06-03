@@ -20,6 +20,8 @@ export const UnityMessageType = {
   ItemThumbnailIsGenerated: 8,
   NftModelIsGenerated: 9,
   RequestToOpenItemDetail: 10,
+  DragStarted: 11,
+  DragEnded: 12,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];

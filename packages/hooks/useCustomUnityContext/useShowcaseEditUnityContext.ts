@@ -13,7 +13,7 @@ import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type Props = {
-  itemMenuX: number;
+  itemMenuX?: number;
   onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveData) => void;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
@@ -27,7 +27,7 @@ type Props = {
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
 export const useShowcaseEditUnityContext = ({
-  itemMenuX,
+  itemMenuX = -1,
   onSaveDataGenerated,
   onRemoveItemEnabled,
   onRemoveItemDisabled,
