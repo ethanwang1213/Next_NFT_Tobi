@@ -454,7 +454,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         description: sample.digital_item.description,
         defaultThumbnailUrl: sample.digital_item.default_thumb_url,
         customThumbnailUrl: sample.digital_item.custom_thumb_url,
-        isCustomThumbnailSelected: sample.digital_item.is_default_thumb,
+        isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
         price: sample.price,
         status: sample.digital_item.status,
         startDate: sample.start_date,
@@ -502,17 +502,17 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     license,
     copyrights,
   }:{
-    name: string,
-    description: string,
-    customThumbnailUrl: string,
-    isCustomThumbnailSelected: boolean,
-    price: number,
-    status: number,
-    startDate: string | undefined,
-    endDate: string | undefined,
-    quantityLimit: number,
-    license: string,
-    copyrights: {id: number|null, name: string}[],
+    name?: string,
+    description?: string,
+    customThumbnailUrl?: string,
+    isCustomThumbnailSelected?: boolean,
+    price?: number,
+    status?: number,
+    startDate?: string,
+    endDate?: string,
+    quantityLimit?: number,
+    license?: string,
+    copyrights?: {id: number|null, name: string}[],
   }=req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
@@ -541,71 +541,78 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sample = await prisma.tobiratory_sample_items.update({
+      const sample = await prisma.tobiratory_sample_items.findUnique({
         where: {
           id: parseInt(sampleId),
-          content_id: content?.id,
-          is_deleted: false,
         },
-        data: {
-          price: price,
-          start_date: startDate==undefined?undefined:new Date(startDate),
-          end_date: endDate==undefined?undefined:new Date(endDate),
-          quantity_limit: quantityLimit,
+        include: {
+          digital_item: true,
         },
       });
       if (!sample) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
           data: "not-exist",
         });
         return;
       }
-      const digitalItemData = await prisma.tobiratory_digital_items.update({
-        where: {
-          id: sample.digital_item_id,
-        },
-        data: {
-          name: name,
-          description: description,
-          custom_thumb_url: customThumbnailUrl,
-          is_default_thumb: !isCustomThumbnailSelected,
-          status: status,
-          license: license,
-        },
-      });
-      if (!digitalItemData) {
-        res.status(401).send({
-          status: "error",
-          data: "not-exist-digital-item",
+      if (price||startDate||endDate||quantityLimit) {
+        await prisma.tobiratory_sample_items.update({
+          where: {
+            id: parseInt(sampleId),
+            content_id: content?.id,
+            is_deleted: false,
+          },
+          data: {
+            price: price,
+            start_date: startDate==undefined?undefined:new Date(startDate),
+            end_date: endDate==undefined?undefined:new Date(endDate),
+            quantity_limit: quantityLimit,
+          },
         });
-        return;
       }
-      await prisma.tobiratory_digital_items_copyright.deleteMany({
-        where: {
-          digital_item_id: digitalItemData.id,
-        },
-      });
-      await Promise.all(
-          copyrights.map(async (copyright)=>{
-            const selectedCopyright = await prisma.tobiratory_copyright.upsert({
-              where: {
-                id: copyright.id??0,
-              },
-              update: {},
-              create: {
-                copyright_name: copyright.name,
-                content_id: content.id,
-              },
-            });
-            await prisma.tobiratory_digital_items_copyright.create({
-              data: {
-                digital_item_id: digitalItemData.id,
-                copyright_id: selectedCopyright.id,
-              },
-            });
-          })
-      );
+      if (name||description||customThumbnailUrl||isCustomThumbnailSelected||status||license) {
+        await prisma.tobiratory_digital_items.update({
+          where: {
+            id: sample?.digital_item_id,
+          },
+          data: {
+            name: name,
+            description: description,
+            custom_thumb_url: customThumbnailUrl,
+            is_default_thumb: !isCustomThumbnailSelected,
+            status: status,
+            license: license,
+          },
+        });
+      }
+      if (copyrights) {
+        await prisma.tobiratory_digital_items_copyright.deleteMany({
+          where: {
+            digital_item_id: sample.digital_item_id,
+          },
+        });
+        await Promise.all(
+            copyrights.map(async (copyright)=>{
+              const selectedCopyright = await prisma.tobiratory_copyright.upsert({
+                where: {
+                  id: copyright.id??0,
+                },
+                update: {},
+                create: {
+                  copyright_name: copyright.name,
+                  content_id: content.id,
+                },
+              });
+              await prisma.tobiratory_digital_items_copyright.create({
+                data: {
+                  digital_item_id: sample.digital_item_id,
+                  copyright_id: selectedCopyright.id,
+                },
+              });
+            })
+        );
+      }
       res.status(200).send({
         status: "success",
         data: "updated",

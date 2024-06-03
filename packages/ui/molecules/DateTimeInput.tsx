@@ -102,10 +102,10 @@ const DateTimeInput = ({
   return (
     <div
       className={clsx(
-        "h-12 border-2 rounded-lg",
+        "h-12 border-2 rounded-lg border-secondary",
         readOnly
-          ? "border-secondary/50"
-          : "border-secondary hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
+          ? "bg-secondary-100"
+          : "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
         "flex flex-row",
         className,
       )}
