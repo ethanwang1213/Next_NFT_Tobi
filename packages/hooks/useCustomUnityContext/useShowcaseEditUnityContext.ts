@@ -35,6 +35,7 @@ export const useShowcaseEditUnityContext = ({
 }: Props) => {
   const {
     unityProvider,
+    isDragging,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -45,6 +46,8 @@ export const useShowcaseEditUnityContext = ({
     removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
+    handleDragStarted,
+    handleDragEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
   } = useSaidanLikeUnityContextBase({
@@ -182,6 +185,8 @@ export const useShowcaseEditUnityContext = ({
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
+    handleDragStarted,
+    handleDragEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
@@ -189,6 +194,7 @@ export const useShowcaseEditUnityContext = ({
 
   return {
     unityProvider,
+    isDragging,
     setLoadData: processAndSetLoadData,
     requestSaveData,
     placeNewItem,

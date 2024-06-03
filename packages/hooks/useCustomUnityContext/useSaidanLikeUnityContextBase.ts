@@ -18,6 +18,7 @@ export const useSaidanLikeUnityContextBase = ({
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
   const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
     useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const {
     unityProvider,
@@ -108,6 +109,14 @@ export const useSaidanLikeUnityContextBase = ({
     );
   }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
 
+  const handleDragStarted = useCallback(() => {
+    setIsDragging(true);
+  }, [setIsDragging]);
+
+  const handleDragEnded = useCallback(() => {
+    setIsDragging(false);
+  }, [setIsDragging]);
+
   const handleRemoveItemEnabled = useCallback(() => {
     if (!onRemoveItemEnabled) return;
     onRemoveItemEnabled();
@@ -120,6 +129,7 @@ export const useSaidanLikeUnityContextBase = ({
 
   return {
     unityProvider,
+    isDragging,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -130,6 +140,8 @@ export const useSaidanLikeUnityContextBase = ({
     removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
+    handleDragStarted,
+    handleDragEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
   };

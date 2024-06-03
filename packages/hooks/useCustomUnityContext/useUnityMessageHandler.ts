@@ -18,6 +18,8 @@ type Props = {
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;
   handleItemThumbnailGenerated?: MessageHandler;
+  handleDragStarted?: () => void;
+  handleDragEnded?: () => void;
   handleRemoveItemEnabled?: () => void;
   handleRemoveItemDisabled?: () => void;
   handleRemoveItemRequested?: MessageHandler;
@@ -30,6 +32,8 @@ export const useUnityMessageHandler = ({
   handleSceneIsLoaded,
   handleSaveDataGenerated,
   handleItemThumbnailGenerated,
+  handleDragStarted,
+  handleDragEnded,
   handleRemoveItemEnabled,
   handleRemoveItemDisabled,
   handleRemoveItemRequested,
@@ -64,29 +68,25 @@ export const useUnityMessageHandler = ({
           handleSceneIsLoaded();
           return;
         case UnityMessageType.SaidanSaveDataIsGenerated:
-          if (handleSaveDataGenerated) {
-            handleSaveDataGenerated(msgObj);
-          }
+          handleSaveDataGenerated?.(msgObj);
           return;
         case UnityMessageType.ItemThumbnailIsGenerated:
-          if (handleItemThumbnailGenerated) {
-            handleItemThumbnailGenerated(msgObj);
-          }
+          handleItemThumbnailGenerated?.(msgObj);
           return;
         case UnityMessageType.RemoveItemEnabled:
-          if (handleRemoveItemEnabled) {
-            handleRemoveItemEnabled();
-          }
+          handleRemoveItemEnabled?.();
           return;
         case UnityMessageType.RemoveItemDisabled:
-          if (handleRemoveItemDisabled) {
-            handleRemoveItemDisabled();
-          }
+          handleRemoveItemDisabled?.();
           return;
         case UnityMessageType.RemoveItemRequested:
-          if (handleRemoveItemRequested) {
-            handleRemoveItemRequested(msgObj);
-          }
+          handleRemoveItemRequested?.(msgObj);
+          return;
+        case UnityMessageType.DragStarted:
+          handleDragStarted?.();
+          return;
+        case UnityMessageType.DragEnded:
+          handleDragEnded?.();
           return;
         default:
           return;

@@ -31,6 +31,7 @@ export const useWorkspaceUnityContext = ({
 }: Props) => {
   const {
     unityProvider,
+    isDragging,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -41,6 +42,8 @@ export const useWorkspaceUnityContext = ({
     removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
+    handleDragStarted,
+    handleDragEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
   } = useSaidanLikeUnityContextBase({
@@ -211,6 +214,8 @@ export const useWorkspaceUnityContext = ({
     handleSceneIsLoaded,
     handleSaveDataGenerated,
     handleItemThumbnailGenerated,
+    handleDragStarted,
+    handleDragEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
@@ -218,6 +223,7 @@ export const useWorkspaceUnityContext = ({
 
   return {
     unityProvider,
+    isDragging,
     setLoadData,
     requestSaveData,
     placeNewSample,
