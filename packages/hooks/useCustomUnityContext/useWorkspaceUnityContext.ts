@@ -18,7 +18,7 @@ type Props = {
   onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
   onRemoveSampleEnabled?: () => void;
   onRemoveSampleDisabled?: () => void;
-  onRemoveSampleRequested?: (itemId: number, tableId: number) => void;
+  onRemoveSampleRequested?: (id: number, itemId: number) => void;
 };
 
 export const useWorkspaceUnityContext = ({
@@ -116,11 +116,11 @@ export const useWorkspaceUnityContext = ({
   );
 
   const removeSample = useCallback(
-    ({ itemId, tableId }: { itemId: number; tableId: number }) => {
+    ({ id, itemId }: { id: number; itemId: number }) => {
       removeItem({
+        id: id,
         itemType: ItemType.Sample,
         itemId,
-        tableId,
       });
     },
     [removeItem],
@@ -164,8 +164,8 @@ export const useWorkspaceUnityContext = ({
 
       var workspaceItemList: ItemSaveData[] =
         messageBody.saidanData.saidanItemList.map((v) => ({
+          id: v.id,
           itemId: v.itemId,
-          tableId: v.tableId,
           stageType: v.stageType,
           position: v.position,
           rotation: v.rotation,
@@ -196,13 +196,13 @@ export const useWorkspaceUnityContext = ({
       if (!onRemoveSampleRequested) return;
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
+        id: number;
         itemId: number;
-        tableId: number;
       };
 
       if (!messageBody) return;
 
-      onRemoveSampleRequested(messageBody.itemId, messageBody.tableId);
+      onRemoveSampleRequested(messageBody.id, messageBody.itemId);
     },
     [onRemoveSampleRequested],
   );

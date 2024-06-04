@@ -75,20 +75,20 @@ export const useSaidanLikeUnityContextBase = ({
 
   const removeItem = useCallback(
     ({
+      id: id,
       itemType,
       itemId,
-      tableId,
     }: {
+      id: number;
       itemType: ItemType;
       itemId: number;
-      tableId: number;
     }) => {
       postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
         JSON.stringify({
+          id: id,
           itemType,
           itemId,
-          tableId,
         }),
       );
     },

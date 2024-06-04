@@ -18,9 +18,9 @@ type Props = {
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onRemoveItemRequested?: (
+    id: number,
     itemType: ItemType,
     itemId: number,
-    tableId: number,
   ) => void;
 };
 
@@ -131,8 +131,8 @@ export const useShowcaseEditUnityContext = ({
       var sampleItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
         .filter((v) => v.itemType === ItemType.Sample)
         .map((v) => ({
+          id: v.id,
           itemId: v.itemId,
-          tableId: v.tableId,
           stageType: v.stageType,
           position: v.position,
           rotation: v.rotation,
@@ -141,8 +141,8 @@ export const useShowcaseEditUnityContext = ({
       var nftItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
         .filter((v) => v.itemType === ItemType.DigitalItemNft)
         .map((v) => ({
+          id: v.id,
           itemId: v.itemId,
-          tableId: v.tableId,
           stageType: v.stageType,
           position: v.position,
           rotation: v.rotation,
@@ -163,17 +163,17 @@ export const useShowcaseEditUnityContext = ({
       if (!onRemoveItemRequested) return;
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
+        id: number;
         itemType: ItemType;
         itemId: number;
-        tableId: number;
       };
 
       if (!messageBody) return;
 
       onRemoveItemRequested(
+        messageBody.id,
         messageBody.itemType,
         messageBody.itemId,
-        messageBody.tableId,
       );
     },
     [onRemoveItemRequested],

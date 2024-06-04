@@ -42,7 +42,7 @@ export type ItemBaseData = {
 };
 
 export type SaidanItemData = ItemBaseData & {
-  tableId: number;
+  id: number;
   stageType: UnityStageType;
   position: Vector3;
   rotation: Vector3;
