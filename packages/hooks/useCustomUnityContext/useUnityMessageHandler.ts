@@ -18,6 +18,11 @@ type Props = {
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;
   handleItemThumbnailGenerated?: MessageHandler;
+  handleDragStarted?: () => void;
+  handleDragEnded?: () => void;
+  handleRemoveItemEnabled?: () => void;
+  handleRemoveItemDisabled?: () => void;
+  handleRemoveItemRequested?: MessageHandler;
 };
 
 export const useUnityMessageHandler = ({
@@ -27,6 +32,11 @@ export const useUnityMessageHandler = ({
   handleSceneIsLoaded,
   handleSaveDataGenerated,
   handleItemThumbnailGenerated,
+  handleDragStarted,
+  handleDragEnded,
+  handleRemoveItemEnabled,
+  handleRemoveItemDisabled,
+  handleRemoveItemRequested,
 }: Props) => {
   const resolveUnityMessage = useCallback((json: string) => {
     try {
@@ -58,14 +68,25 @@ export const useUnityMessageHandler = ({
           handleSceneIsLoaded();
           return;
         case UnityMessageType.SaidanSaveDataIsGenerated:
-          if (handleSaveDataGenerated) {
-            handleSaveDataGenerated(msgObj);
-          }
+          handleSaveDataGenerated?.(msgObj);
           return;
         case UnityMessageType.ItemThumbnailIsGenerated:
-          if (handleItemThumbnailGenerated) {
-            handleItemThumbnailGenerated(msgObj);
-          }
+          handleItemThumbnailGenerated?.(msgObj);
+          return;
+        case UnityMessageType.RemoveItemEnabled:
+          handleRemoveItemEnabled?.();
+          return;
+        case UnityMessageType.RemoveItemDisabled:
+          handleRemoveItemDisabled?.();
+          return;
+        case UnityMessageType.RemoveItemRequested:
+          handleRemoveItemRequested?.(msgObj);
+          return;
+        case UnityMessageType.DragStarted:
+          handleDragStarted?.();
+          return;
+        case UnityMessageType.DragEnded:
+          handleDragEnded?.();
           return;
         default:
           return;
@@ -77,6 +98,11 @@ export const useUnityMessageHandler = ({
       handleSceneIsLoaded,
       handleSaveDataGenerated,
       handleItemThumbnailGenerated,
+      handleDragStarted,
+      handleDragEnded,
+      handleRemoveItemEnabled,
+      handleRemoveItemDisabled,
+      handleRemoveItemRequested,
     ],
   );
 

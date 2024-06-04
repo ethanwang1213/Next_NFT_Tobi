@@ -12,32 +12,45 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
-type MessageBodyForGeneratingItemThumbnail = {
-  base64Image: string;
-};
-
 type Props = {
+  sampleMenuX?: number;
   onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
   onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
+  onRemoveSampleEnabled?: () => void;
+  onRemoveSampleDisabled?: () => void;
+  onRemoveSampleRequested?: (itemId: number, tableId: number) => void;
 };
 
 export const useWorkspaceUnityContext = ({
+  sampleMenuX = -1,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
+  onRemoveSampleEnabled,
+  onRemoveSampleDisabled,
+  onRemoveSampleRequested,
 }: Props) => {
   const {
     unityProvider,
+    isDragging,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
     setLoadData: privateSetLoadData,
     requestSaveData,
     placeNewItem,
-    removeItem: internalRemoveItem,
+    placeNewItemWithDrag,
+    removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded,
+    handleDragStarted,
+    handleDragEnded,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
+    itemMenuX: sampleMenuX,
+    onRemoveItemEnabled: onRemoveSampleEnabled,
+    onRemoveItemDisabled: onRemoveSampleDisabled,
   });
 
   const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
@@ -92,15 +105,25 @@ export const useWorkspaceUnityContext = ({
     [placeNewItem],
   );
 
+  const placeNewSampleWithDrag = useCallback(
+    (itemData: Omit<ItemBaseData, "itemType">) => {
+      placeNewItemWithDrag({
+        itemType: ItemType.Sample,
+        ...itemData,
+      });
+    },
+    [placeNewItemWithDrag],
+  );
+
   const removeSample = useCallback(
     ({ itemId, tableId }: { itemId: number; tableId: number }) => {
-      internalRemoveItem({
+      removeItem({
         itemType: ItemType.Sample,
         itemId,
         tableId,
       });
     },
-    [internalRemoveItem],
+    [removeItem],
   );
 
   const removeSamplesByItemId = useCallback(
@@ -157,15 +180,31 @@ export const useWorkspaceUnityContext = ({
     (msgObj: UnityMessageJson) => {
       if (!onItemThumbnailGenerated) return;
 
-      const messageBody = JSON.parse(
-        msgObj.messageBody,
-      ) as MessageBodyForGeneratingItemThumbnail;
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        base64Image: string;
+      };
 
       if (!messageBody) return;
 
       onItemThumbnailGenerated(messageBody.base64Image);
     },
     [onItemThumbnailGenerated],
+  );
+
+  const handleRemoveSampleRequested = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onRemoveSampleRequested) return;
+
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemId: number;
+        tableId: number;
+      };
+
+      if (!messageBody) return;
+
+      onRemoveSampleRequested(messageBody.itemId, messageBody.tableId);
+    },
+    [onRemoveSampleRequested],
   );
 
   useUnityMessageHandler({
@@ -175,13 +214,20 @@ export const useWorkspaceUnityContext = ({
     handleSceneIsLoaded,
     handleSaveDataGenerated,
     handleItemThumbnailGenerated,
+    handleDragStarted,
+    handleDragEnded,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
+    handleRemoveItemRequested: handleRemoveSampleRequested,
   });
 
   return {
     unityProvider,
+    isDragging,
     setLoadData,
     requestSaveData,
     placeNewSample,
+    placeNewSampleWithDrag,
     removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,
