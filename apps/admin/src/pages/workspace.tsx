@@ -11,6 +11,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { ModelType } from "types/unityTypes";
 import { SampleItem } from "ui/types/adminTypes";
+import { WorkspaceSaveData } from "types/adminTypes";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -42,6 +43,7 @@ export default function Index() {
   const generateMaterialImage = useRef(null);
   const generateModelUrl = useRef(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   const onSaveDataGenerated = (workspaceSaveData: WorkspaceSaveData) => {};
 
   const onItemThumbnailGenerated = async (thumbnailBase64: string) => {
@@ -64,9 +66,12 @@ export default function Index() {
 
   const {
     unityProvider,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setLoadData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     requestSaveData,
     placeNewSample,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,
