@@ -5,13 +5,20 @@ import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
+  itemMenuX,
+  onRemoveItemEnabled,
+  onRemoveItemDisabled,
 }: {
   sceneType: UnitySceneType;
+  itemMenuX: number;
+  onRemoveItemEnabled?: () => void;
+  onRemoveItemDisabled?: () => void;
 }) => {
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
   const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
     useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const {
     unityProvider,
@@ -53,6 +60,19 @@ export const useSaidanLikeUnityContextBase = ({
     [postMessageToUnity],
   );
 
+  const placeNewItemWithDrag = useCallback(
+    (itemData: ItemBaseData) => {
+      postMessageToUnity(
+        "NewItemWithDragMessageReceiver",
+        JSON.stringify({
+          ...itemData,
+          itemMenuX,
+        }),
+      );
+    },
+    [postMessageToUnity, itemMenuX],
+  );
+
   const removeItem = useCallback(
     ({
       itemType,
@@ -80,16 +100,49 @@ export const useSaidanLikeUnityContextBase = ({
     postMessageToLoadData();
   }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
+  useEffect(() => {
+    if (!isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
+      return;
+    postMessageToUnity(
+      "ItemMenuXMessageReceiver",
+      JSON.stringify({ itemMenuX }),
+    );
+  }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
+
+  const handleDragStarted = useCallback(() => {
+    setIsDragging(true);
+  }, [setIsDragging]);
+
+  const handleDragEnded = useCallback(() => {
+    setIsDragging(false);
+  }, [setIsDragging]);
+
+  const handleRemoveItemEnabled = useCallback(() => {
+    if (!onRemoveItemEnabled) return;
+    onRemoveItemEnabled();
+  }, [onRemoveItemEnabled]);
+
+  const handleRemoveItemDisabled = useCallback(() => {
+    if (!onRemoveItemDisabled) return;
+    onRemoveItemDisabled();
+  }, [onRemoveItemDisabled]);
+
   return {
     unityProvider,
+    isDragging,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
     setLoadData,
     requestSaveData,
     placeNewItem,
+    placeNewItemWithDrag,
     removeItem,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
+    handleDragStarted,
+    handleDragEnded,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
   };
 };
