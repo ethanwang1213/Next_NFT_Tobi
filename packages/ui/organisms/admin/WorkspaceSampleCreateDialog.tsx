@@ -8,16 +8,24 @@ import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect
 import MaterialImageCircleCropComponent from "ui/organisms/admin/MaterialImageCircleCrop";
 import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
 import SampleGenerateComponent from "ui/organisms/admin/SampleGenerate";
-import { MaterialItem } from "ui/types/DigitalItems";
+import { MaterialItem } from "ui/types/adminTypes";
 
 const WorkspaceSampleCreateDialog = ({
   dialogRef,
   initDialog,
   materials,
+  generateHandler,
+  generateError,
 }: {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   initDialog: number;
   materials: MaterialItem[];
+  generateHandler: (
+    materialId: number,
+    materialImage: string,
+    sampleType: number,
+  ) => void;
+  generateError: boolean;
 }) => {
   const [creationStep, setCreationStep] = useState(0);
   const [sampleType, setSampleType] = useState(null);
@@ -71,6 +79,8 @@ const WorkspaceSampleCreateDialog = ({
               }
               backHandler={() => setCreationStep(creationStep - 1)}
               nextHandler={() => setCreationStep(creationStep + 1)}
+              generateHandler={generateHandler}
+              generateError={generateError}
             />
           )}
           {creationStep === 2 && sampleType === "Can Badge" && (
@@ -83,18 +93,6 @@ const WorkspaceSampleCreateDialog = ({
               nextHandler={() => setCreationStep(creationStep + 1)}
             />
           )}
-          {creationStep === 3 &&
-            (sampleType === "Poster" || sampleType === "Can Badge") && (
-              <SampleGenerateComponent
-                material={materialImage}
-                sampleType={sampleType}
-                closeHandler={() => {
-                  if (dialogRef.current) {
-                    dialogRef.current.close();
-                  }
-                }}
-              />
-            )}
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">

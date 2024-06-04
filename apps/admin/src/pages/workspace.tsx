@@ -8,6 +8,9 @@ import Image from "next/image";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import { WorkspaceUnity } from "ui/molecules/CustomUnity";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { ImageType, uploadImage } from "fetchers/UploadActions";
+import { ModelType } from "types/unityTypes";
+import { SampleItem } from "ui/types/adminTypes";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -32,11 +35,32 @@ export default function Index() {
     deleteData: deleteSamples,
   } = useRestfulAPI("native/my/samples");
 
-  const { data: materials } = useRestfulAPI("native/materials");
+  const { data: materials, postData } = useRestfulAPI("native/materials");
+
+  const generateError = useRef(false);
+  const generateSampleType = useRef(null);
+  const generateMaterialImage = useRef(null);
+  const generateModelUrl = useRef(null);
 
   const onSaveDataGenerated = (workspaceSaveData: WorkspaceSaveData) => {};
 
-  const onItemThumbnailGenerated = (thumbnailBase64: string) => {};
+  const onItemThumbnailGenerated = async (thumbnailBase64: string) => {
+    const sampleThumb = await uploadImage(
+      thumbnailBase64,
+      ImageType.SampleThumbnail,
+    );
+    const newSample = await postData("native/my/samples", {
+      thumbUrl: sampleThumb,
+      modelUrl: generateModelUrl.current,
+      materialId: generateMaterialImage.current.id,
+      type: generateSampleType.current,
+    });
+    placeSampleHandler(newSample);
+
+    if (sampleCreateDialogRef.current) {
+      sampleCreateDialogRef.current.close();
+    }
+  };
 
   const {
     unityProvider,
@@ -51,27 +75,34 @@ export default function Index() {
     onItemThumbnailGenerated,
   });
 
-  const createSampleHandler = useCallback(() => {
+  const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
       setInitSampleCreateDialog(initSampleCreateDialog + 1);
       sampleCreateDialogRef.current.showModal();
     }
   }, [initSampleCreateDialog]);
 
+  const placeSampleHandler = useCallback(
+    (sample: SampleItem) => {
+      const materialIndex = materials.findIndex(
+        (value) => value.id === sample.materialId,
+      );
+      placeNewSample({
+        itemId: sample.id,
+        modelUrl: sample.modelUrl,
+        imageUrl: materials[materialIndex].image,
+        modelType: sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+      });
+    },
+    [materials, placeNewSample],
+  );
+
   const sampleSelectHandler = useCallback(
     (index: number) => {
       setSelectedSampleItem(samples[index].id);
-      const materialIndex = materials.findIndex(
-        (value) => value.id === samples[index].materialId,
-      );
-      placeNewSample({
-        itemId: samples[index].id,
-        modelUrl: samples[index].modelUrl,
-        imageUrl: materials[materialIndex].image,
-        modelType: samples[index].type,
-      });
+      placeSampleHandler(samples[index]);
     },
-    [materials, samples, placeNewSample],
+    [samples, placeSampleHandler],
   );
 
   const deleteSamplesHandler = useCallback(
@@ -93,6 +124,49 @@ export default function Index() {
     [samples, removeSamplesByItemId],
   );
 
+  const generateSampleHandler = useCallback(
+    async (materialId: number, materialImage: string, sampleType: number) => {
+      generateSampleType.current = sampleType;
+      if (sampleType === ModelType.Poster) {
+        // take material image
+        let selMaterialImage;
+        if (materialId === 0) {
+          const imageUrl = await uploadImage(
+            materialImage,
+            ImageType.MaterialImage,
+          );
+          const response = await postData(
+            "native/materials",
+            { image: imageUrl },
+            [],
+          );
+          selMaterialImage = response[response.length - 1];
+        } else {
+          const materialIndex = materials.findIndex(
+            (value) => value.id === materialId,
+          );
+          selMaterialImage = materials[materialIndex];
+        }
+        generateMaterialImage.current = selMaterialImage;
+
+        // create model
+        const modelResp = await postData("native/model/create", {
+          type: "Poster",
+          materialId: selMaterialImage.id,
+          imageUrl: selMaterialImage.image,
+        });
+        generateModelUrl.current = modelResp["modelUrl"];
+        requestItemThumbnail({
+          modelType: ModelType.Poster,
+          modelUrl: modelResp["modelUrl"],
+          imageUrl: selMaterialImage.image,
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [materials, requestItemThumbnail],
+  );
+
   return (
     <div className="w-full h-full relative">
       <WorkspaceUnity unityProvider={unityProvider} />
@@ -101,6 +175,8 @@ export default function Index() {
           dialogRef={sampleCreateDialogRef}
           initDialog={initSampleCreateDialog}
           materials={materials}
+          generateHandler={generateSampleHandler}
+          generateError={generateError.current}
         />
         <WorkspaceShortcutDialog
           dialogRef={shortcutDialogRef}
@@ -115,7 +191,7 @@ export default function Index() {
           data={samples}
           createHandler={() => {
             setShowListView(false);
-            createSampleHandler();
+            addButtonHandler();
           }}
           selectHandler={sampleSelectHandler}
           deleteHandler={deleteSamplesHandler}
@@ -174,7 +250,7 @@ export default function Index() {
         <div
           className="absolute bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
             flex justify-center items-center cursor-pointer"
-          onClick={createSampleHandler}
+          onClick={addButtonHandler}
         >
           <Image
             width={48}
