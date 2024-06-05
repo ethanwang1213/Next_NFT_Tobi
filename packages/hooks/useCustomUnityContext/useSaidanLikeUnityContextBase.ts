@@ -125,7 +125,7 @@ export const useSaidanLikeUnityContextBase = ({
   );
 
   const updateIdValues: UpdateIdValues = useCallback(
-    ({ idPairs }) => {
+    ({ data: idPairs }) => {
       postMessageToUnity(
         "UpdateItemIdMessageReceiver",
         JSON.stringify({
