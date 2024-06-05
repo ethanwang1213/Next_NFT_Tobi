@@ -179,7 +179,8 @@ const Showcase = () => {
       window.removeEventListener("resize", updateContainerWidth);
       clearTimeout(requestSaveDataTimer);
     };
-  }, [requestSaveDataInterval, requestSaveData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const selectSampleHandler = useCallback(
     (
