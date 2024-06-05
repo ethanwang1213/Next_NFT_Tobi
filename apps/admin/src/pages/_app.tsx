@@ -15,6 +15,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import Layout from "ui/organisms/admin/Layout";
+import { LeavePageProvider } from "contexts/LeavePageProvider";
 
 config.autoAddCss = false;
 
@@ -25,7 +26,9 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <main className={font.className}>
         <Layout>
-          <Component {...pageProps} />
+          <LeavePageProvider>
+            <Component {...pageProps} />
+          </LeavePageProvider>
         </Layout>
       </main>
     </>

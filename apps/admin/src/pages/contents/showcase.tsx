@@ -15,6 +15,7 @@ import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import { ShowcaseSaveData } from "types/adminTypes";
 import { ItemType, ModelType } from "types/unityTypes";
+import { useLeavePage } from "contexts/LeavePageProvider";
 
 const Showcase = () => {
   const router = useRouter();
@@ -38,11 +39,12 @@ const Showcase = () => {
   } = useRestfulAPI(null);
   const timerId = useRef(null);
 
+  const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes
+
   const { data: materialData } = useRestfulAPI("native/materials");
 
-  const checkNewItem = useCallback(
+  const checkItemChange = useCallback(
     async (showcaseSaveData: ShowcaseSaveData) => {
-      console.log("showcaseData", showcaseData, showcaseSaveData);
       const oldSampleList =
         showcaseData.sampleItemList.length > 0
           ? showcaseData.sampleItemList
@@ -66,7 +68,6 @@ const Showcase = () => {
           ? showcaseSaveData.nftItemList.map((item) => item["itemId"] as number)
           : [];
 
-      console.log(oldSampleList, newSampleList, oldNFTList, newNFTList);
       if (
         newSampleList.length > oldSampleList.length ||
         newNFTList.length > oldNFTList.length
@@ -83,16 +84,15 @@ const Showcase = () => {
 
   const onSaveDataGenerated = useCallback(
     async (showcaseSaveData: ShowcaseSaveData) => {
-      console.log("showcaseSaveData", showcaseSaveData);
-      await checkNewItem(showcaseSaveData);
-      postData(`${apiUrl}/${id}`, {
+      await checkItemChange(showcaseSaveData);
+      await postData(`${apiUrl}/${id}`, {
         sampleItemList: showcaseSaveData.sampleItemList,
         nftItemList: showcaseSaveData.nftItemList,
         thumbnailImage: showcaseSaveData.thumbnailImageBase64,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id],
+    [id, checkItemChange],
   );
 
   const {
@@ -104,6 +104,16 @@ const Showcase = () => {
   } = useShowcaseEditUnityContext({
     onSaveDataGenerated,
   });
+
+  const { leavingPage, setLeavingPage } = useLeavePage();
+
+  useEffect(() => {
+    if (leavingPage) {
+      // Request save data to Unity
+      requestSaveData();
+      setLeavingPage(false); // Reset the state
+    }
+  }, [leavingPage, setLeavingPage, requestSaveData]);
 
   const handleButtonClick = (msg) => {
     setShowToast(false);
@@ -140,9 +150,10 @@ const Showcase = () => {
     setLoading(false);
   };
 
+  // load showcase data
   useEffect(() => {
     if (id) {
-      getData(`${apiUrl}/${id}`);
+      getData(`${apiUrl}/${id}`); // update showcaseData state
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -165,10 +176,16 @@ const Showcase = () => {
     updateContainerWidth();
     window.addEventListener("resize", updateContainerWidth);
 
+    // Initialize timer
+    const requestSaveDataTimer = setTimeout(() => {
+      requestSaveData();
+    }, requestSaveDataInterval);
+
     return () => {
       window.removeEventListener("resize", updateContainerWidth);
+      clearTimeout(requestSaveDataTimer);
     };
-  }, []);
+  }, [requestSaveDataInterval, requestSaveData]);
 
   const selectSampleHandler = useCallback(
     (
@@ -331,11 +348,11 @@ const Showcase = () => {
         <div
           className="fixed mt-[24px] ml-[38px]"
           onClick={() => {
-            requestSaveData();
+            // requestSaveData();
           }}
         >
           <Link
-            href="#"
+            href="/contents"
             className="rounded-lg bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-md p-2"
           >
             <Image
