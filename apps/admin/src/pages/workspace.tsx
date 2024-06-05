@@ -83,20 +83,20 @@ export default function Index() {
   });
 
   useEffect(() => {
-    if (workspaceData && workspaceData.workspaceItemList.length) {
-      setWorkspaceData(workspaceData.workspaceItemList);
+    if (workspaceData) {
+      setWorkspaceData(workspaceData);
     }
   }, [workspaceData, setWorkspaceData]);
 
-  const requestSaveDataInterval = 1000 * 60 * 1; // 5 minutes
+  const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
     // Initialize timer
-    const requestSaveDataTimer = setTimeout(() => {
+    const requestSaveDataTimer = setInterval(() => {
       requestSaveData();
     }, requestSaveDataInterval);
 
     return () => {
-      clearTimeout(requestSaveDataTimer);
+      clearInterval(requestSaveDataTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
