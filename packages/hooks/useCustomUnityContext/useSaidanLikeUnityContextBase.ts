@@ -21,7 +21,14 @@ export const useSaidanLikeUnityContextBase = ({
     useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const base = useCustomUnityContextBase({ sceneType });
+  const {
+    unityProvider,
+    isLoaded,
+    addEventListener,
+    removeEventListener,
+    postMessageToUnity,
+    handleSimpleMessage,
+  } = useCustomUnityContextBase({ sceneType });
 
   const postMessageToLoadData = useCallback(() => {
     if (!loadData || loadData.saidanId === currentSaidanId) {
@@ -30,20 +37,20 @@ export const useSaidanLikeUnityContextBase = ({
     }
 
     const json = JSON.stringify({ ...loadData });
-    base.postMessageToUnity("LoadSaidanDataMessageReceiver", json);
+    postMessageToUnity("LoadSaidanDataMessageReceiver", json);
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
     setIsSaidanSceneLoaded(true);
-  }, [loadData, currentSaidanId, base.postMessageToUnity]);
+  }, [loadData, currentSaidanId, postMessageToUnity]);
 
   const requestSaveData = () => {
-    base.postMessageToUnity("SaveSaidanDataMessageReceiver", "");
+    postMessageToUnity("SaveSaidanDataMessageReceiver", "");
   };
 
   const placeNewSample = useCallback(
     (params: Expand<Omit<ItemBaseData, "itemType">>) => {
-      base.postMessageToUnity(
+      postMessageToUnity(
         "NewItemMessageReceiver",
         JSON.stringify({
           itemType: ItemType.Sample,
@@ -52,7 +59,7 @@ export const useSaidanLikeUnityContextBase = ({
         }),
       );
     },
-    [base.postMessageToUnity],
+    [postMessageToUnity],
   );
 
   const placeNewNft = useCallback(
@@ -61,7 +68,7 @@ export const useSaidanLikeUnityContextBase = ({
         Omit<ItemBaseData, "itemType" | "imageUrl" | "secondImageUrl">
       >,
     ) => {
-      base.postMessageToUnity(
+      postMessageToUnity(
         "NewItemMessageReceiver",
         JSON.stringify({
           itemType: ItemType.DigitalItemNft,
@@ -71,12 +78,12 @@ export const useSaidanLikeUnityContextBase = ({
         }),
       );
     },
-    [base.postMessageToUnity],
+    [postMessageToUnity],
   );
 
   const placeNewSampleWithDrag = useCallback(
     (itemData: Expand<Omit<ItemBaseData, "itemType">>) => {
-      base.postMessageToUnity(
+      postMessageToUnity(
         "NewItemWithDragMessageReceiver",
         JSON.stringify({
           itemType: ItemType.Sample,
@@ -85,7 +92,7 @@ export const useSaidanLikeUnityContextBase = ({
         }),
       );
     },
-    [base.postMessageToUnity, itemMenuX],
+    [postMessageToUnity, itemMenuX],
   );
 
   const placeNewNftWithDrag = useCallback(
@@ -94,7 +101,7 @@ export const useSaidanLikeUnityContextBase = ({
         Omit<ItemBaseData, "itemType" | "imageUrl" | "secondImageUrl">
       >,
     ) => {
-      base.postMessageToUnity(
+      postMessageToUnity(
         "NewItemWithDragMessageReceiver",
         JSON.stringify({
           itemType: ItemType.DigitalItemNft,
@@ -104,44 +111,44 @@ export const useSaidanLikeUnityContextBase = ({
         }),
       );
     },
-    [base.postMessageToUnity, itemMenuX],
+    [postMessageToUnity, itemMenuX],
   );
 
   const removeItem = useCallback(
     (itemInfo: { id: number; itemType: ItemType; itemId: number }) => {
-      base.postMessageToUnity(
+      postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
         JSON.stringify(itemInfo),
       );
     },
-    [base.postMessageToUnity],
+    [postMessageToUnity],
   );
 
   const updateIdValues: UpdateIdValues = useCallback(
     ({ idPairs }) => {
-      base.postMessageToUnity(
+      postMessageToUnity(
         "UpdateItemIdMessageReceiver",
         JSON.stringify({
           idPairs,
         }),
       );
     },
-    [base.postMessageToUnity],
+    [postMessageToUnity],
   );
 
   useEffect(() => {
-    if (!base.isLoaded || !isSaidanSceneLoaded) return;
+    if (!isLoaded || !isSaidanSceneLoaded) return;
     postMessageToLoadData();
-  }, [base.isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
+  }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
   useEffect(() => {
-    if (!base.isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
+    if (!isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
       return;
-    base.postMessageToUnity(
+    postMessageToUnity(
       "ItemMenuXMessageReceiver",
       JSON.stringify({ itemMenuX }),
     );
-  }, [base.isLoaded, isSaidanSceneLoaded, itemMenuX, base.postMessageToUnity]);
+  }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
 
   const handleDragStarted = useCallback(() => {
     setIsDragging(true);
@@ -162,11 +169,11 @@ export const useSaidanLikeUnityContextBase = ({
   }, [onRemoveItemDisabled]);
 
   return {
-    unityProvider: base.unityProvider,
+    unityProvider,
     isDragging,
-    addEventListener: base.addEventListener,
-    removeEventListener: base.removeEventListener,
-    postMessageToUnity: base.postMessageToUnity,
+    addEventListener,
+    removeEventListener,
+    postMessageToUnity,
     setLoadData,
     requestSaveData,
     placeNewSample,
@@ -175,7 +182,7 @@ export const useSaidanLikeUnityContextBase = ({
     placeNewNftWithDrag,
     removeItem,
     updateIdValues,
-    handleSimpleMessage: base.handleSimpleMessage,
+    handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
     handleDragStarted,
     handleDragEnded,

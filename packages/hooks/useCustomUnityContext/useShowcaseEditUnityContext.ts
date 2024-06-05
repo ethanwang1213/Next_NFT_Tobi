@@ -40,7 +40,27 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemDisabled,
   onRemoveItemRequested,
 }: Props) => {
-  const base = useSaidanLikeUnityContextBase({
+  const {
+    unityProvider,
+    isDragging,
+    addEventListener,
+    removeEventListener,
+    postMessageToUnity,
+    setLoadData,
+    requestSaveData,
+    placeNewSample,
+    placeNewNft,
+    placeNewSampleWithDrag,
+    placeNewNftWithDrag,
+    removeItem,
+    updateIdValues,
+    handleSimpleMessage,
+    handleSceneIsLoaded,
+    handleDragStarted,
+    handleDragEnded,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
+  } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
     onRemoveItemEnabled,
@@ -91,19 +111,19 @@ export const useShowcaseEditUnityContext = ({
 
   const processAndSetLoadData = useCallback(
     (loadData: ShowcaseLoadData) => {
-      base.setLoadData(processLoadData(loadData));
+      setLoadData(processLoadData(loadData));
     },
-    [base.setLoadData, processLoadData],
+    [setLoadData, processLoadData],
   );
 
   const removeRecentItem = useCallback(
     (itemInfo: { itemType: ItemType; itemId: number }) => {
-      base.postMessageToUnity(
+      postMessageToUnity(
         "RemoveRecentItemMessageReceiver",
         JSON.stringify(itemInfo),
       );
     },
-    [base.postMessageToUnity],
+    [postMessageToUnity],
   );
 
   const handleSaveDataGenerated = useCallback(
@@ -143,10 +163,10 @@ export const useShowcaseEditUnityContext = ({
           nftItemList,
           thumbnailImageBase64: messageBody.saidanThumbnailBase64,
         },
-        base.updateIdValues,
+        updateIdValues,
       );
     },
-    [onSaveDataGenerated, base.updateIdValues],
+    [onSaveDataGenerated, updateIdValues],
   );
 
   const handleRemoveItemRequested = useCallback(
@@ -171,28 +191,28 @@ export const useShowcaseEditUnityContext = ({
   );
 
   useUnityMessageHandler({
-    addEventListener: base.addEventListener,
-    removeEventListener: base.removeEventListener,
-    handleSimpleMessage: base.handleSimpleMessage,
-    handleSceneIsLoaded: base.handleSceneIsLoaded,
+    addEventListener,
+    removeEventListener,
+    handleSimpleMessage,
+    handleSceneIsLoaded,
     handleSaveDataGenerated,
-    handleDragStarted: base.handleDragStarted,
-    handleDragEnded: base.handleDragEnded,
-    handleRemoveItemEnabled: base.handleRemoveItemEnabled,
-    handleRemoveItemDisabled: base.handleRemoveItemDisabled,
+    handleDragStarted,
+    handleDragEnded,
+    handleRemoveItemEnabled,
+    handleRemoveItemDisabled,
     handleRemoveItemRequested,
   });
 
   return {
-    unityProvider: base.unityProvider,
-    isDragging: base.isDragging,
+    unityProvider,
+    isDragging,
     setLoadData: processAndSetLoadData,
-    requestSaveData: base.requestSaveData,
-    placeNewSample: base.placeNewSample,
-    placeNewNft: base.placeNewNft,
-    placeNewSampleWithDrag: base.placeNewSampleWithDrag,
-    placeNewNftWithDrag: base.placeNewNftWithDrag,
-    removeItem: base.removeItem,
+    requestSaveData,
+    placeNewSample,
+    placeNewNft,
+    placeNewSampleWithDrag,
+    placeNewNftWithDrag,
+    removeItem,
     removeRecentItem,
   };
 };
