@@ -178,8 +178,8 @@ export const useWorkspaceUnityContext = ({
   );
 
   useUnityMessageHandler({
-    addEventListener,
-    removeEventListener,
+    addEventListener: base.addEventListener,
+    removeEventListener: base.removeEventListener,
     handleSimpleMessage: base.handleSimpleMessage,
     handleSceneIsLoaded: base.handleSceneIsLoaded,
     handleSaveDataGenerated,

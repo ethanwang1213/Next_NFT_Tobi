@@ -164,8 +164,8 @@ export const useSaidanLikeUnityContextBase = ({
   return {
     unityProvider: base.unityProvider,
     isDragging,
-    addEventListener,
-    removeEventListener,
+    addEventListener: base.addEventListener,
+    removeEventListener: base.removeEventListener,
     postMessageToUnity: base.postMessageToUnity,
     setLoadData,
     requestSaveData,
