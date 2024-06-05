@@ -85,26 +85,6 @@ export const useWorkspaceUnityContext = ({
     [base.setLoadData, processLoadData],
   );
 
-  const placeNewSample = useCallback(
-    (params: Omit<ItemBaseData, "itemType">) => {
-      base.placeNewItem({
-        itemType: ItemType.Sample,
-        ...params,
-      });
-    },
-    [base.placeNewItem],
-  );
-
-  const placeNewSampleWithDrag = useCallback(
-    (itemData: Omit<ItemBaseData, "itemType">) => {
-      base.placeNewItemWithDrag({
-        itemType: ItemType.Sample,
-        ...itemData,
-      });
-    },
-    [base.placeNewItemWithDrag],
-  );
-
   const removeSample = useCallback(
     ({ id, itemId }: { id: number; itemId: number }) => {
       base.removeItem({
@@ -216,8 +196,8 @@ export const useWorkspaceUnityContext = ({
     isDragging: base.isDragging,
     setLoadData,
     requestSaveData: base.requestSaveData,
-    placeNewSample,
-    placeNewSampleWithDrag,
+    placeNewSample: base.placeNewSample,
+    placeNewSampleWithDrag: base.placeNewSampleWithDrag,
     removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,

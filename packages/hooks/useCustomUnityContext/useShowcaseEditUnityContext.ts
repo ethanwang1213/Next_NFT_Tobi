@@ -97,13 +97,10 @@ export const useShowcaseEditUnityContext = ({
   );
 
   const removeRecentItem = useCallback(
-    ({ itemType, itemId }) => {
+    (itemInfo: { itemType: ItemType; itemId: number }) => {
       base.postMessageToUnity(
         "RemoveRecentItemMessageReceiver",
-        JSON.stringify({
-          itemType,
-          itemId,
-        }),
+        JSON.stringify(itemInfo),
       );
     },
     [base.postMessageToUnity],
@@ -191,8 +188,10 @@ export const useShowcaseEditUnityContext = ({
     isDragging: base.isDragging,
     setLoadData: processAndSetLoadData,
     requestSaveData: base.requestSaveData,
-    placeNewItem: base.placeNewItem,
-    placeNewItemWithDrag: base.placeNewItemWithDrag,
+    placeNewSample: base.placeNewSample,
+    placeNewNft: base.placeNewNft,
+    placeNewSampleWithDrag: base.placeNewSampleWithDrag,
+    placeNewNftWithDrag: base.placeNewNftWithDrag,
     removeItem: base.removeItem,
     removeRecentItem,
   };

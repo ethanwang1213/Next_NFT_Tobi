@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { ItemBaseData, ItemType } from "types/unityTypes";
-import { SaidanLikeData, UnitySceneType } from "./types";
-import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 import { UpdateIdValues } from "types/adminTypes";
+import { ItemBaseData, ItemType } from "types/unityTypes";
+import { Expand, SaidanLikeData, UnitySceneType } from "./types";
+import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
@@ -41,11 +41,12 @@ export const useSaidanLikeUnityContextBase = ({
     base.postMessageToUnity("SaveSaidanDataMessageReceiver", "");
   };
 
-  const placeNewItem = useCallback(
-    (params: ItemBaseData) => {
+  const placeNewSample = useCallback(
+    (params: Expand<Omit<ItemBaseData, "itemType">>) => {
       base.postMessageToUnity(
         "NewItemMessageReceiver",
         JSON.stringify({
+          itemType: ItemType.Sample,
           ...params,
           isDebug: params.isDebug ? params.isDebug : false,
         }),
@@ -54,11 +55,50 @@ export const useSaidanLikeUnityContextBase = ({
     [base.postMessageToUnity],
   );
 
-  const placeNewItemWithDrag = useCallback(
-    (itemData: ItemBaseData) => {
+  const placeNewNft = useCallback(
+    (
+      params: Expand<
+        Omit<ItemBaseData, "itemType" | "imageUrl" | "secondImageUrl">
+      >,
+    ) => {
+      base.postMessageToUnity(
+        "NewItemMessageReceiver",
+        JSON.stringify({
+          itemType: ItemType.DigitalItemNft,
+          imageUrl: "",
+          ...params,
+          isDebug: params.isDebug ? params.isDebug : false,
+        }),
+      );
+    },
+    [base.postMessageToUnity],
+  );
+
+  const placeNewSampleWithDrag = useCallback(
+    (itemData: Expand<Omit<ItemBaseData, "itemType">>) => {
       base.postMessageToUnity(
         "NewItemWithDragMessageReceiver",
         JSON.stringify({
+          itemType: ItemType.Sample,
+          ...itemData,
+          itemMenuX,
+        }),
+      );
+    },
+    [base.postMessageToUnity, itemMenuX],
+  );
+
+  const placeNewNftWithDrag = useCallback(
+    (
+      itemData: Expand<
+        Omit<ItemBaseData, "itemType" | "imageUrl" | "secondImageUrl">
+      >,
+    ) => {
+      base.postMessageToUnity(
+        "NewItemWithDragMessageReceiver",
+        JSON.stringify({
+          itemType: ItemType.DigitalItemNft,
+          imageUrl: "",
           ...itemData,
           itemMenuX,
         }),
@@ -68,22 +108,10 @@ export const useSaidanLikeUnityContextBase = ({
   );
 
   const removeItem = useCallback(
-    ({
-      id: id,
-      itemType,
-      itemId,
-    }: {
-      id: number;
-      itemType: ItemType;
-      itemId: number;
-    }) => {
+    (itemInfo: { id: number; itemType: ItemType; itemId: number }) => {
       base.postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
-        JSON.stringify({
-          id: id,
-          itemType,
-          itemId,
-        }),
+        JSON.stringify(itemInfo),
       );
     },
     [base.postMessageToUnity],
@@ -141,8 +169,10 @@ export const useSaidanLikeUnityContextBase = ({
     postMessageToUnity: base.postMessageToUnity,
     setLoadData,
     requestSaveData,
-    placeNewItem,
-    placeNewItemWithDrag,
+    placeNewSample,
+    placeNewNft,
+    placeNewSampleWithDrag,
+    placeNewNftWithDrag,
     removeItem,
     updateIdValues,
     handleSimpleMessage: base.handleSimpleMessage,

@@ -38,6 +38,7 @@ export type ItemBaseData = {
   modelType: ModelType;
   modelUrl: string;
   imageUrl: string;
+  secondImageUrl?: string;
   isDebug?: boolean;
 };
 
