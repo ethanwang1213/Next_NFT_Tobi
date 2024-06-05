@@ -114,4 +114,4 @@ export type IdPairs = {
   next: number;
 }[];
 
-export type UpdateIdValues = ({ data }: { data: IdPairs }) => void;
+export type UpdateIdValues = ({ idPairs }: { idPairs: IdPairs }) => void;
