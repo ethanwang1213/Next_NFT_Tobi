@@ -1,4 +1,9 @@
-import { ItemLoadData, ItemSaveData, ShowcaseType } from "./unityTypes";
+import {
+  ItemSaveData,
+  NftLoadData,
+  SampleLoadData,
+  ShowcaseType,
+} from "./unityTypes";
 
 export type User = {
   uuid: string;
@@ -81,7 +86,7 @@ export type TcpFormType = {
 };
 
 export type WorkspaceLoadData = {
-  workspaceItemList: ItemLoadData[];
+  workspaceItemList: SampleLoadData[];
   isDebug?: boolean;
 };
 
@@ -93,8 +98,8 @@ export type ShowcaseLoadData = {
   showcaseId: number;
   showcaseType: ShowcaseType;
   showcaseUrl: string;
-  sampleItemList: ItemLoadData[];
-  nftItemList: ItemLoadData[];
+  sampleItemList: SampleLoadData[];
+  nftItemList: NftLoadData[];
   isDebug?: boolean;
 };
 
@@ -103,3 +108,10 @@ export type ShowcaseSaveData = {
   nftItemList: ItemSaveData[];
   thumbnailImageBase64: string;
 };
+
+export type IdPairs = {
+  previous: number;
+  next: number;
+}[];
+
+export type UpdateIdValues = ({ idPairs }: { idPairs: IdPairs }) => void;

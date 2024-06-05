@@ -1,5 +1,9 @@
 import { useCallback } from "react";
-import { ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
+import {
+  ShowcaseLoadData,
+  ShowcaseSaveData,
+  UpdateIdValues,
+} from "types/adminTypes";
 import { ItemSaveData, ItemType, SaidanItemData } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
@@ -14,7 +18,10 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type Props = {
   itemMenuX?: number;
-  onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveData) => void;
+  onSaveDataGenerated?: (
+    showcaseSaveData: ShowcaseSaveData,
+    updateIdValues: UpdateIdValues,
+  ) => void;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onRemoveItemRequested?: (
@@ -33,24 +40,7 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemDisabled,
   onRemoveItemRequested,
 }: Props) => {
-  const {
-    unityProvider,
-    isDragging,
-    addEventListener,
-    removeEventListener,
-    postMessageToUnity,
-    setLoadData,
-    requestSaveData,
-    placeNewItem,
-    placeNewItemWithDrag,
-    removeItem,
-    handleSimpleMessage,
-    handleSceneIsLoaded,
-    handleDragStarted,
-    handleDragEnded,
-    handleRemoveItemEnabled,
-    handleRemoveItemDisabled,
-  } = useSaidanLikeUnityContextBase({
+  const base = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
     onRemoveItemEnabled,
@@ -75,6 +65,7 @@ export const useShowcaseEditUnityContext = ({
         return {
           ...v,
           itemType: ItemType.DigitalItemNft,
+          imageUrl: "",
           canScale: true,
           itemMeterHeight: 0.3,
           isDebug: false, // not used in loading
@@ -100,14 +91,14 @@ export const useShowcaseEditUnityContext = ({
 
   const processAndSetLoadData = useCallback(
     (loadData: ShowcaseLoadData) => {
-      setLoadData(processLoadData(loadData));
+      base.setLoadData(processLoadData(loadData));
     },
-    [setLoadData, processLoadData],
+    [base.setLoadData, processLoadData],
   );
 
   const removeRecentItem = useCallback(
     ({ itemType, itemId }) => {
-      postMessageToUnity(
+      base.postMessageToUnity(
         "RemoveRecentItemMessageReceiver",
         JSON.stringify({
           itemType,
@@ -115,7 +106,7 @@ export const useShowcaseEditUnityContext = ({
         }),
       );
     },
-    [postMessageToUnity],
+    [base.postMessageToUnity],
   );
 
   const handleSaveDataGenerated = useCallback(
@@ -149,13 +140,16 @@ export const useShowcaseEditUnityContext = ({
           scale: v.scale,
         }));
 
-      onSaveDataGenerated({
-        sampleItemList,
-        nftItemList,
-        thumbnailImageBase64: messageBody.saidanThumbnailBase64,
-      });
+      onSaveDataGenerated(
+        {
+          sampleItemList,
+          nftItemList,
+          thumbnailImageBase64: messageBody.saidanThumbnailBase64,
+        },
+        base.updateIdValues,
+      );
     },
-    [onSaveDataGenerated],
+    [onSaveDataGenerated, base.updateIdValues],
   );
 
   const handleRemoveItemRequested = useCallback(
@@ -182,24 +176,24 @@ export const useShowcaseEditUnityContext = ({
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
-    handleSimpleMessage,
-    handleSceneIsLoaded,
+    handleSimpleMessage: base.handleSimpleMessage,
+    handleSceneIsLoaded: base.handleSceneIsLoaded,
     handleSaveDataGenerated,
-    handleDragStarted,
-    handleDragEnded,
-    handleRemoveItemEnabled,
-    handleRemoveItemDisabled,
+    handleDragStarted: base.handleDragStarted,
+    handleDragEnded: base.handleDragEnded,
+    handleRemoveItemEnabled: base.handleRemoveItemEnabled,
+    handleRemoveItemDisabled: base.handleRemoveItemDisabled,
     handleRemoveItemRequested,
   });
 
   return {
-    unityProvider,
-    isDragging,
+    unityProvider: base.unityProvider,
+    isDragging: base.isDragging,
     setLoadData: processAndSetLoadData,
-    requestSaveData,
-    placeNewItem,
-    placeNewItemWithDrag,
-    removeItem,
+    requestSaveData: base.requestSaveData,
+    placeNewItem: base.placeNewItem,
+    placeNewItemWithDrag: base.placeNewItemWithDrag,
+    removeItem: base.removeItem,
     removeRecentItem,
   };
 };

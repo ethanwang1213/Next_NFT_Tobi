@@ -1,5 +1,9 @@
 import { useCallback } from "react";
-import { WorkspaceLoadData, WorkspaceSaveData } from "types/adminTypes";
+import {
+  UpdateIdValues,
+  WorkspaceLoadData,
+  WorkspaceSaveData,
+} from "types/adminTypes";
 import { ItemBaseData, ItemSaveData, ItemType } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
@@ -14,7 +18,10 @@ type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
 type Props = {
   sampleMenuX?: number;
-  onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
+  onSaveDataGenerated?: (
+    workspaceSaveData: WorkspaceSaveData,
+    updateIdValues: UpdateIdValues,
+  ) => void;
   onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
   onRemoveSampleEnabled?: () => void;
   onRemoveSampleDisabled?: () => void;
@@ -29,24 +36,7 @@ export const useWorkspaceUnityContext = ({
   onRemoveSampleDisabled,
   onRemoveSampleRequested,
 }: Props) => {
-  const {
-    unityProvider,
-    isDragging,
-    addEventListener,
-    removeEventListener,
-    postMessageToUnity,
-    setLoadData: privateSetLoadData,
-    requestSaveData,
-    placeNewItem,
-    placeNewItemWithDrag,
-    removeItem,
-    handleSimpleMessage,
-    handleSceneIsLoaded,
-    handleDragStarted,
-    handleDragEnded,
-    handleRemoveItemEnabled,
-    handleRemoveItemDisabled,
-  } = useSaidanLikeUnityContextBase({
+  const base = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
     onRemoveItemEnabled: onRemoveSampleEnabled,
@@ -90,40 +80,40 @@ export const useWorkspaceUnityContext = ({
 
   const setLoadData = useCallback(
     (loadData: WorkspaceLoadData) => {
-      privateSetLoadData(processLoadData(loadData));
+      base.setLoadData(processLoadData(loadData));
     },
-    [privateSetLoadData, processLoadData],
+    [base.setLoadData, processLoadData],
   );
 
   const placeNewSample = useCallback(
     (params: Omit<ItemBaseData, "itemType">) => {
-      placeNewItem({
+      base.placeNewItem({
         itemType: ItemType.Sample,
         ...params,
       });
     },
-    [placeNewItem],
+    [base.placeNewItem],
   );
 
   const placeNewSampleWithDrag = useCallback(
     (itemData: Omit<ItemBaseData, "itemType">) => {
-      placeNewItemWithDrag({
+      base.placeNewItemWithDrag({
         itemType: ItemType.Sample,
         ...itemData,
       });
     },
-    [placeNewItemWithDrag],
+    [base.placeNewItemWithDrag],
   );
 
   const removeSample = useCallback(
     ({ id, itemId }: { id: number; itemId: number }) => {
-      removeItem({
+      base.removeItem({
         id: id,
         itemType: ItemType.Sample,
         itemId,
       });
     },
-    [removeItem],
+    [base.removeItem],
   );
 
   const removeSamplesByItemId = useCallback(
@@ -132,24 +122,24 @@ export const useWorkspaceUnityContext = ({
         itemType: ItemType.Sample,
         itemId,
       }));
-      postMessageToUnity(
+      base.postMessageToUnity(
         "RemoveItemsMessageReceiver",
         JSON.stringify({ itemRefList: list }),
       );
     },
-    [postMessageToUnity],
+    [base.postMessageToUnity],
   );
 
   const requestItemThumbnail = useCallback(
     (params: ItemThumbnailParams) => {
-      postMessageToUnity(
+      base.postMessageToUnity(
         "ItemThumbnailGenerationMessageReceiver",
         JSON.stringify({
           ...params,
         }),
       );
     },
-    [postMessageToUnity],
+    [base.postMessageToUnity],
   );
 
   const handleSaveDataGenerated = useCallback(
@@ -171,7 +161,7 @@ export const useWorkspaceUnityContext = ({
           rotation: v.rotation,
           scale: v.scale,
         }));
-      onSaveDataGenerated({ workspaceItemList });
+      onSaveDataGenerated({ workspaceItemList }, base.updateIdValues);
     },
     [onSaveDataGenerated],
   );
@@ -210,22 +200,22 @@ export const useWorkspaceUnityContext = ({
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
-    handleSimpleMessage,
-    handleSceneIsLoaded,
+    handleSimpleMessage: base.handleSimpleMessage,
+    handleSceneIsLoaded: base.handleSceneIsLoaded,
     handleSaveDataGenerated,
     handleItemThumbnailGenerated,
-    handleDragStarted,
-    handleDragEnded,
-    handleRemoveItemEnabled,
-    handleRemoveItemDisabled,
+    handleDragStarted: base.handleDragStarted,
+    handleDragEnded: base.handleDragEnded,
+    handleRemoveItemEnabled: base.handleRemoveItemEnabled,
+    handleRemoveItemDisabled: base.handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
   });
 
   return {
-    unityProvider,
-    isDragging,
+    unityProvider: base.unityProvider,
+    isDragging: base.isDragging,
     setLoadData,
-    requestSaveData,
+    requestSaveData: base.requestSaveData,
     placeNewSample,
     placeNewSampleWithDrag,
     removeSample,

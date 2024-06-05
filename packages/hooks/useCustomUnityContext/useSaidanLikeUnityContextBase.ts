@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ItemBaseData, ItemType } from "types/unityTypes";
 import { SaidanLikeData, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
+import { UpdateIdValues } from "types/adminTypes";
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
@@ -20,14 +21,7 @@ export const useSaidanLikeUnityContextBase = ({
     useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const {
-    unityProvider,
-    isLoaded,
-    addEventListener,
-    removeEventListener,
-    postMessageToUnity,
-    handleSimpleMessage,
-  } = useCustomUnityContextBase({ sceneType });
+  const base = useCustomUnityContextBase({ sceneType });
 
   const postMessageToLoadData = useCallback(() => {
     if (!loadData || loadData.saidanId === currentSaidanId) {
@@ -36,20 +30,20 @@ export const useSaidanLikeUnityContextBase = ({
     }
 
     const json = JSON.stringify({ ...loadData });
-    postMessageToUnity("LoadSaidanDataMessageReceiver", json);
+    base.postMessageToUnity("LoadSaidanDataMessageReceiver", json);
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
     setIsSaidanSceneLoaded(true);
-  }, [loadData, currentSaidanId, postMessageToUnity]);
+  }, [loadData, currentSaidanId, base.postMessageToUnity]);
 
   const requestSaveData = () => {
-    postMessageToUnity("SaveSaidanDataMessageReceiver", "");
+    base.postMessageToUnity("SaveSaidanDataMessageReceiver", "");
   };
 
   const placeNewItem = useCallback(
     (params: ItemBaseData) => {
-      postMessageToUnity(
+      base.postMessageToUnity(
         "NewItemMessageReceiver",
         JSON.stringify({
           ...params,
@@ -57,12 +51,12 @@ export const useSaidanLikeUnityContextBase = ({
         }),
       );
     },
-    [postMessageToUnity],
+    [base.postMessageToUnity],
   );
 
   const placeNewItemWithDrag = useCallback(
     (itemData: ItemBaseData) => {
-      postMessageToUnity(
+      base.postMessageToUnity(
         "NewItemWithDragMessageReceiver",
         JSON.stringify({
           ...itemData,
@@ -70,7 +64,7 @@ export const useSaidanLikeUnityContextBase = ({
         }),
       );
     },
-    [postMessageToUnity, itemMenuX],
+    [base.postMessageToUnity, itemMenuX],
   );
 
   const removeItem = useCallback(
@@ -83,7 +77,7 @@ export const useSaidanLikeUnityContextBase = ({
       itemType: ItemType;
       itemId: number;
     }) => {
-      postMessageToUnity(
+      base.postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
         JSON.stringify({
           id: id,
@@ -92,22 +86,34 @@ export const useSaidanLikeUnityContextBase = ({
         }),
       );
     },
-    [postMessageToUnity],
+    [base.postMessageToUnity],
+  );
+
+  const updateIdValues: UpdateIdValues = useCallback(
+    ({ idPairs }) => {
+      base.postMessageToUnity(
+        "UpdateItemIdMessageReceiver",
+        JSON.stringify({
+          idPairs,
+        }),
+      );
+    },
+    [base.postMessageToUnity],
   );
 
   useEffect(() => {
-    if (!isLoaded || !isSaidanSceneLoaded) return;
+    if (!base.isLoaded || !isSaidanSceneLoaded) return;
     postMessageToLoadData();
-  }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
+  }, [base.isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
   useEffect(() => {
-    if (!isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
+    if (!base.isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
       return;
-    postMessageToUnity(
+    base.postMessageToUnity(
       "ItemMenuXMessageReceiver",
       JSON.stringify({ itemMenuX }),
     );
-  }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
+  }, [base.isLoaded, isSaidanSceneLoaded, itemMenuX, base.postMessageToUnity]);
 
   const handleDragStarted = useCallback(() => {
     setIsDragging(true);
@@ -128,17 +134,18 @@ export const useSaidanLikeUnityContextBase = ({
   }, [onRemoveItemDisabled]);
 
   return {
-    unityProvider,
+    unityProvider: base.unityProvider,
     isDragging,
     addEventListener,
     removeEventListener,
-    postMessageToUnity,
+    postMessageToUnity: base.postMessageToUnity,
     setLoadData,
     requestSaveData,
     placeNewItem,
     placeNewItemWithDrag,
     removeItem,
-    handleSimpleMessage,
+    updateIdValues,
+    handleSimpleMessage: base.handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
     handleDragStarted,
     handleDragEnded,

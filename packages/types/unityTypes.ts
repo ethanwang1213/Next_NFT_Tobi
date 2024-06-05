@@ -51,10 +51,16 @@ export type SaidanItemData = ItemBaseData & {
   scale: number;
 };
 
-export type ItemLoadData = Omit<
+export type SampleLoadData = Omit<
   SaidanItemData,
   "itemType" | "canScale" | "itemMeterHeight"
 >;
+
+export type NftLoadData = Omit<
+  SaidanItemData,
+  "itemType" | "canScale" | "imageUrl"
+>;
+
 export type ItemSaveData = Omit<
   SaidanItemData,
   | "itemType"
