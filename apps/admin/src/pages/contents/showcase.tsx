@@ -39,57 +39,44 @@ const Showcase = () => {
   } = useRestfulAPI(null);
   const timerId = useRef(null);
 
-  const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes
-
   const { data: materialData } = useRestfulAPI("native/materials");
 
   const checkItemChange = useCallback(
     async (showcaseSaveData: ShowcaseSaveData) => {
-      const oldSampleList =
-        showcaseData.sampleItemList.length > 0
-          ? showcaseData.sampleItemList
-              .map((item) => item["itemId"] as number)
-              .toList()
-          : [];
-      const oldNFTList =
-        showcaseData.nftItemList.length > 0
-          ? showcaseData.nftItemList
-              .map((item) => item["itemId"] as number)
-              .toList()
-          : [];
-      const newSampleList =
-        showcaseSaveData.sampleItemList.length > 0
-          ? showcaseSaveData.sampleItemList.map(
-              (item) => item["itemId"] as number,
-            )
-          : [];
-      const newNFTList =
-        showcaseSaveData.nftItemList.length > 0
-          ? showcaseSaveData.nftItemList.map((item) => item["itemId"] as number)
-          : [];
+      const newSampleList = showcaseSaveData.sampleItemList.filter(
+        (item) => item.tableId == 0,
+      );
+      const newNFTList = showcaseSaveData.nftItemList.filter(
+        (item) => item.tableId == 0,
+      );
 
-      if (
-        newSampleList.length > oldSampleList.length ||
-        newNFTList.length > oldNFTList.length
-      ) {
-        await putData(`${apiUrl}/${id}/put-item`, {
-          sampleIds: newSampleList,
-          nftIds: newNFTList,
-        });
+      if (newSampleList.length || newNFTList.length) {
+        await putData(
+          `${apiUrl}/${id}/put-item`,
+          {
+            samples: newSampleList,
+            nfts: newNFTList,
+          },
+          [],
+        );
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id, showcaseData],
+    [id],
   );
 
   const onSaveDataGenerated = useCallback(
     async (showcaseSaveData: ShowcaseSaveData) => {
       await checkItemChange(showcaseSaveData);
-      await postData(`${apiUrl}/${id}`, {
-        sampleItemList: showcaseSaveData.sampleItemList,
-        nftItemList: showcaseSaveData.nftItemList,
-        thumbnailImage: showcaseSaveData.thumbnailImageBase64,
-      });
+      await postData(
+        `${apiUrl}/${id}`,
+        {
+          sampleItemList: showcaseSaveData.sampleItemList,
+          nftItemList: showcaseSaveData.nftItemList,
+          thumbnailImage: showcaseSaveData.thumbnailImageBase64,
+        },
+        [],
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [id, checkItemChange],
@@ -165,6 +152,7 @@ const Showcase = () => {
     }
   }, [showcaseData, setLoadData]);
 
+  const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes
   useEffect(() => {
     const updateContainerWidth = () => {
       const height = document.querySelector(".w-full.h-full").clientHeight;
@@ -194,10 +182,12 @@ const Showcase = () => {
       modelType: number,
       materialId: number,
     ) => {
+      // show detail view
       setSelectedSampleItem(sampleId);
       const materialImageIndex = materialData.findIndex(
         (value) => value.id === materialId,
       );
+      // place a new item
       placeNewItem({
         itemType: ItemType.Sample,
         itemId: sampleId,
@@ -205,8 +195,10 @@ const Showcase = () => {
         modelUrl: modelUrl,
         imageUrl: materialData[materialImageIndex].image,
       });
+      // store to backend
+      requestSaveData();
     },
-    [materialData, placeNewItem],
+    [materialData, placeNewItem, requestSaveData],
   );
 
   return (
