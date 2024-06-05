@@ -16,6 +16,7 @@ import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import { ShowcaseSaveData } from "types/adminTypes";
 import { ItemType, ModelType } from "types/unityTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
+import { ImageType, uploadImage } from "fetchers/UploadActions";
 
 const Showcase = () => {
   const router = useRouter();
@@ -68,12 +69,16 @@ const Showcase = () => {
   const onSaveDataGenerated = useCallback(
     async (showcaseSaveData: ShowcaseSaveData) => {
       await checkItemChange(showcaseSaveData);
+      const thumbnailUrl = await uploadImage(
+        showcaseSaveData.thumbnailImageBase64,
+        ImageType.ShowcaseThumbnail,
+      );
       await postData(
         `${apiUrl}/${id}`,
         {
           sampleItemList: showcaseSaveData.sampleItemList,
           nftItemList: showcaseSaveData.nftItemList,
-          thumbnailImage: showcaseSaveData.thumbnailImageBase64,
+          thumbnailImage: thumbnailUrl,
         },
         [],
       );

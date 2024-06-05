@@ -6,6 +6,7 @@ export enum ImageType {
   ContentBrand,
   SampleThumbnail,
   MaterialImage,
+  ShowcaseThumbnail,
 }
 
 export const uploadImage = async (image, type) => {
@@ -32,8 +33,13 @@ export const uploadImage = async (image, type) => {
       const byteArray = new Uint8Array(byteNumbers);
       blob = new Blob([byteArray], { type: "image/png" });
     } else {
-      console.log("invalid image type");
-      return "";
+      const byteCharacters = Buffer.from(image, "base64");
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters[i];
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      blob = new Blob([byteArray], { type: "image/png" });
     }
 
     // Upload the file to Firebase Storage
@@ -53,6 +59,10 @@ export const uploadImage = async (image, type) => {
 
       case ImageType.MaterialImage:
         path = `materials/${auth.currentUser.uid}/${storageFileName}`;
+        break;
+
+      case ImageType.ShowcaseThumbnail:
+        path = `users/${auth.currentUser.uid}/showcase/${storageFileName}`;
         break;
 
       default:
