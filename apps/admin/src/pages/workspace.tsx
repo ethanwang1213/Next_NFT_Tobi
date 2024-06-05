@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
@@ -12,6 +12,7 @@ import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { ModelType } from "types/unityTypes";
 import { SampleItem } from "ui/types/adminTypes";
 import { WorkspaceSaveData } from "types/adminTypes";
+import { useLeavePage } from "contexts/LeavePageProvider";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -25,8 +26,9 @@ export default function Index() {
 
   const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
 
-  // const workspaceAPIUrl = "native/my/workspace";
-  // const { data: workspaceData } = useRestfulAPI(workspaceAPIUrl);
+  const workspaceAPIUrl = "native/my/workspace";
+  const { data: workspaceData, postData: storeWorkspaceData } =
+    useRestfulAPI(workspaceAPIUrl);
 
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
 
@@ -43,8 +45,12 @@ export default function Index() {
   const generateMaterialImage = useRef(null);
   const generateModelUrl = useRef(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  const onSaveDataGenerated = (workspaceSaveData: WorkspaceSaveData) => {};
+  const onSaveDataGenerated = (workspaceSaveData: WorkspaceSaveData) => {
+    console.log("onSaveDataGenerated", workspaceSaveData);
+    storeWorkspaceData(workspaceAPIUrl, {
+      itemList: workspaceSaveData.workspaceItemList,
+    });
+  };
 
   const onItemThumbnailGenerated = async (thumbnailBase64: string) => {
     const sampleThumb = await uploadImage(
@@ -66,19 +72,44 @@ export default function Index() {
 
   const {
     unityProvider,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setLoadData,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,
   } = useWorkspaceUnityContext({
     onSaveDataGenerated,
     onItemThumbnailGenerated,
   });
+
+  useEffect(() => {
+    if (workspaceData && workspaceData.workspaceItemList.length) {
+      setWorkspaceData(workspaceData.workspaceItemList);
+    }
+  }, [workspaceData, setWorkspaceData]);
+
+  const requestSaveDataInterval = 1000 * 60 * 1; // 5 minutes
+  useEffect(() => {
+    // Initialize timer
+    const requestSaveDataTimer = setTimeout(() => {
+      requestSaveData();
+    }, requestSaveDataInterval);
+
+    return () => {
+      clearTimeout(requestSaveDataTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { leavingPage, setLeavingPage } = useLeavePage();
+
+  useEffect(() => {
+    if (leavingPage) {
+      // Request save data to Unity
+      requestSaveData();
+      setLeavingPage(false); // Reset the state
+    }
+  }, [leavingPage, setLeavingPage, requestSaveData]);
 
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
@@ -98,8 +129,9 @@ export default function Index() {
         imageUrl: materials[materialIndex].image,
         modelType: sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
       });
+      requestSaveData();
     },
-    [materials, placeNewSample],
+    [materials, placeNewSample, requestSaveData],
   );
 
   const sampleSelectHandler = useCallback(
