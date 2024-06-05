@@ -87,6 +87,7 @@ const Showcase = () => {
     setLoadData,
     requestSaveData,
     placeNewItem,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     removeItem,
   } = useShowcaseEditUnityContext({
     onSaveDataGenerated,
@@ -337,12 +338,7 @@ const Showcase = () => {
             ) => selectSampleHandler(sampleId, modelUrl, modelType, materialId)}
           />
         )}
-        <div
-          className="fixed mt-[24px] ml-[38px]"
-          onClick={() => {
-            // requestSaveData();
-          }}
-        >
+        <div className="fixed mt-[24px] ml-[38px]">
           <Link
             href="/contents"
             className="rounded-lg bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-md p-2"
