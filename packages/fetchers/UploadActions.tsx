@@ -18,28 +18,25 @@ export const uploadImage = async (image, type) => {
 
     let blob;
     // Check if the image is a Blob object or a base64 string
-    if (typeof image === "string" && image.startsWith("blob:")) {
-      blob = await fetch(image).then((response) => response.blob());
-    } else if (image instanceof Blob) {
+    if (image instanceof Blob) {
       blob = image;
-    } else if (typeof image === "string" && image.startsWith("data:image")) {
-      // Convert base64 string to Blob
-      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-      const byteCharacters = Buffer.from(base64Data, "base64");
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters[i];
+    } else if (typeof image === "string") {
+      if (image.startsWith("blob:")) {
+        blob = await fetch(image).then((response) => response.blob());
+      } else {
+        // Convert base64 string to Blob
+        const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+        const byteCharacters = Buffer.from(base64Data, "base64");
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters[i];
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        blob = new Blob([byteArray], { type: "image/png" });
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      blob = new Blob([byteArray], { type: "image/png" });
     } else {
-      const byteCharacters = Buffer.from(image, "base64");
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters[i];
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      blob = new Blob([byteArray], { type: "image/png" });
+      console.log("invalid image type");
+      return "";
     }
 
     // Upload the file to Firebase Storage
