@@ -30,13 +30,18 @@ export default function Index() {
 
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
 
+  const sampleAPIUrl = "native/my/samples";
   const {
     data: samples,
+    getData: loadSamples,
     setData: setSamples,
+    postData: createSample,
     deleteData: deleteSamples,
-  } = useRestfulAPI("native/my/samples");
+  } = useRestfulAPI(sampleAPIUrl);
 
-  const { data: materials, postData } = useRestfulAPI("native/materials");
+  const materialAPIUrl = "native/materials";
+  const { data: materials, postData: createMaterialImage } =
+    useRestfulAPI(materialAPIUrl);
 
   const generateError = useRef(false);
   const generateSampleType = useRef(null);
@@ -51,13 +56,14 @@ export default function Index() {
       thumbnailBase64,
       ImageType.SampleThumbnail,
     );
-    const newSample = await postData("native/my/samples", {
+    const newSample = await createSample(sampleAPIUrl, {
       thumbUrl: sampleThumb,
       modelUrl: generateModelUrl.current,
       materialId: generateMaterialImage.current.id,
       type: generateSampleType.current,
     });
     placeSampleHandler(newSample);
+    loadSamples(sampleAPIUrl);
 
     if (sampleCreateDialogRef.current) {
       sampleCreateDialogRef.current.close();
@@ -129,42 +135,38 @@ export default function Index() {
     [samples, removeSamplesByItemId],
   );
 
+  const uploadMaterialImageHandler = useCallback(async (image: string) => {
+    const imageUrl = await uploadImage(image, ImageType.MaterialImage);
+    await createMaterialImage(materialAPIUrl, { image: imageUrl }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const generateSampleHandler = useCallback(
-    async (materialId: number, materialImage: string, sampleType: number) => {
+    async (materialId: number, cropImage: string, sampleType: number) => {
       generateSampleType.current = sampleType;
       if (sampleType === ModelType.Poster) {
         // take material image
-        let selMaterialImage;
-        if (materialId === 0) {
-          const imageUrl = await uploadImage(
-            materialImage,
-            ImageType.MaterialImage,
-          );
-          const response = await postData(
-            "native/materials",
-            { image: imageUrl },
-            [],
-          );
-          selMaterialImage = response[response.length - 1];
-        } else {
-          const materialIndex = materials.findIndex(
-            (value) => value.id === materialId,
-          );
-          selMaterialImage = materials[materialIndex];
+        const materialIndex = materials.findIndex(
+          (value) => value.id === materialId,
+        );
+        let modelImageUrl = materials[materialIndex].image;
+        // if material image is edited, upload it.
+        if (cropImage !== null) {
+          modelImageUrl = await uploadImage(cropImage, ImageType.MaterialImage);
         }
-        generateMaterialImage.current = selMaterialImage;
+        generateMaterialImage.current = materials[materialIndex];
 
         // create model
-        const modelResp = await postData("native/model/create", {
+        const modelResp = await createSample("native/model/create", {
           type: "Poster",
-          materialId: selMaterialImage.id,
-          imageUrl: selMaterialImage.image,
+          materialId: materialId,
+          imageUrl: modelImageUrl,
         });
         generateModelUrl.current = modelResp["modelUrl"];
         requestItemThumbnail({
           modelType: ModelType.Poster,
           modelUrl: modelResp["modelUrl"],
-          imageUrl: selMaterialImage.image,
+          imageUrl: modelImageUrl,
         });
       }
     },
@@ -182,6 +184,7 @@ export default function Index() {
           materials={materials}
           generateHandler={generateSampleHandler}
           generateError={generateError.current}
+          uploadImageHandler={uploadMaterialImageHandler}
         />
         <WorkspaceShortcutDialog
           dialogRef={shortcutDialogRef}

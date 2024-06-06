@@ -10,6 +10,7 @@ type Props = {
   selectImageHandler: (value: MaterialItem) => void;
   backHandler: () => void;
   nextHandler: () => void;
+  uploadImageHandler: (image: string) => void;
 };
 
 const MaterialImageSelectComponent: React.FC<Props> = (props) => {
@@ -18,8 +19,7 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
       // Do something with the files
       const file = acceptedFiles[0];
       if (file && file.type.startsWith("image/png")) {
-        props.selectImageHandler({ id: 0, image: URL.createObjectURL(file) });
-        props.nextHandler();
+        props.uploadImageHandler(URL.createObjectURL(file));
       } else {
         const reader = new FileReader();
         reader.onload = () => {
@@ -33,16 +33,14 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             const dataUrlWithoutExif = canvas.toDataURL("image/jpeg"); // strip the EXIF data
-            props.selectImageHandler({ id: 0, image: dataUrlWithoutExif });
-            props.nextHandler();
+            props.uploadImageHandler(dataUrlWithoutExif);
           };
           img.src = imageDataUrl.toString();
         };
         reader.readAsDataURL(file);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [props],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });

@@ -10,9 +10,10 @@ type Props = {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   initDialog: number;
   materials: MaterialItem[];
+  uploadImageHandler: (image: string) => void;
   generateHandler: (
     materialId: number,
-    materialImage: string,
+    cropImage: string,
     sampleType: number,
   ) => void;
   generateError: boolean;
@@ -61,6 +62,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
               selectImageHandler={(value) => setMaterialImage(value)}
               backHandler={() => setCreationStep(creationStep - 1)}
               nextHandler={() => setCreationStep(creationStep + 1)}
+              uploadImageHandler={props.uploadImageHandler}
             />
           )}
           {creationStep === 2 && sampleType === "Poster" && (
