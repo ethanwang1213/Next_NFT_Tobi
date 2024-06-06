@@ -14,7 +14,7 @@ import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import { ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, ModelType } from "types/unityTypes";
+import { ModelType } from "types/unityTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 
@@ -42,61 +42,26 @@ const Showcase = () => {
 
   const { data: materialData } = useRestfulAPI("native/materials");
 
-  const checkItemChange = useCallback(
-    async (showcaseSaveData: ShowcaseSaveData) => {
-      const newSampleList = showcaseSaveData.sampleItemList.filter(
-        (item) => item.tableId == 0,
-      );
-      const newNFTList = showcaseSaveData.nftItemList.filter(
-        (item) => item.tableId == 0,
-      );
+  const onSaveDataGenerated = async (
+    showcaseSaveData: ShowcaseSaveData,
+    updateIdValues,
+  ) => {
+    const thumbnailUrl = await uploadImage(
+      showcaseSaveData.thumbnailImageBase64,
+      ImageType.ShowcaseThumbnail,
+    );
+    const IdPairs = await postData(`${apiUrl}/${id}`, {
+      sampleItemList: showcaseSaveData.sampleItemList,
+      nftItemList: showcaseSaveData.nftItemList,
+      thumbnailImage: thumbnailUrl,
+    });
+    updateIdValues({ data: IdPairs });
+  };
 
-      if (newSampleList.length || newNFTList.length) {
-        await putData(
-          `${apiUrl}/${id}/put-item`,
-          {
-            samples: newSampleList,
-            nfts: newNFTList,
-          },
-          [],
-        );
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id],
-  );
-
-  const onSaveDataGenerated = useCallback(
-    async (showcaseSaveData: ShowcaseSaveData) => {
-      await checkItemChange(showcaseSaveData);
-      const thumbnailUrl = await uploadImage(
-        showcaseSaveData.thumbnailImageBase64,
-        ImageType.ShowcaseThumbnail,
-      );
-      await postData(
-        `${apiUrl}/${id}`,
-        {
-          sampleItemList: showcaseSaveData.sampleItemList,
-          nftItemList: showcaseSaveData.nftItemList,
-          thumbnailImage: thumbnailUrl,
-        },
-        [],
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id, checkItemChange],
-  );
-
-  const {
-    unityProvider,
-    setLoadData,
-    requestSaveData,
-    placeNewItem,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    removeItem,
-  } = useShowcaseEditUnityContext({
-    onSaveDataGenerated,
-  });
+  const { unityProvider, setLoadData, requestSaveData, placeNewSample } =
+    useShowcaseEditUnityContext({
+      onSaveDataGenerated,
+    });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
 
@@ -195,8 +160,7 @@ const Showcase = () => {
         (value) => value.id === materialId,
       );
       // place a new item
-      placeNewItem({
-        itemType: ItemType.Sample,
+      placeNewSample({
         itemId: sampleId,
         modelType: modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
         modelUrl: modelUrl,
@@ -205,7 +169,7 @@ const Showcase = () => {
       // store to backend
       requestSaveData();
     },
-    [materialData, placeNewItem, requestSaveData],
+    [materialData, placeNewSample, requestSaveData],
   );
 
   return (
