@@ -153,7 +153,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
         ModelType.Poster,
       );
     }
-  }, []);
+  }, [props]);
 
   return (
     <div className="h-full relative">
