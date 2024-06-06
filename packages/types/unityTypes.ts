@@ -68,6 +68,7 @@ export type ItemSaveData = Omit<
   | "modelType"
   | "modelUrl"
   | "imageUrl"
+  | "secondImageUrl"
   | "canScale"
   | "itemMeterHeight"
   | "isDebug"
