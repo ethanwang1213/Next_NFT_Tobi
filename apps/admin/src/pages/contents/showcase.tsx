@@ -58,10 +58,15 @@ const Showcase = () => {
     updateIdValues({ data: IdPairs });
   };
 
-  const { unityProvider, setLoadData, requestSaveData, placeNewSample } =
-    useShowcaseEditUnityContext({
-      onSaveDataGenerated,
-    });
+  const {
+    unityProvider,
+    setLoadData,
+    requestSaveData,
+    placeNewSample,
+    placeNewSampleWithDrag,
+  } = useShowcaseEditUnityContext({
+    onSaveDataGenerated,
+  });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
 
@@ -153,6 +158,7 @@ const Showcase = () => {
       modelUrl: string,
       modelType: number,
       materialId: number,
+      isDrag: boolean,
     ) => {
       // show detail view
       setSelectedSampleItem(sampleId);
@@ -160,16 +166,24 @@ const Showcase = () => {
         (value) => value.id === materialId,
       );
       // place a new item
-      placeNewSample({
-        itemId: sampleId,
-        modelType: modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
-        modelUrl: modelUrl,
-        imageUrl: materialData[materialImageIndex].image,
-      });
+      if (!isDrag)
+        placeNewSample({
+          itemId: sampleId,
+          modelType: modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelUrl: modelUrl,
+          imageUrl: materialData[materialImageIndex].image,
+        });
+      else
+        placeNewSampleWithDrag({
+          itemId: sampleId,
+          modelType: modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelUrl: modelUrl,
+          imageUrl: materialData[materialImageIndex].image,
+        });
       // store to backend
       requestSaveData();
     },
-    [materialData, placeNewSample, requestSaveData],
+    [materialData, placeNewSample, placeNewSampleWithDrag, requestSaveData],
   );
 
   return (
@@ -305,7 +319,29 @@ const Showcase = () => {
               modelUrl: string,
               modelType: number,
               materialId: number,
-            ) => selectSampleHandler(sampleId, modelUrl, modelType, materialId)}
+            ) =>
+              selectSampleHandler(
+                sampleId,
+                modelUrl,
+                modelType,
+                materialId,
+                false,
+              )
+            }
+            dragSampleItem={(
+              sampleId: number,
+              modelUrl: string,
+              modelType: number,
+              materialId: number,
+            ) =>
+              selectSampleHandler(
+                sampleId,
+                modelUrl,
+                modelType,
+                materialId,
+                true,
+              )
+            }
           />
         )}
         <div className="fixed mt-[24px] ml-[38px]">

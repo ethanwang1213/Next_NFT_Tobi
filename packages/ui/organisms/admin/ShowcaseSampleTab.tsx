@@ -1,10 +1,18 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const ShowcaseSampleTab = ({
   clickSampleItem,
+  dragSampleItem,
 }: {
   clickSampleItem: (
+    sampleId: number,
+    modelUrl: string,
+    modelType: number,
+    materialId: number,
+  ) => void;
+  dragSampleItem: (
     sampleId: number,
     modelUrl: string,
     modelType: number,
@@ -36,14 +44,16 @@ const ShowcaseSampleTab = ({
         data.map((sample, index) => {
           return (
             <div key={sample.id} className="w-1/4 p-2">
-              <div
-                className={
-                  "rounded-[8px] bg-no-repeat bg-center cursor-pointer"
-                }
+              <Image
+                src={sample.thumbUrl}
+                className={"rounded-[8px] cursor-pointer"}
+                alt="sample item"
+                width={80}
+                height={80}
                 style={{
-                  backgroundImage: `url(${sample.thumbUrl})`,
-                  backgroundSize: "contain",
-                  paddingTop: "100%",
+                  objectFit: "contain",
+                  maxWidth: 80,
+                  maxHeight: 80,
                 }}
                 onClick={() =>
                   clickSampleItem(
@@ -53,7 +63,15 @@ const ShowcaseSampleTab = ({
                     sample.materialId,
                   )
                 }
-              ></div>
+                onDragStart={(e) => {
+                  dragSampleItem(
+                    sample.id,
+                    sample.modelUrl,
+                    sample.type,
+                    sample.materialId,
+                  );
+                }}
+              />
             </div>
           );
         })}

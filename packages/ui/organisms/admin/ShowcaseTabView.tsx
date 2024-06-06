@@ -9,8 +9,15 @@ import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
 
 const ShowcaseTabView = ({
   clickSampleItem,
+  dragSampleItem,
 }: {
   clickSampleItem: (
+    sampleId: number,
+    modelUrl: string,
+    modelType: number,
+    materialId: number,
+  ) => void;
+  dragSampleItem: (
     sampleId: number,
     modelUrl: string,
     modelType: number,
@@ -82,6 +89,12 @@ const ShowcaseTabView = ({
               modelType: number,
               materialId: number,
             ) => clickSampleItem(sampleId, modelUrl, modelType, materialId)}
+            dragSampleItem={(
+              sampleId: number,
+              modelUrl: string,
+              modelType: number,
+              materialId: number,
+            ) => dragSampleItem(sampleId, modelUrl, modelType, materialId)}
           ></ShowcaseSampleTab>
         </TabPanel>
         <TabPanel
