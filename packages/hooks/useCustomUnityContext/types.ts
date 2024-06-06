@@ -1,5 +1,8 @@
 import { SaidanItemData, Vector3 } from "types/unityTypes";
 
+// to expand omit types
+export type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
+
 export const UnitySceneType = {
   Standby: 0,
   Workspace: 1,

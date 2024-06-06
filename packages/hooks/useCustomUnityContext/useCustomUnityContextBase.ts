@@ -12,14 +12,17 @@ type MessageDestination =
   | "RemoveSingleItemMessageReceiver"
   | "RemoveItemsMessageReceiver"
   | "RemoveRecentItemMessageReceiver"
-  | "ItemMenuXMessageReceiver";
+  | "ItemMenuXMessageReceiver"
+  | "UpdateItemIdMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,
 }: {
   sceneType: UnitySceneType;
 }) => {
-  const buildFilePath = "/admin/unity/build/webgl";
+  // const buildFilePath = "/admin/unity/build/webgl";
+  const buildFilePath =
+    "https://storage.googleapis.com/tobiratory-dev_media/unity-builds/admin/webgl";
   const {
     unityProvider,
     isLoaded,
