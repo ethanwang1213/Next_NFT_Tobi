@@ -1,11 +1,15 @@
 import Image from "next/image";
 
-const InventoryItemComponent = (data: { imageUrl: string }) => {
+const InventoryItemComponent = (props: {
+  imageUrl: string;
+  selectHandler: () => void;
+  dragStartHandler: () => void;
+}) => {
   return (
     <Image
       width={80}
       height={80}
-      src={data.imageUrl}
+      src={props.imageUrl}
       alt="Inventory Icon"
       className="rounded-[8px] cursor-pointer"
       style={{
@@ -13,6 +17,8 @@ const InventoryItemComponent = (data: { imageUrl: string }) => {
         maxHeight: 80,
         objectFit: "contain",
       }}
+      onClick={props.selectHandler}
+      onDragStart={props.dragStartHandler}
     />
   );
 };

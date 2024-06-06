@@ -6,14 +6,18 @@ import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
 import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
-import { SampleItem } from "ui/types/adminTypes";
+import { NftItem, SampleItem } from "ui/types/adminTypes";
 
 const ShowcaseTabView = ({
   clickSampleItem,
   dragSampleItem,
+  clickNftItem,
+  dragNftItem,
 }: {
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
+  clickNftItem: (item: NftItem) => void;
+  dragNftItem: (item: NftItem) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
 
@@ -82,7 +86,10 @@ const ShowcaseTabView = ({
           hidden={tab !== "Inventory"}
           className={tab === "Inventory" ? "flex-1 flex flex-col" : ""}
         >
-          <ShowcaseInventoryTab clickSampleItem={null}></ShowcaseInventoryTab>
+          <ShowcaseInventoryTab
+            clickNftItem={clickNftItem}
+            dragNftItem={dragNftItem}
+          ></ShowcaseInventoryTab>
         </TabPanel>
         <TabPanel hidden={tab !== "Settings"}></TabPanel>
         <ToastContainer

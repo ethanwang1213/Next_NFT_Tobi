@@ -12,3 +12,10 @@ export type SampleItem = {
   type: number;
 };
 
+export type NftItem = {
+  id: number;
+  name: string;
+  thumbUrl: string;
+  modelUrl: string;
+  type: number;
+};
