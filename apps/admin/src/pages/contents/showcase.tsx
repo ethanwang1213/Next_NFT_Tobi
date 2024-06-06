@@ -171,13 +171,13 @@ const Showcase = () => {
     window.addEventListener("resize", updateContainerWidth);
 
     // Initialize timer
-    const requestSaveDataTimer = setTimeout(() => {
+    const requestSaveDataTimer = setInterval(() => {
       requestSaveData();
     }, requestSaveDataInterval);
 
     return () => {
       window.removeEventListener("resize", updateContainerWidth);
-      clearTimeout(requestSaveDataTimer);
+      clearInterval(requestSaveDataTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
