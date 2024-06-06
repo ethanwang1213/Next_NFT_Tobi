@@ -1,15 +1,11 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useEffect, useState } from "react";
+import { SampleItem } from "ui/types/adminTypes";
 
 const ShowcaseSampleTab = ({
   clickSampleItem,
 }: {
-  clickSampleItem: (
-    sampleId: number,
-    modelUrl: string,
-    modelType: number,
-    materialId: number,
-  ) => void;
+  clickSampleItem: (sample: SampleItem) => void;
 }) => {
   const apiUrl = "native/my/samples";
   const { data, loading, getData } = useRestfulAPI(apiUrl);
@@ -45,14 +41,7 @@ const ShowcaseSampleTab = ({
                   backgroundSize: "contain",
                   paddingTop: "100%",
                 }}
-                onClick={() =>
-                  clickSampleItem(
-                    sample.id,
-                    sample.modelUrl,
-                    sample.type,
-                    sample.materialId,
-                  )
-                }
+                onClick={() => clickSampleItem(sample)}
               ></div>
             </div>
           );
