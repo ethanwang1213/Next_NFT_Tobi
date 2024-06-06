@@ -1,13 +1,9 @@
-import { ImageType, uploadImage } from "fetchers/UploadActions";
-import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
 import React, { MutableRefObject, useEffect, useState } from "react";
+import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
+import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect";
 import RoadMapComponent from "ui/organisms/admin/SampleCreateRoadmap";
 import SampleTypeSelectComponent from "ui/organisms/admin/SampleTypeSelect";
-import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect";
-import MaterialImageCircleCropComponent from "ui/organisms/admin/MaterialImageCircleCrop";
-import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
-import SampleGenerateComponent from "ui/organisms/admin/SampleGenerate";
 import { MaterialItem } from "ui/types/adminTypes";
 
 type Props = {
@@ -77,16 +73,6 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
               nextHandler={() => setCreationStep(creationStep + 1)}
               generateHandler={props.generateHandler}
               generateError={props.generateError}
-            />
-          )}
-          {creationStep === 2 && sampleType === "Can Badge" && (
-            <MaterialImageCircleCropComponent
-              materialImage={materialImage}
-              cropHandler={(image: string) =>
-                setMaterialImage({ id: 0, image: image })
-              }
-              backHandler={() => setCreationStep(creationStep - 1)}
-              nextHandler={() => setCreationStep(creationStep + 1)}
             />
           )}
         </div>
