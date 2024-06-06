@@ -59,7 +59,7 @@ export type SampleLoadData = Omit<
 
 export type NftLoadData = Omit<
   SaidanItemData,
-  "itemType" | "canScale" | "imageUrl"
+  "itemType" | "canScale" | "imageUrl" | "secondImageUrl"
 >;
 
 export type ItemSaveData = Omit<
