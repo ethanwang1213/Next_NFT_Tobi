@@ -38,11 +38,12 @@ export type ItemBaseData = {
   modelType: ModelType;
   modelUrl: string;
   imageUrl: string;
+  secondImageUrl?: string;
   isDebug?: boolean;
 };
 
 export type SaidanItemData = ItemBaseData & {
-  tableId: number;
+  id: number;
   stageType: UnityStageType;
   position: Vector3;
   rotation: Vector3;
@@ -51,16 +52,23 @@ export type SaidanItemData = ItemBaseData & {
   scale: number;
 };
 
-export type ItemLoadData = Omit<
+export type SampleLoadData = Omit<
   SaidanItemData,
   "itemType" | "canScale" | "itemMeterHeight"
 >;
+
+export type NftLoadData = Omit<
+  SaidanItemData,
+  "itemType" | "canScale" | "imageUrl" | "secondImageUrl"
+>;
+
 export type ItemSaveData = Omit<
   SaidanItemData,
   | "itemType"
   | "modelType"
   | "modelUrl"
   | "imageUrl"
+  | "secondImageUrl"
   | "canScale"
   | "itemMeterHeight"
   | "isDebug"
