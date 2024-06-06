@@ -192,6 +192,7 @@ model tobiratory_digital_item_nfts {
   rotation                         Float[]                            @default([0, 0, 0])
   box_id                           Int                                @default(0)
   mint_status                      String                             @default("minting") // "minted", "opened"
+  gift_status                      String                             @default("") @db.VarChar(255)
   tx_id                            String?                            @db.VarChar(255)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)

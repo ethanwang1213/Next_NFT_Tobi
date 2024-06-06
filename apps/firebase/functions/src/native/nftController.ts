@@ -309,6 +309,9 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   if (flowAccount.flow_address === receiveFlowId) {
     throw new GiftError(401, "You can not gift to yourself");
   }
+  if (digitalItemNft.gift_status === "gifting") {
+    throw new GiftError(401, "This NFT is gifting now");
+  }
   const flowJobId = uuidv4();
   const message = {flowJobId, txType: "giftNFT", params: {
     tobiratoryAccountUuid: uid,
