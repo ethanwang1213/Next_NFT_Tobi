@@ -1,23 +1,14 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { SampleItem } from "ui/types/adminTypes";
 
 const ShowcaseSampleTab = ({
   clickSampleItem,
   dragSampleItem,
 }: {
-  clickSampleItem: (
-    sampleId: number,
-    modelUrl: string,
-    modelType: number,
-    materialId: number,
-  ) => void;
-  dragSampleItem: (
-    sampleId: number,
-    modelUrl: string,
-    modelType: number,
-    materialId: number,
-  ) => void;
+  clickSampleItem: (item: SampleItem) => void;
+  dragSampleItem: (item: SampleItem) => void;
 }) => {
   const apiUrl = "native/my/samples";
   const { data, loading, getData } = useRestfulAPI(apiUrl);
@@ -55,22 +46,8 @@ const ShowcaseSampleTab = ({
                   maxWidth: 80,
                   maxHeight: 80,
                 }}
-                onClick={() =>
-                  clickSampleItem(
-                    sample.id,
-                    sample.modelUrl,
-                    sample.type,
-                    sample.materialId,
-                  )
-                }
-                onDragStart={(e) => {
-                  dragSampleItem(
-                    sample.id,
-                    sample.modelUrl,
-                    sample.type,
-                    sample.materialId,
-                  );
-                }}
+                onClick={() => clickSampleItem(sample)}
+                onDragStart={() => dragSampleItem(sample)}
               />
             </div>
           );

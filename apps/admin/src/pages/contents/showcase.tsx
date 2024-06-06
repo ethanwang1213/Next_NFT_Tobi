@@ -17,6 +17,7 @@ import { ShowcaseSaveData } from "types/adminTypes";
 import { ModelType } from "types/unityTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
+import { SampleItem } from "ui/types/adminTypes";
 
 const Showcase = () => {
   const router = useRouter();
@@ -153,31 +154,27 @@ const Showcase = () => {
   }, []);
 
   const selectSampleHandler = useCallback(
-    (
-      sampleId: number,
-      modelUrl: string,
-      modelType: number,
-      materialId: number,
-      isDrag: boolean,
-    ) => {
+    (sample: SampleItem, isDrag: boolean) => {
       // show detail view
-      setSelectedSampleItem(sampleId);
+      setSelectedSampleItem(sample.id);
       const materialImageIndex = materialData.findIndex(
-        (value) => value.id === materialId,
+        (value) => value.id === sample.materialId,
       );
       // place a new item
       if (!isDrag)
         placeNewSample({
-          itemId: sampleId,
-          modelType: modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
-          modelUrl: modelUrl,
+          itemId: sample.id,
+          modelType:
+            sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelUrl: sample.modelUrl,
           imageUrl: materialData[materialImageIndex].image,
         });
       else
         placeNewSampleWithDrag({
-          itemId: sampleId,
-          modelType: modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
-          modelUrl: modelUrl,
+          itemId: sample.id,
+          modelType:
+            sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelUrl: sample.modelUrl,
           imageUrl: materialData[materialImageIndex].image,
         });
       // store to backend
@@ -314,33 +311,11 @@ const Showcase = () => {
         </div>
         {showDetailView && (
           <ShowcaseTabView
-            clickSampleItem={(
-              sampleId: number,
-              modelUrl: string,
-              modelType: number,
-              materialId: number,
-            ) =>
-              selectSampleHandler(
-                sampleId,
-                modelUrl,
-                modelType,
-                materialId,
-                false,
-              )
+            clickSampleItem={(item: SampleItem) =>
+              selectSampleHandler(item, false)
             }
-            dragSampleItem={(
-              sampleId: number,
-              modelUrl: string,
-              modelType: number,
-              materialId: number,
-            ) =>
-              selectSampleHandler(
-                sampleId,
-                modelUrl,
-                modelType,
-                materialId,
-                true,
-              )
+            dragSampleItem={(item: SampleItem) =>
+              selectSampleHandler(item, true)
             }
           />
         )}

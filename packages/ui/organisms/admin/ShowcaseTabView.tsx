@@ -6,23 +6,14 @@ import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
 import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
+import { SampleItem } from "ui/types/adminTypes";
 
 const ShowcaseTabView = ({
   clickSampleItem,
   dragSampleItem,
 }: {
-  clickSampleItem: (
-    sampleId: number,
-    modelUrl: string,
-    modelType: number,
-    materialId: number,
-  ) => void;
-  dragSampleItem: (
-    sampleId: number,
-    modelUrl: string,
-    modelType: number,
-    materialId: number,
-  ) => void;
+  clickSampleItem: (item: SampleItem) => void;
+  dragSampleItem: (item: SampleItem) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
 
@@ -83,18 +74,8 @@ const ShowcaseTabView = ({
       <div className="p-[30px] w-full flex-1 flex flex-col">
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab
-            clickSampleItem={(
-              sampleId: number,
-              modelUrl: string,
-              modelType: number,
-              materialId: number,
-            ) => clickSampleItem(sampleId, modelUrl, modelType, materialId)}
-            dragSampleItem={(
-              sampleId: number,
-              modelUrl: string,
-              modelType: number,
-              materialId: number,
-            ) => dragSampleItem(sampleId, modelUrl, modelType, materialId)}
+            clickSampleItem={clickSampleItem}
+            dragSampleItem={dragSampleItem}
           ></ShowcaseSampleTab>
         </TabPanel>
         <TabPanel
