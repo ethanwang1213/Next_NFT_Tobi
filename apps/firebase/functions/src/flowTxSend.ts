@@ -90,6 +90,19 @@ export const flowTxSend = functions.region(REGION)
         const messageForMonitoring = {flowJobId, txType, params};
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
+      } else if (txType == "giftNFT") {
+        await updateGiftNFTRecord(params.digitalItemNftId, params.receiveFlowId);
+        const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.digitalItemNftId, params.receiveFlowId);
+        await flowJobDocRef.update({
+          flowJobId,
+          txType,
+          params,
+          txId,
+          sentAt: new Date(),
+        });
+        const messageForMonitoring = {flowJobId, txType, params};
+        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
+        console.log(`Message ${messageId} published.`);
       }
     });
 
@@ -121,6 +134,17 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
     return existingFlowJobs.docs[0].ref;
   }
   return await firestore().collection("flowJobs").add({flowJobId});
+};
+
+const updateGiftNFTRecord = async (digitalItemNftId: number, receiveFlowId: string) => {
+await prisma.tobiratory_digital_item_nfts.update({
+    where: {
+      id: digitalItemNftId,
+    },
+    data: {
+      gift_status: "gifting"
+    },
+  });
 };
 
 const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any) => {
@@ -634,6 +658,70 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
   };
 };
 
+const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: number, receiveFlowId: string) => {
+  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+
+  const senderFlowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
+  const receiveFlowAccountDocRef = await getFlowAccountDocRef(receiveFlowId);
+  if (!senderFlowAccountDocRef) {
+    throw new functions.https.HttpsError("not-found", "The sender flow account does not exist.");
+  }
+  if (!receiveFlowAccountDocRef) {
+    throw new functions.https.HttpsError("not-found", "The receive flow account does not exist.");
+  }
+
+  const senderFlowAccountDoc = await senderFlowAccountDocRef.get();
+  const senderAccountDocData = senderFlowAccountDoc.data();
+  if (!senderAccountDocData || !senderAccountDocData.address) {
+    throw new functions.https.HttpsError("not-found", "The receive flow account does not exist.");
+  }
+  const senderFlowAddress = senderAccountDocData.address;
+
+  const cadence = `
+import NonFungibleToken from ${nonFungibleTokenAddress}
+import TobiratoryDigitalItems from ${tobiratoryDigitalItemsAddress}
+
+transaction(recipient: Address, withdrawID: UInt64) {
+    let senderCollectionRef: &TobiratoryDigitalItems.Collection
+    let recipientCollectionRef: &{NonFungibleToken.CollectionPublic}
+
+    prepare(acct: AuthAccount) {
+        self.senderCollectionRef = acct
+            .borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath)
+            ?? panic("Not found")
+
+        self.recipientCollectionRef = getAccount(recipient)
+            .getCapability(TobiratoryDigitalItems.CollectionPublicPath)
+            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            ?? panic("Not found")
+    }
+
+    execute {
+        let nft <- self.senderCollectionRef.withdraw(withdrawID: withdrawID)
+        self.recipientCollectionRef.deposit(token: <-nft)
+    }
+}
+`;
+
+  const args = (arg: any, t: any) => [
+    arg(receiveFlowId, t.Address),
+    arg(senderFlowAddress, t.Address),
+  ];
+
+  const txId = await fcl.mutate({
+    cadence,
+    args,
+    proposer: createCreatorAuthz(senderFlowAccountDocRef),
+    payer: transferPayer,
+    authorizations: [createCreatorAuthz(senderFlowAccountDocRef)],
+    limit: 9999,
+  });
+  console.log({txId});
+
+  return {txId};
+};
+
 const generateKeysAndSendFlowAccountCreationTx = async (tobiratoryAccountUuid: string) => {
   if (
     !process.env.KMS_PROJECT_ID ||
@@ -737,6 +825,27 @@ const generateKeyPair = () => {
   };
 };
 
+const transferPayer = async (account: any) => {
+  const {addr, keyId, privateKey} = await transferPayerBase();
+  return {
+    ...account,
+    tempId: `${addr}-${keyId}`,
+    addr: fcl.sansPrefix(addr),
+    keyId,
+    signingFunction: async (signable: any) => {
+      const signature = signWithKey({privateKey,
+        msgHex: signable.message,
+        hash: process.env.FLOW_TRANSFER_PAYER_ACCOUNT_KEY_HASH || "",
+        sign: process.env.FLOW_TRANSFER_PAYER_ACCOUNT_KEY_SIGN || ""});
+      return {
+        addr,
+        keyId,
+        signature,
+      };
+    },
+  };
+};
+
 const authz = async (account: any) => {
   const {addr, keyId, privateKey} = await authzBase();
   return {
@@ -756,6 +865,41 @@ const authz = async (account: any) => {
       };
     },
   };
+};
+
+const transferPayerBase = async () => {
+  if (!process.env.FLOW_TRANSFER_PAYER_ACCOUNT_ADDRESS ||
+      !process.env.FLOW_TRANSFER_PAYER_ACCOUNT_KEY_ID ||
+      !process.env.FLOW_TRANSFER_PAYER_ACCOUNT_ENCRYPTED_PRIVATE_KEY ||
+      !process.env.KMS_PROJECT_ID ||
+      !process.env.KMS_OPERATION_KEY_LOCATION ||
+      !process.env.KMS_OPERATION_KEYRING ||
+      !process.env.KMS_OPERATION_KEY
+  ) {
+    throw new Error("The environment of flow signer is not defined.");
+  }
+  let privateKey: string | undefined;
+  if (process.env.PUBSUB_EMULATOR_HOST) {
+    privateKey = process.env.FLOW_ACCOUNT_PRIVATE_KEY;
+  } else {
+    const encryptedPrivateKey = process.env.FLOW_TRANSFER_PAYER_ACCOUNT_ENCRYPTED_PRIVATE_KEY;
+    const keyName = kmsClient.cryptoKeyPath(
+        process.env.KMS_PROJECT_ID,
+        process.env.KMS_OPERATION_KEY_LOCATION,
+        process.env.KMS_OPERATION_KEYRING,
+        process.env.KMS_OPERATION_KEY
+    );
+    const [decryptedData] = await kmsClient.decrypt({name: keyName, ciphertext: encryptedPrivateKey});
+    privateKey = decryptedData.plaintext?.toString();
+  }
+
+  if (!privateKey) {
+    throw new Error("The private key of flow signer is not defined.");
+  }
+  const addr = process.env.FLOW_TRANSFER_PAYER_ACCOUNT_ADDRESS;
+  const keyId = Number(process.env.FLOW_TRANSFER_PAYER_ACCOUNT_KEY_ID);
+
+  return {addr: addr as string, keyId, privateKey: privateKey as string};
 };
 
 const authzBase = async () => {

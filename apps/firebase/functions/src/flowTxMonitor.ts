@@ -80,6 +80,20 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         throw e;
       }
     }
+  } else if (txType == "giftNFT") {
+try {
+      await fetchAndUpdateGiftNFT(params.nftId, params.fcmToken);
+      await flowJobDocRef.update({status: "done", updatedAt: new Date()});
+    } catch (e) {
+      if (e instanceof Error && e.message === "TX_FAILED") {
+        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
+        console.log(`Message ${messageId} published.`);
+        await flowJobDocRef.update({status: "retrying", updatedAt: new Date()});
+      } else {
+        throw e;
+      }
+    }
+
   }
 });
 
@@ -156,7 +170,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     throw new Error("TX_NOT_FOUND");
   }
 
-  const {serialNumber} = await fetchMintNFT(txId);
+  const {serialNumber, to} = await fetchMintNFT(txId);
   const itemId = digitalItem.item_id;
   const creatorAddress = digitalItem.creator_flow_address;
   if (!itemId) {
@@ -187,6 +201,13 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       minted_count: Number(mintedCount),
     },
   });
+  await prisma.tobiratory_digital_nft_ownership.create({
+    data: {
+      nft_id: digitalItemNftId,
+      tx_id: txId,
+      owner_uuid: to,
+    }
+  });
   pushToDevice(fcmToken, {
     title: "NFTの作成が完了しました",
     body: "タップして見に行ってみよう!",
@@ -202,10 +223,28 @@ const fetchMintNFT = async (txId: string) => {
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
+  const result: {
+    id: number,
+    itemID: number,
+    serialNumber: number,
+    to: string
+  } = {
+    id: -1,
+    itemID: -1,
+    serialNumber: -1,
+    to: "",
+  };
   for (const event of tx.events) {
     if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Mint`) {
-      return {id: event.data.id, itemID: event.data.itemID, serialNumber: event.data.serialNumber};
+      result.id = event.data.id;
+      result.itemID = event.data.itemID;
+      result.serialNumber = event.data.serialNumber;
+    } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Deposit`) {
+      result.to = event.data.to;
     }
+  }
+  if (result.id != -1) {
+    return result;
   }
   throw Error("TX_FAILED");
 };
@@ -248,6 +287,88 @@ pub fun main(address: Address, itemID: UInt64): UInt32? {
     args: (arg: any, t: any) => [arg(creatorFlowAccount, t.Address), arg(itemId, t.UInt64)],
   });
 };
+
+const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
+  const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
+    where: {
+      id: nftId,
+    },
+  });
+  if (!nft) {
+    throw new Error("NFT_NOT_FOUND");
+  }
+  const txId = nft.tx_id;
+  if (!txId) {
+    throw new Error("TX_NOT_FOUND");
+  }
+  const { withdraw, deposit } = await fetchGiftNFT(txId);
+  if (withdraw && deposit) {
+    const toFlowRef = await prisma.tobiratory_flow_accounts.findFirst({
+      where: {
+        flow_address: deposit.to,
+      },
+    });
+    if (!toFlowRef) {
+      throw new Error("RECEIVER_FLOW_ACCOUNT_NOT_FOUND");
+    }
+    const toFlowAccountUuid = toFlowRef.uuid;
+    await prisma.tobiratory_digital_nft_ownership.create({
+      data: {
+        nft_id: nftId,
+        tx_id: txId,
+        owner_uuid: toFlowAccountUuid,
+      }
+    });
+    await prisma.tobiratory_digital_item_nfts.update({
+      where: {
+        id: nftId,
+      },
+      data: {
+        owner_uuid: toFlowAccountUuid,
+        box_id: 0,
+        gift_status: "",
+      },
+    });
+    pushToDevice(fcmToken, {
+      title: "NFTのギフトが完了しました",
+      body: "",
+    }, {
+      body: JSON.stringify({
+        type: "giftCompleted",
+        data: {nft_id: nftId},
+      }),
+    });
+  }
+}
+
+const fetchGiftNFT = async (txId: string) => {
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const tx = await fcl.tx(txId).onceSealed();
+  console.log(tx);
+  const result: { withdraw: {
+      id: number,
+      from: string,
+      date: number,
+    } | null, deposit: {
+      id: number,
+      to: string,
+      date: number,
+    } | null } = {
+    "withdraw": null,
+    "deposit": null
+  };
+  for (const event of tx.events) {
+    if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Withdraw`) {
+      result.withdraw = {id: event.data.id, from: event.data.from, date: new Date().getDate()};
+    } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Deposit`) {
+      result.deposit = {id: event.data.id, to: event.data.to, date: new Date().getDate()};
+    }
+  }
+  if (result.withdraw && result.deposit) {
+    return result;
+  }
+  throw Error("TX_FAILED");
+}
 
 const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   const existingFlowJobs = await firestore().collection("flowJobs").where("flowJobId", "==", flowJobId).get();

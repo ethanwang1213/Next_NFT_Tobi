@@ -15,9 +15,9 @@ const SampleTable = (filters: {
   saleEndDate: { from: Date; to: Date };
   createDate: { from: Date; to: Date };
 }) => {
-  const apiUrl = "native/admin/samples";
+  const apiUrl = "native/admin/digital_items";
   const {
-    data: samples,
+    data: digitalItems,
     dataRef,
     setData,
     getData,
@@ -27,11 +27,11 @@ const SampleTable = (filters: {
   // active sorting column
   const [sortOrder, setSortOrder] = useState(0);
 
-  // selected sample id array
-  const [selSampleIds, setSelSampleIds] = useState([]);
+  // selected digital item id array
+  const [selDigitalItemIds, setSelDigitalItemIds] = useState([]);
 
   const applySort = (sortKey, sortData) => {
-    // sort sample data
+    // sort digital items
     const newData = [...sortData];
     switch (sortKey) {
       case -1:
@@ -366,22 +366,22 @@ const SampleTable = (filters: {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {samples?.map((sample) => (
-                <tr key={sample.id} className="w-full border-b py-3 text-sm">
+              {digitalItems?.map((item) => (
+                <tr key={item.id} className="w-full border-b py-3 text-sm">
                   <td className="py-3 text-center">
                     <input
                       type="checkbox"
                       className="w-4 h-4"
-                      checked={selSampleIds.includes(sample.id)}
+                      checked={selDigitalItemIds.includes(item.id)}
                       onChange={(e) => {
                         const checked = e.target.checked;
-                        const sampleId = sample.id;
+                        const itemId = item.id;
 
-                        setSelSampleIds((prevIds) => {
+                        setSelDigitalItemIds((prevIds) => {
                           if (checked) {
-                            return [...prevIds, sampleId];
+                            return [...prevIds, itemId];
                           } else {
-                            return prevIds.filter((id) => id !== sampleId);
+                            return prevIds.filter((id) => id !== itemId);
                           }
                         });
                       }}
@@ -389,47 +389,47 @@ const SampleTable = (filters: {
                   </td>
                   <td className="py-3">
                     <Link
-                      href={`/items/detail?id=${sample.id}`}
+                      href={`/items/detail?id=${item.id}`}
                       className="flex items-center"
                     >
                       <Image
-                        src={sample.thumbnail}
+                        src={item.thumbnail}
                         className="rounded-full inline-block mx-2"
                         width={80}
                         height={80}
-                        alt={`${sample.name}'s profile picture`}
+                        alt={`${item.name}'s profile picture`}
                         unoptimized
                       />
-                      <span className="inline-block">{sample.name}</span>
+                      <span className="inline-block">{item.name}</span>
                     </Link>
                   </td>
                   <td className="px-3 py-3 text-center justify-center">
-                    {formatCurrency(sample.price)}
+                    {formatCurrency(item.price)}
                   </td>
                   <td className="p-3 text-center justify-center">
-                    {getSampleStatusTitle(sample.status)}
+                    {getSampleStatusTitle(item.status)}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    {!!sample.saleStartDate && sample.saleStartDate.length
-                      ? formatDateToLocal(sample.saleStartDate)
+                    {!!item.saleStartDate && item.saleStartDate.length
+                      ? formatDateToLocal(item.saleStartDate)
                       : "-"}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    {!!sample.saleEndDate && sample.saleEndDate.length
-                      ? formatDateToLocal(sample.saleEndDate)
+                    {!!item.saleEndDate && item.saleEndDate.length
+                      ? formatDateToLocal(item.saleEndDate)
                       : "-"}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    <span>{sample.saleQuantity} / </span>
-                    {sample.quantityLimit != -1 ? (
-                      <span>{sample.quantityLimit}</span>
+                    <span>{item.saleQuantity} / </span>
+                    {item.quantityLimit != -1 ? (
+                      <span>{item.quantityLimit}</span>
                     ) : (
                       <span className="text-[20px]">∞</span>
                     )}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    {!!sample.createDate && sample.createDate.length
-                      ? formatDateToLocal(sample.createDate)
+                    {!!item.createDate && item.createDate.length
+                      ? formatDateToLocal(item.createDate)
                       : "-"}
                   </td>
                   <td></td>
@@ -437,11 +437,11 @@ const SampleTable = (filters: {
               ))}
             </tbody>
           </table>
-          {selSampleIds.length > 0 ? (
+          {selDigitalItemIds.length > 0 ? (
             <div className="fixed bottom-5 right-5 w-[472px] h-14 flex justify-between">
               <Button
                 className="w-[208px] h-14 rounded-[30px] bg-[#009FF5] text-white text-2xl leading-[56px] text-center"
-                onClick={() => setSelSampleIds([])}
+                onClick={() => setSelDigitalItemIds([])}
               >
                 CANCEL
               </Button>
@@ -449,10 +449,10 @@ const SampleTable = (filters: {
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
                   const result = await deleteData(apiUrl, {
-                    sampleIds: selSampleIds,
+                    sampleIds: selDigitalItemIds,
                   });
                   if (result) {
-                    setSelSampleIds([]);
+                    setSelDigitalItemIds([]);
                     getData(apiUrl);
                   }
                 }}

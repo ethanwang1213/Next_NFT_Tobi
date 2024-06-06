@@ -35,8 +35,13 @@ export const uploadImage = async (image, type) => {
         blob = new Blob([byteArray], { type: "image/png" });
       }
     } else {
-      console.log("invalid image type");
-      return "";
+      const byteCharacters = Buffer.from(image, "base64");
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters[i];
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      blob = new Blob([byteArray], { type: "image/png" });
     }
 
     // Upload the file to Firebase Storage
