@@ -10,13 +10,7 @@ import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
 import SampleGenerateComponent from "ui/organisms/admin/SampleGenerate";
 import { MaterialItem } from "ui/types/adminTypes";
 
-const WorkspaceSampleCreateDialog = ({
-  dialogRef,
-  initDialog,
-  materials,
-  generateHandler,
-  generateError,
-}: {
+type Props = {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   initDialog: number;
   materials: MaterialItem[];
@@ -26,7 +20,9 @@ const WorkspaceSampleCreateDialog = ({
     sampleType: number,
   ) => void;
   generateError: boolean;
-}) => {
+};
+
+const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
   const [creationStep, setCreationStep] = useState(0);
   const [sampleType, setSampleType] = useState(null);
   const [materialImage, setMaterialImage] = useState(null);
@@ -35,10 +31,10 @@ const WorkspaceSampleCreateDialog = ({
     setCreationStep(0);
     setSampleType(null);
     setMaterialImage(null);
-  }, [initDialog]);
+  }, [props.initDialog]);
 
   return (
-    <dialog ref={dialogRef} className="modal">
+    <dialog ref={props.dialogRef} className="modal">
       <div className="modal-box max-w-[650px] max-h-[540px] rounded-3xl p-4 pt-8 flex gap-3">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
@@ -64,7 +60,7 @@ const WorkspaceSampleCreateDialog = ({
           )}
           {creationStep === 1 && (
             <MaterialImageSelectComponent
-              data={materials}
+              data={props.materials}
               selectedImage={materialImage}
               selectImageHandler={(value) => setMaterialImage(value)}
               backHandler={() => setCreationStep(creationStep - 1)}
@@ -79,8 +75,8 @@ const WorkspaceSampleCreateDialog = ({
               }
               backHandler={() => setCreationStep(creationStep - 1)}
               nextHandler={() => setCreationStep(creationStep + 1)}
-              generateHandler={generateHandler}
-              generateError={generateError}
+              generateHandler={props.generateHandler}
+              generateError={props.generateError}
             />
           )}
           {creationStep === 2 && sampleType === "Can Badge" && (

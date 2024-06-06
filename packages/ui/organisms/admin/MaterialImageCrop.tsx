@@ -14,6 +14,19 @@ import { MaterialItem } from "ui/types/adminTypes";
 import Button from "ui/atoms/Button";
 import { ModelType } from "types/unityTypes";
 
+type Props = {
+  materialImage: MaterialItem;
+  cropHandler: (image: string) => void;
+  backHandler: () => void;
+  nextHandler: () => void;
+  generateHandler: (
+    materialId: number,
+    materialImage: string,
+    sampleType: number,
+  ) => void;
+  generateError: boolean;
+};
+
 function centerAspectCrop(
   mediaWidth: number,
   mediaHeight: number,
@@ -34,18 +47,7 @@ function centerAspectCrop(
   );
 }
 
-const MaterialImageCropComponent = (props: {
-  materialImage: MaterialItem;
-  cropHandler: (image: string) => void;
-  backHandler: () => void;
-  nextHandler: () => void;
-  generateHandler: (
-    materialId: number,
-    materialImage: string,
-    sampleType: number,
-  ) => void;
-  generateError: boolean;
-}) => {
+const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>({

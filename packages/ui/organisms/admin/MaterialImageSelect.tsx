@@ -4,13 +4,15 @@ import { useDropzone } from "react-dropzone";
 import { MaterialItem } from "ui/types/adminTypes";
 import Button from "ui/atoms/Button";
 
-const MaterialImageSelectComponent = (props: {
+type Props = {
   data: MaterialItem[];
   selectedImage: MaterialItem | null;
   selectImageHandler: (value: MaterialItem) => void;
   backHandler: () => void;
   nextHandler: () => void;
-}) => {
+};
+
+const MaterialImageSelectComponent: React.FC<Props> = (props) => {
   const onDrop = useCallback(
     async (acceptedFiles) => {
       // Do something with the files
