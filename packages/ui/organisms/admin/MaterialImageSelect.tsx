@@ -2,22 +2,24 @@ import NextImage from "next/image";
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { MaterialItem } from "ui/types/adminTypes";
-import ButtonGroupComponent from "./ButtonGroupComponent";
+import Button from "ui/atoms/Button";
 
-const MaterialImageSelectComponent = (props: {
+type Props = {
   data: MaterialItem[];
   selectedImage: MaterialItem | null;
   selectImageHandler: (value: MaterialItem) => void;
   backHandler: () => void;
   nextHandler: () => void;
-}) => {
+  uploadImageHandler: (image: string) => void;
+};
+
+const MaterialImageSelectComponent: React.FC<Props> = (props) => {
   const onDrop = useCallback(
     async (acceptedFiles) => {
       // Do something with the files
       const file = acceptedFiles[0];
       if (file && file.type.startsWith("image/png")) {
-        props.selectImageHandler({ id: 0, image: URL.createObjectURL(file) });
-        props.nextHandler();
+        props.uploadImageHandler(URL.createObjectURL(file));
       } else {
         const reader = new FileReader();
         reader.onload = () => {
@@ -31,16 +33,14 @@ const MaterialImageSelectComponent = (props: {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             const dataUrlWithoutExif = canvas.toDataURL("image/jpeg"); // strip the EXIF data
-            props.selectImageHandler({ id: 0, image: dataUrlWithoutExif });
-            props.nextHandler();
+            props.uploadImageHandler(dataUrlWithoutExif);
           };
           img.src = imageDataUrl.toString();
         };
         reader.readAsDataURL(file);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [props],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -91,16 +91,34 @@ const MaterialImageSelectComponent = (props: {
             />
           ))}
       </div>
-      <ButtonGroupComponent
-        backButtonHandler={props.backHandler}
-        nextButtonHandler={() => {
-          if (props.selectedImage === null) {
-            console.log("material image is not set");
-          } else {
-            props.nextHandler();
-          }
-        }}
-      />
+      <div className="flex justify-between">
+        <Button
+          className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1"
+          onClick={props.backHandler}
+        >
+          <NextImage
+            width={20}
+            height={20}
+            src="/admin/images/icon/arrow-left-s-line.svg"
+            alt="left arrow"
+          />
+          <span className="text-primary text-sm font-medium">Back</span>
+        </Button>
+        <Button
+          className={`w-[72px] h-8 rounded-lg flex items-center justify-center gap-1
+            ${props.selectedImage === null ? "bg-secondary" : "bg-primary"}`}
+          onClick={props.nextHandler}
+          disabled={props.selectedImage === null}
+        >
+          <span className="text-base-white text-sm font-medium">Next</span>
+          <NextImage
+            width={20}
+            height={20}
+            src="/admin/images/icon/arrow-right-s-line.svg"
+            alt="left arrow"
+          />
+        </Button>
+      </div>
     </div>
   );
 };
