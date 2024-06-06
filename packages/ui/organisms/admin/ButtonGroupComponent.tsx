@@ -5,6 +5,7 @@ import Button from "ui/atoms/Button";
 const ButtonGroupComponent = (props: {
   backButtonHandler: () => void;
   nextButtonHandler: () => void;
+  disable: boolean;
 }) => {
   return (
     <div className="flex justify-between">
@@ -21,8 +22,10 @@ const ButtonGroupComponent = (props: {
         <span className="text-primary text-sm font-medium">Back</span>
       </Button>
       <Button
-        className="w-[72px] h-8 rounded-lg bg-primary flex items-center justify-center gap-1"
+        className={`w-[72px] h-8 rounded-lg flex items-center justify-center gap-1
+          ${props.disable ? "bg-secondary" : "bg-primary"}`}
         onClick={props.nextButtonHandler}
+        disabled={props.disable}
       >
         <span className="text-base-white text-sm font-medium">Next</span>
         <NextImage

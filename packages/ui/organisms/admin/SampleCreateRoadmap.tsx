@@ -16,13 +16,12 @@ const sampleCreateRoadmapTitles = {
   poster: [
     {
       title: "Select a material",
-      description: "ポスターにする素材を選択してください",
+      description: "",
     },
     {
       title: "Crop",
-      description: "ポスターにしたい範囲で切り抜きしてください",
+      description: "Crop the poster material as needed.",
     },
-    { title: "Generate", description: "" },
   ],
   messagecard: [
     {
