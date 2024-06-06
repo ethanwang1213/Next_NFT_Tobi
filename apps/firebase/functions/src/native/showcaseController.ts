@@ -458,119 +458,6 @@ const updateShocaseSchedule = async (scheduleTime: string, timeDifference: numbe
   }, timeDifference);
 };
 
-export const putItemToShowcase = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  const {id} = req.params;
-  const {sampleIds, nftIds}:{sampleIds: number[], nftIds: number[]} = req.body;
-  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
-    try {
-      const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
-        where: {
-          uuid: uid,
-        },
-      });
-      if (!admin) {
-        res.status(401).send({
-          status: "error",
-          data: "not-admin",
-        });
-        return;
-      }
-      const content = await prisma.tobiratory_contents.findFirst({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
-      const showcase = await prisma.tobiratory_showcase.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-      });
-      if (!showcase) {
-        res.status(404).send({
-          status: "error",
-          data: "not-exist-showcase",
-        });
-        return;
-      }
-      if (showcase.owner_uuid != uid) {
-        res.status(403).send({
-          status: "error",
-          data: "not-yours",
-        });
-        return;
-      }
-      for (const nftId of nftIds) {
-        await prisma.tobiratory_showcase_nft_items.upsert({
-          where: {
-            nft_id: nftId,
-          },
-          update: {
-          },
-          create: {
-            nft_id: nftId,
-            showcase_id: showcase.id,
-          },
-        });
-      }
-      await prisma.tobiratory_showcase_nft_items.deleteMany({
-        where: {
-          nft_id: {
-            notIn: nftIds,
-          },
-        },
-      });
-      for (const sampleId of sampleIds) {
-        const existFlag = await prisma.tobiratory_showcase_sample_items.findFirst({
-          where: {
-            sample_id: sampleId,
-            showcase_id: showcase.id,
-          },
-        });
-        if (!existFlag) {
-          await prisma.tobiratory_showcase_sample_items.create({
-            data: {
-              sample_id: sampleId,
-              showcase_id: showcase.id,
-            },
-          });
-        }
-      }
-      await prisma.tobiratory_showcase_sample_items.deleteMany({
-        where: {
-          sample_id: {
-            notIn: nftIds,
-          },
-          showcase_id: showcase.id,
-        },
-      });
-      res.status(200).send({
-        status: "success",
-        data: "success-added",
-      });
-    } catch (error) {
-      res.status(401).send({
-        status: "error",
-        data: error,
-      });
-    }
-  }).catch((error: FirebaseError) => {
-    res.status(401).send({
-      status: "error",
-      data: error,
-    });
-    return;
-  });
-};
-
 export const loadMyShowcase = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
@@ -645,6 +532,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         const sampleData = relationSample.sample;
         const digitalData = relationSample.sample.digital_item;
         return {
+          id: relationSample.id,
           itemId: sampleData.id,
           modelType: digitalData.type,
           modelUrl: sampleData.model_url,
@@ -667,6 +555,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         const nftData = relationNft.nft;
         const digitalData = relationNft.nft.digital_item;
         return {
+          id: relationNft.id,
           itemId: nftData.id,
           modelType: digitalData.type,
           modelUrl: nftData.nft_model,
@@ -723,6 +612,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {sampleItemList, nftItemList, thumbnailImage}: {sampleItemList: ItemType[], nftItemList: ItemType[], thumbnailImage: string} = req.body;
   type ItemType = {
+    id: number,
     itemId: number,
     stageType: number,
     position: {
@@ -783,31 +673,61 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
+      const idPair: {previous: number, next: number}[] = [];
       for (const sample of sampleItemList) {
-        await prisma.tobiratory_showcase_sample_items.updateMany({
+        const sampledata = await prisma.tobiratory_showcase_sample_items.upsert({
           where: {
+            id: sample.id,
             showcase_id: isShowcase.id,
             sample_id: sample.itemId,
           },
-          data: {
+          update: {
             stage_type: sample.stageType,
             position: [sample.position.x, sample.position.y, sample.position.z],
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },
+          create: {
+            showcase_id: isShowcase.id,
+            sample_id: sample.itemId,
+            stage_type: sample.stageType,
+            position: [sample.position.x, sample.position.y, sample.position.z],
+            rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
+          }
         });
+        if (sample.id<0) {
+          idPair.push({
+            previous: sample.id,
+            next: sampledata.id,
+          });
+        }
       }
       for (const nft of nftItemList) {
-        await prisma.tobiratory_showcase_nft_items.update({
+        const nftData = await prisma.tobiratory_showcase_nft_items.upsert({
           where: {
+            id: nft.id,
             showcase_id: isShowcase.id,
             nft_id: nft.itemId,
           },
-          data: {
+          update: {
             stage_type: nft.stageType,
             position: [nft.position.x, nft.position.y, nft.position.z],
             rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
           },
+          create: {
+            id: nft.id,
+            showcase_id: isShowcase.id,
+            nft_id: nft.itemId,
+            stage_type: nft.stageType,
+            position: [nft.position.x, nft.position.y, nft.position.z],
+            rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
+          }
         });
+        if (nft.id<0) {
+          idPair.push({
+            previous: nft.id,
+            next: nftData.id,
+          });
+        }
       }
       await prisma.tobiratory_showcase.update({
         where: {
@@ -817,94 +737,9 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           thumb_url: thumbnailImage,
         },
       });
-      const showcase = await prisma.tobiratory_showcase.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-        include: {
-          tobiratory_showcase_sample_items: {
-            include: {
-              sample: {
-                include: {
-                  digital_item: true,
-                },
-              },
-            },
-          },
-          tobiratory_showcase_nfts: {
-            include: {
-              nft: {
-                include: {
-                  digital_item: true,
-                },
-              },
-            },
-          },
-          tobiratory_showcase_template: true,
-        },
-      });
-
-      const updatedSampleItemList = showcase?.tobiratory_showcase_sample_items.map((relationSample)=>{
-        const sampleData = relationSample.sample;
-        const digitalData = relationSample.sample.digital_item;
-        return {
-          itemId: sampleData.id,
-          modelType: digitalData.type,
-          modelUrl: sampleData.model_url,
-          imageUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
-          stageType: relationSample.stage_type,
-          scale: relationSample.scale,
-          position: {
-            x: relationSample.position[0]??0,
-            y: relationSample.position[1]??0,
-            z: relationSample.position[2]??0,
-          },
-          rotation: {
-            x: relationSample.rotation[0]??0,
-            y: relationSample.rotation[1]??0,
-            z: relationSample.rotation[2]??0,
-          },
-        };
-      });
-      const updatedNftItemList = showcase?.tobiratory_showcase_nfts.map((relationNft)=>{
-        const nftData = relationNft.nft;
-        const digitalData = relationNft.nft.digital_item;
-        return {
-          itemId: nftData.id,
-          modelType: digitalData.type,
-          modelUrl: nftData.nft_model,
-          stageType: relationNft.stage_type,
-          scale: relationNft.scale,
-          itemMeterHeight: relationNft.meter_height,
-          position: {
-            x: relationNft.position[0]??0,
-            y: relationNft.position[1]??0,
-            z: relationNft.position[2]??0,
-          },
-          rotation: {
-            x: relationNft.rotation[0]??0,
-            y: relationNft.rotation[1]??0,
-            z: relationNft.rotation[2]??0,
-          },
-        };
-      });
-      const returnData = {
-        showcaseId: showcase?.id,
-        thumbImage: showcase?.thumb_url,
-        title: showcase?.title,
-        description: showcase?.description,
-        status: showcase?.status,
-        scheduleTime: showcase?.schedule_time,
-        showcaseType: showcase?.tobiratory_showcase_template?.type,
-        showcaseUrl: showcase?.tobiratory_showcase_template?.model_url,
-        sampleItemList: updatedSampleItemList,
-        nftItemList: updatedNftItemList,
-        createTime: showcase?.created_date_time,
-        updateTime: showcase?.updated_date_time,
-      };
       res.status(200).send({
         status: "success",
-        data: returnData,
+        data: idPair,
       });
     } catch (error) {
       res.status(401).send({
