@@ -14,6 +14,19 @@ import { MaterialItem } from "ui/types/adminTypes";
 import Button from "ui/atoms/Button";
 import { ModelType } from "types/unityTypes";
 
+type Props = {
+  materialImage: MaterialItem;
+  cropHandler: (image: string) => void;
+  backHandler: () => void;
+  nextHandler: () => void;
+  generateHandler: (
+    materialId: number,
+    cropImage: string,
+    sampleType: number,
+  ) => void;
+  generateError: boolean;
+};
+
 function centerAspectCrop(
   mediaWidth: number,
   mediaHeight: number,
@@ -34,18 +47,7 @@ function centerAspectCrop(
   );
 }
 
-const MaterialImageCropComponent = (props: {
-  materialImage: MaterialItem;
-  cropHandler: (image: string) => void;
-  backHandler: () => void;
-  nextHandler: () => void;
-  generateHandler: (
-    materialId: number,
-    materialImage: string,
-    sampleType: number,
-  ) => void;
-  generateError: boolean;
-}) => {
+const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>({
@@ -135,23 +137,12 @@ const MaterialImageCropComponent = (props: {
   const generateClickHandler = useCallback(async () => {
     setIsGenerating(true);
 
-    // check material image
-    if (props.materialImage.id === 0 || blobUrlRef.current !== null) {
-      // new image
-      // upload firebase storage
-      if (blobUrlRef.current !== null) {
-        props.generateHandler(0, blobUrlRef.current, ModelType.Poster);
-      } else if (props.materialImage.id === 0) {
-        props.generateHandler(0, props.materialImage.image, ModelType.Poster);
-      }
-    } else {
-      props.generateHandler(
-        props.materialImage.id,
-        props.materialImage.image,
-        ModelType.Poster,
-      );
-    }
-  }, []);
+    props.generateHandler(
+      props.materialImage.id,
+      blobUrlRef.current,
+      ModelType.Poster,
+    );
+  }, [props]);
 
   return (
     <div className="h-full relative">

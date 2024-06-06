@@ -8,9 +8,9 @@ export const dummyLoadData: SaidanLikeData[] = [
     saidanUrl: "",
     saidanItemList: [
       {
+        id: 0,
         itemType: ItemType.Sample,
         itemId: 0,
-        tableId: 0,
         modelType: ModelType.Poster,
         modelUrl: "",
         imageUrl: "",
@@ -35,9 +35,9 @@ export const dummyLoadData: SaidanLikeData[] = [
     saidanUrl: "",
     saidanItemList: [
       {
+        id: 200,
         itemType: ItemType.DigitalItemNft,
         itemId: 99,
-        tableId: 200,
         modelType: ModelType.AcrylicStand,
         modelUrl: "",
         imageUrl: "",
@@ -50,9 +50,9 @@ export const dummyLoadData: SaidanLikeData[] = [
         isDebug: true,
       },
       {
+        id: 102,
         itemType: ItemType.Sample,
         itemId: 88,
-        tableId: 102,
         modelType: ModelType.Poster,
         modelUrl: "",
         imageUrl: "",

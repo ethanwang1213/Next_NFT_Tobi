@@ -1,5 +1,9 @@
 import { useCallback } from "react";
-import { WorkspaceLoadData, WorkspaceSaveData } from "types/adminTypes";
+import {
+  UpdateIdValues,
+  WorkspaceLoadData,
+  WorkspaceSaveData,
+} from "types/adminTypes";
 import { ItemBaseData, ItemSaveData, ItemType } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
@@ -14,11 +18,14 @@ type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
 type Props = {
   sampleMenuX?: number;
-  onSaveDataGenerated?: (workspaceSaveData: WorkspaceSaveData) => void;
+  onSaveDataGenerated?: (
+    workspaceSaveData: WorkspaceSaveData,
+    updateIdValues: UpdateIdValues,
+  ) => void;
   onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
   onRemoveSampleEnabled?: () => void;
   onRemoveSampleDisabled?: () => void;
-  onRemoveSampleRequested?: (itemId: number, tableId: number) => void;
+  onRemoveSampleRequested?: (id: number, itemId: number) => void;
 };
 
 export const useWorkspaceUnityContext = ({
@@ -37,9 +44,10 @@ export const useWorkspaceUnityContext = ({
     postMessageToUnity,
     setLoadData: privateSetLoadData,
     requestSaveData,
-    placeNewItem,
-    placeNewItemWithDrag,
+    placeNewSample,
+    placeNewSampleWithDrag,
     removeItem,
+    updateIdValues,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragStarted,
@@ -95,32 +103,12 @@ export const useWorkspaceUnityContext = ({
     [privateSetLoadData, processLoadData],
   );
 
-  const placeNewSample = useCallback(
-    (params: Omit<ItemBaseData, "itemType">) => {
-      placeNewItem({
-        itemType: ItemType.Sample,
-        ...params,
-      });
-    },
-    [placeNewItem],
-  );
-
-  const placeNewSampleWithDrag = useCallback(
-    (itemData: Omit<ItemBaseData, "itemType">) => {
-      placeNewItemWithDrag({
-        itemType: ItemType.Sample,
-        ...itemData,
-      });
-    },
-    [placeNewItemWithDrag],
-  );
-
   const removeSample = useCallback(
-    ({ itemId, tableId }: { itemId: number; tableId: number }) => {
+    ({ id, itemId }: { id: number; itemId: number }) => {
       removeItem({
+        id: id,
         itemType: ItemType.Sample,
         itemId,
-        tableId,
       });
     },
     [removeItem],
@@ -164,16 +152,16 @@ export const useWorkspaceUnityContext = ({
 
       var workspaceItemList: ItemSaveData[] =
         messageBody.saidanData.saidanItemList.map((v) => ({
+          id: v.id,
           itemId: v.itemId,
-          tableId: v.tableId,
           stageType: v.stageType,
           position: v.position,
           rotation: v.rotation,
           scale: v.scale,
         }));
-      onSaveDataGenerated({ workspaceItemList });
+      onSaveDataGenerated({ workspaceItemList }, updateIdValues);
     },
-    [onSaveDataGenerated],
+    [onSaveDataGenerated, updateIdValues],
   );
 
   const handleItemThumbnailGenerated = useCallback(
@@ -196,13 +184,13 @@ export const useWorkspaceUnityContext = ({
       if (!onRemoveSampleRequested) return;
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
+        id: number;
         itemId: number;
-        tableId: number;
       };
 
       if (!messageBody) return;
 
-      onRemoveSampleRequested(messageBody.itemId, messageBody.tableId);
+      onRemoveSampleRequested(messageBody.id, messageBody.itemId);
     },
     [onRemoveSampleRequested],
   );

@@ -1,5 +1,9 @@
 import { useCallback } from "react";
-import { ShowcaseLoadData, ShowcaseSaveData } from "types/adminTypes";
+import {
+  ShowcaseLoadData,
+  ShowcaseSaveData,
+  UpdateIdValues,
+} from "types/adminTypes";
 import { ItemSaveData, ItemType, SaidanItemData } from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
@@ -14,13 +18,16 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type Props = {
   itemMenuX?: number;
-  onSaveDataGenerated?: (showcaseSaveData: ShowcaseSaveData) => void;
+  onSaveDataGenerated?: (
+    showcaseSaveData: ShowcaseSaveData,
+    updateIdValues: UpdateIdValues,
+  ) => void;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onRemoveItemRequested?: (
+    id: number,
     itemType: ItemType,
     itemId: number,
-    tableId: number,
   ) => void;
 };
 
@@ -41,9 +48,12 @@ export const useShowcaseEditUnityContext = ({
     postMessageToUnity,
     setLoadData,
     requestSaveData,
-    placeNewItem,
-    placeNewItemWithDrag,
+    placeNewSample,
+    placeNewNft,
+    placeNewSampleWithDrag,
+    placeNewNftWithDrag,
     removeItem,
+    updateIdValues,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragStarted,
@@ -75,6 +85,7 @@ export const useShowcaseEditUnityContext = ({
         return {
           ...v,
           itemType: ItemType.DigitalItemNft,
+          imageUrl: "",
           canScale: true,
           itemMeterHeight: 0.3,
           isDebug: false, // not used in loading
@@ -106,13 +117,10 @@ export const useShowcaseEditUnityContext = ({
   );
 
   const removeRecentItem = useCallback(
-    ({ itemType, itemId }) => {
+    (itemInfo: { itemType: ItemType; itemId: number }) => {
       postMessageToUnity(
         "RemoveRecentItemMessageReceiver",
-        JSON.stringify({
-          itemType,
-          itemId,
-        }),
+        JSON.stringify(itemInfo),
       );
     },
     [postMessageToUnity],
@@ -131,8 +139,8 @@ export const useShowcaseEditUnityContext = ({
       var sampleItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
         .filter((v) => v.itemType === ItemType.Sample)
         .map((v) => ({
+          id: v.id,
           itemId: v.itemId,
-          tableId: v.tableId,
           stageType: v.stageType,
           position: v.position,
           rotation: v.rotation,
@@ -141,21 +149,24 @@ export const useShowcaseEditUnityContext = ({
       var nftItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
         .filter((v) => v.itemType === ItemType.DigitalItemNft)
         .map((v) => ({
+          id: v.id,
           itemId: v.itemId,
-          tableId: v.tableId,
           stageType: v.stageType,
           position: v.position,
           rotation: v.rotation,
           scale: v.scale,
         }));
 
-      onSaveDataGenerated({
-        sampleItemList,
-        nftItemList,
-        thumbnailImageBase64: messageBody.saidanThumbnailBase64,
-      });
+      onSaveDataGenerated(
+        {
+          sampleItemList,
+          nftItemList,
+          thumbnailImageBase64: messageBody.saidanThumbnailBase64,
+        },
+        updateIdValues,
+      );
     },
-    [onSaveDataGenerated],
+    [onSaveDataGenerated, updateIdValues],
   );
 
   const handleRemoveItemRequested = useCallback(
@@ -163,17 +174,17 @@ export const useShowcaseEditUnityContext = ({
       if (!onRemoveItemRequested) return;
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
+        id: number;
         itemType: ItemType;
         itemId: number;
-        tableId: number;
       };
 
       if (!messageBody) return;
 
       onRemoveItemRequested(
+        messageBody.id,
         messageBody.itemType,
         messageBody.itemId,
-        messageBody.tableId,
       );
     },
     [onRemoveItemRequested],
@@ -197,8 +208,10 @@ export const useShowcaseEditUnityContext = ({
     isDragging,
     setLoadData: processAndSetLoadData,
     requestSaveData,
-    placeNewItem,
-    placeNewItemWithDrag,
+    placeNewSample,
+    placeNewNft,
+    placeNewSampleWithDrag,
+    placeNewNftWithDrag,
     removeItem,
     removeRecentItem,
   };
