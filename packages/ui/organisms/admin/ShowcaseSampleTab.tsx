@@ -1,12 +1,13 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useEffect, useState } from "react";
+import { SampleItem } from "ui/types/adminTypes";
 
 const ShowcaseSampleTab = ({
   clickSampleItem,
 }: {
-  clickSampleItem: (id: number) => void;
+  clickSampleItem: (sample: SampleItem) => void;
 }) => {
-  const apiUrl = "native/admin/samples";
+  const apiUrl = "native/my/samples";
   const { data, loading, getData } = useRestfulAPI(apiUrl);
 
   const [reload, setReload] = useState(0);
@@ -36,11 +37,11 @@ const ShowcaseSampleTab = ({
                   "rounded-[8px] bg-no-repeat bg-center cursor-pointer"
                 }
                 style={{
-                  backgroundImage: `url(${sample.thumbnail})`,
+                  backgroundImage: `url(${sample.thumbUrl})`,
                   backgroundSize: "contain",
                   paddingTop: "100%",
                 }}
-                onClick={() => clickSampleItem(sample.id)}
+                onClick={() => clickSampleItem(sample)}
               ></div>
             </div>
           );
