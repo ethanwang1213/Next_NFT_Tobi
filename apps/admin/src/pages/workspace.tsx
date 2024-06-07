@@ -11,7 +11,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { ModelType } from "types/unityTypes";
 import { SampleItem } from "ui/types/adminTypes";
-import { WorkspaceSaveData } from "types/adminTypes";
+import { UpdateIdValues, WorkspaceSaveData } from "types/adminTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
 
 export const metadata: Metadata = {
@@ -50,11 +50,16 @@ export default function Index() {
   const generateMaterialImage = useRef(null);
   const generateModelUrl = useRef(null);
 
-  const onSaveDataGenerated = (workspaceSaveData: WorkspaceSaveData) => {
-    console.log("onSaveDataGenerated", workspaceSaveData);
-    storeWorkspaceData(workspaceAPIUrl, {
+  const onSaveDataGenerated = async (
+    workspaceSaveData: WorkspaceSaveData,
+    updateIdValues: UpdateIdValues,
+  ) => {
+    const updateIds = await storeWorkspaceData(workspaceAPIUrl, {
       itemList: workspaceSaveData.workspaceItemList,
     });
+    if (updateIds.length > 0) {
+      updateIdValues({ idPairs: updateIds });
+    }
   };
 
   const onItemThumbnailGenerated = async (thumbnailBase64: string) => {
@@ -81,6 +86,7 @@ export default function Index() {
     setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
+    placeNewSampleWithDrag,
     removeSamplesByItemId,
     requestItemThumbnail,
   } = useWorkspaceUnityContext({
@@ -104,8 +110,7 @@ export default function Index() {
     return () => {
       clearInterval(requestSaveDataTimer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [requestSaveData, requestSaveDataInterval]);
 
   const { leavingPage, setLeavingPage } = useLeavePage();
 
@@ -135,9 +140,8 @@ export default function Index() {
         imageUrl: materials[materialIndex].image,
         modelType: sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
       });
-      requestSaveData();
     },
-    [materials, placeNewSample, requestSaveData],
+    [materials, placeNewSample],
   );
 
   const sampleSelectHandler = useCallback(
@@ -146,6 +150,23 @@ export default function Index() {
       placeSampleHandler(samples[index]);
     },
     [samples, placeSampleHandler],
+  );
+
+  const sampleDragHandler = useCallback(
+    (index: number) => {
+      setSelectedSampleItem(samples[index].id);
+      const materialIndex = materials.findIndex(
+        (value) => value.id === samples[index].materialId,
+      );
+      placeNewSampleWithDrag({
+        itemId: samples[index].id,
+        modelUrl: samples[index].modelUrl,
+        imageUrl: materials[materialIndex].image,
+        modelType:
+          samples[index].type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+      });
+    },
+    [samples, materials, placeNewSampleWithDrag],
   );
 
   const deleteSamplesHandler = useCallback(
@@ -235,6 +256,7 @@ export default function Index() {
           }}
           selectHandler={sampleSelectHandler}
           deleteHandler={deleteSamplesHandler}
+          dragHandler={sampleDragHandler}
         />
         <div
           className="absolute left-[50%] bottom-12 h-12 flex justify-center"

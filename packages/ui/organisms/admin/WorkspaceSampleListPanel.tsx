@@ -1,16 +1,19 @@
 import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
-import { SampleItem } from "ui/types/DigitalItems";
+import { SampleItem } from "ui/types/adminTypes";
 
-const SampleItemComponent = (props: {
+type ItemProps = {
   thumbnail: string;
   name: string;
   selectState: boolean;
   checked: boolean;
   changeHandler: (value: boolean) => void;
   selectHandler: () => void;
-}) => {
+  dragStartHandler: () => void;
+};
+
+const SampleItemComponent: React.FC<ItemProps> = (props) => {
   const checkboxRef = useRef(null);
 
   const clickHandler = useCallback(() => {
@@ -44,20 +47,27 @@ const SampleItemComponent = (props: {
         height={80}
         src={props.thumbnail}
         alt="thumbnail image"
+        onDragStart={() => {
+          if (props.selectState) return;
+          props.dragStartHandler();
+        }}
       />
       <span className="text-white text-base font-semibold">{props.name}</span>
     </div>
   );
 };
 
-const WorkspaceSampleListPanel = (props: {
+type ListProps = {
   isOpen: boolean;
   closeHandler: () => void;
   data: SampleItem[];
   createHandler: () => void;
-  selectHandler: (id: number) => void;
+  selectHandler: (index: number) => void;
   deleteHandler: (ids: number[]) => void;
-}) => {
+  dragHandler: (index: number) => void;
+};
+
+const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
   const [selectState, setSelectState] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const panelRef = useRef(null);
@@ -103,7 +113,7 @@ const WorkspaceSampleListPanel = (props: {
   return (
     <div
       className="absolute top-0 w-[448px] bg-[#001327] h-full py-8 
-      flex flex-col gap-6 z-20"
+        flex flex-col gap-6 z-20 select-none"
       style={{ transition: "right 0.3s ease", right: props.isOpen ? 0 : -448 }}
       ref={panelRef}
     >
@@ -158,6 +168,7 @@ const WorkspaceSampleListPanel = (props: {
                   selectionChangeHandler(sample.id, value)
                 }
                 selectHandler={() => props.selectHandler(index)}
+                dragStartHandler={() => props.dragHandler(index)}
               />
             ))}
         </div>
