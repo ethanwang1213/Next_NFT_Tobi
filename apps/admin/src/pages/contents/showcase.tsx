@@ -2,7 +2,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useToggle } from "react-use";
@@ -11,6 +11,14 @@ import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
+import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
+import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
+import { ShowcaseSaveData } from "types/adminTypes";
+import { ModelType } from "types/unityTypes";
+import { useLeavePage } from "contexts/LeavePageProvider";
+import { ImageType, uploadImage } from "fetchers/UploadActions";
+import { SampleItem } from "ui/types/adminTypes";
+
 const Showcase = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -20,12 +28,51 @@ const Showcase = () => {
   const [mainToast, toggleMainToast] = useToggle(true);
   const [message, setMessage] = useState("");
   const [containerWidth, setContainerWidth] = useState(0);
-  const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
+  const [selectedSampleItem, setSelectedSampleItem] = useState(0);
   const [loading, setLoading] = useState(false);
   const dialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
-  const { data, error, getData, putData } = useRestfulAPI(null);
+  const {
+    data: showcaseData,
+    error,
+    getData,
+    putData,
+    postData,
+  } = useRestfulAPI(null);
   const timerId = useRef(null);
+
+  const { data: materialData } = useRestfulAPI("native/materials");
+
+  const onSaveDataGenerated = async (
+    showcaseSaveData: ShowcaseSaveData,
+    updateIdValues,
+  ) => {
+    const thumbnailUrl = await uploadImage(
+      showcaseSaveData.thumbnailImageBase64,
+      ImageType.ShowcaseThumbnail,
+    );
+    const IdPairs = await postData(`${apiUrl}/${id}`, {
+      sampleItemList: showcaseSaveData.sampleItemList,
+      nftItemList: showcaseSaveData.nftItemList,
+      thumbnailImage: thumbnailUrl,
+    });
+    updateIdValues({ data: IdPairs });
+  };
+
+  const { unityProvider, setLoadData, requestSaveData, placeNewSample } =
+    useShowcaseEditUnityContext({
+      onSaveDataGenerated,
+    });
+
+  const { leavingPage, setLeavingPage } = useLeavePage();
+
+  useEffect(() => {
+    if (leavingPage) {
+      // Request save data to Unity
+      requestSaveData();
+      setLeavingPage(false); // Reset the state
+    }
+  }, [leavingPage, setLeavingPage, requestSaveData]);
 
   const handleButtonClick = (msg) => {
     setShowToast(false);
@@ -46,14 +93,10 @@ const Showcase = () => {
 
   const changeShowcaseDetail = async (title: string, description: string) => {
     setLoading(true);
-    const jsonData = await putData(
-      `${apiUrl}/${id}`,
-      { title, description },
-      [],
-    );
+    const jsonData = await putData(`${apiUrl}/${id}`, { title, description });
     if (jsonData) {
-      data.title = jsonData.title;
-      data.description = jsonData.description;
+      showcaseData.title = jsonData.title;
+      showcaseData.description = jsonData.description;
     } else {
       if (error) {
         if (error instanceof String) {
@@ -66,11 +109,22 @@ const Showcase = () => {
     setLoading(false);
   };
 
+  // load showcase data
   useEffect(() => {
-    getData(`${apiUrl}/${id}`);
+    if (id) {
+      getData(`${apiUrl}/${id}`); // update showcaseData state
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  // set showcase data to unity view when it is loaded
+  useEffect(() => {
+    if (showcaseData) {
+      setLoadData(showcaseData);
+    }
+  }, [showcaseData, setLoadData]);
+
+  const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes
   useEffect(() => {
     const updateContainerWidth = () => {
       const height = document.querySelector(".w-full.h-full").clientHeight;
@@ -82,14 +136,42 @@ const Showcase = () => {
     updateContainerWidth();
     window.addEventListener("resize", updateContainerWidth);
 
+    // Initialize timer
+    const requestSaveDataTimer = setInterval(() => {
+      requestSaveData();
+    }, requestSaveDataInterval);
+
     return () => {
       window.removeEventListener("resize", updateContainerWidth);
+      clearInterval(requestSaveDataTimer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const selectSampleHandler = useCallback(
+    (sample: SampleItem) => {
+      // show detail view
+      setSelectedSampleItem(sample.id);
+      const materialImageIndex = materialData.findIndex(
+        (value) => value.id === sample.materialId,
+      );
+      // place a new item
+      placeNewSample({
+        itemId: sample.id,
+        modelType: sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+        modelUrl: sample.modelUrl,
+        imageUrl: materialData[materialImageIndex].image,
+      });
+      // store to backend
+      requestSaveData();
+    },
+    [materialData, placeNewSample, requestSaveData],
+  );
+
   return (
-    <div className="w-full h-full">
-      <div className="unity-view w-full h-full relative">
+    <div className="w-full h-full relative">
+      <ShowcaseEditUnity unityProvider={unityProvider} />
+      <div className="absolute left-0 right-0 top-0 bottom-0">
         <div
           className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
           style={{
@@ -98,7 +180,7 @@ const Showcase = () => {
           }}
         >
           <span className="text-xl font-semibold text-[#858585] text-center mr-1">
-            {data?.title}
+            {showcaseData?.title}
           </span>
           {/* <div className="relative">
             <button
@@ -213,9 +295,7 @@ const Showcase = () => {
           </div>
         </div>
         {showDetailView && (
-          <ShowcaseTabView
-            clickSampleItem={(id: number) => setSelectedSampleItem(id)}
-          />
+          <ShowcaseTabView clickSampleItem={selectSampleHandler} />
         )}
         <div className="fixed mt-[24px] ml-[38px]">
           <Link
@@ -232,8 +312,8 @@ const Showcase = () => {
           </Link>
         </div>
         <ShowcaseNameEditDialog
-          showcaseTitle={data?.title}
-          showcaseDescription={data?.description}
+          showcaseTitle={showcaseData?.title}
+          showcaseDescription={showcaseData?.description}
           dialogRef={dialogRef}
           changeHandler={changeShowcaseDetail}
         />
