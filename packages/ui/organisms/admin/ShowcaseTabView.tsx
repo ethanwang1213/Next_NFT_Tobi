@@ -13,11 +13,13 @@ const ShowcaseTabView = ({
   dragSampleItem,
   clickNftItem,
   dragNftItem,
+  showRestoreMenu,
 }: {
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
   clickNftItem: (item: NftItem) => void;
   dragNftItem: (item: NftItem) => void;
+  showRestoreMenu: boolean;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
 
@@ -32,8 +34,25 @@ const ShowcaseTabView = ({
   return (
     <div
       className="w-[504px] bg-gray-800 bg-opacity-50 min-h-full absolute right-0
-  flex flex-col items-center text-base-white"
+        flex flex-col items-center text-base-white"
     >
+      {showRestoreMenu && (
+        <div
+          className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
+            flex flex-col gap-6 justify-center items-center z-10 select-none"
+        >
+          <span className="text-white text-[32px] font-bold">
+            Return to the Inventory
+          </span>
+          <Image
+            width={48}
+            height={48}
+            src="/admin/images/icon/keyboard_return.svg"
+            alt="return icon"
+            draggable={false}
+          />
+        </div>
+      )}
       <nav className="flex h-16 w-full bg-white">
         <ShowcaseTabSelector
           isActive={tab === "Sample Items"}

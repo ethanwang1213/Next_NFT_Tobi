@@ -14,10 +14,10 @@ import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import { ShowcaseSaveData } from "types/adminTypes";
-import { ModelType } from "types/unityTypes";
+import { ItemType, ModelType } from "types/unityTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
-import { SampleItem } from "ui/types/adminTypes";
+import { NftItem, SampleItem } from "ui/types/adminTypes";
 
 const Showcase = () => {
   const router = useRouter();
@@ -43,6 +43,9 @@ const Showcase = () => {
 
   const { data: materialData } = useRestfulAPI("native/materials");
 
+  const [showRestoreMenu, setShowRestoreMenu] = useState(false);
+
+  // showcase unity view event handlers
   const onSaveDataGenerated = async (
     showcaseSaveData: ShowcaseSaveData,
     updateIdValues,
@@ -59,14 +62,51 @@ const Showcase = () => {
     updateIdValues({ data: IdPairs });
   };
 
+  const onRemoveItemEnabled = () => {
+    setShowRestoreMenu(true);
+  };
+
+  const onRemoveItemDisabled = () => {
+    setShowRestoreMenu(false);
+  };
+
+  const onRemoveItemRequested = (
+    id: number,
+    itemType: ItemType,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    itemId: number,
+  ) => {
+    // hide the restore menu
+    setShowRestoreMenu(false);
+    if (itemType === ItemType.Sample) {
+      postData(`${apiUrl}/${id}/throw`, {
+        sampleRelationId: id,
+      });
+    }
+    if (itemType === ItemType.DigitalItemNft) {
+      postData(`${apiUrl}/${id}/throw`, {
+        nftRelationId: id,
+      });
+      // update remains count for NFT item
+    }
+  };
+
+  const [contentWidth, setContentWidth] = useState(0);
+
   const {
     unityProvider,
     setLoadData,
     requestSaveData,
     placeNewSample,
+    placeNewNft,
     placeNewSampleWithDrag,
+    placeNewNftWithDrag,
   } = useShowcaseEditUnityContext({
+    itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
+    onRemoveItemEnabled,
+    onRemoveItemDisabled,
+    onRemoveItemRequested,
   });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -131,26 +171,33 @@ const Showcase = () => {
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes
   useEffect(() => {
-    const updateContainerWidth = () => {
-      const height = document.querySelector(".w-full.h-full").clientHeight;
-      const width = Math.ceil((height / 16) * 9);
-      setContainerWidth(width);
-    };
-
-    // Update container width on mount and window resize
-    updateContainerWidth();
-    window.addEventListener("resize", updateContainerWidth);
-
     // Initialize timer
     const requestSaveDataTimer = setInterval(() => {
       requestSaveData();
     }, requestSaveDataInterval);
 
     return () => {
-      window.removeEventListener("resize", updateContainerWidth);
       clearInterval(requestSaveDataTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestSaveDataInterval, requestSaveData]);
+
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      const height = document.querySelector(".w-full.h-full").clientHeight;
+      const width = Math.ceil((height / 16) * 9);
+      setContainerWidth(width);
+
+      setContentWidth(document.querySelector(".w-full.h-full").clientWidth);
+    };
+
+    // Update container width on mount and window resize
+    updateContainerWidth();
+    window.addEventListener("resize", updateContainerWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateContainerWidth);
+    };
   }, []);
 
   const selectSampleHandler = useCallback(
@@ -177,10 +224,31 @@ const Showcase = () => {
           modelUrl: sample.modelUrl,
           imageUrl: materialData[materialImageIndex].image,
         });
-      // store to backend
-      requestSaveData();
     },
-    [materialData, placeNewSample, placeNewSampleWithDrag, requestSaveData],
+    [materialData, placeNewSample, placeNewSampleWithDrag],
+  );
+
+  const selectNftHandler = useCallback(
+    (nft: NftItem, isDrag: boolean) => {
+      // place a new item
+      if (!isDrag)
+        placeNewNft({
+          itemId: nft.id,
+          modelType:
+            nft.modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelUrl: nft.modelUrl,
+          isDebug: true,
+        });
+      else
+        placeNewNftWithDrag({
+          itemId: nft.id,
+          modelType:
+            nft.modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelUrl: nft.modelUrl,
+          isDebug: true,
+        });
+    },
+    [placeNewNft, placeNewNftWithDrag],
   );
 
   return (
@@ -317,6 +385,9 @@ const Showcase = () => {
             dragSampleItem={(item: SampleItem) =>
               selectSampleHandler(item, true)
             }
+            clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
+            dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
+            showRestoreMenu={showRestoreMenu}
           />
         )}
         <div className="fixed mt-[24px] ml-[38px]">
@@ -333,9 +404,23 @@ const Showcase = () => {
             <span>Exit</span>
           </Link>
         </div>
+        {showRestoreMenu && !showDetailView && (
+          <div
+            className="absolute w-[56px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+              flex flex-col justify-center items-center z-10 select-none"
+          >
+            <Image
+              width={48}
+              height={48}
+              src="/admin/images/icon/keyboard_return.svg"
+              alt="return icon"
+              draggable={false}
+            />
+          </div>
+        )}
         <ShowcaseNameEditDialog
-          showcaseTitle={showcaseData?.title}
-          showcaseDescription={showcaseData?.description}
+          showcaseTitle={showcaseData ? showcaseData.title : ""}
+          showcaseDescription={showcaseData ? showcaseData.description : ""}
           dialogRef={dialogRef}
           changeHandler={changeShowcaseDetail}
         />
