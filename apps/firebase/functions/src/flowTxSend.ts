@@ -137,12 +137,12 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
 };
 
 const updateGiftNFTRecord = async (digitalItemNftId: number, receiveFlowId: string) => {
-await prisma.tobiratory_digital_item_nfts.update({
+  await prisma.tobiratory_digital_item_nfts.update({
     where: {
       id: digitalItemNftId,
     },
     data: {
-      gift_status: "gifting"
+      gift_status: "gifting",
     },
   });
 };

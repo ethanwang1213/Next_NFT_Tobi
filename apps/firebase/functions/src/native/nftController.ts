@@ -290,7 +290,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   const digitalItemNft = await prisma.tobiratory_digital_item_nfts.findUnique({
     where: {
       id: id,
-    }
+    },
   });
   if (!digitalItemNft) {
     throw new GiftError(404, "NFT does not found");
