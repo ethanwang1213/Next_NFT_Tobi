@@ -73,7 +73,6 @@ const Showcase = () => {
   const onRemoveItemRequested = (
     id: number,
     itemType: ItemType,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     itemId: number,
   ) => {
     // hide the restore menu
@@ -89,6 +88,7 @@ const Showcase = () => {
       });
       // update remains count for NFT item
     }
+    removeItem({ id: id, itemType: itemType, itemId: itemId });
   };
 
   const [contentWidth, setContentWidth] = useState(0);
@@ -101,6 +101,7 @@ const Showcase = () => {
     placeNewNft,
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
+    removeItem,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
