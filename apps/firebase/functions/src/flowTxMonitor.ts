@@ -81,7 +81,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
       }
     }
   } else if (txType == "giftNFT") {
-try {
+    try {
       await fetchAndUpdateGiftNFT(params.nftId, params.fcmToken);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
@@ -93,7 +93,6 @@ try {
         throw e;
       }
     }
-
   }
 });
 
@@ -206,7 +205,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       nft_id: digitalItemNftId,
       tx_id: txId,
       owner_uuid: to,
-    }
+    },
   });
   pushToDevice(fcmToken, {
     title: "NFTの作成が完了しました",
@@ -301,7 +300,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
   if (!txId) {
     throw new Error("TX_NOT_FOUND");
   }
-  const { withdraw, deposit } = await fetchGiftNFT(txId);
+  const {withdraw, deposit} = await fetchGiftNFT(txId);
   if (withdraw && deposit) {
     const toFlowRef = await prisma.tobiratory_flow_accounts.findFirst({
       where: {
@@ -317,7 +316,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
         nft_id: nftId,
         tx_id: txId,
         owner_uuid: toFlowAccountUuid,
-      }
+      },
     });
     await prisma.tobiratory_digital_item_nfts.update({
       where: {
@@ -339,7 +338,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
       }),
     });
   }
-}
+};
 
 const fetchGiftNFT = async (txId: string) => {
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
@@ -354,9 +353,9 @@ const fetchGiftNFT = async (txId: string) => {
       to: string,
       date: number,
     } | null } = {
-    "withdraw": null,
-    "deposit": null
-  };
+      "withdraw": null,
+      "deposit": null,
+    };
   for (const event of tx.events) {
     if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Withdraw`) {
       result.withdraw = {id: event.data.id, from: event.data.from, date: new Date().getDate()};
@@ -368,7 +367,7 @@ const fetchGiftNFT = async (txId: string) => {
     return result;
   }
   throw Error("TX_FAILED");
-}
+};
 
 const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   const existingFlowJobs = await firestore().collection("flowJobs").where("flowJobId", "==", flowJobId).get();

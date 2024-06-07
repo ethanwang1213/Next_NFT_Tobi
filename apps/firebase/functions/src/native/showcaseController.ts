@@ -692,7 +692,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             stage_type: sample.stageType,
             position: [sample.position.x, sample.position.y, sample.position.z],
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
-          }
+          },
         });
         if (sample.id<0) {
           idPair.push({
@@ -720,7 +720,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             stage_type: nft.stageType,
             position: [nft.position.x, nft.position.y, nft.position.z],
             rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
-          }
+          },
         });
         if (nft.id<0) {
           idPair.push({
@@ -740,6 +740,88 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: idPair,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const throwItemShowcase = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  const {sampleRelationId, nftRelationId}:{sampleRelationId?: number, nftRelationId?: number} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    try {
+      const uid = decodedToken.uid;
+      const admin = await prisma.tobiratory_businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+      });
+      if (!admin) {
+        res.status(401).send({
+          status: "error",
+          data: "not-admin",
+        });
+        return;
+      }
+      const content = await prisma.tobiratory_contents.findFirst({
+        where: {
+          owner_uuid: uid,
+        },
+      });
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-content",
+        });
+        return;
+      }
+      const showcase = await prisma.tobiratory_showcase.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (!showcase) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist-showcase",
+        });
+        return;
+      }
+      if (showcase.owner_uuid != uid) {
+        res.status(403).send({
+          status: "error",
+          data: "not-yours",
+        });
+        return;
+      }
+      if (sampleRelationId) {
+        await prisma.tobiratory_showcase_sample_items.delete({
+          where: {
+            id: sampleRelationId,
+          },
+        });
+      }else if (nftRelationId) {
+        await prisma.tobiratory_showcase_nft_items.delete({
+          where: {
+            id: nftRelationId,
+          },
+        });
+      }
+      res.status(200).send({
+        status: "success",
+        data: "thrown",
       });
     } catch (error) {
       res.status(401).send({
