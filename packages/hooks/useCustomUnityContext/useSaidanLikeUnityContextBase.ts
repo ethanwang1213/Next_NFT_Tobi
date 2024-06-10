@@ -152,11 +152,11 @@ export const useSaidanLikeUnityContextBase = ({
     );
   }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
 
-  const handleDragStarted = useCallback(() => {
+  const handleDragPlacingStarted = useCallback(() => {
     setIsDragging(true);
   }, [setIsDragging]);
 
-  const handleDragEnded = useCallback(() => {
+  const handleDragPlacingEnded = useCallback(() => {
     setIsDragging(false);
   }, [setIsDragging]);
 
@@ -186,8 +186,8 @@ export const useSaidanLikeUnityContextBase = ({
     updateIdValues,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
-    handleDragStarted,
-    handleDragEnded,
+    handleDragPlacingStarted,
+    handleDragPlacingEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
   };
