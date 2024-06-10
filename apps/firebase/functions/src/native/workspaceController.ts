@@ -136,7 +136,8 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
       });
       const itemList = workspaceSamples.map((workspaceSample)=>{
         return {
-          itemId: workspaceSample.id,
+          id: workspaceSample.id,
+          itemId: workspaceSample.sample.id,
           modelType: workspaceSample.sample.digital_item.type,
           modelUrl: workspaceSample.sample.model_url,
           imageUrl: workspaceSample.sample.digital_item.is_default_thumb?workspaceSample.sample.digital_item.default_thumb_url:workspaceSample.sample.digital_item.custom_thumb_url,

@@ -244,6 +244,94 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
   });
 };
 
+export const giftNFT = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {authorization} = req.headers;
+  const {receiveFlowId, fcmToken} = req.body;
+  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      await gift(parseInt(id), uid, receiveFlowId, fcmToken);
+      res.status(200).send({
+        status: "success",
+        data: "NFT is gifting",
+      });
+    } catch (err) {
+      if (err instanceof GiftError) {
+        res.status(err.status).send({
+          status: "error",
+          data: err.message,
+        });
+      } else {
+        res.status(401).send({
+          status: "error",
+          data: err,
+        });
+      }
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    throw error;
+  });
+};
+
+class GiftError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export const gift = async (id: number, uid: string, receiveFlowId: string, fcmToken: string) => {
+  const digitalItemNft = await prisma.tobiratory_digital_item_nfts.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!digitalItemNft) {
+    throw new GiftError(404, "NFT does not found");
+  }
+  if (digitalItemNft.owner_uuid !== uid) {
+    throw new GiftError(401, "You are not owner of this NFT");
+  }
+  const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
+    where: {
+      uuid: receiveFlowId,
+    },
+  });
+  if (!flowAccount) {
+    throw new GiftError(404, "FlowAccount does not found");
+  }
+  if (flowAccount.flow_address === receiveFlowId) {
+    throw new GiftError(401, "You can not gift to yourself");
+  }
+  if (digitalItemNft.gift_status === "gifting") {
+    throw new GiftError(401, "This NFT is gifting now");
+  }
+  const flowJobId = uuidv4();
+  const message = {flowJobId, txType: "giftNFT", params: {
+    tobiratoryAccountUuid: uid,
+    digitalItemNftId: digitalItemNft.id,
+    receiveFlowId,
+    fcmToken,
+  }};
+  const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
+  console.log(`Message ${messageId} published.`);
+  pushToDevice(fcmToken, {
+    title: "NFTをギフトしています",
+    body: "ギフト完了までしばらくお待ちください",
+  }, {
+    body: JSON.stringify({
+      type: "transferBegan",
+      data: {id: id},
+    }),
+  });
+};
+
 export const fetchNftThumb = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {mediaUrl}:{mediaUrl: string} = req.body;

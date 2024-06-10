@@ -57,7 +57,7 @@ import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, ope
 import {adminGetAllNFTs, adminGetBoxData, fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
-import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases, putItemToShowcase, loadMyShowcase, saveMyShowcase} from "./showcaseController";
+import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases, loadMyShowcase, saveMyShowcase, throwItemShowcase} from "./showcaseController";
 import {searchAll, searchContents, searchDigitalItems, searchSaidans, searchUsers} from "./searchController";
 
 const app = express();
@@ -196,10 +196,10 @@ app.get("/admin/showcases/template", getShowcaseTemplate);
 app.post("/admin/showcases", createMyShocase);
 app.get("/admin/showcases", getMyShowcases);
 app.put("/admin/showcases/:id", updateMyShowcase);
-app.put("/admin/showcases/:id/put-item", putItemToShowcase);
 app.delete("/admin/showcases/:id", deleteMyShowcase);
 app.get("/admin/showcases/:id", loadMyShowcase);
 app.post("/admin/showcases/:id", saveMyShowcase);
+app.post("/admin/showcases/:id/throw", throwItemShowcase);
 
 // management content
 app.get("/admin/content", getMyContentInfo);

@@ -55,6 +55,7 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.Sample,
           ...params,
+          secondImageUrl: !!params.secondImageUrl ? params.secondImageUrl : "",
           isDebug: params.isDebug ? params.isDebug : false,
         }),
       );
@@ -73,6 +74,7 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
+          secondImageUrl: "",
           ...params,
           isDebug: params.isDebug ? params.isDebug : false,
         }),
