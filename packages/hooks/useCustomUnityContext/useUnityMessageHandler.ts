@@ -18,8 +18,8 @@ type Props = {
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;
   handleItemThumbnailGenerated?: MessageHandler;
-  handleDragStarted?: () => void;
-  handleDragEnded?: () => void;
+  handleDragPlacingStarted?: () => void;
+  handleDragPlacingEnded?: () => void;
   handleRemoveItemEnabled?: () => void;
   handleRemoveItemDisabled?: () => void;
   handleRemoveItemRequested?: MessageHandler;
@@ -32,8 +32,8 @@ export const useUnityMessageHandler = ({
   handleSceneIsLoaded,
   handleSaveDataGenerated,
   handleItemThumbnailGenerated,
-  handleDragStarted,
-  handleDragEnded,
+  handleDragPlacingStarted,
+  handleDragPlacingEnded,
   handleRemoveItemEnabled,
   handleRemoveItemDisabled,
   handleRemoveItemRequested,
@@ -83,10 +83,10 @@ export const useUnityMessageHandler = ({
           handleRemoveItemRequested?.(msgObj);
           return;
         case UnityMessageType.DragStarted:
-          handleDragStarted?.();
+          handleDragPlacingStarted?.();
           return;
         case UnityMessageType.DragEnded:
-          handleDragEnded?.();
+          handleDragPlacingEnded?.();
           return;
         default:
           return;
@@ -98,8 +98,8 @@ export const useUnityMessageHandler = ({
       handleSceneIsLoaded,
       handleSaveDataGenerated,
       handleItemThumbnailGenerated,
-      handleDragStarted,
-      handleDragEnded,
+      handleDragPlacingStarted,
+      handleDragPlacingEnded,
       handleRemoveItemEnabled,
       handleRemoveItemDisabled,
       handleRemoveItemRequested,
