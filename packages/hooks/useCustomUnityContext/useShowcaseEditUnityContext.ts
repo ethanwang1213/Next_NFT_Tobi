@@ -136,7 +136,7 @@ export const useShowcaseEditUnityContext = ({
   const sendRemovalResult = useCallback(
     (itemType: ItemType, id: number, completed: boolean) => {
       postMessageToUnity(
-        "ClearingResultMessageReceiver",
+        "RemovalResultMessageReceiver",
         JSON.stringify({
           itemType,
           id,
