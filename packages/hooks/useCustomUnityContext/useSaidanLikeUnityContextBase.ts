@@ -55,6 +55,7 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.Sample,
           ...params,
+          secondImageUrl: !!params.secondImageUrl ? params.secondImageUrl : "",
           isDebug: params.isDebug ? params.isDebug : false,
         }),
       );
@@ -73,6 +74,7 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
+          secondImageUrl: "",
           ...params,
           isDebug: params.isDebug ? params.isDebug : false,
         }),
@@ -88,11 +90,10 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.Sample,
           ...itemData,
-          itemMenuX,
         }),
       );
     },
-    [postMessageToUnity, itemMenuX],
+    [postMessageToUnity],
   );
 
   const placeNewNftWithDrag = useCallback(
@@ -106,12 +107,12 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
+          secondImageUrl: "",
           ...itemData,
-          itemMenuX,
         }),
       );
     },
-    [postMessageToUnity, itemMenuX],
+    [postMessageToUnity],
   );
 
   const removeItem = useCallback(
@@ -150,11 +151,11 @@ export const useSaidanLikeUnityContextBase = ({
     );
   }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
 
-  const handleDragStarted = useCallback(() => {
+  const handleDragPlacingStarted = useCallback(() => {
     setIsDragging(true);
   }, [setIsDragging]);
 
-  const handleDragEnded = useCallback(() => {
+  const handleDragPlacingEnded = useCallback(() => {
     setIsDragging(false);
   }, [setIsDragging]);
 
@@ -184,8 +185,8 @@ export const useSaidanLikeUnityContextBase = ({
     updateIdValues,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
-    handleDragStarted,
-    handleDragEnded,
+    handleDragPlacingStarted,
+    handleDragPlacingEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
   };
