@@ -90,11 +90,10 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.Sample,
           ...itemData,
-          itemMenuX,
         }),
       );
     },
-    [postMessageToUnity, itemMenuX],
+    [postMessageToUnity],
   );
 
   const placeNewNftWithDrag = useCallback(
@@ -108,12 +107,12 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
+          secondImageUrl: "",
           ...itemData,
-          itemMenuX,
         }),
       );
     },
-    [postMessageToUnity, itemMenuX],
+    [postMessageToUnity],
   );
 
   const removeItem = useCallback(
