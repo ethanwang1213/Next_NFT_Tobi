@@ -49,6 +49,7 @@ function centerAspectCrop(
 
 const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
+  const imgWrapperRef = useRef<HTMLDivElement>(null);
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>({
     unit: "%", // Can be 'px' or '%'
@@ -57,7 +58,6 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     width: 100,
     height: 100,
   });
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [rotate, setRotate] = useState(0);
   const [aspect, setAspect] = useState<number | undefined>(undefined);
 
@@ -70,8 +70,14 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
 
   const imageLoadHandler = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
+      if (imgWrapperRef.current == null) return;
+
       const { width, height } = e.currentTarget;
-      setCompletedCrop(convertToPixelCrop(crop, width, height));
+      const initialCrop = convertToPixelCrop(crop, width, height);
+      initialCrop.x = (imgWrapperRef.current.clientWidth - width) / 2;
+      initialCrop.y = (imgWrapperRef.current.clientHeight - height) / 2;
+
+      setCrop(initialCrop);
     },
     [crop],
   );
@@ -82,18 +88,47 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       if (imgRef.current) {
         const { width, height } = imgRef.current;
         const newCrop = centerAspectCrop(width, height, value);
-        setCrop(newCrop);
-        // Updates the preview
-        setCompletedCrop(convertToPixelCrop(newCrop, width, height));
+        const newPixelCrop = convertToPixelCrop(
+          newCrop,
+          imgWrapperRef.current.clientWidth,
+          imgWrapperRef.current.clientHeight,
+        );
+        setCrop(newPixelCrop);
       }
     }
   }, []);
 
   const cropHandler = useCallback(async () => {
     const image = imgRef.current;
-    if (!image || !completedCrop) {
+    if (!image || crop.unit === "%") {
       throw new Error("Crop canvas does not exist");
     }
+
+    // Create a temporary canvas to draw the rotated image
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d");
+
+    if (!tempCtx) {
+      throw new Error("No 2d context for temporary canvas");
+    }
+
+    // Calculate the bounding box of the rotated image
+    const angleInRadians = (rotate * Math.PI) / 180;
+    const sin = Math.abs(Math.sin(angleInRadians));
+    const cos = Math.abs(Math.cos(angleInRadians));
+    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+
+    tempCanvas.width = rotatedWidth;
+    tempCanvas.height = rotatedHeight;
+
+    // Translate and rotate the temporary canvas
+    tempCtx.translate(rotatedWidth / 2, rotatedHeight / 2);
+    tempCtx.rotate(angleInRadians);
+    tempCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
+
+    // Draw the original image onto the temporary canvas
+    tempCtx.drawImage(image, 0, 0);
 
     // This will size relative to the uploaded image
     // size. If you want to size according to what they
@@ -101,25 +136,44 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
 
-    const offscreen = new OffscreenCanvas(
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
-    );
+    const offscreen = new OffscreenCanvas(crop.width, crop.height);
     const ctx = offscreen.getContext("2d");
     if (!ctx) {
       throw new Error("No 2d context");
     }
 
+    let sx, sy, sw, sh, dx, dy;
+    sx = (imgWrapperRef.current.clientWidth - rotatedWidth / scaleX) / 2;
+    sy = (imgWrapperRef.current.clientHeight - rotatedHeight / scaleY) / 2;
+    sw = rotatedWidth / scaleX;
+    sh = rotatedHeight / scaleY;
+    sw = Math.min(sx + sw, crop.x + crop.width) - Math.max(sx, crop.x);
+    sh = Math.min(sy + sh, crop.y + crop.height) - Math.max(sy, crop.y);
+    if (sx < crop.x) {
+      sx = crop.x - sx;
+      dx = 0;
+    } else {
+      sx = 0;
+      dx = sx - crop.x;
+    }
+    if (sy < crop.y) {
+      sy = crop.y - sy;
+      dy = 0;
+    } else {
+      sy = 0;
+      dy = sy - crop.y;
+    }
+
     ctx.drawImage(
-      image,
-      completedCrop.x * scaleX,
-      completedCrop.y * scaleY,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
-      0,
-      0,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
+      tempCanvas,
+      sx * scaleX,
+      sy * scaleY,
+      sw * scaleX,
+      sw * scaleY,
+      dx,
+      dy,
+      sw,
+      sh,
     );
 
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
@@ -132,17 +186,19 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       URL.revokeObjectURL(blobUrlRef.current);
     }
     blobUrlRef.current = URL.createObjectURL(blob);
-  }, [completedCrop]);
+  }, [crop, rotate]);
 
   const generateClickHandler = useCallback(async () => {
     setIsGenerating(true);
+
+    await cropHandler();
 
     props.generateHandler(
       props.materialImage.id,
       blobUrlRef.current,
       ModelType.Poster,
     );
-  }, [props]);
+  }, [props, cropHandler]);
 
   return (
     <div className="h-full relative">
@@ -153,22 +209,34 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       )}
       {!props.generateError ? (
         <div>
-          <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={aspect}>
-            <NextImage
-              ref={imgRef}
-              src={props.materialImage.image}
-              alt="crop image"
-              width={400}
-              height={352}
-              style={{
-                maxWidth: 400,
-                maxHeight: 352,
-                transform: `rotate(${rotate}deg)`,
-                objectFit: "contain",
-              }}
-              onLoad={imageLoadHandler}
-              crossOrigin="anonymous"
-            />
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => setCrop(c)}
+            aspect={aspect}
+            keepSelection={true}
+          >
+            <div
+              className="w-[400px] h-[352px] flex justify-center items-center"
+              ref={imgWrapperRef}
+            >
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={imgRef}
+                  src={props.materialImage.image}
+                  alt="crop image"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    transform: `rotate(${rotate}deg)`,
+                    objectFit: "contain",
+                  }}
+                  onLoad={imageLoadHandler}
+                  crossOrigin="anonymous"
+                  draggable={false}
+                />
+              }
+            </div>
           </ReactCrop>
           <div className="mt-6 flex flex-col items-center">
             <div className="flex gap-4">
