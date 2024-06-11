@@ -12,6 +12,7 @@ type MessageDestination =
   | "RemoveSingleItemMessageReceiver"
   | "RemoveItemsMessageReceiver"
   | "RemoveRecentItemMessageReceiver"
+  | "RemovalResultMessageReceiver"
   | "ItemMenuXMessageReceiver"
   | "UpdateItemIdMessageReceiver";
 

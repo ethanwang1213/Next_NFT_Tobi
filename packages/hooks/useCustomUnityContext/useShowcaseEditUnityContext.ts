@@ -16,6 +16,12 @@ import {
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
+type SendRemovalResult = (
+  itemType: ItemType,
+  id: number,
+  completed: boolean,
+) => void;
+
 type Props = {
   itemMenuX?: number;
   onSaveDataGenerated?: (
@@ -25,9 +31,10 @@ type Props = {
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onRemoveItemRequested?: (
-    id: number,
     itemType: ItemType,
+    id: number,
     itemId: number,
+    sendRemovalResult: SendRemovalResult,
   ) => void;
 };
 
@@ -126,6 +133,20 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  const sendRemovalResult = useCallback(
+    (itemType: ItemType, id: number, completed: boolean) => {
+      postMessageToUnity(
+        "ClearingResultMessageReceiver",
+        JSON.stringify({
+          itemType,
+          id,
+          completed,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
       if (!onSaveDataGenerated) return;
@@ -174,17 +195,18 @@ export const useShowcaseEditUnityContext = ({
       if (!onRemoveItemRequested) return;
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
-        id: number;
         itemType: ItemType;
+        id: number;
         itemId: number;
       };
 
       if (!messageBody) return;
 
       onRemoveItemRequested(
-        messageBody.id,
         messageBody.itemType,
+        messageBody.id,
         messageBody.itemId,
+        sendRemovalResult,
       );
     },
     [onRemoveItemRequested],
