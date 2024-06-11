@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 export default function Index() {
   const [showDetailView, setShowDetailView] = useState(false);
   const [showListView, setShowListView] = useState(false);
+  const [showRestoreMenu, setShowRestoreMenu] = useState(false);
   const sampleCreateDialogRef = useRef(null);
   const shortcutDialogRef = useRef(null);
 
@@ -81,17 +82,55 @@ export default function Index() {
     }
   };
 
+  const onRemoveSampleEnabled = () => {
+    setShowRestoreMenu(true);
+  };
+
+  const onRemoveSampleDisabled = () => {
+    setShowRestoreMenu(false);
+  };
+
+  const onRemoveSampleRequested = (id: number, itemId: number) => {
+    // hide the restore menu
+    setShowRestoreMenu(false);
+    storeWorkspaceData(`${workspaceAPIUrl}/throw`, {
+      id: id,
+    });
+    removeSample({ id: id, itemId: itemId });
+  };
+
+  const [contentWidth, setContentWidth] = useState(0);
+
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      setContentWidth(document.querySelector("#workspace_view").clientWidth);
+    };
+
+    // Update container width on mount and window resize
+    updateContainerWidth();
+    window.addEventListener("resize", updateContainerWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateContainerWidth);
+    };
+  }, []);
+
   const {
     unityProvider,
     setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
     placeNewSampleWithDrag,
+    removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,
   } = useWorkspaceUnityContext({
+    sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
+    onRemoveSampleEnabled,
+    onRemoveSampleDisabled,
+    onRemoveSampleRequested,
   });
 
   useEffect(() => {
@@ -228,7 +267,7 @@ export default function Index() {
   );
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative" id="workspace_view">
       <WorkspaceUnity unityProvider={unityProvider} />
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
         <WorkspaceSampleCreateDialog
@@ -257,6 +296,7 @@ export default function Index() {
           selectHandler={sampleSelectHandler}
           deleteHandler={deleteSamplesHandler}
           dragHandler={sampleDragHandler}
+          showRestoreMenu={showRestoreMenu}
         />
         <div
           className="absolute left-[50%] bottom-12 h-12 flex justify-center"
@@ -335,6 +375,20 @@ export default function Index() {
             alt="icon button"
           />
         </div>
+        {showRestoreMenu && !showListView && (
+          <div
+            className="absolute w-[56px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+              flex flex-col justify-center items-center z-10 select-none"
+          >
+            <Image
+              width={48}
+              height={48}
+              src="/admin/images/icon/keyboard_return.svg"
+              alt="return icon"
+              draggable={false}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
