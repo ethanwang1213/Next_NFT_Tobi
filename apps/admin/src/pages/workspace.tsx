@@ -138,7 +138,7 @@ export default function Index() {
         itemId: sample.id,
         modelUrl: sample.modelUrl,
         imageUrl: materials[materialIndex].image,
-        modelType: sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+        modelType: sample.type as ModelType,
       });
     },
     [materials, placeNewSample],
@@ -162,8 +162,7 @@ export default function Index() {
         itemId: samples[index].id,
         modelUrl: samples[index].modelUrl,
         imageUrl: materials[materialIndex].image,
-        modelType:
-          samples[index].type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+        modelType: samples[index].type as ModelType,
       });
     },
     [samples, materials, placeNewSampleWithDrag],
