@@ -31,6 +31,8 @@ export const useSaidanLikeUnityContextBase = ({
   } = useCustomUnityContextBase({ sceneType });
 
   const postMessageToLoadData = useCallback(() => {
+    setIsSaidanSceneLoaded(true);
+
     if (!loadData || loadData.saidanId === currentSaidanId) {
       console.log("loadData is null or same saidanId" + currentSaidanId);
       return;
@@ -41,7 +43,6 @@ export const useSaidanLikeUnityContextBase = ({
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
-    setIsSaidanSceneLoaded(true);
   }, [loadData, currentSaidanId, postMessageToUnity]);
 
   const requestSaveData = () => {
@@ -90,11 +91,10 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.Sample,
           ...itemData,
-          itemMenuX,
         }),
       );
     },
-    [postMessageToUnity, itemMenuX],
+    [postMessageToUnity],
   );
 
   const placeNewNftWithDrag = useCallback(
@@ -108,16 +108,16 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
+          secondImageUrl: "",
           ...itemData,
-          itemMenuX,
         }),
       );
     },
-    [postMessageToUnity, itemMenuX],
+    [postMessageToUnity],
   );
 
   const removeItem = useCallback(
-    (itemInfo: { id: number; itemType: ItemType; itemId: number }) => {
+    (itemInfo: { itemType: ItemType; id: number; itemId: number }) => {
       postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
         JSON.stringify(itemInfo),
@@ -152,11 +152,11 @@ export const useSaidanLikeUnityContextBase = ({
     );
   }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
 
-  const handleDragStarted = useCallback(() => {
+  const handleDragPlacingStarted = useCallback(() => {
     setIsDragging(true);
   }, [setIsDragging]);
 
-  const handleDragEnded = useCallback(() => {
+  const handleDragPlacingEnded = useCallback(() => {
     setIsDragging(false);
   }, [setIsDragging]);
 
@@ -186,8 +186,8 @@ export const useSaidanLikeUnityContextBase = ({
     updateIdValues,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
-    handleDragStarted,
-    handleDragEnded,
+    handleDragPlacingStarted,
+    handleDragPlacingEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
   };

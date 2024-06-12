@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import {
+  SendItemRemovalResult,
   ShowcaseLoadData,
   ShowcaseSaveData,
   UpdateIdValues,
@@ -25,9 +26,10 @@ type Props = {
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onRemoveItemRequested?: (
-    id: number,
     itemType: ItemType,
+    id: number,
     itemId: number,
+    sendItemRemovalResult: SendItemRemovalResult,
   ) => void;
 };
 
@@ -56,8 +58,8 @@ export const useShowcaseEditUnityContext = ({
     updateIdValues,
     handleSimpleMessage,
     handleSceneIsLoaded,
-    handleDragStarted,
-    handleDragEnded,
+    handleDragPlacingStarted,
+    handleDragPlacingEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
   } = useSaidanLikeUnityContextBase({
@@ -126,6 +128,20 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  const sendRemovalResult = useCallback(
+    (itemType: ItemType, id: number, completed: boolean) => {
+      postMessageToUnity(
+        "RemovalResultMessageReceiver",
+        JSON.stringify({
+          itemType,
+          id,
+          completed,
+        }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
       if (!onSaveDataGenerated) return;
@@ -174,17 +190,18 @@ export const useShowcaseEditUnityContext = ({
       if (!onRemoveItemRequested) return;
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
-        id: number;
         itemType: ItemType;
+        id: number;
         itemId: number;
       };
 
       if (!messageBody) return;
 
       onRemoveItemRequested(
-        messageBody.id,
         messageBody.itemType,
+        messageBody.id,
         messageBody.itemId,
+        sendRemovalResult,
       );
     },
     [onRemoveItemRequested],
@@ -196,8 +213,8 @@ export const useShowcaseEditUnityContext = ({
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
-    handleDragStarted,
-    handleDragEnded,
+    handleDragPlacingStarted,
+    handleDragPlacingEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested,

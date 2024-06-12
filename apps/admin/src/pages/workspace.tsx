@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
@@ -11,7 +11,8 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { ModelType } from "types/unityTypes";
 import { SampleItem } from "ui/types/adminTypes";
-import { WorkspaceSaveData } from "types/adminTypes";
+import { UpdateIdValues, WorkspaceSaveData } from "types/adminTypes";
+import { useLeavePage } from "contexts/LeavePageProvider";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -25,8 +26,9 @@ export default function Index() {
 
   const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
 
-  // const workspaceAPIUrl = "native/my/workspace";
-  // const { data: workspaceData } = useRestfulAPI(workspaceAPIUrl);
+  const workspaceAPIUrl = "native/my/workspace";
+  const { data: workspaceData, postData: storeWorkspaceData } =
+    useRestfulAPI(workspaceAPIUrl);
 
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
 
@@ -48,8 +50,17 @@ export default function Index() {
   const generateMaterialImage = useRef(null);
   const generateModelUrl = useRef(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  const onSaveDataGenerated = (workspaceSaveData: WorkspaceSaveData) => {};
+  const onSaveDataGenerated = async (
+    workspaceSaveData: WorkspaceSaveData,
+    updateIdValues: UpdateIdValues,
+  ) => {
+    const updateIds = await storeWorkspaceData(workspaceAPIUrl, {
+      itemList: workspaceSaveData.workspaceItemList,
+    });
+    if (updateIds.length > 0) {
+      updateIdValues({ idPairs: updateIds });
+    }
+  };
 
   const onItemThumbnailGenerated = async (thumbnailBase64: string) => {
     const sampleThumb = await uploadImage(
@@ -72,19 +83,44 @@ export default function Index() {
 
   const {
     unityProvider,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setLoadData,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    removeSample,
+    placeNewSampleWithDrag,
     removeSamplesByItemId,
     requestItemThumbnail,
   } = useWorkspaceUnityContext({
     onSaveDataGenerated,
     onItemThumbnailGenerated,
   });
+
+  useEffect(() => {
+    if (workspaceData) {
+      setWorkspaceData(workspaceData);
+    }
+  }, [workspaceData, setWorkspaceData]);
+
+  const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
+  useEffect(() => {
+    // Initialize timer
+    const requestSaveDataTimer = setInterval(() => {
+      requestSaveData();
+    }, requestSaveDataInterval);
+
+    return () => {
+      clearInterval(requestSaveDataTimer);
+    };
+  }, [requestSaveData, requestSaveDataInterval]);
+
+  const { leavingPage, setLeavingPage } = useLeavePage();
+
+  useEffect(() => {
+    if (leavingPage) {
+      // Request save data to Unity
+      requestSaveData();
+      setLeavingPage(false); // Reset the state
+    }
+  }, [leavingPage, setLeavingPage, requestSaveData]);
 
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
@@ -102,7 +138,7 @@ export default function Index() {
         itemId: sample.id,
         modelUrl: sample.modelUrl,
         imageUrl: materials[materialIndex].image,
-        modelType: sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+        modelType: sample.type as ModelType,
       });
     },
     [materials, placeNewSample],
@@ -114,6 +150,22 @@ export default function Index() {
       placeSampleHandler(samples[index]);
     },
     [samples, placeSampleHandler],
+  );
+
+  const sampleDragHandler = useCallback(
+    (index: number) => {
+      setSelectedSampleItem(samples[index].id);
+      const materialIndex = materials.findIndex(
+        (value) => value.id === samples[index].materialId,
+      );
+      placeNewSampleWithDrag({
+        itemId: samples[index].id,
+        modelUrl: samples[index].modelUrl,
+        imageUrl: materials[materialIndex].image,
+        modelType: samples[index].type as ModelType,
+      });
+    },
+    [samples, materials, placeNewSampleWithDrag],
   );
 
   const deleteSamplesHandler = useCallback(
@@ -203,6 +255,7 @@ export default function Index() {
           }}
           selectHandler={sampleSelectHandler}
           deleteHandler={deleteSamplesHandler}
+          dragHandler={sampleDragHandler}
         />
         <div
           className="absolute left-[50%] bottom-12 h-12 flex justify-center"
