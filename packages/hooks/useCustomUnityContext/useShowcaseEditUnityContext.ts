@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import {
+  SendItemRemovalResult,
   ShowcaseLoadData,
   ShowcaseSaveData,
   UpdateIdValues,
@@ -16,12 +17,6 @@ import {
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
-type SendRemovalResult = (
-  itemType: ItemType,
-  id: number,
-  completed: boolean,
-) => void;
-
 type Props = {
   itemMenuX?: number;
   onSaveDataGenerated?: (
@@ -34,7 +29,7 @@ type Props = {
     itemType: ItemType,
     id: number,
     itemId: number,
-    sendRemovalResult: SendRemovalResult,
+    sendItemRemovalResult: SendItemRemovalResult,
   ) => void;
 };
 
