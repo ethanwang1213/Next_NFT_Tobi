@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import {
+  SendSampleRemovalResult,
   UpdateIdValues,
   WorkspaceLoadData,
   WorkspaceSaveData,
@@ -16,8 +17,6 @@ import { useUnityMessageHandler } from "./useUnityMessageHandler";
 
 type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
-type SendRemovalResult = (id: number, completed: boolean) => void;
-
 type Props = {
   sampleMenuX?: number;
   onSaveDataGenerated?: (
@@ -30,7 +29,7 @@ type Props = {
   onRemoveSampleRequested?: (
     id: number,
     itemId: number,
-    sendRemovalResult: SendRemovalResult,
+    sendSampleRemovalResult: SendSampleRemovalResult,
   ) => void;
 };
 
