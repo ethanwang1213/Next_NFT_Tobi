@@ -217,16 +217,14 @@ const Showcase = () => {
       if (!isDrag)
         placeNewSample({
           itemId: sample.id,
-          modelType:
-            sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
           imageUrl: materialData[materialImageIndex].image,
         });
       else
         placeNewSampleWithDrag({
           itemId: sample.id,
-          modelType:
-            sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
           imageUrl: materialData[materialImageIndex].image,
         });
@@ -240,16 +238,14 @@ const Showcase = () => {
       if (!isDrag)
         placeNewNft({
           itemId: nft.id,
-          modelType:
-            nft.modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
         });
       else
         placeNewNftWithDrag({
           itemId: nft.id,
-          modelType:
-            nft.modelType == 1 ? ModelType.Poster : ModelType.AcrylicStand,
+          modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
         });
@@ -425,8 +421,8 @@ const Showcase = () => {
           </div>
         )}
         <ShowcaseNameEditDialog
-          showcaseTitle={showcaseData ? showcaseData.title : ""}
-          showcaseDescription={showcaseData ? showcaseData.description : ""}
+          showcaseTitle={showcaseData?.title ?? ""}
+          showcaseDescription={showcaseData?.description ?? ""}
           dialogRef={dialogRef}
           changeHandler={changeShowcaseDetail}
         />
