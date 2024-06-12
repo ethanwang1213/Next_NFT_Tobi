@@ -1,5 +1,6 @@
 import {
   ItemSaveData,
+  ItemType,
   NftLoadData,
   SampleLoadData,
   ShowcaseType,
@@ -115,3 +116,10 @@ export type IdPairs = {
 }[];
 
 export type UpdateIdValues = ({ idPairs }: { idPairs: IdPairs }) => void;
+
+export type SendSampleRemovalResult = (id: number, completed: boolean) => void;
+export type SendItemRemovalResult = (
+  itemType: ItemType,
+  id: number,
+  completed: boolean,
+) => void;

@@ -54,7 +54,15 @@ import {
 } from "./saidanController";
 import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
-import {adminGetAllNFTs, adminGetBoxData, fetchNftModel, fetchNftThumb, getNftInfo, mintNFT} from "./nftController";
+import {
+  adminGetAllNFTs,
+  adminGetBoxData,
+  fetchNftModel,
+  fetchNftThumb,
+  getNftInfo,
+  giftNFT,
+  mintNFT
+} from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
 import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases, loadMyShowcase, saveMyShowcase, throwItemShowcase} from "./showcaseController";
@@ -160,7 +168,7 @@ app.post("/my/nfts/:id/listing", dummyResponse);
 app.get("/items/:id", getSampleInfo);
 app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
-app.post("/my/nfts/:id/gift", dummyResponse);
+app.post("/my/nfts/:id/gift", giftNFT);
 app.post("/my/nfts/move", moveNFT);
 app.post("/my/nfts/delete", deleteNFT);
 app.post("/address/decoder", userInfoFromAddress);

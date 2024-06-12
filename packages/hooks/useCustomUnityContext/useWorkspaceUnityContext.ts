@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import {
+  SendSampleRemovalResult,
   UpdateIdValues,
   WorkspaceLoadData,
   WorkspaceSaveData,
@@ -25,7 +26,11 @@ type Props = {
   onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
   onRemoveSampleEnabled?: () => void;
   onRemoveSampleDisabled?: () => void;
-  onRemoveSampleRequested?: (id: number, itemId: number) => void;
+  onRemoveSampleRequested?: (
+    id: number,
+    itemId: number,
+    sendSampleRemovalResult: SendSampleRemovalResult,
+  ) => void;
 };
 
 export const useWorkspaceUnityContext = ({
@@ -106,8 +111,8 @@ export const useWorkspaceUnityContext = ({
   const removeSample = useCallback(
     ({ id, itemId }: { id: number; itemId: number }) => {
       removeItem({
-        id: id,
         itemType: ItemType.Sample,
+        id,
         itemId,
       });
     },
@@ -123,6 +128,20 @@ export const useWorkspaceUnityContext = ({
       postMessageToUnity(
         "RemoveItemsMessageReceiver",
         JSON.stringify({ itemRefList: list }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const sendRemovalResult = useCallback(
+    (id: number, completed: boolean) => {
+      postMessageToUnity(
+        "RemovalResultMessageReceiver",
+        JSON.stringify({
+          itemType: ItemType.Sample,
+          id,
+          completed,
+        }),
       );
     },
     [postMessageToUnity],
@@ -184,13 +203,18 @@ export const useWorkspaceUnityContext = ({
       if (!onRemoveSampleRequested) return;
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemType: ItemType;
         id: number;
         itemId: number;
       };
 
       if (!messageBody) return;
 
-      onRemoveSampleRequested(messageBody.id, messageBody.itemId);
+      onRemoveSampleRequested(
+        messageBody.id,
+        messageBody.itemId,
+        sendRemovalResult,
+      );
     },
     [onRemoveSampleRequested],
   );
