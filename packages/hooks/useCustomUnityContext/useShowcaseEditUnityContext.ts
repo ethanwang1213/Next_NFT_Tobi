@@ -129,6 +129,7 @@ export const useShowcaseEditUnityContext = ({
           position: { x: 0, y: 0, z: 0 },
           rotation: { x: 0, y: 0, z: 0 },
         },
+        saidanSettings: loadData.settings,
         isDebug: loadData.isDebug ? loadData.isDebug : false,
       };
     },
@@ -208,6 +209,7 @@ export const useShowcaseEditUnityContext = ({
           sampleItemList,
           nftItemList,
           thumbnailImageBase64: messageBody.saidanThumbnailBase64,
+          settings: messageBody.saidanSettings,
         },
         updateIdValues,
       );
