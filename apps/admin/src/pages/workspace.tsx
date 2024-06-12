@@ -11,7 +11,11 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { ModelType } from "types/unityTypes";
 import { SampleItem } from "ui/types/adminTypes";
-import { UpdateIdValues, WorkspaceSaveData } from "types/adminTypes";
+import {
+  SendSampleRemovalResult,
+  UpdateIdValues,
+  WorkspaceSaveData,
+} from "types/adminTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
 
 export const metadata: Metadata = {
@@ -90,13 +94,17 @@ export default function Index() {
     setShowRestoreMenu(false);
   };
 
-  const onRemoveSampleRequested = (id: number, itemId: number) => {
+  const onRemoveSampleRequested = async (
+    id: number,
+    itemId: number,
+    sendSampleRemovalResult: SendSampleRemovalResult,
+  ) => {
     // hide the restore menu
     setShowRestoreMenu(false);
-    storeWorkspaceData(`${workspaceAPIUrl}/throw`, {
+    const result = await storeWorkspaceData(`${workspaceAPIUrl}/throw`, {
       id: id,
     });
-    removeSample({ id: id, itemId: itemId });
+    sendSampleRemovalResult(id, result !== false);
   };
 
   const [contentWidth, setContentWidth] = useState(0);
@@ -121,7 +129,6 @@ export default function Index() {
     requestSaveData,
     placeNewSample,
     placeNewSampleWithDrag,
-    removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,
   } = useWorkspaceUnityContext({
