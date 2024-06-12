@@ -97,6 +97,24 @@ export const useWorkspaceUnityContext = ({
           z: 0,
         },
       },
+      saidanSettings: {
+        wallpaper: {
+          tint: "",
+        },
+        floor: {
+          tint: "",
+        },
+        lighting: {
+          sceneLight: {
+            tint: "",
+            brightness: -1,
+          },
+          pointLight: {
+            tint: "",
+            brightness: -1,
+          },
+        },
+      },
       isDebug: loadData.isDebug ? loadData.isDebug : false,
     };
   }, []);

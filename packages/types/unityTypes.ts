@@ -73,3 +73,29 @@ export type ItemSaveData = Omit<
   | "itemMeterHeight"
   | "isDebug"
 >;
+
+type WallpaperSettings = {
+  tint: string;
+};
+
+type FloorSettings = {
+  tint: string;
+};
+
+type LightParams = {
+  tint: string;
+  brightness: number;
+};
+
+type LightSettings = {
+  sceneLight: LightParams;
+  pointLight: LightParams;
+};
+
+export type ShowcaseSettings = {
+  wallpaper: WallpaperSettings;
+  floor: FloorSettings;
+  lighting: LightSettings;
+};
+
+export type SaidanSettings = ShowcaseSettings;
