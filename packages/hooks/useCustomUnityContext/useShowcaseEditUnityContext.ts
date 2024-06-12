@@ -35,6 +35,30 @@ type Props = {
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
+type WallpaperSettings = {
+  tint: string;
+};
+
+type FloorSettings = {
+  tint: string;
+};
+
+type LightParams = {
+  tint: string;
+  brightness: number;
+};
+
+type LightSettings = {
+  sceneLight: LightParams;
+  pointLight: LightParams;
+};
+
+type ShowcaseSettings = {
+  wallpaper: WallpaperSettings;
+  floor: FloorSettings;
+  lighting: LightSettings;
+};
+
 export const useShowcaseEditUnityContext = ({
   itemMenuX = -1,
   onSaveDataGenerated,
@@ -132,11 +156,17 @@ export const useShowcaseEditUnityContext = ({
     (itemType: ItemType, id: number, completed: boolean) => {
       postMessageToUnity(
         "RemovalResultMessageReceiver",
-        JSON.stringify({
-          itemType,
-          id,
-          completed,
-        }),
+        JSON.stringify({ itemType, id, completed }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const updateSettings = useCallback(
+    ({ wallpaper, floor, lighting }: ShowcaseSettings) => {
+      postMessageToUnity(
+        "UpdateSettingsMessageReceiver",
+        JSON.stringify({ wallpaper, floor, lighting }),
       );
     },
     [postMessageToUnity],
@@ -231,5 +261,6 @@ export const useShowcaseEditUnityContext = ({
     placeNewNftWithDrag,
     removeItem,
     removeRecentItem,
+    updateSettings,
   };
 };
