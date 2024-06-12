@@ -13,7 +13,7 @@ import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
-import { ShowcaseSaveData } from "types/adminTypes";
+import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
 import { ItemType, ModelType } from "types/unityTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
@@ -59,7 +59,7 @@ const Showcase = () => {
       nftItemList: showcaseSaveData.nftItemList,
       thumbnailImage: thumbnailUrl,
     });
-    updateIdValues({ data: IdPairs });
+    updateIdValues({ idPairs: IdPairs });
   };
 
   const onRemoveItemEnabled = () => {
@@ -70,25 +70,31 @@ const Showcase = () => {
     setShowRestoreMenu(false);
   };
 
-  const onRemoveItemRequested = (
-    id: number,
+  const onRemoveItemRequested = async (
     itemType: ItemType,
+    uniqueId: number,
     itemId: number,
+    sendItemRemovalResult: SendItemRemovalResult,
   ) => {
     // hide the restore menu
     setShowRestoreMenu(false);
+    let postResult;
     if (itemType === ItemType.Sample) {
-      postData(`${apiUrl}/${id}/throw`, {
-        sampleRelationId: id,
+      postResult = await postData(`${apiUrl}/${id}/throw`, {
+        sampleRelationId: uniqueId,
       });
     }
     if (itemType === ItemType.DigitalItemNft) {
-      postData(`${apiUrl}/${id}/throw`, {
-        nftRelationId: id,
+      postResult = await postData(`${apiUrl}/${id}/throw`, {
+        nftRelationId: uniqueId,
       });
       // update remains count for NFT item
     }
-    removeItem({ id: id, itemType: itemType, itemId: itemId });
+    if (postResult == "thrown") {
+      sendItemRemovalResult(itemType, uniqueId, true);
+    } else {
+      sendItemRemovalResult(itemType, uniqueId, false);
+    }
   };
 
   const [contentWidth, setContentWidth] = useState(0);
@@ -101,7 +107,6 @@ const Showcase = () => {
     placeNewNft,
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
-    removeItem,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
