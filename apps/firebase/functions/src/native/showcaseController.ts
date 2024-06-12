@@ -714,7 +714,6 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
           },
           create: {
-            id: nft.id,
             showcase_id: isShowcase.id,
             nft_id: nft.itemId,
             stage_type: nft.stageType,
@@ -812,7 +811,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
             id: sampleRelationId,
           },
         });
-      }else if (nftRelationId) {
+      } else if (nftRelationId) {
         await prisma.tobiratory_showcase_nft_items.delete({
           where: {
             id: nftRelationId,
