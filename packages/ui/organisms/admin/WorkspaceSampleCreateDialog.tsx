@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
+import MaterialImageRotateComponent from "ui/organisms/admin/MaterialImageRotate";
 import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect";
 import RoadMapComponent from "ui/organisms/admin/SampleCreateRoadmap";
 import SampleTypeSelectComponent from "ui/organisms/admin/SampleTypeSelect";
@@ -99,7 +100,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
 
           case 2:
             return (
-              <MaterialImageCropComponent
+              <MaterialImageRotateComponent
                 materialImage={materialImage}
                 cropHandler={(image: string) =>
                   setMaterialImage({ id: 0, image: image })
@@ -125,7 +126,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
 
           case 4:
             return (
-              <MaterialImageCropComponent
+              <MaterialImageRotateComponent
                 materialImage={materialImage2}
                 cropHandler={(image: string) =>
                   setMaterialImage({ id: 0, image: image })
