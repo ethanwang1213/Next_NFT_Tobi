@@ -26,26 +26,6 @@ type Props = {
   generateError: boolean;
 };
 
-function centerAspectCrop(
-  mediaWidth: number,
-  mediaHeight: number,
-  aspect: number,
-) {
-  return centerCrop(
-    makeAspectCrop(
-      {
-        unit: "%",
-        width: 100,
-      },
-      aspect,
-      mediaWidth,
-      mediaHeight,
-    ),
-    mediaWidth,
-    mediaHeight,
-  );
-}
-
 const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const blobUrlRef = useRef("");
@@ -71,8 +51,12 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
   const imageLoadHandler = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
       const { width, height } = e.currentTarget;
-      setCompletedCrop(convertToPixelCrop(crop, width, height));
-      setCrop(convertToPixelCrop(crop, width, height));
+      const initialCrop = convertToPixelCrop(crop, width, height);
+      initialCrop.x = (400 - width) / 2;
+      initialCrop.y = (352 - height) / 2;
+
+      setCompletedCrop(initialCrop);
+      setCrop(initialCrop);
     },
     [crop],
   );
@@ -83,81 +67,71 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
       throw new Error("Crop canvas does not exist");
     }
 
-    // // This will size relative to the uploaded image
-    // // size. If you want to size according to what they
-    // // are looking at on screen, remove scaleX + scaleY
-    // const scaleX = image.naturalWidth / image.width;
-    // const scaleY = image.naturalHeight / image.height;
+    // Create a temporary canvas to draw the rotated image
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d");
 
-    // const offscreen = new OffscreenCanvas(
-    //   completedCrop.width,
-    //   completedCrop.height,
-    // );
-    // const ctx = offscreen.getContext("2d");
-    // if (!ctx) {
-    //   throw new Error("No 2d context");
-    // }
-
-    // ctx.drawImage(
-    //   image,
-    //   completedCrop.x * scaleX,
-    //   completedCrop.y * scaleY,
-    //   completedCrop.width * scaleX,
-    //   completedCrop.height * scaleY,
-    //   0,
-    //   0,
-    //   completedCrop.width,
-    //   completedCrop.height,
-    // );
-
-    // // You might want { type: "image/jpeg", quality: <0 to 1> } to
-    // // reduce image size
-    // const blob = await offscreen.convertToBlob({
-    //   type: "image/png",
-    // });
-
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) {
-      throw new Error("No 2d context");
+    if (!tempCtx) {
+      throw new Error("No 2d context for temporary canvas");
     }
 
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    // Calculate the bounding box of the rotated image
+    const angleInRadians = (rotate * Math.PI) / 180;
+    const sin = Math.abs(Math.sin(angleInRadians));
+    const cos = Math.abs(Math.cos(angleInRadians));
+    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
 
-    const cropX = completedCrop.x * scaleX;
-    const cropY = completedCrop.y * scaleY;
-    const cropWidth = completedCrop.width * scaleX;
-    const cropHeight = completedCrop.height * scaleY;
+    tempCanvas.width = rotatedWidth;
+    tempCanvas.height = rotatedHeight;
 
-    canvas.width = cropWidth;
-    canvas.height = cropHeight;
+    // Translate and rotate the temporary canvas
+    tempCtx.translate(rotatedWidth / 2, rotatedHeight / 2);
+    tempCtx.rotate(angleInRadians);
+    tempCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
 
-    ctx.translate(cropWidth / 2, cropHeight / 2);
-    ctx.rotate((rotate * Math.PI) / 180);
-    ctx.translate(-cropWidth / 2, -cropHeight / 2);
-    ctx.drawImage(
-      image,
+    // Draw the original image onto the temporary canvas
+    tempCtx.drawImage(image, 0, 0);
+
+    // Create the final canvas to draw the cropped image
+    const finalCanvas = document.createElement("canvas");
+    const finalCtx = finalCanvas.getContext("2d");
+
+    if (!finalCtx) {
+      throw new Error("No 2d context for final canvas");
+    }
+
+    finalCanvas.width = completedCrop.width;
+    finalCanvas.height = completedCrop.height;
+
+    // Calculate the crop coordinates based on the rotated image
+    const scaleX = image.naturalWidth / image.width / scale;
+    const scaleY = image.naturalHeight / image.height / scale;
+    const cropX = (rotatedWidth - completedCrop.width * scaleX) / 2;
+    const cropY = (rotatedHeight - completedCrop.height * scaleY) / 2;
+
+    // Draw the rotated image onto the final canvas
+    finalCtx.drawImage(
+      tempCanvas,
       cropX,
       cropY,
-      cropWidth,
-      cropHeight,
+      rotatedWidth - cropX * 2,
+      rotatedHeight - cropY * 2,
       0,
       0,
-      cropWidth,
-      cropHeight,
+      completedCrop.width,
+      completedCrop.height,
     );
 
     const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, "image/png"),
+      finalCanvas.toBlob(resolve, "image/png"),
     );
 
     if (blobUrlRef.current) {
       URL.revokeObjectURL(blobUrlRef.current);
     }
     blobUrlRef.current = URL.createObjectURL(blob);
-  }, [completedCrop]);
+  }, [completedCrop, rotate, scale]);
 
   const generateClickHandler = useCallback(async () => {
     setIsGenerating(true);
@@ -167,22 +141,23 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
     props.generateHandler(
       props.materialImage.id,
       blobUrlRef.current,
-      ModelType.Poster,
+      ModelType.CanBadge,
     );
   }, [props, cropHandler]);
 
   const handleCropChange = (newCrop: Crop) => {
     if (imgRef.current) {
       const { width, height } = imgRef.current;
-      newCrop.x = (width - newCrop.width) / 2;
-      newCrop.y = (height - newCrop.height) / 2;
+
+      newCrop.x = (400 - newCrop.width) / 2;
+      newCrop.y = (352 - newCrop.height) / 2;
       setCrop(newCrop);
 
-      setScale(
+      const newScale =
         newCrop.width / width > newCrop.height / height
           ? newCrop.width / width
-          : newCrop.height / height,
-      );
+          : newCrop.height / height;
+      setScale(newScale);
     }
   };
 
@@ -201,23 +176,27 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
               handleCropChange(c);
             }}
             onComplete={(c) => setCompletedCrop(c)}
+            keepSelection={true}
             aspect={aspect}
           >
-            <NextImage
-              ref={imgRef}
-              src={props.materialImage.image}
-              alt="crop image"
-              width={400}
-              height={352}
-              style={{
-                maxWidth: 400,
-                maxHeight: 352,
-                transform: `rotate(${rotate}deg) scale(${scale})`,
-                objectFit: "contain",
-              }}
-              onLoad={imageLoadHandler}
-              crossOrigin="anonymous"
-            />
+            <div className="w-[400px] h-[352px] flex justify-center items-center">
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={imgRef}
+                  src={props.materialImage.image}
+                  alt="crop image"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    transform: `rotate(${rotate}deg) scale(${scale})`,
+                    objectFit: "contain",
+                  }}
+                  onLoad={imageLoadHandler}
+                  crossOrigin="anonymous"
+                />
+              }
+            </div>
           </ReactCrop>
           <div className="mt-6 flex flex-col items-center">
             <div className="w-[220px] relative mt-[18px] mb-[6px]">

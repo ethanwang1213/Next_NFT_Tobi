@@ -196,7 +196,10 @@ export default function Index() {
   const generateSampleHandler = useCallback(
     async (materialId: number, cropImage: string, sampleType: number) => {
       generateSampleType.current = sampleType;
-      if (sampleType === ModelType.Poster) {
+      if (
+        sampleType === ModelType.Poster ||
+        sampleType === ModelType.CanBadge
+      ) {
         // take material image
         const materialIndex = materials.findIndex(
           (value) => value.id === materialId,
@@ -210,13 +213,13 @@ export default function Index() {
 
         // create model
         const modelResp = await createSample("native/model/create", {
-          type: "Poster",
+          type: sampleType,
           materialId: materialId,
           imageUrl: modelImageUrl,
         });
         generateModelUrl.current = modelResp["modelUrl"];
         requestItemThumbnail({
-          modelType: ModelType.Poster,
+          modelType: sampleType as ModelType,
           modelUrl: modelResp["modelUrl"],
           imageUrl: modelImageUrl,
         });
