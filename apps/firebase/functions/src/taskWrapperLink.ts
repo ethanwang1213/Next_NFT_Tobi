@@ -22,7 +22,7 @@ export const taskWrapperLink = functions.region(REGION).https.onRequest(async (r
   }
   const url = taskLinkData.url;
   const expiredAt = taskLinkData.expiredAt as Timestamp;
-  if (expiredAt.toDate() > new Date()) {
+  if (expiredAt.toDate() < new Date()) {
     response.status(500).send("このリンクは有効期限が切れています。もう一度リンクを発行してください。").end();
     return;
   }
