@@ -288,7 +288,11 @@ export default function Index() {
               width={32}
               height={32}
               alt="undo button"
-              src="/admin/images/icon/visibility-icon.svg"
+              src={
+                showDetailView
+                  ? "/admin/images/icon/visibility-on-icon.svg"
+                  : "/admin/images/icon/visibility-off-icon.svg"
+              }
               className="cursor-pointer"
               onClick={() => {
                 setShowDetailView(!showDetailView);
