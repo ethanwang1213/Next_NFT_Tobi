@@ -300,7 +300,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   }
   const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
     where: {
-      uuid: receiveFlowId,
+      uuid: uid,
     },
   });
   if (!flowAccount) {
