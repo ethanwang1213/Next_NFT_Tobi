@@ -61,7 +61,7 @@ import {
   fetchNftThumb,
   getNftInfo,
   giftNFT,
-  mintNFT
+  mintNFT,
 } from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";

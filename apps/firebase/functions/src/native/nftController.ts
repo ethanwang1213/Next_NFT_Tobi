@@ -518,7 +518,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       });
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          owner_uuid: nftData.owner_uuid,
+          owner_uuid: nftData.owner_uuid??"",
         },
       });
       const copyrights = nftData.digital_item.copyright.map((relate)=>{
