@@ -184,7 +184,11 @@ export const getInventoryData = async (req: Request, res: Response) => {
           box_id: 0,
         },
         include: {
-          digital_item: true,
+          digital_item: {
+            include: {
+              material: true,
+            },
+          },
         },
         orderBy: {
           updated_date_time: "desc",
@@ -195,6 +199,9 @@ export const getInventoryData = async (req: Request, res: Response) => {
           id: item.id,
           name: item.digital_item.name,
           image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+          modelType: item.digital_item.type,
+          modelUrl: item.nft_model,
+          materialImage: item.digital_item.material.image,
           saidanId: item.saidan_id,
           status: item?.mint_status,
         };
