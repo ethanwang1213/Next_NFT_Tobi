@@ -1,11 +1,14 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { SampleItem } from "ui/types/adminTypes";
 
 const ShowcaseSampleTab = ({
   clickSampleItem,
+  dragSampleItem,
 }: {
-  clickSampleItem: (sample: SampleItem) => void;
+  clickSampleItem: (item: SampleItem) => void;
+  dragSampleItem: (item: SampleItem) => void;
 }) => {
   const apiUrl = "native/my/samples";
   const { data, loading, getData } = useRestfulAPI(apiUrl);
@@ -32,17 +35,20 @@ const ShowcaseSampleTab = ({
         data.map((sample, index) => {
           return (
             <div key={sample.id} className="w-1/4 p-2">
-              <div
-                className={
-                  "rounded-[8px] bg-no-repeat bg-center cursor-pointer"
-                }
+              <Image
+                src={sample.thumbUrl}
+                className={"rounded-[8px] cursor-pointer"}
+                alt="sample item"
+                width={80}
+                height={80}
                 style={{
-                  backgroundImage: `url(${sample.thumbUrl})`,
-                  backgroundSize: "contain",
-                  paddingTop: "100%",
+                  objectFit: "contain",
+                  maxWidth: 80,
+                  maxHeight: 80,
                 }}
                 onClick={() => clickSampleItem(sample)}
-              ></div>
+                onDragStart={() => dragSampleItem(sample)}
+              />
             </div>
           );
         })}

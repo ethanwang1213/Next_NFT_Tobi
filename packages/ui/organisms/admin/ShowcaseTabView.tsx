@@ -6,12 +6,20 @@ import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
 import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
-import { SampleItem } from "ui/types/adminTypes";
+import { NftItem, SampleItem } from "ui/types/adminTypes";
 
 const ShowcaseTabView = ({
   clickSampleItem,
+  dragSampleItem,
+  clickNftItem,
+  dragNftItem,
+  showRestoreMenu,
 }: {
-  clickSampleItem: (sample: SampleItem) => void;
+  clickSampleItem: (item: SampleItem) => void;
+  dragSampleItem: (item: SampleItem) => void;
+  clickNftItem: (item: NftItem) => void;
+  dragNftItem: (item: NftItem) => void;
+  showRestoreMenu: boolean;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
 
@@ -26,8 +34,25 @@ const ShowcaseTabView = ({
   return (
     <div
       className="w-[504px] bg-gray-800 bg-opacity-50 min-h-full absolute right-0
-  flex flex-col items-center text-base-white"
+        flex flex-col items-center text-base-white"
     >
+      {showRestoreMenu && (
+        <div
+          className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
+            flex flex-col gap-6 justify-center items-center z-10 select-none"
+        >
+          <span className="text-white text-[32px] font-bold">
+            Return to the Inventory
+          </span>
+          <Image
+            width={48}
+            height={48}
+            src="/admin/images/icon/keyboard_return.svg"
+            alt="return icon"
+            draggable={false}
+          />
+        </div>
+      )}
       <nav className="flex h-16 w-full bg-white">
         <ShowcaseTabSelector
           isActive={tab === "Sample Items"}
@@ -73,13 +98,17 @@ const ShowcaseTabView = ({
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab
             clickSampleItem={clickSampleItem}
+            dragSampleItem={dragSampleItem}
           ></ShowcaseSampleTab>
         </TabPanel>
         <TabPanel
           hidden={tab !== "Inventory"}
           className={tab === "Inventory" ? "flex-1 flex flex-col" : ""}
         >
-          <ShowcaseInventoryTab clickSampleItem={null}></ShowcaseInventoryTab>
+          <ShowcaseInventoryTab
+            clickNftItem={clickNftItem}
+            dragNftItem={dragNftItem}
+          ></ShowcaseInventoryTab>
         </TabPanel>
         <TabPanel hidden={tab !== "Settings"}></TabPanel>
         <ToastContainer

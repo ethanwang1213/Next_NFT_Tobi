@@ -13,11 +13,11 @@ import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
-import { ShowcaseSaveData } from "types/adminTypes";
-import { ModelType } from "types/unityTypes";
+import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
+import { ItemType, ModelType } from "types/unityTypes";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
-import { SampleItem } from "ui/types/adminTypes";
+import { NftItem, SampleItem } from "ui/types/adminTypes";
 
 const Showcase = () => {
   const router = useRouter();
@@ -43,6 +43,9 @@ const Showcase = () => {
 
   const { data: materialData } = useRestfulAPI("native/materials");
 
+  const [showRestoreMenu, setShowRestoreMenu] = useState(false);
+
+  // showcase unity view event handlers
   const onSaveDataGenerated = async (
     showcaseSaveData: ShowcaseSaveData,
     updateIdValues,
@@ -56,13 +59,61 @@ const Showcase = () => {
       nftItemList: showcaseSaveData.nftItemList,
       thumbnailImage: thumbnailUrl,
     });
-    updateIdValues({ data: IdPairs });
+    updateIdValues({ idPairs: IdPairs });
   };
 
-  const { unityProvider, setLoadData, requestSaveData, placeNewSample } =
-    useShowcaseEditUnityContext({
-      onSaveDataGenerated,
-    });
+  const onRemoveItemEnabled = () => {
+    setShowRestoreMenu(true);
+  };
+
+  const onRemoveItemDisabled = () => {
+    setShowRestoreMenu(false);
+  };
+
+  const onRemoveItemRequested = async (
+    itemType: ItemType,
+    uniqueId: number,
+    itemId: number,
+    sendItemRemovalResult: SendItemRemovalResult,
+  ) => {
+    // hide the restore menu
+    setShowRestoreMenu(false);
+    let postResult;
+    if (itemType === ItemType.Sample) {
+      postResult = await postData(`${apiUrl}/${id}/throw`, {
+        sampleRelationId: uniqueId,
+      });
+    }
+    if (itemType === ItemType.DigitalItemNft) {
+      postResult = await postData(`${apiUrl}/${id}/throw`, {
+        nftRelationId: uniqueId,
+      });
+      // update remains count for NFT item
+    }
+    if (postResult == "thrown") {
+      sendItemRemovalResult(itemType, uniqueId, true);
+    } else {
+      sendItemRemovalResult(itemType, uniqueId, false);
+    }
+  };
+
+  const [contentWidth, setContentWidth] = useState(0);
+
+  const {
+    unityProvider,
+    setLoadData,
+    requestSaveData,
+    placeNewSample,
+    placeNewNft,
+    placeNewSampleWithDrag,
+    placeNewNftWithDrag,
+  } = useShowcaseEditUnityContext({
+    itemMenuX: contentWidth - (showDetailView ? 504 : 30),
+    onSaveDataGenerated,
+    onRemoveItemEnabled,
+    onRemoveItemDisabled,
+    onRemoveItemRequested,
+  });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
 
@@ -126,46 +177,80 @@ const Showcase = () => {
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes
   useEffect(() => {
-    const updateContainerWidth = () => {
-      const height = document.querySelector(".w-full.h-full").clientHeight;
-      const width = Math.ceil((height / 16) * 9);
-      setContainerWidth(width);
-    };
-
-    // Update container width on mount and window resize
-    updateContainerWidth();
-    window.addEventListener("resize", updateContainerWidth);
-
     // Initialize timer
     const requestSaveDataTimer = setInterval(() => {
       requestSaveData();
     }, requestSaveDataInterval);
 
     return () => {
-      window.removeEventListener("resize", updateContainerWidth);
       clearInterval(requestSaveDataTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestSaveDataInterval, requestSaveData]);
+
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      const height = document.querySelector(".w-full.h-full").clientHeight;
+      const width = Math.ceil((height / 16) * 9);
+      setContainerWidth(width);
+
+      setContentWidth(document.querySelector(".w-full.h-full").clientWidth);
+    };
+
+    // Update container width on mount and window resize
+    updateContainerWidth();
+    window.addEventListener("resize", updateContainerWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateContainerWidth);
+    };
   }, []);
 
   const selectSampleHandler = useCallback(
-    (sample: SampleItem) => {
+    (sample: SampleItem, isDrag: boolean) => {
       // show detail view
       setSelectedSampleItem(sample.id);
       const materialImageIndex = materialData.findIndex(
         (value) => value.id === sample.materialId,
       );
       // place a new item
-      placeNewSample({
-        itemId: sample.id,
-        modelType: sample.type == 1 ? ModelType.Poster : ModelType.AcrylicStand,
-        modelUrl: sample.modelUrl,
-        imageUrl: materialData[materialImageIndex].image,
-      });
-      // store to backend
-      requestSaveData();
+      if (!isDrag)
+        placeNewSample({
+          itemId: sample.id,
+          modelType: sample.type as ModelType,
+          modelUrl: sample.modelUrl,
+          imageUrl: materialData[materialImageIndex].image,
+        });
+      else
+        placeNewSampleWithDrag({
+          itemId: sample.id,
+          modelType: sample.type as ModelType,
+          modelUrl: sample.modelUrl,
+          imageUrl: materialData[materialImageIndex].image,
+        });
     },
-    [materialData, placeNewSample, requestSaveData],
+    [materialData, placeNewSample, placeNewSampleWithDrag],
+  );
+
+  const selectNftHandler = useCallback(
+    (nft: NftItem, isDrag: boolean) => {
+      // place a new item
+      if (!isDrag)
+        placeNewNft({
+          itemId: nft.id,
+          modelType: nft.modelType as ModelType,
+          modelUrl: nft.modelUrl,
+          isDebug: true,
+        });
+      else
+        placeNewNftWithDrag({
+          itemId: nft.id,
+          modelType: nft.modelType as ModelType,
+          modelUrl: nft.modelUrl,
+          isDebug: true,
+        });
+    },
+    [placeNewNft, placeNewNftWithDrag],
   );
 
   return (
@@ -295,7 +380,17 @@ const Showcase = () => {
           </div>
         </div>
         {showDetailView && (
-          <ShowcaseTabView clickSampleItem={selectSampleHandler} />
+          <ShowcaseTabView
+            clickSampleItem={(item: SampleItem) =>
+              selectSampleHandler(item, false)
+            }
+            dragSampleItem={(item: SampleItem) =>
+              selectSampleHandler(item, true)
+            }
+            clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
+            dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
+            showRestoreMenu={showRestoreMenu}
+          />
         )}
         <div className="fixed mt-[24px] ml-[38px]">
           <Link
@@ -311,9 +406,23 @@ const Showcase = () => {
             <span>Exit</span>
           </Link>
         </div>
+        {showRestoreMenu && !showDetailView && (
+          <div
+            className="absolute w-[56px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+              flex flex-col justify-center items-center z-10 select-none"
+          >
+            <Image
+              width={48}
+              height={48}
+              src="/admin/images/icon/keyboard_return.svg"
+              alt="return icon"
+              draggable={false}
+            />
+          </div>
+        )}
         <ShowcaseNameEditDialog
-          showcaseTitle={showcaseData?.title}
-          showcaseDescription={showcaseData?.description}
+          showcaseTitle={showcaseData?.title ?? ""}
+          showcaseDescription={showcaseData?.description ?? ""}
           dialogRef={dialogRef}
           changeHandler={changeShowcaseDetail}
         />

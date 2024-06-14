@@ -7,7 +7,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {itemList}: {itemList: ItemType[]} = req.body;
   interface ItemType {
-    id: number;
+    id: number|null;
     itemId: number;
     stageType: number;
     position: {
@@ -25,12 +25,11 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const idPair: {previous: number, next: number}[] = [];
       await Promise.all(
           itemList.map(async (item)=>{
-            const workspaceSample = await prisma.tobiratory_workspace_items.upsert({
+            await prisma.tobiratory_workspace_items.upsert({
               where: {
-                id: item.id,
+                id: item.id??0,
               },
               update: {
                 stage_type: item.stageType,
@@ -63,17 +62,45 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
                 ],
               },
             });
-            if (item.id<0) {
-              idPair.push({
-                previous: item.id,
-                next: workspaceSample.id,
-              });
-            }
           })
       );
+      const workspaceSamples = await prisma.tobiratory_workspace_items.findMany({
+        where: {
+          owner_uuid: uid,
+        },
+        include: {
+          sample: {
+            include: {
+              digital_item: true,
+            },
+          },
+        },
+      });
+      const workspaceItemList = workspaceSamples.map(async (workspaceSample)=>{
+        return {
+          itemId: workspaceSample.id,
+          modelType: workspaceSample.sample.digital_item.type,
+          modelUrl: workspaceSample.sample.model_url,
+          imageUrl: workspaceSample.sample.digital_item.is_default_thumb?workspaceSample.sample.digital_item.default_thumb_url:workspaceSample.sample.digital_item.custom_thumb_url,
+          stageType: workspaceSample.stage_type,
+          position: {
+            x: workspaceSample.position[0]??0,
+            y: workspaceSample.position[1]??0,
+            z: workspaceSample.position[2]??0,
+          },
+          rotation: {
+            x: workspaceSample.rotation[0]??0,
+            y: workspaceSample.rotation[1]??0,
+            z: workspaceSample.rotation[2]??0,
+          },
+          scale: workspaceSample.scale,
+        };
+      });
       res.status(200).send({
         status: "success",
-        data: idPair,
+        data: {
+          workspaceItemList: workspaceItemList,
+        },
       });
     } catch (error) {
       res.status(401).send({
