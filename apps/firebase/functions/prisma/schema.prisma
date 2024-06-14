@@ -179,10 +179,10 @@ model tobiratory_digital_item_nfts {
   serial_no                        Int?
   digital_item                     tobiratory_digital_items           @relation(fields: [digital_item_id], references: [id])
   digital_item_id                  Int
-  user                             tobiratory_accounts                @relation(fields: [owner_uuid], references: [uuid])
+  user                             tobiratory_accounts?               @relation(fields: [owner_uuid], references: [uuid])
   nft_model                        String                             @default("") @db.VarChar(255)
   nft_metadata                     String                             @default("") @db.Text
-  owner_uuid                       String                             @db.VarChar(100)
+  owner_uuid                       String?                            @db.VarChar(100)
   saidan_id                        Int                                @default(0)
   content_id                       Int                                @default(0)
   state_type                       Int                                @default(0)
@@ -204,7 +204,8 @@ model tobiratory_digital_item_nfts {
 model tobiratory_digital_nft_ownership {
   id                       Int                           @id @default(autoincrement())
   tobiratory_accounts      tobiratory_accounts?          @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid               String                        @db.VarChar(100)
+  owner_uuid               String?                       @db.VarChar(100)
+  owner_flow_address       String                        @db.VarChar(255)
   tobiratory_digital_items tobiratory_digital_item_nfts? @relation(fields: [nft_id], references: [id])
   nft_id                   Int
   tx_id                    String?                       @db.VarChar(255)
