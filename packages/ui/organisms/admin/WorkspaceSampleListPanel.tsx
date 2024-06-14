@@ -65,29 +65,13 @@ type ListProps = {
   selectHandler: (index: number) => void;
   deleteHandler: (ids: number[]) => void;
   dragHandler: (index: number) => void;
+  showRestoreMenu: boolean;
 };
 
 const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
   const [selectState, setSelectState] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const panelRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        props.isOpen &&
-        panelRef.current &&
-        !panelRef.current.contains(event.target)
-      ) {
-        props.closeHandler();
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [props]);
 
   const selectionChangeHandler = (selId: number, checked: boolean) => {
     const prevIndex = selectedItems.findIndex((value) => value === selId);
@@ -117,6 +101,23 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
       style={{ transition: "right 0.3s ease", right: props.isOpen ? 0 : -448 }}
       ref={panelRef}
     >
+      {props.showRestoreMenu && (
+        <div
+          className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
+            flex flex-col gap-6 justify-center items-center z-10 select-none"
+        >
+          <span className="text-white text-[32px] font-bold">
+            Return to the Inventory
+          </span>
+          <Image
+            width={48}
+            height={48}
+            src="/admin/images/icon/keyboard_return.svg"
+            alt="return icon"
+            draggable={false}
+          />
+        </div>
+      )}
       <div className="w-full pr-4 flex justify-end gap-4">
         <Image
           width={32}

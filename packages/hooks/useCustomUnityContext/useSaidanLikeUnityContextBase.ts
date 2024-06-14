@@ -31,6 +31,8 @@ export const useSaidanLikeUnityContextBase = ({
   } = useCustomUnityContextBase({ sceneType });
 
   const postMessageToLoadData = useCallback(() => {
+    setIsSaidanSceneLoaded(true);
+
     if (!loadData || loadData.saidanId === currentSaidanId) {
       console.log("loadData is null or same saidanId" + currentSaidanId);
       return;
@@ -41,7 +43,6 @@ export const useSaidanLikeUnityContextBase = ({
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
-    setIsSaidanSceneLoaded(true);
   }, [loadData, currentSaidanId, postMessageToUnity]);
 
   const requestSaveData = () => {
@@ -116,7 +117,7 @@ export const useSaidanLikeUnityContextBase = ({
   );
 
   const removeItem = useCallback(
-    (itemInfo: { id: number; itemType: ItemType; itemId: number }) => {
+    (itemInfo: { itemType: ItemType; id: number; itemId: number }) => {
       postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
         JSON.stringify(itemInfo),
