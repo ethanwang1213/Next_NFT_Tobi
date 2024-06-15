@@ -28,7 +28,7 @@ export const Tpf2023StampRally: React.FC = () => {
     "G1delta",
   ];
   const STAMP_DIR = "/journal/images/tobirapolisfestival/2023/";
-  const stampRally = useAuth().user?.mintStatus?.Tpf2023;
+  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
   const stamps: StampDataType[] = keys.map((key) => ({
     key: key,
     src: `${STAMP_DIR}${key.toLowerCase()}.png`,
@@ -65,7 +65,10 @@ export const Tpf2023StampRally: React.FC = () => {
         </div>
       </div>
       <div className="w-full mt-4 sm:mt-10">
-        <StampRallyRewardForm onSubmit={requestTpf2023Reward} />
+        <StampRallyRewardForm
+          onSubmit={requestTpf2023Reward}
+          event="TOBIRAPOLISFESTIVAL2023"
+        />
       </div>
       <p className="mt-1 text-[10px] sm:text-sm font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}

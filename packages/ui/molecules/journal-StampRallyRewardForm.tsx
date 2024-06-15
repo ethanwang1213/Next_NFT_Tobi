@@ -3,17 +3,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 import { useForm } from "react-hook-form";
-import { StampRallyRewardFormType } from "types/stampRallyTypes";
+import {
+  StampRallyEvents,
+  StampRallyRewardFormType,
+} from "types/stampRallyTypes";
 
 type Props = {
   onSubmit: (data: StampRallyRewardFormType) => void;
+  event: StampRallyEvents;
 };
 
 /**
  * TOBIRA POLIS祭の出し物 G0のスタンプラリーの記念品受け取り用フォーム
  * @returns {ReactElement} The `StampRallyRewardForm` component
  */
-export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
+export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit, event }) => {
   const { register, handleSubmit, reset } = useForm<StampRallyRewardFormType>({
     defaultValues: {
       keyword: "",
@@ -21,11 +25,12 @@ export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const { isSubmitting } = useStampRallyForm();
-  const stampRally = useAuth().user?.mintStatus?.Tpf2023;
+  const stampRally = useAuth().user?.mintStatus?.[event];
 
   if (
-    stampRally?.Complete === "IN_PROGRESS" ||
-    stampRally?.Complete === "DONE"
+    !!stampRally &&
+    "Complete" in stampRally &&
+    (stampRally?.Complete === "IN_PROGRESS" || stampRally?.Complete === "DONE")
   ) {
     return <p className="h-8 sm:h-12 font-bold sm:text-xl">Completed!!</p>;
   }

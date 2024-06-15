@@ -3,12 +3,14 @@ export type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
 
 export type CompleteStampType = "Complete";
 
-export type StampRallyEvents = "Tpf2023" | "Tmf2024";
+export type StampRallyEvents =
+  | "TOBIRAPOLISFESTIVAL2023"
+  | "TOBIRAPOLISMUSICFESTIVAL2024";
 
 // mint状態データ変更メソッド用（全てoptionalじゃなく設定）
 export type MintStatusForSetMethod = {
-  Tpf2023: Tpf2023StampRallyData;
-  Tmf2024: Tmf2024StampRallyData;
+  TOBIRAPOLISFESTIVAL2023: Tpf2023StampRallyData;
+  TOBIRAPOLISMUSICFESTIVAL2024: Tmf2024StampRallyData;
 };
 
 // mint状態データ

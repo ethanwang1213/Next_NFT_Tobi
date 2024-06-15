@@ -1,11 +1,11 @@
 import {REGION} from "./lib/constants";
 import {mintTobirapolisFestival23BadgeNFT} from "./lib/tobirapolisFestival23Flow";
 import {firestore} from "firebase-admin";
-import {MintStatus, Tpf2023Complete, Tpf2023StampType} from "types/journal-types";
 import * as functions from "firebase-functions";
 import Timestamp = firestore.Timestamp;
+import {CompleteStampType, MintStatus, Tpf2023StampType} from "types/stampRallyTypes";
 
-const mintNFT = async (name: string, description: string, userId: string, type: Tpf2023StampType | Tpf2023Complete, onComplete?: () => void) => {
+const mintNFT = async (name: string, description: string, userId: string, type: Tpf2023StampType | CompleteStampType, onComplete?: () => void) => {
   const txDetails = await mintTobirapolisFestival23BadgeNFT(name, description);
   console.log({txDetails});
   const events = txDetails.events;

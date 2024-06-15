@@ -28,12 +28,17 @@ export const useStampRallyFetcher = () => {
     const callable = httpsCallable<
       BodyType,
       StampRallyResultType<Tpf2023StampType>
-    >(functions, "stampRallyBadge-checkRewardTpf2023");
+    >(functions, "journalStampRally-checkRewardTpf2023");
     callable({ keyword: data.keyword })
       .then((result) => {
         console.log(result);
         const d = result.data;
-        setMintStatus("Tpf2023", d.stamp, "IN_PROGRESS", d.isComplete);
+        setMintStatus(
+          "TOBIRAPOLISFESTIVAL2023",
+          d.stamp,
+          "IN_PROGRESS",
+          d.isComplete
+        );
 
         isSubmitting.set(false);
       })
@@ -50,12 +55,17 @@ export const useStampRallyFetcher = () => {
     const callable = httpsCallable<
       BodyType,
       StampRallyResultType<Tmf2024StampType>
-    >(functions, "stampRallyBadge-checkRewardTmf2024");
+    >(functions, "journalStampRally-checkRewardTmf2024");
     callable({ keyword: data.keyword })
       .then((result) => {
         console.log(result);
         const d = result.data;
-        setMintStatus("Tmf2024", d.stamp, "IN_PROGRESS", d.isComplete);
+        setMintStatus(
+          "TOBIRAPOLISMUSICFESTIVAL2024",
+          d.stamp,
+          "IN_PROGRESS",
+          d.isComplete
+        );
 
         isSubmitting.set(false);
       })

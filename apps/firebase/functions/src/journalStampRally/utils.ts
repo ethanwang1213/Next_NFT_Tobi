@@ -1,35 +1,35 @@
-import { firestore } from "firebase-admin";
+import {firestore} from "firebase-admin";
 import * as functions from "firebase-functions";
-import { User } from "types/journal-types";
-import { StampRallyData } from "types/stampRallyTypes";
+import {User} from "types/journal-types";
+import {StampRallyData} from "types/stampRallyTypes";
 
 // ユーザー認証周りのチェック
 export const verifyAuthorizedUser = async (
-  context: functions.https.CallableContext
+    context: functions.https.CallableContext
 ) => {
   if (!context.auth) {
     throw new functions.https.HttpsError(
-      "unauthenticated",
-      "The function must be called while authenticated."
+        "unauthenticated",
+        "The function must be called while authenticated."
     );
   }
   const userId = context.auth.uid;
   const userDoc = await firestore().collection("users").doc(userId).get();
   if (!userDoc.exists) {
     throw new functions.https.HttpsError(
-      "not-found",
-      "The user doesn't exist."
+        "not-found",
+        "The user doesn't exist."
     );
   }
   const user = userDoc.data() as User | undefined;
   const email = user?.email;
   if (!email) {
     throw new functions.https.HttpsError(
-      "not-found",
-      "The user doesn't have email."
+        "not-found",
+        "The user doesn't have email."
     );
   }
-  return { user, userId };
+  return {user, userId};
 };
 
 type Keywords = {
@@ -50,12 +50,12 @@ export const verifyCorrectStampEntry = <T extends Keywords>(
 ) => {
   // 正しい合言葉のentryを探索・取得し、存在するかチェック
   const correctStampEntry = strictEntries(keywords).find(
-    (v) => v[1] === data.keyword
+      (v) => v[1] === data.keyword
   );
   if (!correctStampEntry) {
     throw new functions.https.HttpsError(
-      "invalid-argument",
-      "The function must be called with correct keyword."
+        "invalid-argument",
+        "The function must be called with correct keyword."
     );
   }
   return correctStampEntry[0] as keyof T;
@@ -72,8 +72,8 @@ export const verifyFirstRequest = <T extends string>(
   const mintStatus = currentStampStatusMap[correctStampEntry];
   if (mintStatus === "IN_PROGRESS" || mintStatus === "DONE") {
     throw new functions.https.HttpsError(
-      "already-exists",
-      "This request has already submitted."
+        "already-exists",
+        "This request has already submitted."
     );
   }
 };

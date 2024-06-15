@@ -20,7 +20,7 @@ export const Tmf2024StampRally: React.FC = () => {
 
   const key: Tmf2024StampType = "Stamp";
   const STAMP_DIR = "/journal/images/tobirapolismusicfestival/2024/";
-  const stampRally = useAuth().user?.mintStatus?.Tmf2024;
+  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISMUSICFESTIVAL2024;
   const stamp: StampDataType = {
     key: key,
     src: `${STAMP_DIR}${key.toLowerCase()}.png`,
@@ -40,7 +40,10 @@ export const Tmf2024StampRally: React.FC = () => {
       ) : (
         <div>minted</div>
       )}
-      <StampRallyRewardForm onSubmit={requestTmf2024Reward} />
+      <StampRallyRewardForm
+        onSubmit={requestTmf2024Reward}
+        event="TOBIRAPOLISMUSICFESTIVAL2024"
+      />
     </div>
   );
 };
