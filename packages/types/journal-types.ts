@@ -2,6 +2,7 @@
 
 import { Timestamp } from "firebase/firestore/lite";
 import { ReactElement } from "react";
+import { MintStatus } from "./stampRallyTypes";
 
 // journal 本のタグのデータ型
 export type tagType = {
@@ -50,35 +51,6 @@ export type HouseData = {
   role_id?: string;
   type?: string;
   name?: string;
-};
-
-// mint状態のタイプ
-export type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
-
-// TOBIRAPOLIS祭2023スタンプラリーのスタンプタイプ
-export type Tpf2023StampType =
-  | "G0"
-  | "G1alpha"
-  | "G1beta"
-  | "G1gamma"
-  | "G1delta";
-
-export type Tpf2023Complete = "Complete";
-
-// TOBIRAPOLIS祭2023スタンプラリーのmint状態データ
-export type Tpf2023StampRallyData = {
-  [key in Tpf2023StampType | Tpf2023Complete]?: MintStatusType;
-};
-
-// mint状態データ
-// 今後も使いそうなデータなので、追加できる形にしました
-export type MintStatus = {
-  TOBIRAPOLISFESTIVAL2023?: Tpf2023StampRallyData;
-};
-
-// mint状態データ変更メソッド用（全てoptionalじゃなく設定）
-export type MintStatusForSetMethod = {
-  TOBIRAPOLISFESTIVAL2023: Tpf2023StampRallyData;
 };
 
 // ユーザーデータの型
@@ -141,14 +113,3 @@ export type RedeemStatus =
   | "SUCCESS"
   | "INCORRECT"
   | "SERVER_ERROR";
-
-// スタンプラリーの記念品受け取り用フォームのデータ型
-export type StampRallyRewardFormType = {
-  keyword: string;
-};
-
-export type StampRallyResultType = {
-  stamp: Tpf2023StampType;
-  status: "IN_PROGRESS";
-  isComplete: boolean;
-};

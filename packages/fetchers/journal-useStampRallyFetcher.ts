@@ -4,7 +4,9 @@ import { httpsCallable } from "firebase/functions";
 import {
   StampRallyResultType,
   StampRallyRewardFormType,
-} from "types/journal-types";
+  Tmf2024StampType,
+  Tpf2023StampType,
+} from "types/stampRallyTypes";
 import { functions } from "./firebase/journal-client";
 
 type BodyType = {
@@ -12,30 +14,27 @@ type BodyType = {
 };
 
 /**
- * スタンプラリーの受け取るための外部通信を行うhook
+ * スタンプラリーの報酬を受け取るための外部通信を行うhook
  * @returns
  */
 export const useStampRallyFetcher = () => {
   const { setMintStatus } = useAuth();
   const { isSubmitting } = useStampRallyForm();
 
-  const requestReward = (data: StampRallyRewardFormType) => {
+  const requestTpf2023Reward = (data: StampRallyRewardFormType) => {
     console.log(data);
     isSubmitting.set(true);
 
-    const callable = httpsCallable<BodyType, StampRallyResultType>(
-      functions,
-      "stampRallyBadge-checkReward",
-    );
+    const callable = httpsCallable<
+      BodyType,
+      StampRallyResultType<Tpf2023StampType>
+    >(functions, "stampRallyBadge-checkRewardTpf2023");
     callable({ keyword: data.keyword })
       .then((result) => {
         console.log(result);
-        setMintStatus(
-          "TOBIRAPOLISFESTIVAL2023",
-          result.data.stamp,
-          "IN_PROGRESS",
-          result.data.isComplete,
-        );
+        const d = result.data;
+        setMintStatus("Tpf2023", d.stamp, "IN_PROGRESS", d.isComplete);
+
         isSubmitting.set(false);
       })
       .catch((error) => {
@@ -44,5 +43,27 @@ export const useStampRallyFetcher = () => {
       });
   };
 
-  return { isSubmitting, requestReward };
+  const requestTmf2024Reward = (data: StampRallyRewardFormType) => {
+    console.log(data);
+    isSubmitting.set(true);
+
+    const callable = httpsCallable<
+      BodyType,
+      StampRallyResultType<Tmf2024StampType>
+    >(functions, "stampRallyBadge-checkRewardTmf2024");
+    callable({ keyword: data.keyword })
+      .then((result) => {
+        console.log(result);
+        const d = result.data;
+        setMintStatus("Tmf2024", d.stamp, "IN_PROGRESS", d.isComplete);
+
+        isSubmitting.set(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        isSubmitting.set(false);
+      });
+  };
+
+  return { isSubmitting, requestTpf2023Reward, requestTmf2024Reward };
 };

@@ -5,6 +5,7 @@ import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
 import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
 import { useEffect, useMemo, useState } from "react";
 import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
+import { Tmf2024StampRally } from "ui/organisms/journal-StampRally";
 
 /**
  * プロフィールページの2ページ目
@@ -71,12 +72,11 @@ const ProfilePage1: React.FC = () => {
           )}
         </div>
       </div>
-      {/*
-      // TOBIRAPOLIS祭スタンプラリー用
+      {/* // TOBIRAPOLIS祭スタンプラリー用 */}
       <div className="mt-6 sm:mt-12">
-        <StampRally />
+        {/* <Tpf2023StampRally /> */}
+        <Tmf2024StampRally />
       </div>
-      */}
     </div>
   );
 };

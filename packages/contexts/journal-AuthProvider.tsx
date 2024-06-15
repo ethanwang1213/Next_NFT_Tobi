@@ -18,17 +18,25 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { Birthday, User } from "types/journal-types";
 import {
-  Birthday,
+  CompleteStampType,
+  MintStatus,
   MintStatusForSetMethod,
   MintStatusType,
-  Tpf2023Complete,
-  User,
-} from "types/journal-types";
+  StampRallyEvents,
+} from "types/stampRallyTypes";
 
 type Props = {
   children: ReactNode;
 };
+
+type SetMintStatus = <T extends keyof MintStatus>(
+  event: T,
+  type: keyof MintStatusForSetMethod[T],
+  status: MintStatusType,
+  isComplete: boolean
+) => void;
 
 // AuthContextのデータ型
 type ContextType = {
@@ -44,12 +52,7 @@ type ContextType = {
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
   // TOBIRAPOLIS祭スタンプラリー用
-  setMintStatus: <T extends keyof MintStatusForSetMethod>(
-    event: T,
-    type: keyof MintStatusForSetMethod[T],
-    status: MintStatusType,
-    isComplete: boolean,
-  ) => void;
+  setMintStatus: SetMintStatus;
   refetchUserMintStatus: () => void;
   //
 };
@@ -172,36 +175,41 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   // TOBIRAPOLIS祭スタンプラリー用。
   // スタンプラリーのmint状態を更新する
-  const setMintStatus: ContextType["setMintStatus"] = (
-    event,
-    type,
-    status,
-    isComplete,
-  ) => {
+  const setMintStatus: SetMintStatus = (event, type, status, isComplete) => {
     if (!user) return;
     setUser((state) => {
       if (!state) return null;
-
       // 現状のuserデータに存在するmint状態データを取得
       const currentDataOrEmpty =
         state.mintStatus && state.mintStatus[event]
           ? state.mintStatus[event]
           : {};
 
-      // これでスタンプコンプリートだったらCompleteも"IN_PROGRESS"に設定
-      const completeOrEmpty: { [cmp in Tpf2023Complete]: string } | {} =
-        isComplete ? { Complete: "IN_PROGRESS" } : {};
+      const mode = process.env.NEXT_PUBLIC_STAMPRALLY_MODE as StampRallyEvents;
+      if (!!mode) {
+        // コンプリートスタンプが存在するイベントの場合はここに追加する
+        const hasCompleteStamp = ["Tpf2023"].includes(mode);
 
-      return {
-        ...state,
-        mintStatus: {
-          [event]: {
-            ...currentDataOrEmpty, // 現状のuserのmint状態データの展開
-            [type]: status, // 新規mint状態データ
-            ...completeOrEmpty, // completeを設定
+        // 指定イベントにスタンプコンプリートが存在し、
+        // これでスタンプコンプリートだったらCompleteも"IN_PROGRESS"に設定
+        const completeOrEmpty: { [cmp in CompleteStampType]: string } | {} =
+          isComplete && hasCompleteStamp ? { Complete: "IN_PROGRESS" } : {};
+
+        return {
+          ...state,
+          mintStatus: {
+            [event]: {
+              ...currentDataOrEmpty, // 現状のuserのmint状態データの展開
+              [type]: status, // 新規mint状態データ
+              ...completeOrEmpty, // completeを設定
+            },
           },
-        },
-      };
+        };
+      } else {
+        return {
+          ...state,
+        };
+      }
     });
   };
 
@@ -209,25 +217,23 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   // mintStatusを監視するための関数
   const refetchUserMintStatus = async () => {
     if (!user) return;
-
     // ユーザーコレクションからユーザーデータを参照
     const ref = doc(db, `users/${user.id}`);
     const snap = await getDoc(ref);
     if (snap.exists()) {
       // ユーザーデータを取得してstateに格納
       const appUser = (await getDoc(ref)).data() as User;
+
+      const mode = process.env.NEXT_PUBLIC_STAMPRALLY_MODE as StampRallyEvents;
+      if (!mode) return;
+
       // mintStatusに更新があった時のみuserデータ更新
-      if (
-        !_.isEqual(
-          user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-        )
-      ) {
-        console.log(
-          "updated!!!!!!!!!!!!",
-          user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-          appUser.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-        );
+      const localStatus = user.mintStatus?.[mode];
+      const dbStatus = appUser.mintStatus?.[mode];
+
+      if (!localStatus || !dbStatus) return;
+      if (!_.isEqual(localStatus, dbStatus)) {
+        console.log("updated!!!!!!!!!!!!", localStatus, dbStatus);
         setUser(appUser);
       }
     }

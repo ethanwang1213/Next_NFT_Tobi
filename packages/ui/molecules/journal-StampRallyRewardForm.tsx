@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 import { useForm } from "react-hook-form";
-import { StampRallyRewardFormType } from "types/journal-types";
+import { StampRallyRewardFormType } from "types/stampRallyTypes";
 
 type Props = {
   onSubmit: (data: StampRallyRewardFormType) => void;
@@ -21,7 +21,7 @@ export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const { isSubmitting } = useStampRallyForm();
-  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
+  const stampRally = useAuth().user?.mintStatus?.Tpf2023;
 
   if (
     stampRally?.Complete === "IN_PROGRESS" ||

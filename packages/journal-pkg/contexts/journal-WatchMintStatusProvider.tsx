@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
+import { StampRallyEvents } from "types/stampRallyTypes";
 import { useAuth } from "./journal-AuthProvider";
 
 type Props = {
@@ -42,41 +43,27 @@ export const WatchMintStatusProvider: React.FC<Props> = ({ children }) => {
   const isWatching = () => !paused;
 
   useEffect(() => {
-    if (!user?.mintStatus?.TOBIRAPOLISFESTIVAL2023) return;
-    const tpf2023MintStatus = {
-      ...user.mintStatus?.TOBIRAPOLISFESTIVAL2023,
-    };
+    const mode = process.env.NEXT_PUBLIC_STAMPRALLY_MODE as StampRallyEvents;
+    if (!mode) return;
+
+    const mintStatus = user?.mintStatus?.[mode];
+    // 現在監視中の時、mintStatusにmint中のものが存在しなければ監視を終了する
+    // 現在監視中でない時、mintStatusにmint中のものが存在すれば監視を開始する
+    if (!mintStatus) {
+      if (isWatching()) unwatch();
+      return;
+    }
+    // completeは無視
+    if ("Complete" in mintStatus) mintStatus.Complete = undefined;
+
+    const inProgressExist = !!Object.values(mintStatus).find(
+      (v) => v === "IN_PROGRESS",
+    );
+
     if (isWatching()) {
-      // 現在監視中の時、mintStatusにmint中のものが存在しなければ監視を終了する
-      if (!tpf2023MintStatus) {
-        unwatch();
-        return;
-      }
-      // completeは無視
-      tpf2023MintStatus.Complete = undefined;
-
-      const isEveryInProgress =
-        tpf2023MintStatus &&
-        Object.values(tpf2023MintStatus).every((v) => v !== "IN_PROGRESS");
-
-      if (isEveryInProgress) {
-        unwatch();
-      }
+      if (!inProgressExist) unwatch();
     } else {
-      // 現在監視中でない時、mintStatusにmint中のものが存在すれば監視を開始する
-      if (!tpf2023MintStatus) {
-        return;
-      }
-      // completeは無視
-      tpf2023MintStatus.Complete = undefined;
-
-      const inProgressExist =
-        tpf2023MintStatus &&
-        Object.values(tpf2023MintStatus).find((v) => v === "IN_PROGRESS");
-
-      if (inProgressExist) {
-        watch();
-      }
+      if (inProgressExist) watch();
     }
   }, [user]);
 

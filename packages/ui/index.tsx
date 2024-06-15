@@ -7,4 +7,3 @@ export { BurgerMenu } from "./components/BurgerMenu/BurgerMenu";
 export { FlexMenuButtonLayout } from "./components/FlexMenuButtonLayout/FlexMenuButtonLayout";
 export { MenuButtonLayout } from "./components/MenuButtonLayout/MenuButtonLayout";
 export { CustomDocument } from "./organisms/CustomDocument";
-export { StampRally } from "./organisms/journal-StampRally";
