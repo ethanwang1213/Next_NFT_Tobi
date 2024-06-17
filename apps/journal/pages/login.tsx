@@ -260,7 +260,7 @@ const Login = () => {
                 fill
               />
             </div>
-            Sign in with Google
+            Login with Google
           </button>
           <button
             className="btn btn-block rounded-full gap-3 flex-row text-md sm:text-lg sm:h-[56px] 
@@ -271,7 +271,7 @@ const Login = () => {
             }}
           >
             <FontAwesomeIcon icon={faApple} size="xl" />
-            Sign in with Apple
+            Login with Apple
           </button>
           <div
             className="relative w-full before:border-t before:grow before:border-black after:border-t after:grow after:border-black 
@@ -305,7 +305,7 @@ const Login = () => {
                 drop-shadow-[0_6px_8px_rgba(0,0,0,0.2)]"
             type="submit"
           >
-            Sign in
+            Login
           </button>
           <p className="mt-2 w-full text-red-500 text-[10px] text-center">
             ※TOBIRA NEKO購入済みの方
