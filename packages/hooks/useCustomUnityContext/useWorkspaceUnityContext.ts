@@ -234,7 +234,7 @@ export const useWorkspaceUnityContext = ({
         sendRemovalResult,
       );
     },
-    [onRemoveSampleRequested],
+    [onRemoveSampleRequested, sendRemovalResult],
   );
 
   useUnityMessageHandler({
