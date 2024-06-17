@@ -50,6 +50,8 @@ const BoxInventoryTab = ({
           return (
             <div key={item.id} className="w-1/4 p-2">
               <InventoryItemComponent
+                selectHandler={null}
+                dragStartHandler={null}
                 imageUrl={item.image}
               ></InventoryItemComponent>
             </div>
