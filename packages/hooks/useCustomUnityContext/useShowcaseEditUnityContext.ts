@@ -204,7 +204,7 @@ export const useShowcaseEditUnityContext = ({
         sendRemovalResult,
       );
     },
-    [onRemoveItemRequested],
+    [onRemoveItemRequested, sendRemovalResult],
   );
 
   useUnityMessageHandler({

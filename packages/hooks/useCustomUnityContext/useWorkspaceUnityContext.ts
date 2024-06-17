@@ -5,7 +5,13 @@ import {
   WorkspaceLoadData,
   WorkspaceSaveData,
 } from "types/adminTypes";
-import { ItemBaseData, ItemSaveData, ItemType } from "types/unityTypes";
+import {
+  DebugFlag,
+  ItemSaveData,
+  ItemType,
+  ModelParams,
+  TextureParam,
+} from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
@@ -14,8 +20,6 @@ import {
 } from "./types";
 import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "./useUnityMessageHandler";
-
-type ItemThumbnailParams = Omit<ItemBaseData, "itemType" | "itemId">;
 
 type Props = {
   sampleMenuX?: number;
@@ -148,7 +152,7 @@ export const useWorkspaceUnityContext = ({
   );
 
   const requestItemThumbnail = useCallback(
-    (params: ItemThumbnailParams) => {
+    (params: ModelParams & TextureParam & DebugFlag) => {
       postMessageToUnity(
         "ItemThumbnailGenerationMessageReceiver",
         JSON.stringify({
@@ -216,7 +220,7 @@ export const useWorkspaceUnityContext = ({
         sendRemovalResult,
       );
     },
-    [onRemoveSampleRequested],
+    [onRemoveSampleRequested, sendRemovalResult],
   );
 
   useUnityMessageHandler({
