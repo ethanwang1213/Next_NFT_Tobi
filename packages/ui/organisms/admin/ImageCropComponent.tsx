@@ -1,29 +1,23 @@
 import NextImage from "next/image";
-import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import ReactCrop, {
   centerCrop,
   convertToPixelCrop,
   Crop,
   makeAspectCrop,
-  PixelCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { MaterialItem } from "ui/types/adminTypes";
-import Button from "ui/atoms/Button";
-import { ModelType } from "types/unityTypes";
+import ButtonGroupComponent from "./ButtonGroupComponent";
+import GenerateErrorComponent from "./GenerateErrorComponent";
+import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
   materialImage: MaterialItem;
   cropHandler: (image: string) => void;
   backHandler: () => void;
-  nextHandler: () => void;
-  generateHandler: (
-    materialId: number,
-    cropImage: string,
-    sampleType: number,
-  ) => void;
+  generateHandler: (image: string) => void;
   generateError: boolean;
 };
 
@@ -50,7 +44,7 @@ function centerAspectCrop(
 const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
-  const blobUrlRef = useRef("");
+  const blobUrlRef = useRef(props.materialImage.image);
   const [crop, setCrop] = useState<Crop>({
     unit: "%", // Can be 'px' or '%'
     x: 0,
@@ -58,19 +52,15 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     width: 100,
     height: 100,
   });
-  const [rotate, setRotate] = useState(0);
+  const [rotate, setRotate] = useState(180);
   const [aspect, setAspect] = useState<number | undefined>(undefined);
 
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  useEffect(() => {
-    setIsGenerating(false);
-    blobUrlRef.current = null;
-  }, [props.materialImage]);
+  const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const imageLoadHandler = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
-      if (imgWrapperRef.current == null) return;
+      setLoading(false);
 
       const { width, height } = e.currentTarget;
       const initialCrop = convertToPixelCrop(crop, width, height);
@@ -113,7 +103,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = (rotate * Math.PI) / 180;
+    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
     const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
@@ -188,21 +178,19 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     blobUrlRef.current = URL.createObjectURL(blob);
   }, [crop, rotate]);
 
-  const generateClickHandler = useCallback(async () => {
-    setIsGenerating(true);
+  const generateHandler = useCallback(async () => {
+    setProcessing(true);
 
-    await cropHandler();
+    if (blobUrlRef.current === null) {
+      await cropHandler();
+    }
 
-    props.generateHandler(
-      props.materialImage.id,
-      blobUrlRef.current,
-      ModelType.Poster,
-    );
+    props.generateHandler(blobUrlRef.current);
   }, [props, cropHandler]);
 
   return (
     <div className="h-full relative">
-      {isGenerating && !props.generateError && (
+      {processing && !props.generateError && (
         <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center bg-white/50">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
         </div>
@@ -211,7 +199,10 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
         <div>
           <ReactCrop
             crop={crop}
-            onChange={(c) => setCrop(c)}
+            onChange={(c) => {
+              imgRef.current = null;
+              setCrop(c);
+            }}
             aspect={aspect}
             keepSelection={true}
           >
@@ -219,6 +210,11 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
               className="w-[400px] h-[352px] flex justify-center items-center"
               ref={imgWrapperRef}
             >
+              {loading && (
+                <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center">
+                  <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+                </div>
+              )}
               {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -228,7 +224,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                   style={{
                     maxWidth: "100%",
                     maxHeight: "100%",
-                    transform: `rotate(${rotate}deg)`,
+                    transform: `rotate(${180 - rotate}deg)`,
                     objectFit: "contain",
                   }}
                   onLoad={imageLoadHandler}
@@ -238,7 +234,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
               }
             </div>
           </ReactCrop>
-          <div className="mt-6 flex flex-col items-center">
+          <div className="mt-2 flex flex-col items-center">
             <div className="flex gap-4">
               <NextImage
                 width={24}
@@ -297,89 +293,21 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                 }}
               />
             </div>
-            <div className="w-[220px] relative mt-[18px] mb-[6px]">
-              <Slider
-                min={-180}
-                max={180}
-                styles={{
-                  handle: {
-                    borderColor: "#1779DE",
-                    height: 8,
-                    width: 8,
-                    marginLeft: 0,
-                    marginTop: -3,
-                    backgroundColor: "#1779DE",
-                  },
-                  track: {
-                    backgroundColor: "#1779DE",
-                    height: 2,
-                  },
-                  rail: {
-                    backgroundColor: "#1779DE",
-                    height: 2,
-                  },
-                }}
-                value={rotate}
-                onChange={(value: number) => setRotate(value)}
-              />
-              <span className="absolute left-0 -top-2 text-primary-400 text-[8px] font-medium">
-                -180
-              </span>
-              <span className="absolute right-0 -top-2 text-primary-400 text-[8px] font-medium">
-                180
-              </span>
-            </div>
-            <NextImage
-              width={16}
-              height={16}
-              src="/admin/images/icon/rotate_right.svg"
-              alt="rotate right"
-              className={`cursor-pointer rounded`}
+            <RotateSliderComponent
+              className="mt-[18px] -mb-[18px]"
+              rotate={rotate}
+              setRotate={setRotate}
             />
           </div>
-          <div className="flex justify-between">
-            <Button
-              className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1"
-              onClick={props.backHandler}
-            >
-              <NextImage
-                width={20}
-                height={20}
-                src="/admin/images/icon/arrow-left-s-line.svg"
-                alt="left arrow"
-              />
-              <span className="text-primary text-sm font-medium">Back</span>
-            </Button>
-            <Button
-              className={`w-[72px] h-8 rounded-lg flex items-center justify-center gap-1 bg-warning`}
-              onClick={generateClickHandler}
-            >
-              <span className="text-base-white text-sm font-medium">
-                Generate
-              </span>
-            </Button>
-          </div>
+          <ButtonGroupComponent
+            backButtonHandler={props.backHandler}
+            nextButtonHandler={generateHandler}
+            disabled={false}
+            isGenerate={true}
+          />
         </div>
       ) : (
-        <div className="flex flex-col items-center pt-[152px]">
-          <NextImage
-            src="/admin/images/icon/report-problem.svg"
-            width={98}
-            height={98}
-            alt="warning"
-          />
-          <span className="text-error text-sm font-semibold mt-5">
-            Something wrong happens...
-          </span>
-          <Button
-            className="w-[140px] h-8 mt-[135px] rounded-lg text-base-white bg-primary text-sm font-medium"
-            onClick={() => {
-              props.backHandler();
-            }}
-          >
-            Try again
-          </Button>
-        </div>
+        <GenerateErrorComponent buttonHandler={props.backHandler} />
       )}
     </div>
   );

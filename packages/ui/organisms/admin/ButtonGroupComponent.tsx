@@ -5,7 +5,9 @@ import Button from "ui/atoms/Button";
 const ButtonGroupComponent = (props: {
   backButtonHandler: () => void;
   nextButtonHandler: () => void;
-  disable: boolean;
+  skipButtonHandler?: () => void;
+  disabled: boolean;
+  isGenerate?: boolean;
 }) => {
   return (
     <div className="flex justify-between">
@@ -21,19 +23,43 @@ const ButtonGroupComponent = (props: {
         />
         <span className="text-primary text-sm font-medium">Back</span>
       </Button>
+      {props.skipButtonHandler && (
+        <Button
+          className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1"
+          onClick={props.skipButtonHandler}
+        >
+          <NextImage
+            width={21}
+            height={20}
+            src="/admin/images/icon/skip.svg"
+            alt="skip"
+          />
+          <span className="text-primary text-sm font-medium">Skip</span>
+        </Button>
+      )}
       <Button
         className={`w-[72px] h-8 rounded-lg flex items-center justify-center gap-1
-          ${props.disable ? "bg-secondary" : "bg-primary"}`}
+          ${
+            props.disabled
+              ? "bg-secondary"
+              : props.isGenerate
+                ? "bg-warning"
+                : "bg-primary"
+          }`}
         onClick={props.nextButtonHandler}
-        disabled={props.disable}
+        disabled={props.disabled}
       >
-        <span className="text-base-white text-sm font-medium">Next</span>
-        <NextImage
-          width={20}
-          height={20}
-          src="/admin/images/icon/arrow-right-s-line.svg"
-          alt="left arrow"
-        />
+        <span className="text-base-white text-sm font-medium">
+          {props.isGenerate ? "Generate" : "Next"}
+        </span>
+        {!props.isGenerate && (
+          <NextImage
+            width={20}
+            height={20}
+            src="/admin/images/icon/arrow-right-s-line.svg"
+            alt="left arrow"
+          />
+        )}
       </Button>
     </div>
   );

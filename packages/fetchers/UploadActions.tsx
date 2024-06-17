@@ -7,10 +7,13 @@ export enum ImageType {
   SampleThumbnail,
   MaterialImage,
   ShowcaseThumbnail,
+  ModelTempImage,
 }
 
 export const uploadImage = async (image, type) => {
   try {
+    console.log("uploadImage is called", image, type);
+    return "";
     if (image == "") return "";
 
     // Generate a unique filename for the file
@@ -65,6 +68,10 @@ export const uploadImage = async (image, type) => {
 
       case ImageType.ShowcaseThumbnail:
         path = `users/${auth.currentUser.uid}/showcase/${storageFileName}`;
+        break;
+
+      case ImageType.ModelTempImage:
+        path = `tmp/users/${auth.currentUser.uid}/${storageFileName}`;
         break;
 
       default:

@@ -12,3 +12,7 @@ export type SampleItem = {
   type: number;
 };
 
+export type Vector2 = {
+  x: number;
+  y: number;
+};

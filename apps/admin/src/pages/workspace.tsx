@@ -10,7 +10,7 @@ import { WorkspaceUnity } from "ui/molecules/CustomUnity";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { ModelType } from "types/unityTypes";
-import { SampleItem } from "ui/types/adminTypes";
+import { SampleItem, Vector2 } from "ui/types/adminTypes";
 import {
   SendSampleRemovalResult,
   UpdateIdValues,
@@ -233,40 +233,54 @@ export default function Index() {
     [samples, removeSamplesByItemId],
   );
 
-  const uploadMaterialImageHandler = useCallback(async (image: string) => {
-    const imageUrl = await uploadImage(image, ImageType.MaterialImage);
+  const createMaterialImageHandler = useCallback(async (imageUrl: string) => {
+    console.log("workspace createMaterialImageHandler is called");
     await createMaterialImage(materialAPIUrl, { image: imageUrl }, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const generateSampleHandler = useCallback(
-    async (materialId: number, cropImage: string, sampleType: number) => {
-      generateSampleType.current = sampleType;
-      if (sampleType === ModelType.Poster) {
-        // take material image
-        const materialIndex = materials.findIndex(
-          (value) => value.id === materialId,
-        );
-        let modelImageUrl = materials[materialIndex].image;
-        // if material image is edited, upload it.
-        if (cropImage !== null) {
-          modelImageUrl = await uploadImage(cropImage, ImageType.MaterialImage);
-        }
-        generateMaterialImage.current = materials[materialIndex];
+  const removeBackgroundHandler = useCallback(
+    async (image: string): Promise<string> => {
+      console.log("workspace removeBackgroundHandler is called", image);
+      return image;
+      const imageUrl = await createSample(`${sampleAPIUrl}/remove`, {
+        image: image,
+      });
+      return imageUrl;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
-        // create model
-        const modelResp = await createSample("native/model/create", {
-          type: "Poster",
-          materialId: materialId,
-          imageUrl: modelImageUrl,
-        });
-        generateModelUrl.current = modelResp["modelUrl"];
-        requestItemThumbnail({
-          modelType: ModelType.Poster,
-          modelUrl: modelResp["modelUrl"],
-          imageUrl: modelImageUrl,
-        });
-      }
+  const generateSampleHandler = useCallback(
+    async (
+      sampleType: ModelType,
+      image1: string,
+      image2: string,
+      position: Vector2,
+    ) => {
+      console.log(
+        "workspace generateSampleHandler is called",
+        sampleType,
+        image1,
+        image2,
+        position,
+      );
+      // return;
+      generateSampleType.current = sampleType;
+      const modelResp = await createSample("native/model/create", {
+        type: "Poster",
+        imageUrl1: image1,
+        imageUrl2: image2,
+        position: position,
+      });
+      generateModelUrl.current = modelResp["modelUrl"];
+      requestItemThumbnail({
+        modelType: sampleType as ModelType,
+        modelUrl: modelResp["modelUrl"],
+        imageUrl: image1,
+        // imageUrl: image2,
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [materials, requestItemThumbnail],
@@ -274,7 +288,7 @@ export default function Index() {
 
   return (
     <div className="w-full h-full relative" id="workspace_view">
-      <WorkspaceUnity unityProvider={unityProvider} />
+      {/* <WorkspaceUnity unityProvider={unityProvider} /> */}
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
         <WorkspaceSampleCreateDialog
           dialogRef={sampleCreateDialogRef}
@@ -282,7 +296,8 @@ export default function Index() {
           materials={materials}
           generateHandler={generateSampleHandler}
           generateError={generateError.current}
-          uploadImageHandler={uploadMaterialImageHandler}
+          createMaterialImageHandler={createMaterialImageHandler}
+          removeBackgroundHandler={removeBackgroundHandler}
         />
         <WorkspaceShortcutDialog
           dialogRef={shortcutDialogRef}

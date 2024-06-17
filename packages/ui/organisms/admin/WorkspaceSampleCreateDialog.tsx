@@ -1,50 +1,72 @@
+import { ImageType, uploadImage } from "fetchers/UploadActions";
 import NextImage from "next/image";
 import React, {
   MutableRefObject,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
-import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
-import MaterialImageRotateComponent from "ui/organisms/admin/MaterialImageRotate";
-import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect";
+import { ModelType } from "types/unityTypes";
+import ImageCropComponent from "ui/organisms/admin/ImageCropComponent";
+import ImageRotateComponent from "ui/organisms/admin/ImageRotateComponent";
+import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelectComponent";
 import RoadMapComponent from "ui/organisms/admin/SampleCreateRoadmap";
 import SampleTypeSelectComponent from "ui/organisms/admin/SampleTypeSelect";
 import { MaterialItem } from "ui/types/adminTypes";
+import ImagePositionComponent from "./ImagePositionComponent";
 
 type Props = {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   initDialog: number;
   materials: MaterialItem[];
-  uploadImageHandler: (image: string) => void;
+  createMaterialImageHandler: (image: string) => void;
+  removeBackgroundHandler: (image: string) => Promise<string>;
   generateHandler: (
-    materialId: number,
-    cropImage: string,
-    sampleType: number,
+    sampleType: ModelType,
+    imageUrl1: string,
+    imageUrl2: string,
+    option: any,
   ) => void;
   generateError: boolean;
 };
 
 const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
-  const [creationStep, setCreationStep] = useState(0);
+  const [step, setStep] = useState(0);
   const [sampleType, setSampleType] = useState(null);
   const [materialImage, setMaterialImage] = useState(null);
   const [materialImage2, setMaterialImage2] = useState(null);
 
+  const firstImageRef = useRef(null);
+  const secondImageRef = useRef(null);
+  const uploadImageRef = useRef(null);
+
   useEffect(() => {
-    setCreationStep(0);
+    setStep(0);
     setSampleType(null);
     setMaterialImage(null);
     setMaterialImage2(null);
   }, [props.initDialog]);
 
+  const uploadMaterialImageHandler = useCallback(
+    async (image: string) => {
+      console.log("CreateDialog::uploadMaterialImageHandler is called", image);
+      uploadImageRef.current = await uploadImage(
+        image,
+        ImageType.MaterialImage,
+      );
+      await props.createMaterialImageHandler(uploadImageRef.current);
+    },
+    [props],
+  );
+
   const placeComponent = useCallback(() => {
-    if (sampleType === null || creationStep === 0) {
+    if (sampleType === null || step === 0) {
       return (
         <SampleTypeSelectComponent
           selectTypeHandler={(value) => {
             setSampleType(value);
-            setCreationStep(1);
+            setStep(1);
           }}
         />
       );
@@ -52,29 +74,41 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
 
     switch (sampleType) {
       case "Poster":
-        switch (creationStep) {
+        switch (step) {
           case 1:
             return (
               <MaterialImageSelectComponent
                 data={props.materials}
                 selectedImage={materialImage}
                 selectImageHandler={(value) => setMaterialImage(value)}
-                backHandler={() => setCreationStep(creationStep - 1)}
-                nextHandler={() => setCreationStep(creationStep + 1)}
-                uploadImageHandler={props.uploadImageHandler}
+                backHandler={() => setStep(0)}
+                nextHandler={() => setStep(2)}
+                uploadImageHandler={uploadMaterialImageHandler}
               />
             );
 
           case 2:
             return (
-              <MaterialImageCropComponent
+              <ImageCropComponent
                 materialImage={materialImage}
                 cropHandler={(image: string) =>
                   setMaterialImage({ id: 0, image: image })
                 }
-                backHandler={() => setCreationStep(creationStep - 1)}
-                nextHandler={() => setCreationStep(creationStep + 1)}
-                generateHandler={props.generateHandler}
+                backHandler={() => setStep(1)}
+                generateHandler={async (image: string) => {
+                  if (materialImage.image !== image) {
+                    await uploadMaterialImageHandler(image);
+                    firstImageRef.current = uploadImageRef.current;
+                  } else {
+                    firstImageRef.current = materialImage.image;
+                  }
+                  props.generateHandler(
+                    ModelType.Poster,
+                    firstImageRef.current,
+                    null,
+                    null,
+                  );
+                }}
                 generateError={props.generateError}
               />
             );
@@ -85,30 +119,41 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
         break;
 
       case "Acrylic Stand":
-        switch (creationStep) {
+        switch (step) {
           case 1:
             return (
               <MaterialImageSelectComponent
                 data={props.materials}
                 selectedImage={materialImage}
                 selectImageHandler={(value) => setMaterialImage(value)}
-                backHandler={() => setCreationStep(creationStep - 1)}
-                nextHandler={() => setCreationStep(creationStep + 1)}
-                uploadImageHandler={props.uploadImageHandler}
+                backHandler={() => setStep(0)}
+                nextHandler={async () => {
+                  firstImageRef.current = await props.removeBackgroundHandler(
+                    materialImage.image,
+                  );
+                  setStep(2);
+                }}
+                uploadImageHandler={uploadMaterialImageHandler}
               />
             );
 
           case 2:
             return (
-              <MaterialImageRotateComponent
-                materialImage={materialImage}
-                cropHandler={(image: string) =>
-                  setMaterialImage({ id: 0, image: image })
-                }
-                backHandler={() => setCreationStep(creationStep - 1)}
-                nextHandler={() => setCreationStep(creationStep + 1)}
-                generateHandler={props.generateHandler}
-                generateError={props.generateError}
+              <ImageRotateComponent
+                imageUrl={firstImageRef.current}
+                uploadImageHandler={async (image: string) => {
+                  if (firstImageRef.current != image) {
+                    // skip upload
+                    firstImageRef.current = await uploadImage(
+                      image,
+                      ImageType.ModelTempImage,
+                    );
+                  }
+                }}
+                backHandler={() => setStep(1)}
+                nextHandler={() => setStep(3)}
+                errorHandler={() => setStep(1)}
+                error={props.generateError}
               />
             );
 
@@ -118,35 +163,55 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
                 data={props.materials}
                 selectedImage={materialImage2}
                 selectImageHandler={(value) => setMaterialImage2(value)}
-                backHandler={() => setCreationStep(creationStep - 1)}
-                nextHandler={() => setCreationStep(creationStep + 1)}
-                uploadImageHandler={props.uploadImageHandler}
+                backHandler={() => setStep(2)}
+                nextHandler={async () => {
+                  secondImageRef.current = await props.removeBackgroundHandler(
+                    materialImage2.image,
+                  );
+                  setStep(4);
+                }}
+                uploadImageHandler={uploadMaterialImageHandler}
+                skipHandler={() => {}}
               />
             );
 
           case 4:
             return (
-              <MaterialImageRotateComponent
-                materialImage={materialImage2}
-                cropHandler={(image: string) =>
-                  setMaterialImage({ id: 0, image: image })
-                }
-                backHandler={() => setCreationStep(creationStep - 1)}
-                nextHandler={() => setCreationStep(creationStep + 1)}
-                generateHandler={props.generateHandler}
-                generateError={props.generateError}
+              <ImageRotateComponent
+                imageUrl={secondImageRef.current}
+                uploadImageHandler={async (image: string) => {
+                  if (secondImageRef.current != image) {
+                    // skip upload
+                    secondImageRef.current = await uploadImage(
+                      image,
+                      ImageType.ModelTempImage,
+                    );
+                  }
+                }}
+                showDirection={true}
+                backHandler={() => setStep(3)}
+                nextHandler={() => setStep(5)}
+                errorHandler={() => setStep(3)}
+                error={props.generateError}
               />
             );
 
           case 5:
             return (
-              <MaterialImageSelectComponent
-                data={props.materials}
-                selectedImage={materialImage}
-                selectImageHandler={(value) => setMaterialImage(value)}
-                backHandler={() => setCreationStep(creationStep - 1)}
-                nextHandler={() => setCreationStep(creationStep + 1)}
-                uploadImageHandler={props.uploadImageHandler}
+              <ImagePositionComponent
+                imageUrl={secondImageRef.current}
+                showDirection={true}
+                backHandler={() => setStep(4)}
+                generateHandler={(x: number, y: number) =>
+                  props.generateHandler(
+                    ModelType.AcrylicStand,
+                    firstImageRef.current,
+                    secondImageRef.current,
+                    { x, y },
+                  )
+                }
+                errorHandler={() => setStep(3)}
+                error={props.generateError}
               />
             );
 
@@ -161,11 +226,12 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
   }, [
     props,
     sampleType,
-    creationStep,
+    step,
     materialImage,
     materialImage2,
     setSampleType,
-    setCreationStep,
+    setStep,
+    uploadMaterialImageHandler,
   ]);
 
   return (
@@ -182,7 +248,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           </button>
         </form>
         <div className="w-[188px] rounded-2xl bg-primary ">
-          <RoadMapComponent sampleType={sampleType} step={creationStep} />
+          <RoadMapComponent sampleType={sampleType} step={step} />
         </div>
         <div className="w-[400px] h-[492px] flex flex-col gap-4">
           {placeComponent()}

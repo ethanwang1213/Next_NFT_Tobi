@@ -1,8 +1,8 @@
 import NextImage from "next/image";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { MaterialItem } from "ui/types/adminTypes";
-import Button from "ui/atoms/Button";
+import ButtonGroupComponent from "./ButtonGroupComponent";
 
 type Props = {
   data: MaterialItem[];
@@ -10,16 +10,21 @@ type Props = {
   selectImageHandler: (value: MaterialItem) => void;
   backHandler: () => void;
   nextHandler: () => void;
+  skipHandler?: () => void;
   uploadImageHandler: (image: string) => void;
 };
 
 const MaterialImageSelectComponent: React.FC<Props> = (props) => {
+  const [processing, setProcessing] = useState(false);
+
   const onDrop = useCallback(
     async (acceptedFiles) => {
       // Do something with the files
       const file = acceptedFiles[0];
+      setProcessing(true);
       if (file && file.type.startsWith("image/png")) {
-        props.uploadImageHandler(URL.createObjectURL(file));
+        await props.uploadImageHandler(URL.createObjectURL(file));
+        setProcessing(false);
       } else {
         const reader = new FileReader();
         reader.onload = () => {
@@ -33,7 +38,8 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             const dataUrlWithoutExif = canvas.toDataURL("image/jpeg"); // strip the EXIF data
-            props.uploadImageHandler(dataUrlWithoutExif);
+            await props.uploadImageHandler(dataUrlWithoutExif);
+            setProcessing(false);
           };
           img.src = imageDataUrl.toString();
         };
@@ -47,6 +53,11 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
 
   return (
     <div className="flex flex-col h-full gap-4">
+      {processing && (
+        <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center bg-white/50">
+          <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+        </div>
+      )}
       <div
         {...getRootProps()}
         style={{
@@ -70,55 +81,45 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
           alt="upload icon"
         />
       </div>
-      <div className="flex-1 flex flex-wrap gap-4 overflow-y-auto">
-        {props.data &&
-          props.data.map((image) => (
-            <NextImage
-              key={`material-image-${image.id}`}
-              width={88}
-              height={88}
-              style={{ maxWidth: 88, maxHeight: 88, objectFit: "contain" }}
-              src={image.image}
-              alt="material image"
-              className={`rounded-lg ${
-                props.selectedImage && props.selectedImage.id === image.id
-                  ? "border-2 border-[#009FF5]"
-                  : ""
-              }`}
-              onClick={() => {
-                props.selectImageHandler(image);
-              }}
-            />
-          ))}
+      <div className="flex-1">
+        <div className="flex flex-wrap gap-4 overflow-y-auto">
+          {props.data &&
+            props.data.map((image) => (
+              <NextImage
+                key={`material-image-${image.id}`}
+                width={88}
+                height={88}
+                style={{ maxWidth: 88, maxHeight: 88, objectFit: "contain" }}
+                src={image.image}
+                alt="material image"
+                className={`rounded-lg ${
+                  props.selectedImage && props.selectedImage.id === image.id
+                    ? "border-2 border-[#009FF5]"
+                    : ""
+                }`}
+                onClick={() => {
+                  props.selectImageHandler(image);
+                }}
+              />
+            ))}
+        </div>
       </div>
-      <div className="flex justify-between">
-        <Button
-          className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1"
-          onClick={props.backHandler}
-        >
-          <NextImage
-            width={20}
-            height={20}
-            src="/admin/images/icon/arrow-left-s-line.svg"
-            alt="left arrow"
-          />
-          <span className="text-primary text-sm font-medium">Back</span>
-        </Button>
-        <Button
-          className={`w-[72px] h-8 rounded-lg flex items-center justify-center gap-1
-            ${props.selectedImage === null ? "bg-secondary" : "bg-primary"}`}
-          onClick={props.nextHandler}
-          disabled={props.selectedImage === null}
-        >
-          <span className="text-base-white text-sm font-medium">Next</span>
-          <NextImage
-            width={20}
-            height={20}
-            src="/admin/images/icon/arrow-right-s-line.svg"
-            alt="left arrow"
-          />
-        </Button>
-      </div>
+      <ButtonGroupComponent
+        backButtonHandler={props.backHandler}
+        nextButtonHandler={() => {
+          setProcessing(true);
+          props.nextHandler();
+        }}
+        skipButtonHandler={
+          props.skipHandler
+            ? () => {
+                setProcessing(true);
+                props.skipHandler();
+              }
+            : null
+        }
+        disabled={props.selectedImage === null}
+      />
     </div>
   );
 };
