@@ -200,11 +200,20 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       minted_count: Number(mintedCount),
     },
   });
+  const flowAccount = await prisma.tobiratory_flow_accounts.findFirst({
+    where: {
+      flow_address: to,
+    },
+  });
+  if (!flowAccount) {
+    throw new Error("FLOW_ACCOUNT_NOT_FOUND");
+  }
   await prisma.tobiratory_digital_nft_ownership.create({
     data: {
       nft_id: digitalItemNftId,
       tx_id: txId,
-      owner_uuid: to,
+      owner_uuid: flowAccount.uuid,
+      owner_flow_address: to,
     },
   });
   pushToDevice(fcmToken, {
@@ -307,27 +316,46 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
         flow_address: deposit.to,
       },
     });
-    if (!toFlowRef) {
-      throw new Error("RECEIVER_FLOW_ACCOUNT_NOT_FOUND");
+    if (toFlowRef) {
+      const toFlowAccountUuid = toFlowRef.uuid;
+      await prisma.tobiratory_digital_nft_ownership.create({
+        data: {
+          nft_id: nftId,
+          tx_id: txId,
+          owner_uuid: toFlowAccountUuid,
+          owner_flow_address: deposit.to,
+        },
+      });
+      await prisma.tobiratory_digital_item_nfts.update({
+        where: {
+          id: nftId,
+        },
+        data: {
+          owner_uuid: toFlowAccountUuid,
+          box_id: 0,
+          gift_status: "",
+        },
+      });
+    } else {
+      await prisma.tobiratory_digital_nft_ownership.create({
+        data: {
+          nft_id: nftId,
+          tx_id: txId,
+          owner_uuid: null,
+          owner_flow_address: deposit.to,
+        },
+      });
+      await prisma.tobiratory_digital_item_nfts.update({
+        where: {
+          id: nftId,
+        },
+        data: {
+          owner_uuid: null,
+          box_id: 0,
+          gift_status: "",
+        },
+      });
     }
-    const toFlowAccountUuid = toFlowRef.uuid;
-    await prisma.tobiratory_digital_nft_ownership.create({
-      data: {
-        nft_id: nftId,
-        tx_id: txId,
-        owner_uuid: toFlowAccountUuid,
-      },
-    });
-    await prisma.tobiratory_digital_item_nfts.update({
-      where: {
-        id: nftId,
-      },
-      data: {
-        owner_uuid: toFlowAccountUuid,
-        box_id: 0,
-        gift_status: "",
-      },
-    });
     pushToDevice(fcmToken, {
       title: "NFTのギフトが完了しました",
       body: "",
