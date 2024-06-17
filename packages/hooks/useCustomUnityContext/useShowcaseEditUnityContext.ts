@@ -5,7 +5,12 @@ import {
   ShowcaseSaveData,
   UpdateIdValues,
 } from "types/adminTypes";
-import { ItemSaveData, ItemType, SaidanItemData } from "types/unityTypes";
+import {
+  ItemSaveData,
+  ItemType,
+  SaidanItemData,
+  ShowcaseSettings,
+} from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -34,30 +39,6 @@ type Props = {
 };
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
-
-type WallpaperSettings = {
-  tint: string;
-};
-
-type FloorSettings = {
-  tint: string;
-};
-
-type LightParams = {
-  tint: string;
-  brightness: number;
-};
-
-type LightSettings = {
-  sceneLight: LightParams;
-  pointLight: LightParams;
-};
-
-type ShowcaseSettings = {
-  wallpaper: WallpaperSettings;
-  floor: FloorSettings;
-  lighting: LightSettings;
-};
 
 export const useShowcaseEditUnityContext = ({
   itemMenuX = -1,
