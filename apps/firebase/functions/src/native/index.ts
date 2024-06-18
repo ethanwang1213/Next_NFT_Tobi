@@ -25,7 +25,7 @@ import {
   updateMyContentInfo,
 } from "./contentController";
 import {
-  createModel,
+  createAcrylicStand,
   createDigitalItem,
   deleteDigitalItem,
   getMyDigitalItems,
@@ -39,6 +39,8 @@ import {
   adminDeleteDigitalItems,
   adminDetailOfDigitalItem,
   adminUpdateDigitalItem,
+  removeBackground,
+  removeBackgroundOfMessage,
 } from "./itemController";
 import {
   createSaidan,
@@ -130,7 +132,9 @@ app.get("/my/samples", getMyDigitalItems);
 app.get("/my/samples/:id");
 app.delete("/my/samples/:id", deleteDigitalItem);
 
-app.post("/model/create", createModel);
+app.post("/model/acrylic-stand", createAcrylicStand);
+app.post("/model/remove-bg", removeBackground);
+app.post("/model/message", removeBackgroundOfMessage);
 
 app.get("/my/saidans", getMySaidans);
 app.post("/my/saidans", createSaidan);

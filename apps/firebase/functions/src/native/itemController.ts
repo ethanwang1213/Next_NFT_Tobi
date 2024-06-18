@@ -4,19 +4,67 @@ import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
 
-export const createModel = async (req: Request, res: Response) => {
+export const createAcrylicStand = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {materialId, type, imageUrl}:{materialId: number, type: number, imageUrl: string} = req.body;
-  const predefinedModel = "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+  const {bodyUrl, baseUrl, coords}:{bodyUrl: string, baseUrl?: string, coords?: string} = req.body;
+  const predefinedModel = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample.glb";
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    console.log(uid, materialId, type, imageUrl);
+    console.log(uid, bodyUrl, baseUrl, coords);
 
     // const modelData = await createModelCloud(materialId, type);
     res.status(200).send({
       status: "success",
       data: {
-        modelUrl: predefinedModel, // modelData.modelUrl,
+        url: predefinedModel, // modelData.modelUrl,
+      },
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+export const removeBackground = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {url}:{url: string} = req.body;
+  const predefinedUrl = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample-trans-neko.png";
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    console.log(uid, url);
+
+    // const modelData = await createModelCloud(materialId, type);
+    res.status(200).send({
+      status: "success",
+      data: {
+        url: predefinedUrl, // modelData.modelUrl,
+      },
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+export const removeBackgroundOfMessage = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {url}:{url: string} = req.body;
+  const predefinedUrl = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample-message.png";
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    console.log(uid, url);
+
+    // const modelData = await createModelCloud(materialId, type);
+    res.status(200).send({
+      status: "success",
+      data: {
+        url: predefinedUrl, // modelData.modelUrl,
       },
     });
   }).catch((error: FirebaseError)=>{
