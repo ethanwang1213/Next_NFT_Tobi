@@ -1,22 +1,129 @@
+import axios from "axios";
 import {Request, Response} from "express";
 // import {firestore} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
 
-export const createModel = async (req: Request, res: Response) => {
+interface AcrylicStandResponse {
+  url: string;
+}
+
+export const ModelRequestType = {
+  AcrylicStand: "acrylic_stand",
+  MessageCard: "message_card",
+  RemoveBg: "remove_bg",
+} as const;
+
+export type ModelRequestType = (typeof ModelRequestType)[keyof typeof ModelRequestType];
+
+const getPathAfterBucket = (urlString: string) => {
+  const url = new URL(urlString);
+  const paths = url.pathname.split("/");
+  // index 0 is empty, index 1 is bucket name.
+  return paths.slice(2).join("/");
+};
+
+export const modelApiHandler = (type: ModelRequestType) => {
+  return async (req: Request, res: Response) => {
+    const {authorization} = req.headers;
+    await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+      const uid = decodedToken.uid;
+      switch (type) {
+        case ModelRequestType.AcrylicStand:
+          createAcrylicStand(req, res, uid);
+          break;
+      }
+    }).catch((error: FirebaseError) => {
+      res.status(401).send({
+        status: "error",
+        data: error.code,
+      });
+      return;
+    });
+  };
+};
+
+const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
+  const {bodyUrl, baseUrl, coords}:{bodyUrl: string, baseUrl?: string, coords?: string} = req.body;
+  const modelApiUrl = process.env.MODEL_API_URL;
+  const token = process.env.MODEL_API_TOKEN;
+  if (!modelApiUrl || !token) {
+    res.status(500).send({
+      status: "error",
+      data: "invalid-variable",
+    });
+    return;
+  }
+  const params: Record<string, string | undefined> = {
+    uid,
+    token,
+    process_type: ModelRequestType.AcrylicStand,
+    image1: getPathAfterBucket(bodyUrl),
+    image2: baseUrl ? getPathAfterBucket(baseUrl) : undefined,
+    coords1: coords,
+  };
+  const urlParams = new URLSearchParams();
+  Object.keys(params).forEach((key)=>{
+    if (params[key]) {
+      urlParams.append(key, params[key] as string);
+    }
+  });
+  const url = `${modelApiUrl}?${urlParams.toString()}`;
+  try {
+    const apiResponse = await axios.post<AcrylicStandResponse>(url);
+    res.status(200).send({
+      status: "success",
+      data: {
+        url: apiResponse.data.url,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      status: "error",
+      data: "api-error",
+    });
+  }
+};
+
+export const removeBackground = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {materialId, type, imageUrl}:{materialId: number, type: number, imageUrl: string} = req.body;
-  const predefinedModel = "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+  const {url}:{url: string} = req.body;
+  const predefinedUrl = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample-trans-neko.png";
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    console.log(uid, materialId, type, imageUrl);
+    console.log(uid, url);
 
     // const modelData = await createModelCloud(materialId, type);
     res.status(200).send({
       status: "success",
       data: {
-        modelUrl: predefinedModel, // modelData.modelUrl,
+        url: predefinedUrl, // modelData.modelUrl,
+      },
+    });
+  }).catch((error: FirebaseError)=>{
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
+
+export const removeBackgroundOfMessage = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {url}:{url: string} = req.body;
+  const predefinedUrl = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample-message.png";
+  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    console.log(uid, url);
+
+    // const modelData = await createModelCloud(materialId, type);
+    res.status(200).send({
+      status: "success",
+      data: {
+        url: predefinedUrl, // modelData.modelUrl,
       },
     });
   }).catch((error: FirebaseError)=>{
