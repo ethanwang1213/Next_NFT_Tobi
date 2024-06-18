@@ -50,7 +50,7 @@ const writeMintStatusAsInProgress = async (
 ) => {
   const settingData: { mintStatus: MintStatus } = {
     mintStatus: {
-      TOBIRAPOLISMUSICFESTIVAL2024: {
+      TOBIRAMUSICFESTIVAL2024: {
         [correctStampEntry]: "IN_PROGRESS",
       },
     },
@@ -78,7 +78,7 @@ exports.checkRewardTmf2024 = functions
           );
 
           const currentStampStatusMap =
-        user.mintStatus?.TOBIRAPOLISMUSICFESTIVAL2024;
+        user.mintStatus?.TOBIRAMUSICFESTIVAL2024;
           verifyFirstRequest(correctStampEntry, currentStampStatusMap);
 
           const isStampCompleted = checkStampCompleted(

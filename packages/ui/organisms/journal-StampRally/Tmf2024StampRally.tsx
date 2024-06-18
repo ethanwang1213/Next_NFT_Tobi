@@ -18,32 +18,46 @@ type StampDataType = {
 export const Tmf2024StampRally: React.FC = () => {
   const { requestTmf2024Reward } = useStampRallyFetcher();
 
-  const key: Tmf2024StampType = "Stamp";
-  const STAMP_DIR = "/journal/images/tobirapolismusicfestival/2024/";
-  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISMUSICFESTIVAL2024;
-  const stamp: StampDataType = {
+  const keys: Tmf2024StampType[] = [
+    "TobiraMusicFestival2024",
+    "YouSoTotallyRock",
+  ];
+  const STAMP_DIR = "/journal/images/tobiramusicfestival/2024/";
+  const stampRally = useAuth().user?.mintStatus?.TOBIRAMUSICFESTIVAL2024;
+  const stamps: StampDataType[] = keys.map((key) => ({
     key: key,
     src: `${STAMP_DIR}${key.toLowerCase()}.png`,
     blankSrc: `${STAMP_DIR}${key.toLowerCase()}_blank.png`,
     status: !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key],
-  };
-
-  const loading = stamp.status === "IN_PROGRESS";
+  }));
 
   // TODO: display stamprally
   return (
     <div>
-      {loading ? (
-        <div className="absolute w-full h-full left-0 top-0 flex justify-center grid content-center">
-          <FontAwesomeIcon className="" fontSize={32} icon={faSpinner} spin />
-        </div>
-      ) : (
-        <div>minted</div>
-      )}
-      <StampRallyRewardForm
-        onSubmit={requestTmf2024Reward}
-        event="TOBIRAPOLISMUSICFESTIVAL2024"
-      />
+      {stamps.map((v) => {
+        if (v.status === "NOTHING") {
+          return <div key={v.key}>nothing</div>;
+        } else if (v.status === "IN_PROGRESS") {
+          return (
+            <div key={v.key}>
+              <FontAwesomeIcon
+                className=""
+                fontSize={32}
+                icon={faSpinner}
+                spin
+              />
+            </div>
+          );
+        } else if (v.status === "DONE") {
+          return <div key={v.key}>minted</div>;
+        }
+      })}
+      <div className="w-full mt-4 sm:mt-10">
+        <StampRallyRewardForm
+          onSubmit={requestTmf2024Reward}
+          event="TOBIRAMUSICFESTIVAL2024"
+        />
+      </div>
     </div>
   );
 };

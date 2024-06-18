@@ -5,12 +5,12 @@ export type CompleteStampType = "Complete";
 
 export type StampRallyEvents =
   | "TOBIRAPOLISFESTIVAL2023"
-  | "TOBIRAPOLISMUSICFESTIVAL2024";
+  | "TOBIRAMUSICFESTIVAL2024";
 
 // mint状態データ変更メソッド用（全てoptionalじゃなく設定）
 export type MintStatusForSetMethod = {
   TOBIRAPOLISFESTIVAL2023: Tpf2023StampRallyData;
-  TOBIRAPOLISMUSICFESTIVAL2024: Tmf2024StampRallyData;
+  TOBIRAMUSICFESTIVAL2024: Tmf2024StampRallyData;
 };
 
 // mint状態データ
@@ -57,7 +57,7 @@ export type Tpf2023StampRallyData = StampRallyData<
 //////////////////////////////////////////////////
 
 // TOBIRAPOLIS MUSIC FESTIVAL 2024のスタンプタイプ
-export type Tmf2024StampType = "Stamp";
+export type Tmf2024StampType = "TobiraMusicFestival2024" | "YouSoTotallyRock";
 
 // TOBIRAPOLIS MUSIC FESTIVAL 2024のmint状態データ
 export type Tmf2024StampRallyData = StampRallyData<Tmf2024StampType>;
