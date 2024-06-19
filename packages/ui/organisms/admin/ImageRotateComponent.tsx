@@ -6,8 +6,7 @@ import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
   imageUrl: string;
-  showDirection?: boolean;
-  uploadImageHandler: (image: string) => void;
+  uploadImageHandler: (image: string) => Promise<string>;
   backHandler: () => void;
   nextHandler: () => void;
   error: boolean;
@@ -22,13 +21,6 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
   const [rotate, setRotate] = useState(180);
   const [processing, setProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  console.log(
-    "ImageRotateComponent is rendered",
-    props,
-    processing,
-    blobUrlRef.current,
-  );
 
   const cropImage = useCallback(async () => {
     const image = imgRef.current;
@@ -76,11 +68,9 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
     if (rotate !== 180) {
       await cropImage();
     }
-    await props.uploadImageHandler(blobUrlRef.current);
-    props.nextHandler();
+    const url = await props.uploadImageHandler(blobUrlRef.current);
+    if (url != "") props.nextHandler();
   }, [rotate, props, cropImage]);
-
-  console.log("ImageRotateComponent is rendered", rotate);
 
   return (
     <div className="h-full relative">
@@ -92,23 +82,13 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
       {!props.error ? (
         <div>
           <div
-            className={`w-[400px] h-[402px] flex items-center relative
-              ${
-                props.showDirection
-                  ? "flex-col justify-between"
-                  : "justify-center"
-              }`}
+            className={`w-[400px] h-[402px] flex justify-center items-center relative`}
             ref={imgWrapperRef}
           >
             {loading && (
               <div className="absolute left-0 top-0 w-[400px] h-[402px] z-10 flex justify-center items-center">
                 <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
               </div>
-            )}
-            {props.showDirection && (
-              <span className="text-secondary-400 text-sm font-medium">
-                Back
-              </span>
             )}
             {
               // eslint-disable-next-line @next/next/no-img-element
@@ -127,11 +107,6 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
                 onLoad={() => setLoading(false)}
               />
             }
-            {props.showDirection && (
-              <span className="text-secondary-400 text-sm font-medium">
-                Front
-              </span>
-            )}
           </div>
           <RotateSliderComponent
             className="mt-1 -mb-4"
@@ -145,7 +120,12 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
           />
         </div>
       ) : (
-        <GenerateErrorComponent buttonHandler={props.errorHandler} />
+        <GenerateErrorComponent
+          buttonHandler={() => {
+            setProcessing(false);
+            props.errorHandler();
+          }}
+        />
       )}
     </div>
   );

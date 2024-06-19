@@ -16,14 +16,9 @@ const sampleCreateRoadmapTitles = {
       description: "Select the material for the acrylic stand base.",
     },
     {
-      title: "Adjust Base",
+      title: "Adjust and Place",
       description:
-        "Set the front and back of the base and adjust it by rotating.",
-    },
-    {
-      title: "Place on Base stand",
-      description:
-        'Place the body on the base. Move the rectangle labeled "Acrylic plate" to set the placement.',
+        'Set the front and back of the base and adjust it by rotating and place the body on the base. Move the rectangle labeled "Acrylic plate" to set the placement.',
     },
   ],
   poster: [

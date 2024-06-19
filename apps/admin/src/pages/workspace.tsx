@@ -44,13 +44,15 @@ export default function Index() {
     setData: setSamples,
     postData: createSample,
     deleteData: deleteSamples,
+    post,
   } = useRestfulAPI(sampleAPIUrl);
 
   const materialAPIUrl = "native/materials";
   const { data: materials, postData: createMaterialImage } =
     useRestfulAPI(materialAPIUrl);
 
-  const generateError = useRef(false);
+  const [generateSampleError, setGenerateSampleError] = useState(false);
+
   const generateSampleType = useRef(null);
   const generateMaterialImage = useRef(null);
   const generateModelUrl = useRef(null);
@@ -75,9 +77,13 @@ export default function Index() {
     const newSample = await createSample(sampleAPIUrl, {
       thumbUrl: sampleThumb,
       modelUrl: generateModelUrl.current,
-      materialId: generateMaterialImage.current.id,
+      materialId: generateMaterialImage.current?.id ?? 0,
       type: generateSampleType.current,
     });
+    if (newSample === false) {
+      setGenerateSampleError(true);
+      return;
+    }
     placeSampleHandler(newSample);
     loadSamples(sampleAPIUrl);
 
@@ -171,6 +177,7 @@ export default function Index() {
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
       setInitSampleCreateDialog(initSampleCreateDialog + 1);
+      setGenerateSampleError(false);
       sampleCreateDialogRef.current.showModal();
     }
   }, [initSampleCreateDialog]);
@@ -234,21 +241,28 @@ export default function Index() {
   );
 
   const createMaterialImageHandler = useCallback(async (imageUrl: string) => {
-    console.log("workspace createMaterialImageHandler is called");
-    await createMaterialImage(materialAPIUrl, { image: imageUrl }, []);
+    const resp = await createMaterialImage(
+      materialAPIUrl,
+      { image: imageUrl },
+      [],
+    );
+    if (!resp) {
+      setGenerateSampleError(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const removeBackgroundHandler = useCallback(
     async (image: string): Promise<string> => {
-      console.log("workspace removeBackgroundHandler is called", image);
-      return image;
-      const imageUrl = await createSample(`${sampleAPIUrl}/remove`, {
-        image: image,
+      const resp = await post("native/model/remove-bg", {
+        url: image,
       });
-      return imageUrl;
+      if (!resp) {
+        setGenerateSampleError(true);
+        return "";
+      }
+      return resp["url"];
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -257,30 +271,49 @@ export default function Index() {
       sampleType: ModelType,
       image1: string,
       image2: string,
-      position: Vector2,
+      coords: string,
     ) => {
-      console.log(
-        "workspace generateSampleHandler is called",
-        sampleType,
-        image1,
-        image2,
-        position,
-      );
-      // return;
       generateSampleType.current = sampleType;
-      const modelResp = await createSample("native/model/create", {
-        type: "Poster",
-        imageUrl1: image1,
-        imageUrl2: image2,
-        position: position,
-      });
-      generateModelUrl.current = modelResp["modelUrl"];
-      requestItemThumbnail({
-        modelType: sampleType as ModelType,
-        modelUrl: modelResp["modelUrl"],
-        imageUrl: image1,
-        // imageUrl: image2,
-      });
+      if (sampleType == ModelType.Poster) {
+        const modelResp = await createSample("native/model/create", {
+          type: ModelType.Poster,
+        });
+        if (modelResp === false) {
+          setGenerateSampleError(true);
+          return;
+        }
+        generateModelUrl.current = modelResp["modelUrl"];
+        requestItemThumbnail({
+          modelType: sampleType as ModelType,
+          modelUrl: modelResp["modelUrl"],
+          imageUrl: image1,
+        });
+      }
+      if (sampleType == ModelType.AcrylicStand) {
+        const bodyObj = {
+          bodyUrl: image1,
+          baseUrl: image2,
+          coords: coords,
+        };
+        if (image2 == null) {
+          delete bodyObj.bodyUrl;
+        }
+        if (coords == null) {
+          delete bodyObj.coords;
+        }
+        const modelResp = await post("native/model/acrylic-stand", bodyObj);
+        if (modelResp === false) {
+          setGenerateSampleError(true);
+          return;
+        }
+        generateModelUrl.current = modelResp["url"];
+        generateMaterialImage.current = null;
+        requestItemThumbnail({
+          modelType: sampleType as ModelType,
+          modelUrl: modelResp["url"],
+          imageUrl: image1,
+        });
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [materials, requestItemThumbnail],
@@ -295,9 +328,12 @@ export default function Index() {
           initDialog={initSampleCreateDialog}
           materials={materials}
           generateHandler={generateSampleHandler}
-          generateError={generateError.current}
+          generateError={generateSampleError}
           createMaterialImageHandler={createMaterialImageHandler}
           removeBackgroundHandler={removeBackgroundHandler}
+          resetErrorHandler={() => {
+            setGenerateSampleError(false);
+          }}
         />
         <WorkspaceShortcutDialog
           dialogRef={shortcutDialogRef}

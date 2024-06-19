@@ -18,7 +18,8 @@ type Props = {
   cropHandler: (image: string) => void;
   backHandler: () => void;
   generateHandler: (image: string) => void;
-  generateError: boolean;
+  error: boolean;
+  errorHandler: () => void;
 };
 
 function centerAspectCrop(
@@ -190,12 +191,12 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
 
   return (
     <div className="h-full relative">
-      {processing && !props.generateError && (
+      {processing && !props.error && (
         <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center bg-white/50">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
         </div>
       )}
-      {!props.generateError ? (
+      {!props.error ? (
         <div>
           <ReactCrop
             crop={crop}
@@ -307,7 +308,12 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
           />
         </div>
       ) : (
-        <GenerateErrorComponent buttonHandler={props.backHandler} />
+        <GenerateErrorComponent
+          buttonHandler={() => {
+            setProcessing(false);
+            props.errorHandler();
+          }}
+        />
       )}
     </div>
   );

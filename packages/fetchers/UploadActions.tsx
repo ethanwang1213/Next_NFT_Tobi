@@ -12,8 +12,6 @@ export enum ImageType {
 
 export const uploadImage = async (image, type) => {
   try {
-    console.log("uploadImage is called", image, type);
-    return "";
     if (image == "") return "";
 
     // Generate a unique filename for the file
