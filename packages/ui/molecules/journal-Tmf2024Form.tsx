@@ -29,7 +29,7 @@ export const Tmf2024Form: React.FC<Props> = ({
 }) => {
   return (
     <div>
-      <div className="flex justify-center pt-10">
+      <div className="flex justify-center pt-3 sm:pt-10">
         {status === "Nothing" && <Nothing />}
         {status === "Checking" && <Checking />}
         {status === "Minting" && <Minting />}

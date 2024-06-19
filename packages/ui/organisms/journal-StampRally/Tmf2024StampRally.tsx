@@ -55,7 +55,7 @@ export const Tmf2024StampRally: React.FC = () => {
 
   // TODO: display stamprally
   return (
-    <div>
+    <div className="pb-2 sm:pb-0">
       <Tmf2024Title />
       <div>
         <Tmf2024Form

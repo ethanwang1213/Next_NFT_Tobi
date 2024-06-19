@@ -7,11 +7,11 @@ export const Tmf2024Title: React.FC = React.memo(() => {
       <div className="py-2">
         <TobirapolisIcon />
       </div>
-      <div className="pl-6 pt-1">
-        <h3 className="text-dark-brown text-[32px] font-bold">
+      <div className="pl-3 sm:pl-6 pt-1">
+        <h3 className="text-dark-brown text-[24px] sm:text-[32px] font-bold">
           Enter the Keyword
         </h3>
-        <p className="text-primary text-xs font-bold">
+        <p className="text-primary text-[10px] sm:text-xs font-bold">
           If you enter the correct keyword, it will be recorded in your Journal.
         </p>
       </div>

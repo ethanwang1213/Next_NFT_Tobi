@@ -18,7 +18,7 @@ export const Tmf2024Input: React.FC<Props> = ({ onSubmit }) => {
         reset();
         onSubmit(data);
       })}
-      className="flex justify-center gap-4 pr-8 text-[16px] font-bold"
+      className="flex justify-center gap-4 sm:pr-8 text-sm sm:text-[16px] font-bold"
     >
       <p className="text-dark-brown font-bold place-content-center">Keyword</p>
       <div className="w-[280px]">
@@ -36,7 +36,7 @@ export const Tmf2024Input: React.FC<Props> = ({ onSubmit }) => {
         />
       </div>
       <div className="flex items-center">
-        <button className="w-[105px] max-h-8 min-h-8 btn btn-accent rounded-full">
+        <button className="w-18 sm:w-[105px] max-h-8 min-h-8 btn btn-accent rounded-full">
           send
         </button>
       </div>
