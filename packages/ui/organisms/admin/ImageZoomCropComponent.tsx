@@ -14,7 +14,6 @@ import RotateSliderComponent from "./RotateSliderComponent";
 type Props = {
   materialImage: MaterialItem;
   backHandler: () => void;
-  nextHandler: () => void;
   generateHandler: (image: string) => void;
   error: boolean;
   errorHandler: () => void;
