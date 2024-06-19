@@ -33,6 +33,7 @@ const config = {
       },
       colors: {
         brown: "#894400",
+        "dark-brown": "#5B2E02",
         "secondary-main": "#3598AF",
         "neutral-main": "#717171",
         "disabled-input": "#A1A1A1",

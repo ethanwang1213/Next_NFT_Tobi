@@ -17,7 +17,7 @@ type Props = {
  * TOBIRA POLIS祭の出し物 G0のスタンプラリーの記念品受け取り用フォーム
  * @returns {ReactElement} The `StampRallyRewardForm` component
  */
-export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit, event }) => {
+export const Tpf2023RewardForm: React.FC<Props> = ({ onSubmit, event }) => {
   const { register, handleSubmit, reset } = useForm<StampRallyRewardFormType>({
     defaultValues: {
       keyword: "",

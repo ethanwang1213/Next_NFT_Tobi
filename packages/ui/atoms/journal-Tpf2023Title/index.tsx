@@ -4,7 +4,7 @@ import { TitleHr } from "./journal-TitleHr";
  * スタンプラリーのタイトルを表示するコンポーネント
  * @returns {ReactElement} The `StampRallyTitle` component
  */
-export const StampRallyTitle: React.FC = () => {
+export const Tpf2023Title: React.FC = () => {
   return (
     <>
       <TitleHr />

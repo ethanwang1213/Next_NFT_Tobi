@@ -1,9 +1,9 @@
 import { useAuth } from "contexts/journal-AuthProvider";
 import { MintStatusType, Tpf2023StampType } from "types/stampRallyTypes";
-import { useStampRallyFetcher } from "../../../fetchers/journal-useStampRallyFetcher";
+import { useStampRallyFetcher } from "fetchers/journal-useStampRallyFetcher";
 import { RoundedImage } from "../../atoms/journal-RoundedImage";
-import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
-import { StampRallyRewardForm } from "../../molecules/journal-StampRallyRewardForm";
+import { Tpf2023Title } from "../../atoms/journal-Tpf2023Title";
+import { Tpf2023RewardForm } from "../../molecules/journal-Tpf2023RewardForm";
 
 type StampDataType = {
   key: Tpf2023StampType;
@@ -43,7 +43,7 @@ export const Tpf2023StampRally: React.FC = () => {
   return (
     <div className="text-center text-primary">
       <div>
-        <StampRallyTitle />
+        <Tpf2023Title />
       </div>
       <div className="mt-6 sm:mt-12">
         <p className="text-xs sm:text-lg font-bold">
@@ -65,7 +65,7 @@ export const Tpf2023StampRally: React.FC = () => {
         </div>
       </div>
       <div className="w-full mt-4 sm:mt-10">
-        <StampRallyRewardForm
+        <Tpf2023RewardForm
           onSubmit={requestTpf2023Reward}
           event="TOBIRAPOLISFESTIVAL2023"
         />
