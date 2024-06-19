@@ -7,14 +7,26 @@ import {
 } from "../atoms/journal-Tmf2024Status";
 import { Tmf2024Input } from "../atoms/journal-Tmf2024Input";
 import { Tmf2024RedirectButton } from "../atoms/journal-Tmf2024RedirectButton";
+import { StampRallyRewardFormType } from "types/stampRallyTypes";
 
-type Status = "Nothing" | "Checking" | "Minting" | "Incorrect" | "Success";
+export type FormStatus =
+  | "Nothing"
+  | "Checking"
+  | "Minting"
+  | "Incorrect"
+  | "Success";
 
 type Props = {
-  status: Status;
+  status: FormStatus;
+  onSubmit: (data: StampRallyRewardFormType) => void;
+  onRedirectClick: () => void;
 };
 
-export const Tmf2024Form: React.FC<Props> = ({ status }) => {
+export const Tmf2024Form: React.FC<Props> = ({
+  status,
+  onSubmit,
+  onRedirectClick,
+}) => {
   return (
     <div>
       <div className="flex justify-center pt-10">
@@ -25,9 +37,13 @@ export const Tmf2024Form: React.FC<Props> = ({ status }) => {
         {status === "Success" && <Success />}
       </div>
       <div className="h-8">
-        {(status === "Nothing" || status === "Incorrect") && <Tmf2024Input />}
+        {(status === "Nothing" || status === "Incorrect") && (
+          <Tmf2024Input onSubmit={onSubmit} />
+        )}
         {(status === "Checking" || status === "Minting") && <div></div>}
-        {status === "Success" && <Tmf2024RedirectButton />}
+        {status === "Success" && (
+          <Tmf2024RedirectButton onClick={onRedirectClick} />
+        )}
       </div>
     </div>
   );

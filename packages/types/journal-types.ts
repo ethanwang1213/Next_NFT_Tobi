@@ -64,6 +64,7 @@ export type User = {
   birthday: Birthday;
   characteristic?: Characteristic;
   mintStatus?: MintStatus;
+  isStampTmf2024Checked?: boolean;
 };
 
 // NFTの基本データ型

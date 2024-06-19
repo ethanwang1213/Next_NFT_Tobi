@@ -7,7 +7,8 @@ import {
   Tmf2024StampType,
   Tpf2023StampType,
 } from "types/stampRallyTypes";
-import { functions } from "./firebase/journal-client";
+import { db, functions } from "./firebase/journal-client";
+import { doc, setDoc } from "firebase/firestore/lite";
 
 type BodyType = {
   keyword: string;
@@ -18,8 +19,12 @@ type BodyType = {
  * @returns
  */
 export const useStampRallyFetcher = () => {
-  const { setMintStatus } = useAuth();
-  const { isSubmitting } = useStampRallyForm();
+  const {
+    user,
+    setMintStatus,
+    checkStampMinted: checkLocalStampMinted,
+  } = useAuth();
+  const { isSubmitting, isIncorrect } = useStampRallyForm();
 
   const requestTpf2023Reward = (data: StampRallyRewardFormType) => {
     console.log(data);
@@ -51,6 +56,7 @@ export const useStampRallyFetcher = () => {
   const requestTmf2024Reward = (data: StampRallyRewardFormType) => {
     console.log(data);
     isSubmitting.set(true);
+    isIncorrect.set(false);
 
     const callable = httpsCallable<
       BodyType,
@@ -68,12 +74,34 @@ export const useStampRallyFetcher = () => {
         );
 
         isSubmitting.set(false);
+        console.log("success");
       })
       .catch((error) => {
         console.log(error);
         isSubmitting.set(false);
+        isIncorrect.set(true);
+        console.log("error");
       });
   };
 
-  return { isSubmitting, requestTpf2023Reward, requestTmf2024Reward };
+  const checkMintedStamp = () => {
+    try {
+      if (user.isStampTmf2024Checked) return true;
+
+      const usersSrcRef = doc(db, `users/${user.id}`);
+      setDoc(usersSrcRef, { isStampTmf2024Checked: true }, { merge: true });
+      checkLocalStampMinted();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  return {
+    isSubmitting,
+    requestTpf2023Reward,
+    requestTmf2024Reward,
+    checkMintedStamp,
+  };
 };

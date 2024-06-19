@@ -54,6 +54,7 @@ type ContextType = {
   // TOBIRAPOLIS祭スタンプラリー用
   setMintStatus: SetMintStatus;
   refetchUserMintStatus: () => void;
+  checkStampMinted: () => void;
   //
 };
 
@@ -239,6 +240,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const checkMintedStamp = () => {
+    if (!user) return;
+    setUser((state) => {
+      return { ...state, isStampTmf2024Checked: true };
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -251,6 +259,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         // TOBIRAPOLIS祭スタンプラリー用
         setMintStatus,
         refetchUserMintStatus,
+        checkStampMinted: checkMintedStamp,
         //
       }}
     >

@@ -3,6 +3,13 @@ export type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
 
 export type CompleteStampType = "Complete";
 
+export type FormStatus =
+  | "Nothing"
+  | "Checking"
+  | "Minting"
+  | "Incorrect"
+  | "Success";
+
 export type StampRallyEvents =
   | "TOBIRAPOLISFESTIVAL2023"
   | "TOBIRAMUSICFESTIVAL2024";

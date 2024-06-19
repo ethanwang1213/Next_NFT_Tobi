@@ -17,13 +17,17 @@ type ContextType = {
     current: boolean;
     set: Dispatch<SetStateAction<boolean>>;
   };
+  isIncorrect: {
+    current: boolean;
+    set: Dispatch<SetStateAction<boolean>>;
+  };
 };
 
 const StampRallyFormContext = createContext<ContextType>({} as ContextType);
 
 /**
  * スタンプラリーのフォームの状態を管理するコンテキスト
- * 
+ *
  * 使用方法：pages/index.tsxで、WatchMintStatusProviderとともにcontextを宣言する
  * 理由：ユーザーログインを必要とする機能であるため、ログイン後のページであるindexで宣言する必要がある
  * @param param0
@@ -31,12 +35,17 @@ const StampRallyFormContext = createContext<ContextType>({} as ContextType);
  */
 export const StampRallyFormProvider: React.FC<Props> = ({ children }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isIncorrect, setIsIncorrect] = useState(false);
 
   const contextValue: ContextType = useMemo(
     () => ({
       isSubmitting: {
         current: isSubmitting,
         set: setIsSubmitting,
+      },
+      isIncorrect: {
+        current: isIncorrect,
+        set: setIsIncorrect,
       },
     }),
     [isSubmitting, setIsSubmitting]

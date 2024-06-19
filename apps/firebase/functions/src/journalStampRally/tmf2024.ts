@@ -48,12 +48,16 @@ const writeMintStatusAsInProgress = async (
     userId: string,
     correctStampEntry: Tmf2024StampType
 ) => {
-  const settingData: { mintStatus: MintStatus } = {
+  const settingData: {
+    mintStatus: MintStatus;
+    isStampTmf2024Checked: boolean;
+  } = {
     mintStatus: {
       TOBIRAMUSICFESTIVAL2024: {
         [correctStampEntry]: "IN_PROGRESS",
       },
     },
+    isStampTmf2024Checked: false,
   };
   await firestore().collection("users").doc(userId).set(settingData, {
     merge: true,
@@ -77,8 +81,7 @@ exports.checkRewardTmf2024 = functions
               TMF2024_STAMP_RALLY_KEYWORDS
           );
 
-          const currentStampStatusMap =
-        user.mintStatus?.TOBIRAMUSICFESTIVAL2024;
+          const currentStampStatusMap = user.mintStatus?.TOBIRAMUSICFESTIVAL2024;
           verifyFirstRequest(correctStampEntry, currentStampStatusMap);
 
           const isStampCompleted = checkStampCompleted(

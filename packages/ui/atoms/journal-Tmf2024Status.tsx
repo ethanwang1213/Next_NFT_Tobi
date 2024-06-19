@@ -72,5 +72,5 @@ const IconContainer: React.FC<{ children?: React.ReactNode }> = ({
 const TextContainer: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  return <p className="m-5 text-[15px] font-bold">{children}</p>;
+  return <p className="m-5 text-[15px] font-bold text-center">{children}</p>;
 };

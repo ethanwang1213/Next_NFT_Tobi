@@ -1,11 +1,16 @@
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useStampRallyFetcher } from "fetchers/journal-useStampRallyFetcher";
-import { MintStatusType, Tmf2024StampType } from "types/stampRallyTypes";
-import { Tpf2023RewardForm } from "../../molecules/journal-Tpf2023RewardForm";
+import {
+  FormStatus,
+  MintStatus,
+  MintStatusType,
+  Tmf2024StampType,
+} from "types/stampRallyTypes";
 import TobirapolisIcon from "../../../../apps/journal/public/images/icon/tobirapolis_icon.svg";
 import { Tmf2024Form } from "../../molecules/journal-Tmf2024Form";
+import { useBookContext } from "../../../../apps/journal/contexts/journal-BookProvider";
+import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
+import { useCallback } from "react";
 
 type StampDataType = {
   key: Tmf2024StampType;
@@ -15,20 +20,37 @@ type StampDataType = {
 };
 
 export const Tmf2024StampRally: React.FC = () => {
-  const { requestTmf2024Reward } = useStampRallyFetcher();
+  const { requestTmf2024Reward, checkMintedStamp } = useStampRallyFetcher();
+  const { isSubmitting, isIncorrect } = useStampRallyForm();
 
   const keys: Tmf2024StampType[] = [
     "TobiraMusicFestival2024",
     "YouSoTotallyRock",
   ];
-  const STAMP_DIR = "/journal/images/tobiramusicfestival/2024/";
-  const stampRally = useAuth().user?.mintStatus?.TOBIRAMUSICFESTIVAL2024;
-  const stamps: StampDataType[] = keys.map((key) => ({
-    key: key,
-    src: `${STAMP_DIR}${key.toLowerCase()}.png`,
-    blankSrc: `${STAMP_DIR}${key.toLowerCase()}_blank.png`,
-    status: !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key],
-  }));
+  const user = useAuth().user;
+  const stampRally = user?.mintStatus?.TOBIRAMUSICFESTIVAL2024;
+  const statuses: MintStatusType[] = keys.map((key) =>
+    !stampRally || !stampRally[key] ? "NOTHING" : stampRally[key]
+  );
+  const isStampChecked = user?.isStampTmf2024Checked;
+
+  const checkStatus: () => FormStatus = useCallback(() => {
+    console.log("check status");
+    if (isSubmitting.current) {
+      return "Checking";
+    } else if (isIncorrect.current) {
+      return "Incorrect";
+    } else if (statuses.includes("IN_PROGRESS")) {
+      return "Minting";
+    } else if (
+      (statuses.includes("DONE") && !isStampChecked) ||
+      !statuses.includes("NOTHING")
+    ) {
+      return "Success";
+    } else {
+      return "Nothing";
+    }
+  }, [statuses, isSubmitting.current, isIncorrect.current, isStampChecked]);
 
   // TODO: display stamprally
   return (
@@ -48,7 +70,11 @@ export const Tmf2024StampRally: React.FC = () => {
         </div>
       </div>
       <div>
-        <Tmf2024Form status="Success" />
+        <Tmf2024Form
+          status={checkStatus()}
+          onSubmit={requestTmf2024Reward}
+          onRedirectClick={checkMintedStamp}
+        />
       </div>
     </div>
   );
