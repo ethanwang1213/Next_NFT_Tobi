@@ -15,6 +15,7 @@ export const ModelType = {
   Poster: 1,
   AcrylicStand: 2,
   CanBadge: 3,
+  MessageCard: 4,
 } as const;
 export type ModelType = (typeof ModelType)[keyof typeof ModelType];
 
@@ -33,44 +34,58 @@ export type Vector3 = {
   z: number;
 };
 
-export type ItemBaseData = {
+export type ItemTypeParam = {
   itemType: ItemType;
+};
+
+export type ItemBaseId = {
   itemId: number;
+};
+
+export type ModelParams = {
   modelType: ModelType;
   modelUrl: string;
-  imageUrl: string;
-  secondImageUrl?: string;
+};
+
+export type TextureParam = {
+  imageUrl?: string;
+};
+
+export type DebugFlag = {
   isDebug?: boolean;
 };
 
-export type SaidanItemData = ItemBaseData & {
+export type ItemBaseData = ItemTypeParam &
+  ItemBaseId &
+  ModelParams &
+  TextureParam &
+  DebugFlag;
+export type SampleBaseData = Omit<ItemBaseData, "itemType">;
+export type NftBaseData = Omit<ItemBaseData, "itemType" | "imageUrl">;
+
+export type ItemId = {
   id: number;
+};
+
+export type ItemPosture = {
   stageType: UnityStageType;
   position: Vector3;
   rotation: Vector3;
-  canScale: boolean;
-  itemMeterHeight: number;
   scale: number;
 };
 
-export type SampleLoadData = Omit<
-  SaidanItemData,
-  "itemType" | "canScale" | "itemMeterHeight"
->;
+export type SaidanItemData = ItemBaseData &
+  ItemId &
+  ItemPosture & {
+    canScale: boolean;
+    itemMeterHeight: number;
+  };
 
-export type NftLoadData = Omit<
-  SaidanItemData,
-  "itemType" | "canScale" | "imageUrl" | "secondImageUrl"
->;
+export type SampleLoadData = SampleBaseData & ItemId & ItemPosture;
+export type NftLoadData = NftBaseData &
+  ItemId &
+  ItemPosture & {
+    itemMeterHeight: number;
+  };
 
-export type ItemSaveData = Omit<
-  SaidanItemData,
-  | "itemType"
-  | "modelType"
-  | "modelUrl"
-  | "imageUrl"
-  | "secondImageUrl"
-  | "canScale"
-  | "itemMeterHeight"
-  | "isDebug"
->;
+export type ItemSaveData = ItemBaseId & ItemId & ItemPosture;
