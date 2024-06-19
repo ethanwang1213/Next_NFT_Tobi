@@ -55,16 +55,13 @@ export type DebugFlag = {
   isDebug?: boolean;
 };
 
-export type NftBaseData = ItemBaseId & ModelParams & DebugFlag;
-export type SampleBaseData = ItemBaseId &
-  ModelParams &
-  TextureParam &
-  DebugFlag;
 export type ItemBaseData = ItemTypeParam &
   ItemBaseId &
   ModelParams &
   TextureParam &
   DebugFlag;
+export type SampleBaseData = Omit<ItemBaseData, "itemType">;
+export type NftBaseData = Omit<ItemBaseData, "itemType" | "imageUrl">;
 
 export type ItemId = {
   id: number;
