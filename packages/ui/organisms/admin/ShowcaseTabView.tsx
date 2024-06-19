@@ -33,7 +33,7 @@ const ShowcaseTabView = ({
 
   return (
     <div
-      className="w-[504px] bg-gray-800 bg-opacity-50 min-h-full absolute right-0
+      className="w-[504px] min-h-full absolute right-0
         flex flex-col items-center text-base-white"
     >
       {showRestoreMenu && (
@@ -53,7 +53,7 @@ const ShowcaseTabView = ({
           />
         </div>
       )}
-      <nav className="flex h-16 w-full bg-white">
+      <nav className="flex h-16 w-full">
         <ShowcaseTabSelector
           isActive={tab === "Sample Items"}
           onClick={() => handleTabChange("Sample Items")}
@@ -94,7 +94,7 @@ const ShowcaseTabView = ({
           <span className="text-sm font-semibold leading-6">Settings</span>
         </ShowcaseTabSelector>
       </nav>
-      <div className="p-[30px] w-full flex-1 flex flex-col">
+      <div className="pl-8 pr-8 pt-12 pb-12 w-full flex-1 flex flex-col bg-gray-600 bg-opacity-50 backdrop-blur-[25px]">
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab
             clickSampleItem={clickSampleItem}
