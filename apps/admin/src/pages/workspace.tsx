@@ -334,7 +334,7 @@ export default function Index() {
 
   return (
     <div className="w-full h-full relative" id="workspace_view">
-      {/* <WorkspaceUnity unityProvider={unityProvider} /> */}
+      <WorkspaceUnity unityProvider={unityProvider} />
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
         <WorkspaceSampleCreateDialog
           dialogRef={sampleCreateDialogRef}
