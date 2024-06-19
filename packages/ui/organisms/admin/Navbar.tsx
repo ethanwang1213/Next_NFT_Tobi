@@ -128,7 +128,7 @@ const UserMenu = () => {
               <div className={"w-[48px] flex justify-center"}>
                 <Image
                   src={"/admin/images/icon/signout.svg"}
-                  alt={"Sign Out Button"}
+                  alt={"Logout Button"}
                   width={24}
                   height={24}
                 />
@@ -139,7 +139,7 @@ const UserMenu = () => {
                     "text-start text-base-content text-[15px] font-normal"
                   }
                 >
-                  Sign Out
+                  Logout
                 </div>
               </div>
             </button>

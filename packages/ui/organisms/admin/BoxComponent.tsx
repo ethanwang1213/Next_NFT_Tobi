@@ -10,7 +10,7 @@ const BoxComponent = ({
   const data = box;
   return (
     <div
-      className="rounded-[8px] bg-no-repeat bg-center cursor-pointer bg-white bg-opacity-50 bg-contain flex flex-wrap w-20 h-20"
+      className="rounded-[8px] cursor-pointer bg-white bg-opacity-50 flex flex-wrap w-20 h-20"
       onClick={() => {
         clickBox(data.id, data.name);
       }}
@@ -29,6 +29,7 @@ const BoxComponent = ({
                 maxHeight: data.items.length == 1 ? 72 : 32,
                 objectFit: "contain",
               }}
+              draggable={false}
             />
           </div>
         );

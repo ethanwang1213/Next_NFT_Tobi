@@ -10,7 +10,7 @@ import { WorkspaceUnity } from "ui/molecules/CustomUnity";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { ModelType } from "types/unityTypes";
-import { SampleItem, Vector2 } from "ui/types/adminTypes";
+import { SampleItem } from "ui/types/adminTypes";
 import {
   SendSampleRemovalResult,
   UpdateIdValues,
@@ -274,9 +274,20 @@ export default function Index() {
       coords: string,
     ) => {
       generateSampleType.current = sampleType;
-      if (sampleType == ModelType.Poster) {
+      if (
+        sampleType === ModelType.Poster ||
+        sampleType === ModelType.CanBadge
+      ) {
+        // take material image
+        const materialIndex = materials.findIndex(
+          (value) => value.image === image1,
+        );
+        generateMaterialImage.current = materials[materialIndex];
+
+        // create model
         const modelResp = await createSample("native/model/create", {
-          type: ModelType.Poster,
+          type: sampleType,
+          imageUrl: image1,
         });
         if (modelResp === false) {
           setGenerateSampleError(true);

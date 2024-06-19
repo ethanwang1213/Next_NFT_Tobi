@@ -14,6 +14,7 @@ export type ItemType = (typeof ItemType)[keyof typeof ItemType];
 export const ModelType = {
   Poster: 1,
   AcrylicStand: 2,
+  CanBadge: 3,
 } as const;
 export type ModelType = (typeof ModelType)[keyof typeof ModelType];
 

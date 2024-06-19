@@ -215,12 +215,6 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         content_id: content?.id,
       },
     });
-    await prisma.tobiratory_digital_nft_ownership.create({
-      data: {
-        owner_uuid: uid,
-        nft_id: nft.id,
-      },
-    });
     const flowJobId = uuidv4();
     const message = {flowJobId, txType: "createItem", params: {
       tobiratoryAccountUuid: uid,
@@ -300,7 +294,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   }
   const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
     where: {
-      uuid: receiveFlowId,
+      uuid: uid,
     },
   });
   if (!flowAccount) {
@@ -524,7 +518,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       });
       const content = await prisma.tobiratory_contents.findFirst({
         where: {
-          owner_uuid: nftData.owner_uuid,
+          owner_uuid: nftData.owner_uuid??"",
         },
       });
       const copyrights = nftData.digital_item.copyright.map((relate)=>{

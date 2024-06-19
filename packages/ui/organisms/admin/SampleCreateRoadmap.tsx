@@ -54,13 +54,12 @@ const sampleCreateRoadmapTitles = {
   canbadge: [
     {
       title: "Select a material",
-      description: "ポスターにする素材を選択してください",
+      description: "Select the material for the Can Badge.",
     },
     {
       title: "Crop the image",
-      description: "",
+      description: "Crop the can badge material as needed.",
     },
-    { title: "Generate", description: "" },
   ],
 };
 

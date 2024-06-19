@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import { BoxComponent } from "ui/organisms/admin/BoxComponent";
 import { BoxInventoryTab } from "./BoxInventoryTab";
 import { InventoryItemComponent } from "./InventoryItemComponent";
+import { NftItem } from "ui/types/adminTypes";
 
 const ShowcaseInventoryTab = ({
-  clickSampleItem,
+  clickNftItem,
+  dragNftItem,
 }: {
-  clickSampleItem: (id: number) => void;
+  clickNftItem: (id: NftItem) => void;
+  dragNftItem: (item: NftItem) => void;
 }) => {
   const apiUrl = "native/my/inventory";
   const { data, loading, getData } = useRestfulAPI(apiUrl);
@@ -50,6 +53,8 @@ const ShowcaseInventoryTab = ({
               <div key={item.id} className="w-1/4 p-2">
                 <InventoryItemComponent
                   imageUrl={item.image}
+                  selectHandler={() => clickNftItem(item)}
+                  dragStartHandler={() => dragNftItem(item)}
                 ></InventoryItemComponent>
               </div>
             );
