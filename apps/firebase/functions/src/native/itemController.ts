@@ -556,6 +556,13 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
+      if (sample.owner_uuid!=uid) {
+        res.status(404).send({
+          status: "error",
+          data: "not-owner",
+        });
+        return;
+      }
       if (price||startDate||endDate||quantityLimit) {
         await prisma.tobiratory_sample_items.update({
           where: {
@@ -939,18 +946,22 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sample = await prisma.tobiratory_sample_items.findUnique({
+      const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: parseInt(digitalId),
         },
-        include: {
-          digital_item: true,
-        },
       });
-      if (!sample) {
+      if (!digitalItem) {
         res.status(404).send({
           status: "error",
           data: "not-exist",
+        });
+        return;
+      }
+      if (digitalItem.creator_uuid!=uid) {
+        res.status(404).send({
+          status: "error",
+          data: "not-owner",
         });
         return;
       }
@@ -972,7 +983,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
       if (name||description||customThumbnailUrl||isCustomThumbnailSelected||status||license) {
         await prisma.tobiratory_digital_items.update({
           where: {
-            id: sample?.digital_item_id,
+            id: parseInt(digitalId),
           },
           data: {
             name: name,
@@ -987,7 +998,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
       if (copyrights) {
         await prisma.tobiratory_digital_items_copyright.deleteMany({
           where: {
-            digital_item_id: sample.digital_item_id,
+            digital_item_id: parseInt(digitalId),
           },
         });
         await Promise.all(
@@ -1004,7 +1015,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
               });
               await prisma.tobiratory_digital_items_copyright.create({
                 data: {
-                  digital_item_id: sample.digital_item_id,
+                  digital_item_id: parseInt(digitalId),
                   copyright_id: selectedCopyright.id,
                 },
               });
