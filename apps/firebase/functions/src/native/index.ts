@@ -40,7 +40,7 @@ import {
   adminDetailOfDigitalItem,
   adminUpdateDigitalItem,
   removeBackground,
-  removeBackgroundOfMessage,
+  removeBackgroundOfMessageCard,
 } from "./itemController";
 import {
   createSaidan,
@@ -134,7 +134,7 @@ app.delete("/my/samples/:id", deleteDigitalItem);
 
 app.post("/model/acrylic-stand", createAcrylicStand);
 app.post("/model/remove-bg", removeBackground);
-app.post("/model/message", removeBackgroundOfMessage);
+app.post("/model/message-card", removeBackgroundOfMessageCard);
 
 app.get("/my/saidans", getMySaidans);
 app.post("/my/saidans", createSaidan);
