@@ -3,16 +3,14 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactCrop, {
-  centerCrop,
   convertToPixelCrop,
   Crop,
-  makeAspectCrop,
   PixelCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { MaterialItem } from "ui/types/adminTypes";
-import Button from "ui/atoms/Button";
 import { ModelType } from "types/unityTypes";
+import Button from "ui/atoms/Button";
+import { MaterialItem } from "ui/types/adminTypes";
 
 type Props = {
   materialImage: MaterialItem;
@@ -26,27 +24,7 @@ type Props = {
   generateError: boolean;
 };
 
-function centerAspectCrop(
-  mediaWidth: number,
-  mediaHeight: number,
-  aspect: number,
-) {
-  return centerCrop(
-    makeAspectCrop(
-      {
-        unit: "%",
-        width: 100,
-      },
-      aspect,
-      mediaWidth,
-      mediaHeight,
-    ),
-    mediaWidth,
-    mediaHeight,
-  );
-}
-
-const MaterialImageCropComponent: React.FC<Props> = (props) => {
+const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>({
@@ -59,6 +37,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [rotate, setRotate] = useState(0);
   const [aspect, setAspect] = useState<number | undefined>(undefined);
+  const [scale, setScale] = useState(1);
 
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -70,23 +49,15 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const imageLoadHandler = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
       const { width, height } = e.currentTarget;
-      setCompletedCrop(convertToPixelCrop(crop, width, height));
+      const initialCrop = convertToPixelCrop(crop, width, height);
+      initialCrop.x = (400 - width) / 2;
+      initialCrop.y = (352 - height) / 2;
+
+      setCompletedCrop(initialCrop);
+      setCrop(initialCrop);
     },
     [crop],
   );
-
-  const toggleAspectHandler = useCallback((value: number | undefined) => {
-    setAspect(value);
-    if (value) {
-      if (imgRef.current) {
-        const { width, height } = imgRef.current;
-        const newCrop = centerAspectCrop(width, height, value);
-        setCrop(newCrop);
-        // Updates the preview
-        setCompletedCrop(convertToPixelCrop(newCrop, width, height));
-      }
-    }
-  }, []);
 
   const cropHandler = useCallback(async () => {
     const image = imgRef.current;
@@ -94,54 +65,99 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       throw new Error("Crop canvas does not exist");
     }
 
-    // This will size relative to the uploaded image
-    // size. If you want to size according to what they
-    // are looking at on screen, remove scaleX + scaleY
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    // Create a temporary canvas to draw the rotated image
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d");
 
-    const offscreen = new OffscreenCanvas(
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
-    );
-    const ctx = offscreen.getContext("2d");
-    if (!ctx) {
-      throw new Error("No 2d context");
+    if (!tempCtx) {
+      throw new Error("No 2d context for temporary canvas");
     }
 
-    ctx.drawImage(
-      image,
-      completedCrop.x * scaleX,
-      completedCrop.y * scaleY,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
+    // Calculate the bounding box of the rotated image
+    const angleInRadians = (rotate * Math.PI) / 180;
+    const sin = Math.abs(Math.sin(angleInRadians));
+    const cos = Math.abs(Math.cos(angleInRadians));
+    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+
+    tempCanvas.width = rotatedWidth;
+    tempCanvas.height = rotatedHeight;
+
+    // Translate and rotate the temporary canvas
+    tempCtx.translate(rotatedWidth / 2, rotatedHeight / 2);
+    tempCtx.rotate(angleInRadians);
+    tempCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
+
+    // Draw the original image onto the temporary canvas
+    tempCtx.drawImage(image, 0, 0);
+
+    // Create the final canvas to draw the cropped image
+    const finalCanvas = document.createElement("canvas");
+    const finalCtx = finalCanvas.getContext("2d");
+
+    if (!finalCtx) {
+      throw new Error("No 2d context for final canvas");
+    }
+
+    finalCanvas.width = completedCrop.width;
+    finalCanvas.height = completedCrop.height;
+
+    // Calculate the crop coordinates based on the rotated image
+    const scaleX = image.naturalWidth / image.width / scale;
+    const scaleY = image.naturalHeight / image.height / scale;
+    const cropX = (rotatedWidth - completedCrop.width * scaleX) / 2;
+    const cropY = (rotatedHeight - completedCrop.height * scaleY) / 2;
+
+    // Draw the rotated image onto the final canvas
+    finalCtx.drawImage(
+      tempCanvas,
+      cropX,
+      cropY,
+      rotatedWidth - cropX * 2,
+      rotatedHeight - cropY * 2,
       0,
       0,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
+      completedCrop.width,
+      completedCrop.height,
     );
 
-    // You might want { type: "image/jpeg", quality: <0 to 1> } to
-    // reduce image size
-    const blob = await offscreen.convertToBlob({
-      type: "image/png",
-    });
+    const blob = await new Promise<Blob | null>((resolve) =>
+      finalCanvas.toBlob(resolve, "image/png"),
+    );
 
     if (blobUrlRef.current) {
       URL.revokeObjectURL(blobUrlRef.current);
     }
     blobUrlRef.current = URL.createObjectURL(blob);
-  }, [completedCrop]);
+  }, [completedCrop, rotate, scale]);
 
   const generateClickHandler = useCallback(async () => {
     setIsGenerating(true);
 
+    await cropHandler();
+
     props.generateHandler(
       props.materialImage.id,
       blobUrlRef.current,
-      ModelType.Poster,
+      ModelType.CanBadge,
     );
-  }, [props]);
+  }, [props, cropHandler]);
+
+  const handleCropChange = (newCrop: Crop) => {
+    if (imgRef.current) {
+      const { width, height } = imgRef.current;
+
+      newCrop.x = (400 - newCrop.width) / 2;
+      newCrop.y = (352 - newCrop.height) / 2;
+      setCrop(newCrop);
+
+      const newScale =
+        newCrop.width / width > newCrop.height / height
+          ? newCrop.width / width
+          : newCrop.height / height;
+      setScale(newScale);
+    }
+  };
 
   return (
     <div className="h-full relative">
@@ -152,82 +168,35 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       )}
       {!props.generateError ? (
         <div>
-          <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={aspect}>
-            <NextImage
-              ref={imgRef}
-              src={props.materialImage.image}
-              alt="crop image"
-              width={400}
-              height={352}
-              style={{
-                maxWidth: 400,
-                maxHeight: 352,
-                transform: `rotate(${rotate}deg)`,
-                objectFit: "contain",
-              }}
-              onLoad={imageLoadHandler}
-              crossOrigin="anonymous"
-            />
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => {
+              handleCropChange(c);
+            }}
+            onComplete={(c) => setCompletedCrop(c)}
+            keepSelection={true}
+            aspect={aspect}
+          >
+            <div className="w-[400px] h-[352px] flex justify-center items-center">
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={imgRef}
+                  src={props.materialImage.image}
+                  alt="crop image"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    transform: `rotate(${rotate}deg) scale(${scale})`,
+                    objectFit: "contain",
+                  }}
+                  onLoad={imageLoadHandler}
+                  crossOrigin="anonymous"
+                />
+              }
+            </div>
           </ReactCrop>
           <div className="mt-6 flex flex-col items-center">
-            <div className="flex gap-4">
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop.svg"
-                alt="crop"
-                className={`cursor-pointer rounded hover:bg-neutral-200`}
-                onClick={cropHandler}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_16_9.svg"
-                alt="crop 16:9"
-                className={`cursor-pointer rounded hover:bg-neutral-200
-              ${aspect === 9 / 16 ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(9 / 16);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_3_2.svg"
-                alt="crop 3:2"
-                className={`cursor-pointer rounded hover:bg-neutral-200
-              ${
-                Math.floor(aspect * 100) === Math.floor(200 / 3)
-                  ? "bg-neutral-200"
-                  : ""
-              }`}
-                onClick={() => {
-                  toggleAspectHandler(2 / 3);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_square.svg"
-                alt="crop square"
-                className={`cursor-pointer rounded hover:bg-neutral-200
-              ${aspect === 1 ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(1);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_free.svg"
-                alt="crop free"
-                className={`cursor-pointer rounded hover:bg-neutral-200
-              ${aspect === undefined ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(undefined);
-                }}
-              />
-            </div>
             <div className="w-[220px] relative mt-[18px] mb-[6px]">
               <Slider
                 min={-180}
@@ -251,7 +220,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                   },
                 }}
                 value={rotate}
-                onChange={(value: number) => setRotate(value)}
+                onChange={(v: number) => setRotate(v)}
               />
               <span className="absolute left-0 -top-2 text-primary-400 text-[8px] font-medium">
                 -180
@@ -316,4 +285,4 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
   );
 };
 
-export default React.memo(MaterialImageCropComponent);
+export default React.memo(MaterialImageZoomCropComponent);

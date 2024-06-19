@@ -2,6 +2,7 @@ import NextImage from "next/image";
 import React, { MutableRefObject, useEffect, useState } from "react";
 import MaterialImageCropComponent from "ui/organisms/admin/MaterialImageCrop";
 import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect";
+import MaterialImageZoomCropComponent from "ui/organisms/admin/MaterialImageZoomCrop";
 import RoadMapComponent from "ui/organisms/admin/SampleCreateRoadmap";
 import SampleTypeSelectComponent from "ui/organisms/admin/SampleTypeSelect";
 import { MaterialItem } from "ui/types/adminTypes";
@@ -68,9 +69,15 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           {creationStep === 2 && sampleType === "Poster" && (
             <MaterialImageCropComponent
               materialImage={materialImage}
-              cropHandler={(image: string) =>
-                setMaterialImage({ id: 0, image: image })
-              }
+              backHandler={() => setCreationStep(creationStep - 1)}
+              nextHandler={() => setCreationStep(creationStep + 1)}
+              generateHandler={props.generateHandler}
+              generateError={props.generateError}
+            />
+          )}
+          {creationStep === 2 && sampleType === "Can Badge" && (
+            <MaterialImageZoomCropComponent
+              materialImage={materialImage}
               backHandler={() => setCreationStep(creationStep - 1)}
               nextHandler={() => setCreationStep(creationStep + 1)}
               generateHandler={props.generateHandler}
