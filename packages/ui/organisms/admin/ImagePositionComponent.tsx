@@ -163,6 +163,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
                 crossOrigin="anonymous"
                 draggable={false}
                 onLoad={() => setLoading(false)}
+                onError={() => setLoading(false)}
               />
             }
             <span className="text-secondary-400 text-sm font-medium">

@@ -172,35 +172,6 @@ const useRestfulAPI = (url) => {
     if (dataRef.current) setData(dataRef.current);
   };
 
-  const post = async (url, data) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const token = await auth.currentUser!.getIdToken();
-      const response = await fetch(`${apiUrlPrefix}${url}`, {
-        method: "POST",
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error(`An error occurred: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-
-    return false;
-  };
-
   useEffect(() => {
     if (url == null || url == "") return;
     getData(url);
@@ -219,7 +190,6 @@ const useRestfulAPI = (url) => {
     putData,
     deleteData,
     restoreData,
-    post,
   };
 };
 

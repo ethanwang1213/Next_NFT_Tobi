@@ -44,7 +44,6 @@ export default function Index() {
     setData: setSamples,
     postData: createSample,
     deleteData: deleteSamples,
-    post,
   } = useRestfulAPI(sampleAPIUrl);
 
   const materialAPIUrl = "native/materials";
@@ -254,7 +253,7 @@ export default function Index() {
 
   const removeBackgroundHandler = useCallback(
     async (image: string): Promise<string> => {
-      const resp = await post("native/model/remove-bg", {
+      const resp = await createSample("native/model/remove-bg", {
         url: image,
       });
       if (!resp) {
@@ -312,7 +311,10 @@ export default function Index() {
         if (coords == null) {
           delete bodyObj.coords;
         }
-        const modelResp = await post("native/model/acrylic-stand", bodyObj);
+        const modelResp = await createSample(
+          "native/model/acrylic-stand",
+          bodyObj,
+        );
         if (modelResp === false) {
           setGenerateSampleError(true);
           return;

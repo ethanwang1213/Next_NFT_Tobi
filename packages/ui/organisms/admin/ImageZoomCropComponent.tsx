@@ -31,18 +31,20 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     height: 100,
   });
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-  const [rotate, setRotate] = useState(0);
-  const [aspect, setAspect] = useState<number | undefined>(undefined);
+  const [rotate, setRotate] = useState(180);
   const [scale, setScale] = useState(1);
 
   const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const imageLoadHandler = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
+      setLoading(false);
+
       const { width, height } = e.currentTarget;
       const initialCrop = convertToPixelCrop(crop, width, height);
       initialCrop.x = (400 - width) / 2;
-      initialCrop.y = (352 - height) / 2;
+      initialCrop.y = (379 - height) / 2;
 
       setCompletedCrop(initialCrop);
       setCrop(initialCrop);
@@ -65,7 +67,7 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = (rotate * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
     const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
@@ -135,13 +137,19 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
       const { width, height } = imgRef.current;
 
       newCrop.x = (400 - newCrop.width) / 2;
-      newCrop.y = (352 - newCrop.height) / 2;
+      newCrop.y = (379 - newCrop.height) / 2;
       setCrop(newCrop);
 
+      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
+      const sin = Math.abs(Math.sin(angleInRadians));
+      const cos = Math.abs(Math.cos(angleInRadians));
+      const rotatedWidth = width * cos + height * sin;
+      const rotatedHeight = width * sin + height * cos;
+
       const newScale =
-        newCrop.width / width > newCrop.height / height
-          ? newCrop.width / width
-          : newCrop.height / height;
+        newCrop.width / rotatedWidth > newCrop.height / rotatedHeight
+          ? newCrop.width / rotatedWidth
+          : newCrop.height / rotatedHeight;
       setScale(newScale);
     }
   };
@@ -162,9 +170,8 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
             }}
             onComplete={(c) => setCompletedCrop(c)}
             keepSelection={true}
-            aspect={aspect}
           >
-            <div className="w-[400px] h-[352px] flex justify-center items-center">
+            <div className="w-[400px] h-[379px] flex justify-center items-center">
               {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -174,11 +181,13 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
                   style={{
                     maxWidth: "100%",
                     maxHeight: "100%",
-                    transform: `rotate(${rotate}deg) scale(${scale})`,
+                    transform: `rotate(${180 - rotate}deg) scale(${scale})`,
                     objectFit: "contain",
                   }}
-                  onLoad={imageLoadHandler}
                   crossOrigin="anonymous"
+                  draggable={false}
+                  onLoad={imageLoadHandler}
+                  onError={() => setLoading(false)}
                 />
               }
             </div>

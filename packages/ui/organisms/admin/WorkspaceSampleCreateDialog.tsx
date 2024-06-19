@@ -10,6 +10,7 @@ import React, {
 import { ModelType } from "types/unityTypes";
 import ImageCropComponent from "ui/organisms/admin/ImageCropComponent";
 import ImageRotateComponent from "ui/organisms/admin/ImageRotateComponent";
+import ImageZoomCropComponent from "ui/organisms/admin/ImageZoomCropComponent";
 import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelectComponent";
 import RoadMapComponent from "ui/organisms/admin/SampleCreateRoadmap";
 import SampleTypeSelectComponent from "ui/organisms/admin/SampleTypeSelect";
@@ -103,9 +104,6 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             return (
               <ImageCropComponent
                 materialImage={materialImage}
-                cropHandler={(image: string) =>
-                  setMaterialImage({ id: 0, image: image })
-                }
                 backHandler={() => setStep(1)}
                 generateHandler={async (image: string) => {
                   if (materialImage.image !== image) {
@@ -245,6 +243,57 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
                     coords,
                   )
                 }
+                error={props.generateError || error}
+                errorHandler={() => {
+                  setError(false);
+                  props.resetErrorHandler();
+                }}
+              />
+            );
+
+          default:
+            break;
+        }
+        break;
+
+      case "Can Badge":
+        switch (step) {
+          case 1:
+            return (
+              <MaterialImageSelectComponent
+                data={props.materials}
+                selectedImage={materialImage}
+                selectImageHandler={(value) => setMaterialImage(value)}
+                backHandler={() => setStep(0)}
+                nextHandler={() => setStep(2)}
+                uploadImageHandler={uploadMaterialImageHandler}
+                error={props.generateError || error}
+                errorHandler={() => {
+                  setError(false);
+                  props.resetErrorHandler();
+                }}
+              />
+            );
+
+          case 2:
+            return (
+              <ImageZoomCropComponent
+                materialImage={materialImage}
+                backHandler={() => setStep(1)}
+                generateHandler={async (image: string) => {
+                  if (materialImage.image !== image) {
+                    await uploadMaterialImageHandler(image);
+                    firstImageRef.current = uploadImageRef.current;
+                  } else {
+                    firstImageRef.current = materialImage.image;
+                  }
+                  props.generateHandler(
+                    ModelType.CanBadge,
+                    firstImageRef.current,
+                    null,
+                    null,
+                  );
+                }}
                 error={props.generateError || error}
                 errorHandler={() => {
                   setError(false);

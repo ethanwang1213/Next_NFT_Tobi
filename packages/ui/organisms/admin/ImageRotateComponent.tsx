@@ -95,7 +95,7 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
               <img
                 ref={imgRef}
                 src={props.imageUrl}
-                alt="crop image"
+                alt="image"
                 style={{
                   maxWidth: "100%",
                   maxHeight: 352,
@@ -105,6 +105,7 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
                 crossOrigin="anonymous"
                 draggable={false}
                 onLoad={() => setLoading(false)}
+                onError={() => setLoading(false)}
               />
             }
           </div>

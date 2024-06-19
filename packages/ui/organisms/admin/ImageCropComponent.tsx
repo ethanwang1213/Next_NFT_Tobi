@@ -15,7 +15,6 @@ import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
   materialImage: MaterialItem;
-  cropHandler: (image: string) => void;
   backHandler: () => void;
   generateHandler: (image: string) => void;
   error: boolean;
@@ -228,9 +227,10 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                     transform: `rotate(${180 - rotate}deg)`,
                     objectFit: "contain",
                   }}
-                  onLoad={imageLoadHandler}
                   crossOrigin="anonymous"
                   draggable={false}
+                  onLoad={imageLoadHandler}
+                  onError={() => setLoading(false)}
                 />
               }
             </div>
