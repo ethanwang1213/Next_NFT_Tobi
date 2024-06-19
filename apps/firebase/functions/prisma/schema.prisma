@@ -126,7 +126,7 @@ model tobiratory_digital_items {
   material             tobiratory_material_images           @relation(fields: [material_id], references: [id])
   material_id          Int                                  @default(0)
   type                 Int
-  description          String                               @default("") @db.VarChar(255)
+  description          String                               @default("") @db.Text()
   limit                Int?
   license              String                               @default("") @db.VarChar(255)
   copyright            tobiratory_digital_items_copyright[]
