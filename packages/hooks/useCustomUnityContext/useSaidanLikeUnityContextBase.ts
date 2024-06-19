@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { UpdateIdValues } from "types/adminTypes";
-import { ItemBaseData, ItemType } from "types/unityTypes";
-import { Expand, SaidanLikeData, UnitySceneType } from "./types";
+import {
+  ItemBaseData,
+  ItemBaseId,
+  ItemId,
+  ItemType,
+  ItemTypeParam,
+  NftBaseData,
+  SampleBaseData,
+} from "types/unityTypes";
+import { SaidanLikeData, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
@@ -50,74 +58,76 @@ export const useSaidanLikeUnityContextBase = ({
   };
 
   const placeNewSample = useCallback(
-    (params: Expand<Omit<ItemBaseData, "itemType">>) => {
-      postMessageToUnity(
-        "NewItemMessageReceiver",
-        JSON.stringify({
-          itemType: ItemType.Sample,
-          ...params,
-          secondImageUrl: !!params.secondImageUrl ? params.secondImageUrl : "",
-          isDebug: params.isDebug ? params.isDebug : false,
-        }),
-      );
+    ({
+      itemId,
+      modelType,
+      modelUrl,
+      imageUrl = "",
+      isDebug = false,
+    }: SampleBaseData) => {
+      const params = { itemId, modelType, modelUrl, imageUrl, isDebug };
+      const data: ItemBaseData = {
+        itemType: ItemType.Sample,
+        ...params,
+      };
+      postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
     },
     [postMessageToUnity],
   );
 
   const placeNewNft = useCallback(
-    (
-      params: Expand<
-        Omit<ItemBaseData, "itemType" | "imageUrl" | "secondImageUrl">
-      >,
-    ) => {
-      postMessageToUnity(
-        "NewItemMessageReceiver",
-        JSON.stringify({
-          itemType: ItemType.DigitalItemNft,
-          imageUrl: "",
-          secondImageUrl: "",
-          ...params,
-          isDebug: params.isDebug ? params.isDebug : false,
-        }),
-      );
+    ({ itemId, modelType, modelUrl, isDebug = false }: NftBaseData) => {
+      const params = { itemId, modelType, modelUrl, isDebug };
+      const data: ItemBaseData = {
+        itemType: ItemType.DigitalItemNft,
+        imageUrl: "",
+        ...params,
+      };
+      postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
     },
     [postMessageToUnity],
   );
 
   const placeNewSampleWithDrag = useCallback(
-    (itemData: Expand<Omit<ItemBaseData, "itemType">>) => {
+    ({
+      itemId,
+      modelType,
+      modelUrl,
+      imageUrl = "",
+      isDebug = false,
+    }: SampleBaseData) => {
+      const params = { itemId, modelType, modelUrl, imageUrl, isDebug };
+      const data: ItemBaseData = {
+        itemType: ItemType.Sample,
+        ...params,
+      };
       postMessageToUnity(
         "NewItemWithDragMessageReceiver",
-        JSON.stringify({
-          itemType: ItemType.Sample,
-          ...itemData,
-        }),
+        JSON.stringify(data),
       );
     },
     [postMessageToUnity],
   );
 
   const placeNewNftWithDrag = useCallback(
-    (
-      itemData: Expand<
-        Omit<ItemBaseData, "itemType" | "imageUrl" | "secondImageUrl">
-      >,
-    ) => {
+    ({ itemId, modelType, modelUrl, isDebug = false }: NftBaseData) => {
+      const params = { itemId, modelType, modelUrl, isDebug };
+      const data: ItemBaseData = {
+        itemType: ItemType.DigitalItemNft,
+        imageUrl: "",
+        ...params,
+      };
       postMessageToUnity(
         "NewItemWithDragMessageReceiver",
-        JSON.stringify({
-          itemType: ItemType.DigitalItemNft,
-          imageUrl: "",
-          secondImageUrl: "",
-          ...itemData,
-        }),
+        JSON.stringify(data),
       );
     },
     [postMessageToUnity],
   );
 
   const removeItem = useCallback(
-    (itemInfo: { itemType: ItemType; id: number; itemId: number }) => {
+    ({ itemType, itemId, id }: ItemTypeParam & ItemBaseId & ItemId) => {
+      const itemInfo = { itemType, itemId, id };
       postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
         JSON.stringify(itemInfo),
