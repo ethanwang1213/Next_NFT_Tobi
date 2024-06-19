@@ -3,10 +3,8 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactCrop, {
-  centerCrop,
   convertToPixelCrop,
   Crop,
-  makeAspectCrop,
   PixelCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
