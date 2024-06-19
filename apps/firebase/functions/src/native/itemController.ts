@@ -55,7 +55,6 @@ export const removeBackground = async (req: Request, res: Response) => {
 export const removeBackgroundOfMessageCard = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {url}:{url: string} = req.body;
-  const predefinedUrl = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample-message.png";
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     console.log(uid, url);
@@ -64,7 +63,7 @@ export const removeBackgroundOfMessageCard = async (req: Request, res: Response)
     res.status(200).send({
       status: "success",
       data: {
-        url: predefinedUrl, // modelData.modelUrl,
+        url: url,
       },
     });
   }).catch((error: FirebaseError)=>{
