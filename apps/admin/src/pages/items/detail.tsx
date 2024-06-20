@@ -17,8 +17,8 @@ import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect, {
   getSampleStatusTitle,
-  SampleStatus,
 } from "ui/organisms/admin/StatusDropdownSelect";
+import { SampleStatus } from "ui/types/adminTypes";
 
 const Detail = () => {
   const router = useRouter();
@@ -328,7 +328,7 @@ const Detail = () => {
       {sampleItem && (
         <div className="ml-24 mr-[104px] mt-16">
           <div className="flex gap-4">
-            <div className="flex-grow flex flex-col gap-9">
+            <div className="flex-grow flex flex-col gap-8">
               <div className="flex flex-col gap-4 pr-11">
                 <h3 className="text-xl text-secondary">SAMPLE DETAIL</h3>
                 <div className="flex flex-col gap-6">
@@ -355,16 +355,8 @@ const Detail = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-6 pr-11">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl text-secondary">SAMPLE STATUS</h3>
-                  <StatusDropdownSelect
-                    initialStatus={dataRef.current.status}
-                    handleSelectedItemChange={(changes) => {
-                      fieldChangeHandler("status", changes.selectedItem.value);
-                    }}
-                  />
-                </div>
-                {sampleItem.status == 6 || sampleItem.status == 7 ? (
+                {sampleItem.status == SampleStatus.ScheduledPublishing ||
+                sampleItem.status == SampleStatus.ScheduledforSale ? (
                   <div className="flex flex-col gap-6 pl-4">
                     <div className="flex items-center justify-between">
                       <span className="text-xl">Start Date (JST)</span>
@@ -399,7 +391,7 @@ const Detail = () => {
                   <></>
                 )}
               </div>
-              <div className="flex flex-col gap-6 mt-12">
+              <div className="flex flex-col gap-6">
                 <h3 className="text-xl text-secondary">
                   PRICE & DETAILS SETTINGS
                 </h3>
@@ -514,7 +506,7 @@ const Detail = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-6 mt-12">
+              <div className="flex flex-col gap-6">
                 <h3 className="text-xl text-secondary">LICENSE & COPYRIGHTS</h3>
                 <div className="flex flex-col gap-6">
                   <div className="flex gap-6">
@@ -602,7 +594,7 @@ const Detail = () => {
                 </div>
               </div>
             </div>
-            <div>
+            <div className="flex flex-col gap-6">
               <div>
                 <Image
                   width={384}
@@ -616,7 +608,7 @@ const Detail = () => {
                   alt="thumbnail image"
                 />
               </div>
-              <div className="flex gap-3 mt-6">
+              <div className="flex gap-3">
                 <div
                   style={{
                     width: 120,
@@ -726,24 +718,52 @@ const Detail = () => {
                   />
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="text-center mt-10 h-14">
-            {loading ? (
-              <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
-            ) : (
-              <Button
-                type="submit"
-                className={clsx(
-                  "text-xl h-14 text-white rounded-[30px] px-10",
-                  modified ? "bg-primary" : "bg-inactive",
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl text-secondary">STATUS</h3>
+                <StatusDropdownSelect
+                  initialStatus={dataRef.current.status}
+                  handleSelectedItemChange={(changes) => {
+                    fieldChangeHandler("status", changes.selectedItem.value);
+                  }}
+                />
+              </div>
+              <div className="text-center h-12">
+                {loading ? (
+                  <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
+                ) : (
+                  <Button
+                    className={clsx(
+                      "w-full text-xl h-12 text-white rounded-[30px] font-medium",
+                      modified ? "bg-primary" : "bg-inactive",
+                    )}
+                    disabled={!modified}
+                    onClick={saveButtonHandler}
+                  >
+                    Save
+                  </Button>
                 )}
-                disabled={!modified}
-                onClick={saveButtonHandler}
-              >
-                SAVE
-              </Button>
-            )}
+              </div>
+              <div className="text-center h-12">
+                {sampleItem.status == SampleStatus.Draft && (
+                  <Button
+                    className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
+                    flex justify-center items-center gap-4
+                  `}
+                    onClick={null}
+                  >
+                    <Image
+                      src="/admin/images/icon/mint_icon.svg"
+                      width={16}
+                      height={20}
+                      alt="mint icon"
+                    />
+                    <span className="text-[#E96800] text-xl font-semibold">
+                      Mint as an NFT
+                    </span>
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
