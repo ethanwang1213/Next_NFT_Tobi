@@ -318,19 +318,15 @@ const Detail = () => {
   }, [dataRef]);
 
   return (
-    <div>
+    <div className="mt-16 mb-12">
       <ItemEditHeader
-        activeName={
-          dataRef.current && dataRef.current.name
-            ? dataRef.current.name
-            : "No Name"
-        }
+        id={Array.isArray(id) ? id[0] : id}
         loading={loading}
-        saveHandler={saveButtonHandler}
+        className="ml-8 mr-[104px]"
       />
 
       {sampleItem && (
-        <div className="container mx-auto px-1.5 py-12">
+        <div className="ml-24 mr-[104px] mt-16">
           <div className="flex gap-4">
             <div className="flex-grow flex flex-col gap-9">
               <div className="flex flex-col gap-4 pr-11">

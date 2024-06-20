@@ -1,49 +1,49 @@
 import Link from "next/link";
 import Button from "ui/atoms/Button";
-import Breadcrumbs from "ui/molecules/Breadcrumbs";
+import NextImage from "next/image";
 
 const ItemEditHeader = ({
-  activeName,
+  id,
   loading,
-  saveHandler,
+  className,
 }: {
-  activeName: string;
+  id: string;
   loading: boolean;
-  saveHandler: () => void;
+  className: string;
 }) => {
   return (
-    <div className="flex pt-9 pl-12 pr-7 h-28">
-      <div className="flex-grow">
-        <Breadcrumbs
-          breadcrumbs={[
-            { label: "SAMPLES", href: "/items" },
-            {
-              label: activeName,
-              href: "",
-              active: true,
-            },
-          ]}
+    <div className={`${className} h-12 flex items-center gap-3`}>
+      <Link href="/items">
+        <NextImage
+          src="/admin/images/icon/arrow_back.svg"
+          width={32}
+          height={32}
+          alt="back icon"
         />
-      </div>
+      </Link>
+      <span className="flex-1 text-secondary-600 text-[32px] font-semibold">
+        ITEM DETAIL
+      </span>
       {loading ? (
-        <span className="loading loading-spinner loading-md mr-14 text-secondary-600" />
+        <span className="loading loading-spinner loading-md text-secondary-600" />
       ) : (
         <div>
-          <Link href="/items">
+          <Link href={`/workspace/${id}`}>
             <Button
-              type="reset"
-              className="text-xl h-14 bg-transparent border-primary border-2 text-primary rounded-[30px] mr-6 px-8"
+              className="w-[384px] h-12 rounded-[30px] border-primary-500 border-[3px] 
+                flex justify-center items-center gap-3"
             >
-              CANCEL
+              <NextImage
+                src="/admin/images/icon/preview.svg"
+                width={32}
+                height={32}
+                alt="preview icon"
+              />
+              <span className="text-primary-500 text-2xl font-medium">
+                Preview in Workspace
+              </span>
             </Button>
           </Link>
-          <Button
-            type="submit"
-            className="text-xl h-14 bg-primary text-white rounded-[30px] px-10"
-            onClick={saveHandler}
-          >
-            SAVE
-          </Button>
         </div>
       )}
     </div>
