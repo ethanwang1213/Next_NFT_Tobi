@@ -14,6 +14,7 @@ import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
+import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect, {
   getSampleStatusTitle,
@@ -32,6 +33,7 @@ const Detail = () => {
   const [confirmDialogNotes, setConfirmDialogNotes] = useState([]);
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
   const statusConfirmDialogRef = useRef(null);
+  const mintConfirmDialogRef = useRef(null);
 
   const apiUrl = "native/admin/samples";
   const {
@@ -316,6 +318,12 @@ const Detail = () => {
     }
     return false;
   }, [dataRef]);
+
+  const mintConfirmDialogHandler = useCallback((value: string) => {
+    if (value == "mint") {
+      // call mint API
+    }
+  }, []);
 
   return (
     <div className="mt-16 mb-12">
@@ -749,7 +757,11 @@ const Detail = () => {
                     className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
                     flex justify-center items-center gap-4
                   `}
-                    onClick={null}
+                    onClick={() => {
+                      if (mintConfirmDialogRef.current) {
+                        mintConfirmDialogRef.current.showModal();
+                      }
+                    }}
                   >
                     <Image
                       src="/admin/images/icon/mint_icon.svg"
@@ -774,6 +786,10 @@ const Detail = () => {
         notes={confirmDialogNotes}
         disabled={confirmDialogDisabled}
         saveHandler={submitHandler}
+      />
+      <MintConfirmDialog
+        dialogRef={mintConfirmDialogRef}
+        changeHandler={mintConfirmDialogHandler}
       />
       <ToastContainer
         position="bottom-center"
