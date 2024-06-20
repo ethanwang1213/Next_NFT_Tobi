@@ -122,7 +122,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
       calculatePositionHandler();
     }
     props.generateHandler(coordsRef.current);
-  }, [rotate, props, cropImage, calculatePositionHandler]);
+  }, [props, rotate, position, cropImage, calculatePositionHandler]);
 
   return (
     <div

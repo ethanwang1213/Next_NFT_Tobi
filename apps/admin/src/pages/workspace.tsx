@@ -262,6 +262,7 @@ export default function Index() {
       }
       return resp["url"];
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
