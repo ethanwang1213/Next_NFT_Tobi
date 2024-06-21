@@ -190,7 +190,7 @@ export const useShowcaseEditUnityContext = ({
           sampleItemList,
           nftItemList,
           thumbnailImageBase64: messageBody.saidanThumbnailBase64,
-          settings: messageBody.saidanSettings,
+          settings: messageBody.saidanData.saidanSettings,
         },
         updateIdValues,
       );

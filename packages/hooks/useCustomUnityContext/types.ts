@@ -35,7 +35,6 @@ export type UnityMessageJson = {
 export type MessageBodyForSavingSaidanData = {
   saidanData: SaidanLikeData;
   saidanThumbnailBase64: string;
-  saidanSettings: SaidanSettings;
 };
 
 // export const saidanOffset = 10000;
