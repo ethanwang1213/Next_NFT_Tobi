@@ -319,11 +319,19 @@ const Detail = () => {
     return false;
   }, [dataRef]);
 
-  const mintConfirmDialogHandler = useCallback((value: string) => {
-    if (value == "mint") {
-      // call mint API
-    }
-  }, []);
+  const mintConfirmDialogHandler = useCallback(
+    async (value: string) => {
+      if (value == "mint") {
+        postData(`native/items/${id}/mint`, {
+          fcmToken: "",
+          amount: 1,
+          modelUrl: "",
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [id],
+  );
 
   return (
     <div className="mt-16 mb-12">
