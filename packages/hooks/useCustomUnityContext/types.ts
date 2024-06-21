@@ -1,4 +1,4 @@
-import { SaidanItemData, Vector3 } from "types/unityTypes";
+import { SaidanItemData, SaidanSettings, Vector3 } from "types/unityTypes";
 
 export const UnitySceneType = {
   Standby: 0,
@@ -35,6 +35,7 @@ export type UnityMessageJson = {
 export type MessageBodyForSavingSaidanData = {
   saidanData: SaidanLikeData;
   saidanThumbnailBase64: string;
+  saidanSettings: SaidanSettings;
 };
 
 // export const saidanOffset = 10000;
@@ -59,5 +60,6 @@ export type SaidanLikeData = {
     position: Vector3;
     rotation: Vector3;
   };
+  saidanSettings: SaidanSettings;
   isDebug: boolean;
 };
