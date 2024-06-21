@@ -1,30 +1,25 @@
-import NextImage from "next/image";
-import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import ReactCrop, {
   convertToPixelCrop,
   Crop,
   PixelCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { ModelType } from "types/unityTypes";
-import Button from "ui/atoms/Button";
 import { MaterialItem } from "ui/types/adminTypes";
+import ButtonGroupComponent from "./ButtonGroupComponent";
+import GenerateErrorComponent from "./GenerateErrorComponent";
+import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
   materialImage: MaterialItem;
   backHandler: () => void;
-  nextHandler: () => void;
-  generateHandler: (
-    materialId: number,
-    cropImage: string,
-    sampleType: number,
-  ) => void;
-  generateError: boolean;
+  generateHandler: (image: string) => void;
+  error: boolean;
+  errorHandler: () => void;
 };
 
-const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
+const ImageZoomCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>({
@@ -35,23 +30,20 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
     height: 100,
   });
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-  const [rotate, setRotate] = useState(0);
-  const [aspect, setAspect] = useState<number | undefined>(undefined);
+  const [rotate, setRotate] = useState(180);
   const [scale, setScale] = useState(1);
 
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  useEffect(() => {
-    setIsGenerating(false);
-    blobUrlRef.current = null;
-  }, [props.materialImage]);
+  const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const imageLoadHandler = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
+      setLoading(false);
+
       const { width, height } = e.currentTarget;
       const initialCrop = convertToPixelCrop(crop, width, height);
       initialCrop.x = (400 - width) / 2;
-      initialCrop.y = (352 - height) / 2;
+      initialCrop.y = (379 - height) / 2;
 
       setCompletedCrop(initialCrop);
       setCrop(initialCrop);
@@ -74,7 +66,7 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = (rotate * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
     const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
@@ -132,15 +124,11 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
   }, [completedCrop, rotate, scale]);
 
   const generateClickHandler = useCallback(async () => {
-    setIsGenerating(true);
+    setProcessing(true);
 
     await cropHandler();
 
-    props.generateHandler(
-      props.materialImage.id,
-      blobUrlRef.current,
-      ModelType.CanBadge,
-    );
+    props.generateHandler(blobUrlRef.current);
   }, [props, cropHandler]);
 
   const handleCropChange = (newCrop: Crop) => {
@@ -148,25 +136,31 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
       const { width, height } = imgRef.current;
 
       newCrop.x = (400 - newCrop.width) / 2;
-      newCrop.y = (352 - newCrop.height) / 2;
+      newCrop.y = (379 - newCrop.height) / 2;
       setCrop(newCrop);
 
+      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
+      const sin = Math.abs(Math.sin(angleInRadians));
+      const cos = Math.abs(Math.cos(angleInRadians));
+      const rotatedWidth = width * cos + height * sin;
+      const rotatedHeight = width * sin + height * cos;
+
       const newScale =
-        newCrop.width / width > newCrop.height / height
-          ? newCrop.width / width
-          : newCrop.height / height;
+        newCrop.width / rotatedWidth > newCrop.height / rotatedHeight
+          ? newCrop.width / rotatedWidth
+          : newCrop.height / rotatedHeight;
       setScale(newScale);
     }
   };
 
   return (
     <div className="h-full relative">
-      {isGenerating && !props.generateError && (
+      {processing && !props.error && (
         <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center bg-white/50">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
         </div>
       )}
-      {!props.generateError ? (
+      {!props.error ? (
         <div>
           <ReactCrop
             crop={crop}
@@ -175,9 +169,8 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
             }}
             onComplete={(c) => setCompletedCrop(c)}
             keepSelection={true}
-            aspect={aspect}
           >
-            <div className="w-[400px] h-[352px] flex justify-center items-center">
+            <div className="w-[400px] h-[379px] flex justify-center items-center">
               {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -187,102 +180,39 @@ const MaterialImageZoomCropComponent: React.FC<Props> = (props) => {
                   style={{
                     maxWidth: "100%",
                     maxHeight: "100%",
-                    transform: `rotate(${rotate}deg) scale(${scale})`,
+                    transform: `rotate(${180 - rotate}deg) scale(${scale})`,
                     objectFit: "contain",
                   }}
-                  onLoad={imageLoadHandler}
                   crossOrigin="anonymous"
+                  draggable={false}
+                  onLoad={imageLoadHandler}
+                  onError={() => setLoading(false)}
                 />
               }
             </div>
           </ReactCrop>
-          <div className="mt-6 flex flex-col items-center">
-            <div className="w-[220px] relative mt-[18px] mb-[6px]">
-              <Slider
-                min={-180}
-                max={180}
-                styles={{
-                  handle: {
-                    borderColor: "#1779DE",
-                    height: 8,
-                    width: 8,
-                    marginLeft: 0,
-                    marginTop: -3,
-                    backgroundColor: "#1779DE",
-                  },
-                  track: {
-                    backgroundColor: "#1779DE",
-                    height: 2,
-                  },
-                  rail: {
-                    backgroundColor: "#1779DE",
-                    height: 2,
-                  },
-                }}
-                value={rotate}
-                onChange={(v: number) => setRotate(v)}
-              />
-              <span className="absolute left-0 -top-2 text-primary-400 text-[8px] font-medium">
-                -180
-              </span>
-              <span className="absolute right-0 -top-2 text-primary-400 text-[8px] font-medium">
-                180
-              </span>
-            </div>
-            <NextImage
-              width={16}
-              height={16}
-              src="/admin/images/icon/rotate_right.svg"
-              alt="rotate right"
-              className={`cursor-pointer rounded`}
-            />
-          </div>
-          <div className="flex justify-between">
-            <Button
-              className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1"
-              onClick={props.backHandler}
-            >
-              <NextImage
-                width={20}
-                height={20}
-                src="/admin/images/icon/arrow-left-s-line.svg"
-                alt="left arrow"
-              />
-              <span className="text-primary text-sm font-medium">Back</span>
-            </Button>
-            <Button
-              className={`w-[72px] h-8 rounded-lg flex items-center justify-center gap-1 bg-warning`}
-              onClick={generateClickHandler}
-            >
-              <span className="text-base-white text-sm font-medium">
-                Generate
-              </span>
-            </Button>
-          </div>
+          <RotateSliderComponent
+            className="mt-6 -mb-[18px]"
+            rotate={rotate}
+            setRotate={setRotate}
+          />
+          <ButtonGroupComponent
+            backButtonHandler={props.backHandler}
+            nextButtonHandler={generateClickHandler}
+            disabled={false}
+            isGenerate={true}
+          />
         </div>
       ) : (
-        <div className="flex flex-col items-center pt-[152px]">
-          <NextImage
-            src="/admin/images/icon/report-problem.svg"
-            width={98}
-            height={98}
-            alt="warning"
-          />
-          <span className="text-error text-sm font-semibold mt-5">
-            Something wrong happens...
-          </span>
-          <Button
-            className="w-[140px] h-8 mt-[135px] rounded-lg text-base-white bg-primary text-sm font-medium"
-            onClick={() => {
-              props.backHandler();
-            }}
-          >
-            Try again
-          </Button>
-        </div>
+        <GenerateErrorComponent
+          buttonHandler={() => {
+            setProcessing(false);
+            props.errorHandler();
+          }}
+        />
       )}
     </div>
   );
 };
 
-export default React.memo(MaterialImageZoomCropComponent);
+export default React.memo(ImageZoomCropComponent);

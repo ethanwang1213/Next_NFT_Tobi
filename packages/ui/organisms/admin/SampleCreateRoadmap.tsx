@@ -1,22 +1,30 @@
 import NextImage from "next/image";
-import React from "react";
+import React, { useCallback } from "react";
 
 const sampleCreateRoadmapTitles = {
   acrylicstand: [
     {
       title: "Select a material",
-      description: "ポスターにする素材を選択してください",
+      description: "Select the material for the acrylic stand body.",
     },
     {
-      title: "Crop",
-      description: "ポスターにしたい範囲で切り抜きしてください",
+      title: "Adjust Body",
+      description: "Adjust the tilt of the body by rotating it.",
     },
-    { title: "Generate", description: "" },
+    {
+      title: "Select Base Material",
+      description: "Select the material for the acrylic stand base.",
+    },
+    {
+      title: "Adjust and Place",
+      description:
+        'Set the front and back of the base and adjust it by rotating and place the body on the base. Move the rectangle labeled "Acrylic plate" to set the placement.',
+    },
   ],
   poster: [
     {
       title: "Select a material",
-      description: "",
+      description: "Select the material for the poster.",
     },
     {
       title: "Crop",
@@ -59,6 +67,33 @@ const RoadMapComponent = (props: {
   sampleType: string | null;
   step: number;
 }) => {
+  const getOrderNumber = useCallback((value) => {
+    switch (value + 1) {
+      case 1:
+        return "①";
+      case 2:
+        return "②";
+      case 3:
+        return "③";
+      case 4:
+        return "④";
+      case 5:
+        return "⑤";
+      default:
+        return "";
+    }
+  }, []);
+
+  const getLeftBorderLengthClass = useCallback(
+    (idx: number): string => {
+      const key = props.sampleType.toLocaleLowerCase().split(" ").join("");
+      return idx < sampleCreateRoadmapTitles[key].length - 1
+        ? "border-l-2"
+        : "border-l-0";
+    },
+    [props],
+  );
+
   return (
     <div className="flex flex-col py-5 px-6">
       <NextImage
@@ -88,39 +123,26 @@ const RoadMapComponent = (props: {
             return (
               <div key={`roadmap-${index}`} className="flex flex-col">
                 <span
-                  className={`text-base-white text-sm font-normal
+                  className={`text-base-white text-xs font-normal
                     ${
                       props.step === index + 1
                         ? "text-base-white"
                         : "text-base-white/25"
                     } `}
                 >
-                  {`${
-                    index === 0
-                      ? "①"
-                      : index === 1
-                        ? "②"
-                        : index === 2
-                          ? "③"
-                          : "④"
-                  } ${roadmap.title}`}
+                  {`${getOrderNumber(index)} ${roadmap.title}`}
                 </span>
-                {index <
-                  sampleCreateRoadmapTitles[
-                    props.sampleType.toLocaleLowerCase().split(" ").join("")
-                  ].length -
-                    1 && (
-                  <span
-                    className={`text-[8px] font-normal h-8 border-l-2 ml-[6px] pl-3
+                <span
+                  className={`text-[8px] font-normal h-8 ml-[6px] pl-3 text-base-white
                     ${
                       props.step === index + 1
-                        ? "text-base-white border-base-white"
-                        : "text-base-white/25 border-base-white/25"
-                    } `}
-                  >
-                    {roadmap.description}
-                  </span>
-                )}
+                        ? "border-base-white"
+                        : "border-base-white/25"
+                    }
+                    ${getLeftBorderLengthClass(index)} `}
+                >
+                  {props.step === index + 1 ? roadmap.description : ""}
+                </span>
               </div>
             );
           })}
