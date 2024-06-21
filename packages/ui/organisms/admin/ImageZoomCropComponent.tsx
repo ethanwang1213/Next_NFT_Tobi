@@ -12,11 +12,12 @@ import GenerateErrorComponent from "./GenerateErrorComponent";
 import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
-  materialImage: MaterialItem;
+  imageUrl: string;
   backHandler: () => void;
-  generateHandler: (image: string) => void;
+  nextHandler: (image: string) => void;
   error: boolean;
   errorHandler: () => void;
+  isGenerate: boolean;
 };
 
 const ImageZoomCropComponent: React.FC<Props> = (props) => {
@@ -123,12 +124,12 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     blobUrlRef.current = URL.createObjectURL(blob);
   }, [completedCrop, rotate, scale]);
 
-  const generateClickHandler = useCallback(async () => {
+  const nextHandler = useCallback(async () => {
     setProcessing(true);
 
     await cropHandler();
 
-    props.generateHandler(blobUrlRef.current);
+    props.nextHandler(blobUrlRef.current);
   }, [props, cropHandler]);
 
   const handleCropChange = (newCrop: Crop) => {
@@ -175,7 +176,7 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   ref={imgRef}
-                  src={props.materialImage.image}
+                  src={props.imageUrl}
                   alt="crop image"
                   style={{
                     maxWidth: "100%",
@@ -198,9 +199,9 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
           />
           <ButtonGroupComponent
             backButtonHandler={props.backHandler}
-            nextButtonHandler={generateClickHandler}
+            nextButtonHandler={nextHandler}
             disabled={false}
-            isGenerate={true}
+            isGenerate={props.isGenerate}
           />
         </div>
       ) : (

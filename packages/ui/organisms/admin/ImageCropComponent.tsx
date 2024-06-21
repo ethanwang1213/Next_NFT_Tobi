@@ -16,9 +16,10 @@ import RotateSliderComponent from "./RotateSliderComponent";
 type Props = {
   materialImage: MaterialItem;
   backHandler: () => void;
-  generateHandler: (image: string) => void;
+  nextHandler: (image: string) => void;
   error: boolean;
   errorHandler: () => void;
+  isGenerate: boolean;
 };
 
 function centerAspectCrop(
@@ -178,14 +179,14 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     blobUrlRef.current = URL.createObjectURL(blob);
   }, [crop, rotate]);
 
-  const generateHandler = useCallback(async () => {
+  const nextHandler = useCallback(async () => {
     setProcessing(true);
 
     if (blobUrlRef.current === null) {
       await cropHandler();
     }
 
-    props.generateHandler(blobUrlRef.current);
+    props.nextHandler(blobUrlRef.current);
   }, [props, cropHandler]);
 
   return (
@@ -302,9 +303,9 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
           </div>
           <ButtonGroupComponent
             backButtonHandler={props.backHandler}
-            nextButtonHandler={generateHandler}
+            nextButtonHandler={nextHandler}
             disabled={false}
-            isGenerate={true}
+            isGenerate={props.isGenerate}
           />
         </div>
       ) : (

@@ -5,21 +5,49 @@ import GenerateErrorComponent from "./GenerateErrorComponent";
 import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
-  imageUrl: string;
+  imageCardUrl: string;
+  imageMessageUrl: string;
   backHandler: () => void;
-  nextHandler: (image: string) => void;
+  nextHandler: (image: string, coords: string) => void;
   error: boolean;
   errorHandler: () => void;
 };
 
-const ImageRotateComponent: React.FC<Props> = (props) => {
+const ImageCombineComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
-  const blobUrlRef = useRef(props.imageUrl);
+  const blobUrlRef = useRef(props.imageMessageUrl);
 
   const [rotate, setRotate] = useState(180);
   const [processing, setProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [position, setPosition] = useState({ x: 138, y: 185 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartPos = useRef<{ x: number; y: number } | null>(null);
+  const coordsRef = useRef(null);
+
+  const onMouseDown = (event: React.MouseEvent) => {
+    dragStartPos.current = { x: event.clientX, y: event.clientY };
+    setIsDragging(true);
+  };
+
+  const onMouseMove = (event: React.MouseEvent) => {
+    if (isDragging && dragStartPos.current) {
+      const dx = event.clientX - dragStartPos.current.x;
+      const dy = event.clientY - dragStartPos.current.y;
+      setPosition((prevPosition) => ({
+        x: prevPosition.x + dx,
+        y: prevPosition.y + dy,
+      }));
+      dragStartPos.current = { x: event.clientX, y: event.clientY };
+    }
+  };
+
+  const onMouseUp = () => {
+    setIsDragging(false);
+    dragStartPos.current = null;
+  };
 
   const cropImage = useCallback(async () => {
     const image = imgRef.current;
@@ -62,17 +90,44 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
     blobUrlRef.current = URL.createObjectURL(blob);
   }, [rotate]);
 
-  const nextHandler = useCallback(async () => {
+  const calculatePositionHandler = useCallback(() => {
+    const image = imgRef.current;
+    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
+    const sin = Math.abs(Math.sin(angleInRadians));
+    const cos = Math.abs(Math.cos(angleInRadians));
+    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    const screenWidth = rotatedWidth / scaleX;
+    const screenHeight = rotatedHeight / scaleY;
+
+    const screenOffsetX = position.x + 62 - (400 - screenWidth) / 2;
+    const screenOffsetY = position.y + 16 - (402 - screenHeight) / 2;
+    const offsetX = Math.round(screenOffsetX * scaleX);
+    const offsetY = Math.round(screenOffsetY * scaleY);
+    coordsRef.current = `${offsetX},${offsetY}`;
+  }, [rotate, position]);
+
+  const generateHandler = useCallback(async () => {
     setProcessing(true);
     if (rotate !== 180) {
       await cropImage();
     }
+    if (position.x != 138 || position.y != 185) {
+      calculatePositionHandler();
+    }
 
-    props.nextHandler(blobUrlRef.current);
-  }, [rotate, props, cropImage]);
+    props.nextHandler(blobUrlRef.current, coordsRef.current);
+  }, [rotate, position, props, cropImage, calculatePositionHandler]);
 
   return (
-    <div className="h-full relative">
+    <div
+      className="h-full relative"
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
+    >
       {processing && !props.error && (
         <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center bg-white/50">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
@@ -81,7 +136,12 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
       {!props.error ? (
         <div>
           <div
-            className={`w-[400px] h-[402px] flex justify-center items-center relative`}
+            className={`w-[400px] h-[402px] flex flex-col items-center justify-between relative`}
+            style={{
+              backgroundImage: `url(${props.imageCardUrl})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
             ref={imgWrapperRef}
           >
             {loading && (
@@ -90,21 +150,23 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
               </div>
             )}
             {
-              // eslint-disable-next-line @next/next/no-img-element
+              // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
               <img
                 ref={imgRef}
-                src={props.imageUrl}
-                alt="image"
+                src={props.imageMessageUrl}
                 style={{
                   maxWidth: "100%",
                   maxHeight: 352,
                   transform: `rotate(${180 - rotate}deg)`,
                   objectFit: "contain",
+                  left: position.x,
+                  top: position.y,
                 }}
                 crossOrigin="anonymous"
                 draggable={false}
                 onLoad={() => setLoading(false)}
                 onError={() => setLoading(false)}
+                onMouseDown={onMouseDown}
               />
             }
           </div>
@@ -115,8 +177,9 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
           />
           <ButtonGroupComponent
             backButtonHandler={props.backHandler}
-            nextButtonHandler={nextHandler}
+            nextButtonHandler={generateHandler}
             disabled={false}
+            isGenerate={true}
           />
         </div>
       ) : (
@@ -131,4 +194,4 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
   );
 };
 
-export default React.memo(ImageRotateComponent);
+export default React.memo(ImageCombineComponent);

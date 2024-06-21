@@ -47,8 +47,11 @@ export default function Index() {
   } = useRestfulAPI(sampleAPIUrl);
 
   const materialAPIUrl = "native/materials";
-  const { data: materials, postData: createMaterialImage } =
-    useRestfulAPI(materialAPIUrl);
+  const {
+    data: materials,
+    getData: loadMaterialImage,
+    postData: createMaterialImage,
+  } = useRestfulAPI(materialAPIUrl);
 
   const [generateSampleError, setGenerateSampleError] = useState(false);
 
@@ -239,17 +242,21 @@ export default function Index() {
     [samples, removeSamplesByItemId],
   );
 
-  const createMaterialImageHandler = useCallback(async (imageUrl: string) => {
-    const resp = await createMaterialImage(
-      materialAPIUrl,
-      { image: imageUrl },
-      [],
-    );
-    if (!resp) {
-      setGenerateSampleError(true);
-    }
+  const createMaterialImageHandler = useCallback(
+    async (imageUrl: string): Promise<boolean> => {
+      const resp = await createMaterialImage(materialAPIUrl, {
+        image: imageUrl,
+      });
+      if (!resp) {
+        return false;
+      }
+      await loadMaterialImage(materialAPIUrl);
+
+      return true;
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [],
+  );
 
   const removeBackgroundHandler = useCallback(
     async (image: string): Promise<string> => {
@@ -257,11 +264,11 @@ export default function Index() {
         url: image,
       });
       if (!resp) {
-        setGenerateSampleError(true);
         return "";
       }
       return resp["url"];
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -271,7 +278,7 @@ export default function Index() {
       image1: string,
       image2: string,
       coords: string,
-    ) => {
+    ): Promise<boolean> => {
       generateSampleType.current = sampleType;
       if (
         sampleType === ModelType.Poster ||
@@ -289,8 +296,7 @@ export default function Index() {
           imageUrl: image1,
         });
         if (modelResp === false) {
-          setGenerateSampleError(true);
-          return;
+          return false;
         }
         generateModelUrl.current = modelResp["modelUrl"];
         requestItemThumbnail({
@@ -298,8 +304,7 @@ export default function Index() {
           modelUrl: modelResp["modelUrl"],
           imageUrl: image1,
         });
-      }
-      if (sampleType == ModelType.AcrylicStand) {
+      } else if (sampleType == ModelType.AcrylicStand) {
         const bodyObj = {
           bodyUrl: image1,
           baseUrl: image2,
@@ -316,17 +321,36 @@ export default function Index() {
           bodyObj,
         );
         if (modelResp === false) {
-          setGenerateSampleError(true);
-          return;
+          return false;
         }
         generateModelUrl.current = modelResp["url"];
         generateMaterialImage.current = null;
         requestItemThumbnail({
-          modelType: sampleType as ModelType,
+          modelType: ModelType.AcrylicStand,
           modelUrl: modelResp["url"],
-          imageUrl: image1,
+        });
+      } else if (sampleType == ModelType.MessageCard) {
+        const bodyObj = {
+          bodyUrl: image1,
+          baseUrl: image2,
+          coords: coords,
+        };
+        const modelResp = await createSample(
+          "native/model/message-card",
+          bodyObj,
+        );
+        if (modelResp === false) {
+          return false;
+        }
+        generateModelUrl.current = modelResp["url"];
+        generateMaterialImage.current = null;
+        requestItemThumbnail({
+          modelType: ModelType.MessageCard,
+          modelUrl: modelResp["url"],
         });
       }
+
+      return true;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [materials, requestItemThumbnail],

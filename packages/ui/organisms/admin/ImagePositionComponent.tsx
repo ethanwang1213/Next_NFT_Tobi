@@ -7,9 +7,8 @@ import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
   imageUrl: string;
-  uploadImageHandler: (image: string) => Promise<string>;
   backHandler: () => void;
-  generateHandler: (coords: string) => void;
+  nextHandler: (image: string, coords: string) => void;
   error: boolean;
   errorHandler: () => void;
 };
@@ -115,14 +114,12 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
     if (rotate !== 180) {
       await cropImage();
     }
-    const url = await props.uploadImageHandler(blobUrlRef.current);
-    if (url == "") return;
-
     if (position.x != 138 || position.y != 185) {
       calculatePositionHandler();
     }
-    props.generateHandler(coordsRef.current);
-  }, [rotate, props, cropImage, calculatePositionHandler]);
+
+    props.nextHandler(blobUrlRef.current, coordsRef.current);
+  }, [rotate, position, props, cropImage, calculatePositionHandler]);
 
   return (
     <div
