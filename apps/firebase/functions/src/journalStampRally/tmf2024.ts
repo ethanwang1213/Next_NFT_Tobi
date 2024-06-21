@@ -2,7 +2,7 @@ import {firestore} from "firebase-admin";
 import * as functions from "firebase-functions";
 import {
   MintStatus,
-  StampRallyResultType,
+  StampRallyResultType, Tmf2024StampMetadata,
   Tmf2024StampType,
 } from "types/stampRallyTypes";
 import {REGION, TMF2024_STAMP_RALLY_KEYWORDS} from "../lib/constants";
@@ -12,36 +12,28 @@ import {
   verifyCorrectStampEntry,
   verifyFirstRequest,
 } from "./utils";
+import {getFunctions} from "firebase-admin/functions";
 
 const requestMint = async (
     userId: string,
     correctStampEntry: Tmf2024StampType,
-    isStampCompleted: boolean
 ) => {
-  // const badges: {
-  //   [key in Tmf2024StampType]: { name: string; description: string };
-  // } = {
-  //   Stamp: {
-  //     name: "TOBIRAPOLIS MUSIC FESTIVAL2024 STAMP",
-  //     description: "",
-  //   },
-  // };
-  // const badge = badges[correctStampEntry];
-  // const queue = getFunctions().taskQueue(
-  //   `locations/${REGION}/functions/mintFes23NftTaskv1`,
-  // );
-  // await queue.enqueue(
-  //   {
-  //     name: badge.name,
-  //     description: badge.description,
-  //     type: correctStampEntry,
-  //     userId: userId,
-  //     isStampCompleted: isStampCompleted,
-  //   },
-  //   {
-  //     dispatchDeadlineSeconds: 60 * 5,
-  //   },
-  // );
+  const badge = Tmf2024StampMetadata[correctStampEntry];
+  const queue = getFunctions().taskQueue(
+    `locations/${REGION}/functions/mintJournalStampRallyNftTask`,
+  );
+  await queue.enqueue(
+    {
+      name: badge.name,
+      description: badge.description,
+      type: correctStampEntry,
+      userId: userId,
+      event: "tmf2024",
+    },
+    {
+      dispatchDeadlineSeconds: 60 * 5,
+    },
+  );
 };
 
 const writeMintStatusAsInProgress = async (
@@ -89,7 +81,7 @@ exports.checkRewardTmf2024 = functions
               currentStampStatusMap
           );
 
-          await requestMint(userId, correctStampEntry, isStampCompleted);
+          await requestMint(userId, correctStampEntry);
           await writeMintStatusAsInProgress(userId, correctStampEntry);
 
           return {

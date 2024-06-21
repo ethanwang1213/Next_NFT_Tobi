@@ -46,7 +46,7 @@ const requestMint = async (
 
   const badge = badges[correctStampEntry];
   const queue = getFunctions().taskQueue(
-      `locations/${REGION}/functions/mintFes23NftTaskv1`
+      `locations/${REGION}/functions/mintJournalStampRallyNftTask`
   );
   await queue.enqueue(
       {
@@ -55,6 +55,7 @@ const requestMint = async (
         type: correctStampEntry,
         userId: userId,
         isStampCompleted: isStampCompleted,
+        event: "tpf2023",
       },
       {
         dispatchDeadlineSeconds: 60 * 5,

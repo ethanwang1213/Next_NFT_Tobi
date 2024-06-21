@@ -42,6 +42,8 @@ export type StampRallyData<T extends string> = {
   [key in T]?: MintStatusType;
 };
 
+export type StampRallyEventType = "tpf2023" | "tmf2024";
+
 ////////////////////////////////////
 /// TOBIRAPOLIS祭2023スタンプラリー ///
 ////////////////////////////////////
@@ -68,3 +70,17 @@ export type Tmf2024StampType = "TobiraMusicFestival2024" | "YouSoTotallyRock";
 
 // TOBIRAPOLIS MUSIC FESTIVAL 2024のmint状態データ
 export type Tmf2024StampRallyData = StampRallyData<Tmf2024StampType>;
+
+// TOBIRAPOLIS MUSIC FESTIVAL 2024のNFT Metadata
+export const Tmf2024StampMetadata: {
+  [key in Tmf2024StampType]: { name: string; description: string };
+} = {
+  TobiraMusicFestival2024: {
+    name: "TOBIRA MUSIC FESTIVAL 2024",
+    description: "",
+  },
+  YouSoTotallyRock: {
+    name: "You so totally rock!",
+    description: "",
+  }
+};

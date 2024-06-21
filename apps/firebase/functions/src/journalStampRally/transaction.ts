@@ -54,7 +54,7 @@ export const createCollection = async () => {
   return txDetails;
 };
 
-export const mintTobirapolisFestival23BadgeNFT = async (name: string, description: string) => {
+export const sendMintJournalStampRallyNftTx = async (name: string, description: string) => {
   console.log("%cSigning Transaction", "color: teal");
 
   const cadence = `
