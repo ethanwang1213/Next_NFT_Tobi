@@ -91,7 +91,7 @@ const RoadMapComponent = (props: {
         ? "border-l-2"
         : "border-l-0";
     },
-    [props, sampleCreateRoadmapTitles],
+    [props],
   );
 
   return (
