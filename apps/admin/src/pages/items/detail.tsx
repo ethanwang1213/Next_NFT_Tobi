@@ -20,11 +20,13 @@ import StatusDropdownSelect, {
   getSampleStatusTitle,
 } from "ui/organisms/admin/StatusDropdownSelect";
 import { SampleStatus } from "ui/types/adminTypes";
+import useFcmToken from "hooks/useFCMToken";
 
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [modified, setModified] = useState(false);
+  const { token: fcmToken } = useFcmToken();
 
   const [confirmDialogTitle, setConfirmDialogTitle] = useState("");
   const [confirmDialogDescriptions, setConfirmDialogDescriptions] = useState(
@@ -323,14 +325,13 @@ const Detail = () => {
     async (value: string) => {
       if (value == "mint") {
         postData(`native/items/${id}/mint`, {
-          fcmToken: "",
+          fcmToken: fcmToken,
           amount: 1,
-          modelUrl: "",
+          modelUrl: sampleItem.modelUrl,
         });
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id],
+    [postData, id, fcmToken, sampleItem.modelUrl],
   );
 
   return (
