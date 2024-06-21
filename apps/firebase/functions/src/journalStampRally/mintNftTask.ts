@@ -41,7 +41,7 @@ const mintNFT = async (name: string, description: string, userId: string, type: 
           return;
         }
         const nftId = totalSupply - 1;
-        const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type.toLowerCase()}.png`;
+        const imageUrl = `${process.env.TMF2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
         await createMetadata(nftId, type, name, description, imageUrl);
         await recordMintResult(userId, nftId, name, description, new Date(), imageUrl, type);
 
