@@ -117,7 +117,25 @@
 				"HouseBadge",
 				"AchievementBadge",
 				"Festival23Badge",
-				"TobiratoryDigitalItems"
+				"TobiratoryDigitalItems",
+				"JournalStampRally"
+			]
+		},
+		"mainnet": {
+			"mainnetAccount1": [
+				"TobiraNeko",
+				"HouseBadge",
+				"Festival23Badge",
+				"JournalStampRally"
+			]
+		},
+		"testnet": {
+			"testnetAccount3": [
+				"TobiraNeko",
+				"HouseBadge",
+				"AchievementBadge",
+				"Festival23Badge",
+				"JournalStampRally"
 			]
 		}
 	}
