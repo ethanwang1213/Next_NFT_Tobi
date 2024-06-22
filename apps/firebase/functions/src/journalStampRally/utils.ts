@@ -95,3 +95,7 @@ export const checkStampCompleted = <T extends string>(
   });
   return isEveryMinting;
 };
+
+export const isBefore = (date: Date) => {
+  return Date.now() < date.getTime();
+};

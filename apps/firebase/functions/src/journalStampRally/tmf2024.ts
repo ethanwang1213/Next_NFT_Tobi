@@ -2,17 +2,31 @@ import {firestore} from "firebase-admin";
 import * as functions from "firebase-functions";
 import {
   MintStatus,
-  StampRallyResultType, Tmf2024StampMetadata,
+  StampRallyResultType,
   Tmf2024StampType,
-} from "./types/stampRallyTypes";
+} from "types/stampRallyTypes";
 import {REGION, TMF2024_STAMP_RALLY_KEYWORDS} from "../lib/constants";
 import {
   checkStampCompleted,
+  isBefore,
   verifyAuthorizedUser,
   verifyCorrectStampEntry,
   verifyFirstRequest,
 } from "./utils";
 import {getFunctions} from "firebase-admin/functions";
+
+const Tmf2024StampMetadata: {
+  [key in Tmf2024StampType]: { name: string; description: string };
+} = {
+  TobiraMusicFestival2024: {
+    name: "TOBIRA MUSIC FESTIVAL 2024",
+    description: "",
+  },
+  YouSoTotallyRock: {
+    name: "You so totally rock!",
+    description: "",
+  },
+};
 
 const requestMint = async (
     userId: string,
@@ -72,6 +86,18 @@ exports.checkRewardTmf2024 = functions
               data,
               TMF2024_STAMP_RALLY_KEYWORDS
           );
+
+          if (
+            (correctStampEntry === "TobiraMusicFestival2024" &&
+              !isBefore(new Date("2024-06-23T00:00:00+09:00"))) ||
+            (correctStampEntry === "YouSoTotallyRock" &&
+              !isBefore(new Date("2024-06-30T00:00:00+09:00")))
+          ) {
+            throw new functions.https.HttpsError(
+                "invalid-argument",
+                "The keyword is expired."
+            );
+          }
 
           const currentStampStatusMap = user.mintStatus?.TOBIRAMUSICFESTIVAL2024;
           verifyFirstRequest(correctStampEntry, currentStampStatusMap);
