@@ -11,7 +11,14 @@ import {
   Tmf2024StampType,
 } from "types/stampRallyTypes";
 
-const mintNFT = async (name: string, description: string, userId: string, type: Tpf2023StampType | CompleteStampType | Tmf2024StampType, stampRallyEventType: StampRallyEventType, onComplete?: () => void) => {
+const mintNFT = async (
+    name: string,
+    description: string,
+    userId: string,
+    type: Tpf2023StampType | CompleteStampType | Tmf2024StampType,
+    stampRallyEventType: StampRallyEventType,
+    onComplete?: () => void
+) => {
   const txDetails = await sendMintJournalStampRallyNftTx(name, description);
   console.log({txDetails});
   const events = txDetails.events;
@@ -142,7 +149,7 @@ const recordNewActivity = async (userId: string, text: string) => {
 };
 
 const createMetadata = async (nftId: number, type: string, name: string, description: string, imageUrl: string) => {
-  await firestore().collection("tobirapolisFestival23").doc(nftId.toString()).set({
+  await firestore().collection("journalStampRally").doc(nftId.toString()).set({
     description: description,
     type: type,
     image: imageUrl,
@@ -151,10 +158,10 @@ const createMetadata = async (nftId: number, type: string, name: string, descrip
 };
 
 const recordMintResult = async (userId: string, nftId: number, name: string, description: string, date: Date, imageUrl: string, type: string) => {
-  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID ?? "").set({
+  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_JOURNAL_STAMP_RALLY_CONTRACT_ID ?? "").set({
     created_at: Timestamp.fromDate(date),
   });
-  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID ?? "").collection("hold").doc(nftId.toString()).set({
+  await firestore().collection("users").doc(userId).collection("nft").doc(process.env.FLOW_JOURNAL_STAMP_RALLY_CONTRACT_ID ?? "").collection("hold").doc(nftId.toString()).set({
     name: name,
     description: description,
     thumbnail: imageUrl,
