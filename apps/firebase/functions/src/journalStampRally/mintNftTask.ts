@@ -7,11 +7,11 @@ import {
   CompleteStampType,
   MintStatus,
   StampRallyEventType,
+  Tpf2023StampType,
   Tmf2024StampType,
-  Tpf2023StampType
 } from "types/stampRallyTypes";
 
-const mintNFT = async (name: string, description: string, userId: string, type: Tpf2023StampType | CompleteStampType, stampRallyEventType: StampRallyEventType, onComplete?: () => void) => {
+const mintNFT = async (name: string, description: string, userId: string, type: Tpf2023StampType | CompleteStampType | Tmf2024StampType, stampRallyEventType: StampRallyEventType, onComplete?: () => void) => {
   const txDetails = await sendMintJournalStampRallyNftTx(name, description);
   console.log({txDetails});
   const events = txDetails.events;
@@ -35,7 +35,7 @@ const mintNFT = async (name: string, description: string, userId: string, type: 
     }
   } else if (stampRallyEventType === "tmf2024") {
     for (const mintEvent of events) {
-      if (mintEvent.type === `${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID}.${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_EVENT_NAME}`) {
+      if (mintEvent.type === `${process.env.FLOW_JOURNAL_STAMP_RALLY_CONTRACT_ID}.${process.env.FLOW_JOURNAL_STAMP_RALLY_EVENT_NAME}`) {
         const totalSupply = mintEvent.data.totalSupply;
         if (!totalSupply) {
           return;

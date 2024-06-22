@@ -20,7 +20,7 @@ const hashMessageHex = (hashType: string, msgHex: string) => {
 
 const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string}) => {
   const key = curve.keyFromPrivate(Buffer.from(privateKey, "hex"));
-  const hash = process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT_KEY_HASH;
+  const hash = process.env.FLOW_JOURNAL_STAMP_RALLY_ACCOUNT_KEY_HASH;
   if (!hash) {
     throw new Error("The environment of flow signer is not defined.");
   }
@@ -32,9 +32,9 @@ const signWithKey = ({privateKey, msgHex}: {privateKey: string, msgHex: string})
 };
 
 export const signer = async (account: any) => {
-  const accountAddress = process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT;
-  const pkey = process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT_PKEY;
-  const keyId = Number(process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_ACCOUNT_KEY_ID);
+  const accountAddress = process.env.FLOW_JOURNAL_STAMP_RALLY_ACCOUNT;
+  const pkey = process.env.FLOW_JOURNAL_STAMP_RALLY_ACCOUNT_PKEY;
+  const keyId = Number(process.env.FLOW_JOURNAL_STAMP_RALLY_ACCOUNT_KEY_ID);
   if (!accountAddress || !pkey) {
     throw new Error("The environment of flow signer is not defined.");
   }

@@ -4,7 +4,7 @@ import {
   MintStatus,
   StampRallyResultType, Tmf2024StampMetadata,
   Tmf2024StampType,
-} from "types/stampRallyTypes";
+} from "./types/stampRallyTypes";
 import {REGION, TMF2024_STAMP_RALLY_KEYWORDS} from "../lib/constants";
 import {
   checkStampCompleted,
