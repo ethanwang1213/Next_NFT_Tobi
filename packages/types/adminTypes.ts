@@ -3,6 +3,7 @@ import {
   ItemType,
   NftLoadData,
   SampleLoadData,
+  ShowcaseSettings,
   ShowcaseType,
 } from "./unityTypes";
 
@@ -101,6 +102,7 @@ export type ShowcaseLoadData = {
   showcaseUrl: string;
   sampleItemList: SampleLoadData[];
   nftItemList: NftLoadData[];
+  settings: ShowcaseSettings;
   isDebug?: boolean;
 };
 
@@ -108,6 +110,7 @@ export type ShowcaseSaveData = {
   sampleItemList: ItemSaveData[];
   nftItemList: ItemSaveData[];
   thumbnailImageBase64: string;
+  settings: ShowcaseSettings;
 };
 
 export type IdPairs = {

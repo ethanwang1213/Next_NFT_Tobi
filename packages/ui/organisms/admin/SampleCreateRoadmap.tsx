@@ -95,6 +95,16 @@ const RoadMapComponent = (props: {
     }
   }, []);
 
+  const getLeftBorderLengthClass = useCallback(
+    (idx: number): string => {
+      const key = props.sampleType.toLocaleLowerCase().split(" ").join("");
+      return idx < sampleCreateRoadmapTitles[key].length - 1
+        ? "border-l-2"
+        : "border-l-0";
+    },
+    [props],
+  );
+
   return (
     <div className="flex flex-col py-5 px-6">
       <NextImage
@@ -140,15 +150,7 @@ const RoadMapComponent = (props: {
                         ? "border-base-white"
                         : "border-base-white/25"
                     }
-                    ${
-                      index <
-                      sampleCreateRoadmapTitles[
-                        props.sampleType.toLocaleLowerCase().split(" ").join("")
-                      ].length -
-                        1
-                        ? "border-l-2"
-                        : "border-l-0"
-                    } `}
+                    ${getLeftBorderLengthClass(index)} `}
                 >
                   {props.step === index + 1 ? roadmap.description : ""}
                 </span>
