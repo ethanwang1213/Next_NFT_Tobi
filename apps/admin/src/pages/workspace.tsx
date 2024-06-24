@@ -290,18 +290,12 @@ export default function Index() {
         );
         generateMaterialImage.current = materials[materialIndex];
 
-        // create model
-        const modelResp = await createSample("native/model/create", {
-          type: sampleType,
-          imageUrl: image1,
-        });
-        if (modelResp === false) {
-          return false;
-        }
-        generateModelUrl.current = modelResp["modelUrl"];
+        // get model URL
+        generateModelUrl.current =
+          "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
         requestItemThumbnail({
           modelType: sampleType as ModelType,
-          modelUrl: modelResp["modelUrl"],
+          modelUrl: generateModelUrl.current,
           imageUrl: image1,
         });
       } else if (sampleType == ModelType.AcrylicStand) {

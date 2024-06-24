@@ -8,13 +8,12 @@ import ReactCrop, {
   makeAspectCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { MaterialItem } from "ui/types/adminTypes";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 import GenerateErrorComponent from "./GenerateErrorComponent";
 import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
-  materialImage: MaterialItem;
+  imageUrl: string;
   backHandler: () => void;
   nextHandler: (image: string) => void;
   error: boolean;
@@ -45,7 +44,7 @@ function centerAspectCrop(
 const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
-  const blobUrlRef = useRef(props.materialImage.image);
+  const blobUrlRef = useRef(props.imageUrl);
   const [crop, setCrop] = useState<Crop>({
     unit: "%", // Can be 'px' or '%'
     x: 0,
@@ -104,7 +103,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
     const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
@@ -144,15 +143,15 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       sx = crop.x - sx;
       dx = 0;
     } else {
-      sx = 0;
       dx = sx - crop.x;
+      sx = 0;
     }
     if (sy < crop.y) {
       sy = crop.y - sy;
       dy = 0;
     } else {
-      sy = 0;
       dy = sy - crop.y;
+      sy = 0;
     }
 
     ctx.drawImage(
@@ -160,7 +159,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       sx * scaleX,
       sy * scaleY,
       sw * scaleX,
-      sw * scaleY,
+      sh * scaleY,
       dx,
       dy,
       sw,
@@ -182,13 +181,14 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const nextHandler = useCallback(async () => {
     setProcessing(true);
 
-    if (blobUrlRef.current === null) {
+    if (rotate != 180 || blobUrlRef.current === null) {
       await cropHandler();
     }
 
     props.nextHandler(blobUrlRef.current);
-  }, [props, cropHandler]);
+  }, [cropHandler, props, rotate]);
 
+  console.log("image crop component is rendered", blobUrlRef.current);
   return (
     <div className="h-full relative">
       {processing && !props.error && (
@@ -201,7 +201,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
           <ReactCrop
             crop={crop}
             onChange={(c) => {
-              imgRef.current = null;
+              blobUrlRef.current = null;
               setCrop(c);
             }}
             aspect={aspect}
@@ -220,7 +220,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   ref={imgRef}
-                  src={props.materialImage.image}
+                  src={props.imageUrl}
                   alt="crop image"
                   style={{
                     maxWidth: "100%",

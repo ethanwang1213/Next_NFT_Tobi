@@ -33,7 +33,7 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
     const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;

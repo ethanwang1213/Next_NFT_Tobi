@@ -1,5 +1,5 @@
 import NextImage from "next/image";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "react-image-crop/dist/ReactCrop.css";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 import GenerateErrorComponent from "./GenerateErrorComponent";
@@ -16,16 +16,32 @@ type Props = {
 const ImagePositionComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
+  const moverWrapperRef = useRef<HTMLDivElement>(null);
   const blobUrlRef = useRef(props.imageUrl);
 
   const [rotate, setRotate] = useState(180);
   const [processing, setProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [position, setPosition] = useState({ x: 138, y: 185 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartPos = useRef<{ x: number; y: number } | null>(null);
   const coordsRef = useRef(null);
+
+  useEffect(() => {
+    if (imgWrapperRef.current && moverWrapperRef.current) {
+      setPosition({
+        x:
+          (imgWrapperRef.current.clientWidth -
+            moverWrapperRef.current.clientWidth) /
+          2,
+        y:
+          (imgWrapperRef.current.clientWidth -
+            moverWrapperRef.current.clientHeight) /
+          2,
+      });
+    }
+  }, [imgWrapperRef, moverWrapperRef]);
 
   const onMouseDown = (event: React.MouseEvent) => {
     dragStartPos.current = { x: event.clientX, y: event.clientY };
@@ -61,17 +77,19 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
-    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+    const rotatedNaturalWidth =
+      image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedNaturalHeight =
+      image.naturalWidth * sin + image.naturalHeight * cos;
 
-    rotateCanvas.width = rotatedWidth;
-    rotateCanvas.height = rotatedHeight;
+    rotateCanvas.width = rotatedNaturalWidth;
+    rotateCanvas.height = rotatedNaturalHeight;
 
     // Translate and rotate the canvas
-    rotateCtx.translate(rotatedWidth / 2, rotatedHeight / 2);
+    rotateCtx.translate(rotatedNaturalWidth / 2, rotatedNaturalHeight / 2);
     rotateCtx.rotate(angleInRadians);
     rotateCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
 
@@ -92,18 +110,26 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
 
   const calculatePositionHandler = useCallback(() => {
     const image = imgRef.current;
-    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
-    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+    const rotatedNaturalWidth =
+      image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedNaturalHeight =
+      image.naturalWidth * sin + image.naturalHeight * cos;
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-    const screenWidth = rotatedWidth / scaleX;
-    const screenHeight = rotatedHeight / scaleY;
+    const rotatedScreenWidth = rotatedNaturalWidth / scaleX;
+    const rotatedScreenHeight = rotatedNaturalHeight / scaleY;
 
-    const screenOffsetX = position.x + 62 - (400 - screenWidth) / 2;
-    const screenOffsetY = position.y + 16 - (402 - screenHeight) / 2;
+    const screenOffsetX =
+      position.x +
+      moverWrapperRef.current.clientWidth / 2 -
+      (imgWrapperRef.current.clientWidth - rotatedScreenWidth) / 2;
+    const screenOffsetY =
+      position.y +
+      moverWrapperRef.current.clientHeight / 2 -
+      (imgWrapperRef.current.clientHeight - rotatedScreenHeight) / 2;
     const offsetX = Math.round(screenOffsetX * scaleX);
     const offsetY = Math.round(screenOffsetY * scaleY);
     coordsRef.current = `${offsetX},${offsetY}`;
@@ -114,7 +140,17 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
     if (rotate !== 180) {
       await cropImage();
     }
-    if (position.x != 138 || position.y != 185) {
+
+    if (
+      position.x !=
+        (imgWrapperRef.current.clientWidth -
+          moverWrapperRef.current.clientWidth) /
+          2 ||
+      position.y !=
+        (imgWrapperRef.current.clientWidth -
+          moverWrapperRef.current.clientHeight) /
+          2
+    ) {
       calculatePositionHandler();
     }
 
@@ -167,6 +203,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
               Front
             </span>
             <div
+              ref={moverWrapperRef}
               className="absolute w-[124px] h-8 z-10
                   bg-white rounded-lg border border-primary flex justify-center items-center gap-1 cursor-move"
               style={{ left: position.x, top: position.y }}

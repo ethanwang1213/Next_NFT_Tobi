@@ -1,5 +1,5 @@
 import NextImage from "next/image";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { MaterialItem } from "ui/types/adminTypes";
 import ButtonGroupComponent from "./ButtonGroupComponent";
@@ -20,14 +20,17 @@ type Props = {
 const MaterialImageSelectComponent: React.FC<Props> = (props) => {
   const [processing, setProcessing] = useState(false);
 
+  useEffect(() => {
+    setProcessing(false);
+  }, [props.data]);
+
   const onDrop = useCallback(
     async (acceptedFiles) => {
       // Do something with the files
       const file = acceptedFiles[0];
       setProcessing(true);
       if (file && file.type.startsWith("image/png")) {
-        await props.uploadImageHandler(URL.createObjectURL(file));
-        setProcessing(false);
+        props.uploadImageHandler(URL.createObjectURL(file));
       } else {
         const reader = new FileReader();
         reader.onload = () => {
@@ -41,8 +44,7 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             const dataUrlWithoutExif = canvas.toDataURL("image/jpeg"); // strip the EXIF data
-            await props.uploadImageHandler(dataUrlWithoutExif);
-            setProcessing(false);
+            props.uploadImageHandler(dataUrlWithoutExif);
           };
           img.src = imageDataUrl.toString();
         };
@@ -62,7 +64,7 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
         </div>
       )}
       {!props.error ? (
-        <div className="flex flex-col h-full gap-4">
+        <div className="h-full">
           <div
             {...getRootProps()}
             style={{
@@ -86,8 +88,8 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
               alt="upload icon"
             />
           </div>
-          <div className="flex-1">
-            <div className="flex flex-wrap gap-4 overflow-y-auto">
+          <div className="h-[348px] my-4">
+            <div className="h-full flex flex-wrap gap-4 overflow-y-auto">
               {props.data &&
                 props.data.map((image) => (
                   <NextImage
