@@ -1,7 +1,5 @@
 import Image from "next/image";
 import { TabPanel, useTabs } from "react-headless-tabs";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
@@ -111,16 +109,6 @@ const ShowcaseTabView = ({
           ></ShowcaseInventoryTab>
         </TabPanel>
         <TabPanel hidden={tab !== "Settings"}></TabPanel>
-        <ToastContainer
-          position="bottom-center"
-          autoClose={5000}
-          newestOnTop={false}
-          closeOnClick={true}
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={false}
-          theme="dark"
-        />
       </div>
       <ShowcaseUnityUISetting />
     </div>
