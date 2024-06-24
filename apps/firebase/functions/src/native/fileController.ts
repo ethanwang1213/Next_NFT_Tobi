@@ -87,3 +87,45 @@ export const removeMaterials = async (req: Request, res: Response) => {
     return;
   });
 };
+
+export const deleteMaterial = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const material = await prisma.tobiratory_material_images.findUnique({
+      where: {
+        id: parseInt(id),
+      }
+    });
+    if (!material) {
+      res.status(404).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+    if (material.owner_uuid != uid) {
+      res.status(404).send({
+        status: "error",
+        data: "not-yours",
+      });
+      return;
+    }
+    await prisma.tobiratory_material_images.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    res.status(200).send({
+      status: "success",
+      data: "deleted",
+    });
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+    return;
+  });
+};
