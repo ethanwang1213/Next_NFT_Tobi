@@ -5,8 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
 import DateTimeInput from "ui/molecules/DateTimeInput";
@@ -331,7 +330,7 @@ const Detail = () => {
         });
       }
     },
-    [postData, id, fcmToken, sampleItem.modelUrl],
+    [postData, id, fcmToken, sampleItem],
   );
 
   return (
@@ -799,16 +798,6 @@ const Detail = () => {
       <MintConfirmDialog
         dialogRef={mintConfirmDialogRef}
         changeHandler={mintConfirmDialogHandler}
-      />
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        newestOnTop={false}
-        closeOnClick={true}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        theme="dark"
       />
     </div>
   );
