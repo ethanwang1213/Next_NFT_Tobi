@@ -610,7 +610,7 @@ const Detail = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 mt-10">
               <div>
                 <Image
                   width={384}
