@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useToggle } from "react-use";
 import Button from "ui/atoms/Button";
 import CustomToast from "ui/organisms/admin/CustomToast";
