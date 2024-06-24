@@ -5,12 +5,14 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "ui/atoms/Button";
 import MintConfirmDialog from "./MintConfirmDialog";
+import useFcmToken from "hooks/useFCMToken";
 
 const SampleDetailView = ({ id }: { id: number }) => {
   const dialogRef = useRef(null);
   const apiUrl = `native/admin/samples/${id}`;
-  const { data, getData } = useRestfulAPI(null);
+  const { data, getData, postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
+  const { token: fcmToken } = useFcmToken();
 
   useEffect(() => {
     if (id > 0) {
@@ -30,11 +32,18 @@ const SampleDetailView = ({ id }: { id: number }) => {
     return Math.floor(daysDifference);
   };
 
-  const mintConfirmDialogHandler = useCallback((value: string) => {
-    if (value == "mint") {
-      // call mint API
-    }
-  }, []);
+  const mintConfirmDialogHandler = useCallback(
+    (value: string) => {
+      if (value == "mint") {
+        postData(`native/items/${id}/mint`, {
+          fcmToken: fcmToken,
+          amount: 1,
+          modelUrl: data.modelUrl,
+        });
+      }
+    },
+    [data, fcmToken, id, postData],
+  );
 
   return (
     <div className="flex flex-col items-center gap-6 text-base-white">
