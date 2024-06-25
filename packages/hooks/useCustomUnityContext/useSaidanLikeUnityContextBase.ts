@@ -127,10 +127,9 @@ export const useSaidanLikeUnityContextBase = ({
 
   const removeItem = useCallback(
     ({ itemType, itemId, id }: ItemTypeParam & ItemBaseId & ItemId) => {
-      const itemInfo = { itemType, itemId, id };
       postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
-        JSON.stringify(itemInfo),
+        JSON.stringify({ itemType, itemId, id }),
       );
     },
     [postMessageToUnity],
@@ -150,8 +149,10 @@ export const useSaidanLikeUnityContextBase = ({
 
   const inputWasd = useCallback(
     ({ wKey, aKey, sKey, dKey }: WasdParams) => {
-      const params = { wKey, aKey, sKey, dKey };
-      postMessageToUnity("InputWasdMessageReceiver", JSON.stringify(params));
+      postMessageToUnity(
+        "InputWasdMessageReceiver",
+        JSON.stringify({ wKey, aKey, sKey, dKey }),
+      );
     },
     [postMessageToUnity],
   );
