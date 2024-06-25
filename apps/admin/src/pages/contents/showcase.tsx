@@ -50,8 +50,6 @@ const Showcase = () => {
     showcaseSaveData: ShowcaseSaveData,
     updateIdValues,
   ) => {
-    console.log("kkk");
-    console.log(wt, ft, st, sb, pt, pb);
     const thumbnailUrl = await uploadImage(
       showcaseSaveData.thumbnailImageBase64,
       ImageType.ShowcaseThumbnail,
