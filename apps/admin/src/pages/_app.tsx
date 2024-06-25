@@ -40,7 +40,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             newestOnTop={false}
             closeOnClick={false}
             rtl={false}
-            pauseOnFocusLoss={true}
+            pauseOnFocusLoss={false}
             draggable={false}
             pauseOnHover
             transition={Slide}
