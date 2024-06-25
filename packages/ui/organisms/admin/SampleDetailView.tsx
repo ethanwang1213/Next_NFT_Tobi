@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "ui/atoms/Button";
-import MintConfirmDialog from "./MintConfirmDialog";
+import MintConfirmDialog2 from "./MintConfirmDialog2";
 import useFcmToken from "hooks/useFCMToken";
 
 const SampleDetailView = ({ id }: { id: number }) => {
@@ -167,7 +167,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
           </span>
         </Button>
       )}
-      <MintConfirmDialog
+      <MintConfirmDialog2
         dialogRef={mintConfirmDialogRef}
         changeHandler={mintConfirmDialogHandler}
       />
