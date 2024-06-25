@@ -3,16 +3,24 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "ui/atoms/Button";
-import { getSampleStatusTitle } from "./StatusDropdownSelect";
+import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
+import { FilterItem } from "./DigitalItemFilterMenu";
+import { getDigitalItemStatusTitle } from "./StatusDropdownSelect";
 
-const SampleTable = (filters: {
+export enum DigitalItemTableColumn {
+  Name = 1,
+  Price,
+  Status,
+  Minted,
+  CreationDate,
+  DigitalItemTableColumnCount,
+}
+
+const DigitalItemTable = (filters: {
   filterArray: boolean[];
   price: { from: number; to: number };
   statusArray: boolean[];
-  saleStartDate: { from: Date; to: Date };
-  saleEndDate: { from: Date; to: Date };
   createDate: { from: Date; to: Date };
 }) => {
   const apiUrl = "native/admin/digital_items";
@@ -34,71 +42,31 @@ const SampleTable = (filters: {
     // sort digital items
     const newData = [...sortData];
     switch (sortKey) {
-      case -1:
+      case -DigitalItemTableColumn.Name:
         newData.sort((a, b) =>
           a.name < b.name ? -1 : a.name > b.name ? 1 : a.status - b.status,
         );
         break;
 
-      case 1:
+      case DigitalItemTableColumn.Name:
         newData.sort((a, b) =>
           a.name < b.name ? 1 : a.name > b.name ? -1 : a.status - b.status,
         );
         break;
 
-      case -2:
+      case -DigitalItemTableColumn.Price:
         newData.sort((a, b) =>
           a.price != b.price ? a.price - b.price : a.status - b.status,
         );
         break;
 
-      case 2:
+      case DigitalItemTableColumn.Price:
         newData.sort((a, b) =>
           b.price != a.price ? b.price - a.price : a.status - b.status,
         );
         break;
 
-      case -4:
-        newData.sort((a, b) =>
-          a.saleStartDate < b.saleStartDate
-            ? -1
-            : a.saleStartDate > b.saleStartDate
-              ? 1
-              : a.status - b.status,
-        );
-        break;
-
-      case 4:
-        newData.sort((a, b) =>
-          a.saleStartDate < b.saleStartDate
-            ? 1
-            : a.saleStartDate > b.saleStartDate
-              ? -1
-              : a.status - b.status,
-        );
-        break;
-
-      case -5:
-        newData.sort((a, b) =>
-          a.saleEndDate < b.saleEndDate
-            ? -1
-            : a.saleEndDate > b.saleEndDate
-              ? 1
-              : a.status - b.status,
-        );
-        break;
-
-      case 5:
-        newData.sort((a, b) =>
-          a.saleEndDate < b.saleEndDate
-            ? 1
-            : a.saleEndDate > b.saleEndDate
-              ? -1
-              : a.status - b.status,
-        );
-        break;
-
-      case -6:
+      case -DigitalItemTableColumn.Minted:
         newData.sort((a, b) =>
           a.saleQuantity != b.saleQuantity
             ? a.saleQuantity - b.saleQuantity
@@ -106,7 +74,7 @@ const SampleTable = (filters: {
         );
         break;
 
-      case 6:
+      case DigitalItemTableColumn.Minted:
         newData.sort((a, b) =>
           b.saleQuantity != a.saleQuantity
             ? b.saleQuantity - a.saleQuantity
@@ -114,7 +82,7 @@ const SampleTable = (filters: {
         );
         break;
 
-      case -7:
+      case -DigitalItemTableColumn.CreationDate:
         newData.sort((a, b) =>
           a.createDate < b.createDate
             ? -1
@@ -124,7 +92,7 @@ const SampleTable = (filters: {
         );
         break;
 
-      case 7:
+      case DigitalItemTableColumn.CreationDate:
         newData.sort((a, b) =>
           a.createDate < b.createDate
             ? 1
@@ -144,7 +112,7 @@ const SampleTable = (filters: {
   const applyFilter = (filterKey: number, filterData: any[]) => {
     let newData = [];
     switch (filterKey) {
-      case 0: // price
+      case FilterItem.Price: // price
         newData = filterData.filter((value) => {
           if (value.price === null) return false;
           return (
@@ -153,35 +121,13 @@ const SampleTable = (filters: {
         });
         break;
 
-      case 1: // status
+      case FilterItem.Status: // status
         newData = filterData.filter((value) => {
           return filters.statusArray[value.status - 1];
         });
         break;
 
-      case 2: // Sale Start Date
-        newData = filterData.filter((value) => {
-          if (value.saleStartDate === null) return false;
-          const dateValue = new Date(value.saleStartDate);
-          return (
-            dateValue >= filters.saleStartDate.from &&
-            dateValue <= filters.saleStartDate.to
-          );
-        });
-        break;
-
-      case 3: // Sale End Date
-        newData = filterData.filter((value) => {
-          if (value.saleEndDate === null) return false;
-          const dateValue = new Date(value.saleEndDate);
-          return (
-            dateValue >= filters.saleEndDate.from &&
-            dateValue <= filters.saleEndDate.to
-          );
-        });
-        break;
-
-      case 4: // Creation Date
+      case FilterItem.CreationDate: // Creation Date
         newData = filterData.filter((value) => {
           if (value.createDate === null) return false;
           const dateValue = new Date(value.createDate);
@@ -236,18 +182,22 @@ const SampleTable = (filters: {
                 <th
                   scope="col"
                   className="min-w-80 w-80 py-0 hover:bg-[#1363B6] text-center group relative"
-                  onClick={() => toggleSortingDirection(1)}
+                  onClick={() =>
+                    toggleSortingDirection(DigitalItemTableColumn.Name)
+                  }
                 >
-                  SAMPLE NAME
+                  Item Name
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
-                      Math.abs(sortOrder) == 1 ? "inline" : "hidden",
+                      Math.abs(sortOrder) == DigitalItemTableColumn.Name
+                        ? "inline"
+                        : "hidden",
                     )}
                     style={{
                       top: "50%",
                       transform: `translateY(-45%) ScaleY(0.6) rotate(${
-                        sortOrder == -1 ? 180 : 0
+                        sortOrder == -DigitalItemTableColumn.Name ? 180 : 0
                       }deg)`,
                     }}
                   >
@@ -257,18 +207,22 @@ const SampleTable = (filters: {
                 <th
                   scope="col"
                   className="py-0 min-w-24 hover:bg-[#1363B6] text-center group relative"
-                  onClick={() => toggleSortingDirection(2)}
+                  onClick={() =>
+                    toggleSortingDirection(DigitalItemTableColumn.Price)
+                  }
                 >
                   Price
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
-                      Math.abs(sortOrder) == 2 ? "inline" : "hidden",
+                      Math.abs(sortOrder) == DigitalItemTableColumn.Price
+                        ? "inline"
+                        : "hidden",
                     )}
                     style={{
                       top: "50%",
                       transform: `translateY(-45%) ScaleY(0.6) rotate(${
-                        sortOrder == -2 ? 180 : 0
+                        sortOrder == -DigitalItemTableColumn.Price ? 180 : 0
                       }deg)`,
                     }}
                   >
@@ -280,61 +234,23 @@ const SampleTable = (filters: {
                 </th>
                 <th
                   scope="col"
-                  className="min-w-40 py-0 hover:bg-[#1363B6] text-center group relative"
-                  onClick={() => toggleSortingDirection(4)}
-                >
-                  Sale Start Date
-                  <span
-                    className={clsx(
-                      "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
-                      Math.abs(sortOrder) == 4 ? "inline" : "hidden",
-                    )}
-                    style={{
-                      top: "50%",
-                      transform: `translateY(-45%) ScaleY(0.6) rotate(${
-                        sortOrder == -4 ? 180 : 0
-                      }deg)`,
-                    }}
-                  >
-                    ▼
-                  </span>
-                </th>
-                <th
-                  scope="col"
-                  className="min-w-40 py-0 hover:bg-[#1363B6] text-center group relative"
-                  onClick={() => toggleSortingDirection(5)}
-                >
-                  Sale End Date
-                  <span
-                    className={clsx(
-                      "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
-                      Math.abs(sortOrder) == 5 ? "inline" : "hidden",
-                    )}
-                    style={{
-                      top: "50%",
-                      transform: `translateY(-45%) ScaleY(0.6) rotate(${
-                        sortOrder == -5 ? 180 : 0
-                      }deg)`,
-                    }}
-                  >
-                    ▼
-                  </span>
-                </th>
-                <th
-                  scope="col"
                   className="min-w-32 py-0 hover:bg-[#1363B6] text-center group relative"
-                  onClick={() => toggleSortingDirection(6)}
+                  onClick={() =>
+                    toggleSortingDirection(DigitalItemTableColumn.Minted)
+                  }
                 >
-                  Units Sold
+                  Minted
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
-                      Math.abs(sortOrder) == 6 ? "inline" : "hidden",
+                      Math.abs(sortOrder) == DigitalItemTableColumn.Minted
+                        ? "inline"
+                        : "hidden",
                     )}
                     style={{
                       top: "50%",
                       transform: `translateY(-45%) ScaleY(0.6) rotate(${
-                        sortOrder == -6 ? 180 : 0
+                        sortOrder == -DigitalItemTableColumn.Minted ? 180 : 0
                       }deg)`,
                     }}
                   >
@@ -344,18 +260,24 @@ const SampleTable = (filters: {
                 <th
                   scope="col"
                   className="min-w-40 py-0 hover:bg-[#1363B6] text-center group relative"
-                  onClick={() => toggleSortingDirection(7)}
+                  onClick={() =>
+                    toggleSortingDirection(DigitalItemTableColumn.CreationDate)
+                  }
                 >
                   Creation Date
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
-                      Math.abs(sortOrder) == 7 ? "inline" : "hidden",
+                      Math.abs(sortOrder) == DigitalItemTableColumn.CreationDate
+                        ? "inline"
+                        : "hidden",
                     )}
                     style={{
                       top: "50%",
                       transform: `translateY(-45%) ScaleY(0.6) rotate(${
-                        sortOrder == -7 ? 180 : 0
+                        sortOrder == -DigitalItemTableColumn.CreationDate
+                          ? 180
+                          : 0
                       }deg)`,
                     }}
                   >
@@ -407,17 +329,7 @@ const SampleTable = (filters: {
                     {formatCurrency(item.price)}
                   </td>
                   <td className="p-3 text-center justify-center">
-                    {getSampleStatusTitle(item.status)}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    {!!item.saleStartDate && item.saleStartDate.length
-                      ? formatDateToLocal(item.saleStartDate)
-                      : "-"}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    {!!item.saleEndDate && item.saleEndDate.length
-                      ? formatDateToLocal(item.saleEndDate)
-                      : "-"}
+                    {getDigitalItemStatusTitle(item.status)}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
                     <span>{item.saleQuantity} / </span>
@@ -479,4 +391,4 @@ const SampleTable = (filters: {
   );
 };
 
-export { SampleTable };
+export { DigitalItemTable };

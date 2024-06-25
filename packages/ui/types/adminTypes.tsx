@@ -22,13 +22,11 @@ export type NftItem = {
   materialImage: string;
 };
 
-export enum SampleStatus {
+export enum DigitalItemStatus {
   Draft = 1,
   Private,
   ViewingOnly,
   OnSale,
   Unlisted,
-  ScheduledPublishing,
-  ScheduledforSale,
-  SampleStatusCount,
+  DigitalItemStatusCount,
 }

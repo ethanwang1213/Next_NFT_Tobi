@@ -6,6 +6,7 @@ import { formatDateToLocal } from "ui/atoms/Formatters";
 import Button from "ui/atoms/Button";
 import MintConfirmDialog from "./MintConfirmDialog";
 import useFcmToken from "hooks/useFCMToken";
+import Link from "next/link";
 
 const SampleDetailView = ({ id }: { id: number }) => {
   const dialogRef = useRef(null);
@@ -135,17 +136,19 @@ const SampleDetailView = ({ id }: { id: number }) => {
         )}
       </div>
       {id > 0 && (
-        <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
-          <Image
-            src="/admin/images/icon/open_in_new.svg"
-            width={24}
-            height={24}
-            alt="open icon"
-          />
-          <span className="text-base-white text-base font-bold">
-            Edit Item Data
-          </span>
-        </Button>
+        <Link href={`/items/detail?id=${id}`}>
+          <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
+            <Image
+              src="/admin/images/icon/open_in_new.svg"
+              width={24}
+              height={24}
+              alt="open icon"
+            />
+            <span className="text-base-white text-base font-bold">
+              Edit Item Data
+            </span>
+          </Button>
+        </Link>
       )}
       {id > 0 && (
         <Button

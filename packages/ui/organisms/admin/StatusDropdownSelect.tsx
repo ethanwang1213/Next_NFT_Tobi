@@ -1,30 +1,24 @@
 import clsx from "clsx";
 import { useSelect } from "downshift";
-import { SampleStatus } from "ui/types/adminTypes";
+import { DigitalItemStatus } from "ui/types/adminTypes";
 
-export const getSampleStatusTitle = (status) => {
+export const getDigitalItemStatusTitle = (status) => {
   let value;
   switch (status) {
-    case SampleStatus.Draft:
+    case DigitalItemStatus.Draft:
       value = "Draft";
       break;
-    case SampleStatus.Private:
+    case DigitalItemStatus.Private:
       value = "Private";
       break;
-    case SampleStatus.ViewingOnly:
+    case DigitalItemStatus.ViewingOnly:
       value = "Viewing Only";
       break;
-    case SampleStatus.OnSale:
+    case DigitalItemStatus.OnSale:
       value = "On Sale";
       break;
-    case SampleStatus.Unlisted:
+    case DigitalItemStatus.Unlisted:
       value = "Unlisted";
-      break;
-    case SampleStatus.ScheduledPublishing:
-      value = "Scheduled Publishing";
-      break;
-    case SampleStatus.ScheduledforSale:
-      value = "Scheduled for Sale";
       break;
     default:
       value = "";
@@ -34,74 +28,48 @@ export const getSampleStatusTitle = (status) => {
 };
 
 const statusValues = [
-  { value: SampleStatus.Draft, color: "#093159" },
-  { value: SampleStatus.Private, color: "#505050" },
-  { value: SampleStatus.ViewingOnly, color: "#37AD00" },
-  { value: SampleStatus.OnSale, color: "#DB6100" },
-  { value: SampleStatus.Unlisted, color: "#3F3F3F" },
-  { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
-  { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+  { value: DigitalItemStatus.Draft, color: "#093159" },
+  { value: DigitalItemStatus.Private, color: "#505050" },
+  { value: DigitalItemStatus.ViewingOnly, color: "#37AD00" },
+  { value: DigitalItemStatus.OnSale, color: "#DB6100" },
+  { value: DigitalItemStatus.Unlisted, color: "#3F3F3F" },
 ];
 
 const availableStatusValues = (status) => {
   switch (status) {
-    case SampleStatus.Draft:
+    case DigitalItemStatus.Draft:
       return [
-        { value: SampleStatus.Draft, color: "#093159" },
-        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
-        { value: SampleStatus.OnSale, color: "#DB6100" },
-        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
-        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+        { value: DigitalItemStatus.Draft, color: "#093159" },
+        { value: DigitalItemStatus.ViewingOnly, color: "#37AD00" },
+        { value: DigitalItemStatus.OnSale, color: "#DB6100" },
       ];
 
-    case SampleStatus.Private:
+    case DigitalItemStatus.Private:
       return [
-        { value: SampleStatus.Private, color: "#505050" },
-        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
-        { value: SampleStatus.OnSale, color: "#DB6100" },
-        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
-        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+        { value: DigitalItemStatus.Private, color: "#505050" },
+        { value: DigitalItemStatus.ViewingOnly, color: "#37AD00" },
+        { value: DigitalItemStatus.OnSale, color: "#DB6100" },
       ];
 
-    case SampleStatus.ViewingOnly:
+    case DigitalItemStatus.ViewingOnly:
       return [
-        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
-        { value: SampleStatus.OnSale, color: "#DB6100" },
-        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
-        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+        { value: DigitalItemStatus.ViewingOnly, color: "#37AD00" },
+        { value: DigitalItemStatus.OnSale, color: "#DB6100" },
+        { value: DigitalItemStatus.Unlisted, color: "#3F3F3F" },
       ];
 
-    case SampleStatus.OnSale:
+    case DigitalItemStatus.OnSale:
       return [
-        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
-        { value: SampleStatus.OnSale, color: "#DB6100" },
-        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
-        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
+        { value: DigitalItemStatus.ViewingOnly, color: "#37AD00" },
+        { value: DigitalItemStatus.OnSale, color: "#DB6100" },
+        { value: DigitalItemStatus.Unlisted, color: "#3F3F3F" },
       ];
 
-    case SampleStatus.Unlisted:
+    case DigitalItemStatus.Unlisted:
       return [
-        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
-        { value: SampleStatus.OnSale, color: "#DB6100" },
-        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
-        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
-        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
-      ];
-
-    case SampleStatus.ScheduledPublishing:
-      return [
-        { value: SampleStatus.OnSale, color: "#DB6100" },
-        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
-        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
-        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
-      ];
-
-    case SampleStatus.ScheduledforSale:
-      return [
-        { value: SampleStatus.ViewingOnly, color: "#37AD00" },
-        { value: SampleStatus.Unlisted, color: "#3F3F3F" },
-        { value: SampleStatus.ScheduledPublishing, color: "#277C00" },
-        { value: SampleStatus.ScheduledforSale, color: "#9A4500" },
+        { value: DigitalItemStatus.ViewingOnly, color: "#37AD00" },
+        { value: DigitalItemStatus.OnSale, color: "#DB6100" },
+        { value: DigitalItemStatus.Unlisted, color: "#3F3F3F" },
       ];
 
     default:
@@ -136,7 +104,7 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
         {...getToggleButtonProps()}
       >
         <span style={{ fontSize: 18 }}>
-          {getSampleStatusTitle(selectedItem.value)}
+          {getDigitalItemStatusTitle(selectedItem.value)}
         </span>
         <span>{isOpen ? <>▲</> : <>▼</>}</span>
       </div>
@@ -157,7 +125,7 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
               key={item.value}
               {...getItemProps({ item, index })}
             >
-              <span>{getSampleStatusTitle(item.value)}</span>
+              <span>{getDigitalItemStatusTitle(item.value)}</span>
             </li>
           ))}
       </ul>
