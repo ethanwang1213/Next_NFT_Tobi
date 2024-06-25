@@ -3,6 +3,12 @@ import ButtonGroupComponent from "./ButtonGroupComponent";
 import GenerateErrorComponent from "./GenerateErrorComponent";
 import RotateSliderComponent from "./RotateSliderComponent";
 import ScaleSliderComponent from "./ScaleSliderComponent";
+import ReactCrop, {
+  Crop,
+  PixelCrop,
+  convertToPixelCrop,
+} from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
 type Props = {
   imageCardUrl: string;
@@ -14,56 +20,119 @@ type Props = {
 };
 
 const ImageCombineComponent: React.FC<Props> = (props) => {
+  const imgWrapperRef = useRef<HTMLDivElement>(null);
   const imgCardRef = useRef<HTMLImageElement>(null);
   const imgMessageRef = useRef<HTMLImageElement>(null);
-  const imgWrapperRef = useRef<HTMLDivElement>(null);
   const blobUrlRef = useRef(props.imageMessageUrl);
+
+  const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const [crop, setCrop] = useState<Crop>({
+    unit: "%", // Can be 'px' or '%'
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+  });
+  const [aspect, setAspect] = useState<number | undefined>(undefined);
 
   const [rotate, setRotate] = useState(180);
   const [scale, setScale] = useState(1);
-  const [processing, setProcessing] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartPos = useRef<{ x: number; y: number } | null>(null);
   const coordsRef = useRef(null);
 
-  useEffect(() => {
-    if (imgWrapperRef.current && imgMessageRef.current) {
-      setPosition({
-        x:
-          (imgWrapperRef.current.clientWidth -
-            imgMessageRef.current.clientWidth) /
-          2,
-        y:
-          (imgWrapperRef.current.clientWidth -
-            imgMessageRef.current.clientHeight) /
-          2,
-      });
-    }
-  }, [imgWrapperRef, imgMessageRef]);
-
-  const onMouseDown = (event: React.MouseEvent) => {
+  const onMouseDown = useCallback((event: React.MouseEvent) => {
     dragStartPos.current = { x: event.clientX, y: event.clientY };
     setIsDragging(true);
-  };
+    event.stopPropagation();
+  }, []);
 
-  const onMouseMove = (event: React.MouseEvent) => {
-    if (isDragging && dragStartPos.current) {
-      const dx = event.clientX - dragStartPos.current.x;
-      const dy = event.clientY - dragStartPos.current.y;
-      setPosition((prevPosition) => ({
-        x: prevPosition.x + dx,
-        y: prevPosition.y + dy,
-      }));
-      dragStartPos.current = { x: event.clientX, y: event.clientY };
-    }
-  };
+  const onMouseMove = useCallback(
+    (event: React.MouseEvent) => {
+      if (isDragging && dragStartPos.current) {
+        const dx = event.clientX - dragStartPos.current.x;
+        const dy = event.clientY - dragStartPos.current.y;
+        setPosition((prevPosition) => ({
+          x: prevPosition.x + dx,
+          y: prevPosition.y + dy,
+        }));
 
-  const onMouseUp = () => {
+        crop.x += dx;
+        crop.y += dy;
+        setCrop(crop);
+
+        dragStartPos.current = { x: event.clientX, y: event.clientY };
+      }
+    },
+    [crop, isDragging],
+  );
+
+  const onMouseUp = useCallback(() => {
     setIsDragging(false);
     dragStartPos.current = null;
+  }, []);
+
+  const imageLoadHandler = useCallback(
+    (e: React.SyntheticEvent<HTMLImageElement>) => {
+      setLoading(false);
+
+      const { width, height } = e.currentTarget;
+
+      setPosition({
+        x: (imgWrapperRef.current.clientWidth - width) / 2,
+        y: (imgWrapperRef.current.clientHeight - height) / 2,
+      });
+
+      const initialCrop = convertToPixelCrop(crop, width, height);
+      initialCrop.x = (imgWrapperRef.current.clientWidth - width) / 2;
+      initialCrop.y = (imgWrapperRef.current.clientHeight - height) / 2;
+      setCrop(initialCrop);
+      setAspect(width / height);
+    },
+    [crop],
+  );
+
+  const rotateChangeHandler = useCallback(
+    (rotate) => {
+      const { width, height } = imgMessageRef.current;
+
+      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
+      const sin = Math.abs(Math.sin(angleInRadians));
+      const cos = Math.abs(Math.cos(angleInRadians));
+      const rotatedScreenWidth = (width * cos + height * sin) * scale;
+      const rotateScreenHeight = (width * sin + height * cos) * scale;
+
+      crop.x = position.x + width / 2 - rotatedScreenWidth / 2;
+      crop.width = rotatedScreenWidth;
+      crop.y = position.y + height / 2 - rotateScreenHeight / 2;
+      crop.height = rotateScreenHeight;
+      setCrop(crop);
+      setAspect(rotatedScreenWidth / rotateScreenHeight);
+
+      setRotate(rotate);
+    },
+    [crop, position, scale],
+  );
+
+  const cropChangeHandler = (newCrop: Crop) => {
+    if (imgMessageRef.current) {
+      const { width, height } = imgMessageRef.current;
+
+      newCrop.x = crop.x + (crop.width - newCrop.width) / 2;
+      newCrop.y = crop.y + (crop.height - newCrop.height) / 2;
+      setCrop(newCrop);
+
+      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
+      const sin = Math.abs(Math.sin(angleInRadians));
+      const cos = Math.abs(Math.cos(angleInRadians));
+      const rotatedWidth = width * cos + height * sin;
+      const newScale = newCrop.width / rotatedWidth;
+      setScale(newScale);
+    }
   };
 
   const cropImage = useCallback(async () => {
@@ -81,16 +150,15 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedNaturalWidth =
-      (image.width * cos + image.height * sin) * scale;
-    const rotatedNaturalHeight =
+    const rotatedScreenWidth = (image.width * cos + image.height * sin) * scale;
+    const rotatedScreenHeight =
       (image.width * sin + image.height * cos) * scale;
 
-    rotateCanvas.width = rotatedNaturalWidth;
-    rotateCanvas.height = rotatedNaturalHeight;
+    rotateCanvas.width = rotatedScreenWidth;
+    rotateCanvas.height = rotatedScreenHeight;
 
     // Translate and rotate the canvas
-    rotateCtx.translate(rotatedNaturalWidth / 2, rotatedNaturalHeight / 2);
+    rotateCtx.translate(rotatedScreenWidth / 2, rotatedScreenHeight / 2);
     rotateCtx.rotate(angleInRadians);
     rotateCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
 
@@ -114,24 +182,22 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedNaturalWidth =
-      image.naturalWidth * cos + image.naturalHeight * sin;
-    const rotatedNaturalHeight =
-      image.naturalWidth * sin + image.naturalHeight * cos;
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    const rotatedScreenWidth = rotatedNaturalWidth / scaleX;
-    const rotatedScreenHeight = rotatedNaturalHeight / scaleY;
+    const rotatedScreenWidth = (image.width * cos + image.height * sin) * scale;
+    const rotatedScreenHeight =
+      (image.width * sin + image.height * cos) * scale;
 
-    const screenOffsetX =
-      position.x - (imgWrapperRef.current.clientWidth - rotatedScreenWidth) / 2;
-    const screenOffsetY =
-      position.y -
-      (imgWrapperRef.current.clientHeight - rotatedScreenHeight) / 2;
-    const offsetX = Math.round(screenOffsetX * scaleX);
-    const offsetY = Math.round(screenOffsetY * scaleY);
+    const screenOffsetX = position.x + (image.width - rotatedScreenWidth) / 2;
+    const screenOffsetY = position.y + (image.height - rotatedScreenHeight) / 2;
+    const cardOffsetX =
+      screenOffsetX -
+      (imgWrapperRef.current.clientWidth - imgCardRef.current.width) / 2;
+    const cardOffsetY =
+      screenOffsetY -
+      (imgWrapperRef.current.clientHeight - imgCardRef.current.height) / 2;
+    const offsetX = Math.round(cardOffsetX);
+    const offsetY = Math.round(cardOffsetY);
     coordsRef.current = `${offsetX},${offsetY}`;
-  }, [rotate, position]);
+  }, [position, rotate, scale]);
 
   const generateHandler = useCallback(async () => {
     setProcessing(true);
@@ -157,64 +223,68 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       )}
       {!props.error ? (
         <div>
-          <div
-            className={`w-[400px] h-[342px] flex justify-center items-center relative`}
-            ref={imgWrapperRef}
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => {
+              cropChangeHandler(c);
+            }}
+            keepSelection={true}
+            aspect={aspect}
           >
-            {loading && (
-              <div className="absolute left-0 top-0 w-[400px] h-[342px] z-10 flex justify-center items-center">
-                <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
-              </div>
-            )}
-            {
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                ref={imgCardRef}
-                src={props.imageCardUrl}
-                alt="card image"
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  objectFit: "contain",
-                }}
-                crossOrigin="anonymous"
-                draggable={false}
-                onLoad={() => setLoading(false)}
-                onError={() => setLoading(false)}
-              />
-            }
-            {
-              // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-              <img
-                ref={imgMessageRef}
-                src={props.imageMessageUrl}
-                style={{
-                  position: "absolute",
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  transform: `rotate(${180 - rotate}deg) scale(${scale})`,
-                  objectFit: "contain",
-                  left: position.x,
-                  top: position.y,
-                }}
-                crossOrigin="anonymous"
-                draggable={false}
-                onLoad={() => setLoading(false)}
-                onError={() => setLoading(false)}
-                onMouseDown={onMouseDown}
-                className="cursor-move"
-              />
-            }
-          </div>
+            <div
+              className={`w-[400px] h-[385px] overflow-hidden flex justify-center items-center relative`}
+              ref={imgWrapperRef}
+            >
+              {loading && (
+                <div className="absolute left-0 top-0 w-[400px] h-[385px] z-10 flex justify-center items-center">
+                  <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+                </div>
+              )}
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={imgCardRef}
+                  src={props.imageCardUrl}
+                  alt="card image"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
+                  }}
+                  crossOrigin="anonymous"
+                  draggable={false}
+                  onError={() => setLoading(false)}
+                />
+              }
+              {
+                // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+                <img
+                  ref={imgMessageRef}
+                  src={props.imageMessageUrl}
+                  style={{
+                    position: "absolute",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    transform: `rotate(${180 - rotate}deg) scale(${scale})`,
+                    objectFit: "contain",
+                    left: position.x,
+                    top: position.y,
+                    zIndex: 10,
+                  }}
+                  crossOrigin="anonymous"
+                  draggable={false}
+                  onLoad={imageLoadHandler}
+                  onError={() => setLoading(false)}
+                  onMouseDown={onMouseDown}
+                  className="cursor-move"
+                />
+              }
+            </div>
+          </ReactCrop>
           <RotateSliderComponent
-            className="mt-1 -mb-4"
+            className="mt-4 -mb-4"
             rotate={rotate}
-            setRotate={setRotate}
-          />
-          <ScaleSliderComponent
-            className="mt-1 -mb-4"
-            scale={scale}
-            setScale={setScale}
+            setRotate={rotateChangeHandler}
           />
           <ButtonGroupComponent
             backButtonHandler={props.backHandler}

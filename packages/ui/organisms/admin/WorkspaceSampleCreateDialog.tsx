@@ -119,6 +119,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
               props.resetErrorHandler();
             }}
             isGenerate={true}
+            isShowCropButtons={true}
           />
         );
 
@@ -313,6 +314,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
               setError(false);
             }}
             isGenerate={false}
+            isShowCropButtons={true}
           />
         );
 
@@ -369,6 +371,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
               setError(false);
             }}
             isGenerate={false}
+            isShowCropButtons={false}
           />
         );
 

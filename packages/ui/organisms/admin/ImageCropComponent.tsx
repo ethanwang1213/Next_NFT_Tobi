@@ -19,6 +19,7 @@ type Props = {
   error: boolean;
   errorHandler: () => void;
   isGenerate: boolean;
+  isShowCropButtons: boolean;
 };
 
 function centerAspectCrop(
@@ -88,7 +89,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     }
   }, []);
 
-  const cropHandler = useCallback(async () => {
+  const cropImage = useCallback(async () => {
     const image = imgRef.current;
     if (!image || crop.unit === "%") {
       throw new Error("Crop canvas does not exist");
@@ -106,14 +107,16 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
-    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+    const rotatedNaturalWidth =
+      image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedNaturalHeight =
+      image.naturalWidth * sin + image.naturalHeight * cos;
 
-    tempCanvas.width = rotatedWidth;
-    tempCanvas.height = rotatedHeight;
+    tempCanvas.width = rotatedNaturalWidth;
+    tempCanvas.height = rotatedNaturalHeight;
 
     // Translate and rotate the temporary canvas
-    tempCtx.translate(rotatedWidth / 2, rotatedHeight / 2);
+    tempCtx.translate(rotatedNaturalWidth / 2, rotatedNaturalHeight / 2);
     tempCtx.rotate(angleInRadians);
     tempCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
 
@@ -133,10 +136,11 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     }
 
     let sx, sy, sw, sh, dx, dy;
-    sx = (imgWrapperRef.current.clientWidth - rotatedWidth / scaleX) / 2;
-    sy = (imgWrapperRef.current.clientHeight - rotatedHeight / scaleY) / 2;
-    sw = rotatedWidth / scaleX;
-    sh = rotatedHeight / scaleY;
+    sx = (imgWrapperRef.current.clientWidth - rotatedNaturalWidth / scaleX) / 2;
+    sy =
+      (imgWrapperRef.current.clientHeight - rotatedNaturalHeight / scaleY) / 2;
+    sw = rotatedNaturalWidth / scaleX;
+    sh = rotatedNaturalHeight / scaleY;
     sw = Math.min(sx + sw, crop.x + crop.width) - Math.max(sx, crop.x);
     sh = Math.min(sy + sh, crop.y + crop.height) - Math.max(sy, crop.y);
     if (sx < crop.x) {
@@ -182,13 +186,12 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     setProcessing(true);
 
     if (rotate != 180 || blobUrlRef.current === null) {
-      await cropHandler();
+      await cropImage();
     }
 
     props.nextHandler(blobUrlRef.current);
-  }, [cropHandler, props, rotate]);
+  }, [cropImage, props, rotate]);
 
-  console.log("image crop component is rendered", blobUrlRef.current);
   return (
     <div className="h-full relative">
       {processing && !props.error && (
@@ -208,7 +211,9 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
             keepSelection={true}
           >
             <div
-              className="w-[400px] h-[352px] flex justify-center items-center"
+              className={`w-[400px] ${
+                props.isShowCropButtons ? "h-[352px]" : "h-[376px]"
+              } flex justify-center items-center`}
               ref={imgWrapperRef}
             >
               {loading && (
@@ -237,64 +242,66 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
             </div>
           </ReactCrop>
           <div className="mt-2 flex flex-col items-center">
-            <div className="flex gap-4">
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop.svg"
-                alt="crop"
-                className={`cursor-pointer rounded hover:bg-neutral-200`}
-                onClick={cropHandler}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_16_9.svg"
-                alt="crop 16:9"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+            {props.isShowCropButtons && (
+              <div className="flex gap-4">
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop.svg"
+                  alt="crop"
+                  className={`cursor-pointer rounded hover:bg-neutral-200`}
+                  onClick={cropImage}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_16_9.svg"
+                  alt="crop 16:9"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${aspect === 9 / 16 ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(9 / 16);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_3_2.svg"
-                alt="crop 3:2"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+                  onClick={() => {
+                    toggleAspectHandler(9 / 16);
+                  }}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_3_2.svg"
+                  alt="crop 3:2"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${
                 Math.floor(aspect * 100) === Math.floor(200 / 3)
                   ? "bg-neutral-200"
                   : ""
               }`}
-                onClick={() => {
-                  toggleAspectHandler(2 / 3);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_square.svg"
-                alt="crop square"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+                  onClick={() => {
+                    toggleAspectHandler(2 / 3);
+                  }}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_square.svg"
+                  alt="crop square"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${aspect === 1 ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(1);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_free.svg"
-                alt="crop free"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+                  onClick={() => {
+                    toggleAspectHandler(1);
+                  }}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_free.svg"
+                  alt="crop free"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${aspect === undefined ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(undefined);
-                }}
-              />
-            </div>
+                  onClick={() => {
+                    toggleAspectHandler(undefined);
+                  }}
+                />
+              </div>
+            )}
             <RotateSliderComponent
               className="mt-[18px] -mb-[18px]"
               rotate={rotate}
