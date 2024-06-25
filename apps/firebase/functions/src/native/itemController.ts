@@ -6,9 +6,9 @@ import {prisma} from "../prisma";
 
 export const createAcrylicStand = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {bodyUrl, baseUrl, coords}:{bodyUrl: string, baseUrl?: string, coords?: string} = req.body;
+  const {bodyUrl, baseUrl, coords}: { bodyUrl: string, baseUrl?: string, coords?: string } = req.body;
   const predefinedModel = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample.glb";
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     console.log(uid, bodyUrl, baseUrl, coords);
 
@@ -19,7 +19,7 @@ export const createAcrylicStand = async (req: Request, res: Response) => {
         url: predefinedModel, // modelData.modelUrl,
       },
     });
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: error.code,
@@ -30,9 +30,9 @@ export const createAcrylicStand = async (req: Request, res: Response) => {
 
 export const removeBackground = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {url}:{url: string} = req.body;
+  const {url}: { url: string } = req.body;
   const predefinedUrl = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample-trans-neko.png";
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     console.log(uid, url);
 
@@ -43,7 +43,7 @@ export const removeBackground = async (req: Request, res: Response) => {
         url: predefinedUrl, // modelData.modelUrl,
       },
     });
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: error.code,
@@ -54,8 +54,8 @@ export const removeBackground = async (req: Request, res: Response) => {
 
 export const removeBackgroundOfMessageCard = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {url}:{url: string} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  const {url}: { url: string } = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     console.log(uid, url);
 
@@ -66,7 +66,7 @@ export const removeBackgroundOfMessageCard = async (req: Request, res: Response)
         url: url,
       },
     });
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: error.code,
@@ -82,8 +82,8 @@ export const createDigitalItem = async (req: Request, res: Response) => {
     modelUrl,
     materialId,
     type,
-  }: {thumbUrl: string, modelUrl: string, materialId: number, type: number} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  }: { thumbUrl: string, modelUrl: string, materialId: number, type: number } = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const content = await prisma.tobiratory_contents.findUnique({
@@ -106,14 +106,14 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           digital_item_id: digitalItem.id,
           model_url: modelUrl,
           owner_uuid: uid,
-          content_id: content?content.id:0,
+          content_id: content ? content.id : 0,
         },
       });
       res.status(200).send({
         status: "success",
         data: {
           id: sample.id,
-          thumbUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           modelUrl: sample.model_url,
           materialId: digitalItem.material_id,
           type: digitalItem.type,
@@ -126,7 +126,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
       });
     }
     return;
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: error.code,
@@ -137,7 +137,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
 
 export const getMyDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const samples = await prisma.tobiratory_sample_items.findMany({
@@ -149,12 +149,12 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
           digital_item: true,
         },
       });
-      const returnData = samples.map((sample)=>{
+      const returnData = samples.map((sample) => {
         return {
           id: sample.id,
           name: sample.digital_item.name,
           description: sample.digital_item.description,
-          thumbUrl: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
+          thumbUrl: sample.digital_item.is_default_thumb ? sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
           modelUrl: sample?.model_url,
           materialId: sample.digital_item.material_id,
           type: sample.digital_item.type,
@@ -171,7 +171,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
       });
       return;
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: error.code,
@@ -183,7 +183,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
 export const deleteDigitalItem = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const item = await prisma.tobiratory_sample_items.findUnique({
@@ -191,7 +191,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
           id: parseInt(id),
         },
       });
-      if (item==null) {
+      if (item == null) {
         res.status(401).send({
           status: "error",
           data: {
@@ -231,7 +231,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -245,10 +245,10 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
 export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
-  const {digitalStatus}:{digitalStatus: number} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+  const {digitalStatus}: { digitalStatus: number } = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     try {
-      if (digitalStatus<5) {
+      if (digitalStatus < 5) {
         res.status(401).send({
           status: "error",
           data: "invalid-statusCode",
@@ -274,7 +274,7 @@ export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -287,7 +287,7 @@ export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
 
 export const adminGetAllSamples = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const admin = await prisma.tobiratory_businesses.findUnique({
@@ -320,7 +320,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
         return {
           id: sample.id,
           name: sample.digital_item.name,
-          thumbnail: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
+          thumbnail: sample.digital_item.is_default_thumb ? sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
           price: sample.price,
           status: sample.digital_item.status,
           saleStartDate: sample.start_date,
@@ -342,7 +342,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -355,8 +355,8 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
 
 export const adminDeleteSamples = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {sampleIds}: {sampleIds: number[]} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  const {sampleIds}: { sampleIds: number[] } = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
       const admin = await prisma.tobiratory_businesses.findFirst({
@@ -382,7 +382,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
             id: item,
           },
         });
-        if (sample==null) {
+        if (sample == null) {
           res.status(401).send({
             status: "error",
             data: {
@@ -391,7 +391,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (sample.content_id!=content?.id) {
+        if (sample.content_id != content?.id) {
           res.status(401).send({
             status: "error",
             data: {
@@ -425,7 +425,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -439,7 +439,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
 export const adminDetailOfSample = async (req: Request, res: Response) => {
   const {sampleId} = req.params;
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const admin = await prisma.tobiratory_businesses.findFirst({
@@ -484,7 +484,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      const copyrights = sample.digital_item.copyright.map((relate)=>{
+      const copyrights = sample.digital_item.copyright.map((relate) => {
         return {
           id: relate.copyright.id,
           name: relate.copyright.copyright_name,
@@ -499,6 +499,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
           description: content?.description,
         },
         description: sample.digital_item.description,
+        modelUrl: sample.model_url,
         defaultThumbnailUrl: sample.digital_item.default_thumb_url,
         customThumbnailUrl: sample.digital_item.custom_thumb_url,
         isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
@@ -522,7 +523,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -548,7 +549,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     quantityLimit,
     license,
     copyrights,
-  }:{
+  }: {
     name?: string,
     description?: string,
     customThumbnailUrl?: string,
@@ -559,9 +560,9 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
     endDate?: string,
     quantityLimit?: number,
     license?: string,
-    copyrights?: {id: number|null, name: string}[],
-  }=req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    copyrights?: { id: number | null, name: string }[],
+  } = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const admin = await prisma.tobiratory_businesses.findFirst({
@@ -603,14 +604,14 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (sample.owner_uuid!=uid) {
+      if (sample.owner_uuid != uid) {
         res.status(404).send({
           status: "error",
           data: "not-owner",
         });
         return;
       }
-      if (price||startDate||endDate||quantityLimit) {
+      if (price || startDate || endDate || quantityLimit) {
         await prisma.tobiratory_sample_items.update({
           where: {
             id: parseInt(sampleId),
@@ -619,13 +620,13 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
           },
           data: {
             price: price,
-            start_date: startDate==undefined?undefined:new Date(startDate),
-            end_date: endDate==undefined?undefined:new Date(endDate),
+            start_date: startDate == undefined ? undefined : new Date(startDate),
+            end_date: endDate == undefined ? undefined : new Date(endDate),
             quantity_limit: quantityLimit,
           },
         });
       }
-      if (name||description||customThumbnailUrl||isCustomThumbnailSelected||status||license) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: sample?.digital_item_id,
@@ -647,10 +648,10 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
           },
         });
         await Promise.all(
-            copyrights.map(async (copyright)=>{
+            copyrights.map(async (copyright) => {
               const selectedCopyright = await prisma.tobiratory_copyright.upsert({
                 where: {
-                  id: copyright.id??0,
+                  id: copyright.id ?? 0,
                 },
                 update: {},
                 create: {
@@ -679,7 +680,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -692,7 +693,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
 
 export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const admin = await prisma.tobiratory_businesses.findUnique({
@@ -725,7 +726,7 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
         return {
           id: sample.id,
           name: sample.digital_item.name,
-          thumbnail: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
+          thumbnail: sample.digital_item.is_default_thumb ? sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
           price: sample.price,
           status: sample.digital_item.status,
           saleStartDate: sample.start_date,
@@ -747,7 +748,7 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -760,8 +761,8 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
 
 export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {sampleIds}: {sampleIds: number[]} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  const {sampleIds}: { sampleIds: number[] } = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
       const admin = await prisma.tobiratory_businesses.findFirst({
@@ -787,7 +788,7 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
             id: item,
           },
         });
-        if (sample==null) {
+        if (sample == null) {
           res.status(401).send({
             status: "error",
             data: {
@@ -796,7 +797,7 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (sample.content_id!=content?.id) {
+        if (sample.content_id != content?.id) {
           res.status(401).send({
             status: "error",
             data: {
@@ -830,7 +831,7 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -844,7 +845,7 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
 export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
   const {digitalId} = req.params;
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const admin = await prisma.tobiratory_businesses.findFirst({
@@ -889,7 +890,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      const copyrights = sample.digital_item.copyright.map((relate)=>{
+      const copyrights = sample.digital_item.copyright.map((relate) => {
         return {
           id: relate.copyright.id,
           name: relate.copyright.copyright_name,
@@ -927,7 +928,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -953,7 +954,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     quantityLimit,
     license,
     copyrights,
-  }:{
+  }: {
     name?: string,
     description?: string,
     customThumbnailUrl?: string,
@@ -964,9 +965,9 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     endDate?: string,
     quantityLimit?: number,
     license?: string,
-    copyrights?: {id: number|null, name: string}[],
-  }=req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    copyrights?: { id: number | null, name: string }[],
+  } = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const admin = await prisma.tobiratory_businesses.findFirst({
@@ -1005,14 +1006,14 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (digitalItem.creator_uuid!=uid) {
+      if (digitalItem.creator_uuid != uid) {
         res.status(404).send({
           status: "error",
           data: "not-owner",
         });
         return;
       }
-      if (price||startDate||endDate||quantityLimit) {
+      if (price || startDate || endDate || quantityLimit) {
         await prisma.tobiratory_sample_items.update({
           where: {
             id: parseInt(digitalId),
@@ -1021,13 +1022,13 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           },
           data: {
             price: price,
-            start_date: startDate==undefined?undefined:new Date(startDate),
-            end_date: endDate==undefined?undefined:new Date(endDate),
+            start_date: startDate == undefined ? undefined : new Date(startDate),
+            end_date: endDate == undefined ? undefined : new Date(endDate),
             quantity_limit: quantityLimit,
           },
         });
       }
-      if (name||description||customThumbnailUrl||isCustomThumbnailSelected||status||license) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: parseInt(digitalId),
@@ -1049,10 +1050,10 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           },
         });
         await Promise.all(
-            copyrights.map(async (copyright)=>{
+            copyrights.map(async (copyright) => {
               const selectedCopyright = await prisma.tobiratory_copyright.upsert({
                 where: {
-                  id: copyright.id??0,
+                  id: copyright.id ?? 0,
                 },
                 update: {},
                 create: {
@@ -1081,7 +1082,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         },
       });
     }
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: {
@@ -1095,7 +1096,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
 export const getSampleInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  await getAuth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+  await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     try {
       const sampleData = await prisma.tobiratory_sample_items.findUnique({
         where: {
@@ -1129,7 +1130,7 @@ export const getSampleInfo = async (req: Request, res: Response) => {
           uuid: sampleData.user.uuid,
           username: sampleData.user.username,
         },
-        copyrights: sampleData.digital_item.copyright.map((copy)=>{
+        copyrights: sampleData.digital_item.copyright.map((copy) => {
           return {
             id: copy.copyright_id,
             name: copy.copyright.copyright_name,
@@ -1150,7 +1151,7 @@ export const getSampleInfo = async (req: Request, res: Response) => {
       });
     }
     return;
-  }).catch((error: FirebaseError)=>{
+  }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
       data: error.code,
