@@ -126,7 +126,7 @@ model tobiratory_digital_items {
   material             tobiratory_material_images           @relation(fields: [material_id], references: [id])
   material_id          Int                                  @default(0)
   type                 Int
-  description          String                               @default("") @db.VarChar(255)
+  description          String                               @default("") @db.Text
   limit                Int?
   license              String                               @default("") @db.VarChar(255)
   copyright            tobiratory_digital_items_copyright[]
@@ -303,6 +303,12 @@ model tobiratory_showcase {
   thumb_url                        String                             @db.VarChar(255)
   position                         Float[]                            @default([0, 0, 0])
   rotation                         Float[]                            @default([0, 0, 0])
+  wallpaper_tint                   String?                            @db.VarChar(255)
+  floor_tint                       String?                            @db.VarChar(255)
+  lighting_scene_tint              String?                            @db.VarChar(255)
+  lighting_scene_brightness        Int?
+  lighting_point_tint              String?                            @db.VarChar(255)
+  lighting_point_bright            Int?
   schedule_time                    DateTime?                          @default(now()) @db.Timestamp(6)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)

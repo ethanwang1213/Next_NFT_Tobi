@@ -15,6 +15,7 @@ type ItemProps = {
 
 const SampleItemComponent: React.FC<ItemProps> = (props) => {
   const checkboxRef = useRef(null);
+  const dragStartPos = useRef<{ x: number; y: number } | null>(null);
 
   const clickHandler = useCallback(() => {
     if (props.selectState) {
@@ -26,10 +27,34 @@ const SampleItemComponent: React.FC<ItemProps> = (props) => {
     }
   }, [props]);
 
+  const onMouseDown = (event: React.MouseEvent) => {
+    if (props.selectState) return;
+    dragStartPos.current = { x: event.clientX, y: event.clientY };
+  };
+
+  const onMouseMove = (event: React.MouseEvent) => {
+    if (props.selectState) return;
+    if (dragStartPos.current) {
+      const dx = event.clientX - dragStartPos.current.x;
+      const dy = event.clientY - dragStartPos.current.y;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        dragStartPos.current = null;
+        props.dragStartHandler();
+      }
+    }
+  };
+
+  const onMouseUp = () => {
+    dragStartPos.current = null;
+  };
+
   return (
     <div
       className="flex items-center gap-8 py-3 pl-10 pr-6 hover:bg-[#787878]"
       onClick={clickHandler}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
     >
       {props.selectState && (
         <input
@@ -47,10 +72,7 @@ const SampleItemComponent: React.FC<ItemProps> = (props) => {
         height={80}
         src={props.thumbnail}
         alt="thumbnail image"
-        onDragStart={() => {
-          if (props.selectState) return;
-          props.dragStartHandler();
-        }}
+        draggable={false}
       />
       <span className="text-white text-base font-semibold">{props.name}</span>
     </div>

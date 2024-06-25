@@ -52,7 +52,7 @@ import {
   putAwayItemInSaidan,
   updateMySaidan,
 } from "./saidanController";
-import {getMaterial, removeMaterials, uploadMaterial} from "./fileController";
+import {deleteMaterial, getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
 import {
   adminGetAllNFTs,
@@ -177,6 +177,7 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/materials", uploadMaterial);
 app.get("/materials", getMaterial);
 app.delete("/materials", removeMaterials);
+app.delete("/materials/:id'", deleteMaterial);
 app.post("/nfts/fetch-thumb", fetchNftThumb);
 app.post("/nfts/fetch-model", fetchNftModel);
 

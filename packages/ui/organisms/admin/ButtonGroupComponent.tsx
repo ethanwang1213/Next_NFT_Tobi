@@ -5,12 +5,14 @@ import Button from "ui/atoms/Button";
 const ButtonGroupComponent = (props: {
   backButtonHandler: () => void;
   nextButtonHandler: () => void;
-  disable: boolean;
+  skipButtonHandler?: () => void;
+  disabled: boolean;
+  isGenerate?: boolean;
 }) => {
   return (
     <div className="flex justify-between">
       <Button
-        className="w-[72px] h-8 rounded-lg border border-primary flex items-center justify-center gap-1"
+        className="w-[80px] h-8 rounded-lg border border-primary flex items-center justify-between pl-1 pr-4"
         onClick={props.backButtonHandler}
       >
         <NextImage
@@ -21,20 +23,47 @@ const ButtonGroupComponent = (props: {
         />
         <span className="text-primary text-sm font-medium">Back</span>
       </Button>
-      <Button
-        className={`w-[72px] h-8 rounded-lg flex items-center justify-center gap-1
-          ${props.disable ? "bg-secondary" : "bg-primary"}`}
-        onClick={props.nextButtonHandler}
-        disabled={props.disable}
-      >
-        <span className="text-base-white text-sm font-medium">Next</span>
-        <NextImage
-          width={20}
-          height={20}
-          src="/admin/images/icon/arrow-right-s-line.svg"
-          alt="left arrow"
-        />
-      </Button>
+      {props.skipButtonHandler && (
+        <Button
+          className="w-[80px] h-8 rounded-lg border border-primary flex items-center justify-between pl-4 pr-2"
+          onClick={props.skipButtonHandler}
+        >
+          <span className="text-primary text-sm font-medium">Skip</span>
+          <NextImage
+            width={20}
+            height={20}
+            src="/admin/images/icon/skip.svg"
+            alt="skip"
+            className="mt-[2px]"
+          />
+        </Button>
+      )}
+      {!props.isGenerate && (
+        <Button
+          className={`w-[80px] h-8 rounded-lg flex items-center justify-between pl-4 pr-[6px]
+          ${props.disabled ? "bg-secondary" : "bg-primary"}`}
+          onClick={props.nextButtonHandler}
+          disabled={props.disabled}
+        >
+          <span className="text-base-white text-sm font-medium">Next</span>
+          <NextImage
+            width={20}
+            height={20}
+            src="/admin/images/icon/arrow-right-s-line.svg"
+            alt="left arrow"
+          />
+        </Button>
+      )}
+      {props.isGenerate && (
+        <Button
+          className={`w-[86px] h-8 rounded-lg flex items-center justify-center
+          ${props.disabled ? "bg-secondary" : "bg-warning"}`}
+          onClick={props.nextButtonHandler}
+          disabled={props.disabled}
+        >
+          <span className="text-base-white text-sm font-medium">Generate</span>
+        </Button>
+      )}
     </div>
   );
 };

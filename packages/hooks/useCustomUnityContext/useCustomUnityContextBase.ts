@@ -14,7 +14,8 @@ type MessageDestination =
   | "RemoveRecentItemMessageReceiver"
   | "RemovalResultMessageReceiver"
   | "ItemMenuXMessageReceiver"
-  | "UpdateItemIdMessageReceiver";
+  | "UpdateItemIdMessageReceiver"
+  | "UpdateSettingsMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,
