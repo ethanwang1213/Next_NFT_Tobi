@@ -92,7 +92,7 @@ export const flowTxSend = functions.region(REGION)
         console.log(`Message ${messageId} published.`);
       } else if (txType == "giftNFT") {
         await updateGiftNFTRecord(params.digitalItemNftId);
-        const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.digitalItemNftId, params.receiveFlowId);
+        const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.receiveFlowId);
         await flowJobDocRef.update({
           flowJobId,
           txType,
@@ -658,7 +658,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
   };
 };
 
-const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: number, receiveFlowId: string) => {
+const sendGiftNFTTx = async (tobiratoryAccountUuid: string, receiveFlowId: string) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
