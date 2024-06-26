@@ -14,7 +14,7 @@ type Props = {
   imageCardUrl: string;
   imageMessageUrl: string;
   backHandler: () => void;
-  nextHandler: (image: string, coords: string) => void;
+  nextHandler: (image: string) => void;
   error: boolean;
   errorHandler: () => void;
 };
@@ -135,7 +135,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     }
   };
 
-  const cropImage = useCallback(async () => {
+  const combineImage = useCallback(async () => {
     const image = imgMessageRef.current;
 
     // Create a temporary canvas to draw the rotated image
@@ -165,17 +165,54 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     // Draw the original image onto the canvas
     rotateCtx.drawImage(image, 0, 0);
 
+    // Create a final canvas to draw the card and message image
+    const finalCanvas = document.createElement("canvas");
+    const finalCtx = finalCanvas.getContext("2d");
+
+    if (!finalCtx) {
+      throw new Error("No 2d context for final image canvas");
+    }
+
+    finalCanvas.width = imgCardRef.current.width;
+    finalCanvas.height = imgCardRef.current.height;
+
+    // Draw the original card image onto the canvas
+    finalCtx.drawImage(imgCardRef.current, 0, 0);
+
+    // Calculate offset
+    const screenOffsetX = position.x + (image.width - rotatedScreenWidth) / 2;
+    const screenOffsetY = position.y + (image.height - rotatedScreenHeight) / 2;
+    const cardOffsetX =
+      screenOffsetX -
+      (imgWrapperRef.current.clientWidth - imgCardRef.current.width) / 2;
+    const cardOffsetY =
+      screenOffsetY -
+      (imgWrapperRef.current.clientHeight - imgCardRef.current.height) / 2;
+
+    // Draw the rotated message image onto the card image
+    finalCtx.drawImage(
+      rotateCanvas,
+      0,
+      0,
+      rotatedScreenWidth,
+      rotatedScreenHeight,
+      cardOffsetX,
+      cardOffsetY,
+      rotatedScreenWidth,
+      rotatedScreenHeight,
+    );
+
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
     // reduce image size
     const blob = await new Promise<Blob | null>((resolve) =>
-      rotateCanvas.toBlob(resolve, "image/png"),
+      finalCanvas.toBlob(resolve, "image/png"),
     );
 
     if (blobUrlRef.current) {
       URL.revokeObjectURL(blobUrlRef.current);
     }
     blobUrlRef.current = URL.createObjectURL(blob);
-  }, [rotate, scale]);
+  }, [rotate, scale, position]);
 
   const calculatePositionHandler = useCallback(() => {
     const image = imgMessageRef.current;
@@ -201,13 +238,11 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
 
   const generateHandler = useCallback(async () => {
     setProcessing(true);
-    if (rotate !== 180 || scale !== 1) {
-      await cropImage();
-    }
-    calculatePositionHandler();
 
-    props.nextHandler(blobUrlRef.current, coordsRef.current);
-  }, [calculatePositionHandler, cropImage, props, rotate, scale]);
+    await combineImage();
+
+    props.nextHandler(blobUrlRef.current);
+  }, [combineImage, props]);
 
   return (
     <div

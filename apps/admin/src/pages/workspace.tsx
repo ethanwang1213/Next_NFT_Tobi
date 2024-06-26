@@ -47,11 +47,8 @@ export default function Index() {
   } = useRestfulAPI(sampleAPIUrl);
 
   const materialAPIUrl = "native/materials";
-  const {
-    data: materials,
-    getData: loadMaterialImage,
-    postData: createMaterialImage,
-  } = useRestfulAPI(materialAPIUrl);
+  const { data: materials, postData: createMaterialImage } =
+    useRestfulAPI(materialAPIUrl);
 
   const [generateSampleError, setGenerateSampleError] = useState(false);
 
@@ -76,10 +73,15 @@ export default function Index() {
       thumbnailBase64,
       ImageType.SampleThumbnail,
     );
+
+    const materialIndex = materials.findIndex(
+      (value) => value.image === generateMaterialImage.current,
+    );
+
     const newSample = await createSample(sampleAPIUrl, {
       thumbUrl: sampleThumb,
       modelUrl: generateModelUrl.current,
-      materialId: generateMaterialImage.current?.id ?? 0,
+      materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
       type: generateSampleType.current,
     });
     if (newSample === false) {
@@ -244,13 +246,16 @@ export default function Index() {
 
   const createMaterialImageHandler = useCallback(
     async (imageUrl: string): Promise<boolean> => {
-      const resp = await createMaterialImage(materialAPIUrl, {
-        image: imageUrl,
-      });
+      const resp = await createMaterialImage(
+        materialAPIUrl,
+        {
+          image: imageUrl,
+        },
+        [],
+      );
       if (!resp) {
         return false;
       }
-      await loadMaterialImage(materialAPIUrl);
 
       return true;
     },
@@ -272,84 +277,60 @@ export default function Index() {
     [],
   );
 
-  const generateSampleHandler = useCallback(
-    async (
-      sampleType: ModelType,
-      image1: string,
-      image2: string,
-      coords: string,
-    ): Promise<boolean> => {
-      generateSampleType.current = sampleType;
-      if (
-        sampleType === ModelType.Poster ||
-        sampleType === ModelType.CanBadge
-      ) {
-        // take material image
-        const materialIndex = materials.findIndex(
-          (value) => value.image === image1,
-        );
-        generateMaterialImage.current = materials[materialIndex];
-
-        // get model URL
-        generateModelUrl.current =
-          "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
-        requestItemThumbnail({
-          modelType: sampleType as ModelType,
-          modelUrl: generateModelUrl.current,
-          imageUrl: image1,
-        });
-      } else if (sampleType == ModelType.AcrylicStand) {
-        const bodyObj = {
-          bodyUrl: image1,
-          baseUrl: image2,
-          coords: coords,
-        };
-        if (image2 == null) {
-          delete bodyObj.bodyUrl;
-        }
-        if (coords == null) {
-          delete bodyObj.coords;
-        }
-        const modelResp = await createSample(
-          "native/model/acrylic-stand",
-          bodyObj,
-        );
-        if (modelResp === false) {
-          return false;
-        }
-        generateModelUrl.current = modelResp["url"];
-        generateMaterialImage.current = null;
-        requestItemThumbnail({
-          modelType: ModelType.AcrylicStand,
-          modelUrl: modelResp["url"],
-        });
-      } else if (sampleType == ModelType.MessageCard) {
-        const bodyObj = {
-          bodyUrl: image1,
-          baseUrl: image2,
-          coords: coords,
-        };
-        const modelResp = await createSample(
-          "native/model/message-card",
-          bodyObj,
-        );
-        if (modelResp === false) {
-          return false;
-        }
-        generateModelUrl.current = modelResp["url"];
-        generateMaterialImage.current = null;
-        requestItemThumbnail({
-          modelType: ModelType.MessageCard,
-          modelUrl: modelResp["url"],
-        });
+  const generateSampleHandler = async (
+    sampleType: ModelType,
+    image1: string,
+    image2: string,
+    coords: string,
+  ): Promise<boolean> => {
+    generateSampleType.current = sampleType;
+    if (sampleType === ModelType.Poster || sampleType === ModelType.CanBadge) {
+      generateModelUrl.current =
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+      generateMaterialImage.current = image1;
+      requestItemThumbnail({
+        modelType: sampleType as ModelType,
+        modelUrl: generateModelUrl.current,
+        imageUrl: image1,
+      });
+    } else if (sampleType == ModelType.AcrylicStand) {
+      const bodyObj = {
+        bodyUrl: image1,
+        baseUrl: image2,
+        coords: coords,
+      };
+      if (image2 == null) {
+        delete bodyObj.bodyUrl;
       }
+      if (coords == null) {
+        delete bodyObj.coords;
+      }
+      const modelResp = await createSample(
+        "native/model/acrylic-stand",
+        bodyObj,
+      );
+      if (modelResp === false) {
+        return false;
+      }
+      generateModelUrl.current = modelResp["url"];
+      generateMaterialImage.current = null;
+      requestItemThumbnail({
+        modelType: ModelType.AcrylicStand,
+        modelUrl: modelResp["url"],
+      });
+    } else if (sampleType == ModelType.MessageCard) {
+      generateModelUrl.current =
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/message-card/message-card.glb";
+      generateMaterialImage.current = image1;
+      requestItemThumbnail({
+        modelType: ModelType.MessageCard,
+        modelUrl: generateModelUrl.current,
+        imageUrl: image1,
+      });
+    }
 
-      return true;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [materials, requestItemThumbnail],
-  );
-
+    return true;
+  };
   return (
     <div className="w-full h-full relative" id="workspace_view">
       <WorkspaceUnity unityProvider={unityProvider} />

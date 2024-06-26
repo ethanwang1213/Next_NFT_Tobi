@@ -381,24 +381,15 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             imageCardUrl={firstImageRef.current}
             imageMessageUrl={secondImageRef.current}
             backHandler={() => setStep(4)}
-            nextHandler={async (image: string, coords: string) => {
-              if (secondImageRef.current != image) {
-                const uploadUrl = await uploadImage(
-                  image,
-                  ImageType.ModelTempImage,
-                );
-                if (uploadUrl == "") {
-                  setError(true);
-                  return;
-                }
-                secondImageRef.current = uploadUrl;
+            nextHandler={async (image: string) => {
+              const result = await uploadMaterialImageHandler(image);
+              if (!result) {
+                setError(true);
+                return;
               }
-
               const generateResult = await props.generateHandler(
                 ModelType.MessageCard,
-                firstImageRef.current,
-                secondImageRef.current,
-                coords,
+                uploadImageRef.current,
               );
               if (!generateResult) setError(true);
             }}
