@@ -1,9 +1,9 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useEffect, useState } from "react";
 import { BoxComponent } from "ui/organisms/admin/BoxComponent";
+import { NftItem } from "ui/types/adminTypes";
 import { BoxInventoryTab } from "./BoxInventoryTab";
 import { InventoryItemComponent } from "./InventoryItemComponent";
-import { NftItem } from "ui/types/adminTypes";
 
 const ShowcaseInventoryTab = ({
   clickNftItem,
@@ -66,6 +66,8 @@ const ShowcaseInventoryTab = ({
           <BoxInventoryTab
             id={boxid}
             title={boxName}
+            clickNftItem={clickNftItem}
+            dragNftItem={dragNftItem}
             backRoot={() => {
               setBoxid(-1);
               setBoxName("");

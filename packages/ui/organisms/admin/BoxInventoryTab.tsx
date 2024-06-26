@@ -1,16 +1,21 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { NftItem } from "../../types/adminTypes";
 import { InventoryItemComponent } from "./InventoryItemComponent";
 
 const BoxInventoryTab = ({
   backRoot,
   id,
   title,
+  clickNftItem,
+  dragNftItem,
 }: {
   backRoot: () => void;
   id: number;
   title: string;
+  clickNftItem: (id: NftItem) => void;
+  dragNftItem: (item: NftItem) => void;
 }) => {
   const apiUrl = `native/my/inventory/box/${id}`;
   const { data, loading, getData } = useRestfulAPI(apiUrl);
@@ -50,8 +55,8 @@ const BoxInventoryTab = ({
           return (
             <div key={item.id} className="w-1/4 p-2">
               <InventoryItemComponent
-                selectHandler={null}
-                dragStartHandler={null}
+                selectHandler={() => clickNftItem(item)}
+                dragStartHandler={() => dragNftItem(item)}
                 imageUrl={item.image}
               ></InventoryItemComponent>
             </div>
