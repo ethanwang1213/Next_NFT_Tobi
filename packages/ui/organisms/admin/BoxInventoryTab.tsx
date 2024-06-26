@@ -4,19 +4,21 @@ import { useEffect, useState } from "react";
 import { NftItem } from "../../types/adminTypes";
 import { InventoryItemComponent } from "./InventoryItemComponent";
 
+type BoxInventoryTabProps = {
+  backRoot: () => void;
+  id: number;
+  title: string;
+  clickNftItem: (nftItem: NftItem) => void;
+  dragNftItem: (nftItem: NftItem) => void;
+};
+
 const BoxInventoryTab = ({
   backRoot,
   id,
   title,
   clickNftItem,
   dragNftItem,
-}: {
-  backRoot: () => void;
-  id: number;
-  title: string;
-  clickNftItem: (id: NftItem) => void;
-  dragNftItem: (item: NftItem) => void;
-}) => {
+}: BoxInventoryTabProps) => {
   const apiUrl = `native/my/inventory/box/${id}`;
   const { data, loading, getData } = useRestfulAPI(apiUrl);
 
