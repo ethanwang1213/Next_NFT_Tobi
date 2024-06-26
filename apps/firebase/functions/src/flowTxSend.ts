@@ -77,32 +77,41 @@ export const flowTxSend = functions.region(REGION)
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
         const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata);
-        const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, params.digitalItemId);
-        await flowJobDocRef.update({
-          flowJobId,
-          txType,
-          params,
-          txId,
-          sentAt: new Date(),
-        });
-        params.digitalItemNftId = id;
-        await updateNFTRecord(id, txId);
-        const messageForMonitoring = {flowJobId, txType, params};
-        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
-        console.log(`Message ${messageId} published.`);
+        try {
+          const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, params.digitalItemId);
+          await flowJobDocRef.update({
+            flowJobId,
+            txType,
+            params,
+            txId,
+            sentAt: new Date(),
+          });
+          params.digitalItemNftId = id;
+          await updateNFTRecord(id, txId);
+          const messageForMonitoring = {flowJobId, txType, params};
+          const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
+          console.log(`Message ${messageId} published.`);
+        } catch (e) {
+          await updateMintNFTRecord(id, "error");
+          throw e;
+        }
       } else if (txType == "giftNFT") {
-        await updateGiftNFTRecord(params.digitalItemNftId);
-        const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.receiveFlowId);
-        await flowJobDocRef.update({
-          flowJobId,
-          txType,
-          params,
-          txId,
-          sentAt: new Date(),
-        });
-        const messageForMonitoring = {flowJobId, txType, params};
-        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
-        console.log(`Message ${messageId} published.`);
+        try {
+          const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.receiveFlowId);
+          await flowJobDocRef.update({
+            flowJobId,
+            txType,
+            params,
+            txId,
+            sentAt: new Date(),
+          });
+          const messageForMonitoring = {flowJobId, txType, params};
+          const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
+          console.log(`Message ${messageId} published.`);
+        } catch (e) {
+          await updateGiftNFTRecord(params.digitalItemNftId, "error");
+          throw e;
+        }
       }
     });
 
@@ -136,16 +145,27 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const updateGiftNFTRecord = async (digitalItemNftId: number) => {
+const updateGiftNFTRecord = async (digitalItemNftId: number, status: string) => {
   await prisma.tobiratory_digital_item_nfts.update({
     where: {
       id: digitalItemNftId,
     },
     data: {
-      gift_status: "gifting",
+      gift_status: status,
     },
   });
 };
+
+const updateMintNFTRecord = async (digitalItemNftId: number, status: string) => {
+  await prisma.tobiratory_digital_item_nfts.update({
+    where: {
+      id: digitalItemNftId,
+    },
+    data: {
+      mint_status: status,
+    },
+  });
+}
 
 const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any) => {
   const digitalItemNftId = metadata.digitalItemNftId;
