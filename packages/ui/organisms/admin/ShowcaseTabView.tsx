@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import Collapse from "ui/organisms/admin/Collapse";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
@@ -60,7 +58,7 @@ const ShowcaseTabView = ({
       setPt(settings.lighting.pointLight.tint ?? "#717171");
       setPb(settings.lighting.pointLight.brightness ?? 1);
     }
-  }, settings);
+  }, [settings]);
 
   const updateUnityTheme = () => {
     updateUnityViewSettings(wt, ft, st, sb, pt, pb);
@@ -241,16 +239,6 @@ const ShowcaseTabView = ({
                 </Collapse>
               </div>
             </TabPanel>
-            <ToastContainer
-              position="bottom-center"
-              autoClose={5000}
-              newestOnTop={false}
-              closeOnClick={true}
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable={false}
-              theme="dark"
-            />
           </div>
         </div>
       </div>

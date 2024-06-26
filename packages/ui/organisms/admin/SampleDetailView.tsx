@@ -1,13 +1,18 @@
 import Image from "next/image";
 import SampleDetailDialog from "./SampleDetailDialog";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { formatDateToLocal } from "ui/atoms/Formatters";
+import Button from "ui/atoms/Button";
+import MintConfirmDialog2 from "./MintConfirmDialog2";
+import useFcmToken from "hooks/useFCMToken";
 
 const SampleDetailView = ({ id }: { id: number }) => {
   const dialogRef = useRef(null);
   const apiUrl = `native/admin/samples/${id}`;
-  const { data, loading, getData } = useRestfulAPI(null);
+  const { data, getData, postData } = useRestfulAPI(null);
+  const mintConfirmDialogRef = useRef(null);
+  const { token: fcmToken } = useFcmToken();
 
   useEffect(() => {
     if (id > 0) {
@@ -26,6 +31,19 @@ const SampleDetailView = ({ id }: { id: number }) => {
 
     return Math.floor(daysDifference);
   };
+
+  const mintConfirmDialogHandler = useCallback(
+    (value: string) => {
+      if (value == "mint") {
+        postData(`native/items/${id}/mint`, {
+          fcmToken: fcmToken,
+          amount: 1,
+          modelUrl: data.modelUrl,
+        });
+      }
+    },
+    [data, fcmToken, id, postData],
+  );
 
   return (
     <div className="flex flex-col items-center gap-6 text-base-white">
@@ -49,6 +67,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
             dialogRef.current.showModal();
           }
         }}
+        className="rounded-lg"
       />
       <span className="text-[10px] font-normal text-center">
         {data?.description}
@@ -106,13 +125,52 @@ const SampleDetailView = ({ id }: { id: number }) => {
           </span>
           <span className="text-[10px] font-medium">-</span>
         </div>
-        <SampleDetailDialog
-          thumbnail={data?.customThumbnailUrl}
-          content={data?.content.name}
-          item={data?.name}
-          dialogRef={dialogRef}
-        />
+        {data && (
+          <SampleDetailDialog
+            thumbnail={data?.customThumbnailUrl}
+            content={data?.content.name}
+            item={data?.name}
+            dialogRef={dialogRef}
+          />
+        )}
       </div>
+      {id > 0 && (
+        <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
+          <Image
+            src="/admin/images/icon/open_in_new.svg"
+            width={24}
+            height={24}
+            alt="open icon"
+          />
+          <span className="text-base-white text-base font-bold">
+            Edit Item Data
+          </span>
+        </Button>
+      )}
+      {id > 0 && (
+        <Button
+          className="w-[192px] h-[46px] rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
+          onClick={() => {
+            if (mintConfirmDialogRef.current) {
+              mintConfirmDialogRef.current.showModal();
+            }
+          }}
+        >
+          <Image
+            src="/admin/images/icon/sample-icon.svg"
+            width={16}
+            height={20}
+            alt="mint icon"
+          />
+          <span className="text-base-white text-base font-bold">
+            Mint as an NFT
+          </span>
+        </Button>
+      )}
+      <MintConfirmDialog2
+        dialogRef={mintConfirmDialogRef}
+        changeHandler={mintConfirmDialogHandler}
+      />
     </div>
   );
 };

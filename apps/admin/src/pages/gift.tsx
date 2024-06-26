@@ -9,8 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import CreateButton from "ui/molecules/CreateButton";
 import BoxNameEditDialog from "ui/organisms/admin/BoxNameEditDialog";
 import DeleteConfirmDialog from "ui/organisms/admin/DeleteConfirmDialog";
@@ -373,16 +372,6 @@ export default function Index() {
         initialValue=""
         dialogRef={dialogRef}
         changeHandler={(value) => addBoxHandler(value)}
-      />
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        newestOnTop={false}
-        closeOnClick={true}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        theme="dark"
       />
     </div>
   );

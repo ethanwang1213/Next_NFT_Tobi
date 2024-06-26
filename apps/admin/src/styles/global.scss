@@ -96,3 +96,25 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   background: url("/admin/images/checkbox-checked.svg") no-repeat; /* Set the path to your custom checked image */
   background-size: cover;
 }
+
+.Toastify__toast-theme--colored {
+  background-color: #3F3F3F !important;
+  color: #FAFAFA !important;
+}
+
+.Toastify__toast-container--bottom-center {
+  bottom: 0 !important;
+}
+
+.Toastify__toast-container--bottom-center {
+  padding-bottom: 0 !important;
+}
+
+.mint-notification {
+  margin-bottom: 0 !important;
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  width: 352px !important;
+}

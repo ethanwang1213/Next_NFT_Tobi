@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
 import { ItemType, ModelType } from "types/unityTypes";
@@ -203,7 +202,7 @@ const Showcase = () => {
       setPt(showcaseData.settings.lighting.pointLight.tint ?? "#717171");
       setPb(showcaseData.settings.lighting.pointLight.brightness ?? 1);
     }
-  }, showcaseData);
+  }, [showcaseData]);
   // set showcase data to unity view when it is loaded
   useEffect(() => {
     if (showcaseData) {
