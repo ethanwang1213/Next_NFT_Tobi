@@ -91,7 +91,7 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "giftNFT") {
-        await updateGiftNFTRecord(params.digitalItemNftId, params.receiveFlowId);
+        await updateGiftNFTRecord(params.digitalItemNftId);
         const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.digitalItemNftId, params.receiveFlowId);
         await flowJobDocRef.update({
           flowJobId,
@@ -136,7 +136,7 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const updateGiftNFTRecord = async (digitalItemNftId: number, receiveFlowId: string) => {
+const updateGiftNFTRecord = async (digitalItemNftId: number) => {
   await prisma.tobiratory_digital_item_nfts.update({
     where: {
       id: digitalItemNftId,
@@ -663,18 +663,14 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: nu
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   const senderFlowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
-  const receiveFlowAccountDocRef = await getFlowAccountDocRef(receiveFlowId);
   if (!senderFlowAccountDocRef) {
     throw new functions.https.HttpsError("not-found", "The sender flow account does not exist.");
-  }
-  if (!receiveFlowAccountDocRef) {
-    throw new functions.https.HttpsError("not-found", "The receive flow account does not exist.");
   }
 
   const senderFlowAccountDoc = await senderFlowAccountDocRef.get();
   const senderAccountDocData = senderFlowAccountDoc.data();
   if (!senderAccountDocData || !senderAccountDocData.address) {
-    throw new functions.https.HttpsError("not-found", "The receive flow account does not exist.");
+    throw new functions.https.HttpsError("not-found", "The sender flow account does not exist.");
   }
   const senderFlowAddress = senderAccountDocData.address;
 
