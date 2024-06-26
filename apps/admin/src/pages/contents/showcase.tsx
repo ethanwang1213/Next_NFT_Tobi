@@ -203,7 +203,7 @@ const Showcase = () => {
       setPt(showcaseData.settings.lighting.pointLight.tint ?? "#717171");
       setPb(showcaseData.settings.lighting.pointLight.brightness ?? 1);
     }
-  }, showcaseData);
+  }, [showcaseData]);
   // set showcase data to unity view when it is loaded
   useEffect(() => {
     if (showcaseData) {
