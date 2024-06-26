@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
+import { ToastContainer } from "react-toastify";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import Collapse from "ui/organisms/admin/Collapse";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
@@ -127,120 +128,133 @@ const ShowcaseTabView = ({
           <span className="text-sm font-semibold leading-6">Settings</span>
         </ShowcaseTabSelector>
       </nav>
-      <div className="w-full flex-1 flex flex-col bg-gray-600 bg-opacity-50 backdrop-blur-[25px]">
-        <div
+      <div className="pl-8 pr-8 pt-12 pb-12 w-full flex-1 flex flex-col bg-gray-600 bg-opacity-50 backdrop-blur-[25px]">
+        {/* <div
           className="h-[calc(100vh-312px)] overflow-y-auto"
           style={{ scrollbarWidth: "none" }}
         >
-          <div className="pl-8 pr-8 pt-12 pb-12">
-            <TabPanel hidden={tab !== "Sample Items"}>
-              <ShowcaseSampleTab
-                clickSampleItem={clickSampleItem}
-                dragSampleItem={dragSampleItem}
-              ></ShowcaseSampleTab>
-            </TabPanel>
-            <TabPanel
-              hidden={tab !== "Inventory"}
-              className={tab === "Inventory" ? "flex-1 flex flex-col" : ""}
-            >
-              <ShowcaseInventoryTab
-                clickNftItem={clickNftItem}
-                dragNftItem={dragNftItem}
-              ></ShowcaseInventoryTab>
-            </TabPanel>
-            <TabPanel hidden={tab !== "Settings"}>
-              <div className="max-w-2xl mx-auto">
-                <Collapse title="WALLPAPER">
-                  <ColorPicker
-                    mode={true}
-                    initialColor={wt}
-                    onColorChanged={(color) => {
-                      setWt(color);
-                      updateUnityTheme();
-                    }}
-                  />
-                </Collapse>
-                <div className="pb-8"></div>
-                <Collapse title="FLOOR">
-                  <ColorPicker
-                    mode={true}
-                    initialColor={ft}
-                    onColorChanged={(color) => {
-                      setFt(color);
-                      updateUnityTheme();
-                    }}
-                  />
-                </Collapse>
-                <div className="pb-8"></div>
-                <Collapse title="LIGHTING">
-                  <div className="pl-2 pr-[68px] py-4">
-                    <div className="flex items-center">
-                      <Image
-                        width={19}
-                        height={19}
-                        src="/admin/images/scene_light.svg"
-                        alt="Scene Light icon"
-                        className="mr-[10px]"
-                      />
-                      <span className="text-[16px] font-[700] leading-[20px]">
-                        Scene Light
-                      </span>
-                    </div>
-                    <div className="p-2">
-                      <ColorPicker
-                        mode={false}
-                        initialColor={st}
-                        onColorChanged={(color) => {
-                          setSt(color);
-                          updateUnityTheme();
-                        }}
-                      />
-                      <BrightnessPicker
-                        initialValue={sb}
-                        onBrightnessChanged={(val) => {
-                          setSb(val);
-                          updateUnityTheme();
-                        }}
-                      />
-                    </div>
-                    <div className="h-[1px] bg-white"></div>
+          <div className="pl-8 pr-8 pt-12 pb-12"> */}
+        <TabPanel hidden={tab !== "Sample Items"}>
+          <ShowcaseSampleTab
+            clickSampleItem={clickSampleItem}
+            dragSampleItem={dragSampleItem}
+          ></ShowcaseSampleTab>
+        </TabPanel>
+        <TabPanel
+          hidden={tab !== "Inventory"}
+          className={tab === "Inventory" ? "flex-1 flex flex-col" : ""}
+        >
+          <ShowcaseInventoryTab
+            clickNftItem={clickNftItem}
+            dragNftItem={dragNftItem}
+          ></ShowcaseInventoryTab>
+        </TabPanel>
+        <TabPanel hidden={tab !== "Settings"}>
+          <div
+            className="h-[calc(100vh-410px)] overflow-y-auto"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <div className="max-w-2xl mx-auto">
+              <Collapse title="WALLPAPER">
+                <ColorPicker
+                  mode={true}
+                  initialColor={wt}
+                  onColorChanged={(color) => {
+                    setWt(color);
+                    updateUnityTheme();
+                  }}
+                />
+              </Collapse>
+              <div className="pb-8"></div>
+              <Collapse title="FLOOR">
+                <ColorPicker
+                  mode={true}
+                  initialColor={ft}
+                  onColorChanged={(color) => {
+                    setFt(color);
+                    updateUnityTheme();
+                  }}
+                />
+              </Collapse>
+              <div className="pb-8"></div>
+              <Collapse title="LIGHTING">
+                <div className="pl-2 pr-[68px] py-4">
+                  <div className="flex items-center">
+                    <Image
+                      width={19}
+                      height={19}
+                      src="/admin/images/scene_light.svg"
+                      alt="Scene Light icon"
+                      className="mr-[10px]"
+                    />
+                    <span className="text-[16px] font-[700] leading-[20px]">
+                      Scene Light
+                    </span>
                   </div>
-                  <div className="pl-2 pr-[68px] pt-4">
-                    <div className="flex items-center">
-                      <Image
-                        width={19}
-                        height={19}
-                        src="/admin/images/point_right.svg"
-                        alt="Point Light icon"
-                        className="mr-[10px]"
-                      />
-                      <span className="text-[16px] font-[700] leading-[20px]">
-                        Point Light
-                      </span>
-                    </div>
-                    <div className="p-2">
-                      <ColorPicker
-                        mode={false}
-                        initialColor={pt}
-                        onColorChanged={(color) => {
-                          setPt(color);
-                          updateUnityTheme();
-                        }}
-                      />
-                      <BrightnessPicker
-                        initialValue={pb}
-                        onBrightnessChanged={(val) => {
-                          setPb(val);
-                          updateUnityTheme();
-                        }}
-                      />
-                    </div>
+                  <div className="p-2">
+                    <ColorPicker
+                      mode={false}
+                      initialColor={st}
+                      onColorChanged={(color) => {
+                        setSt(color);
+                        updateUnityTheme();
+                      }}
+                    />
+                    <BrightnessPicker
+                      initialValue={sb}
+                      onBrightnessChanged={(val) => {
+                        setSb(val);
+                        updateUnityTheme();
+                      }}
+                    />
                   </div>
-                </Collapse>
-              </div>
-            </TabPanel>
+                  <div className="h-[1px] bg-white"></div>
+                </div>
+                <div className="pl-2 pr-[68px] pt-4">
+                  <div className="flex items-center">
+                    <Image
+                      width={19}
+                      height={19}
+                      src="/admin/images/point_right.svg"
+                      alt="Point Light icon"
+                      className="mr-[10px]"
+                    />
+                    <span className="text-[16px] font-[700] leading-[20px]">
+                      Point Light
+                    </span>
+                  </div>
+                  <div className="p-2">
+                    <ColorPicker
+                      mode={false}
+                      initialColor={pt}
+                      onColorChanged={(color) => {
+                        setPt(color);
+                        updateUnityTheme();
+                      }}
+                    />
+                    <BrightnessPicker
+                      initialValue={pb}
+                      onBrightnessChanged={(val) => {
+                        setPb(val);
+                        updateUnityTheme();
+                      }}
+                    />
+                  </div>
+                </div>
+              </Collapse>
+            </div>
           </div>
-        </div>
+        </TabPanel>
+        <ToastContainer
+          position="bottom-center"
+          autoClose={5000}
+          newestOnTop={false}
+          closeOnClick={true}
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          theme="dark"
+        />
       </div>
       <ShowcaseUnityUISetting />
     </div>
