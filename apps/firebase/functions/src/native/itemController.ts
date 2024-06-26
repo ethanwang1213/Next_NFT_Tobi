@@ -33,6 +33,12 @@ export const modelApiHandler = (type: ModelRequestType) => {
         case ModelRequestType.AcrylicStand:
           createAcrylicStand(req, res, uid);
           break;
+        case ModelRequestType.MessageCard:
+          removeBackground(req, res, uid, ModelRequestType.MessageCard);
+          break;
+        case ModelRequestType.RemoveBg:
+          removeBackground(req, res, uid);
+          break;
       }
     }).catch((error: FirebaseError) => {
       res.status(401).send({
@@ -48,10 +54,17 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
   const {bodyUrl, baseUrl, coords}:{bodyUrl: string, baseUrl?: string, coords?: string} = req.body;
   const modelApiUrl = process.env.MODEL_API_URL;
   const token = process.env.MODEL_API_TOKEN;
-  if (!modelApiUrl || !token) {
+
+  if (!bodyUrl) {
+    res.status(400).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  } else if (!modelApiUrl || !token) {
     res.status(500).send({
       status: "error",
-      data: "invalid-variable",
+      data: "invalid-system-settings",
     });
     return;
   }
@@ -69,9 +82,9 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
       urlParams.append(key, params[key] as string);
     }
   });
-  const url = `${modelApiUrl}?${urlParams.toString()}`;
+  const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(url);
+    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -87,51 +100,52 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
   }
 };
 
-export const removeBackground = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
+export const removeBackground = async (req: Request, res: Response, uid: string, modelRequestType?: ModelRequestType) => {
   const {url}:{url: string} = req.body;
-  const predefinedUrl = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample-trans-neko.png";
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    console.log(uid, url);
+  const modelApiUrl = process.env.MODEL_API_URL;
+  const token = process.env.MODEL_API_TOKEN;
 
-    // const modelData = await createModelCloud(materialId, type);
+  if (!url) {
+    res.status(400).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  } else if (!modelApiUrl || !token) {
+    res.status(500).send({
+      status: "error",
+      data: "invalid-system-settings",
+    });
+    return;
+  }
+  const params: Record<string, string | undefined> = {
+    uid,
+    token,
+    process_type: modelRequestType ?? ModelRequestType.RemoveBg,
+    url: getPathAfterBucket(url),
+  };
+  const urlParams = new URLSearchParams();
+  Object.keys(params).forEach((key)=>{
+    if (params[key]) {
+      urlParams.append(key, params[key] as string);
+    }
+  });
+  const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
+  try {
+    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
-        url: predefinedUrl, // modelData.modelUrl,
+        url: apiResponse.data.url,
       },
     });
-  }).catch((error: FirebaseError)=>{
-    res.status(401).send({
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
       status: "error",
-      data: error.code,
+      data: "api-error",
     });
-    return;
-  });
-};
-
-export const removeBackgroundOfMessageCard = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  const {url}:{url: string} = req.body;
-  await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
-    console.log(uid, url);
-
-    // const modelData = await createModelCloud(materialId, type);
-    res.status(200).send({
-      status: "success",
-      data: {
-        url: url,
-      },
-    });
-  }).catch((error: FirebaseError)=>{
-    res.status(401).send({
-      status: "error",
-      data: error.code,
-    });
-    return;
-  });
+  }
 };
 
 export const createDigitalItem = async (req: Request, res: Response) => {
