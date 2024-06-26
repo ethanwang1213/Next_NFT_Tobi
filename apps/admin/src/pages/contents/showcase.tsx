@@ -1,3 +1,6 @@
+import { useLeavePage } from "contexts/LeavePageProvider";
+import { ImageType, uploadImage } from "fetchers/UploadActions";
+import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,23 +8,20 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
+import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
+import { ItemType, ModelType } from "types/unityTypes";
 import Button from "ui/atoms/Button";
+import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
-import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
-import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
-import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, ModelType } from "types/unityTypes";
-import { useLeavePage } from "contexts/LeavePageProvider";
-import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
 
 const Showcase = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [showDetailView, setShowDetailView] = useState(true);
+  const [showDetailView, setShowDetailView] = useState(false);
   const [showSmartFrame, setShowSmartFrame] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
@@ -57,6 +57,24 @@ const Showcase = () => {
       sampleItemList: showcaseSaveData.sampleItemList,
       nftItemList: showcaseSaveData.nftItemList,
       thumbnailImage: thumbnailUrl,
+      settings: {
+        wallpaper: {
+          tint: wt,
+        },
+        floor: {
+          tint: ft,
+        },
+        lighting: {
+          sceneLight: {
+            tint: st,
+            brightness: sb,
+          },
+          pointLight: {
+            tint: pt,
+            brightness: pb,
+          },
+        },
+      },
     });
     updateIdValues({ idPairs: IdPairs });
   };
@@ -106,6 +124,7 @@ const Showcase = () => {
     placeNewNft,
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
+    updateSettings,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
@@ -167,6 +186,23 @@ const Showcase = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const [wt, setWt] = useState("#717171");
+  const [ft, setFt] = useState("#717171");
+  const [st, setSt] = useState("#717171");
+  const [sb, setSb] = useState(70);
+  const [pt, setPt] = useState("#717171");
+  const [pb, setPb] = useState(70);
+
+  useEffect(() => {
+    if (showcaseData != undefined) {
+      setWt(showcaseData.settings.wallpaper.tint ?? "#717171");
+      setFt(showcaseData.settings.floor.tint ?? "#717171");
+      setSt(showcaseData.settings.lighting.sceneLight.tint ?? "#717171");
+      setSb(showcaseData.settings.lighting.sceneLight.brightness ?? 1);
+      setPt(showcaseData.settings.lighting.pointLight.tint ?? "#717171");
+      setPb(showcaseData.settings.lighting.pointLight.brightness ?? 1);
+    }
+  }, showcaseData);
   // set showcase data to unity view when it is loaded
   useEffect(() => {
     if (showcaseData) {
@@ -252,6 +288,40 @@ const Showcase = () => {
     [placeNewNft, placeNewNftWithDrag],
   );
 
+  const updateUnityViewSettings = (
+    wt: string,
+    ft: string,
+    st: string,
+    sb: number,
+    pt: string,
+    pb: number,
+  ) => {
+    setWt(wt);
+    setFt(ft);
+    setSt(st);
+    setSb(sb);
+    setPt(pt);
+    setPb(pb);
+    updateSettings({
+      wallpaper: {
+        tint: wt,
+      },
+      floor: {
+        tint: ft,
+      },
+      lighting: {
+        sceneLight: {
+          tint: st,
+          brightness: sb,
+        },
+        pointLight: {
+          tint: pt,
+          brightness: pb,
+        },
+      },
+    });
+  };
+
   return (
     <div className="w-full h-full relative">
       <ShowcaseEditUnity unityProvider={unityProvider} />
@@ -260,7 +330,7 @@ const Showcase = () => {
           className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
           style={{
             width: `${containerWidth}px`,
-            left: `${318 - 504}px`,
+            left: `${318 - 432}px`,
           }}
         >
           <span className="text-xl font-semibold text-[#858585] text-center mr-1">
@@ -300,14 +370,14 @@ const Showcase = () => {
         {/* 318px: width of left component. 504px: width of right component. */}
         <div
           className="w-[336px] mt-[72px] absolute"
-          style={{ left: "calc(318px + (100% - 318px - 504px - 336px) / 2)" }}
+          style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
         >
           {mainToast && <CustomToast show={showToast} message={message} />}
           {!mainToast && <CustomToast show={showToast} message={message} />}
         </div>
         <div
           className="w-[336px] bottom-0 absolute"
-          style={{ left: "calc(318px + (100% - 318px - 504px - 336px) / 2)" }}
+          style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
         >
           <div className="absolute bottom-12 w-full flex justify-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8">
@@ -389,6 +459,17 @@ const Showcase = () => {
             clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
             dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
             showRestoreMenu={showRestoreMenu}
+            settings={showcaseData?.settings}
+            updateUnityViewSettings={(
+              wt: string,
+              ft: string,
+              st: string,
+              sb: number,
+              pt: string,
+              pb: number,
+            ) => {
+              updateUnityViewSettings(wt, ft, st, sb, pt, pb);
+            }}
           />
         )}
         <div className="fixed mt-[24px] ml-[38px]">
