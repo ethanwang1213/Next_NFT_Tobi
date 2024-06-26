@@ -126,3 +126,10 @@ export type SendItemRemovalResult = (
   id: number,
   completed: boolean,
 ) => void;
+
+export type WasdParams = {
+  wKey: boolean;
+  aKey: boolean;
+  sKey: boolean;
+  dKey: boolean;
+};

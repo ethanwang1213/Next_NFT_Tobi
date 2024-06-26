@@ -5,8 +5,6 @@ import { ContentSettingPanel } from "./ContentSettingPanel";
 import { ShowcasePanel } from "./ShowcasePanel";
 import { useEffect, useRef, useState } from "react";
 import SaveConfirmDialog from "./SaveConfirmDialog";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export default function ContentsManageTab({
   onTabChange,
@@ -138,16 +136,6 @@ export default function ContentsManageTab({
         <SaveConfirmDialog
           dialogRef={dialogRef}
           changeHandler={actionHandler}
-        />
-        <ToastContainer
-          position="bottom-center"
-          autoClose={5000}
-          newestOnTop={false}
-          closeOnClick={true}
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={false}
-          theme="dark"
         />
       </div>
     </>

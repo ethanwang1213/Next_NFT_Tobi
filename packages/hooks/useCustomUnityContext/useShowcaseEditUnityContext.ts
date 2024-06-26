@@ -61,6 +61,7 @@ export const useShowcaseEditUnityContext = ({
     placeNewNftWithDrag,
     removeItem,
     updateIdValues,
+    inputWasd,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragPlacingStarted,
@@ -245,5 +246,6 @@ export const useShowcaseEditUnityContext = ({
     removeItem,
     removeRecentItem,
     updateSettings,
+    inputWasd,
   };
 };

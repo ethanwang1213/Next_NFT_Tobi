@@ -178,7 +178,7 @@ app.post("/address/decoder", userInfoFromAddress);
 app.post("/materials", uploadMaterial);
 app.get("/materials", getMaterial);
 app.delete("/materials", removeMaterials);
-app.delete("/materials/:id'", deleteMaterial);
+app.delete("/materials/:id", deleteMaterial);
 app.post("/nfts/fetch-thumb", fetchNftThumb);
 app.post("/nfts/fetch-model", fetchNftModel);
 

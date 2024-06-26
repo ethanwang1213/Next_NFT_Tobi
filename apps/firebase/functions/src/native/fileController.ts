@@ -96,7 +96,7 @@ export const deleteMaterial = async (req: Request, res: Response) => {
     const material = await prisma.tobiratory_material_images.findUnique({
       where: {
         id: parseInt(id),
-      }
+      },
     });
     if (!material) {
       res.status(404).send({

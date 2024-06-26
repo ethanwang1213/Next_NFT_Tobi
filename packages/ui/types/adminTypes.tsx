@@ -21,3 +21,14 @@ export type NftItem = {
   saidanId: number;
   materialImage: string;
 };
+
+export enum SampleStatus {
+  Draft = 1,
+  Private,
+  ViewingOnly,
+  OnSale,
+  Unlisted,
+  ScheduledPublishing,
+  ScheduledforSale,
+  SampleStatusCount,
+}

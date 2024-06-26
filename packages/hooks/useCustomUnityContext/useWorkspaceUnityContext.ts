@@ -57,6 +57,7 @@ export const useWorkspaceUnityContext = ({
     placeNewSampleWithDrag,
     removeItem,
     updateIdValues,
+    inputWasd,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragPlacingStarted,
@@ -265,5 +266,6 @@ export const useWorkspaceUnityContext = ({
     removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,
+    inputWasd,
   };
 };

@@ -5,8 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
 import DateTimeInput from "ui/molecules/DateTimeInput";
@@ -14,16 +13,19 @@ import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
+import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect, {
   getSampleStatusTitle,
-  SampleStatus,
 } from "ui/organisms/admin/StatusDropdownSelect";
+import { SampleStatus } from "ui/types/adminTypes";
+import useFcmToken from "hooks/useFCMToken";
 
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [modified, setModified] = useState(false);
+  const { token: fcmToken } = useFcmToken();
 
   const [confirmDialogTitle, setConfirmDialogTitle] = useState("");
   const [confirmDialogDescriptions, setConfirmDialogDescriptions] = useState(
@@ -32,6 +34,7 @@ const Detail = () => {
   const [confirmDialogNotes, setConfirmDialogNotes] = useState([]);
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
   const statusConfirmDialogRef = useRef(null);
+  const mintConfirmDialogRef = useRef(null);
 
   const apiUrl = "native/admin/samples";
   const {
@@ -317,22 +320,31 @@ const Detail = () => {
     return false;
   }, [dataRef]);
 
+  const mintConfirmDialogHandler = useCallback(
+    async (value: string) => {
+      if (value == "mint") {
+        postData(`native/items/${id}/mint`, {
+          fcmToken: fcmToken,
+          amount: 1,
+          modelUrl: sampleItem.modelUrl,
+        });
+      }
+    },
+    [postData, id, fcmToken, sampleItem],
+  );
+
   return (
-    <div>
+    <div className="mt-16 mb-12">
       <ItemEditHeader
-        activeName={
-          dataRef.current && dataRef.current.name
-            ? dataRef.current.name
-            : "No Name"
-        }
+        id={Array.isArray(id) ? id[0] : id}
         loading={loading}
-        saveHandler={saveButtonHandler}
+        className="ml-8 mr-[104px]"
       />
 
       {sampleItem && (
-        <div className="container mx-auto px-1.5 py-12">
+        <div className="ml-24 mr-[104px] mt-16">
           <div className="flex gap-4">
-            <div className="flex-grow flex flex-col gap-9">
+            <div className="flex-grow flex flex-col gap-8">
               <div className="flex flex-col gap-4 pr-11">
                 <h3 className="text-xl text-secondary">SAMPLE DETAIL</h3>
                 <div className="flex flex-col gap-6">
@@ -359,16 +371,8 @@ const Detail = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-6 pr-11">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl text-secondary">SAMPLE STATUS</h3>
-                  <StatusDropdownSelect
-                    initialStatus={dataRef.current.status}
-                    handleSelectedItemChange={(changes) => {
-                      fieldChangeHandler("status", changes.selectedItem.value);
-                    }}
-                  />
-                </div>
-                {sampleItem.status == 6 || sampleItem.status == 7 ? (
+                {sampleItem.status == SampleStatus.ScheduledPublishing ||
+                sampleItem.status == SampleStatus.ScheduledforSale ? (
                   <div className="flex flex-col gap-6 pl-4">
                     <div className="flex items-center justify-between">
                       <span className="text-xl">Start Date (JST)</span>
@@ -403,7 +407,7 @@ const Detail = () => {
                   <></>
                 )}
               </div>
-              <div className="flex flex-col gap-6 mt-12">
+              <div className="flex flex-col gap-6">
                 <h3 className="text-xl text-secondary">
                   PRICE & DETAILS SETTINGS
                 </h3>
@@ -518,7 +522,7 @@ const Detail = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-6 mt-12">
+              <div className="flex flex-col gap-6">
                 <h3 className="text-xl text-secondary">LICENSE & COPYRIGHTS</h3>
                 <div className="flex flex-col gap-6">
                   <div className="flex gap-6">
@@ -606,7 +610,7 @@ const Detail = () => {
                 </div>
               </div>
             </div>
-            <div>
+            <div className="flex flex-col gap-6 mt-10">
               <div>
                 <Image
                   width={384}
@@ -620,7 +624,7 @@ const Detail = () => {
                   alt="thumbnail image"
                 />
               </div>
-              <div className="flex gap-3 mt-6">
+              <div className="flex gap-3">
                 <div
                   style={{
                     width: 120,
@@ -730,24 +734,56 @@ const Detail = () => {
                   />
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="text-center mt-10 h-14">
-            {loading ? (
-              <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
-            ) : (
-              <Button
-                type="submit"
-                className={clsx(
-                  "text-xl h-14 text-white rounded-[30px] px-10",
-                  modified ? "bg-primary" : "bg-inactive",
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl text-secondary">STATUS</h3>
+                <StatusDropdownSelect
+                  initialStatus={dataRef.current.status}
+                  handleSelectedItemChange={(changes) => {
+                    fieldChangeHandler("status", changes.selectedItem.value);
+                  }}
+                />
+              </div>
+              <div className="text-center h-12">
+                {loading ? (
+                  <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
+                ) : (
+                  <Button
+                    className={clsx(
+                      "w-full text-xl h-12 text-white rounded-[30px] font-medium",
+                      modified ? "bg-primary" : "bg-inactive",
+                    )}
+                    disabled={!modified}
+                    onClick={saveButtonHandler}
+                  >
+                    Save
+                  </Button>
                 )}
-                disabled={!modified}
-                onClick={saveButtonHandler}
-              >
-                SAVE
-              </Button>
-            )}
+              </div>
+              <div className="text-center h-12">
+                {sampleItem.status == SampleStatus.Draft && (
+                  <Button
+                    className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
+                    flex justify-center items-center gap-4
+                  `}
+                    onClick={() => {
+                      if (mintConfirmDialogRef.current) {
+                        mintConfirmDialogRef.current.showModal();
+                      }
+                    }}
+                  >
+                    <Image
+                      src="/admin/images/icon/mint_icon.svg"
+                      width={16}
+                      height={20}
+                      alt="mint icon"
+                    />
+                    <span className="text-[#E96800] text-xl font-semibold">
+                      Mint as an NFT
+                    </span>
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -759,15 +795,9 @@ const Detail = () => {
         disabled={confirmDialogDisabled}
         saveHandler={submitHandler}
       />
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        newestOnTop={false}
-        closeOnClick={true}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        theme="dark"
+      <MintConfirmDialog
+        dialogRef={mintConfirmDialogRef}
+        changeHandler={mintConfirmDialogHandler}
       />
     </div>
   );
