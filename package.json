@@ -35,6 +35,7 @@
     "qrcode.react": "^3.1.0",
     "rc-slider": "^10.6.2",
     "rc-switch": "^4.1.0",
+    "react-colorful": "^5.6.1",
     "react-cropper": "^2.3.3",
     "react-datepicker": "^4.25.0",
     "react-dropzone": "^14.2.3",

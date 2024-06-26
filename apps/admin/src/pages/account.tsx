@@ -3,8 +3,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
 import Image from "next/image";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
 
@@ -389,16 +388,6 @@ export default function Index() {
         accept=".png, .jpg, .jpeg, .gif"
         onChange={(e) => handleFileInputChange(e)}
         className="hidden"
-      />
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        newestOnTop={false}
-        closeOnClick={true}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        theme="dark"
       />
     </div>
   );

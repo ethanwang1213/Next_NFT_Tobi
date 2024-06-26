@@ -16,6 +16,9 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import Layout from "ui/organisms/admin/Layout";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
+import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 config.autoAddCss = false;
 
@@ -26,9 +29,24 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <main className={font.className}>
         <Layout>
+          <FcmTokenComp />
           <LeavePageProvider>
             <Component {...pageProps} />
           </LeavePageProvider>
+          <ToastContainer
+            position="bottom-center"
+            autoClose={3000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable={false}
+            pauseOnHover
+            transition={Slide}
+            closeButton={false}
+            theme="colored"
+          />
         </Layout>
       </main>
     </>
