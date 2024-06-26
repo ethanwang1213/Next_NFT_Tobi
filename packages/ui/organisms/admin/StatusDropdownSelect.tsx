@@ -1,16 +1,6 @@
 import clsx from "clsx";
 import { useSelect } from "downshift";
-
-export enum SampleStatus {
-  Draft = 1,
-  Private,
-  ViewingOnly,
-  OnSale,
-  Unlisted,
-  ScheduledPublishing,
-  ScheduledforSale,
-  SampleStatusCount,
-}
+import { SampleStatus } from "ui/types/adminTypes";
 
 export const getSampleStatusTitle = (status) => {
   let value;
