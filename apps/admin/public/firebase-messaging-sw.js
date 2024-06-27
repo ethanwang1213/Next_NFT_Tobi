@@ -7,13 +7,13 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: "AIzaSyALE9B9ErxN6KjL8_aaW6Nj4w5L_kNtFjo",
-  authDomain: "tobiratory-f6ae1.firebaseapp.com",
-  projectId: "tobiratory-f6ae1",
-  storageBucket: "tobiratory-f6ae1.appspot.com",
-  messagingSenderId: "578163240854",
-  appId: "1:578163240854:web:6f7298d0cbc69921a177b7",
-  measurementId: "G-CSVP2WR95Y",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 });
 
 const messaging = firebase.messaging();

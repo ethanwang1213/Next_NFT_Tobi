@@ -1,10 +1,14 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
+import Collapse from "ui/organisms/admin/Collapse";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
 import { ShowcaseSampleTab } from "ui/organisms/admin/ShowcaseSampleTab";
 import ShowcaseUnityUISetting from "ui/organisms/admin/ShowcaseUnityUISetting";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
+import BrightnessPicker from "./BrightnessPicker";
+import ColorPicker from "./ColorPicker";
 
 const ShowcaseTabView = ({
   clickSampleItem,
@@ -12,26 +16,57 @@ const ShowcaseTabView = ({
   clickNftItem,
   dragNftItem,
   showRestoreMenu,
+  settings,
+  updateUnityViewSettings,
 }: {
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
   clickNftItem: (item: NftItem) => void;
   dragNftItem: (item: NftItem) => void;
   showRestoreMenu: boolean;
+  settings: any;
+  updateUnityViewSettings: (
+    wt: string,
+    ft: string,
+    st: string,
+    sb: number,
+    pt: string,
+    pb: number,
+  ) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
+  const [wt, setWt] = useState(String);
+  const [ft, setFt] = useState(String);
+  const [st, setSt] = useState(String);
+  const [sb, setSb] = useState(Number);
+  const [pt, setPt] = useState(String);
+  const [pb, setPb] = useState(Number);
 
   const handleTabChange = (active) => {
     if (active == tab) {
       return;
     }
-
     setTab(active);
+  };
+
+  useEffect(() => {
+    if (settings != undefined) {
+      setWt(settings.wallpaper.tint ?? "#717171");
+      setFt(settings.floor.tint ?? "#717171");
+      setSt(settings.lighting.sceneLight.tint ?? "#717171");
+      setSb(settings.lighting.sceneLight.brightness ?? 1);
+      setPt(settings.lighting.pointLight.tint ?? "#717171");
+      setPb(settings.lighting.pointLight.brightness ?? 1);
+    }
+  }, [settings]);
+
+  const updateUnityTheme = () => {
+    updateUnityViewSettings(wt, ft, st, sb, pt, pb);
   };
 
   return (
     <div
-      className="w-[504px] min-h-full absolute right-0
+      className="w-[432px] min-h-full absolute right-0
         flex flex-col items-center text-base-white"
     >
       {showRestoreMenu && (
@@ -93,6 +128,11 @@ const ShowcaseTabView = ({
         </ShowcaseTabSelector>
       </nav>
       <div className="pl-8 pr-8 pt-12 pb-12 w-full flex-1 flex flex-col bg-gray-600 bg-opacity-50 backdrop-blur-[25px]">
+        {/* <div
+          className="h-[calc(100vh-312px)] overflow-y-auto"
+          style={{ scrollbarWidth: "none" }}
+        >
+          <div className="pl-8 pr-8 pt-12 pb-12"> */}
         <TabPanel hidden={tab !== "Sample Items"}>
           <ShowcaseSampleTab
             clickSampleItem={clickSampleItem}
@@ -108,7 +148,102 @@ const ShowcaseTabView = ({
             dragNftItem={dragNftItem}
           ></ShowcaseInventoryTab>
         </TabPanel>
-        <TabPanel hidden={tab !== "Settings"}></TabPanel>
+        <TabPanel hidden={tab !== "Settings"}>
+          <div
+            className="h-[calc(100vh-410px)] overflow-y-auto"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <div className="max-w-2xl mx-auto">
+              <Collapse title="WALLPAPER">
+                <ColorPicker
+                  mode={true}
+                  initialColor={wt}
+                  onColorChanged={(color) => {
+                    setWt(color);
+                    updateUnityTheme();
+                  }}
+                />
+              </Collapse>
+              <div className="pb-8"></div>
+              <Collapse title="FLOOR">
+                <ColorPicker
+                  mode={true}
+                  initialColor={ft}
+                  onColorChanged={(color) => {
+                    setFt(color);
+                    updateUnityTheme();
+                  }}
+                />
+              </Collapse>
+              <div className="pb-8"></div>
+              <Collapse title="LIGHTING">
+                <div className="pl-2 pr-[68px] py-4">
+                  <div className="flex items-center">
+                    <Image
+                      width={19}
+                      height={19}
+                      src="/admin/images/scene_light.svg"
+                      alt="Scene Light icon"
+                      className="mr-[10px]"
+                    />
+                    <span className="text-[16px] font-[700] leading-[20px]">
+                      Scene Light
+                    </span>
+                  </div>
+                  <div className="p-2">
+                    <ColorPicker
+                      mode={false}
+                      initialColor={st}
+                      onColorChanged={(color) => {
+                        setSt(color);
+                        updateUnityTheme();
+                      }}
+                    />
+                    <BrightnessPicker
+                      initialValue={sb}
+                      onBrightnessChanged={(val) => {
+                        setSb(val);
+                        updateUnityTheme();
+                      }}
+                    />
+                  </div>
+                  <div className="h-[1px] bg-white"></div>
+                </div>
+                <div className="pl-2 pr-[68px] pt-4">
+                  <div className="flex items-center">
+                    <Image
+                      width={19}
+                      height={19}
+                      src="/admin/images/point_right.svg"
+                      alt="Point Light icon"
+                      className="mr-[10px]"
+                    />
+                    <span className="text-[16px] font-[700] leading-[20px]">
+                      Point Light
+                    </span>
+                  </div>
+                  <div className="p-2">
+                    <ColorPicker
+                      mode={false}
+                      initialColor={pt}
+                      onColorChanged={(color) => {
+                        setPt(color);
+                        updateUnityTheme();
+                      }}
+                    />
+                    <BrightnessPicker
+                      initialValue={pb}
+                      onBrightnessChanged={(val) => {
+                        setPb(val);
+                        updateUnityTheme();
+                      }}
+                    />
+                  </div>
+                </div>
+              </Collapse>
+            </div>
+          </div>
+        </TabPanel>
       </div>
       <ShowcaseUnityUISetting />
     </div>

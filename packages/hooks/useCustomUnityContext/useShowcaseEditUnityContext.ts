@@ -5,7 +5,12 @@ import {
   ShowcaseSaveData,
   UpdateIdValues,
 } from "types/adminTypes";
-import { ItemSaveData, ItemType, SaidanItemData } from "types/unityTypes";
+import {
+  ItemSaveData,
+  ItemType,
+  SaidanItemData,
+  ShowcaseSettings,
+} from "types/unityTypes";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -56,6 +61,7 @@ export const useShowcaseEditUnityContext = ({
     placeNewNftWithDrag,
     removeItem,
     updateIdValues,
+    inputWasd,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragPlacingStarted,
@@ -105,6 +111,7 @@ export const useShowcaseEditUnityContext = ({
           position: { x: 0, y: 0, z: 0 },
           rotation: { x: 0, y: 0, z: 0 },
         },
+        saidanSettings: loadData.settings,
         isDebug: loadData.isDebug ? loadData.isDebug : false,
       };
     },
@@ -132,11 +139,17 @@ export const useShowcaseEditUnityContext = ({
     (itemType: ItemType, id: number, completed: boolean) => {
       postMessageToUnity(
         "RemovalResultMessageReceiver",
-        JSON.stringify({
-          itemType,
-          id,
-          completed,
-        }),
+        JSON.stringify({ itemType, id, completed }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const updateSettings = useCallback(
+    ({ wallpaper, floor, lighting }: ShowcaseSettings) => {
+      postMessageToUnity(
+        "UpdateSettingsMessageReceiver",
+        JSON.stringify({ wallpaper, floor, lighting }),
       );
     },
     [postMessageToUnity],
@@ -178,6 +191,7 @@ export const useShowcaseEditUnityContext = ({
           sampleItemList,
           nftItemList,
           thumbnailImageBase64: messageBody.saidanThumbnailBase64,
+          settings: messageBody.saidanData.saidanSettings,
         },
         updateIdValues,
       );
@@ -231,5 +245,7 @@ export const useShowcaseEditUnityContext = ({
     placeNewNftWithDrag,
     removeItem,
     removeRecentItem,
+    updateSettings,
+    inputWasd,
   };
 };

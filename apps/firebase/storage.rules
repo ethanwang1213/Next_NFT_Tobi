@@ -35,11 +35,11 @@ service firebase.storage {
       }
     }
     // (Common) temporary folder. Old files are automatically deleted.
-    match /tmp/users/{userId} {
+    match /tmp/users/{userId}/{fileName} {
       allow read: if request.auth != null
         && request.auth.uid == userId;
       allow write: if request.auth != null
-        && request.auth.uid == userId
+        && request.auth.uid == userId;
       allow delete: if request.auth != null
         && request.auth.uid == userId;
     }

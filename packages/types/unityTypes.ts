@@ -89,3 +89,26 @@ export type NftLoadData = NftBaseData &
   };
 
 export type ItemSaveData = ItemBaseId & ItemId & ItemPosture;
+
+type RoomSurfaceParams = {
+  tint: string;
+};
+type WallpaperSettings = RoomSurfaceParams;
+type FloorSettings = RoomSurfaceParams;
+
+type LightParams = {
+  tint: string;
+  brightness: number;
+};
+type LightSettings = {
+  sceneLight: LightParams;
+  pointLight: LightParams;
+};
+
+export type ShowcaseSettings = {
+  wallpaper: WallpaperSettings;
+  floor: FloorSettings;
+  lighting: LightSettings;
+};
+
+export type SaidanSettings = ShowcaseSettings;

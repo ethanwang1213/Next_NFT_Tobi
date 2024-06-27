@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { UpdateIdValues } from "types/adminTypes";
+import { UpdateIdValues, WasdParams } from "types/adminTypes";
 import {
   ItemBaseData,
   ItemBaseId,
@@ -127,10 +127,9 @@ export const useSaidanLikeUnityContextBase = ({
 
   const removeItem = useCallback(
     ({ itemType, itemId, id }: ItemTypeParam & ItemBaseId & ItemId) => {
-      const itemInfo = { itemType, itemId, id };
       postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
-        JSON.stringify(itemInfo),
+        JSON.stringify({ itemType, itemId, id }),
       );
     },
     [postMessageToUnity],
@@ -143,6 +142,16 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify({
           idPairs,
         }),
+      );
+    },
+    [postMessageToUnity],
+  );
+
+  const inputWasd = useCallback(
+    ({ wKey, aKey, sKey, dKey }: WasdParams) => {
+      postMessageToUnity(
+        "InputWasdMessageReceiver",
+        JSON.stringify({ wKey, aKey, sKey, dKey }),
       );
     },
     [postMessageToUnity],
@@ -194,6 +203,7 @@ export const useSaidanLikeUnityContextBase = ({
     placeNewNftWithDrag,
     removeItem,
     updateIdValues,
+    inputWasd,
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
     handleDragPlacingStarted,

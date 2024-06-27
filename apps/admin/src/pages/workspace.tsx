@@ -50,7 +50,8 @@ export default function Index() {
   const { data: materials, postData: createMaterialImage } =
     useRestfulAPI(materialAPIUrl);
 
-  const generateError = useRef(false);
+  const [generateSampleError, setGenerateSampleError] = useState(false);
+
   const generateSampleType = useRef(null);
   const generateMaterialImage = useRef(null);
   const generateModelUrl = useRef(null);
@@ -75,9 +76,13 @@ export default function Index() {
     const newSample = await createSample(sampleAPIUrl, {
       thumbUrl: sampleThumb,
       modelUrl: generateModelUrl.current,
-      materialId: generateMaterialImage.current.id,
+      materialId: generateMaterialImage.current?.id ?? 0,
       type: generateSampleType.current,
     });
+    if (newSample === false) {
+      setGenerateSampleError(true);
+      return;
+    }
     placeSampleHandler(newSample);
     loadSamples(sampleAPIUrl);
 
@@ -171,6 +176,7 @@ export default function Index() {
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
       setInitSampleCreateDialog(initSampleCreateDialog + 1);
+      setGenerateSampleError(false);
       sampleCreateDialogRef.current.showModal();
     }
   }, [initSampleCreateDialog]);
@@ -233,14 +239,40 @@ export default function Index() {
     [samples, removeSamplesByItemId],
   );
 
-  const uploadMaterialImageHandler = useCallback(async (image: string) => {
-    const imageUrl = await uploadImage(image, ImageType.MaterialImage);
-    await createMaterialImage(materialAPIUrl, { image: imageUrl }, []);
+  const createMaterialImageHandler = useCallback(async (imageUrl: string) => {
+    const resp = await createMaterialImage(
+      materialAPIUrl,
+      { image: imageUrl },
+      [],
+    );
+    if (!resp) {
+      setGenerateSampleError(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const removeBackgroundHandler = useCallback(
+    async (image: string): Promise<string> => {
+      const resp = await createSample("native/model/remove-bg", {
+        url: image,
+      });
+      if (!resp) {
+        setGenerateSampleError(true);
+        return "";
+      }
+      return resp["url"];
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   const generateSampleHandler = useCallback(
-    async (materialId: number, cropImage: string, sampleType: number) => {
+    async (
+      sampleType: ModelType,
+      image1: string,
+      image2: string,
+      coords: string,
+    ) => {
       generateSampleType.current = sampleType;
       if (
         sampleType === ModelType.Poster ||
@@ -248,26 +280,52 @@ export default function Index() {
       ) {
         // take material image
         const materialIndex = materials.findIndex(
-          (value) => value.id === materialId,
+          (value) => value.image === image1,
         );
-        let modelImageUrl = materials[materialIndex].image;
-        // if material image is edited, upload it.
-        if (cropImage !== null) {
-          modelImageUrl = await uploadImage(cropImage, ImageType.MaterialImage);
-        }
         generateMaterialImage.current = materials[materialIndex];
 
         // create model
         const modelResp = await createSample("native/model/create", {
           type: sampleType,
-          materialId: materialId,
-          imageUrl: modelImageUrl,
+          imageUrl: image1,
         });
+        if (modelResp === false) {
+          setGenerateSampleError(true);
+          return;
+        }
         generateModelUrl.current = modelResp["modelUrl"];
         requestItemThumbnail({
           modelType: sampleType as ModelType,
           modelUrl: modelResp["modelUrl"],
-          imageUrl: modelImageUrl,
+          imageUrl: image1,
+        });
+      }
+      if (sampleType == ModelType.AcrylicStand) {
+        const bodyObj = {
+          bodyUrl: image1,
+          baseUrl: image2,
+          coords: coords,
+        };
+        if (image2 == null) {
+          delete bodyObj.bodyUrl;
+        }
+        if (coords == null) {
+          delete bodyObj.coords;
+        }
+        const modelResp = await createSample(
+          "native/model/acrylic-stand",
+          bodyObj,
+        );
+        if (modelResp === false) {
+          setGenerateSampleError(true);
+          return;
+        }
+        generateModelUrl.current = modelResp["url"];
+        generateMaterialImage.current = null;
+        requestItemThumbnail({
+          modelType: sampleType as ModelType,
+          modelUrl: modelResp["url"],
+          imageUrl: image1,
         });
       }
     },
@@ -284,8 +342,12 @@ export default function Index() {
           initDialog={initSampleCreateDialog}
           materials={materials}
           generateHandler={generateSampleHandler}
-          generateError={generateError.current}
-          uploadImageHandler={uploadMaterialImageHandler}
+          generateError={generateSampleError}
+          createMaterialImageHandler={createMaterialImageHandler}
+          removeBackgroundHandler={removeBackgroundHandler}
+          resetErrorHandler={() => {
+            setGenerateSampleError(false);
+          }}
         />
         <WorkspaceShortcutDialog
           dialogRef={shortcutDialogRef}
@@ -338,7 +400,11 @@ export default function Index() {
               width={32}
               height={32}
               alt="undo button"
-              src="/admin/images/icon/visibility-icon.svg"
+              src={
+                showDetailView
+                  ? "/admin/images/icon/visibility-on-icon.svg"
+                  : "/admin/images/icon/visibility-off-icon.svg"
+              }
               className="cursor-pointer"
               onClick={() => {
                 setShowDetailView(!showDetailView);

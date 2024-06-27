@@ -64,7 +64,7 @@ export const getShowcaseTemplate = async (req: Request, res: Response) => {
 
 export const createMyShocase = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {title, description, templateId}: { title: string, description: string, templateId: number} = req.body;
+  const {title, description, templateId}: { title: string, description: string, templateId: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -145,7 +145,7 @@ export const createMyShocase = async (req: Request, res: Response) => {
 export const updateMyShowcase = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  const {title, description, thumbUrl, status, scheduleTime}: { title?: string, description?: string, thumbUrl?: string, status?: number, scheduleTime: string} = req.body;
+  const {title, description, thumbUrl, status, scheduleTime}: { title?: string, description?: string, thumbUrl?: string, status?: number, scheduleTime: string } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -185,7 +185,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (status&&status != statusOfShowcase.public&&status != statusOfShowcase.publicSchedule) {
+      if (status && status != statusOfShowcase.public && status != statusOfShowcase.publicSchedule) {
         res.status(401).send({
           status: "error",
           data: "invalid-status",
@@ -211,12 +211,12 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
           title: title,
           description: description,
           thumb_url: thumbUrl,
-          schedule_time: scheduleTime==undefined?undefined:new Date(scheduleTime),
+          schedule_time: scheduleTime == undefined ? undefined : new Date(scheduleTime),
           status: status,
           updated_date_time: new Date(),
         },
       });
-      if (status == statusOfShowcase.publicSchedule&&scheduleTime) {
+      if (status == statusOfShowcase.publicSchedule && scheduleTime) {
         const specificTime = new Date(scheduleTime);
         const currentTime = new Date();
         const timeDifference = specificTime.getTime() - currentTime.getTime();
@@ -429,7 +429,7 @@ const updateShocaseSchedule = async (scheduleTime: string, timeDifference: numbe
           id: id,
         },
       });
-      if (!showcase||showcase.schedule_time!=new Date(scheduleTime)) {
+      if (!showcase || showcase.schedule_time != new Date(scheduleTime)) {
         return;
       }
       await prisma.tobiratory_showcase.updateMany({
@@ -528,7 +528,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sampleItemList = showcase.tobiratory_showcase_sample_items.map((relationSample)=>{
+      const sampleItemList = showcase.tobiratory_showcase_sample_items.map((relationSample) => {
         const sampleData = relationSample.sample;
         const digitalData = relationSample.sample.digital_item;
         return {
@@ -536,22 +536,22 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           itemId: sampleData.id,
           modelType: digitalData.type,
           modelUrl: sampleData.model_url,
-          imageUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
+          imageUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
           stageType: relationSample.stage_type,
           scale: relationSample.scale,
           position: {
-            x: relationSample.position[0]??0,
-            y: relationSample.position[1]??0,
-            z: relationSample.position[2]??0,
+            x: relationSample.position[0] ?? 0,
+            y: relationSample.position[1] ?? 0,
+            z: relationSample.position[2] ?? 0,
           },
           rotation: {
-            x: relationSample.rotation[0]??0,
-            y: relationSample.rotation[1]??0,
-            z: relationSample.rotation[2]??0,
+            x: relationSample.rotation[0] ?? 0,
+            y: relationSample.rotation[1] ?? 0,
+            z: relationSample.rotation[2] ?? 0,
           },
         };
       });
-      const nftItemList = showcase.tobiratory_showcase_nfts.map((relationNft)=>{
+      const nftItemList = showcase.tobiratory_showcase_nfts.map((relationNft) => {
         const nftData = relationNft.nft;
         const digitalData = relationNft.nft.digital_item;
         return {
@@ -563,17 +563,35 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           scale: relationNft.scale,
           itemMeterHeight: relationNft.meter_height,
           position: {
-            x: relationNft.position[0]??0,
-            y: relationNft.position[1]??0,
-            z: relationNft.position[2]??0,
+            x: relationNft.position[0] ?? 0,
+            y: relationNft.position[1] ?? 0,
+            z: relationNft.position[2] ?? 0,
           },
           rotation: {
-            x: relationNft.rotation[0]??0,
-            y: relationNft.rotation[1]??0,
-            z: relationNft.rotation[2]??0,
+            x: relationNft.rotation[0] ?? 0,
+            y: relationNft.rotation[1] ?? 0,
+            z: relationNft.rotation[2] ?? 0,
           },
         };
       });
+      const settings = {
+        wallpaper: {
+          tint: showcase.wallpaper_tint,
+        },
+        floor: {
+          tint: showcase.floor_tint,
+        },
+        lighting: {
+          sceneLight: {
+            tint: showcase.lighting_scene_tint,
+            brightness: showcase.lighting_scene_brightness,
+          },
+          pointLight: {
+            tint: showcase.lighting_point_tint,
+            brightness: showcase.lighting_point_bright,
+          },
+        },
+      };
       const returnData = {
         showcaseId: showcase.id,
         thumbImage: showcase.thumb_url,
@@ -585,6 +603,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         showcaseUrl: showcase.tobiratory_showcase_template?.model_url,
         sampleItemList: sampleItemList,
         nftItemList: nftItemList,
+        settings: settings,
         createTime: showcase.created_date_time,
         updateTime: showcase.updated_date_time,
       };
@@ -610,7 +629,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
 export const saveMyShowcase = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  const {sampleItemList, nftItemList, thumbnailImage}: {sampleItemList: ItemType[], nftItemList: ItemType[], thumbnailImage: string} = req.body;
+  const {sampleItemList, nftItemList, thumbnailImage, settings}: { sampleItemList: ItemType[], nftItemList: ItemType[], thumbnailImage: string, settings: SettingsType } = req.body;
   type ItemType = {
     id: number,
     itemId: number,
@@ -627,6 +646,24 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
     },
     scale: number,
   };
+  type SettingsType = {
+    wallpaper: {
+      tint?: string;
+    };
+    floor: {
+      tint?: string;
+    };
+    lighting: {
+      sceneLight: {
+        tint?: string;
+        brightness?: number;
+      };
+      pointLight: {
+        tint?: string;
+        brightness?: number;
+      };
+    };
+  }
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -673,7 +710,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const idPair: {previous: number, next: number}[] = [];
+      const idPair: { previous: number, next: number }[] = [];
       for (const sample of sampleItemList) {
         const sampledata = await prisma.tobiratory_showcase_sample_items.upsert({
           where: {
@@ -694,7 +731,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },
         });
-        if (sample.id<0) {
+        if (sample.id < 0) {
           idPair.push({
             previous: sample.id,
             next: sampledata.id,
@@ -721,7 +758,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
           },
         });
-        if (nft.id<0) {
+        if (nft.id < 0) {
           idPair.push({
             previous: nft.id,
             next: nftData.id,
@@ -734,6 +771,12 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         },
         data: {
           thumb_url: thumbnailImage,
+          wallpaper_tint: settings.wallpaper.tint,
+          floor_tint: settings.floor.tint,
+          lighting_scene_tint: settings.lighting.sceneLight.tint,
+          lighting_scene_brightness: settings.lighting.sceneLight.brightness,
+          lighting_point_tint: settings.lighting.pointLight.tint,
+          lighting_point_bright: settings.lighting.pointLight.brightness,
         },
       });
       res.status(200).send({
@@ -758,7 +801,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
 export const throwItemShowcase = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {id} = req.params;
-  const {sampleRelationId, nftRelationId}:{sampleRelationId?: number, nftRelationId?: number} = req.body;
+  const {sampleRelationId, nftRelationId}: { sampleRelationId?: number, nftRelationId?: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;

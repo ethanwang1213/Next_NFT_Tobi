@@ -57,6 +57,7 @@ export const useWorkspaceUnityContext = ({
     placeNewSampleWithDrag,
     removeItem,
     updateIdValues,
+    inputWasd,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragPlacingStarted,
@@ -99,6 +100,24 @@ export const useWorkspaceUnityContext = ({
           x: 0,
           y: 0,
           z: 0,
+        },
+      },
+      saidanSettings: {
+        wallpaper: {
+          tint: "",
+        },
+        floor: {
+          tint: "",
+        },
+        lighting: {
+          sceneLight: {
+            tint: "",
+            brightness: -1,
+          },
+          pointLight: {
+            tint: "",
+            brightness: -1,
+          },
         },
       },
       isDebug: loadData.isDebug ? loadData.isDebug : false,
@@ -247,5 +266,6 @@ export const useWorkspaceUnityContext = ({
     removeSample,
     removeSamplesByItemId,
     requestItemThumbnail,
+    inputWasd,
   };
 };
