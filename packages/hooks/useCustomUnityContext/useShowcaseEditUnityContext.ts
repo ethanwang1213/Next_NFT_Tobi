@@ -49,6 +49,7 @@ export const useShowcaseEditUnityContext = ({
 }: Props) => {
   const {
     unityProvider,
+    isLoaded,
     isDragging,
     addEventListener,
     removeEventListener,
@@ -236,6 +237,7 @@ export const useShowcaseEditUnityContext = ({
 
   return {
     unityProvider,
+    isLoaded,
     isDragging,
     setLoadData: processAndSetLoadData,
     requestSaveData,
