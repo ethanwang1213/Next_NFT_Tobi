@@ -691,7 +691,7 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: nu
     throw new functions.https.HttpsError("not-found", "The digital item NFT does not exist.");
   }
   const serialNo = digitalItemNft.serial_no;
-  if (serialNo == null) {
+  if (!serialNo) {
     throw new functions.https.HttpsError("not-found", "The serial number of the digital item NFT does not exist.");
   }
 
