@@ -34,7 +34,7 @@ export const modelApiHandler = (type: ModelRequestType) => {
           createAcrylicStand(req, res, uid);
           break;
         case ModelRequestType.MessageCard:
-          removeBackground(req, res, uid, ModelRequestType.MessageCard);
+          createMessageCard(req, res, uid);
           break;
         case ModelRequestType.RemoveBg:
           removeBackground(req, res, uid);
@@ -98,6 +98,65 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
       data: "api-error",
     });
   }
+};
+
+const createMessageCard = async (req: Request, res: Response, uid: string) => {
+  const {url}: { url: string} = req.body;
+  const modelApiUrl = process.env.MODEL_API_URL;
+  const token = process.env.MODEL_API_TOKEN;
+
+  if (!url) {
+    res.status(400).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  } else if (!modelApiUrl || !token) {
+    res.status(500).send({
+      status: "error",
+      data: "invalid-system-settings",
+    });
+    return;
+  }
+
+  // Mock response
+  const predefinedModel = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample.glb";
+  res.status(200).send({
+    status: "success",
+    data: {
+      url: predefinedModel,
+    },
+  });
+  /*
+  const params: Record<string, string | undefined> = {
+    uid,
+    token,
+    process_type: ModelRequestType.MessageCard,
+    image1: getPathAfterBucket(url),
+  };
+  const urlParams = new URLSearchParams();
+  Object.keys(params).forEach((key)=>{
+    if (params[key]) {
+      urlParams.append(key, params[key] as string);
+    }
+  });
+  const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
+  try {
+    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    res.status(200).send({
+      status: "success",
+      data: {
+        url: apiResponse.data.url,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      status: "error",
+      data: "api-error",
+    });
+  }
+   */
 };
 
 export const removeBackground = async (req: Request, res: Response, uid: string, modelRequestType?: ModelRequestType) => {
