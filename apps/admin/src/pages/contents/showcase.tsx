@@ -2,6 +2,7 @@ import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import useWASDKeys from "hooks/useWASDKeys";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -41,7 +42,7 @@ const Showcase = () => {
   const timerId = useRef(null);
 
   const { data: materialData } = useRestfulAPI("native/materials");
-
+  const wasdKeys = useWASDKeys();
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
 
   // showcase unity view event handlers
@@ -125,6 +126,7 @@ const Showcase = () => {
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
     updateSettings,
+    inputWasd,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
@@ -240,6 +242,10 @@ const Showcase = () => {
       window.removeEventListener("resize", updateContainerWidth);
     };
   }, []);
+
+  useEffect(() => {
+    inputWasd(wasdKeys);
+  }, [inputWasd, wasdKeys]);
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
