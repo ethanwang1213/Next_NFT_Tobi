@@ -97,7 +97,7 @@ export const flowTxSend = functions.region(REGION)
         }
       } else if (txType == "giftNFT") {
         try {
-          const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.receiveFlowId);
+          const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.digitalItemNftId, params.receiveFlowId);
           await flowJobDocRef.update({
             flowJobId,
             txType,
@@ -678,9 +678,22 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
   };
 };
 
-const sendGiftNFTTx = async (tobiratoryAccountUuid: string, receiveFlowId: string) => {
+const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: number, receiveFlowId: string) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+
+  const digitalItemNft = await prisma.tobiratory_digital_item_nfts.findUnique({
+    where: {
+      id: digitalItemNftId,
+    }
+  });
+  if (!digitalItemNft) {
+    throw new functions.https.HttpsError("not-found", "The digital item NFT does not exist.");
+  }
+  const serialNo = digitalItemNft.serial_no;
+  if (serialNo == null) {
+    throw new functions.https.HttpsError("not-found", "The serial number of the digital item NFT does not exist.");
+  }
 
   const senderFlowAccountDocRef = await getFlowAccountDocRef(tobiratoryAccountUuid);
   if (!senderFlowAccountDocRef) {
@@ -692,7 +705,6 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, receiveFlowId: strin
   if (!senderAccountDocData || !senderAccountDocData.address) {
     throw new functions.https.HttpsError("not-found", "The sender flow account does not exist.");
   }
-  const senderFlowAddress = senderAccountDocData.address;
 
   const cadence = `
 import NonFungibleToken from ${nonFungibleTokenAddress}
@@ -722,7 +734,7 @@ transaction(recipient: Address, withdrawID: UInt64) {
 
   const args = (arg: any, t: any) => [
     arg(receiveFlowId, t.Address),
-    arg(senderFlowAddress, t.Address),
+    arg(serialNo, t.UInt64),
   ];
 
   const txId = await fcl.mutate({
