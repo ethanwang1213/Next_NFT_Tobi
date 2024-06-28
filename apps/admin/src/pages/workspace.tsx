@@ -1,22 +1,23 @@
-import { Metadata } from "next";
-import { useCallback, useEffect, useRef, useState } from "react";
-import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
-import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
-import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
-import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
-import Image from "next/image";
-import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
-import { WorkspaceUnity } from "ui/molecules/CustomUnity";
-import useRestfulAPI from "hooks/useRestfulAPI";
+import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
-import { ModelType } from "types/unityTypes";
-import { SampleItem } from "ui/types/adminTypes";
+import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+import useRestfulAPI from "hooks/useRestfulAPI";
+import useWASDKeys from "hooks/useWASDKeys";
+import { Metadata } from "next";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   SendSampleRemovalResult,
   UpdateIdValues,
   WorkspaceSaveData,
 } from "types/adminTypes";
-import { useLeavePage } from "contexts/LeavePageProvider";
+import { ModelType } from "types/unityTypes";
+import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
+import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
+import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
+import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
+import { SampleItem } from "ui/types/adminTypes";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -52,7 +53,7 @@ export default function Index() {
 
   const [generateSampleError, setGenerateSampleError] = useState(false);
 
-  const [keysPressed, setKeysPressed] = useState(new Set());
+  const wasdKeys = useWASDKeys();
 
   const generateSampleType = useRef(null);
   const generateMaterialImage = useRef(null);
@@ -121,37 +122,15 @@ export default function Index() {
       setContentWidth(document.querySelector("#workspace_view").clientWidth);
     };
 
-    // Function to handle keydown event
-    const handleKeyDown = (event) => {
-      setKeysPressed((prevKeysPressed) => {
-        const updatedKeys = new Set(prevKeysPressed);
-        updatedKeys.add(event.key);
-        return updatedKeys;
-      });
-    };
-
-    // Function to handle keyup event
-    const handleKeyUp = (event) => {
-      setKeysPressed((prevKeysPressed) => {
-        const updatedKeys = new Set(prevKeysPressed);
-        updatedKeys.delete(event.key);
-        return updatedKeys;
-      });
-    };
-
     // Update container width on mount and window resize
     updateContainerWidth();
 
     // Add event listener when the component mounts
     window.addEventListener("resize", updateContainerWidth);
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
 
     // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", updateContainerWidth);
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
@@ -202,13 +181,8 @@ export default function Index() {
   }, [leavingPage, setLeavingPage, requestSaveData]);
 
   useEffect(() => {
-    inputWasd({
-      wKey: keysPressed.has("w"),
-      aKey: keysPressed.has("a"),
-      sKey: keysPressed.has("s"),
-      dKey: keysPressed.has("d"),
-    });
-  }, [inputWasd, keysPressed]);
+    inputWasd(wasdKeys);
+  }, [inputWasd, wasdKeys]);
 
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
