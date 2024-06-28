@@ -19,7 +19,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
   const flowJobId = message.json.flowJobId;
   const txType = message.json.txType;
   const params = message.json.params;
-  console.log(`flowTxSend: flowJobId=${flowJobId} txType=${txType} params=${JSON.stringify(params)}`);
+  console.log(`flowTxMonitor: flowJobId=${flowJobId} txType=${txType} params=${JSON.stringify(params)}`);
 
   const flowJobDocRef = await createOrGetFlowJobDocRef(flowJobId);
 
