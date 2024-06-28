@@ -310,7 +310,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   const message = {flowJobId, txType: "giftNFT", params: {
     tobiratoryAccountUuid: uid,
     digitalItemNftId: digitalItemNft.id,
-    receiveFlowId: receiveFlowId,
+    receiveFlowId,
     fcmToken,
   }};
   const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
