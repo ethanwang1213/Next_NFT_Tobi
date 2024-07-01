@@ -47,6 +47,7 @@ export const useWorkspaceUnityContext = ({
 }: Props) => {
   const {
     unityProvider,
+    isLoaded,
     isDragging,
     addEventListener,
     removeEventListener,
@@ -258,6 +259,7 @@ export const useWorkspaceUnityContext = ({
 
   return {
     unityProvider,
+    isLoaded,
     isDragging,
     setLoadData,
     requestSaveData,
