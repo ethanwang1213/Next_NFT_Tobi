@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import Image from "next/image";
+import NextImage from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -11,7 +11,6 @@ import Button from "ui/atoms/Button";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
-import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect, {
@@ -305,11 +304,47 @@ const Detail = () => {
 
   return (
     <div className="mt-16 mb-12">
-      <ItemEditHeader
-        id={Array.isArray(id) ? id[0] : id}
-        loading={loading}
-        className="ml-8 mr-[104px]"
-      />
+      <div className={`ml-8 mr-[104px] h-12 flex items-center gap-4`}>
+        <Link href="/items">
+          <NextImage
+            src="/admin/images/icon/arrow_back.svg"
+            width={32}
+            height={32}
+            alt="back icon"
+          />
+        </Link>
+        <span className="flex-1 text-secondary-600 text-[32px] font-semibold">
+          ITEM DETAIL
+        </span>
+        {digitalItem && (
+          <span className="text-xl text-secondary font-bold">Status</span>
+        )}
+        {digitalItem && (
+          <StatusDropdownSelect
+            initialStatus={dataRef.current.status}
+            handleSelectedItemChange={(changes) => {
+              fieldChangeHandler("status", changes.selectedItem.value);
+            }}
+          />
+        )}
+
+        {loading ? (
+          <div className="w-[182px] h-10 flex justify-center items-center">
+            <span className="loading loading-spinner loading-md text-secondary-600" />
+          </div>
+        ) : (
+          <Button
+            className={clsx(
+              "w-[182px] text-xl h-10 text-white rounded-[30px] font-medium",
+              modified ? "bg-primary" : "bg-inactive",
+            )}
+            disabled={!modified}
+            onClick={saveButtonHandler}
+          >
+            Save
+          </Button>
+        )}
+      </div>
 
       {digitalItem && (
         <div className="ml-24 mr-[104px] mt-16">
@@ -356,7 +391,7 @@ const Detail = () => {
                     }
                   />
                   <div className="flex">
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -422,7 +457,7 @@ const Detail = () => {
                     >
                       No Quantity Limit
                     </label>
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -466,7 +501,7 @@ const Detail = () => {
                       }}
                       readOnly={isReadOnly()}
                     />
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -508,7 +543,7 @@ const Detail = () => {
                       }
                       readOnly={isReadOnly()}
                     />
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -549,7 +584,7 @@ const Detail = () => {
             </div>
             <div className="flex flex-col gap-6 mt-10">
               <div>
-                <Image
+                <NextImage
                   width={384}
                   height={384}
                   className="bg-[#2D94FF6B] rounded-[13px]"
@@ -588,7 +623,7 @@ const Detail = () => {
                       e.stopPropagation(); // Stop event propagation
                     }}
                   >
-                    <Image
+                    <NextImage
                       width={24}
                       height={24}
                       alt="download"
@@ -621,7 +656,7 @@ const Detail = () => {
                 >
                   {digitalItem.customThumbnailUrl &&
                   digitalItem.customThumbnailUrl.length > 0 ? (
-                    <Image
+                    <NextImage
                       width={24}
                       height={24}
                       alt="cancel"
@@ -637,7 +672,7 @@ const Detail = () => {
                       }}
                     />
                   ) : (
-                    <Image
+                    <NextImage
                       width={24}
                       height={24}
                       alt="cancel"
@@ -663,7 +698,7 @@ const Detail = () => {
                   <span className="h-14 text-secondary-500 text-base text-center">
                     Drop your Image here
                   </span>
-                  <Image
+                  <NextImage
                     width={24}
                     height={24}
                     alt="upload"
@@ -671,38 +706,13 @@ const Detail = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl text-secondary">STATUS</h3>
-                <StatusDropdownSelect
-                  initialStatus={dataRef.current.status}
-                  handleSelectedItemChange={(changes) => {
-                    fieldChangeHandler("status", changes.selectedItem.value);
-                  }}
-                />
-              </div>
-              <div className="text-center h-12">
-                {loading ? (
-                  <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
-                ) : (
-                  <Button
-                    className={clsx(
-                      "w-full text-xl h-12 text-white rounded-[30px] font-medium",
-                      modified ? "bg-primary" : "bg-inactive",
-                    )}
-                    disabled={!modified}
-                    onClick={saveButtonHandler}
-                  >
-                    Save
-                  </Button>
-                )}
-              </div>
               <div className="text-center h-12">
                 <Link href={`/workspace/${id}`}>
                   <Button
                     className="w-full h-12 rounded-[30px] border-[3px] border-primary-500 
                       flex justify-center items-center gap-2"
                   >
-                    <Image
+                    <NextImage
                       src="/admin/images/icon/preview.svg"
                       width={32}
                       height={32}
@@ -726,7 +736,7 @@ const Detail = () => {
                       }
                     }}
                   >
-                    <Image
+                    <NextImage
                       src="/admin/images/icon/mint_icon.svg"
                       width={16}
                       height={20}
