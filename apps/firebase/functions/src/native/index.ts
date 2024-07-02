@@ -25,7 +25,6 @@ import {
   updateMyContentInfo,
 } from "./contentController";
 import {
-  createAcrylicStand,
   createDigitalItem,
   deleteDigitalItem,
   getMyDigitalItems,
@@ -39,8 +38,8 @@ import {
   adminDeleteDigitalItems,
   adminDetailOfDigitalItem,
   adminUpdateDigitalItem,
-  removeBackground,
-  removeBackgroundOfMessageCard,
+  modelApiHandler,
+  ModelRequestType,
 } from "./itemController";
 import {
   createSaidan,
@@ -132,9 +131,9 @@ app.get("/my/samples", getMyDigitalItems);
 app.get("/my/samples/:id");
 app.delete("/my/samples/:id", deleteDigitalItem);
 
-app.post("/model/acrylic-stand", createAcrylicStand);
-app.post("/model/remove-bg", removeBackground);
-app.post("/model/message-card", removeBackgroundOfMessageCard);
+app.post("/model/acrylic-stand", modelApiHandler(ModelRequestType.AcrylicStand));
+app.post("/model/remove-bg", modelApiHandler(ModelRequestType.RemoveBg));
+app.post("/model/message-card", modelApiHandler(ModelRequestType.MessageCard));
 
 app.get("/my/saidans", getMySaidans);
 app.post("/my/saidans", createSaidan);
