@@ -221,7 +221,7 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {q, pageNumber} = req.query;
   const defaultPageSize = 10;
-  const skip = (Number(pageNumber??0)-1)*defaultPageSize;
+  const skip = (Number(pageNumber??1)-1)*defaultPageSize;
   const searchValue = q?.toString()==""?undefined:q?.toString();
   console.log(searchValue);
   if (!searchValue) {
@@ -247,16 +247,15 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
             },
           },
         },
-        // take: 10,
         include: {
           digital_item: true,
         },
-        orderBy: {
-          sale_quantity: "desc",
-          digital_item: {
+        orderBy: [
+          {sale_quantity: "desc"},
+          {digital_item: {
             name: "asc",
-          },
-        },
+          }},
+        ],
       });
       const resultDigitalItems = digitalItems.map((sample)=>{
         return {

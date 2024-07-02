@@ -165,7 +165,7 @@ const updateMintNFTRecord = async (digitalItemNftId: number, status: string) => 
       mint_status: status,
     },
   });
-}
+};
 
 const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any) => {
   const digitalItemNftId = metadata.digitalItemNftId;
@@ -685,7 +685,7 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: nu
   const digitalItemNft = await prisma.tobiratory_digital_item_nfts.findUnique({
     where: {
       id: digitalItemNftId,
-    }
+    },
   });
   if (!digitalItemNft) {
     throw new functions.https.HttpsError("not-found", "The digital item NFT does not exist.");
