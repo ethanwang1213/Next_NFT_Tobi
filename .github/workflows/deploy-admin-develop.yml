@@ -1,0 +1,20 @@
+name: Deploy Admin of Develop branch on Vercel
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - closed
+
+jobs:
+  deploy-admin-develop:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/_deploy-vercel.yml
+    with:
+      ENV_NAME: "admin-develop"
+    secrets:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      NPM_RC_FOR_GSAP: ${{ secrets.NPM_RC_FOR_GSAP }}
