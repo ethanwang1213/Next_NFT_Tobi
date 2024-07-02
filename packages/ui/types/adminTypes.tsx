@@ -30,3 +30,34 @@ export enum DigitalItemStatus {
   Unlisted,
   DigitalItemStatusCount,
 }
+
+export const getDigitalItemStatusTitle = (status) => {
+  let value;
+  switch (status) {
+    case DigitalItemStatus.Draft:
+      value = "Draft";
+      break;
+    case DigitalItemStatus.Private:
+      value = "Private";
+      break;
+    case DigitalItemStatus.ViewingOnly:
+      value = "Viewing Only";
+      break;
+    case DigitalItemStatus.OnSale:
+      value = "On Sale";
+      break;
+    case DigitalItemStatus.Unlisted:
+      value = "Unlisted";
+      break;
+    default:
+      value = "";
+      break;
+  }
+  return value;
+};
+
+export type ScheduleItem = {
+  from: DigitalItemStatus;
+  to: DigitalItemStatus;
+  datetime: string;
+};

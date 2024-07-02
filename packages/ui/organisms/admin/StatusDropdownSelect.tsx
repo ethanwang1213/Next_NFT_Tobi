@@ -1,32 +1,10 @@
 import clsx from "clsx";
 import { useSelect } from "downshift";
 import NextImage from "next/image";
-import { DigitalItemStatus } from "ui/types/adminTypes";
-
-export const getDigitalItemStatusTitle = (status) => {
-  let value;
-  switch (status) {
-    case DigitalItemStatus.Draft:
-      value = "Draft";
-      break;
-    case DigitalItemStatus.Private:
-      value = "Private";
-      break;
-    case DigitalItemStatus.ViewingOnly:
-      value = "Viewing Only";
-      break;
-    case DigitalItemStatus.OnSale:
-      value = "On Sale";
-      break;
-    case DigitalItemStatus.Unlisted:
-      value = "Unlisted";
-      break;
-    default:
-      value = "";
-      break;
-  }
-  return value;
-};
+import {
+  DigitalItemStatus,
+  getDigitalItemStatusTitle,
+} from "ui/types/adminTypes";
 
 const statusValues = [
   { value: DigitalItemStatus.Draft, color: "#9E9E9E" },

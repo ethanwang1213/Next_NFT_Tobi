@@ -118,3 +118,150 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   border-bottom-right-radius: 0 !important;
   width: 352px !important;
 }
+
+.schedule-calendar {
+  width: 100% !important;
+  border-radius: 8px;
+  padding: 64px 12px 24px 12px;
+  border: 1px #717171 solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.schedule-calendar .react-calendar__navigation {
+  width: 418px;
+}
+
+.schedule-calendar .react-calendar__month-view__weekdays__weekday {
+  text-transform: none;
+  color: #AEAEAE;
+  flex: 0 0 16% !important;
+}
+
+.schedule-calendar .react-calendar__month-view__weekdays abbr {
+  text-decoration: auto;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day {
+  font-size: 16px;
+  font-weight: 400;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  flex: 0 0 16% !important;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day abbr {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--now abbr {
+  background-color: #B91C1C;
+  border-radius: 4px;
+  color: white;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day--weekend,
+.schedule-calendar .react-calendar__month-view__weekdays__weekday--weekend {
+  color: #17A1FA;
+  flex: 0 0 10% !important;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  opacity: 0.5;
+}
+
+.schedule-calendar .react-calendar__tile {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--now,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active:enabled:focus {
+  background: none;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day {
+  position: relative;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day abbr {
+  position: relative;
+  z-index: 2;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day::before,
+.schedule-calendar .react-calendar__month-view__days__day::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.status-view-only-end::before,
+.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-end::before {
+  left: 0;
+  width: calc(50% + 24px);
+  border-radius: 0 8px 8px 0;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.status-view-only-begin::before,
+.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-begin::before {
+  right: 0;
+  width: calc(50% + 24px);
+  border-radius: 8px 0 0 8px;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day::after {
+  left: calc(50% - 24px);
+  width: 48px;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.schedule-calendar .status-view-only,
+.schedule-calendar .status-view-only-begin::before,
+.schedule-calendar .status-view-only-end::before {
+  background-color: #BAD9F8 !important;
+}
+
+.schedule-calendar .status-on-sale,
+.schedule-calendar .status-on-sale-begin::before,
+.schedule-calendar .status-on-sale-end::before {
+  background-color: #FFD5B3 !important;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active::after {
+  background-color: #717171;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only-begin::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only-end::after {
+  background-color: #1779DE;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale-begin::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale-end::after {
+  background-color: #FF811C;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.status-view-only,
+.schedule-calendar .react-calendar__month-view__days__day.status-view-only-begin,
+.schedule-calendar .react-calendar__month-view__days__day.status-view-only-end,
+.schedule-calendar .react-calendar__month-view__days__day.status-on-sale,
+.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-begin,
+.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-end {
+  color: #717171;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active {
+  color: white;
+}
+

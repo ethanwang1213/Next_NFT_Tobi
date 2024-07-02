@@ -1,7 +1,9 @@
 import clsx from "clsx";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
+import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -12,13 +14,13 @@ import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
+import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
+import ScheduleEditComponent from "ui/organisms/admin/ScheduleEditComponent";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect, {
   getDigitalItemStatusTitle,
 } from "ui/organisms/admin/StatusDropdownSelect";
 import { DigitalItemStatus } from "ui/types/adminTypes";
-import useFcmToken from "hooks/useFCMToken";
-import Link from "next/link";
 
 const Detail = () => {
   const router = useRouter();
@@ -577,9 +579,9 @@ const Detail = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 pr-11">
                 <h3 className="text-xl text-secondary">SCHEDULE</h3>
-                <div className="flex flex-col gap-6"></div>
+                <ScheduleCalendar />
               </div>
             </div>
             <div className="flex flex-col gap-6 mt-10">
