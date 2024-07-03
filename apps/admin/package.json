@@ -21,7 +21,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "daisyui": "^3.1.0",
     "ethers": "^5.7.2",
-    "firebase": "^10.11.0",
+    "firebase": "^9.23.0",
     "gsap": "npm:@gsap/business@^3.11.5",
     "jimp": "0.22.8",
     "next": "13.4.8",

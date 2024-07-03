@@ -12,6 +12,7 @@ import {
   ModelParams,
   TextureParam,
 } from "types/unityTypes";
+import { DefaultItemMeterHeight } from "./constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
@@ -47,6 +48,7 @@ export const useWorkspaceUnityContext = ({
 }: Props) => {
   const {
     unityProvider,
+    isLoaded,
     isDragging,
     addEventListener,
     removeEventListener,
@@ -80,7 +82,7 @@ export const useWorkspaceUnityContext = ({
         ...v,
         itemType: ItemType.Sample,
         canScale: true,
-        itemMeterHeight: 0.3,
+        itemMeterHeight: DefaultItemMeterHeight,
         isDebug: false, // not used in loading
       };
     });
@@ -258,6 +260,7 @@ export const useWorkspaceUnityContext = ({
 
   return {
     unityProvider,
+    isLoaded,
     isDragging,
     setLoadData,
     requestSaveData,

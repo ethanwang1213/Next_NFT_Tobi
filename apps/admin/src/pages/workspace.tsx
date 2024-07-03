@@ -1,22 +1,23 @@
-import { Metadata } from "next";
-import { useCallback, useEffect, useRef, useState } from "react";
-import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
-import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
-import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
-import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
-import Image from "next/image";
-import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
-import { WorkspaceUnity } from "ui/molecules/CustomUnity";
-import useRestfulAPI from "hooks/useRestfulAPI";
+import { useLeavePage } from "contexts/LeavePageProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
-import { ModelType } from "types/unityTypes";
-import { SampleItem } from "ui/types/adminTypes";
+import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+import useRestfulAPI from "hooks/useRestfulAPI";
+import useWASDKeys from "hooks/useWASDKeys";
+import { Metadata } from "next";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   SendSampleRemovalResult,
   UpdateIdValues,
   WorkspaceSaveData,
 } from "types/adminTypes";
-import { useLeavePage } from "contexts/LeavePageProvider";
+import { ModelType } from "types/unityTypes";
+import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
+import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
+import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
+import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
+import { SampleItem } from "ui/types/adminTypes";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -51,6 +52,8 @@ export default function Index() {
     useRestfulAPI(materialAPIUrl);
 
   const [generateSampleError, setGenerateSampleError] = useState(false);
+
+  const wasdKeys = useWASDKeys();
 
   const generateSampleType = useRef(null);
   const generateMaterialImage = useRef(null);
@@ -121,8 +124,11 @@ export default function Index() {
 
     // Update container width on mount and window resize
     updateContainerWidth();
+
+    // Add event listener when the component mounts
     window.addEventListener("resize", updateContainerWidth);
 
+    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", updateContainerWidth);
     };
@@ -136,6 +142,7 @@ export default function Index() {
     placeNewSampleWithDrag,
     removeSamplesByItemId,
     requestItemThumbnail,
+    inputWasd,
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
@@ -172,6 +179,10 @@ export default function Index() {
       setLeavingPage(false); // Reset the state
     }
   }, [leavingPage, setLeavingPage, requestSaveData]);
+
+  useEffect(() => {
+    inputWasd(wasdKeys);
+  }, [inputWasd, wasdKeys]);
 
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {

@@ -257,7 +257,11 @@ export const getBoxData = async (req: Request, res: Response) => {
         box_id: parseInt(id),
       },
       include: {
-        digital_item: true,
+        digital_item: {
+          include: {
+            material: true,
+          },
+        },
       },
     });
     const returnItem = items.map((item)=>{
@@ -265,7 +269,11 @@ export const getBoxData = async (req: Request, res: Response) => {
         id: item.id,
         name: item.digital_item.name,
         image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
-        saidanId: item?.saidan_id,
+        modelType: item.digital_item.type,
+        modelUrl: item.nft_model,
+        materialImage: item.digital_item.material.image,
+        saidanId: item.saidan_id,
+        status: item?.mint_status,
       };
     });
     res.status(200).send({
