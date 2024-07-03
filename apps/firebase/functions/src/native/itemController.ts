@@ -1128,7 +1128,7 @@ export const getSampleInfo = async (req: Request, res: Response) => {
         description: sampleData.digital_item.description,
         modelType: sampleData.digital_item.type,
         modelUrl: sampleData.model_url,
-        imageUrl: sampleData.digital_item.is_default_thumb?sampleData.digital_item.default_thumb_url:sampleData.digital_item.custom_thumb_url,
+        thumbUrl: sampleData.digital_item.is_default_thumb?sampleData.digital_item.default_thumb_url:sampleData.digital_item.custom_thumb_url,
         creator: {
           uuid: sampleData.user.uuid,
           username: sampleData.user.username,
