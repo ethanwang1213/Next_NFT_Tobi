@@ -26,18 +26,27 @@ const getPathAfterBucket = (urlString: string) => {
 
 export const modelApiHandler = (type: ModelRequestType) => {
   return async (req: Request, res: Response) => {
+    const modelApiUrl = process.env.MODEL_API_URL;
+    const token = process.env.MODEL_API_TOKEN;
+    if (!modelApiUrl || !token) {
+      res.status(500).send({
+        status: "error",
+        data: "invalid-system-settings",
+      });
+      return;
+    }
     const {authorization} = req.headers;
     await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
       const uid = decodedToken.uid;
       switch (type) {
         case ModelRequestType.AcrylicStand:
-          createAcrylicStand(req, res, uid);
+          createAcrylicStand(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.MessageCard:
-          createMessageCard(req, res, uid);
+          createMessageCard(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.RemoveBg:
-          removeBackground(req, res, uid);
+          removeBackground(req, res, uid, modelApiUrl, token);
           break;
       }
     }).catch((error: FirebaseError) => {
@@ -50,21 +59,13 @@ export const modelApiHandler = (type: ModelRequestType) => {
   };
 };
 
-const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
+const createAcrylicStand = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {bodyUrl, baseUrl, coords}: { bodyUrl: string, baseUrl?: string, coords?: string } = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!bodyUrl) {
     res.status(400).send({
       status: "error",
       data: "invalid-params",
-    });
-    return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
     });
     return;
   }
@@ -100,21 +101,13 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
   }
 };
 
-const createMessageCard = async (req: Request, res: Response, uid: string) => {
+const createMessageCard = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {url}: { url: string} = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!url) {
     res.status(400).send({
       status: "error",
       data: "invalid-params",
-    });
-    return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
     });
     return;
   }
@@ -149,10 +142,8 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
   }
 };
 
-export const removeBackground = async (req: Request, res: Response, uid: string, modelRequestType?: ModelRequestType) => {
+export const removeBackground = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {url}: { url: string } = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!url) {
     res.status(400).send({
@@ -160,17 +151,11 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
       data: "invalid-params",
     });
     return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
-    });
-    return;
   }
   const params: Record<string, string | undefined> = {
     uid,
     token,
-    process_type: modelRequestType ?? ModelRequestType.RemoveBg,
+    process_type: ModelRequestType.RemoveBg,
     url: getPathAfterBucket(url),
   };
   const urlParams = new URLSearchParams();
