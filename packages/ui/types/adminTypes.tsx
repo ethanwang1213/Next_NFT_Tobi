@@ -23,6 +23,7 @@ export type NftItem = {
 };
 
 export enum DigitalItemStatus {
+  None = 0,
   Draft = 1,
   Private,
   ViewingOnly,
@@ -57,7 +58,6 @@ export const getDigitalItemStatusTitle = (status) => {
 };
 
 export type ScheduleItem = {
-  from: DigitalItemStatus;
-  to: DigitalItemStatus;
+  status: DigitalItemStatus;
   datetime: string;
 };

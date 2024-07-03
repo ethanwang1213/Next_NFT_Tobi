@@ -97,6 +97,8 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   background-size: cover;
 }
 
+// customize toasty
+
 .Toastify__toast-theme--colored {
   background-color: #3F3F3F !important;
   color: #FAFAFA !important;
@@ -119,7 +121,9 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   width: 352px !important;
 }
 
-.schedule-calendar {
+// customize calendar
+
+.schedule-calendar.react-calendar {
   width: 100% !important;
   border-radius: 8px;
   padding: 64px 12px 24px 12px;
@@ -171,7 +175,7 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   flex: 0 0 10% !important;
 }
 
-.schedule-calendar .react-calendar__month-view__days__day--neighboringMonth {
+.schedule-calendar .react-calendar__month-view__days__day--neighboringMonth abbr {
   opacity: 0.5;
 }
 
@@ -201,63 +205,47 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   position: absolute;
   top: 0;
   height: 100%;
+  z-index: 1;
 }
 
-.schedule-calendar .react-calendar__month-view__days__day.status-view-only-end::before,
-.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-end::before {
-  left: 0;
-  width: calc(50% + 24px);
-  border-radius: 0 8px 8px 0;
-}
-
-.schedule-calendar .react-calendar__month-view__days__day.status-view-only-begin::before,
-.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-begin::before {
-  right: 0;
-  width: calc(50% + 24px);
+.schedule-calendar .react-calendar__month-view__days__day::before {
+  left: calc(50% - 24px);
+  width: 24px;
   border-radius: 8px 0 0 8px;
 }
 
 .schedule-calendar .react-calendar__month-view__days__day::after {
-  left: calc(50% - 24px);
-  width: 48px;
-  border-radius: 8px;
-  z-index: 1;
+  left: calc(50%);
+  width: 24px;
+  border-radius: 0 8px 8px 0;
 }
 
-.schedule-calendar .status-view-only,
-.schedule-calendar .status-view-only-begin::before,
-.schedule-calendar .status-view-only-end::before {
-  background-color: #BAD9F8 !important;
+
+.schedule-calendar .status-bg-section.status-view-only {
+  background-color: #BAD9F8;
 }
 
-.schedule-calendar .status-on-sale,
-.schedule-calendar .status-on-sale-begin::before,
-.schedule-calendar .status-on-sale-end::before {
-  background-color: #FFD5B3 !important;
+.schedule-calendar .status-bg-section.status-on-sale {
+  background-color: #FFD5B3;
 }
 
-.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active::after {
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active::before {
   background-color: #717171;
 }
 
 .schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only::after,
-.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only-begin::after,
-.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only-end::after {
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only::before {
   background-color: #1779DE;
 }
 
 .schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale::after,
-.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale-begin::after,
-.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale-end::after {
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale::before {
   background-color: #FF811C;
 }
 
 .schedule-calendar .react-calendar__month-view__days__day.status-view-only,
-.schedule-calendar .react-calendar__month-view__days__day.status-view-only-begin,
-.schedule-calendar .react-calendar__month-view__days__day.status-view-only-end,
-.schedule-calendar .react-calendar__month-view__days__day.status-on-sale,
-.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-begin,
-.schedule-calendar .react-calendar__month-view__days__day.status-on-sale-end {
+.schedule-calendar .react-calendar__month-view__days__day.status-on-sale {
   color: #717171;
 }
 

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Button from "ui/atoms/Button";
 import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
 import { FilterItem } from "./DigitalItemFilterMenu";
-import { getDigitalItemStatusTitle } from "./StatusDropdownSelect";
+import { getDigitalItemStatusTitle } from "ui/types/adminTypes";
 
 export enum DigitalItemTableColumn {
   Name = 1,

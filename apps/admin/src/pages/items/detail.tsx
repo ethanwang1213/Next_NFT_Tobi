@@ -15,12 +15,12 @@ import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
 import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
-import ScheduleEditComponent from "ui/organisms/admin/ScheduleEditComponent";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
-import StatusDropdownSelect, {
+import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
+import {
+  DigitalItemStatus,
   getDigitalItemStatusTitle,
-} from "ui/organisms/admin/StatusDropdownSelect";
-import { DigitalItemStatus } from "ui/types/adminTypes";
+} from "ui/types/adminTypes";
 
 const Detail = () => {
   const router = useRouter();
@@ -581,7 +581,23 @@ const Detail = () => {
               </div>
               <div className="flex flex-col gap-6 pr-11">
                 <h3 className="text-xl text-secondary">SCHEDULE</h3>
-                <ScheduleCalendar />
+                <ScheduleCalendar
+                  status={digitalItem.status}
+                  schedules={[
+                    {
+                      status: DigitalItemStatus.ViewingOnly,
+                      datetime: "2024-07-20 00:00",
+                    },
+                    {
+                      status: DigitalItemStatus.OnSale,
+                      datetime: "2024-07-22 00:00",
+                    },
+                    {
+                      status: DigitalItemStatus.ViewingOnly,
+                      datetime: "2024-07-24 00:00",
+                    },
+                  ]}
+                />
               </div>
             </div>
             <div className="flex flex-col gap-6 mt-10">
