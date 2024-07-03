@@ -119,15 +119,6 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
     return;
   }
 
-  // Mock response
-  const predefinedModel = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample.glb";
-  res.status(200).send({
-    status: "success",
-    data: {
-      url: predefinedModel,
-    },
-  });
-  /*
   const params: Record<string, string | undefined> = {
     uid,
     token,
@@ -156,7 +147,6 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
       data: "api-error",
     });
   }
-   */
 };
 
 export const removeBackground = async (req: Request, res: Response, uid: string, modelRequestType?: ModelRequestType) => {
