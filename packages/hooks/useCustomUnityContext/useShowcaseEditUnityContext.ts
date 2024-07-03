@@ -11,6 +11,7 @@ import {
   SaidanItemData,
   ShowcaseSettings,
 } from "types/unityTypes";
+import { DefaultItemMeterHeight } from "./constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -86,7 +87,7 @@ export const useShowcaseEditUnityContext = ({
           ...v,
           itemType: ItemType.Sample,
           canScale: true,
-          itemMeterHeight: 0.3,
+          itemMeterHeight: DefaultItemMeterHeight,
           isDebug: false, // not used in loading
         };
       });
@@ -96,7 +97,7 @@ export const useShowcaseEditUnityContext = ({
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
           canScale: true,
-          itemMeterHeight: 0.3,
+          itemMeterHeight: DefaultItemMeterHeight,
           isDebug: false, // not used in loading
         };
       });

@@ -12,6 +12,7 @@ import {
   ModelParams,
   TextureParam,
 } from "types/unityTypes";
+import { DefaultItemMeterHeight } from "./constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
@@ -81,7 +82,7 @@ export const useWorkspaceUnityContext = ({
         ...v,
         itemType: ItemType.Sample,
         canScale: true,
-        itemMeterHeight: 0.3,
+        itemMeterHeight: DefaultItemMeterHeight,
         isDebug: false, // not used in loading
       };
     });
