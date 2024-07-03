@@ -30,7 +30,7 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
     "downshift": "^9.0.4",
-    "firebase": "^10.11.0",
+    "firebase": "^9.23.0",
     "numeral": "^2.0.6",
     "qrcode.react": "^3.1.0",
     "rc-slider": "^10.6.2",
