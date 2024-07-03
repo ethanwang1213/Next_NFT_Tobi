@@ -44,17 +44,6 @@ const MintConfirmDialog2 = ({
         <div className="modal-action mt-4 flex justify-end gap-1">
           <Button
             type="button"
-            className="px-4 py-2 bg-primary rounded-[64px] 
-              text-base-white text-sm leading-4 font-semibold"
-            onClick={() => {
-              changeHandler("mint");
-              dialogRef.current.close();
-            }}
-          >
-            Mint Now
-          </Button>
-          <Button
-            type="button"
             className="px-4 py-2 rounded-[64px] border-2 border-primary
               text-primary text-sm leading-4 font-semibold"
             onClick={() => {
@@ -63,6 +52,17 @@ const MintConfirmDialog2 = ({
             }}
           >
             Cancel
+          </Button>
+          <Button
+            type="button"
+            className="px-4 py-2 bg-primary rounded-[64px] 
+              text-base-white text-sm leading-4 font-semibold"
+            onClick={() => {
+              changeHandler("mint");
+              dialogRef.current.close();
+            }}
+          >
+            Mint Now
           </Button>
         </div>
       </div>
