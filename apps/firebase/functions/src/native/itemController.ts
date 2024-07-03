@@ -5,7 +5,7 @@ import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
 
-interface AcrylicStandResponse {
+interface ModelApiResponse {
   url: string;
 }
 
@@ -85,7 +85,7 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string, mode
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -112,7 +112,7 @@ const createMessageCard = async (req: Request, res: Response, uid: string, model
     return;
   }
 
-  const params: Record<string, string | undefined> = {
+  const params: Record<string, string> = {
     uid,
     token,
     process_type: ModelRequestType.MessageCard,
@@ -126,7 +126,7 @@ const createMessageCard = async (req: Request, res: Response, uid: string, model
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -152,7 +152,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
     });
     return;
   }
-  const params: Record<string, string | undefined> = {
+  const params: Record<string, string> = {
     uid,
     token,
     process_type: ModelRequestType.RemoveBg,
@@ -166,7 +166,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
