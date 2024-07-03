@@ -22,6 +22,21 @@ import {
   getDigitalItemStatusTitle,
 } from "ui/types/adminTypes";
 
+const testSchedule = [
+  {
+    status: DigitalItemStatus.ViewingOnly,
+    datetime: "2024-07-20 00:00",
+  },
+  {
+    status: DigitalItemStatus.OnSale,
+    datetime: "2024-07-22 00:00",
+  },
+  {
+    status: DigitalItemStatus.ViewingOnly,
+    datetime: "2024-07-24 00:00",
+  },
+];
+
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -583,20 +598,8 @@ const Detail = () => {
                 <h3 className="text-xl text-secondary">SCHEDULE</h3>
                 <ScheduleCalendar
                   status={digitalItem.status}
-                  schedules={[
-                    {
-                      status: DigitalItemStatus.ViewingOnly,
-                      datetime: "2024-07-20 00:00",
-                    },
-                    {
-                      status: DigitalItemStatus.OnSale,
-                      datetime: "2024-07-22 00:00",
-                    },
-                    {
-                      status: DigitalItemStatus.ViewingOnly,
-                      datetime: "2024-07-24 00:00",
-                    },
-                  ]}
+                  schedules={digitalItem.schedules ?? testSchedule}
+                  changeHandler={(v) => fieldChangeHandler("schedules", v)}
                 />
               </div>
             </div>

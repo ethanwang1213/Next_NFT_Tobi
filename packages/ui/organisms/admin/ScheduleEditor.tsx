@@ -88,21 +88,21 @@ const ScheduleEditor = (props: {
         props.changeHandler(
           DigitalItemStatus.ViewingOnly,
           formatDateToLocal(timeViewOnly, true),
-          date,
+          formatDateToLocal(date, true),
         );
       }
       if (status == DigitalItemStatus.OnSale) {
         props.changeHandler(
           DigitalItemStatus.OnSale,
           formatDateToLocal(timeOnSale, true),
-          date,
+          formatDateToLocal(date, true),
         );
       }
       if (status == DigitalItemStatus.Unlisted) {
         props.changeHandler(
           DigitalItemStatus.Unlisted,
           formatDateToLocal(timeUnlisted, true),
-          date,
+          formatDateToLocal(date, true),
         );
       }
     },

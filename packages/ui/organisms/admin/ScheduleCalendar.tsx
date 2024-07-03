@@ -38,8 +38,9 @@ const NextMonthButton = () => {
 const ScheduleCalendar = (props: {
   status: DigitalItemStatus;
   schedules: ScheduleItem[];
+  changeHandler: (value: ScheduleItem[]) => void;
 }) => {
-  const [selectedDate, onChange] = useState<Value>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [schedules, setSchedules] = useState(props.schedules);
   const [error, setError] = useState(false);
 
@@ -62,8 +63,22 @@ const ScheduleCalendar = (props: {
           </span>
         </div>
       );
+    } else {
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            paddingTop: "8px",
+          }}
+        >
+          <span className="text-black text-xl font-bold mb-4">
+            {date.getFullYear()}
+          </span>
+        </div>
+      );
     }
-    return null;
   }, []);
 
   const formatShortWeekday = useCallback(
@@ -237,8 +252,9 @@ const ScheduleCalendar = (props: {
       });
       setSchedules(newSchedules);
       checkSchedules(newSchedules);
+      props.changeHandler(newSchedules);
     },
-    [checkSchedules, schedules],
+    [checkSchedules, props, schedules],
   );
 
   const removeScheduleHandler = useCallback(
@@ -252,8 +268,9 @@ const ScheduleCalendar = (props: {
       });
       setSchedules(newSchedules);
       checkSchedules(newSchedules);
+      props.changeHandler(newSchedules);
     },
-    [checkSchedules, schedules],
+    [checkSchedules, props, schedules],
   );
 
   const changeScheduleHandler = useCallback(
@@ -272,14 +289,15 @@ const ScheduleCalendar = (props: {
       });
       setSchedules(newSchedules);
       checkSchedules(newSchedules);
+      props.changeHandler(newSchedules);
     },
-    [checkSchedules, schedules],
+    [checkSchedules, props, schedules],
   );
 
   return (
     <div className="flex flex-col gap-9">
       <Calendar
-        onChange={onChange}
+        onChange={setSelectedDate}
         value={selectedDate}
         className="schedule-calendar"
         navigationLabel={renderCustomNavigationLabel}
