@@ -68,51 +68,51 @@ export const getContentById = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sampleItems = showcase.tobiratory_showcase_sample_items.map((sampleId) => {
+      const sampleItems = showcase.tobiratory_showcase_sample_items.map((relationSample) => {
         return {
-          sampleId: sampleId.sample_id,
-          itemId: sampleId.id,
-          thumbImage: sampleId.sample.digital_item.is_default_thumb ?
-            sampleId.sample.digital_item.default_thumb_url :
-            sampleId.sample.digital_item?.custom_thumb_url,
-          modelType: sampleId.sample.digital_item.type,
-          modelUrl: sampleId.sample.model_url,
-          stageType: sampleId.stage_type,
-          scale: sampleId.scale,
+          relationSample: relationSample.sample_id,
+          itemId: relationSample.id,
+          thumbImage: relationSample.sample.digital_item.is_default_thumb ?
+            relationSample.sample.digital_item.default_thumb_url :
+            relationSample.sample.digital_item?.custom_thumb_url,
+          modelType: relationSample.sample.digital_item.type,
+          modelUrl: relationSample.sample.model_url,
+          stageType: relationSample.stage_type,
+          scale: relationSample.scale,
           position: {
-            x: sampleId.position[0] ?? 0,
-            y: sampleId.position[1] ?? 0,
-            z: sampleId.position[2] ?? 0,
+            x: relationSample.position[0] ?? 0,
+            y: relationSample.position[1] ?? 0,
+            z: relationSample.position[2] ?? 0,
           },
           rotation: {
-            x: sampleId.rotation[0] ?? 0,
-            y: sampleId.rotation[1] ?? 0,
-            z: sampleId.rotation[2] ?? 0,
+            x: relationSample.rotation[0] ?? 0,
+            y: relationSample.rotation[1] ?? 0,
+            z: relationSample.rotation[2] ?? 0,
           },
         };
       });
 
-      const nftItems = showcase.tobiratory_showcase_nfts.map((nft) => {
+      const nftItems = showcase.tobiratory_showcase_nfts.map((relationNFT) => {
         return {
-          nftId: nft.nft_id,
-          itemId: nft.id,
-          thumbImage: nft.nft.digital_item.is_default_thumb ?
-            nft.nft.digital_item.default_thumb_url :
-            nft.nft.digital_item.custom_thumb_url,
-          modelType: nft.nft.digital_item.type,
-          modelUrl: nft.nft.nft_model,
-          stageType: nft.stage_type,
-          scale: nft.scale,
-          itemMeterHeight: nft.meter_height,
+          nftId: relationNFT.nft_id,
+          itemId: relationNFT.id,
+          thumbImage: relationNFT.nft.digital_item.is_default_thumb ?
+            relationNFT.nft.digital_item.default_thumb_url :
+            relationNFT.nft.digital_item.custom_thumb_url,
+          modelType: relationNFT.nft.digital_item.type,
+          modelUrl: relationNFT.nft.nft_model,
+          stageType: relationNFT.stage_type,
+          scale: relationNFT.scale,
+          itemMeterHeight: relationNFT.meter_height,
           position: {
-            x: nft.position[0] ?? 0,
-            y: nft.position[1] ?? 0,
-            z: nft.position[2] ?? 0,
+            x: relationNFT.position[0] ?? 0,
+            y: relationNFT.position[1] ?? 0,
+            z: relationNFT.position[2] ?? 0,
           },
           rotation: {
-            x: nft.rotation[0] ?? 0,
-            y: nft.rotation[1] ?? 0,
-            z: nft.rotation[2] ?? 0,
+            x: relationNFT.rotation[0] ?? 0,
+            y: relationNFT.rotation[1] ?? 0,
+            z: relationNFT.rotation[2] ?? 0,
           },
         };
       });
@@ -257,51 +257,51 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sampleItems = showcase.tobiratory_showcase_sample_items.map((sampleId) => {
+      const sampleItems = showcase.tobiratory_showcase_sample_items.map((relationSample) => {
         return {
-          sampleId: sampleId.sample_id,
-          itemId: sampleId.id,
-          thumbImage: sampleId.sample.digital_item.is_default_thumb ?
-            sampleId.sample.digital_item.default_thumb_url :
-            sampleId.sample.digital_item?.custom_thumb_url,
-          modelType: sampleId.sample.digital_item.type,
-          modelUrl: sampleId.sample.model_url,
-          stageType: sampleId.stage_type,
-          scale: sampleId.scale,
+          relationSample: relationSample.sample_id,
+          itemId: relationSample.id,
+          thumbImage: relationSample.sample.digital_item.is_default_thumb ?
+            relationSample.sample.digital_item.default_thumb_url :
+            relationSample.sample.digital_item?.custom_thumb_url,
+          modelType: relationSample.sample.digital_item.type,
+          modelUrl: relationSample.sample.model_url,
+          stageType: relationSample.stage_type,
+          scale: relationSample.scale,
           position: {
-            x: sampleId.position[0] ?? 0,
-            y: sampleId.position[1] ?? 0,
-            z: sampleId.position[2] ?? 0,
+            x: relationSample.position[0] ?? 0,
+            y: relationSample.position[1] ?? 0,
+            z: relationSample.position[2] ?? 0,
           },
           rotation: {
-            x: sampleId.rotation[0] ?? 0,
-            y: sampleId.rotation[1] ?? 0,
-            z: sampleId.rotation[2] ?? 0,
+            x: relationSample.rotation[0] ?? 0,
+            y: relationSample.rotation[1] ?? 0,
+            z: relationSample.rotation[2] ?? 0,
           },
         };
       });
 
-      const nftItems = showcase.tobiratory_showcase_nfts.map((nft) => {
+      const nftItems = showcase.tobiratory_showcase_nfts.map((relationNFT) => {
         return {
-          nftId: nft.nft_id,
-          itemId: nft.id,
-          thumbImage: nft.nft.digital_item.is_default_thumb ?
-            nft.nft.digital_item.default_thumb_url :
-            nft.nft.digital_item.custom_thumb_url,
-          modelType: nft.nft.digital_item.type,
-          modelUrl: nft.nft.nft_model,
-          stageType: nft.stage_type,
-          scale: nft.scale,
-          itemMeterHeight: nft.meter_height,
+          nftId: relationNFT.nft_id,
+          itemId: relationNFT.id,
+          thumbImage: relationNFT.nft.digital_item.is_default_thumb ?
+            relationNFT.nft.digital_item.default_thumb_url :
+            relationNFT.nft.digital_item.custom_thumb_url,
+          modelType: relationNFT.nft.digital_item.type,
+          modelUrl: relationNFT.nft.nft_model,
+          stageType: relationNFT.stage_type,
+          scale: relationNFT.scale,
+          itemMeterHeight: relationNFT.meter_height,
           position: {
-            x: nft.position[0] ?? 0,
-            y: nft.position[1] ?? 0,
-            z: nft.position[2] ?? 0,
+            x: relationNFT.position[0] ?? 0,
+            y: relationNFT.position[1] ?? 0,
+            z: relationNFT.position[2] ?? 0,
           },
           rotation: {
-            x: nft.rotation[0] ?? 0,
-            y: nft.rotation[1] ?? 0,
-            z: nft.rotation[2] ?? 0,
+            x: relationNFT.rotation[0] ?? 0,
+            y: relationNFT.rotation[1] ?? 0,
+            z: relationNFT.rotation[2] ?? 0,
           },
         };
       });
