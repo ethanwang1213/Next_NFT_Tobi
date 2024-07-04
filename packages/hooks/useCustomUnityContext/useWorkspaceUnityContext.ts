@@ -36,6 +36,7 @@ type Props = {
     itemId: number,
     sendSampleRemovalResult: SendSampleRemovalResult,
   ) => void;
+  onSampleSelected?: (itemId: number) => void;
 };
 
 export const useWorkspaceUnityContext = ({
@@ -45,6 +46,7 @@ export const useWorkspaceUnityContext = ({
   onRemoveSampleEnabled,
   onRemoveSampleDisabled,
   onRemoveSampleRequested,
+  onSampleSelected,
 }: Props) => {
   const {
     unityProvider,
@@ -83,7 +85,6 @@ export const useWorkspaceUnityContext = ({
         itemType: ItemType.Sample,
         canScale: true,
         itemMeterHeight: DefaultItemMeterHeight,
-        isDebug: false, // not used in loading
       };
     });
 
@@ -244,6 +245,21 @@ export const useWorkspaceUnityContext = ({
     [onRemoveSampleRequested, sendRemovalResult],
   );
 
+  const handleSampleSelected = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onSampleSelected) return;
+
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemId: number;
+      };
+
+      if (!messageBody) return;
+
+      onSampleSelected(messageBody.itemId);
+    },
+    [onSampleSelected],
+  );
+
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
@@ -256,6 +272,7 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
+    handleItemSelected: handleSampleSelected,
   });
 
   return {

@@ -23,6 +23,7 @@ type Props = {
   handleRemoveItemEnabled?: () => void;
   handleRemoveItemDisabled?: () => void;
   handleRemoveItemRequested?: MessageHandler;
+  handleItemSelected?: MessageHandler;
 };
 
 export const useUnityMessageHandler = ({
@@ -37,6 +38,7 @@ export const useUnityMessageHandler = ({
   handleRemoveItemEnabled,
   handleRemoveItemDisabled,
   handleRemoveItemRequested,
+  handleItemSelected,
 }: Props) => {
   const resolveUnityMessage = useCallback((json: string) => {
     try {
@@ -88,6 +90,9 @@ export const useUnityMessageHandler = ({
         case UnityMessageType.DragEnded:
           handleDragPlacingEnded?.();
           return;
+        case UnityMessageType.ItemIsSelected:
+          handleItemSelected?.(msgObj);
+          return;
         default:
           return;
       }
@@ -103,6 +108,7 @@ export const useUnityMessageHandler = ({
       handleRemoveItemEnabled,
       handleRemoveItemDisabled,
       handleRemoveItemRequested,
+      handleItemSelected,
     ],
   );
 

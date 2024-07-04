@@ -37,6 +37,7 @@ type Props = {
     itemId: number,
     sendItemRemovalResult: SendItemRemovalResult,
   ) => void;
+  onItemSelected?: (itemType: ItemType, itemId: number) => void;
 };
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
@@ -47,6 +48,7 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemEnabled,
   onRemoveItemDisabled,
   onRemoveItemRequested,
+  onItemSelected,
 }: Props) => {
   const {
     unityProvider,
@@ -88,7 +90,6 @@ export const useShowcaseEditUnityContext = ({
           itemType: ItemType.Sample,
           canScale: true,
           itemMeterHeight: DefaultItemMeterHeight,
-          isDebug: false, // not used in loading
         };
       });
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
@@ -98,7 +99,6 @@ export const useShowcaseEditUnityContext = ({
           imageUrl: "",
           canScale: true,
           itemMeterHeight: DefaultItemMeterHeight,
-          isDebug: false, // not used in loading
         };
       });
       const saidanItemList = sampleList.concat(nftList);
@@ -223,6 +223,22 @@ export const useShowcaseEditUnityContext = ({
     [onRemoveItemRequested, sendRemovalResult],
   );
 
+  const handleItemSelected = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onItemSelected) return;
+
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemType: ItemType;
+        itemId: number;
+      };
+
+      if (!messageBody) return;
+
+      onItemSelected(messageBody.itemType, messageBody.itemId);
+    },
+    [onItemSelected],
+  );
+
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
@@ -234,6 +250,7 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
+    handleItemSelected,
   });
 
   return {
