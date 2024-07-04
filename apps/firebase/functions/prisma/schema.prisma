@@ -136,6 +136,7 @@ model tobiratory_digital_items {
   tx_id                String?                              @db.VarChar(255)
   status               Int
   minted_count         Int                                  @default(0)
+  schedules            String[]
   updated_date_time    DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time    DateTime                             @default(now()) @db.Timestamp(6)
 }
