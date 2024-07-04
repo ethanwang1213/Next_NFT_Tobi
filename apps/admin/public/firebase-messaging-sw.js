@@ -1,19 +1,28 @@
 // public/firebase-messaging-sw.js
 importScripts(
-  "https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js",
+  "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",
 );
 importScripts(
-  "https://www.gstatic.com/firebasejs/10.11.0/firebase-messaging-compat.js",
+  "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js",
 );
 
+const params = new URL(location).searchParams;
+const apiKey = params.get("apiKey");
+const authDomain = params.get("authDomain");
+const projectId = params.get("projectId");
+const storageBucket = params.get("storageBucket");
+const messagingSenderId = params.get("messagingSenderId");
+const appId = params.get("appId");
+const measurementId = params.get("measurementId");
+
 firebase.initializeApp({
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: apiKey,
+  authDomain: authDomain,
+  projectId: projectId,
+  storageBucket: storageBucket,
+  messagingSenderId: messagingSenderId,
+  appId: appId,
+  measurementId: measurementId,
 });
 
 const messaging = firebase.messaging();
