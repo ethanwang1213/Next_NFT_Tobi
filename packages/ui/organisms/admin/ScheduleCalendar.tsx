@@ -130,7 +130,8 @@ const ScheduleCalendar = (props: {
         if (scheduleDate == dateTime) {
           endStatus = schedule.status;
           if (scheduleDate == scheduleDateTime) {
-            beginStatus = DigitalItemStatus.None;
+            if (beginStatus != schedule.status)
+              beginStatus = DigitalItemStatus.None;
             midStatus = schedule.status;
           } else {
             if (
@@ -142,7 +143,8 @@ const ScheduleCalendar = (props: {
 
         if (scheduleDate > dateTime) {
           if (nextDateTime == scheduleDateTime) {
-            endStatus = DigitalItemStatus.None;
+            if (endStatus != schedule.status)
+              endStatus = DigitalItemStatus.None;
           }
           break;
         }
