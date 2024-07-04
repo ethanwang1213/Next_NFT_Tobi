@@ -144,7 +144,7 @@ export default function Index() {
     requestItemThumbnail,
     inputWasd,
   } = useWorkspaceUnityContext({
-    sampleMenuX: contentWidth - (showListView ? 448 : 30),
+    sampleMenuX: contentWidth - (showListView ? 448 : 56),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
     onRemoveSampleEnabled,
