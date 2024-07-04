@@ -151,7 +151,7 @@ model tobiratory_sample_items {
   price                            Int?
   start_date                       DateTime?                          @db.Timestamp(6)
   end_date                         DateTime?                          @db.Timestamp(6)
-  sale_quantity                    Int?
+  sale_quantity                    Int                                @default(0)
   quantity_limit                   Int?
   is_deleted                       Boolean                            @default(false)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
