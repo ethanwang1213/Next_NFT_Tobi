@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-
+import {statusOfSample} from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -169,6 +169,15 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     throw new Error("TX_NOT_FOUND");
   }
 
+  const sampleItem = await prisma.tobiratory_sample_items.findUnique({
+    where: {
+      digital_item_id: digitalItemId,
+    },
+  });
+  if (!sampleItem) {
+    throw new Error("SAMPLE_ITEM_NOT_FOUND");
+  }
+
   const {serialNumber, to} = await fetchMintNFT(txId);
   const itemId = digitalItem.item_id;
   const creatorAddress = digitalItem.creator_flow_address;
@@ -180,6 +189,11 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   }
   const limit = await fetchMintLimit(itemId, creatorAddress);
   const mintedCount = await fetchMintedCount(itemId, creatorAddress);
+
+  let status = statusOfSample.private;
+  if (sampleItem.content_id) {
+    status = statusOfSample.public;
+  }
 
   await prisma.tobiratory_digital_item_nfts.update({
     where: {
@@ -198,6 +212,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     data: {
       limit: Number(limit),
       minted_count: Number(mintedCount),
+      status: status,
     },
   });
   const flowAccount = await prisma.tobiratory_flow_accounts.findFirst({
