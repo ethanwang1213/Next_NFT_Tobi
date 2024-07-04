@@ -118,7 +118,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
 
   return (
     <div
-      className="absolute top-0 w-[448px] bg-[#001327] h-full py-8 
+      className="absolute top-0 w-[448px] bg-[#001327] h-full pt-8 
         flex flex-col gap-6 z-20 select-none"
       style={{ transition: "right 0.3s ease", right: props.isOpen ? 0 : -448 }}
       ref={panelRef}
@@ -175,7 +175,10 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
           Create New Item
         </span>
       </Button>
-      <div className="flex-1 overflow-y-auto">
+      <div
+        className="flex-1 overflow-y-auto"
+        style={{ scrollbarWidth: "none" }}
+      >
         <div className="w-full flex flex-col">
           {props.data &&
             props.data.map((sample, index) => (
