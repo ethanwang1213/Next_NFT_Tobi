@@ -14,6 +14,7 @@ import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
+import MintConfirmDialog1 from "ui/organisms/admin/MintConfirmDialog1";
 import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
@@ -51,6 +52,7 @@ const Detail = () => {
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
   const statusConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef = useRef(null);
+  const mintConfirmDialogRef1 = useRef(null);
 
   const apiUrl = "native/admin/digital_items";
   const {
@@ -746,28 +748,32 @@ const Detail = () => {
                 </Link>
               </div>
               <div className="text-center h-12">
-                {digitalItem.status == DigitalItemStatus.Draft && (
-                  <Button
-                    className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
+                <Button
+                  className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
                     flex justify-center items-center gap-2
                   `}
-                    onClick={() => {
+                  onClick={() => {
+                    if (digitalItem.status == DigitalItemStatus.Draft) {
+                      if (mintConfirmDialogRef1.current) {
+                        mintConfirmDialogRef1.current.showModal();
+                      }
+                    } else {
                       if (mintConfirmDialogRef.current) {
                         mintConfirmDialogRef.current.showModal();
                       }
-                    }}
-                  >
-                    <NextImage
-                      src="/admin/images/icon/mint_icon.svg"
-                      width={16}
-                      height={20}
-                      alt="mint icon"
-                    />
-                    <span className="w-[240px] text-[#E96800] text-xl font-semibold text-center">
-                      Mint as an NFT
-                    </span>
-                  </Button>
-                )}
+                    }
+                  }}
+                >
+                  <NextImage
+                    src="/admin/images/icon/mint_icon.svg"
+                    width={16}
+                    height={20}
+                    alt="mint icon"
+                  />
+                  <span className="w-[240px] text-[#E96800] text-xl font-semibold text-center">
+                    Mint as an NFT
+                  </span>
+                </Button>
               </div>
             </div>
           </div>
@@ -783,6 +789,10 @@ const Detail = () => {
       />
       <MintConfirmDialog
         dialogRef={mintConfirmDialogRef}
+        changeHandler={mintConfirmDialogHandler}
+      />
+      <MintConfirmDialog1
+        dialogRef={mintConfirmDialogRef1}
         changeHandler={mintConfirmDialogHandler}
       />
     </div>
