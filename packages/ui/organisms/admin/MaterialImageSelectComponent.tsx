@@ -88,7 +88,10 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
               alt="upload icon"
             />
           </div>
-          <div className="h-[348px] my-4 overflow-y-auto">
+          <div
+            className="h-[348px] my-4 overflow-y-auto"
+            style={{ scrollbarWidth: "none" }}
+          >
             <div className="flex flex-wrap gap-4">
               {props.data &&
                 props.data.map((image) => (
