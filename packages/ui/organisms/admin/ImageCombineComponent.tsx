@@ -1,14 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
+import ReactCrop, { convertToPixelCrop, Crop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 import GenerateErrorComponent from "./GenerateErrorComponent";
 import RotateSliderComponent from "./RotateSliderComponent";
-import ScaleSliderComponent from "./ScaleSliderComponent";
-import ReactCrop, {
-  Crop,
-  PixelCrop,
-  convertToPixelCrop,
-} from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
 
 type Props = {
   imageCardUrl: string;
@@ -96,40 +91,52 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     [crop],
   );
 
-  const rotateChangeHandler = useCallback(
-    (rotate) => {
-      const { width, height } = imgMessageRef.current;
-
-      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
+  const calcRotatedScaledSize = useCallback(
+    (width: number, height: number, angle: number, scale: number) => {
+      const angleInRadians = (angle * Math.PI) / 180;
       const sin = Math.abs(Math.sin(angleInRadians));
       const cos = Math.abs(Math.cos(angleInRadians));
-      const rotatedScreenWidth = (width * cos + height * sin) * scale;
-      const rotateScreenHeight = (width * sin + height * cos) * scale;
+      const rotatedScaledWidth = (width * cos + height * sin) * scale;
+      const rotatedScaledHeight = (width * sin + height * cos) * scale;
+      return { w: rotatedScaledWidth, h: rotatedScaledHeight };
+    },
+    [],
+  );
 
+  const rotateChangeHandler = useCallback(
+    (rotate) => {
+      setRotate(rotate);
+
+      // set outline crop
+      const { width, height } = imgMessageRef.current;
+      const { w: rotatedScreenWidth, h: rotatedScreenHeight } =
+        calcRotatedScaledSize(width, height, 180 - rotate, scale);
       crop.x = position.x + width / 2 - rotatedScreenWidth / 2;
       crop.width = rotatedScreenWidth;
-      crop.y = position.y + height / 2 - rotateScreenHeight / 2;
-      crop.height = rotateScreenHeight;
+      crop.y = position.y + height / 2 - rotatedScreenHeight / 2;
+      crop.height = rotatedScreenHeight;
       setCrop(crop);
-      setAspect(rotatedScreenWidth / rotateScreenHeight);
-
-      setRotate(rotate);
+      setAspect(rotatedScreenWidth / rotatedScreenHeight);
     },
-    [crop, position, scale],
+    [calcRotatedScaledSize, crop, position, scale],
   );
 
   const cropChangeHandler = (newCrop: Crop) => {
     if (imgMessageRef.current) {
       const { width, height } = imgMessageRef.current;
 
+      // keep the center of crop rectangle
       newCrop.x = crop.x + (crop.width - newCrop.width) / 2;
       newCrop.y = crop.y + (crop.height - newCrop.height) / 2;
       setCrop(newCrop);
 
-      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
-      const sin = Math.abs(Math.sin(angleInRadians));
-      const cos = Math.abs(Math.cos(angleInRadians));
-      const rotatedWidth = width * cos + height * sin;
+      const { w: rotatedWidth, h: rotatedHeight } = calcRotatedScaledSize(
+        width,
+        height,
+        180 - rotate,
+        1,
+      );
+
       const newScale = newCrop.width / rotatedWidth;
       setScale(newScale);
     }
@@ -147,17 +154,14 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
-    const sin = Math.abs(Math.sin(angleInRadians));
-    const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedScreenWidth = (image.width * cos + image.height * sin) * scale;
-    const rotatedScreenHeight =
-      (image.width * sin + image.height * cos) * scale;
+    const { w: rotatedScreenWidth, h: rotatedScreenHeight } =
+      calcRotatedScaledSize(image.width, image.height, 180 - rotate, scale);
 
     rotateCanvas.width = rotatedScreenWidth;
     rotateCanvas.height = rotatedScreenHeight;
 
     // Translate and rotate the canvas
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     rotateCtx.translate(rotatedScreenWidth / 2, rotatedScreenHeight / 2);
     rotateCtx.rotate(angleInRadians);
     rotateCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
@@ -180,13 +184,11 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     finalCtx.drawImage(imgCardRef.current, 0, 0);
 
     // Calculate offset
-    const screenOffsetX = position.x + (image.width - rotatedScreenWidth) / 2;
-    const screenOffsetY = position.y + (image.height - rotatedScreenHeight) / 2;
     const cardOffsetX =
-      screenOffsetX -
+      crop.x -
       (imgWrapperRef.current.clientWidth - imgCardRef.current.width) / 2;
     const cardOffsetY =
-      screenOffsetY -
+      crop.y -
       (imgWrapperRef.current.clientHeight - imgCardRef.current.height) / 2;
 
     // Draw the rotated message image onto the card image
@@ -212,29 +214,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       URL.revokeObjectURL(blobUrlRef.current);
     }
     blobUrlRef.current = URL.createObjectURL(blob);
-  }, [rotate, scale, position]);
-
-  const calculatePositionHandler = useCallback(() => {
-    const image = imgMessageRef.current;
-    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
-    const sin = Math.abs(Math.sin(angleInRadians));
-    const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedScreenWidth = (image.width * cos + image.height * sin) * scale;
-    const rotatedScreenHeight =
-      (image.width * sin + image.height * cos) * scale;
-
-    const screenOffsetX = position.x + (image.width - rotatedScreenWidth) / 2;
-    const screenOffsetY = position.y + (image.height - rotatedScreenHeight) / 2;
-    const cardOffsetX =
-      screenOffsetX -
-      (imgWrapperRef.current.clientWidth - imgCardRef.current.width) / 2;
-    const cardOffsetY =
-      screenOffsetY -
-      (imgWrapperRef.current.clientHeight - imgCardRef.current.height) / 2;
-    const offsetX = Math.round(cardOffsetX);
-    const offsetY = Math.round(cardOffsetY);
-    coordsRef.current = `${offsetX},${offsetY}`;
-  }, [position, rotate, scale]);
+  }, [calcRotatedScaledSize, crop, rotate, scale]);
 
   const generateHandler = useCallback(async () => {
     setProcessing(true);
