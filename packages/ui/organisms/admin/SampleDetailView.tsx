@@ -47,7 +47,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
   );
 
   return (
-    <div className="flex flex-col items-center gap-6 text-base-white">
+    <div className="w-full h-full flex flex-col justify-center items-center gap-6 text-base-white">
       <span className="text-base font-semibold ">{data?.content.name}</span>
       <span className="text-2xl font-bold text-center">
         {data ? data.name || "Unnamed Sample item" : ""}
@@ -70,61 +70,68 @@ const SampleDetailView = ({ id }: { id: number }) => {
         }}
         className="rounded-lg"
       />
-      <span className="text-[10px] font-normal text-center">
-        {data?.description}
-      </span>
-      <div className="w-full flex flex-col gap-2">
-        <div className="flex gap-4">
-          <span className="text-[10px] font-medium w-[100px] text-right">
-            Creator
-          </span>
-          <span className="text-[10px] font-medium">
-            {data?.content.name ? data?.content.name : "-"}
-          </span>
-        </div>
-        <div className="flex gap-4">
-          <span className="text-[10px] font-medium w-[100px] text-right">
-            Copyright
-          </span>
-          <span className="text-[10px] font-medium">
-            {data?.copyrights.length ? `@${data?.copyrights.join(" @")}` : "-"}
-          </span>
-        </div>
-        <div className="flex gap-4">
-          <span className="text-[10px] font-medium w-[100px] text-right">
-            License
-          </span>
-          <span className="text-[10px] font-medium flex-1">
-            {data?.license ? data.license : "-"}
-          </span>
-        </div>
-        <div className="flex gap-4">
-          <span className="text-[10px] font-medium w-[100px] text-right">
-            Date Acquired
-          </span>
-          <div className="text-[10px] font-medium">
-            {data
-              ? data.startDate
-                ? formatDateToLocal(data.startDate)
-                : "-"
-              : "-"}
-            {data && <br />}
-            {data && `Owned for ${calculateTotalDays()} days`}
+      <div
+        className="w-full flex-1 overflow-y-auto flex flex-col gap-6"
+        style={{ scrollbarWidth: "none" }}
+      >
+        <span className="text-[10px] font-normal text-center">
+          {data?.description}
+        </span>
+        <div className="w-full flex flex-col gap-2">
+          <div className="flex gap-4">
+            <span className="text-[10px] font-medium w-[76px] text-right">
+              Creator
+            </span>
+            <span className="text-[10px] font-medium w-[168px]">
+              {data?.content.name ? data?.content.name : "-"}
+            </span>
           </div>
-        </div>
-        <div className="flex gap-4">
-          <span className="text-[10px] font-medium w-[100px] text-right">
-            History
-          </span>
-          <div className="flex-1 flex gap-1">
-            <span className="text-[10px] font-medium">-</span>
+          <div className="flex gap-4">
+            <span className="text-[10px] font-medium w-[76px] text-right">
+              Copyright
+            </span>
+            <span className="text-[10px] font-medium w-[168px]">
+              {data?.copyrights.length
+                ? `@${data?.copyrights.join(" @")}`
+                : "-"}
+            </span>
           </div>
-        </div>
-        <div className="flex gap-4">
-          <span className="text-[10px] font-medium w-[100px] text-right">
-            Serial Number
-          </span>
-          <span className="text-[10px] font-medium">-</span>
+          <div className="flex gap-4">
+            <span className="text-[10px] font-medium w-[76px] text-right">
+              License
+            </span>
+            <span className="text-[10px] font-medium w-[168px]">
+              {data?.license ? data.license : "-"}
+            </span>
+          </div>
+          <div className="flex gap-4">
+            <span className="text-[10px] font-medium w-[76px] text-right">
+              Date Acquired
+            </span>
+            <div className="text-[10px] font-medium w-[168px]">
+              {data
+                ? data.startDate
+                  ? formatDateToLocal(data.startDate)
+                  : "-"
+                : "-"}
+              {data && <br />}
+              {data && `Owned for ${calculateTotalDays()} days`}
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <span className="text-[10px] font-medium w-[76px] text-right">
+              History
+            </span>
+            <div className="w-[168px]">
+              <span className="text-[10px] font-medium">-</span>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <span className="text-[10px] font-medium w-[76px] text-right">
+              Serial Number
+            </span>
+            <span className="text-[10px] font-medium w-[168px]">-</span>
+          </div>
         </div>
         {data && (
           <SampleDetailDialog

@@ -11,6 +11,7 @@ import {
   SaidanItemData,
   ShowcaseSettings,
 } from "types/unityTypes";
+import { DefaultItemMeterHeight } from "./constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -36,6 +37,7 @@ type Props = {
     itemId: number,
     sendItemRemovalResult: SendItemRemovalResult,
   ) => void;
+  onItemSelected?: (itemType: ItemType, itemId: number) => void;
 };
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
@@ -46,6 +48,7 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemEnabled,
   onRemoveItemDisabled,
   onRemoveItemRequested,
+  onItemSelected,
 }: Props) => {
   const {
     unityProvider,
@@ -86,8 +89,7 @@ export const useShowcaseEditUnityContext = ({
           ...v,
           itemType: ItemType.Sample,
           canScale: true,
-          itemMeterHeight: 0.3,
-          isDebug: false, // not used in loading
+          itemMeterHeight: DefaultItemMeterHeight,
         };
       });
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
@@ -96,8 +98,7 @@ export const useShowcaseEditUnityContext = ({
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
           canScale: true,
-          itemMeterHeight: 0.3,
-          isDebug: false, // not used in loading
+          itemMeterHeight: DefaultItemMeterHeight,
         };
       });
       const saidanItemList = sampleList.concat(nftList);
@@ -222,6 +223,22 @@ export const useShowcaseEditUnityContext = ({
     [onRemoveItemRequested, sendRemovalResult],
   );
 
+  const handleItemSelected = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onItemSelected) return;
+
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemType: ItemType;
+        itemId: number;
+      };
+
+      if (!messageBody) return;
+
+      onItemSelected(messageBody.itemType, messageBody.itemId);
+    },
+    [onItemSelected],
+  );
+
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
@@ -233,6 +250,7 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
+    handleItemSelected,
   });
 
   return {

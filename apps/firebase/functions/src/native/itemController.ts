@@ -5,7 +5,7 @@ import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
 
-interface AcrylicStandResponse {
+interface ModelApiResponse {
   url: string;
 }
 
@@ -26,18 +26,27 @@ const getPathAfterBucket = (urlString: string) => {
 
 export const modelApiHandler = (type: ModelRequestType) => {
   return async (req: Request, res: Response) => {
+    const modelApiUrl = process.env.MODEL_API_URL;
+    const token = process.env.MODEL_API_TOKEN;
+    if (!modelApiUrl || !token) {
+      res.status(500).send({
+        status: "error",
+        data: "invalid-system-settings",
+      });
+      return;
+    }
     const {authorization} = req.headers;
     await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
       const uid = decodedToken.uid;
       switch (type) {
         case ModelRequestType.AcrylicStand:
-          createAcrylicStand(req, res, uid);
+          createAcrylicStand(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.MessageCard:
-          createMessageCard(req, res, uid);
+          createMessageCard(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.RemoveBg:
-          removeBackground(req, res, uid);
+          removeBackground(req, res, uid, modelApiUrl, token);
           break;
       }
     }).catch((error: FirebaseError) => {
@@ -50,21 +59,13 @@ export const modelApiHandler = (type: ModelRequestType) => {
   };
 };
 
-const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
+const createAcrylicStand = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {bodyUrl, baseUrl, coords}: { bodyUrl: string, baseUrl?: string, coords?: string } = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!bodyUrl) {
     res.status(400).send({
       status: "error",
       data: "invalid-params",
-    });
-    return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
     });
     return;
   }
@@ -84,7 +85,7 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -100,10 +101,8 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
   }
 };
 
-const createMessageCard = async (req: Request, res: Response, uid: string) => {
+const createMessageCard = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {url}: { url: string} = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!url) {
     res.status(400).send({
@@ -111,24 +110,9 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
       data: "invalid-params",
     });
     return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
-    });
-    return;
   }
 
-  // Mock response
-  const predefinedModel = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample.glb";
-  res.status(200).send({
-    status: "success",
-    data: {
-      url: predefinedModel,
-    },
-  });
-  /*
-  const params: Record<string, string | undefined> = {
+  const params: Record<string, string> = {
     uid,
     token,
     process_type: ModelRequestType.MessageCard,
@@ -142,7 +126,7 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -156,13 +140,10 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
       data: "api-error",
     });
   }
-   */
 };
 
-export const removeBackground = async (req: Request, res: Response, uid: string, modelRequestType?: ModelRequestType) => {
+export const removeBackground = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {url}: { url: string } = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!url) {
     res.status(400).send({
@@ -170,18 +151,12 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
       data: "invalid-params",
     });
     return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
-    });
-    return;
   }
-  const params: Record<string, string | undefined> = {
+  const params: Record<string, string> = {
     uid,
     token,
-    process_type: modelRequestType ?? ModelRequestType.RemoveBg,
-    url: getPathAfterBucket(url),
+    process_type: ModelRequestType.RemoveBg,
+    image1: getPathAfterBucket(url),
   };
   const urlParams = new URLSearchParams();
   Object.keys(params).forEach((key)=>{
@@ -191,7 +166,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -1258,6 +1233,9 @@ export const getSampleInfo = async (req: Request, res: Response) => {
         id: sampleData.id,
         title: sampleData.digital_item.name,
         description: sampleData.digital_item.description,
+        modelType: sampleData.digital_item.type,
+        modelUrl: sampleData.model_url,
+        thumbUrl: sampleData.digital_item.is_default_thumb?sampleData.digital_item.default_thumb_url:sampleData.digital_item.custom_thumb_url,
         creator: {
           uuid: sampleData.user.uuid,
           username: sampleData.user.username,

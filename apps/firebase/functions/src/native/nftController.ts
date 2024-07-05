@@ -242,6 +242,13 @@ export const giftNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
   const {receiveFlowId, fcmToken} = req.body;
+  if (!receiveFlowId || !fcmToken) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {

@@ -219,7 +219,9 @@ export const searchUsers = async (req: Request, res: Response) => {
 
 export const searchDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {q} = req.query;
+  const {q, pageNumber} = req.query;
+  const defaultPageSize = 10;
+  const skip = (Number(pageNumber??1)-1)*defaultPageSize;
   const searchValue = q?.toString()==""?undefined:q?.toString();
   console.log(searchValue);
   if (!searchValue) {
@@ -232,6 +234,8 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
       const digitalItems = await prisma.tobiratory_sample_items.findMany({
+        skip: skip,
+        take: defaultPageSize,
         where: {
           digital_item: {
             name: {
@@ -243,15 +247,15 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
             },
           },
         },
-        // take: 10,
         include: {
           digital_item: true,
         },
-        orderBy: {
-          digital_item: {
+        orderBy: [
+          {sale_quantity: "desc"},
+          {digital_item: {
             name: "asc",
-          },
-        },
+          }},
+        ],
       });
       const resultDigitalItems = digitalItems.map((sample)=>{
         return {

@@ -12,6 +12,7 @@ import {
   ModelParams,
   TextureParam,
 } from "types/unityTypes";
+import { DefaultItemMeterHeight } from "./constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
@@ -35,6 +36,7 @@ type Props = {
     itemId: number,
     sendSampleRemovalResult: SendSampleRemovalResult,
   ) => void;
+  onSampleSelected?: (itemId: number) => void;
 };
 
 export const useWorkspaceUnityContext = ({
@@ -44,6 +46,7 @@ export const useWorkspaceUnityContext = ({
   onRemoveSampleEnabled,
   onRemoveSampleDisabled,
   onRemoveSampleRequested,
+  onSampleSelected,
 }: Props) => {
   const {
     unityProvider,
@@ -81,8 +84,7 @@ export const useWorkspaceUnityContext = ({
         ...v,
         itemType: ItemType.Sample,
         canScale: true,
-        itemMeterHeight: 0.3,
-        isDebug: false, // not used in loading
+        itemMeterHeight: DefaultItemMeterHeight,
       };
     });
 
@@ -243,6 +245,21 @@ export const useWorkspaceUnityContext = ({
     [onRemoveSampleRequested, sendRemovalResult],
   );
 
+  const handleSampleSelected = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onSampleSelected) return;
+
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemId: number;
+      };
+
+      if (!messageBody) return;
+
+      onSampleSelected(messageBody.itemId);
+    },
+    [onSampleSelected],
+  );
+
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
@@ -255,6 +272,7 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
+    handleItemSelected: handleSampleSelected,
   });
 
   return {

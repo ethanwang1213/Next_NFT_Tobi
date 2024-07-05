@@ -38,6 +38,15 @@ export const getContentById = async (req: Request, res: Response) => {
               },
             },
           },
+          tobiratory_showcase_nfts: {
+            include: {
+              nft: {
+                include: {
+                  digital_item: true,
+                },
+              },
+            },
+          },
         },
       });
       if (!showcase) {
@@ -59,31 +68,52 @@ export const getContentById = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sampleItems = showcase.tobiratory_showcase_sample_items.map((sampleId) => {
+      const sampleItems = showcase.tobiratory_showcase_sample_items.map((relationSample) => {
         return {
-          sampleId: sampleId.sample_id,
-          thumbImage: sampleId.sample.digital_item.is_default_thumb ?
-            sampleId.sample.digital_item.default_thumb_url :
-            sampleId.sample.digital_item?.custom_thumb_url,
+          relationSample: relationSample.sample_id,
+          itemId: relationSample.id,
+          thumbImage: relationSample.sample.digital_item.is_default_thumb ?
+            relationSample.sample.digital_item.default_thumb_url :
+            relationSample.sample.digital_item?.custom_thumb_url,
+          modelType: relationSample.sample.digital_item.type,
+          modelUrl: relationSample.sample.model_url,
+          stageType: relationSample.stage_type,
+          scale: relationSample.scale,
+          position: {
+            x: relationSample.position[0] ?? 0,
+            y: relationSample.position[1] ?? 0,
+            z: relationSample.position[2] ?? 0,
+          },
+          rotation: {
+            x: relationSample.rotation[0] ?? 0,
+            y: relationSample.rotation[1] ?? 0,
+            z: relationSample.rotation[2] ?? 0,
+          },
         };
       });
 
-      const nftItemInfos = await prisma.tobiratory_showcase_nft_items.findMany({
-        where: {
-          showcase_id: showcase.id,
-        },
-        include: {
-          nft: {
-            include: {
-              digital_item: true,
-            },
-          },
-        },
-      });
-      const nftItems = nftItemInfos.map((nft) => {
+      const nftItems = showcase.tobiratory_showcase_nfts.map((relationNFT) => {
         return {
-          nftId: nft.nft.id,
-          thumbImage: nft.nft.digital_item.is_default_thumb ? nft.nft.digital_item.default_thumb_url : nft.nft.digital_item.custom_thumb_url,
+          nftId: relationNFT.nft_id,
+          itemId: relationNFT.id,
+          thumbImage: relationNFT.nft.digital_item.is_default_thumb ?
+            relationNFT.nft.digital_item.default_thumb_url :
+            relationNFT.nft.digital_item.custom_thumb_url,
+          modelType: relationNFT.nft.digital_item.type,
+          modelUrl: relationNFT.nft.nft_model,
+          stageType: relationNFT.stage_type,
+          scale: relationNFT.scale,
+          itemMeterHeight: relationNFT.meter_height,
+          position: {
+            x: relationNFT.position[0] ?? 0,
+            y: relationNFT.position[1] ?? 0,
+            z: relationNFT.position[2] ?? 0,
+          },
+          rotation: {
+            x: relationNFT.rotation[0] ?? 0,
+            y: relationNFT.rotation[1] ?? 0,
+            z: relationNFT.rotation[2] ?? 0,
+          },
         };
       });
       const favorite = await prisma.tobiratory_favorite_content.findFirst({
@@ -92,7 +122,24 @@ export const getContentById = async (req: Request, res: Response) => {
           content_id: content.id,
         },
       });
-
+      const settings = {
+        wallpaper: {
+          tint: showcase.wallpaper_tint,
+        },
+        floor: {
+          tint: showcase.floor_tint,
+        },
+        lighting: {
+          sceneLight: {
+            tint: showcase.lighting_scene_tint,
+            brightness: showcase.lighting_scene_brightness,
+          },
+          pointLight: {
+            tint: showcase.lighting_point_tint,
+            brightness: showcase.lighting_point_bright,
+          },
+        },
+      };
       const returnData = {
         content: {
           id: content.id,
@@ -102,6 +149,9 @@ export const getContentById = async (req: Request, res: Response) => {
           id: showcase.id,
           title: showcase.title,
           description: showcase.description,
+          showcaseType: showcase.tobiratory_showcase_template?.type,
+          showcaseUrl: showcase.tobiratory_showcase_template?.model_url,
+          settings: settings,
         },
         owner: {
           uuid: owner.uuid,
@@ -177,6 +227,15 @@ export const getContentByUuid = async (req: Request, res: Response) => {
               },
             },
           },
+          tobiratory_showcase_nfts: {
+            include: {
+              nft: {
+                include: {
+                  digital_item: true,
+                },
+              },
+            },
+          },
         },
       });
       if (!showcase) {
@@ -198,27 +257,52 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sampleItems = showcase.tobiratory_showcase_sample_items.map((sampleId) => {
+      const sampleItems = showcase.tobiratory_showcase_sample_items.map((relationSample) => {
         return {
-          sampleId: sampleId.sample_id,
-          thumbImage: sampleId.sample.digital_item.is_default_thumb ?
-            sampleId.sample.digital_item.default_thumb_url :
-            sampleId.sample.digital_item?.custom_thumb_url,
+          relationSample: relationSample.sample_id,
+          itemId: relationSample.id,
+          thumbImage: relationSample.sample.digital_item.is_default_thumb ?
+            relationSample.sample.digital_item.default_thumb_url :
+            relationSample.sample.digital_item?.custom_thumb_url,
+          modelType: relationSample.sample.digital_item.type,
+          modelUrl: relationSample.sample.model_url,
+          stageType: relationSample.stage_type,
+          scale: relationSample.scale,
+          position: {
+            x: relationSample.position[0] ?? 0,
+            y: relationSample.position[1] ?? 0,
+            z: relationSample.position[2] ?? 0,
+          },
+          rotation: {
+            x: relationSample.rotation[0] ?? 0,
+            y: relationSample.rotation[1] ?? 0,
+            z: relationSample.rotation[2] ?? 0,
+          },
         };
       });
 
-      const nftItemInfos = await prisma.tobiratory_digital_item_nfts.findMany({
-        where: {
-          content_id: content.id,
-        },
-        include: {
-          digital_item: true,
-        },
-      });
-      const nftItems = nftItemInfos.map((nft) => {
+      const nftItems = showcase.tobiratory_showcase_nfts.map((relationNFT) => {
         return {
-          nftId: nft.id,
-          thumbImage: nft.digital_item.is_default_thumb ? nft.digital_item.default_thumb_url : nft.digital_item.custom_thumb_url,
+          nftId: relationNFT.nft_id,
+          itemId: relationNFT.id,
+          thumbImage: relationNFT.nft.digital_item.is_default_thumb ?
+            relationNFT.nft.digital_item.default_thumb_url :
+            relationNFT.nft.digital_item.custom_thumb_url,
+          modelType: relationNFT.nft.digital_item.type,
+          modelUrl: relationNFT.nft.nft_model,
+          stageType: relationNFT.stage_type,
+          scale: relationNFT.scale,
+          itemMeterHeight: relationNFT.meter_height,
+          position: {
+            x: relationNFT.position[0] ?? 0,
+            y: relationNFT.position[1] ?? 0,
+            z: relationNFT.position[2] ?? 0,
+          },
+          rotation: {
+            x: relationNFT.rotation[0] ?? 0,
+            y: relationNFT.rotation[1] ?? 0,
+            z: relationNFT.rotation[2] ?? 0,
+          },
         };
       });
       const favorite = await prisma.tobiratory_favorite_content.findFirst({
@@ -227,7 +311,24 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           content_id: content.id,
         },
       });
-
+      const settings = {
+        wallpaper: {
+          tint: showcase.wallpaper_tint,
+        },
+        floor: {
+          tint: showcase.floor_tint,
+        },
+        lighting: {
+          sceneLight: {
+            tint: showcase.lighting_scene_tint,
+            brightness: showcase.lighting_scene_brightness,
+          },
+          pointLight: {
+            tint: showcase.lighting_point_tint,
+            brightness: showcase.lighting_point_bright,
+          },
+        },
+      };
       const returnData = {
         content: {
           id: content.id,
@@ -237,6 +338,9 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           id: showcase.id,
           title: showcase.title,
           description: showcase.description,
+          showcaseType: showcase.tobiratory_showcase_template?.type,
+          showcaseUrl: showcase.tobiratory_showcase_template?.model_url,
+          settings: settings,
         },
         owner: {
           uuid: owner.uuid,
