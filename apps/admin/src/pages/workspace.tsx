@@ -300,7 +300,7 @@ export default function Index() {
         coords: coords,
       };
       if (image2 == null) {
-        delete bodyObj.bodyUrl;
+        delete bodyObj.baseUrl;
       }
       if (coords == null) {
         delete bodyObj.coords;
@@ -319,13 +319,17 @@ export default function Index() {
         modelUrl: modelResp["url"],
       });
     } else if (sampleType == ModelType.MessageCard) {
-      generateModelUrl.current =
-        "https://storage.googleapis.com/tobiratory-dev_media/item-models/message-card/message-card.glb";
-      generateMaterialImage.current = image1;
+      const modelResp = await createSample("native/model/message-card", {
+        url: image1,
+      });
+      if (modelResp === false) {
+        return false;
+      }
+      generateModelUrl.current = modelResp["url"];
+      generateMaterialImage.current = null;
       requestItemThumbnail({
         modelType: ModelType.MessageCard,
-        modelUrl: generateModelUrl.current,
-        imageUrl: image1,
+        modelUrl: modelResp["url"],
       });
     }
 
