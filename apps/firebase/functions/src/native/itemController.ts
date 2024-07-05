@@ -4,7 +4,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import { statusOfSample } from "./utils";
+import {statusOfSample} from "./utils";
 
 interface AcrylicStandResponse {
   url: string;
@@ -1177,6 +1177,21 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           return;
         }
       }
+      if (schedules&&schedules.length>2) {
+        for (let i = 0; i < schedules.length; i++) {
+          const element1 = schedules[i];
+          for (let j = i + 1; j < schedules.length; j++) {
+            const element2 = schedules[j];
+            if (element1.datetime==element2.datetime) {
+              res.status(401).send({
+                status: "error",
+                data: "wrong-schedule",
+              });
+              return;
+            }
+          }
+        }
+      }
       if (price || startDate || endDate || quantityLimit) {
         await prisma.tobiratory_sample_items.update({
           where: {
@@ -1206,7 +1221,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             license: license,
             schedules: schedules?.map((schedule) => {
               return JSON.stringify(schedule);
-            })
+            }),
           },
         });
       }
