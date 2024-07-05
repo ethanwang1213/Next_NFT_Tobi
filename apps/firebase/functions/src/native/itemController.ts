@@ -4,6 +4,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
+import {statusOfSample} from "./utils";
 
 interface ModelApiResponse {
   url: string;
@@ -1019,6 +1020,9 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         status: sample.digital_item.status,
         startDate: sample.start_date,
         endDate: sample.end_date,
+        schedules: sample.digital_item.schedules.map((schedule)=>{
+          return JSON.parse(schedule);
+        }),
         quantityLimit: sample.quantity_limit,
         license: sample.digital_item.license,
         copyrights: copyrights,
@@ -1061,6 +1065,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     quantityLimit,
     license,
     copyrights,
+    schedules,
   }: {
     name?: string,
     description?: string,
@@ -1073,6 +1078,10 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     quantityLimit?: number,
     license?: string,
     copyrights?: { id: number | null, name: string }[],
+    schedules?: {
+      status: number,
+      datetime: string,
+    }[],
   } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
@@ -1120,6 +1129,44 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
+      if (status) {
+        if (status<=1||status>=7) {
+          res.status(401).send({
+            status: "error",
+            data: "wrong-status",
+          });
+          return;
+        }
+        if (digitalItem.status == status) {
+          res.status(401).send({
+            status: "error",
+            data: "same-status",
+          });
+          return;
+        }
+        if ([statusOfSample.private, statusOfSample.draft].includes(digitalItem.status) && status ==statusOfSample.unListed) {
+          res.status(401).send({
+            status: "error",
+            data: "wrong-status",
+          });
+          return;
+        }
+      }
+      if (schedules&&schedules.length>2) {
+        for (let i = 0; i < schedules.length; i++) {
+          const element1 = schedules[i];
+          for (let j = i + 1; j < schedules.length; j++) {
+            const element2 = schedules[j];
+            if (element1.datetime==element2.datetime) {
+              res.status(401).send({
+                status: "error",
+                data: "wrong-schedule",
+              });
+              return;
+            }
+          }
+        }
+      }
       if (price || startDate || endDate || quantityLimit) {
         await prisma.tobiratory_sample_items.update({
           where: {
@@ -1135,7 +1182,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           },
         });
       }
-      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license || schedules) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: parseInt(digitalId),
@@ -1147,6 +1194,9 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             is_default_thumb: !isCustomThumbnailSelected,
             status: status,
             license: license,
+            schedules: schedules?.map((schedule) => {
+              return JSON.stringify(schedule);
+            }),
           },
         });
       }
