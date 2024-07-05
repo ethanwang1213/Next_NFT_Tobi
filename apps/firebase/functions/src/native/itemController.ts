@@ -156,7 +156,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
     uid,
     token,
     process_type: ModelRequestType.RemoveBg,
-    url: getPathAfterBucket(url),
+    image1: getPathAfterBucket(url),
   };
   const urlParams = new URLSearchParams();
   Object.keys(params).forEach((key)=>{
