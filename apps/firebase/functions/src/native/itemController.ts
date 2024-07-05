@@ -1207,7 +1207,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           },
         });
       }
-      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license || schedules) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: parseInt(digitalId),
