@@ -47,6 +47,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
                 ],
               },
               create: {
+                id: item.id>0?item.id:undefined,
                 owner_uuid: uid,
                 sample_id: item.itemId,
                 stage_type: item.stageType,

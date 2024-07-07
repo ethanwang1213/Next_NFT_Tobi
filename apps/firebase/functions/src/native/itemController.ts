@@ -434,7 +434,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           saleStartDate: sample.start_date,
           saleEndDate: sample.end_date,
           saleQuantity: sample.sale_quantity,
-          quantityLimit: sample.quantity_limit,
+          quantityLimit: sample.digital_item.limit,
           createDate: sample.created_date_time,
         };
       });
@@ -615,7 +615,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         status: sample.digital_item.status,
         startDate: sample.start_date,
         endDate: sample.end_date,
-        quantityLimit: sample.quantity_limit,
+        quantityLimit: sample.digital_item.limit,
         license: sample.digital_item.license,
         copyrights: copyrights,
       };
@@ -719,7 +719,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (price || startDate || endDate || quantityLimit) {
+      if (price || startDate || endDate) {
         await prisma.tobiratory_sample_items.update({
           where: {
             id: parseInt(sampleId),
@@ -730,11 +730,10 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
             price: price,
             start_date: startDate == undefined ? undefined : new Date(startDate),
             end_date: endDate == undefined ? undefined : new Date(endDate),
-            quantity_limit: quantityLimit,
           },
         });
       }
-      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license || quantityLimit) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: sample?.digital_item_id,
@@ -746,6 +745,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
             is_default_thumb: !isCustomThumbnailSelected,
             status: status,
             license: license,
+            limit: quantityLimit,
           },
         });
       }
@@ -821,27 +821,34 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
           owner_uuid: uid,
         },
       });
-      const allSamples = await prisma.tobiratory_sample_items.findMany({
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-content",
+        });
+        return;
+      }
+      const allDigitalItems = await prisma.tobiratory_digital_items.findMany({
         where: {
-          content_id: content?.id,
-          is_deleted: false,
+          creator_uuid: uid,
         },
         include: {
-          digital_item: true,
+          sample_item: true,
         },
       });
-      const returnData = allSamples.map((sample) => {
+      const returnData = allDigitalItems.map((digitalItem) => {
         return {
-          id: sample.id,
-          name: sample.digital_item.name,
-          thumbnail: sample.digital_item.is_default_thumb ? sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
-          price: sample.price,
-          status: sample.digital_item.status,
-          saleStartDate: sample.start_date,
-          saleEndDate: sample.end_date,
-          saleQuantity: sample.sale_quantity,
-          quantityLimit: sample.quantity_limit,
-          createDate: sample.created_date_time,
+          id: digitalItem.id,
+          name: digitalItem.name,
+          thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          price: digitalItem.sample_item?.price,
+          status: digitalItem.status,
+          saleStartDate: digitalItem.sample_item?.start_date,
+          saleEndDate: digitalItem.sample_item?.end_date,
+          saleQuantity: digitalItem.sample_item?.sale_quantity,
+          quantityLimit: digitalItem.limit,
+          mintedCount: digitalItem.minted_count,
+          createDate: digitalItem.created_date_time,
         };
       });
       res.status(200).send({
@@ -869,7 +876,7 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
 
 export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {sampleIds}: { sampleIds: number[] } = req.body;
+  const {digitalItemIds}: { digitalItemIds: number[] } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -890,13 +897,20 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
           owner_uuid: uid,
         },
       });
-      for (const item of sampleIds) {
-        const sample = await prisma.tobiratory_sample_items.findUnique({
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-content",
+        });
+        return;
+      }
+      for (const item of digitalItemIds) {
+        const digitalItem = await prisma.tobiratory_digital_items.findUnique({
           where: {
             id: item,
           },
         });
-        if (sample == null) {
+        if (digitalItem == null) {
           res.status(401).send({
             status: "error",
             data: {
@@ -905,20 +919,20 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (sample.content_id != content?.id) {
+        if (digitalItem.creator_uuid != uid) {
           res.status(401).send({
             status: "error",
             data: {
-              result: "not-content",
+              result: "not-owner",
             },
           });
           return;
         }
       }
-      await prisma.tobiratory_sample_items.updateMany({
+      await prisma.tobiratory_digital_items.updateMany({
         where: {
           id: {
-            in: sampleIds,
+            in: digitalItemIds,
           },
         },
         data: {
@@ -973,58 +987,61 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
           owner_uuid: uid,
         },
       });
-      const sample = await prisma.tobiratory_sample_items.findUnique({
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-content",
+        });
+        return;
+      }
+      const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: parseInt(digitalId),
-          content_id: content?.id,
           is_deleted: false,
         },
         include: {
-          digital_item: {
+          copyright: {
             include: {
-              copyright: {
-                include: {
-                  copyright: true,
-                },
-              },
+              copyright: true,
             },
           },
+          sample_item: true,
         },
       });
-      if (!sample) {
+      if (!digitalItem) {
         res.status(401).send({
           status: "error",
           data: "not-exist",
         });
         return;
       }
-      const copyrights = sample.digital_item.copyright.map((relate) => {
+      const copyrights = digitalItem.copyright.map((relate) => {
         return {
           id: relate.copyright.id,
           name: relate.copyright.copyright_name,
         };
       });
       const returnData = {
-        id: sample.id,
-        name: sample.digital_item.name,
+        id: digitalItem.id,
+        name: digitalItem.name,
         content: {
           id: content?.id,
           name: content?.name,
           description: content?.description,
         },
-        description: sample.digital_item.description,
-        defaultThumbnailUrl: sample.digital_item.default_thumb_url,
-        customThumbnailUrl: sample.digital_item.custom_thumb_url,
-        isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
-        price: sample.price,
-        status: sample.digital_item.status,
-        startDate: sample.start_date,
-        endDate: sample.end_date,
-        schedules: sample.digital_item.schedules.map((schedule)=>{
+        description: digitalItem.description,
+        defaultThumbnailUrl: digitalItem.default_thumb_url,
+        customThumbnailUrl: digitalItem.custom_thumb_url,
+        isCustomThumbnailSelected: !digitalItem.is_default_thumb,
+        price: digitalItem.sample_item?.price,
+        status: digitalItem.status,
+        startDate: digitalItem.sample_item?.start_date,
+        endDate: digitalItem.sample_item?.end_date,
+        schedules: digitalItem.schedules.map((schedule)=>{
           return JSON.parse(schedule);
         }),
-        quantityLimit: sample.quantity_limit,
-        license: sample.digital_item.license,
+        quantityLimit: digitalItem.limit,
+        license: digitalItem.license,
         copyrights: copyrights,
       };
       res.status(200).send({
@@ -1106,7 +1123,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
       if (!content) {
         res.status(401).send({
           status: "error",
-          data: "not-content",
+          data: "not-exist-content",
         });
         return;
       }
@@ -1114,6 +1131,9 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         where: {
           id: parseInt(digitalId),
         },
+        include: {
+          sample_item: true,
+        }
       });
       if (!digitalItem) {
         res.status(404).send({
@@ -1134,13 +1154,6 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           res.status(401).send({
             status: "error",
             data: "wrong-status",
-          });
-          return;
-        }
-        if (digitalItem.status == status) {
-          res.status(401).send({
-            status: "error",
-            data: "same-status",
           });
           return;
         }
@@ -1167,10 +1180,10 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           }
         }
       }
-      if (price || startDate || endDate || quantityLimit) {
+      if (price || startDate || endDate) {
         await prisma.tobiratory_sample_items.update({
           where: {
-            id: parseInt(digitalId),
+            id: digitalItem.sample_item?.id??0,
             content_id: content?.id,
             is_deleted: false,
           },
@@ -1178,11 +1191,10 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             price: price,
             start_date: startDate == undefined ? undefined : new Date(startDate),
             end_date: endDate == undefined ? undefined : new Date(endDate),
-            quantity_limit: quantityLimit,
           },
         });
       }
-      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license || schedules) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license || schedules || quantityLimit) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: parseInt(digitalId),
@@ -1193,6 +1205,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             custom_thumb_url: customThumbnailUrl,
             is_default_thumb: !isCustomThumbnailSelected,
             status: status,
+            limit: quantityLimit,
             license: license,
             schedules: schedules?.map((schedule) => {
               return JSON.stringify(schedule);
