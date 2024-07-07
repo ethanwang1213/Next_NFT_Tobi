@@ -23,21 +23,6 @@ import {
   getDigitalItemStatusTitle,
 } from "ui/types/adminTypes";
 
-const testSchedule = [
-  {
-    status: DigitalItemStatus.ViewingOnly,
-    datetime: "2024-07-20 00:00",
-  },
-  {
-    status: DigitalItemStatus.OnSale,
-    datetime: "2024-07-22 00:00",
-  },
-  {
-    status: DigitalItemStatus.ViewingOnly,
-    datetime: "2024-07-24 00:00",
-  },
-];
-
 const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -118,11 +103,9 @@ const Detail = () => {
     // set title
     setConfirmDialogTitle(
       `Changing from ${getDigitalItemStatusTitle(
-        dataRef.current.status > 5
-          ? dataRef.current.status - 2
-          : dataRef.current.status,
+        dataRef.current.status,
       ).toLowerCase()} to ${getDigitalItemStatusTitle(
-        digitalItem.status > 5 ? digitalItem.status - 2 : digitalItem.status,
+        digitalItem.status,
       ).toLowerCase()}`,
     );
 
@@ -275,6 +258,7 @@ const Detail = () => {
       quantityLimit: parseInt(digitalItem.quantityLimit),
       license: digitalItem.license,
       copyrights: digitalItem.copyrights,
+      schedules: digitalItem.schedules,
     };
 
     if (submitData.customThumbnailUrl != dataRef.current.customThumbnailUrl) {
@@ -600,7 +584,7 @@ const Detail = () => {
                 <h3 className="text-xl text-secondary">SCHEDULE</h3>
                 <ScheduleCalendar
                   status={digitalItem.status}
-                  schedules={digitalItem.schedules ?? testSchedule}
+                  schedules={digitalItem.schedules}
                   changeHandler={(v) => fieldChangeHandler("schedules", v)}
                 />
               </div>
