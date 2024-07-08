@@ -203,6 +203,27 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
     uploadMaterialImageHandler,
   ]);
 
+  const generateAcrylicStandSample = useCallback(
+    async (image: string, coords: string) => {
+      thirdImageRef.current = secondImageRef.current;
+      if (
+        await checkAndUploadImage(
+          thirdImageRef,
+          image,
+          ImageType.ModelTempImage,
+          0,
+        )
+      )
+        generateSample(
+          ModelType.AcrylicStand,
+          firstImageRef.current,
+          thirdImageRef.current,
+          coords,
+        );
+    },
+    [checkAndUploadImage, generateSample],
+  );
+
   const placeComponentForAcrylicStand = useCallback(() => {
     switch (step) {
       case 1:
@@ -275,23 +296,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           <ImagePositionComponent
             imageUrl={secondImageRef.current}
             backHandler={() => setStep(3)}
-            nextHandler={async (image: string, coords: string) => {
-              thirdImageRef.current = secondImageRef.current;
-              if (
-                await checkAndUploadImage(
-                  thirdImageRef,
-                  image,
-                  ImageType.ModelTempImage,
-                  0,
-                )
-              )
-                generateSample(
-                  ModelType.AcrylicStand,
-                  firstImageRef.current,
-                  thirdImageRef.current,
-                  coords,
-                );
-            }}
+            nextHandler={generateAcrylicStandSample}
             error={props.generateError || error}
             errorHandler={() => {
               setError(false);
@@ -306,6 +311,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
   }, [
     checkAndUploadImage,
     error,
+    generateAcrylicStandSample,
     generateSample,
     materialImage,
     materialImage2,
@@ -314,6 +320,42 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
     step,
     uploadMaterialImageHandler,
   ]);
+
+  const removeTextImageBackground = useCallback(
+    async (image: string) => {
+      if (
+        await checkAndUploadImage(
+          secondImageRef,
+          image,
+          ImageType.ModelTempImage,
+          0,
+        )
+      )
+        removeImageBackground(secondImageRef, secondImageRef.current, 5);
+    },
+    [checkAndUploadImage, removeImageBackground],
+  );
+
+  const generateMessageCardSample = useCallback(
+    async (image: string) => {
+      thirdImageRef.current = secondImageRef.current;
+      if (
+        await checkAndUploadImage(
+          thirdImageRef,
+          image,
+          ImageType.ModelTempImage,
+          0,
+        )
+      )
+        generateSample(
+          ModelType.MessageCard,
+          thirdImageRef.current,
+          null,
+          null,
+        );
+    },
+    [checkAndUploadImage, generateSample],
+  );
 
   const placeComponentForMessageCard = useCallback(() => {
     switch (step) {
@@ -382,21 +424,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           <ImageCropComponent
             imageUrl={materialImage2.image}
             backHandler={() => setStep(3)}
-            nextHandler={async (image: string) => {
-              if (
-                await checkAndUploadImage(
-                  secondImageRef,
-                  image,
-                  ImageType.ModelTempImage,
-                  0,
-                )
-              )
-                removeImageBackground(
-                  secondImageRef,
-                  secondImageRef.current,
-                  5,
-                );
-            }}
+            nextHandler={removeTextImageBackground}
             error={error}
             errorHandler={() => {
               setError(false);
@@ -412,23 +440,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             imageCardUrl={firstImageRef.current}
             imageMessageUrl={secondImageRef.current}
             backHandler={() => setStep(4)}
-            nextHandler={async (image: string) => {
-              thirdImageRef.current = secondImageRef.current;
-              if (
-                await checkAndUploadImage(
-                  thirdImageRef,
-                  image,
-                  ImageType.ModelTempImage,
-                  0,
-                )
-              )
-                generateSample(
-                  ModelType.MessageCard,
-                  thirdImageRef.current,
-                  null,
-                  null,
-                );
-            }}
+            nextHandler={generateMessageCardSample}
             error={props.generateError || error}
             errorHandler={() => {
               setError(false);
@@ -443,14 +455,29 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
   }, [
     checkAndUploadImage,
     error,
-    generateSample,
+    generateMessageCardSample,
     materialImage,
     materialImage2,
     props,
-    removeImageBackground,
+    removeTextImageBackground,
     step,
     uploadMaterialImageHandler,
   ]);
+
+  const generateCanBadgeSample = useCallback(
+    async (image: string) => {
+      if (
+        await checkAndUploadImage(
+          firstImageRef,
+          image,
+          ImageType.MaterialImage,
+          0,
+        )
+      )
+        generateSample(ModelType.CanBadge, firstImageRef.current, null, null);
+    },
+    [checkAndUploadImage, generateSample],
+  );
 
   const placeComponentForCanBadge = useCallback(() => {
     switch (step) {
@@ -478,22 +505,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           <ImageZoomCropComponent
             imageUrl={materialImage.image}
             backHandler={() => setStep(1)}
-            nextHandler={async (image: string) => {
-              if (
-                await checkAndUploadImage(
-                  firstImageRef,
-                  image,
-                  ImageType.MaterialImage,
-                  0,
-                )
-              )
-                generateSample(
-                  ModelType.CanBadge,
-                  firstImageRef.current,
-                  null,
-                  null,
-                );
-            }}
+            nextHandler={generateCanBadgeSample}
             error={props.generateError || error}
             errorHandler={() => {
               setError(false);
@@ -507,9 +519,8 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
         break;
     }
   }, [
-    checkAndUploadImage,
     error,
-    generateSample,
+    generateCanBadgeSample,
     materialImage,
     props,
     step,
