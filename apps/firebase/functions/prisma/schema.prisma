@@ -136,6 +136,8 @@ model tobiratory_digital_items {
   tx_id                String?                              @db.VarChar(255)
   status               Int
   minted_count         Int                                  @default(0)
+  schedules            String[]
+  is_deleted           Boolean                              @default(false)
   updated_date_time    DateTime                             @default(now()) @db.Timestamp(6)
   created_date_time    DateTime                             @default(now()) @db.Timestamp(6)
 }
@@ -152,7 +154,6 @@ model tobiratory_sample_items {
   start_date                       DateTime?                          @db.Timestamp(6)
   end_date                         DateTime?                          @db.Timestamp(6)
   sale_quantity                    Int                                @default(0)
-  quantity_limit                   Int?
   is_deleted                       Boolean                            @default(false)
   updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
   created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
