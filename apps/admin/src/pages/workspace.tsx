@@ -144,7 +144,7 @@ export default function Index() {
     requestItemThumbnail,
     inputWasd,
   } = useWorkspaceUnityContext({
-    sampleMenuX: contentWidth - (showListView ? 448 : 56),
+    sampleMenuX: contentWidth - (showListView ? 448 : 112),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
     onRemoveSampleEnabled,
@@ -463,7 +463,7 @@ export default function Index() {
         </div>
         {showRestoreMenu && !showListView && (
           <div
-            className="absolute w-[56px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+            className="absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
               flex flex-col justify-center items-center z-10 select-none"
           >
             <Image
