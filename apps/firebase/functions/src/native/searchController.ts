@@ -251,7 +251,6 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
           digital_item: true,
         },
         orderBy: [
-          {sale_quantity: "desc"},
           {digital_item: {
             name: "asc",
           }},
@@ -384,6 +383,57 @@ export const searchSaidans = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: resultSaidans,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error.code,
+    });
+  });
+};
+
+export const hotPicksDigitalItem = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {pageNumber} = req.query;
+  const defaultPageSize = 10;
+  const skip = (Number(pageNumber??1)-1)*defaultPageSize;
+  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
+    try {
+      const digitalItems = await prisma.tobiratory_sample_items.findMany({
+        skip: skip,
+        take: defaultPageSize,
+        where: {
+          digital_item: {
+            status: {
+              in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
+            },
+          },
+        },
+        include: {
+          digital_item: true,
+        },
+        orderBy: [
+          {sale_quantity: "desc"},
+          {digital_item: {
+            name: "asc",
+          }},
+        ],
+      });
+      const resultDigitalItems = digitalItems.map((sample)=>{
+        return {
+          sampleId: sample.id,
+          thumbImage: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url:sample.digital_item.custom_thumb_url,
+        };
+      });
+      res.status(200).send({
+        status: "success",
+        data: resultDigitalItems,
       });
     } catch (error) {
       res.status(401).send({
