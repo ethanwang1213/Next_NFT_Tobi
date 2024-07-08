@@ -332,7 +332,7 @@ const DigitalItemTable = (filters: {
                     {getDigitalItemStatusTitle(item.status)}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
-                    <span>{item.saleQuantity} / </span>
+                    <span>{item.mintedCount} / </span>
                     {item.quantityLimit != -1 ? (
                       <span>{item.quantityLimit}</span>
                     ) : (
@@ -361,7 +361,7 @@ const DigitalItemTable = (filters: {
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
                   const result = await deleteData(apiUrl, {
-                    sampleIds: selDigitalItemIds,
+                    digitalItemIds: selDigitalItemIds,
                   });
                   if (result) {
                     setSelDigitalItemIds([]);
