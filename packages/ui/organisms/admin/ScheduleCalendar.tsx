@@ -1,9 +1,10 @@
 import NextImage from "next/image";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { DigitalItemStatus, ScheduleItem } from "ui/types/adminTypes";
 import ScheduleEditor from "./ScheduleEditor";
+import { formatDateToLocal } from "ui/atoms/Formatters";
 
 type ValuePiece = Date | null;
 
@@ -36,13 +37,16 @@ const NextMonthButton = () => {
 };
 
 const ScheduleCalendar = (props: {
-  status: DigitalItemStatus;
+  originStatus: DigitalItemStatus;
+  currentStatus: DigitalItemStatus;
   schedules: ScheduleItem[];
   changeHandler: (value: ScheduleItem[]) => void;
 }) => {
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [schedules, setSchedules] = useState(props.schedules);
   const [error, setError] = useState(false);
+
+  const currentSchedule = useRef<ScheduleItem | null>(null);
 
   const renderCustomNavigationLabel = useCallback(({ date, view }) => {
     if (view === "month") {
@@ -110,9 +114,9 @@ const ScheduleCalendar = (props: {
 
   const get3Status = useCallback(
     (date: string) => {
-      let beginStatus = props.status;
-      let midStatus = props.status;
-      let endStatus = props.status;
+      let beginStatus = DigitalItemStatus.Draft;
+      let midStatus = DigitalItemStatus.Draft;
+      let endStatus = DigitalItemStatus.Draft;
 
       for (const schedule of schedules) {
         const scheduleDate = new Date(schedule.datetime).setHours(0, 0, 0, 0);
@@ -152,7 +156,7 @@ const ScheduleCalendar = (props: {
 
       return { beginStatus, midStatus, endStatus };
     },
-    [getStatusPriority, props.status, schedules],
+    [getStatusPriority, schedules],
   );
 
   const getTileClass = ({ date, view }) => {
@@ -193,7 +197,7 @@ const ScheduleCalendar = (props: {
 
   const getPrevStatus = useCallback(
     (date: string) => {
-      let status = props.status;
+      let status = DigitalItemStatus.Draft;
       for (const schedule of schedules) {
         const scheduleDate = new Date(schedule.datetime).setHours(0, 0, 0, 0);
         const dateTime = new Date(date).setHours(0, 0, 0, 0);
@@ -210,7 +214,7 @@ const ScheduleCalendar = (props: {
 
       return status;
     },
-    [props.status, schedules],
+    [schedules],
   );
 
   const checkSchedules = useCallback(
@@ -244,23 +248,28 @@ const ScheduleCalendar = (props: {
     [error],
   );
 
-  const addScheduleHandler = useCallback(
-    (status: DigitalItemStatus, time: string) => {
+  const isAfterTime = useCallback((time: string) => {
+    const scheduleTime = new Date(time).getTime();
+    const currentTime = new Date().getTime();
+    return scheduleTime >= currentTime;
+  }, []);
+
+  const addSchedule = useCallback(
+    (status: DigitalItemStatus, time: string, schedules: ScheduleItem[]) => {
       let newSchedules = [...schedules, { status, datetime: time }];
       newSchedules.sort((a, b) => {
         const aTime = new Date(a.datetime).getTime();
         const bTime = new Date(b.datetime).getTime();
         return aTime - bTime;
       });
-      setSchedules(newSchedules);
-      checkSchedules(newSchedules);
-      props.changeHandler(newSchedules);
+
+      return newSchedules;
     },
-    [checkSchedules, props, schedules],
+    [],
   );
 
-  const removeScheduleHandler = useCallback(
-    (status: DigitalItemStatus, time: string) => {
+  const removeSchedule = useCallback(
+    (status: DigitalItemStatus, time: string, schedules: ScheduleItem[]) => {
       const newSchedules = schedules.filter((item) => {
         if (item.status !== status) return true;
         if (new Date(item.datetime).getTime() !== new Date(time).getTime())
@@ -268,32 +277,93 @@ const ScheduleCalendar = (props: {
 
         return false;
       });
+
+      return newSchedules;
+    },
+    [],
+  );
+
+  const updateSchedule = useCallback(
+    (newSchedules: ScheduleItem[]) => {
       setSchedules(newSchedules);
       checkSchedules(newSchedules);
       props.changeHandler(newSchedules);
     },
-    [checkSchedules, props, schedules],
+    [checkSchedules, props],
+  );
+
+  useEffect(() => {
+    if (
+      (currentSchedule.current == null &&
+        props.originStatus == props.currentStatus) ||
+      (currentSchedule.current &&
+        currentSchedule.current.status == props.currentStatus)
+    )
+      return;
+
+    let newSchedules = null;
+    if (currentSchedule.current) {
+      newSchedules = removeSchedule(
+        currentSchedule.current.status,
+        currentSchedule.current.datetime,
+        schedules,
+      );
+      currentSchedule.current = null;
+    } else {
+      newSchedules = [...schedules];
+    }
+    if (props.originStatus != props.currentStatus) {
+      const time = new Date();
+      const timeString = formatDateToLocal(time.toString(), true);
+      newSchedules = addSchedule(props.currentStatus, timeString, newSchedules);
+      currentSchedule.current = {
+        status: props.currentStatus,
+        datetime: timeString,
+      };
+    }
+    updateSchedule(newSchedules);
+  }, [
+    addSchedule,
+    props.currentStatus,
+    props.originStatus,
+    removeSchedule,
+    schedules,
+    updateSchedule,
+  ]);
+
+  const addScheduleHandler = useCallback(
+    (status: DigitalItemStatus, time: string) => {
+      // check current time
+      if (!isAfterTime(time)) return;
+
+      const newSchedules = addSchedule(status, time, schedules);
+      updateSchedule(newSchedules);
+    },
+    [addSchedule, isAfterTime, schedules, updateSchedule],
+  );
+
+  const removeScheduleHandler = useCallback(
+    (status: DigitalItemStatus, time: string) => {
+      // check current time
+      if (!isAfterTime(time)) return;
+
+      const newSchedules = removeSchedule(status, time, schedules);
+      updateSchedule(newSchedules);
+    },
+    [isAfterTime, removeSchedule, schedules, updateSchedule],
   );
 
   const changeScheduleHandler = useCallback(
     (status: DigitalItemStatus, oTime: string, nTime: string) => {
-      let newSchedules = [...schedules, { status, datetime: nTime }];
-      const index = newSchedules.findIndex(
-        (item) =>
-          item.status === status &&
-          new Date(item.datetime).getTime() == new Date(oTime).getTime(),
-      );
-      newSchedules.splice(index, 1);
-      newSchedules.sort((a, b) => {
-        const aTime = new Date(a.datetime).getTime();
-        const bTime = new Date(b.datetime).getTime();
-        return aTime - bTime;
-      });
-      setSchedules(newSchedules);
-      checkSchedules(newSchedules);
-      props.changeHandler(newSchedules);
+      // check current time
+      if (!isAfterTime(oTime)) return;
+      if (!isAfterTime(nTime)) return;
+
+      let newSchedules = removeSchedule(status, oTime, schedules);
+      newSchedules = addSchedule(status, nTime, newSchedules);
+      updateSchedule(newSchedules);
     },
-    [checkSchedules, props, schedules],
+    [addSchedule, isAfterTime, removeSchedule, schedules, updateSchedule],
   );
 
   return (

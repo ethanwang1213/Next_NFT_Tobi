@@ -20,6 +20,7 @@ import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
 import {
   DigitalItemStatus,
+  ScheduleItem,
   getDigitalItemStatusTitle,
 } from "ui/types/adminTypes";
 
@@ -234,7 +235,38 @@ const Detail = () => {
     statusConfirmDialogRef.current.showModal();
   };
 
+  const checkSchedules = useCallback((values: ScheduleItem[]) => {
+    if (values.length < 2) {
+      return true;
+    }
+
+    let prevStatus = null;
+    for (const schedule of values) {
+      if (prevStatus == null) {
+        prevStatus = schedule;
+        continue;
+      } else {
+        if (
+          prevStatus.status != schedule.status &&
+          prevStatus.datetime != schedule.datetime
+        ) {
+          prevStatus = schedule;
+          continue;
+        } else {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }, []);
+
   const saveButtonHandler = async () => {
+    if (!checkSchedules(digitalItem.schedules)) {
+      toast("Status change invalid: Cannot change to the same status.");
+      return;
+    }
+
     if (dataRef.current.status != digitalItem.status) {
       showStatusConfirmDialog();
       return;
@@ -583,7 +615,8 @@ const Detail = () => {
               <div className="flex flex-col gap-6 pr-11">
                 <h3 className="text-xl text-secondary">SCHEDULE</h3>
                 <ScheduleCalendar
-                  status={digitalItem.status}
+                  originStatus={dataRef.current.status}
+                  currentStatus={digitalItem.status}
                   schedules={digitalItem.schedules}
                   changeHandler={(v) => fieldChangeHandler("schedules", v)}
                 />
