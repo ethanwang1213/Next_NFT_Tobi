@@ -198,7 +198,7 @@ const ScheduleEditor = (props: {
                 timeCaption="時間"
                 className="hidden"
                 popperPlacement="top-end"
-                popperClassName=""
+                popperClassName="custom-datepicker-popper"
               />
             )}
           </div>
@@ -250,7 +250,7 @@ const ScheduleEditor = (props: {
                 timeCaption="時間"
                 className="hidden"
                 popperPlacement="top-end"
-                popperClassName=""
+                popperClassName="custom-datepicker-popper"
               />
             )}
           </div>
@@ -302,7 +302,7 @@ const ScheduleEditor = (props: {
                 timeCaption="時間"
                 className="hidden"
                 popperPlacement="top-end"
-                popperClassName=""
+                popperClassName="custom-datepicker-popper"
               />
             )}
           </div>

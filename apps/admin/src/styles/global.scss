@@ -253,3 +253,6 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   color: white;
 }
 
+.custom-datepicker-popper {
+  z-index: 10 !important;
+}
