@@ -91,57 +91,54 @@ const ShowcaseTabView = ({
         <ShowcaseTabSelector
           isActive={tab === "Sample Items"}
           onClick={() => handleTabChange("Sample Items")}
-          children={
-            <div className="flex items-center justify-center cursor-pointer">
-              <Image
-                width={12}
-                height={12}
-                alt="Sample Tab Icon"
-                src="/admin/images/icon/sample-icon.svg"
-                className="mr-2"
-              />
-              <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
-                Samples Items
-              </span>
-            </div>
-          }
-        />
+        >
+          <div className="flex items-center justify-center cursor-pointer">
+            <Image
+              width={12}
+              height={12}
+              alt="Sample Tab Icon"
+              src="/admin/images/icon/sample-icon.svg"
+              className="mr-2"
+            />
+            <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
+              Samples Items
+            </span>
+          </div>
+        </ShowcaseTabSelector>
         <ShowcaseTabSelector
           isActive={tab === "Inventory"}
           onClick={() => handleTabChange("Inventory")}
-          children={
-            <div className="flex items-center justify-center cursor-pointer">
-              <Image
-                width={16}
-                height={16}
-                alt="Inventory Tab Icon"
-                src="/admin/images/icon/inventory-icon.svg"
-                className="mr-2"
-              />
-              <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
-                Inventory
-              </span>
-            </div>
-          }
-        />
+        >
+          <div className="flex items-center justify-center cursor-pointer">
+            <Image
+              width={16}
+              height={16}
+              alt="Inventory Tab Icon"
+              src="/admin/images/icon/inventory-icon.svg"
+              className="mr-2"
+            />
+            <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
+              Inventory
+            </span>
+          </div>
+        </ShowcaseTabSelector>
         <ShowcaseTabSelector
           isActive={tab === "Settings"}
           onClick={() => handleTabChange("Settings")}
-          children={
-            <div className="flex items-center justify-center cursor-pointer">
-              <Image
-                width={16}
-                height={16}
-                alt="Setting Tab Icon"
-                src="/admin/images/icon/setting-icon.svg"
-                className="mr-2"
-              />
-              <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
-                Settings
-              </span>
-            </div>
-          }
-        />
+        >
+          <div className="flex items-center justify-center cursor-pointer">
+            <Image
+              width={16}
+              height={16}
+              alt="Setting Tab Icon"
+              src="/admin/images/icon/setting-icon.svg"
+              className="mr-2"
+            />
+            <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
+              Settings
+            </span>
+          </div>
+        </ShowcaseTabSelector>
       </div>
       <div className="tab-content flex flex-col w-full h-full bg-gray-600 bg-opacity-50 backdrop-blur-[25px] rounded-b-3xl">
         <div className="flex flex-1 pl-8 pr-8 pt-12 pb-12 w-full flex-col">
