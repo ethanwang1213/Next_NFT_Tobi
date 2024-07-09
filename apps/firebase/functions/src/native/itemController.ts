@@ -831,6 +831,7 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
       const allDigitalItems = await prisma.tobiratory_digital_items.findMany({
         where: {
           creator_uuid: uid,
+          is_deleted: false,
         },
         include: {
           sample_item: true,
@@ -1008,7 +1009,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
           sample_item: true,
         },
       });
-      if (!digitalItem) {
+      if (!digitalItem||digitalItem.is_deleted) {
         res.status(401).send({
           status: "error",
           data: "not-exist",
@@ -1133,9 +1134,9 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         },
         include: {
           sample_item: true,
-        }
+        },
       });
-      if (!digitalItem) {
+      if (!digitalItem||digitalItem.is_deleted) {
         res.status(404).send({
           status: "error",
           data: "not-exist",
@@ -1150,7 +1151,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         return;
       }
       if (status) {
-        if (status<=1||status>=7) {
+        if (status<1||status>7) {
           res.status(401).send({
             status: "error",
             data: "wrong-status",
@@ -1168,6 +1169,13 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
       if (schedules&&schedules.length>2) {
         for (let i = 0; i < schedules.length; i++) {
           const element1 = schedules[i];
+          if (element1.status<1||element1.status>7) {
+            res.status(401).send({
+              status: "error",
+              data: "wrong-status",
+            });
+            return;
+          }
           for (let j = i + 1; j < schedules.length; j++) {
             const element2 = schedules[j];
             if (element1.datetime==element2.datetime) {
