@@ -425,6 +425,23 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
           }},
         ],
       });
+      const totalRecord = await prisma.tobiratory_sample_items.count({
+        skip: skip,
+        take: defaultPageSize,
+        where: {
+          digital_item: {
+            status: {
+              in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
+            },
+          },
+        },
+        orderBy: [
+          {sale_quantity: "desc"},
+          {digital_item: {
+            name: "asc",
+          }},
+        ],
+      });
       const resultDigitalItems = digitalItems.map((sample)=>{
         return {
           sampleId: sample.id,
@@ -433,7 +450,12 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
       });
       res.status(200).send({
         status: "success",
-        data: resultDigitalItems,
+        data: {
+          pageNumber: pageNumber,
+          size: defaultPageSize,
+          totalRecord: totalRecord,
+          digitalItems: resultDigitalItems,
+        },
       });
     } catch (error) {
       res.status(401).send({
