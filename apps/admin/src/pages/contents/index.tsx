@@ -34,7 +34,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center">
+      <div className="h-14 ml-9 mr-7 mt-[34px] flex justify-between items-center">
         <h1 className="font-semibold text-secondary text-3xl">CONTENT</h1>
         <CreateButton {...(links[selectedTab] ?? links.showcase)} height={56} />
       </div>

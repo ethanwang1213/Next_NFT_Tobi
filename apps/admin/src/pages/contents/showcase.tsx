@@ -23,6 +23,7 @@ const Showcase = () => {
   const router = useRouter();
   const { id } = router.query;
   const [showDetailView, setShowDetailView] = useState(false);
+  const [showSampleDetailView, setShowSampleDetailView] = useState(false);
   const [showSmartFrame, setShowSmartFrame] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
@@ -118,6 +119,7 @@ const Showcase = () => {
   const [contentWidth, setContentWidth] = useState(0);
 
   const {
+    isLoaded,
     unityProvider,
     setLoadData,
     requestSaveData,
@@ -133,6 +135,10 @@ const Showcase = () => {
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onRemoveItemRequested,
+    onItemSelected(itemType, itemId) {
+      setShowSampleDetailView(true);
+      setSelectedSampleItem(itemId);
+    },
   });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -250,7 +256,6 @@ const Showcase = () => {
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
       // show detail view
-      setSelectedSampleItem(sample.id);
       const materialImageIndex = materialData.findIndex(
         (value) => value.id === sample.materialId,
       );
@@ -331,12 +336,17 @@ const Showcase = () => {
   return (
     <div className="w-full h-full relative">
       <ShowcaseEditUnity unityProvider={unityProvider} />
+      {!isLoaded && (
+        <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+          <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+        </div>
+      )}
       <div className="absolute left-0 right-0 top-0 bottom-0">
         <div
           className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
           style={{
             width: `${containerWidth}px`,
-            left: `${318 - 432}px`,
+            left: `${320 - 424}px`,
           }}
         >
           <span className="text-xl font-semibold text-[#858585] text-center mr-1">
@@ -371,9 +381,11 @@ const Showcase = () => {
             </Button>
           )}
         </div>
-        {showDetailView && <ShowcaseSampleDetail id={selectedSampleItem} />}
+        {showSampleDetailView && (
+          <ShowcaseSampleDetail id={selectedSampleItem} />
+        )}
         {/* Align component in the center */}
-        {/* 318px: width of left component. 504px: width of right component. */}
+        {/* 320px: width of left component. 424px: width of right component. */}
         <div
           className="w-[336px] mt-[72px] absolute"
           style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
@@ -478,23 +490,25 @@ const Showcase = () => {
             }}
           />
         )}
-        <div className="fixed mt-[24px] ml-[38px]">
-          <Link
-            href="/contents"
-            className="rounded-lg bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-md p-2"
-          >
-            <Image
-              width={32}
-              height={32}
-              alt="Link back Icon"
-              src="/admin/images/icon/arrow-back-icon.svg"
-            />
-            <span>Exit</span>
-          </Link>
-        </div>
+        {!showDetailView && (
+          <div className="fixed mt-[24px] ml-[38px]">
+            <Link
+              href="/contents"
+              className="rounded-lg bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-md p-2"
+            >
+              <Image
+                width={32}
+                height={32}
+                alt="Link back Icon"
+                src="/admin/images/icon/arrow-back-icon.svg"
+              />
+              <span>Exit</span>
+            </Link>
+          </div>
+        )}
         {showRestoreMenu && !showDetailView && (
           <div
-            className="absolute w-[56px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+            className="absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
               flex flex-col justify-center items-center z-10 select-none"
           >
             <Image

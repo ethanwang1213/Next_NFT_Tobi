@@ -42,7 +42,7 @@ const BoxInventoryTab = ({
           onClick={backRoot}
         />
       </div>
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center">
         <span className="text-center text-base font-semibold leading-[19.2px]">
           {title}
         </span>

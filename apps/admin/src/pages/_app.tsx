@@ -1,11 +1,12 @@
 import type { AppContext, AppProps } from "next/app";
 import { default as NextApp } from "next/app";
 
+import "@/styles/CropStyles.css";
 import "@/styles/global.scss";
 import "@/styles/PublicSwitch.css";
-import "@/styles/TripleToggleSwitch.scss";
-import "@/styles/CropStyles.css";
 import "@/styles/Spinner.css";
+import "@/styles/TabView.css";
+import "@/styles/TripleToggleSwitch.scss";
 import "react-easy-crop/react-easy-crop.css";
 import "swiper/css";
 import "swiper/css/effect-cards";
@@ -14,11 +15,11 @@ import basicAuthCheck from "@/methods/basicAuthCheck";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
-import Layout from "ui/organisms/admin/Layout";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
-import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
+import Layout from "ui/organisms/admin/Layout";
 
 config.autoAddCss = false;
 

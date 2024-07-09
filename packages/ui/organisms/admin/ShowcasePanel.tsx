@@ -359,7 +359,7 @@ const ShowcasePanel = () => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-x-36 gap-y-12 select-none">
+      <div className="flex flex-wrap gap-x-24 gap-y-12 select-none">
         {data &&
           data.length > 0 &&
           data.map((showcase, index) => {

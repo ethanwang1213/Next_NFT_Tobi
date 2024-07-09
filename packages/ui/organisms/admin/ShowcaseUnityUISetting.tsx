@@ -24,7 +24,7 @@ const ShowcaseUnityUISetting = () => {
   };
 
   return (
-    <div className="flex flex-col h-[192px] bg-[#717171] w-full rounded-t-2xl shadow-xl pl-12 pr-12 pt-8 pb-8 gap-4">
+    <div className="flex flex-col h-[192px] bg-[#565656] bg-opacity-75 backdrop-blur-[25px] w-full rounded-3xl shadow-xl pl-12 pr-12 pt-8 pb-8 gap-4">
       <div className="flex items-center h-8">
         <span className="text-xl font-bold w-[100px]">Position</span>
         <div className="flex gap-6">
