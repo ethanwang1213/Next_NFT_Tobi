@@ -67,7 +67,7 @@ import {
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
 import {getShowcaseTemplate, createMyShocase, updateMyShowcase, deleteMyShowcase, getMyShowcases, loadMyShowcase, saveMyShowcase, throwItemShowcase} from "./showcaseController";
-import {searchAll, searchContents, searchDigitalItems, searchSaidans, searchUsers} from "./searchController";
+import {hotPicksDigitalItem, searchAll, searchContents, searchDigitalItems, searchSaidans, searchUsers} from "./searchController";
 
 const app = express();
 app.use(cors({origin: true}));
@@ -93,6 +93,7 @@ app.get("/search/users", searchUsers);
 app.get("/search/contents", searchContents);
 app.get("/search/saidans", searchSaidans);
 app.get("/search/samples", searchDigitalItems);
+app.get("/hotpicks-digital-item", hotPicksDigitalItem);
 
 app.get("/accounts/:uid", getAccountById);
 app.get("/accounts/:uid/saidans", getOthersSaidans);

@@ -8,17 +8,18 @@ import ReactCrop, {
   makeAspectCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { MaterialItem } from "ui/types/adminTypes";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 import GenerateErrorComponent from "./GenerateErrorComponent";
 import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
-  materialImage: MaterialItem;
+  imageUrl: string;
   backHandler: () => void;
-  generateHandler: (image: string) => void;
+  nextHandler: (image: string) => void;
   error: boolean;
   errorHandler: () => void;
+  isGenerate: boolean;
+  isShowCropButtons: boolean;
 };
 
 function centerAspectCrop(
@@ -44,7 +45,7 @@ function centerAspectCrop(
 const MaterialImageCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
-  const blobUrlRef = useRef(props.materialImage.image);
+  const blobUrlRef = useRef(props.imageUrl);
   const [crop, setCrop] = useState<Crop>({
     unit: "%", // Can be 'px' or '%'
     x: 0,
@@ -88,7 +89,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     }
   }, []);
 
-  const cropHandler = useCallback(async () => {
+  const cropImage = useCallback(async () => {
     const image = imgRef.current;
     if (!image || crop.unit === "%") {
       throw new Error("Crop canvas does not exist");
@@ -103,17 +104,19 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
-    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+    const rotatedNaturalWidth =
+      image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedNaturalHeight =
+      image.naturalWidth * sin + image.naturalHeight * cos;
 
-    tempCanvas.width = rotatedWidth;
-    tempCanvas.height = rotatedHeight;
+    tempCanvas.width = rotatedNaturalWidth;
+    tempCanvas.height = rotatedNaturalHeight;
 
     // Translate and rotate the temporary canvas
-    tempCtx.translate(rotatedWidth / 2, rotatedHeight / 2);
+    tempCtx.translate(rotatedNaturalWidth / 2, rotatedNaturalHeight / 2);
     tempCtx.rotate(angleInRadians);
     tempCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
 
@@ -133,25 +136,26 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     }
 
     let sx, sy, sw, sh, dx, dy;
-    sx = (imgWrapperRef.current.clientWidth - rotatedWidth / scaleX) / 2;
-    sy = (imgWrapperRef.current.clientHeight - rotatedHeight / scaleY) / 2;
-    sw = rotatedWidth / scaleX;
-    sh = rotatedHeight / scaleY;
+    sx = (imgWrapperRef.current.clientWidth - rotatedNaturalWidth / scaleX) / 2;
+    sy =
+      (imgWrapperRef.current.clientHeight - rotatedNaturalHeight / scaleY) / 2;
+    sw = rotatedNaturalWidth / scaleX;
+    sh = rotatedNaturalHeight / scaleY;
     sw = Math.min(sx + sw, crop.x + crop.width) - Math.max(sx, crop.x);
     sh = Math.min(sy + sh, crop.y + crop.height) - Math.max(sy, crop.y);
     if (sx < crop.x) {
       sx = crop.x - sx;
       dx = 0;
     } else {
-      sx = 0;
       dx = sx - crop.x;
+      sx = 0;
     }
     if (sy < crop.y) {
       sy = crop.y - sy;
       dy = 0;
     } else {
-      sy = 0;
       dy = sy - crop.y;
+      sy = 0;
     }
 
     ctx.drawImage(
@@ -159,7 +163,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       sx * scaleX,
       sy * scaleY,
       sw * scaleX,
-      sw * scaleY,
+      sh * scaleY,
       dx,
       dy,
       sw,
@@ -178,15 +182,15 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     blobUrlRef.current = URL.createObjectURL(blob);
   }, [crop, rotate]);
 
-  const generateHandler = useCallback(async () => {
+  const nextHandler = useCallback(async () => {
     setProcessing(true);
 
-    if (blobUrlRef.current === null) {
-      await cropHandler();
+    if (rotate != 180 || blobUrlRef.current === null) {
+      await cropImage();
     }
 
-    props.generateHandler(blobUrlRef.current);
-  }, [props, cropHandler]);
+    props.nextHandler(blobUrlRef.current);
+  }, [cropImage, props, rotate]);
 
   return (
     <div className="h-full relative">
@@ -200,14 +204,16 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
           <ReactCrop
             crop={crop}
             onChange={(c) => {
-              imgRef.current = null;
+              blobUrlRef.current = null;
               setCrop(c);
             }}
             aspect={aspect}
             keepSelection={true}
           >
             <div
-              className="w-[400px] h-[352px] flex justify-center items-center"
+              className={`w-[400px] ${
+                props.isShowCropButtons ? "h-[352px]" : "h-[376px]"
+              } flex justify-center items-center`}
               ref={imgWrapperRef}
             >
               {loading && (
@@ -219,7 +225,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   ref={imgRef}
-                  src={props.materialImage.image}
+                  src={props.imageUrl}
                   alt="crop image"
                   style={{
                     maxWidth: "100%",
@@ -236,64 +242,66 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
             </div>
           </ReactCrop>
           <div className="mt-2 flex flex-col items-center">
-            <div className="flex gap-4">
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop.svg"
-                alt="crop"
-                className={`cursor-pointer rounded hover:bg-neutral-200`}
-                onClick={cropHandler}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_16_9.svg"
-                alt="crop 16:9"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+            {props.isShowCropButtons && (
+              <div className="flex gap-4">
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop.svg"
+                  alt="crop"
+                  className={`cursor-pointer rounded hover:bg-neutral-200`}
+                  onClick={cropImage}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_16_9.svg"
+                  alt="crop 16:9"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${aspect === 9 / 16 ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(9 / 16);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_3_2.svg"
-                alt="crop 3:2"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+                  onClick={() => {
+                    toggleAspectHandler(9 / 16);
+                  }}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_3_2.svg"
+                  alt="crop 3:2"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${
                 Math.floor(aspect * 100) === Math.floor(200 / 3)
                   ? "bg-neutral-200"
                   : ""
               }`}
-                onClick={() => {
-                  toggleAspectHandler(2 / 3);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_square.svg"
-                alt="crop square"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+                  onClick={() => {
+                    toggleAspectHandler(2 / 3);
+                  }}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_square.svg"
+                  alt="crop square"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${aspect === 1 ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(1);
-                }}
-              />
-              <NextImage
-                width={24}
-                height={24}
-                src="/admin/images/icon/crop_free.svg"
-                alt="crop free"
-                className={`cursor-pointer rounded hover:bg-neutral-200
+                  onClick={() => {
+                    toggleAspectHandler(1);
+                  }}
+                />
+                <NextImage
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/crop_free.svg"
+                  alt="crop free"
+                  className={`cursor-pointer rounded hover:bg-neutral-200
               ${aspect === undefined ? "bg-neutral-200" : ""}`}
-                onClick={() => {
-                  toggleAspectHandler(undefined);
-                }}
-              />
-            </div>
+                  onClick={() => {
+                    toggleAspectHandler(undefined);
+                  }}
+                />
+              </div>
+            )}
             <RotateSliderComponent
               className="mt-[18px] -mb-[18px]"
               rotate={rotate}
@@ -302,9 +310,9 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
           </div>
           <ButtonGroupComponent
             backButtonHandler={props.backHandler}
-            nextButtonHandler={generateHandler}
+            nextButtonHandler={nextHandler}
             disabled={false}
-            isGenerate={true}
+            isGenerate={props.isGenerate}
           />
         </div>
       ) : (

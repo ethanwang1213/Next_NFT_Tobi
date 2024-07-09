@@ -33,14 +33,25 @@ const sampleCreateRoadmapTitles = {
   ],
   messagecard: [
     {
-      title: "Select a material",
-      description: "ポスターにする素材を選択してください",
+      title: "Select Sheet Material",
+      description: "Select the sheet material for the message card.",
     },
     {
-      title: "Crop",
-      description: "ポスターにしたい範囲で切り抜きしてください",
+      title: "Crop Sheet",
+      description: "Crop the sheet as needed.",
     },
-    { title: "Generate", description: "" },
+    {
+      title: "Select Text Material",
+      description: "Select the text material for the message card.",
+    },
+    {
+      title: "Adjust Text",
+      description: "Adjust the position and size of the text",
+    },
+    {
+      title: "Combine",
+      description: "Combine the sheet and text to generate a single item.",
+    },
   ],
   acrylickeyholder: [
     {

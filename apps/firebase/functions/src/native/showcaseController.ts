@@ -724,6 +724,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },
           create: {
+            id: sample.id>0?sample.id:undefined,
             showcase_id: isShowcase.id,
             sample_id: sample.itemId,
             stage_type: sample.stageType,

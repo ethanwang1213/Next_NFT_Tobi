@@ -6,9 +6,8 @@ import RotateSliderComponent from "./RotateSliderComponent";
 
 type Props = {
   imageUrl: string;
-  uploadImageHandler: (image: string) => Promise<string>;
   backHandler: () => void;
-  nextHandler: () => void;
+  nextHandler: (image: string) => void;
   error: boolean;
   errorHandler: () => void;
 };
@@ -34,17 +33,19 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
     }
 
     // Calculate the bounding box of the rotated image
-    const angleInRadians = ((360 - rotate) * Math.PI) / 180;
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
-    const rotatedWidth = image.naturalWidth * cos + image.naturalHeight * sin;
-    const rotatedHeight = image.naturalWidth * sin + image.naturalHeight * cos;
+    const rotatedNaturalWidth =
+      image.naturalWidth * cos + image.naturalHeight * sin;
+    const rotatedNaturalHeight =
+      image.naturalWidth * sin + image.naturalHeight * cos;
 
-    rotateCanvas.width = rotatedWidth;
-    rotateCanvas.height = rotatedHeight;
+    rotateCanvas.width = rotatedNaturalWidth;
+    rotateCanvas.height = rotatedNaturalHeight;
 
     // Translate and rotate the canvas
-    rotateCtx.translate(rotatedWidth / 2, rotatedHeight / 2);
+    rotateCtx.translate(rotatedNaturalWidth / 2, rotatedNaturalHeight / 2);
     rotateCtx.rotate(angleInRadians);
     rotateCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
 
@@ -68,8 +69,8 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
     if (rotate !== 180) {
       await cropImage();
     }
-    const url = await props.uploadImageHandler(blobUrlRef.current);
-    if (url != "") props.nextHandler();
+
+    props.nextHandler(blobUrlRef.current);
   }, [rotate, props, cropImage]);
 
   return (
