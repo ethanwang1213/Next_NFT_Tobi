@@ -6,7 +6,7 @@ import {
   FUNGIBLE_TOKEN_ADDRESS,
   NON_FUNGIBLE_TOKEN_ADDRESS,
   REGION,
-  digital_items_ADDRESS,
+  TOBIRATORY_DIGITAL_ITEMS_ADDRESS,
   TOPIC_NAMES,
 } from "./lib/constants";
 import * as fcl from "@onflow/fcl";
@@ -206,7 +206,7 @@ type Metadata = {
 
 const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: number, metadata: Metadata) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
-  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const fungibleTokenAddress = FUNGIBLE_TOKEN_ADDRESS;
 
   const digitalItem = await prisma.digital_items.findUnique({
@@ -413,11 +413,11 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
               business: {
                 include: {
                   content: true,
-                }
-              }
-            }
-          }
-        }
+                },
+              },
+            },
+          },
+        },
       });
       if (!digitalItem) {
         throw new Error("DigitalItem does not found");
@@ -425,7 +425,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
 
       let dbCreatorName = "";
       if (digitalItem.account.business?.content) {
-          dbCreatorName = digitalItem.account.business?.content.name;
+        dbCreatorName = digitalItem.account.business?.content.name;
       } else {
         const user = await prisma.accounts.findUnique({
           where: {
@@ -525,7 +525,7 @@ function arraysEqual(a: any[], b: any[]): boolean {
 
 const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: string, itemId: number, digitalItemId: number) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
-  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   const digitalItem = await prisma.digital_items.findUnique({
     where: {
@@ -537,11 +537,11 @@ const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: 
           business: {
             include: {
               content: true,
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
   if (!digitalItem) {
     throw new functions.https.HttpsError("not-found", "The sample item does not exist.");
@@ -669,7 +669,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
 
 const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: number, receiveFlowId: string) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
-  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   const digitalItemNft = await prisma.digital_item_nfts.findUnique({
     where: {
@@ -792,7 +792,7 @@ const sendCreateAccountTx = async () => {
   const {privKey, pubKey} = generateKeyPair();
 
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
-  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   // TODO: Add initialization for Tobiratory-related NFT Collection
   const cadence = `\

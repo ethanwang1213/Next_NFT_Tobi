@@ -409,26 +409,26 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
         skip: skip,
         take: defaultPageSize,
         where: {
-            status: {
-              in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
-            },
+          status: {
+            in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
+          },
         },
         orderBy: [
           {sale_quantity: "desc"},
-           {
+          {
             name: "asc",
           },
         ],
       });
       const totalRecord = await prisma.digital_items.findMany({
         where: {
-            status: {
-              in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
-            },
+          status: {
+            in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
+          },
         },
         orderBy: [
           {sale_quantity: "desc"},
-           {
+          {
             name: "asc",
           },
         ],

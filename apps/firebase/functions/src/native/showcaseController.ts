@@ -62,7 +62,7 @@ export const createMyShocase = async (req: Request, res: Response) => {
         },
         include: {
           content: true,
-        }
+        },
       });
       if (!admin) {
         res.status(401).send({
@@ -288,7 +288,7 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         },
         include: {
           content: true,
-        }
+        },
       });
       if (!admin) {
         res.status(401).send({
@@ -336,7 +336,7 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         },
         data: {
           is_deleted: true,
-        }
+        },
       });
       res.status(200).send({
         status: "success",

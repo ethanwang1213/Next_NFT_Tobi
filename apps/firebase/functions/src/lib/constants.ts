@@ -33,7 +33,7 @@ export const NON_FUNGIBLE_TOKEN_ADDRESS =
     process.env.FLOW_NETWORK === "testnet" ? "0x631e88ae7f1d7c20" :
             "0xf8d6e0586b0a20c7";
 
-export const digital_items_ADDRESS =
+export const TOBIRATORY_DIGITAL_ITEMS_ADDRESS =
     process.env.FLOW_NETWORK === "mainnet" ? "TODO" :
         process.env.FLOW_NETWORK === "testnet" ? "5e9ccdb91ff7ad93" :
             "f8d6e0586b0a20c7";

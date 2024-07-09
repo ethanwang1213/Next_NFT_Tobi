@@ -527,7 +527,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         },
         include: {
           content: true,
-        }
+        },
       });
       if (!admin) {
         res.status(401).send({
@@ -759,8 +759,8 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
           uuid: uid,
         },
         include: {
-          content: true
-        }
+          content: true,
+        },
       });
       if (!admin) {
         res.status(401).send({
@@ -877,8 +877,8 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           uuid: uid,
         },
         include: {
-          content: true
-        }
+          content: true,
+        },
       });
       if (!admin) {
         res.status(401).send({
@@ -1032,7 +1032,7 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
               copyright: true,
             },
           },
-          account:  true,
+          account: true,
         },
       });
       if (!digitalItemData) {

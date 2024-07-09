@@ -71,7 +71,6 @@ class MintError extends Error {
 }
 
 export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: string) => {
-
   const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: parseInt(id),
@@ -81,13 +80,13 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         include: {
           business: {
             include: {
-              content:true,
-            }
+              content: true,
+            },
           },
           flow_account: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
   if (!digitalItem) {
     throw new MintError(404, "DigitalItem does not found");
@@ -107,21 +106,21 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
 
   const itemId = digitalItem.item_id;
   const digitalItemId = digitalItem.id;
-  
+
   if (!digitalItem.account.flow_account) {
     throw new MintError(404, "FlowAccount does not found");
   }
 
   let creatorName;
-    if (digitalItem.account.business.content) {
-      creatorName = digitalItem.account.business.content.name;
-    } else {
-      if (!digitalItem.account) {
-        throw new MintError(404, "User does not found");
-      }
-      creatorName = digitalItem.account.username;
+  if (digitalItem.account.business.content) {
+    creatorName = digitalItem.account.business.content.name;
+  } else {
+    if (!digitalItem.account) {
+      throw new MintError(404, "User does not found");
     }
-  
+    creatorName = digitalItem.account.username;
+  }
+
   const copyrightRelate = await prisma.digital_items_copyright.findMany({
     where: {
       digital_item_id: digitalItem.id,
@@ -252,9 +251,9 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
       account: {
         include: {
           flow_account: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
   if (!digitalItemNft) {
     throw new GiftError(404, "NFT does not found");

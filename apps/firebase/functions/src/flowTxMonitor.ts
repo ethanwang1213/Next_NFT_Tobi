@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {PubSub} from "@google-cloud/pubsub";
-import {REGION, digital_items_ADDRESS, TOPIC_NAMES} from "./lib/constants";
+import {REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "./lib/constants";
 import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
@@ -136,7 +136,7 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
 };
 
 const fetchCreateItem = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   for (const event of tx.events) {
@@ -156,9 +156,9 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       account: {
         include: {
           business: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
   const nft = await prisma.digital_item_nfts.findUnique({
     where: {
@@ -245,7 +245,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
 };
 
 const fetchMintNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   const result: {
@@ -276,7 +276,7 @@ const fetchMintNFT = async (txId: string) => {
 
 const fetchMintLimit = async (itemId: number, creatorFlowAccount: string) => {
   const cadence = `
-import TobiratoryDigitalItems from 0x${digital_items_ADDRESS}
+import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
     
 pub fun main(address: Address, itemID: UInt64): UInt32? {
     let items = getAccount(address)
@@ -295,7 +295,7 @@ pub fun main(address: Address, itemID: UInt64): UInt32? {
 
 const fetchMintedCount = async (itemId: number, creatorFlowAccount: string) => {
   const cadence = `
-import TobiratoryDigitalItems from 0x${digital_items_ADDRESS}
+import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
 
 pub fun main(address: Address, itemID: UInt64): UInt32? {
     let items = getAccount(address)
@@ -386,7 +386,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
 };
 
 const fetchGiftNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
+  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   const result: { withdraw: {
