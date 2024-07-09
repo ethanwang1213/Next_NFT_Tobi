@@ -152,6 +152,13 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     where: {
       id: digitalItemId,
     },
+    include: {
+      account: {
+        include: {
+          business: true,
+        }
+      }
+    }
   });
   const nft = await prisma.digital_item_nfts.findUnique({
     where: {
@@ -169,12 +176,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     throw new Error("TX_NOT_FOUND");
   }
 
-  const sampleItem = await prisma.sample_items.findUnique({
-    where: {
-      digital_item_id: digitalItemId,
-    },
-  });
-  if (!sampleItem) {
+  if (!digitalItem) {
     throw new Error("SAMPLE_ITEM_NOT_FOUND");
   }
 
@@ -191,7 +193,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   const mintedCount = await fetchMintedCount(itemId, creatorAddress);
 
   let status = statusOfSample.private;
-  if (sampleItem.content_id) {
+  if (digitalItem.account.business) {
     status = statusOfSample.public;
   }
 
@@ -227,7 +229,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     data: {
       nft_id: digitalItemNftId,
       tx_id: txId,
-      owner_uuid: flowAccount.uuid,
+      account_uuid: flowAccount.account_uuid,
       owner_flow_address: to,
     },
   });
@@ -332,12 +334,12 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
       },
     });
     if (toFlowRef) {
-      const toFlowAccountUuid = toFlowRef.uuid;
+      const toFlowAccountUuid = toFlowRef.account_uuid;
       await prisma.nft_ownerships.create({
         data: {
           nft_id: nftId,
           tx_id: txId,
-          owner_uuid: toFlowAccountUuid,
+          account_uuid: toFlowAccountUuid,
           owner_flow_address: deposit.to,
         },
       });
@@ -346,7 +348,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
           id: nftId,
         },
         data: {
-          owner_uuid: toFlowAccountUuid,
+          account_uuid: toFlowAccountUuid,
           box_id: 0,
           gift_status: "",
         },
@@ -356,7 +358,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
         data: {
           nft_id: nftId,
           tx_id: txId,
-          owner_uuid: null,
+          account_uuid: null,
           owner_flow_address: deposit.to,
         },
       });
@@ -365,7 +367,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
           id: nftId,
         },
         data: {
-          owner_uuid: null,
+          account_uuid: null,
           box_id: 0,
           gift_status: "",
         },
@@ -469,7 +471,7 @@ const upsertFlowAccountRecord = async (
 ) => {
   await prisma.flow_accounts.upsert({
     where: {
-      uuid: tobiratoryAccountUuid,
+      account_uuid: tobiratoryAccountUuid,
     },
     update: {
       flow_address: address,
@@ -477,7 +479,7 @@ const upsertFlowAccountRecord = async (
       tx_id: txId,
     },
     create: {
-      uuid: tobiratoryAccountUuid,
+      account_uuid: tobiratoryAccountUuid,
       flow_address: address,
       public_key: publicKey,
       tx_id: txId,

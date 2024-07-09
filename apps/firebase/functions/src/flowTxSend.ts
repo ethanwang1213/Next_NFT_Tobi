@@ -176,7 +176,6 @@ const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string,
       },
       data: {
         nft_metadata: JSON.stringify(metadata),
-        nft_model: metadata.modelUrl,
       },
     });
     return {id: digitalItemNftId};
@@ -184,9 +183,8 @@ const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string,
     const nft = await prisma.digital_item_nfts.create({
       data: {
         digital_item_id: digitalItemId,
-        owner_uuid: ownerUuid,
+        account_uuid: ownerUuid,
         nft_metadata: JSON.stringify(metadata),
-        nft_model: metadata.modelUrl,
         mint_status: "minting",
       },
     });
@@ -219,7 +217,7 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
   if (!digitalItem) {
     throw new functions.https.HttpsError("not-found", "The digital item does not exist.");
   }
-  const creatorUuid = digitalItem.creator_uuid;
+  const creatorUuid = digitalItem.account_uuid;
   const flowAccountDocRef = await getFlowAccountDocRef(creatorUuid);
   if (!flowAccountDocRef) {
     throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
@@ -409,40 +407,29 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         where: {
           id: digitalItemId,
         },
+        include: {
+          account: {
+            include: {
+              business: {
+                include: {
+                  content: true,
+                }
+              }
+            }
+          }
+        }
       });
       if (!digitalItem) {
         throw new Error("DigitalItem does not found");
       }
 
       let dbCreatorName = "";
-      const sampleItem = await prisma.sample_items.findUnique({
-        where: {
-          digital_item_id: digitalItem.id,
-        },
-      });
-      if (sampleItem?.content_id) {
-        const content = await prisma.contents.findUnique({
-          where: {
-            id: sampleItem?.content_id,
-          },
-        });
-        if (content) {
-          dbCreatorName = content.name;
-        } else {
-          const user = await prisma.accounts.findUnique({
-            where: {
-              uuid: digitalItem.creator_uuid,
-            },
-          });
-          if (!user) {
-            throw new Error("User does not found");
-          }
-          dbCreatorName = user.username;
-        }
+      if (digitalItem.account.business?.content) {
+          dbCreatorName = digitalItem.account.business?.content.name;
       } else {
         const user = await prisma.accounts.findUnique({
           where: {
-            uuid: digitalItem.creator_uuid,
+            uuid: digitalItem.account_uuid,
           },
         });
         if (!user) {
@@ -463,7 +450,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
                 id: relate.copyright_id,
               },
             });
-            return copyrightData?.copyright_name;
+            return copyrightData?.name;
           })
       );
 
@@ -472,7 +459,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
-        modelUrl: sampleItem?.model_url,
+        modelUrl: digitalItem?.model_url,
         creatorName: dbCreatorName,
         limit: digitalItem.limit,
         license: digitalItem.license,
@@ -540,26 +527,28 @@ const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: 
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
 
-  const sampleItem = await prisma.sample_items.findUnique({
+  const digitalItem = await prisma.digital_items.findUnique({
     where: {
-      digital_item_id: digitalItemId,
+      id: digitalItemId,
     },
+    include: {
+      account: {
+        include: {
+          business: {
+            include: {
+              content: true,
+            }
+          }
+        }
+      }
+    }
   });
-  if (!sampleItem) {
+  if (!digitalItem) {
     throw new functions.https.HttpsError("not-found", "The sample item does not exist.");
   }
-  const contentId = sampleItem.content_id;
   let creatorUuid = tobiratoryAccountUuid;
-  if (contentId) {
-    const content = await prisma.contents.findUnique({
-      where: {
-        id: contentId,
-      },
-    });
-    if (!content) {
-      throw new functions.https.HttpsError("not-found", "The content does not exist.");
-    }
-    creatorUuid = content.owner_uuid;
+  if (digitalItem.account.business?.content) {
+    creatorUuid = digitalItem.account.business?.content.businesses_uuid;
   }
 
   const creatorAccountDocRef = await getFlowAccountDocRef(creatorUuid);
@@ -647,7 +636,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
         throw new Error("DigitalItem does not found");
       }
 
-      const flowAccountDocRef = await getFlowAccountDocRef(digitalItem.creator_uuid);
+      const flowAccountDocRef = await getFlowAccountDocRef(digitalItem.account_uuid);
       if (!flowAccountDocRef) {
         throw new functions.https.HttpsError("not-found", "The flow account does not exist.");
       }

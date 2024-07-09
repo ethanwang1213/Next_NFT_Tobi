@@ -71,36 +71,32 @@ class MintError extends Error {
 }
 
 export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: string) => {
-  const sampleItem = await prisma.sample_items.findUnique({
-    where: {
-      id: parseInt(id),
-      is_deleted: false,
-    },
-  });
-  if (!sampleItem) {
-    throw new MintError(404, "SampleItem does not found");
-  }
 
   const digitalItem = await prisma.digital_items.findUnique({
     where: {
-      id: sampleItem.digital_item_id,
+      id: parseInt(id),
     },
+    include: {
+      account: {
+        include: {
+          business: {
+            include: {
+              content:true,
+            }
+          },
+          flow_account: true,
+        }
+      }
+    }
   });
   if (!digitalItem) {
     throw new MintError(404, "DigitalItem does not found");
   }
 
-  if (sampleItem.content_id) {
-    const content = await prisma.contents.findUnique({
-      where: {
-        id: sampleItem.content_id,
-      },
-    });
-    if (!content) {
-      throw new MintError(404, "Content does not found");
-    }
+  if (!digitalItem.account.business?.content) {
+    throw new MintError(404, "Content does not found");
   } else {
-    if (digitalItem.creator_uuid !== uid) {
+    if (digitalItem.account_uuid !== uid) {
       throw new MintError(401, "You are not creator of this digital item");
     }
   }
@@ -111,47 +107,21 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
 
   const itemId = digitalItem.item_id;
   const digitalItemId = digitalItem.id;
-  const creatorUuid = digitalItem.creator_uuid;
-  const flowAccount = await prisma.flow_accounts.findUnique({
-    where: {
-      uuid: creatorUuid,
-    },
-  });
-  if (!flowAccount) {
+  
+  if (!digitalItem.account.flow_account) {
     throw new MintError(404, "FlowAccount does not found");
   }
 
   let creatorName;
-  if (sampleItem.content_id) {
-    const content = await prisma.contents.findUnique({
-      where: {
-        id: sampleItem.content_id,
-      },
-    });
-    if (content) {
-      creatorName = content.name;
+    if (digitalItem.account.business.content) {
+      creatorName = digitalItem.account.business.content.name;
     } else {
-      const user = await prisma.accounts.findUnique({
-        where: {
-          uuid: digitalItem.creator_uuid,
-        },
-      });
-      if (!user) {
+      if (!digitalItem.account) {
         throw new MintError(404, "User does not found");
       }
-      creatorName = user.username;
+      creatorName = digitalItem.account.username;
     }
-  } else {
-    const user = await prisma.accounts.findUnique({
-      where: {
-        uuid: digitalItem.creator_uuid,
-      },
-    });
-    if (!user) {
-      throw new MintError(404, "User does not found");
-    }
-    creatorName = user.username;
-  }
+  
   const copyrightRelate = await prisma.digital_items_copyright.findMany({
     where: {
       digital_item_id: digitalItem.id,
@@ -164,7 +134,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
             id: relate.copyright_id,
           },
         });
-        return copyrightData?.copyright_name;
+        return copyrightData?.name;
       })
   );
 
@@ -184,7 +154,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
     const flowJobId = uuidv4();
     const message = {flowJobId, txType: "mintNFT", params: {
       tobiratoryAccountUuid: uid,
-      itemCreatorAddress: flowAccount.flow_address,
+      itemCreatorAddress: digitalItem.account.flow_account.flow_address,
       itemId,
       digitalItemId,
       digitalItemNftId: undefined,
@@ -194,25 +164,11 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   } else {
-    await prisma.sample_items.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: {
-        model_url: modelUrl,
-      },
-    });
-    const content = await prisma.contents.findUnique({
-      where: {
-        owner_uuid: uid,
-      },
-    });
     const nft = await prisma.digital_item_nfts.create({
       data: {
         digital_item_id: digitalItem.id,
-        owner_uuid: uid,
+        account_uuid: uid,
         mint_status: "minting",
-        content_id: content?.id,
       },
     });
     const flowJobId = uuidv4();
@@ -292,22 +248,24 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
     where: {
       id: id,
     },
+    include: {
+      account: {
+        include: {
+          flow_account: true,
+        }
+      }
+    }
   });
   if (!digitalItemNft) {
     throw new GiftError(404, "NFT does not found");
   }
-  if (digitalItemNft.owner_uuid !== uid) {
+  if (digitalItemNft.account_uuid !== uid) {
     throw new GiftError(401, "You are not owner of this NFT");
   }
-  const flowAccount = await prisma.flow_accounts.findUnique({
-    where: {
-      uuid: uid,
-    },
-  });
-  if (!flowAccount) {
+  if (!digitalItemNft.account?.flow_account) {
     throw new GiftError(404, "FlowAccount does not found");
   }
-  if (flowAccount.flow_address === receiveFlowId) {
+  if (digitalItemNft.account?.flow_account.flow_address === receiveFlowId) {
     throw new GiftError(401, "You can not gift to yourself");
   }
   if (digitalItemNft.gift_status === "gifting") {
