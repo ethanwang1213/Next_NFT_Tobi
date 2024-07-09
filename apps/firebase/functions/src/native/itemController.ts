@@ -18,13 +18,6 @@ export const ModelRequestType = {
 
 export type ModelRequestType = (typeof ModelRequestType)[keyof typeof ModelRequestType];
 
-const getPathAfterBucket = (urlString: string) => {
-  const url = new URL(urlString);
-  const paths = url.pathname.split("/");
-  // index 0 is empty, index 1 is bucket name.
-  return paths.slice(2).join("/");
-};
-
 export const modelApiHandler = (type: ModelRequestType) => {
   return async (req: Request, res: Response) => {
     const modelApiUrl = process.env.MODEL_API_URL;
@@ -74,8 +67,8 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string, mode
     uid,
     token,
     process_type: ModelRequestType.AcrylicStand,
-    image1: getPathAfterBucket(bodyUrl),
-    image2: baseUrl ? getPathAfterBucket(baseUrl) : undefined,
+    image1: bodyUrl,
+    image2: baseUrl,
     coords1: coords,
   };
   const urlParams = new URLSearchParams();
@@ -117,7 +110,7 @@ const createMessageCard = async (req: Request, res: Response, uid: string, model
     uid,
     token,
     process_type: ModelRequestType.MessageCard,
-    image1: getPathAfterBucket(url),
+    image1: url,
   };
   const urlParams = new URLSearchParams();
   Object.keys(params).forEach((key)=>{
@@ -157,7 +150,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
     uid,
     token,
     process_type: ModelRequestType.RemoveBg,
-    image1: getPathAfterBucket(url),
+    image1: url,
   };
   const urlParams = new URLSearchParams();
   Object.keys(params).forEach((key)=>{
