@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {PubSub} from "@google-cloud/pubsub";
-import {REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "./lib/constants";
+import {REGION, digital_items_ADDRESS, TOPIC_NAMES} from "./lib/constants";
 import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
@@ -97,9 +97,9 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
 });
 
 const fetchFlowAccount = async (creatorUuid: string) => {
-  const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
+  const flowAccount = await prisma.flow_accounts.findUnique({
     where: {
-      uuid: creatorUuid,
+      account_uuid: creatorUuid,
     },
   });
 
@@ -110,7 +110,7 @@ const fetchFlowAccount = async (creatorUuid: string) => {
 };
 
 const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
-  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+  const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: digitalItemId,
     },
@@ -123,7 +123,7 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
     throw new Error("TX_NOT_FOUND");
   }
   const {id, creatorAddress} = await fetchCreateItem(txId);
-  await prisma.tobiratory_digital_items.update({
+  await prisma.digital_items.update({
     where: {
       id: digitalItemId,
     },
@@ -136,7 +136,7 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
 };
 
 const fetchCreateItem = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   for (const event of tx.events) {
@@ -148,12 +148,12 @@ const fetchCreateItem = async (txId: string) => {
 };
 
 const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, digitalItemNftId: number) => {
-  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+  const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: digitalItemId,
     },
   });
-  const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
+  const nft = await prisma.digital_item_nfts.findUnique({
     where: {
       id: digitalItemNftId,
     },
@@ -169,7 +169,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     throw new Error("TX_NOT_FOUND");
   }
 
-  const sampleItem = await prisma.tobiratory_sample_items.findUnique({
+  const sampleItem = await prisma.sample_items.findUnique({
     where: {
       digital_item_id: digitalItemId,
     },
@@ -195,7 +195,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     status = statusOfSample.public;
   }
 
-  await prisma.tobiratory_digital_item_nfts.update({
+  await prisma.digital_item_nfts.update({
     where: {
       id: digitalItemNftId,
     },
@@ -205,7 +205,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       box_id: 0,
     },
   });
-  await prisma.tobiratory_digital_items.update({
+  await prisma.digital_items.update({
     where: {
       id: digitalItemId,
     },
@@ -215,7 +215,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       status: status,
     },
   });
-  const flowAccount = await prisma.tobiratory_flow_accounts.findFirst({
+  const flowAccount = await prisma.flow_accounts.findFirst({
     where: {
       flow_address: to,
     },
@@ -223,7 +223,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   if (!flowAccount) {
     throw new Error("FLOW_ACCOUNT_NOT_FOUND");
   }
-  await prisma.tobiratory_digital_nft_ownership.create({
+  await prisma.nft_ownerships.create({
     data: {
       nft_id: digitalItemNftId,
       tx_id: txId,
@@ -243,7 +243,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
 };
 
 const fetchMintNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   const result: {
@@ -274,7 +274,7 @@ const fetchMintNFT = async (txId: string) => {
 
 const fetchMintLimit = async (itemId: number, creatorFlowAccount: string) => {
   const cadence = `
-import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
+import TobiratoryDigitalItems from 0x${digital_items_ADDRESS}
     
 pub fun main(address: Address, itemID: UInt64): UInt32? {
     let items = getAccount(address)
@@ -293,7 +293,7 @@ pub fun main(address: Address, itemID: UInt64): UInt32? {
 
 const fetchMintedCount = async (itemId: number, creatorFlowAccount: string) => {
   const cadence = `
-import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
+import TobiratoryDigitalItems from 0x${digital_items_ADDRESS}
 
 pub fun main(address: Address, itemID: UInt64): UInt32? {
     let items = getAccount(address)
@@ -312,7 +312,7 @@ pub fun main(address: Address, itemID: UInt64): UInt32? {
 };
 
 const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
-  const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
+  const nft = await prisma.digital_item_nfts.findUnique({
     where: {
       id: nftId,
     },
@@ -326,14 +326,14 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
   }
   const {withdraw, deposit} = await fetchGiftNFT(txId);
   if (withdraw && deposit) {
-    const toFlowRef = await prisma.tobiratory_flow_accounts.findFirst({
+    const toFlowRef = await prisma.flow_accounts.findFirst({
       where: {
         flow_address: deposit.to,
       },
     });
     if (toFlowRef) {
       const toFlowAccountUuid = toFlowRef.uuid;
-      await prisma.tobiratory_digital_nft_ownership.create({
+      await prisma.nft_ownerships.create({
         data: {
           nft_id: nftId,
           tx_id: txId,
@@ -341,7 +341,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
           owner_flow_address: deposit.to,
         },
       });
-      await prisma.tobiratory_digital_item_nfts.update({
+      await prisma.digital_item_nfts.update({
         where: {
           id: nftId,
         },
@@ -352,7 +352,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
         },
       });
     } else {
-      await prisma.tobiratory_digital_nft_ownership.create({
+      await prisma.nft_ownerships.create({
         data: {
           nft_id: nftId,
           tx_id: txId,
@@ -360,7 +360,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
           owner_flow_address: deposit.to,
         },
       });
-      await prisma.tobiratory_digital_item_nfts.update({
+      await prisma.digital_item_nfts.update({
         where: {
           id: nftId,
         },
@@ -384,7 +384,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
 };
 
 const fetchGiftNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const tobiratoryDigitalItemsAddress = digital_items_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(tx);
   const result: { withdraw: {
@@ -467,7 +467,7 @@ const upsertFlowAccountRecord = async (
       flowJobId: any,
     }
 ) => {
-  await prisma.tobiratory_flow_accounts.upsert({
+  await prisma.flow_accounts.upsert({
     where: {
       uuid: tobiratoryAccountUuid,
     },

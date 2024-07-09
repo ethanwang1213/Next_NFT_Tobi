@@ -9,7 +9,7 @@ export const getAccountById = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (/* decodedToken: DecodedIdToken*/) => {
     // const uid = decodedToken.uid;
     try {
-      const accountData = await prisma.tobiratory_accounts.findUnique({
+      const accountData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
         },
@@ -31,7 +31,7 @@ export const getAccountById = async (req: Request, res: Response) => {
         icon: accountData.icon_url,
         sns: accountData.sns,
         aboutMe: accountData.about_me,
-        socialLinks: accountData.social_link,
+        socialLinks: accountData.social_links,
         gender: accountData.gender,
         birth: accountData.birth,
         createdAt: accountData.created_date_time,
@@ -59,7 +59,7 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const accountData = await prisma.tobiratory_accounts.findUnique({
+      const accountData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
         },

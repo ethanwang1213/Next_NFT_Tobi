@@ -51,16 +51,16 @@ export const signUp = async (req: Request, res: Response) => {
       username: username,
     };
     try {
-      const savedUser = await prisma.tobiratory_accounts.upsert({
+      const savedUser = await prisma.accounts.upsert({
         where: {
           uuid: uid,
         },
         update: {},
         create: userData,
       });
-      const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
+      const flowAcc = await prisma.flow_accounts.findUnique({
         where: {
-          uuid: uid,
+          account_uuid: uid,
         },
       });
       if (decodedToken.email_verified && !flowAcc) {
@@ -75,7 +75,7 @@ export const signUp = async (req: Request, res: Response) => {
           icon: savedUser.icon_url,
           sns: savedUser.sns,
           aboutMe: savedUser.about_me,
-          socialLinks: savedUser.social_link,
+          socialLinks: savedUser.social_links,
           gender: savedUser.gender,
           birth: savedUser.birth,
           flow: flowAcc==null ? null : {
@@ -106,9 +106,9 @@ export const createFlowAcc = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
-      const flowAcc = await prisma.tobiratory_flow_accounts.findUnique({
+      const flowAcc = await prisma.flow_accounts.findUnique({
         where: {
-          uuid: uid,
+          account_uuid: uid,
         },
       });
       if (flowAcc != null) {
@@ -123,10 +123,10 @@ export const createFlowAcc = async (req: Request, res: Response) => {
       }
       const flowInfo = await createFlowAccount(uid);
       const flowAccInfo = {
-        uuid: uid,
+        account_uuid: uid,
         flow_job_id: flowInfo.flowJobId,
       };
-      const flowData = await prisma.tobiratory_flow_accounts.create({
+      const flowData = await prisma.flow_accounts.create({
         data: flowAccInfo,
       });
 
@@ -158,7 +158,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
-      const accountData = await prisma.tobiratory_accounts.findUnique({
+      const accountData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
         },
@@ -172,9 +172,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
         return;
       }
 
-      const flowAccountData = await prisma.tobiratory_flow_accounts.findUnique({
+      const flowAccountData = await prisma.flow_accounts.findUnique({
         where: {
-          uuid: uid,
+          account_uuid: uid,
         },
       });
 
@@ -193,7 +193,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
         icon: accountData.icon_url,
         sns: accountData.sns,
         aboutMe: accountData.about_me,
-        socialLinks: accountData.social_link,
+        socialLinks: accountData.social_links,
         gender: accountData.gender,
         birth: accountData.birth,
         giftPermission: accountData.gift_permission,
@@ -262,7 +262,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     let accountData; let flowData;
-    const userExist = await prisma.tobiratory_accounts.findUnique({
+    const userExist = await prisma.accounts.findUnique({
       where: {
         uuid: uid,
       },
@@ -275,22 +275,22 @@ export const postMyProfile = async (req: Request, res: Response) => {
     }
     try {
       if (account&&isEmptyObject(account)) {
-        await prisma.tobiratory_accounts.update({
+        await prisma.accounts.update({
           where: {
             uuid: uid,
           },
           data: accountUpdated,
         });
-        accountData = await prisma.tobiratory_accounts.findUnique({
+        accountData = await prisma.accounts.findUnique({
           where: {
             uuid: uid,
           },
         });
       }
       if (flow&&isEmptyObject(flow)) {
-        flowData = await prisma.tobiratory_flow_accounts.update({
+        flowData = await prisma.flow_accounts.update({
           where: {
-            uuid: uid,
+            account_uuid: uid,
           },
           data: flowUpdated,
         });
@@ -314,7 +314,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
           icon: accountData?.icon_url,
           sns: accountData?.sns,
           aboutMe: accountData?.about_me,
-          socialLinks: accountData?.social_link,
+          socialLinks: accountData?.social_links,
           gender: accountData?.gender,
           birth: accountData?.birth,
           giftPermission: accountData?.gift_permission,
@@ -339,7 +339,7 @@ export const myBusiness = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const businesses = await prisma.tobiratory_businesses.findMany({
+    const businesses = await prisma.businesses.findMany({
       where: {
         uuid: uid,
       },
@@ -391,7 +391,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
   } = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const exist = await prisma.tobiratory_businesses.findFirst({
+    const exist = await prisma.businesses.findFirst({
       where: {
         uuid: uid,
       },
@@ -432,10 +432,10 @@ export const businessSubmission = async (req: Request, res: Response) => {
     };
     try {
       const returnData = await prisma.$transaction(async (tx) => {
-        const savedBusinessData = await tx.tobiratory_businesses.create({
+        const savedBusinessData = await tx.businesses.create({
           data: businessData,
         });
-        const savedContentData = await tx.tobiratory_contents.create({
+        const savedContentData = await tx.contents.create({
           data: contentData,
         });
         const copyrights = copyrightHolder.map((copyright: string)=>{
@@ -444,10 +444,10 @@ export const businessSubmission = async (req: Request, res: Response) => {
             content_id: savedContentData.id,
           };
         });
-        await tx.tobiratory_copyright.createMany({
+        await tx.copyrights.createMany({
           data: copyrights,
         });
-        const showcaseTemplate = await tx.tobiratory_showcase_template.findFirst();
+        const showcaseTemplate = await tx.showcase_template.findFirst();
         if (!showcaseTemplate) {
           res.status(401).send({
             status: "error",
@@ -455,7 +455,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
           });
           return;
         }
-        await tx.tobiratory_showcase.create({
+        await tx.showcases.create({
           data: {
             title: contentName,
             description: description,
@@ -464,14 +464,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
             template_id: showcaseTemplate.id,
             thumb_url: showcaseTemplate.cover_image,
             status: statusOfShowcase.public,
-          },
-        });
-        await tx.tobiratory_sample_items.updateMany({
-          where: {
-            owner_uuid: uid,
-          },
-          data: {
-            content_id: savedContentData.id,
           },
         });
         return {...savedBusinessData, content: {...savedContentData}};
@@ -499,7 +491,7 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const exist = await prisma.tobiratory_businesses.findFirst({
+    const exist = await prisma.businesses.findFirst({
       where: {
         uuid: uid,
       },
@@ -534,7 +526,7 @@ export const updateMyBusiness = async (req: Request, res: Response) => {
   const {fistName, lastName, phone} = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const myBusiness = await prisma.tobiratory_businesses.updateMany({
+    const myBusiness = await prisma.businesses.updateMany({
       where: {
         uuid: uid,
       },

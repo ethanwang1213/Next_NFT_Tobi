@@ -11,7 +11,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
   const {name, giftPermission}:{name?: string, giftPermission?: boolean} = req.body;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const userData = await prisma.tobiratory_accounts.findUnique({
+    const userData = await prisma.accounts.findUnique({
       where: {
         uuid: uid,
       },
@@ -19,7 +19,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
 
     if (!boxId) {
       try {
-        await prisma.tobiratory_accounts.update({
+        await prisma.accounts.update({
           where: {
             uuid: uid,
           },
@@ -36,7 +36,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
       }
     } else {
       try {
-        const boxData = await prisma.tobiratory_boxes.findUnique({
+        const boxData = await prisma.boxes.findUnique({
           where: {
             id: boxId,
           },
@@ -50,7 +50,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (boxData.creator_uuid != uid) {
+        if (boxData.account_uuid != uid) {
           res.status(403).send({
             status: "error",
             data: {
@@ -59,7 +59,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
           });
           return;
         }
-        await prisma.tobiratory_boxes.update({
+        await prisma.boxes.update({
           where: {
             id: boxId,
           },
@@ -76,12 +76,12 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
         return;
       }
     }
-    const updateUserData = await prisma.tobiratory_accounts.findUnique({
+    const updateUserData = await prisma.accounts.findUnique({
       where: {
         uuid: uid,
       },
     });
-    const box = await prisma.tobiratory_boxes.findUnique({
+    const box = await prisma.boxes.findUnique({
       where: {
         id: boxId,
       },
@@ -109,9 +109,9 @@ export const makeBox = async (req: Request, res: Response) => {
   const {name} = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    await prisma.tobiratory_boxes.create({
+    await prisma.boxes.create({
       data: {
-        creator_uuid: uid,
+        account_uuid: uid,
         name: name,
       },
     });
@@ -132,7 +132,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
-      const userData = await prisma.tobiratory_accounts.findUnique({
+      const userData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
         },
@@ -144,16 +144,16 @@ export const getInventoryData = async (req: Request, res: Response) => {
         });
         return;
       }
-      const boxes = await prisma.tobiratory_boxes.findMany({
+      const boxes = await prisma.boxes.findMany({
         where: {
-          creator_uuid: uid,
+          account_uuid: uid,
         },
         orderBy: {
           created_date_time: "desc",
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.tobiratory_digital_item_nfts.findMany({
+        const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
           },
@@ -178,15 +178,15 @@ export const getInventoryData = async (req: Request, res: Response) => {
           items: items4,
         };
       }));
-      const items = await prisma.tobiratory_digital_item_nfts.findMany({
+      const items = await prisma.digital_item_nfts.findMany({
         where: {
-          owner_uuid: uid,
+          account_uuid: uid,
           box_id: 0,
         },
         include: {
           digital_item: {
             include: {
-              material: true,
+              material_images: true,
             },
           },
         },
@@ -200,8 +200,8 @@ export const getInventoryData = async (req: Request, res: Response) => {
           name: item.digital_item.name,
           image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
           modelType: item.digital_item.type,
-          modelUrl: item.nft_model,
-          materialImage: item.digital_item.material.image,
+          modelUrl: item.digital_item.model_url,
+          materialImage: item.digital_item.material_images.image,
           saidanId: item.saidan_id,
           status: item?.mint_status,
         };
@@ -233,7 +233,7 @@ export const getBoxData = async (req: Request, res: Response) => {
   const {id} = req.params;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uuid = decodedToken.uid;
-    const box = await prisma.tobiratory_boxes.findUnique({
+    const box = await prisma.boxes.findUnique({
       where: {
         id: parseInt(id),
       },
@@ -245,21 +245,21 @@ export const getBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.creator_uuid != uuid) {
+    if (box.account_uuid != uuid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    const items = await prisma.tobiratory_digital_item_nfts.findMany({
+    const items = await prisma.digital_item_nfts.findMany({
       where: {
         box_id: parseInt(id),
       },
       include: {
         digital_item: {
           include: {
-            material: true,
+            material_images: true,
           },
         },
       },
@@ -270,8 +270,8 @@ export const getBoxData = async (req: Request, res: Response) => {
         name: item.digital_item.name,
         image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
         modelType: item.digital_item.type,
-        modelUrl: item.nft_model,
-        materialImage: item.digital_item.material.image,
+        modelUrl: item.digital_item.model_url,
+        materialImage: item.digital_item.material_images.image,
         saidanId: item.saidan_id,
         status: item?.mint_status,
       };
@@ -296,7 +296,7 @@ export const deleteBoxData = async (req: Request, res: Response) => {
   const {id} = req.params;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const box = await prisma.tobiratory_boxes.findUnique({
+    const box = await prisma.boxes.findUnique({
       where: {
         id: parseInt(id),
       },
@@ -308,14 +308,14 @@ export const deleteBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (box.creator_uuid != uid) {
+    if (box.account_uuid != uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    await prisma.tobiratory_boxes.delete({
+    await prisma.boxes.delete({
       where: {
         id: parseInt(id),
       },
@@ -337,7 +337,7 @@ export const openNFT = async (req: Request, res: Response) => {
   const {id}:{id: number} = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const nftData = await prisma.tobiratory_digital_item_nfts.findUnique({
+    const nftData = await prisma.digital_item_nfts.findUnique({
       where: {
         id: id,
       },
@@ -349,7 +349,7 @@ export const openNFT = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (nftData.owner_uuid != uid) {
+    if (nftData.account_uuid != uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
@@ -371,7 +371,7 @@ export const openNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
-      const updatedNFT = await prisma.tobiratory_digital_item_nfts.update({
+      const updatedNFT = await prisma.digital_item_nfts.update({
         where: {
           id: id,
         },
@@ -379,7 +379,7 @@ export const openNFT = async (req: Request, res: Response) => {
           mint_status: "opened",
         },
       });
-      const itemData = await prisma.tobiratory_digital_items.findUnique({
+      const itemData = await prisma.digital_items.findUnique({
         where: {
           id: updatedNFT.digital_item_id,
         },
@@ -426,7 +426,7 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
     const receiverBoxId = decodeAddress.split("_")[1];
 
     try {
-      const receiverUserData = await prisma.tobiratory_accounts.findUnique({
+      const receiverUserData = await prisma.accounts.findUnique({
         where: {
           id: parseInt(receiverId),
         },
@@ -450,7 +450,7 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
           },
         });
       } else {
-        const receiverBoxData = await prisma.tobiratory_boxes.findUnique({
+        const receiverBoxData = await prisma.boxes.findUnique({
           where: {
             id: parseInt(receiverBoxId),
           },
@@ -493,7 +493,7 @@ export const moveNFT = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
-      const boxData = await prisma.tobiratory_boxes.findUnique({
+      const boxData = await prisma.boxes.findUnique({
         where: {
           id: boxId,
         },
@@ -506,7 +506,7 @@ export const moveNFT = async (req: Request, res: Response) => {
         return;
       }
       for (const nftId of nfts) {
-        const nftData = await prisma.tobiratory_digital_item_nfts.findUnique({
+        const nftData = await prisma.digital_item_nfts.findUnique({
           where: {
             id: nftId,
           },
@@ -518,7 +518,7 @@ export const moveNFT = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (nftData.owner_uuid != uid) {
+        if (nftData.account_uuid != uid) {
           res.status(401).send({
             status: "error",
             data: "exist-not-yours",
@@ -526,7 +526,7 @@ export const moveNFT = async (req: Request, res: Response) => {
           return;
         }
       }
-      await prisma.tobiratory_digital_item_nfts.updateMany({
+      await prisma.digital_item_nfts.updateMany({
         where: {
           id: {
             in: nfts,
@@ -536,16 +536,16 @@ export const moveNFT = async (req: Request, res: Response) => {
           box_id: boxId,
         },
       });
-      const boxes = await prisma.tobiratory_boxes.findMany({
+      const boxes = await prisma.boxes.findMany({
         where: {
-          creator_uuid: uid,
+          account_uuid: uid,
         },
         orderBy: {
           created_date_time: "desc",
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.tobiratory_digital_item_nfts.findMany({
+        const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
           },
@@ -556,7 +556,7 @@ export const moveNFT = async (req: Request, res: Response) => {
         const items4 = await Promise.all(
             itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
                 .map(async (item)=>{
-                  const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+                  const itemInfo = await prisma.digital_items.findUnique({
                     where: {
                       id: item.digital_item_id,
                     },
@@ -574,9 +574,9 @@ export const moveNFT = async (req: Request, res: Response) => {
           items: items4,
         };
       }));
-      const items = await prisma.tobiratory_digital_item_nfts.findMany({
+      const items = await prisma.digital_item_nfts.findMany({
         where: {
-          owner_uuid: uid,
+          account_uuid: uid,
           box_id: 0,
         },
         orderBy: {
@@ -585,7 +585,7 @@ export const moveNFT = async (req: Request, res: Response) => {
       });
       const returnItems = await Promise.all(
           items.map(async (item)=>{
-            const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+            const itemInfo = await prisma.digital_items.findUnique({
               where: {
                 id: item.digital_item_id,
               },
@@ -627,7 +627,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     try {
       for (const nftId of nfts) {
-        const nftData = await prisma.tobiratory_digital_item_nfts.findUnique({
+        const nftData = await prisma.digital_item_nfts.findUnique({
           where: {
             id: nftId,
           },
@@ -639,7 +639,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (nftData.owner_uuid != uid) {
+        if (nftData.account_uuid != uid) {
           res.status(401).send({
             status: "error",
             data: "exist-not-yours",
@@ -647,23 +647,23 @@ export const deleteNFT = async (req: Request, res: Response) => {
           return;
         }
       }
-      await prisma.tobiratory_digital_item_nfts.deleteMany({
+      await prisma.digital_item_nfts.deleteMany({
         where: {
           id: {
             in: nfts,
           },
         },
       });
-      const boxes = await prisma.tobiratory_boxes.findMany({
+      const boxes = await prisma.boxes.findMany({
         where: {
-          creator_uuid: uid,
+          account_uuid: uid,
         },
         orderBy: {
           created_date_time: "desc",
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.tobiratory_digital_item_nfts.findMany({
+        const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
           },
@@ -674,7 +674,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
         const items4 = await Promise.all(
             itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
                 .map(async (item)=>{
-                  const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+                  const itemInfo = await prisma.digital_items.findUnique({
                     where: {
                       id: item.digital_item_id,
                     },
@@ -692,9 +692,9 @@ export const deleteNFT = async (req: Request, res: Response) => {
           items: items4,
         };
       }));
-      const items = await prisma.tobiratory_digital_item_nfts.findMany({
+      const items = await prisma.digital_item_nfts.findMany({
         where: {
-          owner_uuid: uid,
+          account_uuid: uid,
           box_id: 0,
         },
         orderBy: {
@@ -703,7 +703,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
       });
       const returnItems = await Promise.all(
           items.map(async (item)=>{
-            const itemInfo = await prisma.tobiratory_digital_items.findUnique({
+            const itemInfo = await prisma.digital_items.findUnique({
               where: {
                 id: item.digital_item_id,
               },
@@ -743,7 +743,7 @@ export const adminGetBoxList = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -755,9 +755,9 @@ export const adminGetBoxList = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
+      const content = await prisma.contents.findFirst({
         where: {
-          owner_uuid: uid,
+          businesses_uuid: uid,
         },
       });
       if (!content) {
@@ -767,14 +767,14 @@ export const adminGetBoxList = async (req: Request, res: Response) => {
         });
         return;
       }
-      const inventory = await prisma.tobiratory_accounts.findUnique({
+      const inventory = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
         },
       });
-      const boxes = await prisma.tobiratory_boxes.findMany({
+      const boxes = await prisma.boxes.findMany({
         where: {
-          creator_uuid: uid,
+          account_uuid: uid,
         },
       });
       const inventoryAddress = getBoxAddress(inventory?.id??0, 0);

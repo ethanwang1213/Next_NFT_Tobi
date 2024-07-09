@@ -23,7 +23,7 @@ export const searchAll = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const users = await prisma.tobiratory_accounts.findMany({
+      const users = await prisma.accounts.findMany({
         where: {
           OR: [
             {
@@ -53,7 +53,7 @@ export const searchAll = async (req: Request, res: Response) => {
           aboutMe: user.about_me,
         };
       });
-      const contents = await prisma.tobiratory_contents.findMany({
+      const contents = await prisma.contents.findMany({
         where: {
           name: {
             contains: searchValue,
@@ -62,12 +62,12 @@ export const searchAll = async (req: Request, res: Response) => {
         },
         take: 2,
         include: {
-          showcase: {
+          showcases: {
             where: {
               status: statusOfShowcase.public,
             },
             include: {
-              tobiratory_showcase_template: true,
+              showcase_template: true,
             },
           },
         },
@@ -79,10 +79,10 @@ export const searchAll = async (req: Request, res: Response) => {
         return {
           contentId: content.id,
           contentName: content.name,
-          thumbImage: content.showcase[0].thumb_url,
+          thumbImage: content.showcases[0].thumb_url,
         };
       });
-      const saidans = await prisma.tobiratory_saidans.findMany({
+      const saidans = await prisma.saidans.findMany({
         where: {
           title: {
             contains: searchValue,
@@ -91,7 +91,7 @@ export const searchAll = async (req: Request, res: Response) => {
         },
         take: 2,
         include: {
-          template: true,
+          saidans_template: true,
         },
         orderBy: {
           title: "asc",
@@ -101,10 +101,10 @@ export const searchAll = async (req: Request, res: Response) => {
         return {
           saidanId: saidan.id,
           saidanTitle: saidan.title,
-          thumbImage: saidan.template.cover_image,
+          thumbImage: saidan.saidans_template.cover_image,
         };
       });
-      const digitalItems = await prisma.tobiratory_sample_items.findMany({
+      const digitalItems = await prisma.sample_items.findMany({
         where: {
           digital_item: {
             name: {
@@ -169,7 +169,7 @@ export const searchUsers = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const users = await prisma.tobiratory_accounts.findMany({
+      const users = await prisma.accounts.findMany({
         where: {
           OR: [
             {
@@ -233,7 +233,7 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const digitalItems = await prisma.tobiratory_sample_items.findMany({
+      const digitalItems = await prisma.sample_items.findMany({
         skip: skip,
         take: defaultPageSize,
         where: {
@@ -295,7 +295,7 @@ export const searchContents = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
-      const contents = await prisma.tobiratory_contents.findMany({
+      const contents = await prisma.contents.findMany({
         where: {
           name: {
             contains: searchValue,
@@ -304,15 +304,15 @@ export const searchContents = async (req: Request, res: Response) => {
         },
         // take: 2,
         include: {
-          showcase: {
+          showcases: {
             where: {
               status: statusOfShowcase.public,
             },
             include: {
-              tobiratory_showcase_template: true,
+              showcase_template: true,
             },
           },
-          tobiratory_favorite_content: true,
+          favorite_contents: true,
         },
         orderBy: {
           name: "asc",
@@ -322,8 +322,8 @@ export const searchContents = async (req: Request, res: Response) => {
         return {
           contentId: content.id,
           contentName: content.name,
-          thumbImage: content.showcase[0].thumb_url,
-          favorite: content.tobiratory_favorite_content.filter((favor)=>favor.favor_uuid==uid).length!=0,
+          thumbImage: content.showcases[0].thumb_url,
+          favorite: content.favorite_contents.filter((favor)=>favor.account_uuid==uid).length!=0,
         };
       });
       res.status(200).send({
@@ -358,7 +358,7 @@ export const searchSaidans = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const saidans = await prisma.tobiratory_saidans.findMany({
+      const saidans = await prisma.saidans.findMany({
         where: {
           title: {
             contains: searchValue,
@@ -367,7 +367,7 @@ export const searchSaidans = async (req: Request, res: Response) => {
         },
         // take: 2,
         include: {
-          template: true,
+          saidans_template: true,
         },
         orderBy: {
           title: "asc",
@@ -377,7 +377,7 @@ export const searchSaidans = async (req: Request, res: Response) => {
         return {
           saidanId: saidan.id,
           saidanTitle: saidan.title,
-          thumbImage: saidan.template.cover_image,
+          thumbImage: saidan.saidans_template.cover_image,
         };
       });
       res.status(200).send({
@@ -405,47 +405,38 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
   const skip = (Number(pageNumber??1)-1)*defaultPageSize;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const digitalItems = await prisma.tobiratory_sample_items.findMany({
+      const digitalItems = await prisma.digital_items.findMany({
         skip: skip,
         take: defaultPageSize,
         where: {
-          digital_item: {
             status: {
               in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
             },
-          },
-        },
-        include: {
-          digital_item: true,
         },
         orderBy: [
           {sale_quantity: "desc"},
-          {digital_item: {
+           {
             name: "asc",
-          }},
+          },
         ],
       });
-      const totalRecord = await prisma.tobiratory_sample_items.count({
-        skip: skip,
-        take: defaultPageSize,
+      const totalRecord = await prisma.digital_items.findMany({
         where: {
-          digital_item: {
             status: {
               in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
             },
-          },
         },
         orderBy: [
           {sale_quantity: "desc"},
-          {digital_item: {
+           {
             name: "asc",
-          }},
+          },
         ],
       });
-      const resultDigitalItems = digitalItems.map((sample)=>{
+      const resultDigitalItems = digitalItems.map((digitalItem)=>{
         return {
-          sampleId: sample.id,
-          thumbImage: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url:sample.digital_item.custom_thumb_url,
+          sampleId: digitalItem.id,
+          thumbImage: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
         };
       });
       res.status(200).send({

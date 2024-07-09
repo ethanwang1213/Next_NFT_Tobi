@@ -9,7 +9,7 @@ export const getShowcaseTemplate = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -21,19 +21,7 @@ export const getShowcaseTemplate = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
-      const showcaseTemplate = await prisma.tobiratory_showcase_template.findMany();
+      const showcaseTemplate = await prisma.showcase_template.findMany();
       const returnData = showcaseTemplate.map((template) => {
         return {
           id: template.id,
@@ -68,10 +56,13 @@ export const createMyShocase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
+        include: {
+          content: true,
+        }
       });
       if (!admin) {
         res.status(401).send({
@@ -80,19 +71,14 @@ export const createMyShocase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-      if (!content) {
+      if (!admin.content) {
         res.status(401).send({
           status: "error",
           data: "not-content",
         });
         return;
       }
-      const showcaseTemplate = await prisma.tobiratory_showcase_template.findUnique({
+      const showcaseTemplate = await prisma.showcase_template.findUnique({
         where: {
           id: templateId,
         },
@@ -104,12 +90,12 @@ export const createMyShocase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const showcase = await prisma.tobiratory_showcase.create({
+      const showcase = await prisma.showcases.create({
         data: {
           title: title,
           description: description,
           owner_uuid: admin.uuid,
-          content_id: content.id,
+          content_id: admin.content.id,
           template_id: templateId,
           thumb_url: showcaseTemplate.cover_image,
         },
@@ -149,7 +135,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -161,21 +147,10 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
-      const showcase = await prisma.tobiratory_showcase.findUnique({
+      const showcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
       if (!showcase) {
@@ -193,7 +168,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         return;
       }
       if (status == statusOfShowcase.public) {
-        await prisma.tobiratory_showcase.updateMany({
+        await prisma.showcases.updateMany({
           where: {
             status: statusOfShowcase.public,
             content_id: showcase.content_id,
@@ -203,7 +178,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
           },
         });
       }
-      const updateShowcase = await prisma.tobiratory_showcase.update({
+      const updateShowcase = await prisma.showcases.update({
         where: {
           id: parseInt(id),
         },
@@ -249,7 +224,7 @@ export const getMyShowcases = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -261,21 +236,10 @@ export const getMyShowcases = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
-      const allShowcases = await prisma.tobiratory_showcase.findMany({
+      const allShowcases = await prisma.showcases.findMany({
         where: {
           owner_uuid: admin.uuid,
+          is_deleted: false,
         },
         orderBy: {
           created_date_time: "desc",
@@ -318,10 +282,13 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
+        include: {
+          content: true,
+        }
       });
       if (!admin) {
         res.status(401).send({
@@ -330,19 +297,14 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-      if (!content) {
+      if (!admin.content) {
         res.status(401).send({
           status: "error",
           data: "not-content",
         });
         return;
       }
-      const showcase = await prisma.tobiratory_showcase.findUnique({
+      const showcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
         },
@@ -368,26 +330,13 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.tobiratory_sample_items.updateMany({
-        where: {
-          content_id: content.id,
-        },
-        data: {
-          content_id: 0,
-        },
-      });
-      await prisma.tobiratory_digital_item_nfts.updateMany({
-        where: {
-          content_id: content.id,
-        },
-        data: {
-          content_id: 0,
-        },
-      });
-      const deleteShowcase = await prisma.tobiratory_showcase.delete({
+      const deleteShowcase = await prisma.showcases.update({
         where: {
           id: parseInt(id),
         },
+        data: {
+          is_deleted: true,
+        }
       });
       res.status(200).send({
         status: "success",
@@ -416,7 +365,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -428,42 +377,31 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
-        where: {
-          owner_uuid: uid,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
-      const showcase = await prisma.tobiratory_showcase.findUnique({
+      const showcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
         include: {
-          tobiratory_showcase_sample_items: {
+          showcase_sample_items: {
             include: {
-              sample: {
+              sample_item: {
                 include: {
                   digital_item: true,
                 },
               },
             },
           },
-          tobiratory_showcase_nfts: {
+          showcase_nft_items: {
             include: {
-              nft: {
+              digital_item_nft: {
                 include: {
                   digital_item: true,
                 },
               },
             },
           },
-          tobiratory_showcase_template: true,
+          showcase_template: true,
         },
       });
       if (!showcase) {
@@ -480,14 +418,14 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sampleItemList = showcase.tobiratory_showcase_sample_items.map((relationSample) => {
-        const sampleData = relationSample.sample;
-        const digitalData = relationSample.sample.digital_item;
+      const sampleItemList = showcase.showcase_sample_items.map((relationSample) => {
+        const sampleData = relationSample.sample_item;
+        const digitalData = relationSample.sample_item.digital_item;
         return {
           id: relationSample.id,
           itemId: sampleData.id,
           modelType: digitalData.type,
-          modelUrl: sampleData.model_url,
+          modelUrl: digitalData.model_url,
           imageUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
           stageType: relationSample.stage_type,
           scale: relationSample.scale,
@@ -503,14 +441,14 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           },
         };
       });
-      const nftItemList = showcase.tobiratory_showcase_nfts.map((relationNft) => {
-        const nftData = relationNft.nft;
-        const digitalData = relationNft.nft.digital_item;
+      const nftItemList = showcase.showcase_nft_items.map((relationNft) => {
+        const nftData = relationNft.digital_item_nft;
+        const digitalData = relationNft.digital_item_nft.digital_item;
         return {
           id: relationNft.id,
           itemId: nftData.id,
           modelType: digitalData.type,
-          modelUrl: nftData.nft_model,
+          modelUrl: digitalData.model_url,
           stageType: relationNft.stage_type,
           scale: relationNft.scale,
           itemMeterHeight: relationNft.meter_height,
@@ -551,8 +489,8 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         description: showcase.description,
         status: showcase.status,
         scheduleTime: showcase.schedule_time,
-        showcaseType: showcase.tobiratory_showcase_template?.type,
-        showcaseUrl: showcase.tobiratory_showcase_template?.model_url,
+        showcaseType: showcase.showcase_template?.type,
+        showcaseUrl: showcase.showcase_template?.model_url,
         sampleItemList: sampleItemList,
         nftItemList: nftItemList,
         settings: settings,
@@ -619,7 +557,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -631,9 +569,9 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
+      const content = await prisma.contents.findFirst({
         where: {
-          owner_uuid: uid,
+          businesses_uuid: uid,
         },
       });
       if (!content) {
@@ -643,7 +581,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const isShowcase = await prisma.tobiratory_showcase.findUnique({
+      const isShowcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
         },
@@ -664,11 +602,11 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
       }
       const idPair: { previous: number, next: number }[] = [];
       for (const sample of sampleItemList) {
-        const sampledata = await prisma.tobiratory_showcase_sample_items.upsert({
+        const sampledata = await prisma.showcase_sample_items.upsert({
           where: {
             id: sample.id,
             showcase_id: isShowcase.id,
-            sample_id: sample.itemId,
+            sample_item_id: sample.itemId,
           },
           update: {
             stage_type: sample.stageType,
@@ -678,7 +616,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           create: {
             id: sample.id>0?sample.id:undefined,
             showcase_id: isShowcase.id,
-            sample_id: sample.itemId,
+            sample_item_id: sample.itemId,
             stage_type: sample.stageType,
             position: [sample.position.x, sample.position.y, sample.position.z],
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
@@ -692,7 +630,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         }
       }
       for (const nft of nftItemList) {
-        const nftData = await prisma.tobiratory_showcase_nft_items.upsert({
+        const nftData = await prisma.showcase_nft_items.upsert({
           where: {
             id: nft.id,
             showcase_id: isShowcase.id,
@@ -718,7 +656,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           });
         }
       }
-      await prisma.tobiratory_showcase.update({
+      await prisma.showcases.update({
         where: {
           id: isShowcase.id,
         },
@@ -758,7 +696,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -770,9 +708,9 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findFirst({
+      const content = await prisma.contents.findFirst({
         where: {
-          owner_uuid: uid,
+          businesses_uuid: uid,
         },
       });
       if (!content) {
@@ -782,7 +720,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const showcase = await prisma.tobiratory_showcase.findUnique({
+      const showcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
         },
@@ -802,13 +740,13 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
         return;
       }
       if (sampleRelationId) {
-        await prisma.tobiratory_showcase_sample_items.delete({
+        await prisma.showcase_sample_items.delete({
           where: {
             id: sampleRelationId,
           },
         });
       } else if (nftRelationId) {
-        await prisma.tobiratory_showcase_nft_items.delete({
+        await prisma.showcase_nft_items.delete({
           where: {
             id: nftRelationId,
           },

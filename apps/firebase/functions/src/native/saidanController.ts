@@ -8,7 +8,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
         },
@@ -22,9 +22,9 @@ export const getSaidansById = async (req: Request, res: Response) => {
         return;
       }
 
-      const userData = await prisma.tobiratory_accounts.findUnique({
+      const userData = await prisma.accounts.findUnique({
         where: {
-          uuid: saidanData.owner_uuid,
+          uuid: saidanData.account_uuid,
         },
       });
 
@@ -36,7 +36,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
         return;
       }
 
-      const digitalNFT = await prisma.tobiratory_digital_item_nfts.findMany({
+      const digitalNFT = await prisma.digital_item_nfts.findMany({
         where: {
           saidan_id: saidanData.id,
         },
@@ -84,7 +84,7 @@ export const getSaidanTemplates = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (/* decodedToken: DecodedIdToken*/)=>{
     try {
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findMany();
+      const saidanTemplate = await prisma.saidans_template.findMany();
       const returnData = saidanTemplate.map((template)=>{
         return {
           templateId: template.id,
@@ -115,7 +115,7 @@ export const createSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
+      const saidanTemplate = await prisma.saidans_template.findUnique({
         where: {
           id: templateId,
         },
@@ -127,18 +127,18 @@ export const createSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      const saveData = await prisma.tobiratory_saidans.create({
+      const saveData = await prisma.saidans.create({
         data: {
           title: title,
           template_id: templateId,
-          owner_uuid: uid,
+          account_uuid: uid,
           thumbnail_image: saidanTemplate.cover_image,
         },
       });
-      const favorite = await prisma.tobiratory_saidans_favorite.findMany({
+      const favorite = await prisma.saidans_favorite.findMany({
         where: {
           saidan_id: saveData.id,
-          favorite_user_id: uid,
+          account_uuid: uid,
         },
       });
       const returnData = {
@@ -174,25 +174,25 @@ export const getMySaidans = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const mySaidans = await prisma.tobiratory_saidans.findMany({
+    const mySaidans = await prisma.saidans.findMany({
       where: {
-        owner_uuid: uid,
+        account_uuid: uid,
       },
       include: {
-        favorite_user: true,
-        template: true,
+        favorite_users: true,
+        saidans_template: true,
       },
     });
     const returnData = mySaidans.map((saidan)=>{
       return {
         saidanId: saidan.id,
         title: saidan.title,
-        modelUrl: saidan.template.model_url,
+        modelUrl: saidan.saidans_template.model_url,
         imageUrl: saidan.thumbnail_image,
-        modelType: saidan.template.type,
+        modelType: saidan.saidans_template.type,
         description: saidan.description,
         isPublic: saidan.is_public,
-        favorite: saidan.favorite_user.length!=0,
+        favorite: saidan.favorite_users.length!=0,
       };
     });
 
@@ -214,7 +214,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const saidanData = await prisma.tobiratory_saidans.findUnique({
+    const saidanData = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
       },
@@ -228,7 +228,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
       return;
     }
 
-    if (saidanData.owner_uuid != uid) {
+    if (saidanData.account_uuid != uid) {
       res.status(404).send({
         status: "error",
         data: "not-yours",
@@ -241,7 +241,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
       title: saidanData.title,
       description: saidanData.description,
       owner: {
-        uuid: saidanData.owner_uuid,
+        uuid: saidanData.account_uuid,
       },
     };
     res.status(200).send({
@@ -263,7 +263,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
   const {isPublic, title, description, thumbnailImage, favorite}: {isPublic?: boolean, title?: string, description?: string, thumbnailImage?: string, favorite?: boolean} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const saidanData = await prisma.tobiratory_saidans.findUnique({
+    const saidanData = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
       },
@@ -275,14 +275,14 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (saidanData.owner_uuid != uid) {
+    if (saidanData.account_uuid != uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    await prisma.tobiratory_saidans.update({
+    await prisma.saidans.update({
       where: {
         id: parseInt(saidanId),
       },
@@ -294,33 +294,33 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       },
     });
     if (favorite != undefined) {
-      const nowFavor = await prisma.tobiratory_saidans_favorite.findMany({
+      const nowFavor = await prisma.saidans_favorite.findMany({
         where: {
-          favorite_user_id: uid,
+          account_uuid: uid,
           saidan_id: parseInt(saidanId),
         },
       });
       if (favorite&&!nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.create({
+        await prisma.saidans_favorite.create({
           data: {
-            favorite_user_id: uid,
+            account_uuid: uid,
             saidan_id: parseInt(saidanId),
           },
         });
       } else if (!favorite&&nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.delete({
+        await prisma.saidans_favorite.delete({
           where: {
             id: nowFavor[0].id,
           },
         });
       }
     }
-    const updatedSaidan = await prisma.tobiratory_saidans.findUnique({
+    const updatedSaidan = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
       },
     });
-    const template = await prisma.tobiratory_saidans_template.findUnique({
+    const template = await prisma.saidans_template.findUnique({
       where: {
         id: updatedSaidan?.template_id,
       },
@@ -355,7 +355,7 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(id),
         },
@@ -367,21 +367,21 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      const nowFavor = await prisma.tobiratory_saidans_favorite.findMany({
+      const nowFavor = await prisma.saidans_favorite.findMany({
         where: {
-          favorite_user_id: uid,
+          account_uuid: uid,
           saidan_id: parseInt(id),
         },
       });
       if (favorite&&!nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.create({
+        await prisma.saidans_favorite.create({
           data: {
-            favorite_user_id: uid,
+            account_uuid: uid,
             saidan_id: parseInt(id),
           },
         });
       } else if (!favorite&&nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.delete({
+        await prisma.saidans_favorite.delete({
           where: {
             id: nowFavor[0].id,
           },
@@ -445,7 +445,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
         },
@@ -457,14 +457,14 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (saidanData.owner_uuid != uid) {
+      if (saidanData.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
         });
         return;
       }
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
+      const saidanTemplate = await prisma.saidans_template.findUnique({
         where: {
           id: saidanData.template_id,
         },
@@ -476,7 +476,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.tobiratory_saidans.update({
+      await prisma.saidans.update({
         where: {
           id: parseInt(saidanId),
         },
@@ -484,7 +484,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
           thumbnail_image: thumbImage,
         },
       });
-      const cameraUpdate = await prisma.tobiratory_saidan_camera.upsert({
+      const cameraUpdate = await prisma.saidan_camera.upsert({
         where: {
           saidan_id: parseInt(saidanId),
         },
@@ -516,13 +516,13 @@ export const decorationSaidan = async (req: Request, res: Response) => {
       });
       const items = await Promise.all(
           itemList.map(async (item)=>{
-            const updateItem = await prisma.tobiratory_digital_item_nfts.update({
+            const updateItem = await prisma.digital_item_nfts.update({
               where: {
                 id: item.itemId,
               },
               data: {
                 saidan_id: parseInt(saidanId),
-                state_type: item.stageType,
+                stage_type: item.stageType,
                 position: [
                   item.position.x,
                   item.position.y,
@@ -538,7 +538,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                 scale: item.scale,
               },
             });
-            const digitalData = await prisma.tobiratory_digital_items.findUnique({
+            const digitalData = await prisma.digital_items.findUnique({
               where: {
                 id: updateItem.digital_item_id,
               },
@@ -550,9 +550,9 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         return {
           itemId: saidanItem.id,
           modelType: saidanItem.type,
-          modelUrl: saidanItem.nft_model,
+          modelUrl: saidanItem.model_url,
           imageUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
-          stageType: saidanItem.state_type,
+          stageType: saidanItem.stage_type,
           position: {
             x: saidanItem.position[0],
             y: saidanItem.position[1],
@@ -611,7 +611,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
         },
@@ -623,14 +623,14 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (saidanData.owner_uuid != uid) {
+      if (saidanData.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
         });
         return;
       }
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
+      const saidanTemplate = await prisma.saidans_template.findUnique({
         where: {
           id: saidanData.template_id,
         },
@@ -642,19 +642,19 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
         });
         return;
       }
-      const saidanCamera = await prisma.tobiratory_saidan_camera.findUnique({
+      const saidanCamera = await prisma.saidan_camera.findUnique({
         where: {
           saidan_id: saidanData.id,
         },
       });
-      const saidanItems = await prisma.tobiratory_digital_item_nfts.findMany({
+      const saidanItems = await prisma.digital_item_nfts.findMany({
         where: {
           saidan_id: saidanData.id,
         },
       });
       const saidanItemList = await Promise.all(
           saidanItems.map(async (item)=>{
-            const digitalData = await prisma.tobiratory_digital_items.findUnique({
+            const digitalData = await prisma.digital_items.findUnique({
               where: {
                 id: item.digital_item_id,
               },
@@ -663,9 +663,9 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
             return {
               itemId: saidanItem.id,
               modelType: saidanItem.type,
-              modelUrl: saidanItem.nft_model,
+              modelUrl: saidanItem.model_url,
               imageUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
-              stageType: saidanItem.state_type,
+              stageType: saidanItem.stage_type,
               position: {
                 x: saidanItem.position[0],
                 y: saidanItem.position[1],
@@ -726,7 +726,7 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
         },
@@ -738,14 +738,14 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (saidanData.owner_uuid != uid) {
+      if (saidanData.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
         });
         return;
       }
-      await prisma.tobiratory_digital_item_nfts.update({
+      await prisma.digital_item_nfts.update({
         where: {
           id: itemId,
         },

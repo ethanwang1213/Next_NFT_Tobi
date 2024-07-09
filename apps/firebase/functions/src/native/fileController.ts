@@ -8,15 +8,15 @@ export const uploadMaterial = async (req: Request, res: Response) => {
   const {image} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    await prisma.tobiratory_material_images.create({
+    await prisma.material_images.create({
       data: {
-        owner_uuid: uid,
+        account_uuid: uid,
         image: image,
       },
     });
-    const materials = await prisma.tobiratory_material_images.findMany({
+    const materials = await prisma.material_images.findMany({
       where: {
-        owner_uuid: uid,
+        account_uuid: uid,
       },
     });
     const returnData = materials.map((material)=>{
@@ -42,9 +42,9 @@ export const getMaterial = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const materials = await prisma.tobiratory_material_images.findMany({
+    const materials = await prisma.material_images.findMany({
       where: {
-        owner_uuid: uid,
+        account_uuid: uid,
       },
     });
     const returnData = materials.map((material)=>{
@@ -70,9 +70,9 @@ export const removeMaterials = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    await prisma.tobiratory_material_images.deleteMany({
+    await prisma.material_images.deleteMany({
       where: {
-        owner_uuid: uid,
+        account_uuid: uid,
       },
     });
     res.status(200).send({
@@ -93,7 +93,7 @@ export const deleteMaterial = async (req: Request, res: Response) => {
   const {id} = req.params;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const material = await prisma.tobiratory_material_images.findUnique({
+    const material = await prisma.material_images.findUnique({
       where: {
         id: parseInt(id),
       },
@@ -105,14 +105,14 @@ export const deleteMaterial = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (material.owner_uuid != uid) {
+    if (material.account_uuid != uid) {
       res.status(404).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    await prisma.tobiratory_material_images.delete({
+    await prisma.material_images.delete({
       where: {
         id: parseInt(id),
       },

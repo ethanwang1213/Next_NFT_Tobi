@@ -13,7 +13,7 @@ export const scheduleSystem = functions.region(REGION).pubsub.schedule("every 5 
 );
 
 const updateScheduleOfDigitalItem = async () => {
-  const digitalItems = await prisma.tobiratory_digital_items.findMany({
+  const digitalItems = await prisma.digital_items.findMany({
     where: {
       schedules: {
         isEmpty: false,
@@ -33,7 +33,7 @@ const updateScheduleOfDigitalItem = async () => {
         const scheduleDate = +new Date(scheduleInfo.datetime);
         const nowDate = Date.now();
         if (Math.abs(nowDate - scheduleDate) < 1000 * 60 * 5) {
-          await prisma.tobiratory_digital_items.update({
+          await prisma.digital_items.update({
             where: {
               id: element.id,
             },
@@ -50,7 +50,7 @@ const updateScheduleOfDigitalItem = async () => {
 };
 
 const updateScheduleOfShowcase = async () => {
-  const showcases = await prisma.tobiratory_showcase.findMany({
+  const showcases = await prisma.showcases.findMany({
     where: {
       schedule_time: {
         not: null,
@@ -64,12 +64,12 @@ const updateScheduleOfShowcase = async () => {
       const scheduleDate = +new Date(element.schedule_time??"");
       const nowDate = Date.now();
       if (Math.abs(nowDate - scheduleDate) < 1000 * 60 * 5) {
-        const targetShowcase = await prisma.tobiratory_showcase.findUnique({
+        const targetShowcase = await prisma.showcases.findUnique({
           where: {
             id: element.id,
           },
         });
-        await prisma.tobiratory_showcase.updateMany({
+        await prisma.showcases.updateMany({
           where: {
             owner_uuid: targetShowcase?.owner_uuid,
           },
@@ -77,7 +77,7 @@ const updateScheduleOfShowcase = async () => {
             status: statusOfShowcase.private,
           },
         });
-        await prisma.tobiratory_showcase.update({
+        await prisma.showcases.update({
           where: {
             id: element.id,
           },
