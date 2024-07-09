@@ -259,7 +259,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
       }
       const sampleItems = showcase.tobiratory_showcase_sample_items.map((relationSample) => {
         return {
-          relationSample: relationSample.sample_id,
+          sampleId: relationSample.sample_id,
           itemId: relationSample.id,
           thumbImage: relationSample.sample.digital_item.is_default_thumb ?
             relationSample.sample.digital_item.default_thumb_url :
