@@ -216,17 +216,6 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
           updated_date_time: new Date(),
         },
       });
-      if (status == statusOfShowcase.publicSchedule && scheduleTime) {
-        const specificTime = new Date(scheduleTime);
-        const currentTime = new Date();
-        const timeDifference = specificTime.getTime() - currentTime.getTime();
-
-        if (timeDifference > 0) {
-          updateShocaseSchedule(scheduleTime, timeDifference, updateShowcase.id);
-        } else {
-          console.log("Specific time has already passed.");
-        }
-      }
       const returnData = {
         id: updateShowcase.id,
         title: updateShowcase.title,
@@ -419,43 +408,6 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
     });
     return;
   });
-};
-
-const updateShocaseSchedule = async (scheduleTime: string, timeDifference: number, id: number) => {
-  setTimeout(async () => {
-    try {
-      const showcase = await prisma.tobiratory_showcase.findUnique({
-        where: {
-          id: id,
-        },
-      });
-      if (!showcase || showcase.schedule_time != new Date(scheduleTime)) {
-        return;
-      }
-      await prisma.tobiratory_showcase.updateMany({
-        where: {
-          status: statusOfShowcase.public,
-          content_id: showcase.content_id,
-        },
-        data: {
-          status: statusOfShowcase.private,
-        },
-      });
-      await prisma.tobiratory_showcase.updateMany({
-        where: {
-          id: id,
-          schedule_time: scheduleTime,
-          status: statusOfShowcase.publicSchedule,
-        },
-        data: {
-          status: statusOfShowcase.public,
-        },
-      });
-      console.log("Database updated at specific time.");
-    } catch (error) {
-      console.error("Error updating database:", error);
-    }
-  }, timeDifference);
 };
 
 export const loadMyShowcase = async (req: Request, res: Response) => {
@@ -724,6 +676,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },
           create: {
+            id: sample.id>0?sample.id:undefined,
             showcase_id: isShowcase.id,
             sample_id: sample.itemId,
             stage_type: sample.stageType,

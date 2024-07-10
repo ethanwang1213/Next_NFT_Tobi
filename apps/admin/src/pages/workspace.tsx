@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   title: "ワークスペース",
 };
 
+const REMOVE_PANEL_WIDTH = 56;
+
 export default function Index() {
   const [showDetailView, setShowDetailView] = useState(false);
   const [showListView, setShowListView] = useState(false);
@@ -76,10 +78,15 @@ export default function Index() {
       thumbnailBase64,
       ImageType.SampleThumbnail,
     );
+
+    const materialIndex = materials.findIndex(
+      (value) => value.image === generateMaterialImage.current,
+    );
+
     const newSample = await createSample(sampleAPIUrl, {
       thumbUrl: sampleThumb,
       modelUrl: generateModelUrl.current,
-      materialId: generateMaterialImage.current?.id ?? 0,
+      materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
       type: generateSampleType.current,
     });
     if (newSample === false) {
@@ -144,7 +151,7 @@ export default function Index() {
     requestItemThumbnail,
     inputWasd,
   } = useWorkspaceUnityContext({
-    sampleMenuX: contentWidth - (showListView ? 448 : 30),
+    sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
     onRemoveSampleEnabled,
@@ -250,17 +257,24 @@ export default function Index() {
     [samples, removeSamplesByItemId],
   );
 
-  const createMaterialImageHandler = useCallback(async (imageUrl: string) => {
-    const resp = await createMaterialImage(
-      materialAPIUrl,
-      { image: imageUrl },
-      [],
-    );
-    if (!resp) {
-      setGenerateSampleError(true);
-    }
+  const createMaterialImageHandler = useCallback(
+    async (imageUrl: string): Promise<boolean> => {
+      const resp = await createMaterialImage(
+        materialAPIUrl,
+        {
+          image: imageUrl,
+        },
+        [],
+      );
+      if (!resp) {
+        return false;
+      }
+
+      return true;
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [],
+  );
 
   const removeBackgroundHandler = useCallback(
     async (image: string): Promise<string> => {
@@ -268,7 +282,6 @@ export default function Index() {
         url: image,
       });
       if (!resp) {
-        setGenerateSampleError(true);
         return "";
       }
       return resp["url"];
@@ -277,73 +290,64 @@ export default function Index() {
     [],
   );
 
-  const generateSampleHandler = useCallback(
-    async (
-      sampleType: ModelType,
-      image1: string,
-      image2: string,
-      coords: string,
-    ) => {
-      generateSampleType.current = sampleType;
-      if (
-        sampleType === ModelType.Poster ||
-        sampleType === ModelType.CanBadge
-      ) {
-        // take material image
-        const materialIndex = materials.findIndex(
-          (value) => value.image === image1,
-        );
-        generateMaterialImage.current = materials[materialIndex];
-
-        // create model
-        const modelResp = await createSample("native/model/create", {
-          type: sampleType,
-          imageUrl: image1,
-        });
-        if (modelResp === false) {
-          setGenerateSampleError(true);
-          return;
-        }
-        generateModelUrl.current = modelResp["modelUrl"];
-        requestItemThumbnail({
-          modelType: sampleType as ModelType,
-          modelUrl: modelResp["modelUrl"],
-          imageUrl: image1,
-        });
+  const generateSampleHandler = async (
+    sampleType: ModelType,
+    image1: string,
+    image2: string,
+    coords: string,
+  ): Promise<boolean> => {
+    generateSampleType.current = sampleType;
+    if (sampleType === ModelType.Poster || sampleType === ModelType.CanBadge) {
+      generateModelUrl.current =
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+      generateMaterialImage.current = image1;
+      requestItemThumbnail({
+        modelType: sampleType as ModelType,
+        modelUrl: generateModelUrl.current,
+        imageUrl: image1,
+      });
+    } else if (sampleType == ModelType.AcrylicStand) {
+      const bodyObj = {
+        bodyUrl: image1,
+        baseUrl: image2,
+        coords: coords,
+      };
+      if (image2 == null) {
+        delete bodyObj.baseUrl;
       }
-      if (sampleType == ModelType.AcrylicStand) {
-        const bodyObj = {
-          bodyUrl: image1,
-          baseUrl: image2,
-          coords: coords,
-        };
-        if (image2 == null) {
-          delete bodyObj.bodyUrl;
-        }
-        if (coords == null) {
-          delete bodyObj.coords;
-        }
-        const modelResp = await createSample(
-          "native/model/acrylic-stand",
-          bodyObj,
-        );
-        if (modelResp === false) {
-          setGenerateSampleError(true);
-          return;
-        }
-        generateModelUrl.current = modelResp["url"];
-        generateMaterialImage.current = null;
-        requestItemThumbnail({
-          modelType: sampleType as ModelType,
-          modelUrl: modelResp["url"],
-          imageUrl: image1,
-        });
+      if (coords == null) {
+        delete bodyObj.coords;
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [materials, requestItemThumbnail],
-  );
+      const modelResp = await createSample(
+        "native/model/acrylic-stand",
+        bodyObj,
+      );
+      if (modelResp === false) {
+        return false;
+      }
+      generateModelUrl.current = modelResp["url"];
+      generateMaterialImage.current = null;
+      requestItemThumbnail({
+        modelType: ModelType.AcrylicStand,
+        modelUrl: modelResp["url"],
+      });
+    } else if (sampleType == ModelType.MessageCard) {
+      const modelResp = await createSample("native/model/message-card", {
+        url: image1,
+      });
+      if (modelResp === false) {
+        return false;
+      }
+      generateModelUrl.current = modelResp["url"];
+      generateMaterialImage.current = null;
+      requestItemThumbnail({
+        modelType: ModelType.MessageCard,
+        modelUrl: modelResp["url"],
+      });
+    }
 
+    return true;
+  };
   return (
     <div className="w-full h-full relative" id="workspace_view">
       <WorkspaceUnity unityProvider={unityProvider} />
@@ -463,8 +467,8 @@ export default function Index() {
         </div>
         {showRestoreMenu && !showListView && (
           <div
-            className="absolute w-[56px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
-              flex flex-col justify-center items-center z-10 select-none"
+            className={`absolute w-[${REMOVE_PANEL_WIDTH}px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+              flex flex-col justify-center items-center z-10 select-none`}
           >
             <Image
               width={48}

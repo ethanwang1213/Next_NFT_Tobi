@@ -18,25 +18,7 @@ const MintConfirmDialog2 = ({
           Are you sure you want to mint?
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
-          Performing the Mint operation will disable the ability to undo
-          <Image
-            src="/admin/images/icon/undo.svg"
-            width={16}
-            height={16}
-            alt="undo icon"
-            className="inline"
-          />
-          or redo
-          <Image
-            src="/admin/images/icon/redo.svg"
-            width={16}
-            height={16}
-            alt="redo icon"
-            className="inline"
-          />
-          any previous changes.
-          <br />
-          Please confirm that you want to proceed.
+          After minting, the status will change to Private and cannot be reverted to Draft.
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
           Do you wish to continue?

@@ -4,8 +4,9 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
+import {statusOfSample} from "./utils";
 
-interface AcrylicStandResponse {
+interface ModelApiResponse {
   url: string;
 }
 
@@ -17,27 +18,29 @@ export const ModelRequestType = {
 
 export type ModelRequestType = (typeof ModelRequestType)[keyof typeof ModelRequestType];
 
-const getPathAfterBucket = (urlString: string) => {
-  const url = new URL(urlString);
-  const paths = url.pathname.split("/");
-  // index 0 is empty, index 1 is bucket name.
-  return paths.slice(2).join("/");
-};
-
 export const modelApiHandler = (type: ModelRequestType) => {
   return async (req: Request, res: Response) => {
+    const modelApiUrl = process.env.MODEL_API_URL;
+    const token = process.env.MODEL_API_TOKEN;
+    if (!modelApiUrl || !token) {
+      res.status(500).send({
+        status: "error",
+        data: "invalid-system-settings",
+      });
+      return;
+    }
     const {authorization} = req.headers;
     await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
       const uid = decodedToken.uid;
       switch (type) {
         case ModelRequestType.AcrylicStand:
-          createAcrylicStand(req, res, uid);
+          createAcrylicStand(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.MessageCard:
-          createMessageCard(req, res, uid);
+          createMessageCard(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.RemoveBg:
-          removeBackground(req, res, uid);
+          removeBackground(req, res, uid, modelApiUrl, token);
           break;
       }
     }).catch((error: FirebaseError) => {
@@ -50,10 +53,8 @@ export const modelApiHandler = (type: ModelRequestType) => {
   };
 };
 
-const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
+const createAcrylicStand = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {bodyUrl, baseUrl, coords}: { bodyUrl: string, baseUrl?: string, coords?: string } = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!bodyUrl) {
     res.status(400).send({
@@ -61,19 +62,13 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
       data: "invalid-params",
     });
     return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
-    });
-    return;
   }
   const params: Record<string, string | undefined> = {
     uid,
     token,
     process_type: ModelRequestType.AcrylicStand,
-    image1: getPathAfterBucket(bodyUrl),
-    image2: baseUrl ? getPathAfterBucket(baseUrl) : undefined,
+    image1: bodyUrl,
+    image2: baseUrl,
     coords1: coords,
   };
   const urlParams = new URLSearchParams();
@@ -84,7 +79,7 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -100,10 +95,8 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string) => {
   }
 };
 
-const createMessageCard = async (req: Request, res: Response, uid: string) => {
+const createMessageCard = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {url}: { url: string} = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!url) {
     res.status(400).send({
@@ -111,28 +104,13 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
       data: "invalid-params",
     });
     return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
-    });
-    return;
   }
 
-  // Mock response
-  const predefinedModel = "https://storage.googleapis.com/tobiratory-f6ae1.appspot.com/debug/sample.glb";
-  res.status(200).send({
-    status: "success",
-    data: {
-      url: predefinedModel,
-    },
-  });
-  /*
-  const params: Record<string, string | undefined> = {
+  const params: Record<string, string> = {
     uid,
     token,
     process_type: ModelRequestType.MessageCard,
-    image1: getPathAfterBucket(url),
+    image1: url,
   };
   const urlParams = new URLSearchParams();
   Object.keys(params).forEach((key)=>{
@@ -142,7 +120,7 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -156,13 +134,10 @@ const createMessageCard = async (req: Request, res: Response, uid: string) => {
       data: "api-error",
     });
   }
-   */
 };
 
-export const removeBackground = async (req: Request, res: Response, uid: string, modelRequestType?: ModelRequestType) => {
+export const removeBackground = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
   const {url}: { url: string } = req.body;
-  const modelApiUrl = process.env.MODEL_API_URL;
-  const token = process.env.MODEL_API_TOKEN;
 
   if (!url) {
     res.status(400).send({
@@ -170,18 +145,12 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
       data: "invalid-params",
     });
     return;
-  } else if (!modelApiUrl || !token) {
-    res.status(500).send({
-      status: "error",
-      data: "invalid-system-settings",
-    });
-    return;
   }
-  const params: Record<string, string | undefined> = {
+  const params: Record<string, string> = {
     uid,
     token,
-    process_type: modelRequestType ?? ModelRequestType.RemoveBg,
-    url: getPathAfterBucket(url),
+    process_type: ModelRequestType.RemoveBg,
+    image1: url,
   };
   const urlParams = new URLSearchParams();
   Object.keys(params).forEach((key)=>{
@@ -191,7 +160,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
   });
   const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
   try {
-    const apiResponse = await axios.post<AcrylicStandResponse>(requestUrl);
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
     res.status(200).send({
       status: "success",
       data: {
@@ -458,7 +427,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           saleStartDate: sample.start_date,
           saleEndDate: sample.end_date,
           saleQuantity: sample.sale_quantity,
-          quantityLimit: sample.quantity_limit,
+          quantityLimit: sample.digital_item.limit,
           createDate: sample.created_date_time,
         };
       });
@@ -639,7 +608,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         status: sample.digital_item.status,
         startDate: sample.start_date,
         endDate: sample.end_date,
-        quantityLimit: sample.quantity_limit,
+        quantityLimit: sample.digital_item.limit,
         license: sample.digital_item.license,
         copyrights: copyrights,
       };
@@ -743,7 +712,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (price || startDate || endDate || quantityLimit) {
+      if (price || startDate || endDate) {
         await prisma.tobiratory_sample_items.update({
           where: {
             id: parseInt(sampleId),
@@ -754,11 +723,10 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
             price: price,
             start_date: startDate == undefined ? undefined : new Date(startDate),
             end_date: endDate == undefined ? undefined : new Date(endDate),
-            quantity_limit: quantityLimit,
           },
         });
       }
-      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license || quantityLimit) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: sample?.digital_item_id,
@@ -770,6 +738,7 @@ export const adminUpdateSample = async (req: Request, res: Response) => {
             is_default_thumb: !isCustomThumbnailSelected,
             status: status,
             license: license,
+            limit: quantityLimit,
           },
         });
       }
@@ -845,27 +814,35 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
           owner_uuid: uid,
         },
       });
-      const allSamples = await prisma.tobiratory_sample_items.findMany({
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-content",
+        });
+        return;
+      }
+      const allDigitalItems = await prisma.tobiratory_digital_items.findMany({
         where: {
-          content_id: content?.id,
+          creator_uuid: uid,
           is_deleted: false,
         },
         include: {
-          digital_item: true,
+          sample_item: true,
         },
       });
-      const returnData = allSamples.map((sample) => {
+      const returnData = allDigitalItems.map((digitalItem) => {
         return {
-          id: sample.id,
-          name: sample.digital_item.name,
-          thumbnail: sample.digital_item.is_default_thumb ? sample.digital_item.default_thumb_url : sample.digital_item.custom_thumb_url,
-          price: sample.price,
-          status: sample.digital_item.status,
-          saleStartDate: sample.start_date,
-          saleEndDate: sample.end_date,
-          saleQuantity: sample.sale_quantity,
-          quantityLimit: sample.quantity_limit,
-          createDate: sample.created_date_time,
+          id: digitalItem.id,
+          name: digitalItem.name,
+          thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          price: digitalItem.sample_item?.price,
+          status: digitalItem.status,
+          saleStartDate: digitalItem.sample_item?.start_date,
+          saleEndDate: digitalItem.sample_item?.end_date,
+          saleQuantity: digitalItem.sample_item?.sale_quantity,
+          quantityLimit: digitalItem.limit,
+          mintedCount: digitalItem.minted_count,
+          createDate: digitalItem.created_date_time,
         };
       });
       res.status(200).send({
@@ -893,7 +870,7 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
 
 export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {sampleIds}: { sampleIds: number[] } = req.body;
+  const {digitalItemIds}: { digitalItemIds: number[] } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -914,13 +891,20 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
           owner_uuid: uid,
         },
       });
-      for (const item of sampleIds) {
-        const sample = await prisma.tobiratory_sample_items.findUnique({
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-content",
+        });
+        return;
+      }
+      for (const item of digitalItemIds) {
+        const digitalItem = await prisma.tobiratory_digital_items.findUnique({
           where: {
             id: item,
           },
         });
-        if (sample == null) {
+        if (digitalItem == null) {
           res.status(401).send({
             status: "error",
             data: {
@@ -929,20 +913,20 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (sample.content_id != content?.id) {
+        if (digitalItem.creator_uuid != uid) {
           res.status(401).send({
             status: "error",
             data: {
-              result: "not-content",
+              result: "not-owner",
             },
           });
           return;
         }
       }
-      await prisma.tobiratory_sample_items.updateMany({
+      await prisma.tobiratory_digital_items.updateMany({
         where: {
           id: {
-            in: sampleIds,
+            in: digitalItemIds,
           },
         },
         data: {
@@ -997,55 +981,61 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
           owner_uuid: uid,
         },
       });
-      const sample = await prisma.tobiratory_sample_items.findUnique({
+      if (!content) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-content",
+        });
+        return;
+      }
+      const digitalItem = await prisma.tobiratory_digital_items.findUnique({
         where: {
           id: parseInt(digitalId),
-          content_id: content?.id,
           is_deleted: false,
         },
         include: {
-          digital_item: {
+          copyright: {
             include: {
-              copyright: {
-                include: {
-                  copyright: true,
-                },
-              },
+              copyright: true,
             },
           },
+          sample_item: true,
         },
       });
-      if (!sample) {
+      if (!digitalItem||digitalItem.is_deleted) {
         res.status(401).send({
           status: "error",
           data: "not-exist",
         });
         return;
       }
-      const copyrights = sample.digital_item.copyright.map((relate) => {
+      const copyrights = digitalItem.copyright.map((relate) => {
         return {
           id: relate.copyright.id,
           name: relate.copyright.copyright_name,
         };
       });
       const returnData = {
-        id: sample.id,
-        name: sample.digital_item.name,
+        id: digitalItem.id,
+        name: digitalItem.name,
         content: {
           id: content?.id,
           name: content?.name,
           description: content?.description,
         },
-        description: sample.digital_item.description,
-        defaultThumbnailUrl: sample.digital_item.default_thumb_url,
-        customThumbnailUrl: sample.digital_item.custom_thumb_url,
-        isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
-        price: sample.price,
-        status: sample.digital_item.status,
-        startDate: sample.start_date,
-        endDate: sample.end_date,
-        quantityLimit: sample.quantity_limit,
-        license: sample.digital_item.license,
+        description: digitalItem.description,
+        defaultThumbnailUrl: digitalItem.default_thumb_url,
+        customThumbnailUrl: digitalItem.custom_thumb_url,
+        isCustomThumbnailSelected: !digitalItem.is_default_thumb,
+        price: digitalItem.sample_item?.price,
+        status: digitalItem.status,
+        startDate: digitalItem.sample_item?.start_date,
+        endDate: digitalItem.sample_item?.end_date,
+        schedules: digitalItem.schedules.map((schedule)=>{
+          return JSON.parse(schedule);
+        }),
+        quantityLimit: digitalItem.limit,
+        license: digitalItem.license,
         copyrights: copyrights,
       };
       res.status(200).send({
@@ -1086,6 +1076,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     quantityLimit,
     license,
     copyrights,
+    schedules,
   }: {
     name?: string,
     description?: string,
@@ -1098,6 +1089,10 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     quantityLimit?: number,
     license?: string,
     copyrights?: { id: number | null, name: string }[],
+    schedules?: {
+      status: number,
+      datetime: string,
+    }[],
   } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
@@ -1122,7 +1117,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
       if (!content) {
         res.status(401).send({
           status: "error",
-          data: "not-content",
+          data: "not-exist-content",
         });
         return;
       }
@@ -1130,8 +1125,11 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         where: {
           id: parseInt(digitalId),
         },
+        include: {
+          sample_item: true,
+        },
       });
-      if (!digitalItem) {
+      if (!digitalItem||digitalItem.is_deleted) {
         res.status(404).send({
           status: "error",
           data: "not-exist",
@@ -1145,10 +1143,48 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (price || startDate || endDate || quantityLimit) {
+      if (status) {
+        if (status<1||status>7) {
+          res.status(401).send({
+            status: "error",
+            data: "wrong-status",
+          });
+          return;
+        }
+        if ([statusOfSample.private, statusOfSample.draft].includes(digitalItem.status) && status ==statusOfSample.unListed) {
+          res.status(401).send({
+            status: "error",
+            data: "wrong-status",
+          });
+          return;
+        }
+      }
+      if (schedules&&schedules.length>2) {
+        for (let i = 0; i < schedules.length; i++) {
+          const element1 = schedules[i];
+          if (element1.status<1||element1.status>7) {
+            res.status(401).send({
+              status: "error",
+              data: "wrong-status",
+            });
+            return;
+          }
+          for (let j = i + 1; j < schedules.length; j++) {
+            const element2 = schedules[j];
+            if (element1.datetime==element2.datetime) {
+              res.status(401).send({
+                status: "error",
+                data: "wrong-schedule",
+              });
+              return;
+            }
+          }
+        }
+      }
+      if (price || startDate || endDate) {
         await prisma.tobiratory_sample_items.update({
           where: {
-            id: parseInt(digitalId),
+            id: digitalItem.sample_item?.id??0,
             content_id: content?.id,
             is_deleted: false,
           },
@@ -1156,11 +1192,10 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             price: price,
             start_date: startDate == undefined ? undefined : new Date(startDate),
             end_date: endDate == undefined ? undefined : new Date(endDate),
-            quantity_limit: quantityLimit,
           },
         });
       }
-      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || status || license || schedules || quantityLimit) {
         await prisma.tobiratory_digital_items.update({
           where: {
             id: parseInt(digitalId),
@@ -1171,7 +1206,11 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             custom_thumb_url: customThumbnailUrl,
             is_default_thumb: !isCustomThumbnailSelected,
             status: status,
+            limit: quantityLimit,
             license: license,
+            schedules: schedules?.map((schedule) => {
+              return JSON.stringify(schedule);
+            }),
           },
         });
       }

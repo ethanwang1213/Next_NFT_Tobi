@@ -75,6 +75,7 @@ const postTcpData = async (data: TcpFormType, fileNames: string[]) => {
     ...data,
     copyright: {
       ...data.copyright,
+      copyrightHolder: [data.copyright.copyrightHolder],
       file1: fileNames[0],
       file2: fileNames[1],
       file3: fileNames[2],
