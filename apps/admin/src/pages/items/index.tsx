@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 };
 
 export default function Index() {
-  const [selectedTab, setSelectedTab] = useState("sample");
+  const [selectedTab, setSelectedTab] = useState("item");
 
   const router = useRouter();
 
   const links = {
-    sample: {
-      label: "new sample",
+    item: {
+      label: "new item",
       clickHandler: () => router.push("/workspace"),
     },
   };
@@ -24,7 +24,7 @@ export default function Index() {
     <>
       <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center">
         <h1 className="font-semibold text-secondary text-3xl">ITEMS</h1>
-        <CreateButton {...(links[selectedTab] ?? links.sample)} height={56} />
+        <CreateButton {...(links[selectedTab] ?? links.item)} height={56} />
       </div>
       <div>
         <ItemsManageTab onTabChange={setSelectedTab} />

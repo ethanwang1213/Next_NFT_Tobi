@@ -16,17 +16,17 @@ export default function CreateButton({
         style={{ height: height }}
         onClick={clickHandler ?? null}
         className={`rounded-[30px] bg-primary
-          px-6 flex items-center gap-4 text-white
+          px-6 flex items-center gap-3 text-white
           transition-colors hover:bg-blue-500 
           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600`}
       >
         <Image
           src="/admin/images/icon/plus-icon.svg"
           alt="plus"
-          width={26}
-          height={26}
+          width={24}
+          height={24}
         />
-        <span className="text-xl leading-[26px] font-semibold uppercase text-center pb-0.5">
+        <span className="text-xl leading-[26px] font-semibold uppercase text-center">
           {label}
         </span>
       </Button>

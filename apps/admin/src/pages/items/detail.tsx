@@ -1,25 +1,28 @@
 import clsx from "clsx";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
+import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import Image from "next/image";
+import NextImage from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
-import DateTimeInput from "ui/molecules/DateTimeInput";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
-import ItemEditHeader from "ui/organisms/admin/ItemEditHeader";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
+import MintConfirmDialog1 from "ui/organisms/admin/MintConfirmDialog1";
+import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
-import StatusDropdownSelect, {
-  getSampleStatusTitle,
-} from "ui/organisms/admin/StatusDropdownSelect";
-import { SampleStatus } from "ui/types/adminTypes";
-import useFcmToken from "hooks/useFCMToken";
+import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
+import {
+  DigitalItemStatus,
+  ScheduleItem,
+  getDigitalItemStatusTitle,
+} from "ui/types/adminTypes";
 
 const Detail = () => {
   const router = useRouter();
@@ -35,10 +38,11 @@ const Detail = () => {
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
   const statusConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef = useRef(null);
+  const mintConfirmDialogRef1 = useRef(null);
 
-  const apiUrl = "native/admin/samples";
+  const apiUrl = "native/admin/digital_items";
   const {
-    data: sampleItem,
+    data: digitalItem,
     dataRef,
     loading,
     error,
@@ -49,11 +53,11 @@ const Detail = () => {
 
   const fieldChangeHandler = useCallback(
     (field, value) => {
-      setData({ ...sampleItem, [field]: value });
+      setData({ ...digitalItem, [field]: value });
       setModified(true);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sampleItem],
+    [digitalItem],
   );
 
   const onDrop = useCallback(
@@ -71,32 +75,22 @@ const Detail = () => {
 
   const checkMandatoryFields = () => {
     if (
-      sampleItem.status == SampleStatus.ViewingOnly ||
-      sampleItem.status == SampleStatus.OnSale ||
-      sampleItem.status == SampleStatus.ScheduledPublishing ||
-      sampleItem.status == SampleStatus.ScheduledforSale
+      digitalItem.status == DigitalItemStatus.ViewingOnly ||
+      digitalItem.status == DigitalItemStatus.OnSale
     ) {
       if (
-        sampleItem.name == null ||
-        sampleItem.name == "" ||
-        sampleItem.description == null ||
-        sampleItem.description == "" ||
-        sampleItem.quantityLimit == null ||
-        sampleItem.quantityLimit == 0 ||
-        sampleItem.license == null ||
-        sampleItem.license == "" ||
-        sampleItem.copyrights == null ||
-        sampleItem.copyrights.length == 0
+        digitalItem.name == null ||
+        digitalItem.name == "" ||
+        digitalItem.description == null ||
+        digitalItem.description == "" ||
+        digitalItem.quantityLimit == null ||
+        digitalItem.quantityLimit == 0 ||
+        digitalItem.license == null ||
+        digitalItem.license == "" ||
+        digitalItem.copyrights == null ||
+        digitalItem.copyrights.length == 0
       ) {
         return false;
-      }
-      if (
-        sampleItem.status == SampleStatus.ScheduledPublishing ||
-        sampleItem.status == SampleStatus.ScheduledforSale
-      ) {
-        if (sampleItem.startDate == null || sampleItem.endDate == null) {
-          return false;
-        }
       }
     }
 
@@ -109,21 +103,18 @@ const Detail = () => {
 
     // set title
     setConfirmDialogTitle(
-      `Changing from ${getSampleStatusTitle(
-        dataRef.current.status > 5
-          ? dataRef.current.status - 2
-          : dataRef.current.status,
-      ).toLowerCase()} to ${getSampleStatusTitle(
-        sampleItem.status > 5 ? sampleItem.status - 2 : sampleItem.status,
+      `Changing from ${getDigitalItemStatusTitle(
+        dataRef.current.status,
+      ).toLowerCase()} to ${getDigitalItemStatusTitle(
+        digitalItem.status,
       ).toLowerCase()}`,
     );
 
     // set content
     switch (dataRef.current.status) {
-      case SampleStatus.Draft:
-        switch (sampleItem.status) {
-          case SampleStatus.ViewingOnly:
-          case SampleStatus.ScheduledPublishing:
+      case DigitalItemStatus.Draft:
+        switch (digitalItem.status) {
+          case DigitalItemStatus.ViewingOnly:
             setConfirmDialogDescriptions([
               "Once published, this item will be visible to all users.",
             ]);
@@ -132,8 +123,7 @@ const Detail = () => {
             ]);
             break;
 
-          case SampleStatus.OnSale:
-          case SampleStatus.ScheduledforSale:
+          case DigitalItemStatus.OnSale:
             setConfirmDialogDescriptions([
               "In sales status, the item can be sold and distributed.",
             ]);
@@ -147,10 +137,9 @@ const Detail = () => {
         }
         break;
 
-      case SampleStatus.Private:
-        switch (sampleItem.status) {
-          case SampleStatus.ViewingOnly:
-          case SampleStatus.ScheduledPublishing:
+      case DigitalItemStatus.Private:
+        switch (digitalItem.status) {
+          case DigitalItemStatus.ViewingOnly:
             setConfirmDialogDescriptions([
               "Once published, this item will be visible to all users.",
               "If intended for sale/distribution, please select the sales status (On Sale).",
@@ -161,8 +150,7 @@ const Detail = () => {
             ]);
             break;
 
-          case SampleStatus.OnSale:
-          case SampleStatus.ScheduledforSale:
+          case DigitalItemStatus.OnSale:
             setConfirmDialogDescriptions([
               "The item will be published and available for sale and distribution.",
             ]);
@@ -177,18 +165,16 @@ const Detail = () => {
         }
         break;
 
-      case SampleStatus.ViewingOnly:
-      case SampleStatus.ScheduledPublishing:
-        switch (sampleItem.status) {
-          case SampleStatus.Unlisted:
+      case DigitalItemStatus.ViewingOnly:
+        switch (digitalItem.status) {
+          case DigitalItemStatus.Unlisted:
             setConfirmDialogDescriptions([
               "This item will be hidden from the content page.",
             ]);
             setConfirmDialogNotes([]);
             break;
 
-          case SampleStatus.OnSale:
-          case SampleStatus.ScheduledforSale:
+          case DigitalItemStatus.OnSale:
             setConfirmDialogDescriptions([
               "The item will be available for sale and distribution.",
             ]);
@@ -200,18 +186,16 @@ const Detail = () => {
         }
         break;
 
-      case SampleStatus.OnSale:
-      case SampleStatus.ScheduledforSale:
-        switch (sampleItem.status) {
-          case SampleStatus.ViewingOnly:
-          case SampleStatus.ScheduledPublishing:
+      case DigitalItemStatus.OnSale:
+        switch (digitalItem.status) {
+          case DigitalItemStatus.ViewingOnly:
             setConfirmDialogDescriptions([
               "The item will continue to be displayed to all users, but it will be sold or distributed.",
             ]);
             setConfirmDialogNotes([]);
             break;
 
-          case SampleStatus.Unlisted:
+          case DigitalItemStatus.Unlisted:
             setConfirmDialogDescriptions([
               "This item will be hidden from the content page.",
             ]);
@@ -223,18 +207,16 @@ const Detail = () => {
         }
         break;
 
-      case SampleStatus.Unlisted:
-        switch (sampleItem.status) {
-          case SampleStatus.ViewingOnly:
-          case SampleStatus.ScheduledPublishing:
+      case DigitalItemStatus.Unlisted:
+        switch (digitalItem.status) {
+          case DigitalItemStatus.ViewingOnly:
             setConfirmDialogDescriptions([
               "This item will once again be visible to all users.",
             ]);
             setConfirmDialogNotes([]);
             break;
 
-          case SampleStatus.OnSale:
-          case SampleStatus.ScheduledforSale:
+          case DigitalItemStatus.OnSale:
             setConfirmDialogDescriptions([
               "The item will be published and will also be available for sale and distribution.",
             ]);
@@ -253,8 +235,39 @@ const Detail = () => {
     statusConfirmDialogRef.current.showModal();
   };
 
+  const checkSchedules = useCallback((values: ScheduleItem[]) => {
+    if (values.length < 2) {
+      return true;
+    }
+
+    let prevStatus = null;
+    for (const schedule of values) {
+      if (prevStatus == null) {
+        prevStatus = schedule;
+        continue;
+      } else {
+        if (
+          prevStatus.status != schedule.status &&
+          prevStatus.datetime != schedule.datetime
+        ) {
+          prevStatus = schedule;
+          continue;
+        } else {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }, []);
+
   const saveButtonHandler = async () => {
-    if (dataRef.current.status != sampleItem.status) {
+    if (!checkSchedules(digitalItem.schedules)) {
+      toast("Status change invalid: Cannot change to the same status.");
+      return;
+    }
+
+    if (dataRef.current.status != digitalItem.status) {
       showStatusConfirmDialog();
       return;
     }
@@ -266,17 +279,18 @@ const Detail = () => {
     setLoading(true);
 
     const submitData = {
-      name: sampleItem.name,
-      description: sampleItem.description,
-      customThumbnailUrl: sampleItem.customThumbnailUrl,
-      isCustomThumbnailSelected: sampleItem.isCustomThumbnailSelected,
-      price: parseInt(sampleItem.price ?? 0),
-      status: sampleItem.status,
-      startDate: sampleItem.startDate,
-      endDate: sampleItem.endDate,
-      quantityLimit: parseInt(sampleItem.quantityLimit),
-      license: sampleItem.license,
-      copyrights: sampleItem.copyrights,
+      name: digitalItem.name,
+      description: digitalItem.description,
+      customThumbnailUrl: digitalItem.customThumbnailUrl,
+      isCustomThumbnailSelected: digitalItem.isCustomThumbnailSelected,
+      price: parseInt(digitalItem.price ?? 0),
+      status: digitalItem.status,
+      startDate: digitalItem.startDate,
+      endDate: digitalItem.endDate,
+      quantityLimit: parseInt(digitalItem.quantityLimit),
+      license: digitalItem.license,
+      copyrights: digitalItem.copyrights,
+      schedules: digitalItem.schedules,
     };
 
     if (submitData.customThumbnailUrl != dataRef.current.customThumbnailUrl) {
@@ -286,17 +300,9 @@ const Detail = () => {
       );
     }
 
-    if (
-      submitData.status != SampleStatus.ScheduledPublishing &&
-      submitData.status != SampleStatus.ScheduledforSale
-    ) {
-      delete submitData.startDate;
-      delete submitData.endDate;
-    }
-
-    if (await postData(`${apiUrl}/${sampleItem.id}`, submitData)) {
+    if (await postData(`${apiUrl}/${digitalItem.id}`, submitData)) {
       setModified(false);
-      dataRef.current = sampleItem;
+      dataRef.current = digitalItem;
     } else {
       if (error) {
         if (error instanceof String) {
@@ -310,10 +316,8 @@ const Detail = () => {
 
   const isReadOnly = useCallback(() => {
     if (
-      dataRef.current.status == SampleStatus.ViewingOnly ||
-      dataRef.current.status == SampleStatus.OnSale ||
-      dataRef.current.status == SampleStatus.ScheduledPublishing ||
-      dataRef.current.status == SampleStatus.ScheduledforSale
+      dataRef.current.status == DigitalItemStatus.ViewingOnly ||
+      dataRef.current.status == DigitalItemStatus.OnSale
     ) {
       return true;
     }
@@ -326,33 +330,69 @@ const Detail = () => {
         postData(`native/items/${id}/mint`, {
           fcmToken: fcmToken,
           amount: 1,
-          modelUrl: sampleItem.modelUrl,
+          modelUrl: digitalItem.modelUrl,
         });
       }
     },
-    [postData, id, fcmToken, sampleItem],
+    [postData, id, fcmToken, digitalItem],
   );
 
   return (
     <div className="mt-16 mb-12">
-      <ItemEditHeader
-        id={Array.isArray(id) ? id[0] : id}
-        loading={loading}
-        className="ml-8 mr-[104px]"
-      />
+      <div className={`ml-8 mr-[104px] h-12 flex items-center gap-4`}>
+        <Link href="/items">
+          <NextImage
+            src="/admin/images/icon/arrow_back.svg"
+            width={32}
+            height={32}
+            alt="back icon"
+          />
+        </Link>
+        <span className="flex-1 text-secondary-600 text-[32px] font-semibold">
+          ITEM DETAIL
+        </span>
+        {digitalItem && (
+          <span className="text-xl text-secondary font-bold">Status</span>
+        )}
+        {digitalItem && (
+          <StatusDropdownSelect
+            initialStatus={dataRef.current.status}
+            handleSelectedItemChange={(changes) => {
+              fieldChangeHandler("status", changes.selectedItem.value);
+            }}
+          />
+        )}
 
-      {sampleItem && (
+        {loading ? (
+          <div className="w-[182px] h-10 flex justify-center items-center">
+            <span className="loading loading-spinner loading-md text-secondary-600" />
+          </div>
+        ) : (
+          <Button
+            className={clsx(
+              "w-[182px] text-xl h-10 text-white rounded-[30px] font-medium",
+              modified ? "bg-primary" : "bg-inactive",
+            )}
+            disabled={!modified}
+            onClick={saveButtonHandler}
+          >
+            Save
+          </Button>
+        )}
+      </div>
+
+      {digitalItem && (
         <div className="ml-24 mr-[104px] mt-16">
           <div className="flex gap-4">
             <div className="flex-grow flex flex-col gap-8">
               <div className="flex flex-col gap-4 pr-11">
-                <h3 className="text-xl text-secondary">SAMPLE DETAIL</h3>
+                <h3 className="text-xl text-secondary">ITEM DETAIL</h3>
                 <div className="flex flex-col gap-6">
                   <StyledTextInput
                     className=""
-                    label="Sample Name*"
-                    placeholder="Sample Name"
-                    value={sampleItem.name}
+                    label="Item Name*"
+                    placeholder="Item Name"
+                    value={digitalItem.name}
                     changeHandler={(value) => fieldChangeHandler("name", value)}
                     maxLen={50}
                     readOnly={isReadOnly()}
@@ -361,7 +401,7 @@ const Detail = () => {
                     className=""
                     label="Description"
                     placeholder="Description"
-                    value={sampleItem.description}
+                    value={digitalItem.description}
                     changeHandler={(value) =>
                       fieldChangeHandler("description", value)
                     }
@@ -369,43 +409,6 @@ const Detail = () => {
                     readOnly={isReadOnly()}
                   />
                 </div>
-              </div>
-              <div className="flex flex-col gap-6 pr-11">
-                {sampleItem.status == SampleStatus.ScheduledPublishing ||
-                sampleItem.status == SampleStatus.ScheduledforSale ? (
-                  <div className="flex flex-col gap-6 pl-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl">Start Date (JST)</span>
-                      <DateTimeInput
-                        className=""
-                        labelDate="Date"
-                        labelTime="Time"
-                        placeholder=""
-                        value={sampleItem.startDate}
-                        changeHandler={(v) => {
-                          fieldChangeHandler("startDate", v);
-                        }}
-                        readOnly={isReadOnly()}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl">End Date (JST)</span>
-                      <DateTimeInput
-                        className=""
-                        labelDate="Date"
-                        labelTime="Time"
-                        placeholder=""
-                        value={sampleItem.endDate}
-                        changeHandler={(v) => {
-                          fieldChangeHandler("endDate", v);
-                        }}
-                        readOnly={isReadOnly()}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <></>
-                )}
               </div>
               <div className="flex flex-col gap-6">
                 <h3 className="text-xl text-secondary">
@@ -416,14 +419,14 @@ const Detail = () => {
                     className=""
                     label="Price*"
                     placeholder="Price"
-                    value={`${sampleItem.price ? sampleItem.price : 0}`}
+                    value={`${digitalItem.price ? digitalItem.price : 0}`}
                     inputMask={TextKind.Digit}
                     changeHandler={(value) =>
                       fieldChangeHandler("price", value)
                     }
                   />
                   <div className="flex">
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -458,9 +461,9 @@ const Detail = () => {
                     className=""
                     placeholder="Quantity Limit"
                     value={`${
-                      sampleItem.quantityLimit
-                        ? sampleItem.quantityLimit != -1
-                          ? sampleItem.quantityLimit
+                      digitalItem.quantityLimit
+                        ? digitalItem.quantityLimit != -1
+                          ? digitalItem.quantityLimit
                           : ""
                         : ""
                     }`}
@@ -476,7 +479,7 @@ const Detail = () => {
                       type="checkbox"
                       id="quantityLimit"
                       className="w-6 h-6"
-                      checked={sampleItem.quantityLimit == -1}
+                      checked={digitalItem.quantityLimit == -1}
                       onChange={(e) => {
                         if (!isReadOnly() && e.target.checked) {
                           fieldChangeHandler("quantityLimit", -1);
@@ -489,7 +492,7 @@ const Detail = () => {
                     >
                       No Quantity Limit
                     </label>
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -527,13 +530,13 @@ const Detail = () => {
                 <div className="flex flex-col gap-6">
                   <div className="flex gap-6">
                     <CopyrightMultiSelect
-                      initialSelectedItems={sampleItem.copyrights}
+                      initialSelectedItems={digitalItem.copyrights}
                       handleSelectedItemChange={(changes) => {
                         fieldChangeHandler("copyrights", changes);
                       }}
                       readOnly={isReadOnly()}
                     />
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -569,13 +572,13 @@ const Detail = () => {
                       className="flex-grow"
                       label="License"
                       placeholder="License"
-                      value={sampleItem.license}
+                      value={digitalItem.license}
                       changeHandler={(value) =>
                         fieldChangeHandler("license", value)
                       }
                       readOnly={isReadOnly()}
                     />
-                    <Image
+                    <NextImage
                       src="/admin/images/info-icon-2.svg"
                       width={16}
                       height={16}
@@ -609,17 +612,26 @@ const Detail = () => {
                   </div>
                 </div>
               </div>
+              <div className="flex flex-col gap-6 pr-11">
+                <h3 className="text-xl text-secondary">SCHEDULE</h3>
+                <ScheduleCalendar
+                  originStatus={dataRef.current.status}
+                  currentStatus={digitalItem.status}
+                  schedules={digitalItem.schedules}
+                  changeHandler={(v) => fieldChangeHandler("schedules", v)}
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-6 mt-10">
               <div>
-                <Image
+                <NextImage
                   width={384}
                   height={384}
                   className="bg-[#2D94FF6B] rounded-[13px]"
                   src={
-                    sampleItem.isCustomThumbnailSelected
-                      ? sampleItem.customThumbnailUrl
-                      : sampleItem.defaultThumbnailUrl
+                    digitalItem.isCustomThumbnailSelected
+                      ? digitalItem.customThumbnailUrl
+                      : digitalItem.defaultThumbnailUrl
                   }
                   alt="thumbnail image"
                 />
@@ -631,10 +643,10 @@ const Detail = () => {
                     height: 120,
                     borderRadius: 13,
                     borderWidth: 2,
-                    borderColor: sampleItem.isCustomThumbnailSelected
+                    borderColor: digitalItem.isCustomThumbnailSelected
                       ? "#B3B3B3"
                       : "#98C6F4",
-                    backgroundImage: `url('${sampleItem.defaultThumbnailUrl}')`,
+                    backgroundImage: `url('${digitalItem.defaultThumbnailUrl}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -644,14 +656,14 @@ const Detail = () => {
                   }}
                 >
                   <a
-                    href={sampleItem.defaultThumbnailUrl}
+                    href={digitalItem.defaultThumbnailUrl}
                     download
                     className="absolute right-3 bottom-3 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation(); // Stop event propagation
                     }}
                   >
-                    <Image
+                    <NextImage
                       width={24}
                       height={24}
                       alt="download"
@@ -665,26 +677,26 @@ const Detail = () => {
                     height: 120,
                     borderRadius: 13,
                     borderWidth: 2,
-                    borderColor: !sampleItem.isCustomThumbnailSelected
+                    borderColor: !digitalItem.isCustomThumbnailSelected
                       ? "#B3B3B3"
                       : "#98C6F4",
-                    backgroundImage: `url('${sampleItem.customThumbnailUrl}')`,
+                    backgroundImage: `url('${digitalItem.customThumbnailUrl}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
                   className="relative"
                   onClick={() => {
                     if (
-                      sampleItem.customThumbnailUrl &&
-                      sampleItem.customThumbnailUrl.length > 0
+                      digitalItem.customThumbnailUrl &&
+                      digitalItem.customThumbnailUrl.length > 0
                     ) {
                       fieldChangeHandler("isCustomThumbnailSelected", true);
                     }
                   }}
                 >
-                  {sampleItem.customThumbnailUrl &&
-                  sampleItem.customThumbnailUrl.length > 0 ? (
-                    <Image
+                  {digitalItem.customThumbnailUrl &&
+                  digitalItem.customThumbnailUrl.length > 0 ? (
+                    <NextImage
                       width={24}
                       height={24}
                       alt="cancel"
@@ -693,14 +705,14 @@ const Detail = () => {
                       onClick={(e) => {
                         e.stopPropagation(); // Stop event propagation
                         setData({
-                          ...sampleItem,
+                          ...digitalItem,
                           ["isCustomThumbnailSelected"]: false,
                           ["customThumbnailUrl"]: "",
                         });
                       }}
                     />
                   ) : (
-                    <Image
+                    <NextImage
                       width={24}
                       height={24}
                       alt="cancel"
@@ -726,7 +738,7 @@ const Detail = () => {
                   <span className="h-14 text-secondary-500 text-base text-center">
                     Drop your Image here
                   </span>
-                  <Image
+                  <NextImage
                     width={24}
                     height={24}
                     alt="upload"
@@ -734,54 +746,51 @@ const Detail = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl text-secondary">STATUS</h3>
-                <StatusDropdownSelect
-                  initialStatus={dataRef.current.status}
-                  handleSelectedItemChange={(changes) => {
-                    fieldChangeHandler("status", changes.selectedItem.value);
-                  }}
-                />
-              </div>
               <div className="text-center h-12">
-                {loading ? (
-                  <span className="loading loading-spinner loading-md mt-4 text-secondary-600" />
-                ) : (
+                <Link href={`/workspace/${id}`}>
                   <Button
-                    className={clsx(
-                      "w-full text-xl h-12 text-white rounded-[30px] font-medium",
-                      modified ? "bg-primary" : "bg-inactive",
-                    )}
-                    disabled={!modified}
-                    onClick={saveButtonHandler}
+                    className="w-full h-12 rounded-[30px] border-[3px] border-primary-500 
+                      flex justify-center items-center gap-2"
                   >
-                    Save
+                    <NextImage
+                      src="/admin/images/icon/preview.svg"
+                      width={32}
+                      height={32}
+                      alt="preview icon"
+                    />
+                    <span className="w-[240px] text-primary-500 text-xl font-medium text-center">
+                      Preview in Workspace
+                    </span>
                   </Button>
-                )}
+                </Link>
               </div>
               <div className="text-center h-12">
-                {sampleItem.status == SampleStatus.Draft && (
-                  <Button
-                    className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
-                    flex justify-center items-center gap-4
+                <Button
+                  className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
+                    flex justify-center items-center gap-2
                   `}
-                    onClick={() => {
+                  onClick={() => {
+                    if (digitalItem.status == DigitalItemStatus.Draft) {
+                      if (mintConfirmDialogRef1.current) {
+                        mintConfirmDialogRef1.current.showModal();
+                      }
+                    } else {
                       if (mintConfirmDialogRef.current) {
                         mintConfirmDialogRef.current.showModal();
                       }
-                    }}
-                  >
-                    <Image
-                      src="/admin/images/icon/mint_icon.svg"
-                      width={16}
-                      height={20}
-                      alt="mint icon"
-                    />
-                    <span className="text-[#E96800] text-xl font-semibold">
-                      Mint as an NFT
-                    </span>
-                  </Button>
-                )}
+                    }
+                  }}
+                >
+                  <NextImage
+                    src="/admin/images/icon/mint_icon.svg"
+                    width={16}
+                    height={20}
+                    alt="mint icon"
+                  />
+                  <span className="w-[240px] text-[#E96800] text-xl font-semibold text-center">
+                    Mint as an NFT
+                  </span>
+                </Button>
               </div>
             </div>
           </div>
@@ -797,6 +806,10 @@ const Detail = () => {
       />
       <MintConfirmDialog
         dialogRef={mintConfirmDialogRef}
+        changeHandler={mintConfirmDialogHandler}
+      />
+      <MintConfirmDialog1
+        dialogRef={mintConfirmDialogRef1}
         changeHandler={mintConfirmDialogHandler}
       />
     </div>

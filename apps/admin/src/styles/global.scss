@@ -97,6 +97,8 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   background-size: cover;
 }
 
+// customize toasty
+
 .Toastify__toast-theme--colored {
   background-color: #3F3F3F !important;
   color: #FAFAFA !important;
@@ -117,4 +119,140 @@ input[type="checkbox"].tobiratory-checkbox:checked {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   width: 352px !important;
+}
+
+// customize calendar
+
+.schedule-calendar.react-calendar {
+  width: 100% !important;
+  border-radius: 8px;
+  padding: 64px 12px 24px 12px;
+  border: 1px #717171 solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.schedule-calendar .react-calendar__navigation {
+  width: 418px;
+}
+
+.schedule-calendar .react-calendar__month-view__weekdays__weekday {
+  text-transform: none;
+  color: #AEAEAE;
+  flex: 0 0 16% !important;
+}
+
+.schedule-calendar .react-calendar__month-view__weekdays abbr {
+  text-decoration: auto;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day {
+  font-size: 16px;
+  font-weight: 400;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  flex: 0 0 16% !important;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day abbr {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--now abbr {
+  background-color: #B91C1C;
+  border-radius: 4px;
+  color: white;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day--weekend,
+.schedule-calendar .react-calendar__month-view__weekdays__weekday--weekend {
+  color: #17A1FA;
+  flex: 0 0 10% !important;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day--neighboringMonth abbr {
+  opacity: 0.5;
+}
+
+.schedule-calendar .react-calendar__tile {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--now,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active:enabled:focus {
+  background: none;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day {
+  position: relative;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day abbr {
+  position: relative;
+  z-index: 2;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day::before,
+.schedule-calendar .react-calendar__month-view__days__day::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: 1;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day::before {
+  left: calc(50% - 24px);
+  width: 24px;
+  border-radius: 8px 0 0 8px;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day::after {
+  left: calc(50%);
+  width: 24px;
+  border-radius: 0 8px 8px 0;
+}
+
+
+.schedule-calendar .status-bg-section.status-view-only {
+  background-color: #BAD9F8;
+}
+
+.schedule-calendar .status-bg-section.status-on-sale {
+  background-color: #FFD5B3;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active::before {
+  background-color: #717171;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-view-only::before {
+  background-color: #1779DE;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale::after,
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active.status-on-sale::before {
+  background-color: #FF811C;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.status-view-only,
+.schedule-calendar .react-calendar__month-view__days__day.status-on-sale {
+  color: #717171;
+}
+
+.schedule-calendar .react-calendar__month-view__days__day.react-calendar__tile--active {
+  color: white;
+}
+
+.custom-datepicker-popper {
+  z-index: 10 !important;
 }

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   title: "ワークスペース",
 };
 
-const REMOVE_PANEL_WIDTH = 112;
+const REMOVE_PANEL_WIDTH = 56;
 
 export default function Index() {
   const [showDetailView, setShowDetailView] = useState(false);
@@ -151,7 +151,7 @@ export default function Index() {
     requestItemThumbnail,
     inputWasd,
   } = useWorkspaceUnityContext({
-    sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH),
+    sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
     onRemoveSampleEnabled,
