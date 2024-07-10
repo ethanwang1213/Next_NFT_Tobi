@@ -13,6 +13,7 @@ export const getContentById = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
       if (!content) {
@@ -26,6 +27,7 @@ export const getContentById = async (req: Request, res: Response) => {
         where: {
           content_id: content.id,
           status: statusOfShowcase.public,
+          is_deleted: false,
         },
         include: {
           showcase_template: {},
@@ -33,7 +35,11 @@ export const getContentById = async (req: Request, res: Response) => {
             include: {
               sample_item: {
                 include: {
-                  digital_item: true,
+                  digital_item: {
+                    include: {
+                      material_images: true,
+                    },
+                  },
                 },
               },
             },
@@ -42,7 +48,11 @@ export const getContentById = async (req: Request, res: Response) => {
             include: {
               digital_item_nft: {
                 include: {
-                  digital_item: true,
+                  digital_item: {
+                    include: {
+                      material_images: true,
+                    },
+                  },
                 },
               },
             },
@@ -59,6 +69,7 @@ export const getContentById = async (req: Request, res: Response) => {
       const owner = await prisma.accounts.findUnique({
         where: {
           uuid: content.businesses_uuid,
+          is_deleted: false,
         },
       });
       if (!owner) {
@@ -75,6 +86,7 @@ export const getContentById = async (req: Request, res: Response) => {
           thumbImage: relationSample.sample_item.digital_item.is_default_thumb ?
             relationSample.sample_item.digital_item.default_thumb_url :
             relationSample.sample_item.digital_item?.custom_thumb_url,
+          imageUrl: relationSample.sample_item.digital_item.material_images.image,
           modelType: relationSample.sample_item.digital_item.type,
           modelUrl: relationSample.sample_item.digital_item.model_url,
           stageType: relationSample.stage_type,
@@ -99,6 +111,7 @@ export const getContentById = async (req: Request, res: Response) => {
           thumbImage: relationNFT.digital_item_nft.digital_item.is_default_thumb ?
             relationNFT.digital_item_nft.digital_item.default_thumb_url :
             relationNFT.digital_item_nft.digital_item.custom_thumb_url,
+          imageUrl: relationNFT.digital_item_nft.digital_item.material_images.image,
           modelType: relationNFT.digital_item_nft.digital_item.type,
           modelUrl: relationNFT.digital_item_nft.digital_item.model_url,
           stageType: relationNFT.stage_type,
@@ -190,6 +203,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
       const ownerBusiness = await prisma.businesses.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!ownerBusiness) {
@@ -222,7 +236,11 @@ export const getContentByUuid = async (req: Request, res: Response) => {
             include: {
               sample_item: {
                 include: {
-                  digital_item: true,
+                  digital_item: {
+                    include: {
+                      material_images: true,
+                    },
+                  },
                 },
               },
             },
@@ -231,7 +249,11 @@ export const getContentByUuid = async (req: Request, res: Response) => {
             include: {
               digital_item_nft: {
                 include: {
-                  digital_item: true,
+                  digital_item: {
+                    include: {
+                      material_images: true,
+                    },
+                  },
                 },
               },
             },
@@ -248,6 +270,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
       const owner = await prisma.accounts.findUnique({
         where: {
           uuid: content.businesses_uuid,
+          is_deleted: false,
         },
       });
       if (!owner) {
@@ -264,6 +287,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           thumbImage: relationSample.sample_item.digital_item.is_default_thumb ?
             relationSample.sample_item.digital_item.default_thumb_url :
             relationSample.sample_item.digital_item?.custom_thumb_url,
+          imageUrl: relationSample.sample_item.digital_item.material_images.image,
           modelType: relationSample.sample_item.digital_item.type,
           modelUrl: relationSample.sample_item.digital_item.model_url,
           stageType: relationSample.stage_type,
@@ -288,6 +312,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           thumbImage: relationNFT.digital_item_nft.digital_item.is_default_thumb ?
             relationNFT.digital_item_nft.digital_item.default_thumb_url :
             relationNFT.digital_item_nft.digital_item.custom_thumb_url,
+          imageUrl: relationNFT.digital_item_nft.digital_item.material_images.image,
           modelType: relationNFT.digital_item_nft.digital_item.type,
           modelUrl: relationNFT.digital_item_nft.digital_item.model_url,
           stageType: relationNFT.stage_type,
@@ -381,6 +406,10 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
+        },
+        include: {
+          content: true,
         },
       });
       if (!admin) {
@@ -390,19 +419,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.contents.findFirst({
-        where: {
-          businesses_uuid: uid,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
-      const timeDifference = new Date().getTime() - new Date(content.changed_name_time).getTime();
+      const timeDifference = new Date().getTime() - new Date(admin.content?.changed_name_time??"").getTime();
       if (timeDifference<3*30*24*60*60*1000&&name) {// 3 months
         res.status(401).send({
           status: "error",
@@ -412,7 +429,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
       }
       const updatedContent = await prisma.contents.update({
         where: {
-          id: content.id,
+          id: admin.content?.id??0,
         },
         data: {
           changed_name: name,
@@ -438,7 +455,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
                 },
                 create: {
                   name: copyright.name,
-                  content_id: content.id,
+                  content_id: admin.content?.id??0,
                 },
               });
               return upsertCopyright.id;
@@ -449,7 +466,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
             id: {
               notIn: copyrightIds,
             },
-            content_id: content.id,
+            content_id: admin.content?.id,
           },
         });
       }
@@ -499,6 +516,14 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
+        },
+        include: {
+          content: {
+            include: {
+              copyrights: true,
+            },
+          },
         },
       });
       if (!admin) {
@@ -508,30 +533,15 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.contents.findFirst({
-        where: {
-          businesses_uuid: uid,
-        },
-        include: {
-          copyrights: true,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
 
       const returnData = {
-        id: content.id,
-        name: content.name,
-        description: content.description,
-        license: content.license,
-        image: content.image,
-        sticker: content.sticker,
-        copyright: content.copyrights.map((copyright) => {
+        id: admin.content?.id,
+        name: admin.content?.name,
+        description: admin.content?.description,
+        license: admin.content?.license,
+        image: admin.content?.image,
+        sticker: admin.content?.sticker,
+        copyright: admin.content?.copyrights.map((copyright) => {
           return {
             id: copyright.id,
             name: copyright.name,
@@ -567,6 +577,7 @@ export const setFavoriteContent = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
         include: {
           copyrights: true,

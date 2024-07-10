@@ -28,7 +28,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
       const idPair: {previous: number, next: number}[] = [];
       await Promise.all(
           itemList.map(async (item)=>{
-            const workspaceSample = await prisma.tobiratory_workspace_items.upsert({
+            const workspaceSample = await prisma.workspace_sample_items.upsert({
               where: {
                 id: item.id,
               },
@@ -48,7 +48,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
               },
               create: {
                 id: item.id>0?item.id:undefined,
-                owner_uuid: uid,
+                account_uuid: uid,
                 sample_id: item.itemId,
                 stage_type: item.stageType,
                 scale: item.scale,
@@ -85,7 +85,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -96,12 +96,12 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const workspaceSamples = await prisma.tobiratory_workspace_items.findMany({
+      const workspaceSamples = await prisma.workspace_sample_items.findMany({
         where: {
-          owner_uuid: uid,
+          account_uuid: uid,
         },
         include: {
-          sample: {
+          sample_item: {
             include: {
               digital_item: true,
             },
@@ -111,10 +111,10 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
       const itemList = workspaceSamples.map((workspaceSample)=>{
         return {
           id: workspaceSample.id,
-          itemId: workspaceSample.sample.id,
-          modelType: workspaceSample.sample.digital_item.type,
-          modelUrl: workspaceSample.sample.model_url,
-          imageUrl: workspaceSample.sample.digital_item.is_default_thumb?workspaceSample.sample.digital_item.default_thumb_url:workspaceSample.sample.digital_item.custom_thumb_url,
+          itemId: workspaceSample.sample_item.id,
+          modelType: workspaceSample.sample_item.digital_item.type,
+          modelUrl: workspaceSample.sample_item.digital_item.model_url,
+          imageUrl: workspaceSample.sample_item.digital_item.is_default_thumb?workspaceSample.sample_item.digital_item.default_thumb_url:workspaceSample.sample_item.digital_item.custom_thumb_url,
           stageType: workspaceSample.stage_type,
           position: {
             x: workspaceSample.position[0]??0,
@@ -144,7 +144,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -156,7 +156,7 @@ export const throwSample = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const workspaceItem = await prisma.tobiratory_workspace_items.findUnique({
+      const workspaceItem = await prisma.workspace_sample_items.findUnique({
         where: {
           id: id,
         },
@@ -168,14 +168,14 @@ export const throwSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (workspaceItem.owner_uuid != uid) {
+      if (workspaceItem.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
         });
         return;
       }
-      await prisma.tobiratory_workspace_items.delete({
+      await prisma.workspace_sample_items.delete({
         where: {
           id: id,
         },
@@ -193,7 +193,7 @@ export const throwSample = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });

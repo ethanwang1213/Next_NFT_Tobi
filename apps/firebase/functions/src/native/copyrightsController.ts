@@ -11,6 +11,7 @@ export const getCopyrights = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -24,6 +25,9 @@ export const getCopyrights = async (req: Request, res: Response) => {
         where: {
           businesses_uuid: uid,
         },
+        include: {
+          copyrights: true,
+        },
       });
       if (!content) {
         res.status(401).send({
@@ -32,12 +36,7 @@ export const getCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const copyrights = await prisma.copyrights.findMany({
-        where: {
-          content_id: content.id,
-        },
-      });
-      const returnData = copyrights.map((copyright)=> {
+      const returnData = content.copyrights.map((copyright)=> {
         return {
           id: copyright.id,
           name: copyright.name,

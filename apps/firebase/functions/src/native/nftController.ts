@@ -56,7 +56,7 @@ export const mintNFT = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     throw error;
   });
@@ -228,7 +228,7 @@ export const giftNFT = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     throw error;
   });
@@ -442,6 +442,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
       const nftData = await prisma.digital_item_nfts.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
         include: {
           digital_item: {
@@ -534,6 +535,7 @@ export const adminGetAllNFTs = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -546,6 +548,7 @@ export const adminGetAllNFTs = async (req: Request, res: Response) => {
       const content = await prisma.contents.findFirst({
         where: {
           businesses_uuid: uid,
+          is_deleted: false,
         },
       });
       if (!content) {
@@ -558,6 +561,7 @@ export const adminGetAllNFTs = async (req: Request, res: Response) => {
       const boxes = await prisma.boxes.findMany({
         where: {
           account_uuid: uid,
+          is_deleted: false,
         },
         orderBy: {
           created_date_time: "desc",
@@ -669,7 +673,7 @@ export const adminGetAllNFTs = async (req: Request, res: Response) => {
     res.status(401).send({
       status: "error",
       data: {
-        result: error.code,
+        result: error,
       },
     });
     return;
@@ -684,9 +688,10 @@ export const adminGetBoxData = async (req: Request, res: Response) => {
     const box = await prisma.boxes.findUnique({
       where: {
         id: parseInt(id),
+        is_deleted: false,
       },
     });
-    if (box == null) {
+    if (!box) {
       res.status(401).send({
         status: "error",
         data: "not-exist",
@@ -703,6 +708,7 @@ export const adminGetBoxData = async (req: Request, res: Response) => {
     const allNfts = await prisma.digital_item_nfts.findMany({
       where: {
         box_id: parseInt(id),
+        is_deleted: false,
       },
       include: {
         digital_item: true,
@@ -769,7 +775,7 @@ export const adminGetBoxData = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };

@@ -27,7 +27,7 @@ export const statusOfShowcase = {
   publicSchedule: 2,
 };
 
-export const statusOfSample = {
+export const statusOfDigitalItem = {
   draft: 1,
   private: 2,
   public: 3,

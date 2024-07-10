@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {FirebaseError} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {prisma} from "../prisma";
-import {statusOfSample, statusOfShowcase} from "./utils";
+import {statusOfDigitalItem, statusOfShowcase} from "./utils";
 
 export const searchAll = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -25,6 +25,7 @@ export const searchAll = async (req: Request, res: Response) => {
     try {
       const users = await prisma.accounts.findMany({
         where: {
+          is_deleted: false,
           OR: [
             {
               username: {
@@ -59,6 +60,7 @@ export const searchAll = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
+          is_deleted: false,
         },
         take: 2,
         include: {
@@ -88,6 +90,7 @@ export const searchAll = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
+          is_deleted: false,
         },
         take: 2,
         include: {
@@ -104,32 +107,26 @@ export const searchAll = async (req: Request, res: Response) => {
           thumbImage: saidan.saidans_template.cover_image,
         };
       });
-      const digitalItems = await prisma.sample_items.findMany({
+      const digitalItems = await prisma.digital_items.findMany({
         where: {
-          digital_item: {
-            name: {
-              contains: searchValue,
-              mode: "insensitive",
-            },
-            status: {
-              in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
-            },
+          name: {
+            contains: searchValue,
+            mode: "insensitive",
           },
+          status: {
+            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
+          },
+          is_deleted: false,
         },
         take: 10,
-        include: {
-          digital_item: true,
-        },
         orderBy: {
-          digital_item: {
-            name: "asc",
-          },
+          name: "asc",
         },
       });
-      const resultDigitalItems = digitalItems.map((sample)=>{
+      const resultDigitalItems = digitalItems.map((digitalItem)=>{
         return {
-          sampleId: sample.id,
-          thumbImage: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url:sample.digital_item.custom_thumb_url,
+          sampleId: digitalItem.id,
+          thumbImage: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
         };
       });
       res.status(200).send({
@@ -185,6 +182,7 @@ export const searchUsers = async (req: Request, res: Response) => {
               },
             },
           ],
+          is_deleted: false,
         },
         orderBy: {
           username: "asc",
@@ -233,33 +231,27 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const digitalItems = await prisma.sample_items.findMany({
+      const digitalItems = await prisma.digital_items.findMany({
         skip: skip,
         take: defaultPageSize,
         where: {
-          digital_item: {
-            name: {
-              contains: searchValue,
-              mode: "insensitive",
-            },
-            status: {
-              in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
-            },
+          name: {
+            contains: searchValue,
+            mode: "insensitive",
           },
+          status: {
+            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
+          },
+          is_deleted: false,
         },
-        include: {
-          digital_item: true,
+        orderBy: {
+          name: "asc",
         },
-        orderBy: [
-          {digital_item: {
-            name: "asc",
-          }},
-        ],
       });
-      const resultDigitalItems = digitalItems.map((sample)=>{
+      const resultDigitalItems = digitalItems.map((digitalItem)=>{
         return {
-          sampleId: sample.id,
-          thumbImage: sample.digital_item.is_default_thumb?sample.digital_item.default_thumb_url:sample.digital_item.custom_thumb_url,
+          sampleId: digitalItem.id,
+          thumbImage: digitalItem.is_default_thumb?digitalItem.default_thumb_url:digitalItem.custom_thumb_url,
         };
       });
       res.status(200).send({
@@ -301,6 +293,7 @@ export const searchContents = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
+          is_deleted: false,
         },
         // take: 2,
         include: {
@@ -364,6 +357,7 @@ export const searchSaidans = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
+          is_deleted: false,
         },
         // take: 2,
         include: {
@@ -410,8 +404,9 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
         take: defaultPageSize,
         where: {
           status: {
-            in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
+            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
           },
+          is_deleted: false,
         },
         orderBy: [
           {sale_quantity: "desc"},
@@ -423,8 +418,9 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
       const totalRecord = await prisma.digital_items.findMany({
         where: {
           status: {
-            in: [statusOfSample.public, statusOfSample.onSale, statusOfSample.saleSchedule],
+            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
           },
+          is_deleted: false,
         },
         orderBy: [
           {sale_quantity: "desc"},

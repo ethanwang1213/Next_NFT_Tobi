@@ -11,6 +11,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
       const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
 
@@ -25,6 +26,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
       const userData = await prisma.accounts.findUnique({
         where: {
           uuid: saidanData.account_uuid,
+          is_deleted: false,
         },
       });
 
@@ -39,6 +41,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
       const digitalNFT = await prisma.digital_item_nfts.findMany({
         where: {
           saidan_id: saidanData.id,
+          is_deleted: false,
         },
         include: {
           digital_item: true,
@@ -74,7 +77,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -82,7 +85,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
 
 export const getSaidanTemplates = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken(authorization??"").then(async (/* decodedToken: DecodedIdToken*/)=>{
+  await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
     try {
       const saidanTemplate = await prisma.saidans_template.findMany();
       const returnData = saidanTemplate.map((template)=>{
@@ -104,7 +107,7 @@ export const getSaidanTemplates = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -164,7 +167,7 @@ export const createSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -177,6 +180,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
     const mySaidans = await prisma.saidans.findMany({
       where: {
         account_uuid: uid,
+        is_deleted: false,
       },
       include: {
         favorite_users: true,
@@ -203,7 +207,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -217,10 +221,11 @@ export const getMySaidansById = async (req: Request, res: Response) => {
     const saidanData = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
+        is_deleted: false,
       },
     });
 
-    if (saidanData == null) {
+    if (!saidanData) {
       res.status(404).send({
         status: "error",
         data: "not-exist",
@@ -251,7 +256,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -266,6 +271,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
     const saidanData = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
+        is_deleted: false,
       },
     });
     if (!saidanData) {
@@ -318,6 +324,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
     const updatedSaidan = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
+        is_deleted: false,
       },
     });
     const template = await prisma.saidans_template.findUnique({
@@ -342,7 +349,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -358,6 +365,7 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
       const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -402,7 +410,7 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -448,6 +456,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
       const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -537,13 +546,11 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                 meter_height: item.itemMeterHeight,
                 scale: item.scale,
               },
-            });
-            const digitalData = await prisma.digital_items.findUnique({
-              where: {
-                id: updateItem.digital_item_id,
+              include: {
+                digital_item: true,
               },
             });
-            return {...updateItem, ...digitalData};
+            return {...updateItem, ...updateItem.digital_item};
           })
       );
       const saidanItemList = items.map((saidanItem)=>{
@@ -599,7 +606,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -614,6 +621,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
       const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -650,6 +658,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
       const saidanItems = await prisma.digital_item_nfts.findMany({
         where: {
           saidan_id: saidanData.id,
+          is_deleted: false,
         },
       });
       const saidanItemList = await Promise.all(
@@ -657,6 +666,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
             const digitalData = await prisma.digital_items.findUnique({
               where: {
                 id: item.digital_item_id,
+                is_deleted: false,
               },
             });
             const saidanItem = {...digitalData, ...item};
@@ -713,7 +723,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -729,6 +739,7 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
       const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -748,6 +759,7 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
       await prisma.digital_item_nfts.update({
         where: {
           id: itemId,
+          is_deleted: false,
         },
         data: {
           saidan_id: 0,
@@ -766,7 +778,7 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });

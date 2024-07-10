@@ -12,6 +12,7 @@ export const getShowcaseTemplate = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -56,23 +57,24 @@ export const createMyShocase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.businesses.findFirst({
+      const admin = await prisma.businesses.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
         include: {
           content: true,
         },
       });
       if (!admin) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
           data: "not-admin",
         });
         return;
       }
       if (!admin.content) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
           data: "not-content",
         });
@@ -141,7 +143,7 @@ export const updateMyShowcase = async (req: Request, res: Response) => {
         },
       });
       if (!admin) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
           data: "not-admin",
         });
@@ -227,10 +229,11 @@ export const getMyShowcases = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
           data: "not-admin",
         });
@@ -285,6 +288,7 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
         include: {
           content: true,
@@ -307,6 +311,7 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
       const showcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
       if (!showcase) {
@@ -368,6 +373,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -412,7 +418,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         return;
       }
       if (showcase.owner_uuid != uid) {
-        res.status(403).send({
+        res.status(404).send({
           status: "error",
           data: "not-yours",
         });
@@ -560,6 +566,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -572,6 +579,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
       const content = await prisma.contents.findFirst({
         where: {
           businesses_uuid: uid,
+          is_deleted: false,
         },
       });
       if (!content) {
@@ -584,6 +592,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
       const isShowcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
       if (!isShowcase) {
@@ -696,9 +705,10 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.businesses.findFirst({
+      const admin = await prisma.businesses.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -711,6 +721,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
       const content = await prisma.contents.findFirst({
         where: {
           businesses_uuid: uid,
+          is_deleted: false,
         },
       });
       if (!content) {
@@ -723,6 +734,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
       const showcase = await prisma.showcases.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
       if (!showcase) {
@@ -733,7 +745,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
         return;
       }
       if (showcase.owner_uuid != uid) {
-        res.status(403).send({
+        res.status(404).send({
           status: "error",
           data: "not-yours",
         });

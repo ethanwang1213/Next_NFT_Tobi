@@ -17,6 +17,7 @@ export const uploadMaterial = async (req: Request, res: Response) => {
     const materials = await prisma.material_images.findMany({
       where: {
         account_uuid: uid,
+        is_deleted: false,
       },
     });
     const returnData = materials.map((material)=>{
@@ -32,7 +33,7 @@ export const uploadMaterial = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -45,6 +46,7 @@ export const getMaterial = async (req: Request, res: Response) => {
     const materials = await prisma.material_images.findMany({
       where: {
         account_uuid: uid,
+        is_deleted: false,
       },
     });
     const returnData = materials.map((material)=>{
@@ -60,7 +62,7 @@ export const getMaterial = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -70,9 +72,12 @@ export const removeMaterials = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    await prisma.material_images.deleteMany({
+    await prisma.material_images.updateMany({
       where: {
         account_uuid: uid,
+      },
+      data: {
+        is_deleted: true,
       },
     });
     res.status(200).send({
@@ -82,7 +87,7 @@ export const removeMaterials = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -96,6 +101,7 @@ export const deleteMaterial = async (req: Request, res: Response) => {
     const material = await prisma.material_images.findUnique({
       where: {
         id: parseInt(id),
+        is_deleted: false,
       },
     });
     if (!material) {
@@ -112,9 +118,12 @@ export const deleteMaterial = async (req: Request, res: Response) => {
       });
       return;
     }
-    await prisma.material_images.delete({
+    await prisma.material_images.update({
       where: {
         id: parseInt(id),
+      },
+      data: {
+        is_deleted: true,
       },
     });
     res.status(200).send({

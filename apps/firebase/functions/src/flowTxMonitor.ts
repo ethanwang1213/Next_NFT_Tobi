@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import {statusOfSample} from "./native/utils";
+import {statusOfDigitalItem} from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -192,9 +192,9 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   const limit = await fetchMintLimit(itemId, creatorAddress);
   const mintedCount = await fetchMintedCount(itemId, creatorAddress);
 
-  let status = statusOfSample.private;
+  let status = statusOfDigitalItem.private;
   if (digitalItem.account.business) {
-    status = statusOfSample.public;
+    status = statusOfDigitalItem.public;
   }
 
   await prisma.digital_item_nfts.update({

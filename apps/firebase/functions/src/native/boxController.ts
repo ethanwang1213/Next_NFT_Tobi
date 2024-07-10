@@ -14,8 +14,16 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
     const userData = await prisma.accounts.findUnique({
       where: {
         uuid: uid,
+        is_deleted: false,
       },
     });
+    if (!userData) {
+      res.status(403).send({
+        status: "error",
+        data: "user-not-exist",
+      });
+      return;
+    }
 
     if (!boxId) {
       try {
@@ -39,9 +47,10 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
         const boxData = await prisma.boxes.findUnique({
           where: {
             id: boxId,
+            is_deleted: false,
           },
         });
-        if (boxData == null) {
+        if (!boxData) {
           res.status(404).send({
             status: "error",
             data: {
@@ -51,7 +60,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
           return;
         }
         if (boxData.account_uuid != uid) {
-          res.status(403).send({
+          res.status(404).send({
             status: "error",
             data: {
               msg: "not-yours",
@@ -76,7 +85,7 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
         return;
       }
     }
-    const updateUserData = await prisma.accounts.findUnique({
+    const updatedUserData = await prisma.accounts.findUnique({
       where: {
         uuid: uid,
       },
@@ -84,22 +93,23 @@ export const updateBoxInfo = async (req: Request, res: Response) => {
     const box = await prisma.boxes.findUnique({
       where: {
         id: boxId,
+        is_deleted: false,
       },
     });
-    const address = getBoxAddress(userData?.id??0, boxId);
+    const address = getBoxAddress(updatedUserData?.id??0, boxId);
     res.status(200).send({
       status: "success",
       data: {
         id: boxId,
-        name: !boxId?updateUserData?.username+"'s Inventory":box?.name,
+        name: !boxId?updatedUserData?.username+"'s Inventory":box?.name,
         address: address,
-        giftPermission: !boxId?updateUserData?.gift_permission:box?.gift_permission,
+        giftPermission: !boxId?updatedUserData?.gift_permission:box?.gift_permission,
       },
     });
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -122,7 +132,7 @@ export const makeBox = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "success",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -135,10 +145,11 @@ export const getInventoryData = async (req: Request, res: Response) => {
       const userData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!userData) {
-        res.status(401).send({
+        res.status(403).send({
           status: "error",
           data: "user-not-exist",
         });
@@ -147,6 +158,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
       const boxes = await prisma.boxes.findMany({
         where: {
           account_uuid: uid,
+          is_deleted: false,
         },
         orderBy: {
           created_date_time: "desc",
@@ -156,6 +168,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
         const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
+            is_deleted: false,
           },
           include: {
             digital_item: true,
@@ -182,6 +195,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           box_id: 0,
+          is_deleted: false,
         },
         include: {
           digital_item: {
@@ -223,7 +237,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -236,17 +250,18 @@ export const getBoxData = async (req: Request, res: Response) => {
     const box = await prisma.boxes.findUnique({
       where: {
         id: parseInt(id),
+        is_deleted: false,
       },
     });
-    if (box == null) {
-      res.status(401).send({
+    if (!box) {
+      res.status(404).send({
         status: "error",
         data: "not-exist",
       });
       return;
     }
     if (box.account_uuid != uuid) {
-      res.status(401).send({
+      res.status(404).send({
         status: "error",
         data: "not-yours",
       });
@@ -255,6 +270,7 @@ export const getBoxData = async (req: Request, res: Response) => {
     const items = await prisma.digital_item_nfts.findMany({
       where: {
         box_id: parseInt(id),
+        is_deleted: false,
       },
       include: {
         digital_item: {
@@ -286,7 +302,7 @@ export const getBoxData = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -299,25 +315,29 @@ export const deleteBoxData = async (req: Request, res: Response) => {
     const box = await prisma.boxes.findUnique({
       where: {
         id: parseInt(id),
+        is_deleted: false,
       },
     });
-    if (box == null) {
-      res.status(401).send({
+    if (!box) {
+      res.status(404).send({
         status: "error",
         data: "not-exist",
       });
       return;
     }
     if (box.account_uuid != uid) {
-      res.status(401).send({
+      res.status(404).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    await prisma.boxes.delete({
+    await prisma.boxes.update({
       where: {
         id: parseInt(id),
+      },
+      data: {
+        is_deleted: true,
       },
     });
     res.status(200).send({
@@ -327,7 +347,7 @@ export const deleteBoxData = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -340,17 +360,18 @@ export const openNFT = async (req: Request, res: Response) => {
     const nftData = await prisma.digital_item_nfts.findUnique({
       where: {
         id: id,
+        is_deleted: false,
       },
     });
-    if (nftData == null) {
-      res.status(401).send({
+    if (!nftData) {
+      res.status(404).send({
         status: "error",
         data: "not-exist",
       });
       return;
     }
     if (nftData.account_uuid != uid) {
-      res.status(401).send({
+      res.status(404).send({
         status: "error",
         data: "not-yours",
       });
@@ -378,25 +399,16 @@ export const openNFT = async (req: Request, res: Response) => {
         data: {
           mint_status: "opened",
         },
-      });
-      const itemData = await prisma.digital_items.findUnique({
-        where: {
-          id: updatedNFT.digital_item_id,
+        include: {
+          digital_item: true,
         },
       });
-      if (!itemData) {
-        res.status(401).send({
-          status: "error",
-          data: "not-exist-item",
-        });
-        return;
-      }
       res.status(200).send({
         status: "success",
         data: {
           id: updatedNFT.id,
-          name: itemData.name,
-          image: itemData?.is_default_thumb?itemData.default_thumb_url:itemData?.custom_thumb_url,
+          name: updatedNFT.digital_item.name,
+          image: updatedNFT.digital_item?.is_default_thumb?updatedNFT.digital_item.default_thumb_url:updatedNFT.digital_item?.custom_thumb_url,
           saidanId: updatedNFT.saidan_id,
           status: updatedNFT.mint_status,
         },
@@ -410,7 +422,7 @@ export const openNFT = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -418,8 +430,7 @@ export const openNFT = async (req: Request, res: Response) => {
 export const userInfoFromAddress = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {address}:{address: string} = req.body;
-  await getAuth().verifyIdToken(authorization ?? "").then(async (/* decodedToken: DecodedIdToken*/) => {
-    // const uid = decodedToken.uid;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     const encodedAddress = address.replace("TB", "") + "==";
     const decodeAddress = Buffer.from(encodedAddress, "base64").toString();
     const receiverId = decodeAddress.split("_")[0];
@@ -429,10 +440,11 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
       const receiverUserData = await prisma.accounts.findUnique({
         where: {
           id: parseInt(receiverId),
+          is_deleted: false,
         },
       });
-      if (receiverUserData == null) {
-        res.status(401).send({
+      if (!receiverUserData) {
+        res.status(404).send({
           status: "error",
           data: "not-exist-receiver",
         });
@@ -453,10 +465,11 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
         const receiverBoxData = await prisma.boxes.findUnique({
           where: {
             id: parseInt(receiverBoxId),
+            is_deleted: false,
           },
         });
-        if (receiverBoxData == null) {
-          res.status(401).send({
+        if (!receiverBoxData) {
+          res.status(404).send({
             status: "error",
             data: "not-exist-box",
           });
@@ -482,7 +495,7 @@ export const userInfoFromAddress = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -496,10 +509,11 @@ export const moveNFT = async (req: Request, res: Response) => {
       const boxData = await prisma.boxes.findUnique({
         where: {
           id: boxId,
+          is_deleted: false,
         },
       });
       if (!boxData&&boxId) {
-        res.status(401).send({
+        res.status(404).send({
           status: "error",
           data: "box-not-exist",
         });
@@ -509,6 +523,7 @@ export const moveNFT = async (req: Request, res: Response) => {
         const nftData = await prisma.digital_item_nfts.findUnique({
           where: {
             id: nftId,
+            is_deleted: false,
           },
         });
         if (!nftData) {
@@ -539,6 +554,7 @@ export const moveNFT = async (req: Request, res: Response) => {
       const boxes = await prisma.boxes.findMany({
         where: {
           account_uuid: uid,
+          is_deleted: false,
         },
         orderBy: {
           created_date_time: "desc",
@@ -548,26 +564,23 @@ export const moveNFT = async (req: Request, res: Response) => {
         const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
+            is_deleted: false,
+          },
+          include: {
+            digital_item: true,
           },
           orderBy: {
             updated_date_time: "desc",
           },
         });
-        const items4 = await Promise.all(
-            itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-                .map(async (item)=>{
-                  const itemInfo = await prisma.digital_items.findUnique({
-                    where: {
-                      id: item.digital_item_id,
-                    },
-                  });
-                  return {
-                    id: item.id,
-                    name: itemInfo?.name,
-                    image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-                  };
-                })
-        );
+        const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+            .map(async (item)=>{
+              return {
+                id: item.id,
+                name: item.digital_item?.name,
+                image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+              };
+            });
         return {
           id: box.id,
           name: box.name,
@@ -578,27 +591,24 @@ export const moveNFT = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           box_id: 0,
+          is_deleted: false,
+        },
+        include: {
+          digital_item: true,
         },
         orderBy: {
           updated_date_time: "desc",
         },
       });
-      const returnItems = await Promise.all(
-          items.map(async (item)=>{
-            const itemInfo = await prisma.digital_items.findUnique({
-              where: {
-                id: item.digital_item_id,
-              },
-            });
-            return {
-              id: item.id,
-              name: itemInfo?.name,
-              image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-              saidanId: item.saidan_id,
-              status: item.mint_status,
-            };
-          })
-      );
+      const returnItems = items.map(async (item)=>{
+        return {
+          id: item.id,
+          name: item.digital_item?.name,
+          image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+          saidanId: item.saidan_id,
+          status: item.mint_status,
+        };
+      });
       res.status(200).send({
         status: "success",
         data: {
@@ -615,7 +625,7 @@ export const moveNFT = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -630,6 +640,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
         const nftData = await prisma.digital_item_nfts.findUnique({
           where: {
             id: nftId,
+            is_deleted: false,
           },
         });
         if (!nftData) {
@@ -647,16 +658,20 @@ export const deleteNFT = async (req: Request, res: Response) => {
           return;
         }
       }
-      await prisma.digital_item_nfts.deleteMany({
+      await prisma.digital_item_nfts.updateMany({
         where: {
           id: {
             in: nfts,
           },
         },
+        data: {
+          is_deleted: true,
+        },
       });
       const boxes = await prisma.boxes.findMany({
         where: {
           account_uuid: uid,
+          is_deleted: false,
         },
         orderBy: {
           created_date_time: "desc",
@@ -666,26 +681,23 @@ export const deleteNFT = async (req: Request, res: Response) => {
         const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
+            is_deleted: false,
+          },
+          include: {
+            digital_item: true,
           },
           orderBy: {
             updated_date_time: "desc",
           },
         });
-        const items4 = await Promise.all(
-            itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-                .map(async (item)=>{
-                  const itemInfo = await prisma.digital_items.findUnique({
-                    where: {
-                      id: item.digital_item_id,
-                    },
-                  });
-                  return {
-                    id: item.id,
-                    name: itemInfo?.name,
-                    image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-                  };
-                })
-        );
+        const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
+            .map(async (item)=>{
+              return {
+                id: item.id,
+                name: item.digital_item?.name,
+                image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+              };
+            });
         return {
           id: box.id,
           name: box.name,
@@ -696,27 +708,24 @@ export const deleteNFT = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           box_id: 0,
+          is_deleted: false,
+        },
+        include: {
+          digital_item: true,
         },
         orderBy: {
           updated_date_time: "desc",
         },
       });
-      const returnItems = await Promise.all(
-          items.map(async (item)=>{
-            const itemInfo = await prisma.digital_items.findUnique({
-              where: {
-                id: item.digital_item_id,
-              },
-            });
-            return {
-              id: item.id,
-              name: itemInfo?.name,
-              image: itemInfo?.is_default_thumb?itemInfo.default_thumb_url:itemInfo?.custom_thumb_url,
-              saidanId: item.saidan_id,
-              status: item.mint_status,
-            };
-          })
-      );
+      const returnItems = items.map(async (item)=>{
+        return {
+          id: item.id,
+          name: item.digital_item?.name,
+          image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+          saidanId: item.saidan_id,
+          status: item.mint_status,
+        };
+      });
       res.status(200).send({
         status: "success",
         data: {
@@ -733,7 +742,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -743,9 +752,10 @@ export const adminGetBoxList = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
-      const admin = await prisma.businesses.findFirst({
+      const admin = await prisma.businesses.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -755,26 +765,16 @@ export const adminGetBoxList = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.contents.findFirst({
-        where: {
-          businesses_uuid: uid,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-content",
-        });
-        return;
-      }
       const inventory = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       const boxes = await prisma.boxes.findMany({
         where: {
           account_uuid: uid,
+          is_deleted: false,
         },
       });
       const inventoryAddress = getBoxAddress(inventory?.id??0, 0);

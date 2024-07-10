@@ -54,6 +54,7 @@ export const signUp = async (req: Request, res: Response) => {
       const savedUser = await prisma.accounts.upsert({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
         update: {},
         create: userData,
@@ -109,9 +110,10 @@ export const createFlowAcc = async (req: Request, res: Response) => {
       const flowAcc = await prisma.flow_accounts.findUnique({
         where: {
           account_uuid: uid,
+          is_deleted: false,
         },
       });
-      if (flowAcc != null) {
+      if (flowAcc) {
         res.status(200).send({
           status: "success",
           data: {
@@ -147,7 +149,7 @@ export const createFlowAcc = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -161,10 +163,11 @@ export const getMyProfile = async (req: Request, res: Response) => {
       const accountData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
 
-      if (accountData === null) {
+      if (!accountData) {
         res.status(401).send({
           status: "error",
           data: "Account does not exist!",
@@ -175,10 +178,11 @@ export const getMyProfile = async (req: Request, res: Response) => {
       const flowAccountData = await prisma.flow_accounts.findUnique({
         where: {
           account_uuid: uid,
+          is_deleted: false,
         },
       });
 
-      if (flowAccountData === null) {
+      if (!flowAccountData) {
         res.status(401).send({
           status: "error",
           data: "Flow Account does not exist!",
@@ -217,7 +221,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -265,6 +269,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
     const userExist = await prisma.accounts.findUnique({
       where: {
         uuid: uid,
+        is_deleted: false,
       },
     });
     if (!userExist) {
@@ -330,7 +335,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -342,6 +347,7 @@ export const myBusiness = async (req: Request, res: Response) => {
     const businesses = await prisma.businesses.findMany({
       where: {
         uuid: uid,
+        is_deleted: false,
       },
     });
     const resData = {
@@ -480,9 +486,9 @@ export const businessSubmission = async (req: Request, res: Response) => {
       });
     }
   }).catch((error: FirebaseError)=>{
-    res.status(500).send({
+    res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -494,6 +500,7 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
     const exist = await prisma.businesses.findFirst({
       where: {
         uuid: uid,
+        is_deleted: false,
       },
     });
     if (exist) {
@@ -514,9 +521,9 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
       return;
     }
   }).catch((error: FirebaseError)=>{
-    res.status(500).send({
+    res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -529,6 +536,7 @@ export const updateMyBusiness = async (req: Request, res: Response) => {
     const myBusiness = await prisma.businesses.updateMany({
       where: {
         uuid: uid,
+        is_deleted: false,
       },
       data: {
         first_name: fistName,

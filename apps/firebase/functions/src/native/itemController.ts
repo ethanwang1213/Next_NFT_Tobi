@@ -4,7 +4,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import {statusOfSample} from "./utils";
+import {statusOfDigitalItem} from "./utils";
 
 interface ModelApiResponse {
   url: string;
@@ -280,9 +280,10 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
       const digitalItem = await prisma.digital_items.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
-      if (digitalItem == null) {
+      if (!digitalItem) {
         res.status(404).send({
           status: "error",
           data: {
@@ -348,6 +349,7 @@ export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
       await prisma.digital_items.update({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
         data: {
           status: digitalStatus,
@@ -384,6 +386,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -443,6 +446,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -461,7 +465,7 @@ export const adminDeleteSamples = async (req: Request, res: Response) => {
             digital_item: true,
           },
         });
-        if (sample == null) {
+        if (!sample) {
           res.status(401).send({
             status: "error",
             data: {
@@ -524,6 +528,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
         include: {
           content: true,
@@ -616,6 +621,7 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -679,6 +685,7 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -692,9 +699,10 @@ export const adminDeleteDigitalItems = async (req: Request, res: Response) => {
         const digitalItem = await prisma.digital_items.findUnique({
           where: {
             id: item,
+            is_deleted: false,
           },
         });
-        if (digitalItem == null) {
+        if (!digitalItem) {
           res.status(401).send({
             status: "error",
             data: {
@@ -757,6 +765,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
         include: {
           content: true,
@@ -875,6 +884,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
         include: {
           content: true,
@@ -890,6 +900,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
       const digitalItem = await prisma.digital_items.findUnique({
         where: {
           id: parseInt(digitalId),
+          is_deleted: false,
         },
         include: {
           sample_item: true,
@@ -917,7 +928,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           });
           return;
         }
-        if ([statusOfSample.private, statusOfSample.draft].includes(digitalItem.status) && status ==statusOfSample.unListed) {
+        if ([statusOfDigitalItem.private, statusOfDigitalItem.draft].includes(digitalItem.status) && status ==statusOfDigitalItem.unListed) {
           res.status(401).send({
             status: "error",
             data: "wrong-status",
@@ -1025,6 +1036,7 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
       const digitalItemData = await prisma.digital_items.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
         include: {
           copyrights: {
