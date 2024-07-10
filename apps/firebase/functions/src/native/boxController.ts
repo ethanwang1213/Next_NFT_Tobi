@@ -574,7 +574,7 @@ export const moveNFT = async (req: Request, res: Response) => {
           },
         });
         const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-            .map(async (item)=>{
+            .map((item)=>{
               return {
                 id: item.id,
                 name: item.digital_item?.name,
@@ -600,7 +600,7 @@ export const moveNFT = async (req: Request, res: Response) => {
           updated_date_time: "desc",
         },
       });
-      const returnItems = items.map(async (item)=>{
+      const returnItems = items.map((item)=>{
         return {
           id: item.id,
           name: item.digital_item?.name,
@@ -691,7 +691,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
           },
         });
         const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-            .map(async (item)=>{
+            .map((item)=>{
               return {
                 id: item.id,
                 name: item.digital_item?.name,
@@ -717,7 +717,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
           updated_date_time: "desc",
         },
       });
-      const returnItems = items.map(async (item)=>{
+      const returnItems = items.map((item)=>{
         return {
           id: item.id,
           name: item.digital_item?.name,
