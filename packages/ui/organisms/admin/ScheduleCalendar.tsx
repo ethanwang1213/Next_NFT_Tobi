@@ -385,6 +385,7 @@ const ScheduleCalendar = (props: {
         formatShortWeekday={formatShortWeekday}
         tileClassName={getTileClass}
         tileContent={getTileContent}
+        locale="en-US"
       />
       <ScheduleEditor
         date={selectedDate.toString()}
