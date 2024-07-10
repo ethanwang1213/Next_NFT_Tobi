@@ -13,12 +13,14 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 const PrevMonthButton = () => {
   return (
     <div className="flex justify-center items-center">
-      <NextImage
-        src="/admin/images/icon/prev_month_arrow.png"
-        width={24}
-        height={24}
-        alt="next"
-      />
+      <div className="w-6 h-6 rounded-full bg-[#EBEBF0] flex justify-center items-center">
+        <NextImage
+          src="/admin/images/icon/arrow_left_16.svg"
+          width={16}
+          height={16}
+          alt="next"
+        />
+      </div>
     </div>
   );
 };
@@ -26,12 +28,14 @@ const PrevMonthButton = () => {
 const NextMonthButton = () => {
   return (
     <div className="flex justify-center items-center">
-      <NextImage
-        src="/admin/images/icon/next_month_arrow.png"
-        width={24}
-        height={24}
-        alt="next"
-      />
+      <div className="w-6 h-6 rounded-full bg-[#EBEBF0] flex justify-center items-center">
+        <NextImage
+          src="/admin/images/icon/arrow_right_16.svg"
+          width={16}
+          height={16}
+          alt="next"
+        />
+      </div>
     </div>
   );
 };
