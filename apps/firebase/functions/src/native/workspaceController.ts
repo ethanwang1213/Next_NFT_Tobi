@@ -103,7 +103,11 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
         include: {
           sample_item: {
             include: {
-              digital_item: true,
+              digital_item: {
+                include: {
+                  material_images: true,
+                }
+              },
             },
           },
         },
@@ -114,7 +118,8 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
           itemId: workspaceSample.sample_item.id,
           modelType: workspaceSample.sample_item.digital_item.type,
           modelUrl: workspaceSample.sample_item.digital_item.model_url,
-          imageUrl: workspaceSample.sample_item.digital_item.is_default_thumb?workspaceSample.sample_item.digital_item.default_thumb_url:workspaceSample.sample_item.digital_item.custom_thumb_url,
+          imageUrl: workspaceSample.sample_item.digital_item.material_images.image,
+          thumbImage: workspaceSample.sample_item.digital_item.is_default_thumb?workspaceSample.sample_item.digital_item.default_thumb_url:workspaceSample.sample_item.digital_item.custom_thumb_url,
           stageType: workspaceSample.stage_type,
           position: {
             x: workspaceSample.position[0]??0,
