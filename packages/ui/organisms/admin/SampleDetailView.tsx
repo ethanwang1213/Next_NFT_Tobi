@@ -1,17 +1,17 @@
-import Image from "next/image";
-import SampleDetailDialog from "./SampleDetailDialog";
-import { useCallback, useEffect, useRef } from "react";
-import useRestfulAPI from "hooks/useRestfulAPI";
-import { formatDateToLocal } from "ui/atoms/Formatters";
-import Button from "ui/atoms/Button";
-import MintConfirmDialog2 from "./MintConfirmDialog";
 import useFcmToken from "hooks/useFCMToken";
+import useRestfulAPI from "hooks/useRestfulAPI";
+import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useEffect, useRef } from "react";
+import Button from "ui/atoms/Button";
+import { formatDateToLocal } from "ui/atoms/Formatters";
+import MintConfirmDialog2 from "./MintConfirmDialog";
+import SampleDetailDialog from "./SampleDetailDialog";
 
 const SampleDetailView = ({ id }: { id: number }) => {
   const dialogRef = useRef(null);
   const apiUrl = `native/admin/samples/${id}`;
-  const { data, getData, postData } = useRestfulAPI(null);
+  const { data, loading, getData, postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
 
@@ -47,140 +47,146 @@ const SampleDetailView = ({ id }: { id: number }) => {
   );
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-6 text-base-white">
-      <span className="text-base font-semibold ">{data?.content.name}</span>
-      <span className="text-2xl font-bold text-center">
-        {data ? data.name || "Unnamed Sample item" : ""}
-      </span>
-      <Image
-        width={160}
-        height={160}
-        src={
-          data
-            ? data.isCustomThumbnailSelected
-              ? data.customThumbnailUrl
-              : data.defaultThumbnailUrl
-            : "/admin/images/png/empty-image.png"
-        }
-        alt="image"
-        onClick={() => {
-          if (data && dialogRef.current) {
-            dialogRef.current.showModal();
-          }
-        }}
-        className="rounded-lg"
-      />
-      <div
-        className="w-full flex-1 overflow-y-auto flex flex-col gap-6"
-        style={{ scrollbarWidth: "none" }}
-      >
-        <span className="text-[10px] font-normal text-center">
-          {data?.description}
-        </span>
-        <div className="w-full flex flex-col gap-2">
-          <div className="flex gap-4">
-            <span className="text-[10px] font-medium w-[76px] text-right">
-              Creator
-            </span>
-            <span className="text-[10px] font-medium w-[168px]">
-              {data?.content.name ? data?.content.name : "-"}
-            </span>
-          </div>
-          <div className="flex gap-4">
-            <span className="text-[10px] font-medium w-[76px] text-right">
-              Copyright
-            </span>
-            <span className="text-[10px] font-medium w-[168px]">
-              {data?.copyrights.length
-                ? `@${data?.copyrights.join(" @")}`
-                : "-"}
-            </span>
-          </div>
-          <div className="flex gap-4">
-            <span className="text-[10px] font-medium w-[76px] text-right">
-              License
-            </span>
-            <span className="text-[10px] font-medium w-[168px]">
-              {data?.license ? data.license : "-"}
-            </span>
-          </div>
-          <div className="flex gap-4">
-            <span className="text-[10px] font-medium w-[76px] text-right">
-              Date Acquired
-            </span>
-            <div className="text-[10px] font-medium w-[168px]">
-              {data
-                ? data.startDate
-                  ? formatDateToLocal(data.startDate)
-                  : "-"
-                : "-"}
-              {data && <br />}
-              {data && `Owned for ${calculateTotalDays()} days`}
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <span className="text-[10px] font-medium w-[76px] text-right">
-              History
-            </span>
-            <div className="w-[168px]">
-              <span className="text-[10px] font-medium">-</span>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <span className="text-[10px] font-medium w-[76px] text-right">
-              Serial Number
-            </span>
-            <span className="text-[10px] font-medium w-[168px]">-</span>
-          </div>
-        </div>
-        {data && (
-          <SampleDetailDialog
-            thumbnail={data?.customThumbnailUrl}
-            content={data?.content.name}
-            item={data?.name}
-            dialogRef={dialogRef}
-          />
-        )}
-      </div>
-      {id > 0 && (
-        <Link href={`/items/detail?id=${id}`}>
-          <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
-            <Image
-              src="/admin/images/icon/open_in_new.svg"
-              width={24}
-              height={24}
-              alt="open icon"
-            />
-            <span className="text-base-white text-base font-bold">
-              Edit Item Data
-            </span>
-          </Button>
-        </Link>
-      )}
-      {id > 0 && (
-        <Button
-          className="w-[192px] h-[46px] rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
-          onClick={() => {
-            if (mintConfirmDialogRef.current) {
-              mintConfirmDialogRef.current.showModal();
-            }
-          }}
-        >
-          <Image
-            src="/admin/images/icon/sample-icon.svg"
-            width={16}
-            height={20}
-            alt="mint icon"
-          />
-          <span className="text-base-white text-base font-bold">
-            Mint as an NFT
+    <div className="w-full h-full">
+      {loading ? (
+        <span className="h-full w-full loading loading-spinner"></span>
+      ) : (
+        <div className="gap-6 flex flex-col justify-center items-center text-base-white">
+          <span className="text-base font-semibold ">{data?.content.name}</span>
+          <span className="text-2xl font-bold text-center">
+            {data ? data.name || "Unnamed Sample item" : ""}
           </span>
-        </Button>
+          <Image
+            width={160}
+            height={160}
+            src={
+              data
+                ? data.isCustomThumbnailSelected
+                  ? data.customThumbnailUrl
+                  : data.defaultThumbnailUrl
+                : "/admin/images/png/empty-image.png"
+            }
+            alt="image"
+            onClick={() => {
+              if (data && dialogRef.current) {
+                dialogRef.current.showModal();
+              }
+            }}
+            className="rounded-lg"
+          />
+          <div
+            className="w-full flex-1 overflow-y-auto flex flex-col gap-6"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <span className="text-[10px] font-normal text-center">
+              {data?.description}
+            </span>
+            <div className="w-full flex flex-col gap-2">
+              <div className="flex gap-4">
+                <span className="text-[10px] font-medium w-[76px] text-right">
+                  Creator
+                </span>
+                <span className="text-[10px] font-medium w-[168px]">
+                  {data?.content.name ? data?.content.name : "-"}
+                </span>
+              </div>
+              <div className="flex gap-4">
+                <span className="text-[10px] font-medium w-[76px] text-right">
+                  Copyright
+                </span>
+                <span className="text-[10px] font-medium w-[168px]">
+                  {data?.copyrights.length
+                    ? `@${data?.copyrights.join(" @")}`
+                    : "-"}
+                </span>
+              </div>
+              <div className="flex gap-4">
+                <span className="text-[10px] font-medium w-[76px] text-right">
+                  License
+                </span>
+                <span className="text-[10px] font-medium w-[168px]">
+                  {data?.license ? data.license : "-"}
+                </span>
+              </div>
+              <div className="flex gap-4">
+                <span className="text-[10px] font-medium w-[76px] text-right">
+                  Date Acquired
+                </span>
+                <div className="text-[10px] font-medium w-[168px]">
+                  {data
+                    ? data.startDate
+                      ? formatDateToLocal(data.startDate)
+                      : "-"
+                    : "-"}
+                  {data && <br />}
+                  {data && `Owned for ${calculateTotalDays()} days`}
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <span className="text-[10px] font-medium w-[76px] text-right">
+                  History
+                </span>
+                <div className="w-[168px]">
+                  <span className="text-[10px] font-medium">-</span>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <span className="text-[10px] font-medium w-[76px] text-right">
+                  Serial Number
+                </span>
+                <span className="text-[10px] font-medium w-[168px]">-</span>
+              </div>
+            </div>
+            {data && (
+              <SampleDetailDialog
+                thumbnail={data?.customThumbnailUrl}
+                content={data?.content.name}
+                item={data?.name}
+                dialogRef={dialogRef}
+              />
+            )}
+          </div>
+          {id > 0 && (
+            <Link href={`/items/detail?id=${id}`}>
+              <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
+                <Image
+                  src="/admin/images/icon/open_in_new.svg"
+                  width={24}
+                  height={24}
+                  alt="open icon"
+                />
+                <span className="text-base-white text-base font-bold">
+                  Edit Item Data
+                </span>
+              </Button>
+            </Link>
+          )}
+          {id > 0 && (
+            <Button
+              className="w-[192px] h-[46px] rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
+              onClick={() => {
+                if (mintConfirmDialogRef.current) {
+                  mintConfirmDialogRef.current.showModal();
+                }
+              }}
+            >
+              <Image
+                src="/admin/images/icon/sample-icon.svg"
+                width={16}
+                height={20}
+                alt="mint icon"
+              />
+              <span className="text-base-white text-base font-bold">
+                Mint as an NFT
+              </span>
+            </Button>
+          )}
+          <MintConfirmDialog2
+            dialogRef={mintConfirmDialogRef}
+            changeHandler={mintConfirmDialogHandler}
+          />
+        </div>
       )}
-      <MintConfirmDialog2
-        dialogRef={mintConfirmDialogRef}
-        changeHandler={mintConfirmDialogHandler}
-      />
     </div>
   );
 };

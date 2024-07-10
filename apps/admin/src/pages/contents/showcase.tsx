@@ -350,7 +350,11 @@ const Showcase = () => {
           }}
         >
           <span className="text-xl font-semibold text-[#858585] text-center mr-1">
-            {showcaseData?.title}
+            {showcaseData ? (
+              showcaseData.title
+            ) : (
+              <span className="loading loading-spinner"></span>
+            )}
           </span>
           {/* <div className="relative">
             <button
