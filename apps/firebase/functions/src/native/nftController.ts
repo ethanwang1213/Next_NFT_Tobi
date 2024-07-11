@@ -93,8 +93,10 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
     throw new MintError(404, "DigitalItem does not found");
   }
 
-  if (!digitalItem.account.business?.content) {
-    throw new MintError(404, "Content does not found");
+  if (digitalItem.account.business) {
+    if (!digitalItem.account.business.content) {
+      throw new MintError(404, "Content does not found");
+    }
   } else {
     if (digitalItem.account_uuid !== uid) {
       throw new MintError(401, "You are not creator of this digital item");
@@ -113,7 +115,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
   }
 
   let creatorName;
-  if (digitalItem.account.business.content) {
+  if (digitalItem.account.business?.content) {
     creatorName = digitalItem.account.business.content.name;
   } else {
     if (!digitalItem.account) {
