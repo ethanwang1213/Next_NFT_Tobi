@@ -92,7 +92,9 @@ export const getDownloadUrlFromPath = async (
   fileUrl: string,
 ): Promise<string> => {
   // Extract the file path from the URL
-  const matches = fileUrl.match(/\/([^\/?#]+\/[^\/?#]+\/[^\/?#]+\/[^\/?#]+)$/);
+  const matches = fileUrl.match(
+    /https:\/\/(?:firebasestorage\.googleapis\.com\/v0\/b\/[^\/]+\/o\/|storage\.googleapis\.com\/[^\/]+\/)(.+)/,
+  );
   if (!matches) {
     throw new Error("Invalid URL format");
   }
