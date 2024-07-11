@@ -54,7 +54,7 @@ const StyledTextArea = ({
     <div className={clsx(className, "relative")}>
       <textarea
         className={clsx(
-          "w-full h-[180px] pl-5 pt-4 pr-3 resize-none",
+          "w-full h-[180px] pl-5 pt-5 pr-3 resize-none",
           "outline-none border-2 rounded-lg border-secondary",
           !readOnly
             ? "hover:border-hover-color focus:border-focus-color"

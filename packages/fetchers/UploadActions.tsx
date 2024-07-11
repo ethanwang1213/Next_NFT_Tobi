@@ -87,3 +87,26 @@ export const uploadImage = async (image, type) => {
     return "";
   }
 };
+
+export const getDownloadUrlFromPath = async (
+  fileUrl: string,
+): Promise<string> => {
+  // Extract the file path from the URL
+  const matches = fileUrl.match(
+    /https:\/\/(?:firebasestorage\.googleapis\.com\/v0\/b\/[^\/]+\/o\/|storage\.googleapis\.com\/[^\/]+\/)(.+)/,
+  );
+  if (!matches) {
+    throw new Error("Invalid URL format");
+  }
+
+  const filePath = decodeURIComponent(matches[1]);
+  const fileRef = ref(storage, filePath);
+
+  try {
+    const url = await getDownloadURL(fileRef);
+    return url;
+  } catch (error) {
+    console.error("Error getting download URL:", error);
+    throw error;
+  }
+};

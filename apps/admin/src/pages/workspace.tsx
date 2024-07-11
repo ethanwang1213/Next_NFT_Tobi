@@ -1,5 +1,9 @@
 import { useLeavePage } from "contexts/LeavePageProvider";
-import { ImageType, uploadImage } from "fetchers/UploadActions";
+import {
+  ImageType,
+  getDownloadUrlFromPath,
+  uploadImage,
+} from "fetchers/UploadActions";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
@@ -284,7 +288,7 @@ export default function Index() {
       if (!resp) {
         return "";
       }
-      return resp["url"];
+      return await getDownloadUrlFromPath(resp["url"]);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -325,7 +329,7 @@ export default function Index() {
       if (modelResp === false) {
         return false;
       }
-      generateModelUrl.current = modelResp["url"];
+      generateModelUrl.current = await getDownloadUrlFromPath(modelResp["url"]);
       generateMaterialImage.current = null;
       requestItemThumbnail({
         modelType: ModelType.AcrylicStand,
@@ -338,7 +342,7 @@ export default function Index() {
       if (modelResp === false) {
         return false;
       }
-      generateModelUrl.current = modelResp["url"];
+      generateModelUrl.current = await getDownloadUrlFromPath(modelResp["url"]);
       generateMaterialImage.current = null;
       requestItemThumbnail({
         modelType: ModelType.MessageCard,
