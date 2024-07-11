@@ -33,17 +33,6 @@ const DeleteConfirmDialog = ({
         <div className="modal-action flex justify-end gap-4">
           <Button
             type="button"
-            className="px-4 py-2 bg-error rounded-[64px] 
-              text-base-white text-sm leading-4 font-semibold"
-            onClick={() => {
-              changeHandler("delete");
-              dialogRef.current.close();
-            }}
-          >
-            Delete
-          </Button>
-          <Button
-            type="button"
             className="px-4 py-2 rounded-[64px] border-2 border-secondary
               text-secondary text-sm leading-4 font-semibold"
             onClick={() => {
@@ -52,6 +41,17 @@ const DeleteConfirmDialog = ({
             }}
           >
             Cancel
+          </Button>
+          <Button
+            type="button"
+            className="px-4 py-2 bg-error rounded-[64px] 
+              text-base-white text-sm leading-4 font-semibold"
+            onClick={() => {
+              changeHandler("delete");
+              dialogRef.current.close();
+            }}
+          >
+            Delete
           </Button>
         </div>
       </div>
