@@ -7,6 +7,7 @@ import "@/styles/PublicSwitch.css";
 import "@/styles/Spinner.css";
 import "@/styles/TabView.css";
 import "@/styles/TripleToggleSwitch.scss";
+import "@/styles/globalicons.css";
 import "react-easy-crop/react-easy-crop.css";
 import "swiper/css";
 import "swiper/css/effect-cards";
