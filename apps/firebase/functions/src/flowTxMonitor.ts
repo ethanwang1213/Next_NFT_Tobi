@@ -177,7 +177,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   }
 
   if (!digitalItem) {
-    throw new Error("SAMPLE_ITEM_NOT_FOUND");
+    throw new Error("DIGITAL_ITEM_NOT_FOUND");
   }
 
   const {serialNumber, to} = await fetchMintNFT(txId);
