@@ -9,18 +9,16 @@ export const ShowcaseTabSelector = ({
   children: React.ReactNode;
   onClick: () => void;
 }) => (
-  <button
-    className={`text-sm flex-1 flex items-center justify-center cursor-pointer ${
-      isActive
-        ? "bg-gray-600 bg-opacity-50 backdrop-blur-[25px]"
-        : "bg-[#FAFAFA]/50 backdrop-blur-[25px]"
+  <div
+    className={`flex-1 tab tab-lg tab-lifted ${
+      isActive ? "tab-active bg-opacity-50 backdrop-blur-[25px]" : ""
     }`}
-    style={{
-      borderTopLeftRadius: "10px",
-      borderTopRightRadius: "10px",
-    }}
     onClick={onClick}
+    style={{
+      backgroundColor: "rgb(75 85 99 / var(--tw-bg-opacity))",
+      border: "none",
+    }}
   >
     {children}
-  </button>
+  </div>
 );

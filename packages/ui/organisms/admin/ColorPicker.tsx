@@ -33,7 +33,7 @@ const ColorPicker = ({
         </div>
       )}
       {!mode && (
-        <div className="text-[16px] font-[700] leading-[20px] w-[76px]">
+        <div className="text-[16px] font-[700] leading-[20px] w-[80px]">
           Tint
         </div>
       )}
