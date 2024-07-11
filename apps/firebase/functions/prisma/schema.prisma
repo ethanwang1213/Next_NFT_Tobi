@@ -141,6 +141,7 @@ model digital_items {
     item_id              Int?
     tx_id                String?                   @db.VarChar(255)
     status               Int
+    updated_status_time  DateTime                  @default(now()) @db.Timestamp(6)
     minted_count         Int                       @default(0)
     price                Int?
     sale_quantity        Int?
@@ -195,7 +196,7 @@ model digital_item_nfts {
     gift_status        String?              @db.VarChar(255)
     tx_id              String?              @db.VarChar(255)
     showcase_nft_items showcase_nft_items[]
-    owner_hisotory     nft_ownerships[]
+    owner_history      nft_ownerships[]
     is_deleted         Boolean              @default(false)
     updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
     created_date_time  DateTime             @default(now()) @db.Timestamp(6)

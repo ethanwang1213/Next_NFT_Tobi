@@ -106,7 +106,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
               digital_item: {
                 include: {
                   material_images: true,
-                }
+                },
               },
             },
           },

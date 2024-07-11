@@ -36,3 +36,53 @@ export const statusOfDigitalItem = {
   publicSchedule: 6,
   saleSchedule: 7,
 };
+
+export function getStatusOfDigitalItem(
+    schedules: {
+    status: number,
+    datetime: string,
+  }[],
+    status: number,
+    updateTime: Date,
+): number {
+  const nowTime = Date.now();
+  const updateStatusTime = +new Date(updateTime);
+  let latestSchedule:{
+    status: number,
+    datetime: string,
+    timeStamp: number,
+  } = {
+    status: 0,
+    datetime: "",
+    timeStamp: 0,
+  };
+  for (const schedule of schedules) {
+    const scheduleTime = +new Date(schedule.datetime);
+    if (scheduleTime>updateStatusTime&&scheduleTime<nowTime&&scheduleTime>latestSchedule.timeStamp) {
+      latestSchedule = {...schedule, timeStamp: scheduleTime};
+    }
+  }
+  if (latestSchedule.timeStamp==0) {
+    return status;
+  } else {
+    return latestSchedule.status;
+  }
+}
+
+// export function getStatusOfShowcase(
+//   status: number,
+//   updatedTime: Date,
+//   scheduleDate: Date|null,
+// ): number{
+//   if (!scheduleDate) {
+//     return status;
+//   }
+//   const scheduleTime = +new Date(scheduleDate);
+//   const nowTime = Date.now();
+//   if (nowTime>scheduleTime) {
+//     return status;
+//   }else {
+
+//   }
+//   return 1;
+// }

@@ -4,7 +4,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import {statusOfDigitalItem} from "./utils";
+import {getStatusOfDigitalItem, statusOfDigitalItem} from "./utils";
 
 interface ModelApiResponse {
   url: string;
@@ -353,6 +353,7 @@ export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
         },
         data: {
           status: digitalStatus,
+          updated_status_time: new Date(),
         },
       });
       res.status(200).send({
@@ -408,7 +409,13 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           name: digitalItem.name,
           thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           price: digitalItem.price,
-          status: digitalItem.status,
+          status: getStatusOfDigitalItem(
+              digitalItem.schedules.map((schedule)=>{
+                return JSON.parse(schedule);
+              }),
+              digitalItem.status,
+              digitalItem.updated_status_time,
+          ),
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
           createDate: digitalItem.created_date_time,
@@ -585,7 +592,13 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         customThumbnailUrl: sample.digital_item.custom_thumb_url,
         isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
         price: sample.digital_item.price,
-        status: sample.digital_item.status,
+        status: getStatusOfDigitalItem(
+            sample.digital_item.schedules.map((schedule)=>{
+              return JSON.parse(schedule);
+            }),
+            sample.digital_item.status,
+            sample.digital_item.updated_status_time,
+        ),
         quantityLimit: sample.digital_item.limit,
         license: sample.digital_item.license,
         copyrights: copyrights,
@@ -646,7 +659,13 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
           name: digitalItem.name,
           thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           price: digitalItem.price,
-          status: digitalItem.status,
+          status: getStatusOfDigitalItem(
+              digitalItem.schedules.map((schedule)=>{
+                return JSON.parse(schedule);
+              }),
+              digitalItem.status,
+              digitalItem.updated_status_time,
+          ),
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
           mintedCount: digitalItem.minted_count,
@@ -818,7 +837,13 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         customThumbnailUrl: digitalItem.custom_thumb_url,
         isCustomThumbnailSelected: !digitalItem.is_default_thumb,
         price: digitalItem.price,
-        status: digitalItem.status,
+        status: getStatusOfDigitalItem(
+            digitalItem.schedules.map((schedule)=>{
+              return JSON.parse(schedule);
+            }),
+            digitalItem.status,
+            digitalItem.updated_status_time,
+        ),
         schedules: digitalItem.schedules.map((schedule)=>{
           return JSON.parse(schedule);
         }),
@@ -970,6 +995,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             custom_thumb_url: customThumbnailUrl,
             is_default_thumb: !isCustomThumbnailSelected,
             status: status,
+            updated_status_time: new Date(),
             limit: quantityLimit,
             license: license,
             schedules: schedules?.map((schedule) => {

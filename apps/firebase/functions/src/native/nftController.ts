@@ -6,6 +6,7 @@ import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
+import {getStatusOfDigitalItem} from "./utils";
 
 const pubsub = new PubSub();
 
@@ -319,7 +320,13 @@ export const fetchNftThumb = async (req: Request, res: Response) => {
     });
     return;
   }
-  if (digitalData.status>2) {
+  if (getStatusOfDigitalItem(
+      digitalData.schedules.map((schedule)=>{
+        return JSON.parse(schedule);
+      }),
+      digitalData.status,
+      digitalData.updated_status_time,
+  )>2) {
     try {
       const download = await file.download();
       res.status(200).send({
@@ -391,7 +398,13 @@ export const fetchNftModel = async (req: Request, res: Response) => {
     });
     return;
   }
-  if (digitalData.status>2) {
+  if (getStatusOfDigitalItem(
+      digitalData.schedules.map((schedule)=>{
+        return JSON.parse(schedule);
+      }),
+      digitalData.status,
+      digitalData.updated_status_time,
+  )>2) {
     try {
       const download = await file.download();
       res.status(200).send({
@@ -454,7 +467,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
               },
             },
           },
-          owner_hisotory: {
+          owner_history: {
             include: {
               account: {
                 include: {
@@ -474,7 +487,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
         return;
       }
 
-      const owners = nftData.owner_hisotory.map((ownership)=>{
+      const owners = nftData.owner_history.map((ownership)=>{
         return {
           uid: ownership.account_uuid,
           avatarUrl: ownership.account==null?"":ownership.account.icon_url,
@@ -503,7 +516,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
         },
         copyrights: copyrights,
         license: nftData.digital_item.license,
-        acquiredDate: nftData.owner_hisotory[0].created_date_time,
+        acquiredDate: nftData.owner_history[0].created_date_time,
         certImageUrl: "",
         sn: nftData.serial_no,
         owners: owners,
