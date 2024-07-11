@@ -329,7 +329,7 @@ export default function Index() {
       if (modelResp === false) {
         return false;
       }
-      generateModelUrl.current = modelResp["url"];
+      generateModelUrl.current = await getDownloadUrlFromPath(modelResp["url"]);
       generateMaterialImage.current = null;
       requestItemThumbnail({
         modelType: ModelType.AcrylicStand,
@@ -342,7 +342,7 @@ export default function Index() {
       if (modelResp === false) {
         return false;
       }
-      generateModelUrl.current = modelResp["url"];
+      generateModelUrl.current = await getDownloadUrlFromPath(modelResp["url"]);
       generateMaterialImage.current = null;
       requestItemThumbnail({
         modelType: ModelType.MessageCard,
