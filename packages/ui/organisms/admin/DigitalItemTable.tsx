@@ -174,7 +174,7 @@ const DigitalItemTable = (filters: {
   return (
     <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 pt-0">
+        <div className="bg-gray-50 pt-0">
           <table className="min-w-full text-secondary">
             <thead className="">
               <tr className="text-base/[56px] bg-primary text-white">
@@ -316,7 +316,7 @@ const DigitalItemTable = (filters: {
                     >
                       <Image
                         src={item.thumbnail}
-                        className="rounded-full inline-block mx-2"
+                        className="rounded inline-block mx-2"
                         width={80}
                         height={80}
                         alt={`${item.name}'s profile picture`}
