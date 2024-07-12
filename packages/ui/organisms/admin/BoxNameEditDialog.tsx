@@ -1,5 +1,9 @@
 import Image from "next/image";
+import React from "react";
 import { MutableRefObject, useEffect, useState } from "react";
+import Button from "ui/atoms/Button";
+
+const NAME_MAX_LENGTH = 64;
 
 const BoxNameEditDialog = ({
   initialValue,
@@ -11,6 +15,7 @@ const BoxNameEditDialog = ({
   changeHandler: (value: string) => void;
 }) => {
   const [boxName, setBoxName] = useState("");
+  const [lengthError, setLengthError] = useState(false);
 
   useEffect(() => {
     setBoxName(initialValue);
@@ -39,31 +44,44 @@ const BoxNameEditDialog = ({
             className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
             text-base-black text-sm leading-4 font-normal"
             value={boxName}
-            onChange={(e) => setBoxName(e.target.value)}
+            onChange={(e) => {
+              setBoxName(e.target.value);
+              if (e.target.value.length > NAME_MAX_LENGTH) {
+                setLengthError(true);
+              } else {
+                setLengthError(false);
+              }
+            }}
           />
         </div>
-        <div className="modal-action flex justify-end gap-4">
-          <button
+        <span className="text-error text-[11px] font-normal text-right -mt-1 mb-1">
+          {lengthError ? "The box name is too long." : ""}
+        </span>
+        <div className="flex justify-end gap-4">
+          <Button
             type="button"
             className="px-4 py-2 rounded-[64px] border-2 border-primary
-              hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
-            onClick={() => dialogRef.current.close()}
+            onClick={() => {
+              setBoxName(initialValue);
+              setLengthError(false);
+              dialogRef.current.close();
+            }}
           >
             Cancel
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-primary rounded-[64px] 
-              hover:shadow-xl hover:-top-[3px] transition-shadow
-              text-base-white text-sm leading-4 font-semibold"
+          </Button>
+          <Button
+            className={`px-4 py-2 rounded-[64px] 
+              ${lengthError ? "bg-inactive" : "bg-primary"}
+              text-base-white text-sm leading-4 font-semibold`}
             onClick={() => {
               changeHandler(boxName);
               dialogRef.current.close();
             }}
+            disabled={lengthError}
           >
             Save changes
-          </button>
+          </Button>
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">
@@ -73,4 +91,4 @@ const BoxNameEditDialog = ({
   );
 };
 
-export default BoxNameEditDialog;
+export default React.memo(BoxNameEditDialog);
