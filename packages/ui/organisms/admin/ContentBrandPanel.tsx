@@ -27,8 +27,6 @@ const ContentBrandPanel = ({
   const [activeImageFlag, setActiveImageFlag] = useState(false);
   const modifiedRef = useRef(false);
 
-  const [initCropDialog, setInitCropDialog] = useState(0);
-
   useEffect(() => {
     if (cancelFlag > 0 && modifiedRef.current) {
       restoreData();
@@ -156,19 +154,17 @@ const ContentBrandPanel = ({
           </span>
           <div className="flex items-end gap-12">
             {data.image ? (
-              <div className="w-[320px] h-[100px] overflow-hidden">
-                <NextImage
-                  src={data.image}
-                  width={320}
-                  height={100}
-                  alt="content image"
-                  className={`rounded-2xl`}
-                />
-              </div>
+              <NextImage
+                src={data.image}
+                width={320}
+                height={100}
+                alt="content image"
+                className={`rounded-xl max-w-[320px] max-h-[100px]`}
+              />
             ) : (
               <div
                 style={{ width: 320, height: 100 }}
-                className={`rounded-2xl border-2 border-primary-400 border-dashed`}
+                className={`rounded-xl border-2 border-primary-400 border-dashed`}
               ></div>
             )}
             <button
@@ -176,7 +172,6 @@ const ContentBrandPanel = ({
               onClick={() => {
                 setActiveImageFlag(true);
                 if (data.image) {
-                  setInitCropDialog(initCropDialog + 1);
                   imageCropDlgRef.current.showModal();
                 } else {
                   contentImageFileRef.current.click();
@@ -217,12 +212,12 @@ const ContentBrandPanel = ({
                 width={260}
                 height={260}
                 alt="sticker image"
-                className={`rounded-2xl`}
+                className={`rounded-xl max-w-[260px] max-h-[260px]`}
               />
             ) : (
               <div
                 style={{ width: 260, height: 260 }}
-                className={`rounded-2xl border-2 border-primary-400 border-dashed`}
+                className={`rounded-xl border-2 border-primary-400 border-dashed`}
               ></div>
             )}
             <div
@@ -248,7 +243,6 @@ const ContentBrandPanel = ({
               onClick={() => {
                 setActiveImageFlag(false);
                 if (data.sticker) {
-                  setInitCropDialog(initCropDialog + 1);
                   stickerCropDlgRef.current.showModal();
                 } else {
                   stickerImageFileRef.current.click();
@@ -292,7 +286,6 @@ const ContentBrandPanel = ({
             modifiedRef.current = true;
             changeHandler();
           }}
-          initFlag={initCropDialog}
         />
         <ImageCropDialog
           initialValue={data.sticker}
@@ -303,7 +296,6 @@ const ContentBrandPanel = ({
             modifiedRef.current = true;
             changeHandler();
           }}
-          initFlag={initCropDialog}
         />
       </div>
     )
