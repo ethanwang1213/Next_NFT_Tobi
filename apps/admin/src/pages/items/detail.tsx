@@ -383,7 +383,7 @@ const Detail = () => {
 
       {digitalItem && (
         <div className="ml-24 mr-[104px] mt-16">
-          <div className="flex gap-4">
+          <div className="flex gap-40">
             <div className="flex-grow flex flex-col gap-8">
               <div className="flex flex-col gap-4 pr-11">
                 <h3 className="text-xl text-secondary">ITEM DETAIL</h3>
@@ -454,6 +454,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -520,6 +521,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -564,6 +566,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -607,6 +610,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>
