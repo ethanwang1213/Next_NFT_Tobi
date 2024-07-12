@@ -104,7 +104,7 @@ const DateTimeInput = ({
       className={clsx(
         "h-12 border-2 rounded-lg border-secondary",
         readOnly
-          ? "bg-secondary-100"
+          ? "bg-secondary-200"
           : "hover:border-hover-color focus-within:border-focus-color hover:focus-within:border-focus-color",
         "flex flex-row",
         className,
