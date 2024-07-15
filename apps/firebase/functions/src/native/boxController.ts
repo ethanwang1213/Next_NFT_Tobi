@@ -168,7 +168,6 @@ export const getInventoryData = async (req: Request, res: Response) => {
         const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
-            is_deleted: false,
           },
           include: {
             digital_item: true,
@@ -195,7 +194,6 @@ export const getInventoryData = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           box_id: 0,
-          is_deleted: false,
         },
         include: {
           digital_item: {
@@ -270,7 +268,6 @@ export const getBoxData = async (req: Request, res: Response) => {
     const items = await prisma.digital_item_nfts.findMany({
       where: {
         box_id: parseInt(id),
-        is_deleted: false,
       },
       include: {
         digital_item: {
@@ -360,7 +357,6 @@ export const openNFT = async (req: Request, res: Response) => {
     const nftData = await prisma.digital_item_nfts.findUnique({
       where: {
         id: id,
-        is_deleted: false,
       },
     });
     if (!nftData) {
@@ -523,7 +519,6 @@ export const moveNFT = async (req: Request, res: Response) => {
         const nftData = await prisma.digital_item_nfts.findUnique({
           where: {
             id: nftId,
-            is_deleted: false,
           },
         });
         if (!nftData) {
@@ -564,7 +559,6 @@ export const moveNFT = async (req: Request, res: Response) => {
         const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
-            is_deleted: false,
           },
           include: {
             digital_item: true,
@@ -591,7 +585,6 @@ export const moveNFT = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           box_id: 0,
-          is_deleted: false,
         },
         include: {
           digital_item: true,
@@ -640,7 +633,6 @@ export const deleteNFT = async (req: Request, res: Response) => {
         const nftData = await prisma.digital_item_nfts.findUnique({
           where: {
             id: nftId,
-            is_deleted: false,
           },
         });
         if (!nftData) {
@@ -665,7 +657,6 @@ export const deleteNFT = async (req: Request, res: Response) => {
           },
         },
         data: {
-          is_deleted: true,
         },
       });
       const boxes = await prisma.boxes.findMany({
@@ -681,7 +672,6 @@ export const deleteNFT = async (req: Request, res: Response) => {
         const itemsInBox = await prisma.digital_item_nfts.findMany({
           where: {
             box_id: box.id,
-            is_deleted: false,
           },
           include: {
             digital_item: true,
@@ -708,7 +698,6 @@ export const deleteNFT = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           box_id: 0,
-          is_deleted: false,
         },
         include: {
           digital_item: true,

@@ -96,7 +96,7 @@ export const createMyShocase = async (req: Request, res: Response) => {
         data: {
           title: title,
           description: description,
-          owner_uuid: admin.uuid,
+          account_uuid: admin.uuid,
           content_id: admin.content.id,
           template_id: templateId,
           thumb_url: showcaseTemplate.cover_image,
@@ -241,7 +241,7 @@ export const getMyShowcases = async (req: Request, res: Response) => {
       }
       const allShowcases = await prisma.showcases.findMany({
         where: {
-          owner_uuid: admin.uuid,
+          account_uuid: admin.uuid,
           is_deleted: false,
         },
         orderBy: {
@@ -321,7 +321,7 @@ export const deleteMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (showcase.owner_uuid != admin.uuid) {
+      if (showcase.account_uuid != admin.uuid) {
         res.status(404).send({
           status: "error",
           data: "not-owner",
@@ -417,7 +417,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (showcase.owner_uuid != uid) {
+      if (showcase.account_uuid != uid) {
         res.status(404).send({
           status: "error",
           data: "not-yours",
@@ -602,7 +602,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (isShowcase.owner_uuid != uid) {
+      if (isShowcase.account_uuid != uid) {
         res.status(403).send({
           status: "error",
           data: "not-yours",
@@ -744,7 +744,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (showcase.owner_uuid != uid) {
+      if (showcase.account_uuid != uid) {
         res.status(404).send({
           status: "error",
           data: "not-yours",

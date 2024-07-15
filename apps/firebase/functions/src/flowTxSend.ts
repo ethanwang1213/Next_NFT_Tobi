@@ -175,7 +175,7 @@ const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string,
         id: digitalItemNftId,
       },
       data: {
-        nft_metadata: JSON.stringify(metadata),
+        metadata: JSON.stringify(metadata),
       },
     });
     return {id: digitalItemNftId};
@@ -184,7 +184,7 @@ const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string,
       data: {
         digital_item_id: digitalItemId,
         account_uuid: ownerUuid,
-        nft_metadata: JSON.stringify(metadata),
+        metadata: JSON.stringify(metadata),
         mint_status: "minting",
       },
     });
@@ -629,7 +629,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
 
       const digitalItem = await prisma.digital_items.findFirst({
         where: {
-          item_id: Number(itemId),
+          flow_item_id: Number(itemId),
         },
       });
       if (!digitalItem) {
@@ -649,7 +649,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
       const creatorAddress = data.address;
       if (
         itemCreatorAddress === creatorAddress &&
-          itemID == digitalItem.item_id
+          itemID == digitalItem.flow_item_id
       ) {
         const signature = signWithKey({privateKey,
           msgHex: signable.message,

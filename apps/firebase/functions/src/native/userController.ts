@@ -428,7 +428,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
       balance: 0,
     };
     const contentData = {
-      owner_uuid: uid,
+      business_uuid: uid,
       name: contentName,
       image: "",
       url,
@@ -465,7 +465,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
           data: {
             title: contentName,
             description: description,
-            owner_uuid: savedBusinessData.uuid,
+            account_uuid: savedBusinessData.uuid,
             content_id: savedContentData.id,
             template_id: showcaseTemplate.id,
             thumb_url: showcaseTemplate.cover_image,

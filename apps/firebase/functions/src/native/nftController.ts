@@ -107,7 +107,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
     throw new MintError(401, "Minting limit reached");
   }
 
-  const itemId = digitalItem.item_id;
+  const itemId = digitalItem.flow_item_id;
   const digitalItemId = digitalItem.id;
 
   if (!digitalItem.account.flow_account) {
@@ -457,7 +457,6 @@ export const getNftInfo = async (req: Request, res: Response) => {
       const nftData = await prisma.digital_item_nfts.findUnique({
         where: {
           id: parseInt(id),
-          is_deleted: false,
         },
         include: {
           digital_item: {
@@ -723,7 +722,6 @@ export const adminGetBoxData = async (req: Request, res: Response) => {
     const allNfts = await prisma.digital_item_nfts.findMany({
       where: {
         box_id: parseInt(id),
-        is_deleted: false,
       },
       include: {
         digital_item: true,

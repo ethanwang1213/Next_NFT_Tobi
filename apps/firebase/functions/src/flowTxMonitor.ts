@@ -181,7 +181,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   }
 
   const {serialNumber, to} = await fetchMintNFT(txId);
-  const itemId = digitalItem.item_id;
+  const itemId = digitalItem.flow_item_id;
   const creatorAddress = digitalItem.creator_flow_address;
   if (!itemId) {
     throw new Error("ITEM_ID_NOT_FOUND");

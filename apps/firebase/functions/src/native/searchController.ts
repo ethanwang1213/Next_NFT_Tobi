@@ -305,7 +305,7 @@ export const searchContents = async (req: Request, res: Response) => {
               showcase_template: true,
             },
           },
-          favorite_contents: true,
+          favorite_users: true,
         },
         orderBy: {
           name: "asc",
@@ -316,7 +316,7 @@ export const searchContents = async (req: Request, res: Response) => {
           contentId: content.id,
           contentName: content.name,
           thumbImage: content.showcases[0].thumb_url,
-          favorite: content.favorite_contents.filter((favor)=>favor.account_uuid==uid).length!=0,
+          favorite: content.favorite_users.filter((favor)=>favor.account_uuid==uid).length!=0,
         };
       });
       res.status(200).send({
