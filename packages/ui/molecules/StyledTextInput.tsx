@@ -59,7 +59,8 @@ const StyledTextInput = ({
     }
 
     if (inputMask === TextKind.Digit) {
-      setInputValue(value.replace(/\D/g, ""));
+      value = value.replace(/\D/g, "");
+      setInputValue(value);
     }
 
     changeHandler(value);
