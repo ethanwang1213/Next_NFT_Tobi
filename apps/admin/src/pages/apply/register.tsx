@@ -75,6 +75,7 @@ const Register = () => {
 
     finishBusinessAccountRegistration();
     router.replace("/apply/finish");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response, router]);
 
   const contentInfoInputRefs = {
