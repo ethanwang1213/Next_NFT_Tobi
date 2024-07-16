@@ -9,7 +9,7 @@ import {
   NftBaseData,
   SampleBaseData,
 } from "types/unityTypes";
-import { SaidanLikeData, UnitySceneType } from "./types";
+import { SaidanLikeData, UnityMessageJson, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
@@ -28,6 +28,9 @@ export const useSaidanLikeUnityContextBase = ({
   const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
     useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<
+    (ItemTypeParam & ItemBaseId) | null
+  >(null);
 
   const {
     unityProvider,
@@ -189,10 +192,25 @@ export const useSaidanLikeUnityContextBase = ({
     onRemoveItemDisabled();
   }, [onRemoveItemDisabled]);
 
+  const handleItemSelected = useCallback(
+    (msgObj: UnityMessageJson) => {
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        itemType: ItemType;
+        itemId: number;
+      };
+
+      if (!messageBody) return;
+
+      setSelectedItem(messageBody.itemId === -1 ? null : messageBody);
+    },
+    [setSelectedItem],
+  );
+
   return {
     unityProvider,
     isLoaded,
     isDragging,
+    selectedItem,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -211,5 +229,6 @@ export const useSaidanLikeUnityContextBase = ({
     handleDragPlacingEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
+    handleItemSelected,
   };
 };
