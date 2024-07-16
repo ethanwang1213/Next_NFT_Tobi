@@ -46,7 +46,7 @@ const ScheduleCalendar = (props: {
   schedules: ScheduleItem[];
   changeHandler: (value: ScheduleItem[]) => void;
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Value>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Value>(null);
   const [schedules, setSchedules] = useState(props.schedules);
   const [error, setError] = useState(false);
 
@@ -388,18 +388,31 @@ const ScheduleCalendar = (props: {
         locale="en-US"
       />
       <ScheduleEditor
-        date={selectedDate.toString()}
-        schedules={schedules.filter((schedule) => {
-          const scheduleTime = new Date(schedule.datetime).setHours(0, 0, 0, 0);
-          const datetime = new Date(selectedDate.toString()).setHours(
-            0,
-            0,
-            0,
-            0,
-          );
-          return scheduleTime == datetime;
-        })}
-        prevStatus={getPrevStatus(selectedDate.toString())}
+        date={selectedDate?.toString()}
+        schedules={
+          selectedDate
+            ? schedules.filter((schedule) => {
+                const scheduleTime = new Date(schedule.datetime).setHours(
+                  0,
+                  0,
+                  0,
+                  0,
+                );
+                const datetime = new Date(selectedDate.toString()).setHours(
+                  0,
+                  0,
+                  0,
+                  0,
+                );
+                return scheduleTime == datetime;
+              })
+            : []
+        }
+        prevStatus={
+          selectedDate
+            ? getPrevStatus(selectedDate.toString())
+            : DigitalItemStatus.None
+        }
         addHandler={addScheduleHandler}
         removeHandler={removeScheduleHandler}
         changeHandler={changeScheduleHandler}

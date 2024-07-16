@@ -1,9 +1,15 @@
 import NextImage from "next/image";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ReactCrop, {
   convertToPixelCrop,
   Crop,
-  PixelCrop,
+  makeAspectCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -12,48 +18,70 @@ const ImageCropDialog = ({
   dialogRef,
   cropHandler,
   aspectRatio,
-  initFlag,
 }: {
   initialValue: string;
   dialogRef: MutableRefObject<HTMLDialogElement>;
   cropHandler: (value: string) => void;
-  aspectRatio: number;
-  initFlag: number;
+  aspectRatio: number | null;
 }) => {
   const imgRef = useRef<HTMLImageElement>(null);
+  const imgWrapperRef = useRef<HTMLDivElement>(null);
   const blobUrlRef = useRef("");
-  const [crop, setCrop] = useState<Crop>({
-    unit: "%", // Can be 'px' or '%'
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-  });
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-
+  const [crop, setCrop] = useState<Crop>(null);
   const [imageURL, setImageURL] = useState("");
 
-  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    const { width, height } = e.currentTarget;
-    setCompletedCrop(convertToPixelCrop(crop, width, height));
-  }
+  const onImageLoad = useCallback(
+    (e: React.SyntheticEvent<HTMLImageElement>) => {
+      const { width, height } = e.currentTarget;
+      let newCrop;
+      if (aspectRatio) {
+        newCrop = makeAspectCrop(
+          {
+            unit: "%",
+            width: 100,
+          },
+          aspectRatio,
+          width,
+          height,
+        );
+      } else {
+        newCrop = {
+          unit: "%", // Can be 'px' or '%'
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+        };
+      }
+      newCrop = convertToPixelCrop(newCrop, width, height);
+      newCrop.x = (imgWrapperRef.current.clientWidth - newCrop.width) / 2;
+      newCrop.y = (imgWrapperRef.current.clientHeight - newCrop.height) / 2;
+      setCrop(newCrop);
+    },
+    [aspectRatio],
+  );
 
-  useEffect(() => {
-    setCrop({
-      unit: "%", // Can be 'px' or '%'
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-    });
-  }, [initFlag]);
+  const onCropChange = useCallback((c: Crop) => {
+    const { width, height } = imgRef.current;
+    const { clientWidth, clientHeight } = imgWrapperRef.current;
+    // check the image region
+    // check left-top corner
+    if (c.x < (clientWidth - width) / 2) return;
+    if (c.y < (clientHeight - height) / 2) return;
+    // check right-bottom corder
+    if (c.x + c.width > (clientWidth + width) / 2) return;
+    if (c.y + c.height > (clientHeight + height) / 2) return;
 
-  async function onCropClick() {
+    setCrop(c);
+  }, []);
+
+  const cropImage = useCallback(async () => {
     const image = imgRef.current;
-    if (!image || !completedCrop) {
+    if (!image || !crop) {
       throw new Error("Crop canvas does not exist");
     }
 
+    const { clientWidth, clientHeight } = imgWrapperRef.current;
     // This will size relative to the uploaded image
     // size. If you want to size according to what they
     // are looking at on screen, remove scaleX + scaleY
@@ -61,24 +89,26 @@ const ImageCropDialog = ({
     const scaleY = image.naturalHeight / image.height;
 
     const offscreen = new OffscreenCanvas(
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
     );
     const ctx = offscreen.getContext("2d");
     if (!ctx) {
       throw new Error("No 2d context");
     }
+    const offsetX = crop.x - (clientWidth - image.width) / 2;
+    const offsetY = crop.y - (clientHeight - image.height) / 2;
 
     ctx.drawImage(
       image,
-      completedCrop.x * scaleX,
-      completedCrop.y * scaleY,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
+      offsetX * scaleX,
+      offsetY * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
       0,
       0,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
     );
 
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
@@ -92,7 +122,7 @@ const ImageCropDialog = ({
     }
     blobUrlRef.current = URL.createObjectURL(blob);
     cropHandler(blobUrlRef.current);
-  }
+  }, [crop, cropHandler]);
 
   useEffect(() => {
     setImageURL(initialValue);
@@ -100,7 +130,7 @@ const ImageCropDialog = ({
 
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box w-auto rounded-3xl pt-4 flex flex-col gap-3 relative">
+      <div className="modal-box max-w-[800px] w-[800px] h-[520px] rounded-3xl pt-4 flex flex-col gap-3 relative">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
             <NextImage
@@ -114,29 +144,33 @@ const ImageCropDialog = ({
         <div className="text-base-black text-lg font-semibold">
           Customize Image
         </div>
-        <div className="w-full h-0 border-[0.5px] border-neutral-200"></div>
         <ReactCrop
           crop={crop}
-          onChange={(c) => setCrop(c)}
+          onChange={(c) => onCropChange(c)}
           aspect={aspectRatio}
-          onComplete={(c) => setCompletedCrop(c)}
+          keepSelection={true}
         >
-          {
-            // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-            <img
-              ref={imgRef}
-              src={imageURL}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain",
-              }}
-              crossOrigin="anonymous"
-              onLoad={onImageLoad}
-            />
-          }
+          <div
+            ref={imgWrapperRef}
+            className="w-full h-[360px] flex justify-center items-center border-neutral-200"
+          >
+            {
+              // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+              <img
+                ref={imgRef}
+                src={imageURL}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "360px",
+                  objectFit: "contain",
+                }}
+                crossOrigin="anonymous"
+                onLoad={onImageLoad}
+              />
+            }
+          </div>
         </ReactCrop>
-        <div className="modal-action flex justify-end gap-4">
+        <div className="flex justify-end gap-4 pt-1">
           <button
             type="button"
             className="px-4 py-2 bg-base-white rounded-[64px] border-2 border-primary
@@ -152,7 +186,7 @@ const ImageCropDialog = ({
               hover:shadow-xl hover:-top-[3px] transition-shadow  
               text-base-white text-sm leading-4 font-semibold"
             onClick={() => {
-              onCropClick();
+              cropImage();
               dialogRef.current.close();
             }}
           >

@@ -59,7 +59,8 @@ const StyledTextInput = ({
     }
 
     if (inputMask === TextKind.Digit) {
-      setInputValue(value.replace(/\D/g, ""));
+      value = value.replace(/\D/g, "");
+      setInputValue(value);
     }
 
     changeHandler(value);
@@ -79,7 +80,7 @@ const StyledTextInput = ({
           "outline-none border-2 rounded-lg border-secondary",
           !readOnly
             ? "hover:border-hover-color focus:border-focus-color"
-            : "bg-secondary-100",
+            : "bg-secondary-200",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
         )}

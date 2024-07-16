@@ -383,7 +383,7 @@ const Detail = () => {
 
       {digitalItem && (
         <div className="ml-24 mr-[104px] mt-16">
-          <div className="flex gap-4">
+          <div className="flex gap-40">
             <div className="flex-grow flex flex-col gap-8">
               <div className="flex flex-col gap-4 pr-11">
                 <h3 className="text-xl text-secondary">ITEM DETAIL</h3>
@@ -454,6 +454,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -472,7 +473,7 @@ const Detail = () => {
                     changeHandler={(value) =>
                       fieldChangeHandler("quantityLimit", value)
                     }
-                    readOnly={isReadOnly()}
+                    readOnly={isReadOnly() || digitalItem.quantityLimit == -1}
                   />
                   <div className="flex justify-start items-center gap-2">
                     <input
@@ -481,8 +482,12 @@ const Detail = () => {
                       className="w-6 h-6"
                       checked={digitalItem.quantityLimit == -1}
                       onChange={(e) => {
-                        if (!isReadOnly() && e.target.checked) {
-                          fieldChangeHandler("quantityLimit", -1);
+                        if (!isReadOnly()) {
+                          if (e.target.checked) {
+                            fieldChangeHandler("quantityLimit", -1);
+                          } else {
+                            fieldChangeHandler("quantityLimit", 0);
+                          }
                         }
                       }}
                     />
@@ -520,6 +525,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -564,6 +570,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -607,6 +614,7 @@ const Detail = () => {
                         paddingBottom: "6px",
                         borderRadius: "4px",
                         textAlign: "center",
+                        zIndex: 1,
                       }}
                     />
                   </div>

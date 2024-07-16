@@ -29,6 +29,8 @@ const ScheduleEditor = (props: {
   const [timeUnlisted, setTimeUnlisted] = useState(null);
 
   useEffect(() => {
+    if (!props.date) return;
+
     const scheduleViewOnlyIndex = props.schedules.findIndex(
       (schedule) => schedule.status == DigitalItemStatus.ViewingOnly,
     );
@@ -136,18 +138,18 @@ const ScheduleEditor = (props: {
 
   return (
     <div className="p-6 flex flex-col gap-4">
-      <div className="flex justify-around">
+      <div className="flex justify-around gap-8">
         <div className="w-[100px] flex flex-col text-primary font-normal items-center">
           <span className="text-[64px] leading-[96px]">
-            {new Date(props.date).getDate()}
+            {props.date?new Date(props.date).getDate():""}
           </span>
           <span className="text-xl opacity-50 uppercase">
-            {new Date(props.date).toLocaleDateString("en-US", {
+            {props.date?new Date(props.date).toLocaleDateString("en-US", {
               weekday: "short",
-            })}
+            }):""}
           </span>
         </div>
-        <div className="h-8 flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center">
             <span className="w-[108px] text-base text-secondary text-right mr-6">
               Viewing Only
@@ -202,7 +204,7 @@ const ScheduleEditor = (props: {
               />
             )}
           </div>
-          <div className="h-8 flex items-center">
+          <div className="flex items-center">
             <span className="w-[108px] text-right mr-6">On Sale</span>
             <input
               type="checkbox"
@@ -254,7 +256,7 @@ const ScheduleEditor = (props: {
               />
             )}
           </div>
-          <div className="h-8 flex items-center">
+          <div className="flex items-center">
             <span className="w-[108px] text-right mr-6">Unlisted</span>
             <input
               type="checkbox"
@@ -309,38 +311,38 @@ const ScheduleEditor = (props: {
         </div>
       </div>
       <div className="w-full h-0 border border-[#AEAEAE]"></div>
-      {props.schedules.length > 0 && (
-        <div className="flex justify-around">
-          <span className="w-[108px] text-secondary text-center">LOG</span>
-          <div className="flex flex-col gap-2">
-            {props.schedules.map((schedule, index) => (
-              <div
-                key={`schedule-${index}`}
-                className="flex items-center text-base text-secondary-600 font-normal"
-              >
-                <span className="w-16 h-6">
-                  {new Date(schedule.datetime).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  })}
-                </span>
-                <span className="w-[120px] h-6 text-right">
-                  {getDigitalItemStatusTitle(
-                    index == 0
-                      ? props.prevStatus
-                      : props.schedules[index - 1].status,
-                  )}
-                </span>
-                <span className="w-[32px] h-6 text-center">→</span>
-                <span className="w-[120px] h-6 text-left">
-                  {getDigitalItemStatusTitle(schedule.status)}
-                </span>
-              </div>
-            ))}
-          </div>
+      <div className="flex gap-2">
+        <span className="w-[72px] text-secondary text-center">LOG</span>
+        <div className="flex flex-col gap-2">
+          {props.schedules.length == 0
+            ? getDigitalItemStatusTitle(props.prevStatus)
+            : props.schedules.map((schedule, index) => (
+                <div
+                  key={`schedule-${index}`}
+                  className="flex items-center text-base text-secondary-600 font-normal"
+                >
+                  <span className="w-16 h-6">
+                    {new Date(schedule.datetime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                  </span>
+                  <span className="w-[108px] h-6 text-center">
+                    {getDigitalItemStatusTitle(
+                      index == 0
+                        ? props.prevStatus
+                        : props.schedules[index - 1].status,
+                    )}
+                  </span>
+                  <span className="w-[24px] h-6 text-center">→</span>
+                  <span className="w-[108px] h-6 text-center">
+                    {getDigitalItemStatusTitle(schedule.status)}
+                  </span>
+                </div>
+              ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

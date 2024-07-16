@@ -215,7 +215,7 @@ const CopyrightMultiSelect = ({
         "flex flex-col w-full justify-center self-center min-h-[52px]",
         "outline-none border-2 rounded-lg border-secondary",
         readOnly
-          ? "bg-secondary-100"
+          ? "bg-secondary-200"
           : "hover:border-hover-color focus:border-focus-color",
         "relative",
       )}

@@ -58,7 +58,7 @@ const StyledTextArea = ({
           "outline-none border-2 rounded-lg border-secondary",
           !readOnly
             ? "hover:border-hover-color focus:border-focus-color"
-            : "bg-secondary-100",
+            : "bg-secondary-200",
           "text-sm font-normal text-input-color",
           "placeholder:text-placeholder-color placeholder:font-normal",
         )}

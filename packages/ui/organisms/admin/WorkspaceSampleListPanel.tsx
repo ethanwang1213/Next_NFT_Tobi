@@ -141,22 +141,20 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
         </div>
       )}
       <div className="w-full pr-4 flex justify-end gap-4">
-        <Image
-          width={32}
-          height={32}
-          src="/admin/images/icon/delete-icon.svg"
-          alt="delete icon"
-          className="cursor-pointer"
+        <span
+          className="material-symbols-outlined text-base-white cursor-pointer"
+          style={{ fontSize: 26.7 }}
           onClick={() => setSelectState(!selectState)}
-        />
-        <Image
-          width={32}
-          height={32}
-          src="/admin/images/icon/close-white.svg"
-          alt="close icon"
-          className="cursor-pointer"
+        >
+          library_add_check
+        </span>
+        <span
+          className="material-symbols-outlined text-base-white cursor-pointer"
+          style={{ fontSize: 26.7 }}
           onClick={() => props.closeHandler()}
-        />
+        >
+          close
+        </span>
       </div>
       <Button
         className={`w-[384px] rounded-[64px] ml-10 mr-6 px-4 py-2 
