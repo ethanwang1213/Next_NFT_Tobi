@@ -122,14 +122,13 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
   if (!txId) {
     throw new Error("TX_NOT_FOUND");
   }
-  const {id, creatorAddress} = await fetchCreateItem(txId);
+  const {id} = await fetchCreateItem(txId);
   await prisma.digital_items.update({
     where: {
       id: digitalItemId,
     },
     data: {
-      creator_flow_address: creatorAddress,
-      item_id: Number(id),
+      flow_item_id: Number(id),
     },
   });
   return {id};
@@ -182,10 +181,18 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
 
   const {serialNumber, to} = await fetchMintNFT(txId);
   const itemId = digitalItem.flow_item_id;
-  const creatorAddress = digitalItem.creator_flow_address;
+  const creatorFlowAccount = await prisma.flow_accounts.findUnique({
+    where: {
+      account_uuid: digitalItem.account_uuid,
+    }
+  });
   if (!itemId) {
     throw new Error("ITEM_ID_NOT_FOUND");
   }
+  if (!creatorFlowAccount) {
+    throw new Error("CREATOR_FLOW_ACCOUNT_NOT_FOUND");
+  }
+  const creatorAddress = creatorFlowAccount.flow_address;
   if (!creatorAddress) {
     throw new Error("CREATOR_ADDRESS_NOT_FOUND");
   }
