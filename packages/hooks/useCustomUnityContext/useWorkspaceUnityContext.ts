@@ -264,7 +264,7 @@ export const useWorkspaceUnityContext = ({
     unityProvider,
     isLoaded,
     isDragging,
-    selectedSample:
+    selectedSampleId:
       !!selectedItem && selectedItem.itemId >= 0 ? selectedItem.itemId : -1,
     setLoadData,
     requestSaveData,
