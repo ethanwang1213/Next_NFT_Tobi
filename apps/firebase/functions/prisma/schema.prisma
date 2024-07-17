@@ -143,7 +143,6 @@ model digital_items {
     visibility_status   Int
     updated_status_time DateTime                  @default(now()) @db.Timestamp(6)
     minted_count        Int                       @default(0)
-    sale_quantity       Int?
     schedules           String[]
     is_deleted          Boolean                   @default(false)
     updated_date_time   DateTime                  @default(now()) @db.Timestamp(6)
@@ -154,10 +153,11 @@ model sales {
     id                Int           @id @default(autoincrement())
     digital_item_id   Int
     digital_item      digital_items @relation(fields: [digital_item_id], references: [id])
-    price             Int
+    price             Int?
     start_time        DateTime
     end_time          DateTime
     priority          Int
+    sale_quantity     Int?
     updated_date_time DateTime      @default(now()) @db.Timestamp(6)
     created_date_time DateTime      @default(now()) @db.Timestamp(6)
 }
