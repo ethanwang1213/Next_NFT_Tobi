@@ -119,14 +119,14 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
   return (
     <div
       className="absolute top-0 w-[448px] bg-[#001327] h-full pt-8 
-        flex flex-col gap-6 z-20 select-none"
+        flex flex-col gap-6 z-20 pointer-events-auto"
       style={{ transition: "right 0.3s ease", right: props.isOpen ? 0 : -448 }}
       ref={panelRef}
     >
       {props.showRestoreMenu && (
         <div
           className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
-            flex flex-col gap-6 justify-center items-center z-10 select-none"
+            flex flex-col gap-6 justify-center items-center z-10"
         >
           <span className="text-white text-[32px] font-bold">
             Return to the Inventory

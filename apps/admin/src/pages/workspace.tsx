@@ -1,7 +1,7 @@
 import { useLeavePage } from "contexts/LeavePageProvider";
 import {
-  ImageType,
   getDownloadUrlFromPath,
+  ImageType,
   uploadImage,
 } from "fetchers/UploadActions";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
@@ -33,8 +33,12 @@ export default function Index() {
   const [showDetailView, setShowDetailView] = useState(false);
   const [showListView, setShowListView] = useState(false);
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
-  const sampleCreateDialogRef = useRef(null);
-  const shortcutDialogRef = useRef(null);
+  const sampleCreateDialogRef = useRef<HTMLDialogElement>(null);
+  const shortcutDialogRef = useRef<HTMLDialogElement>(null);
+
+  const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
+    useState(false);
+  const [isShortcutDialogOpen, setIsShortcutDialogOpen] = useState(false);
 
   const [initSampleCreateDialog, setInitSampleCreateDialog] = useState(0);
 
@@ -87,12 +91,17 @@ export default function Index() {
       (value) => value.image === generateMaterialImage.current,
     );
 
-    const newSample = await createSample(sampleAPIUrl, {
+    const postData = {
       thumbUrl: sampleThumb,
       modelUrl: generateModelUrl.current,
       materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
       type: generateSampleType.current,
-    });
+    };
+    if (materialIndex == -1) {
+      delete postData.materialId;
+    }
+
+    const newSample = await createSample(sampleAPIUrl, postData);
     if (newSample === false) {
       setGenerateSampleError(true);
       return;
@@ -200,6 +209,7 @@ export default function Index() {
       setInitSampleCreateDialog(initSampleCreateDialog + 1);
       setGenerateSampleError(false);
       sampleCreateDialogRef.current.showModal();
+      setIsSampleCreateDialogOpen(true);
     }
   }, [initSampleCreateDialog]);
 
@@ -211,7 +221,7 @@ export default function Index() {
       placeNewSample({
         itemId: sample.id,
         modelUrl: sample.modelUrl,
-        imageUrl: materials[materialIndex].image,
+        imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
         modelType: sample.type as ModelType,
       });
     },
@@ -333,7 +343,8 @@ export default function Index() {
       generateMaterialImage.current = null;
       requestItemThumbnail({
         modelType: ModelType.AcrylicStand,
-        modelUrl: modelResp["url"],
+        modelUrl: generateModelUrl.current,
+        imageUrl: image1,
       });
     } else if (sampleType == ModelType.MessageCard) {
       const modelResp = await createSample("native/model/message-card", {
@@ -352,26 +363,90 @@ export default function Index() {
 
     return true;
   };
+
+  const isDialogOpen = () => {
+    if (isSampleCreateDialogOpen) {
+      return true;
+    }
+    if (isShortcutDialogOpen) {
+      return true;
+    }
+
+    return false;
+  };
+
+  useEffect(() => {
+    if (sampleCreateDialogRef.current) {
+      sampleCreateDialogRef.current.addEventListener("close", () => {
+        setIsSampleCreateDialogOpen(false);
+      });
+    }
+
+    if (shortcutDialogRef.current) {
+      shortcutDialogRef.current.addEventListener("close", () => {
+        setIsShortcutDialogOpen(false);
+      });
+    }
+
+    return () => {
+      if (sampleCreateDialogRef.current) {
+        sampleCreateDialogRef.current.removeEventListener("close", () => {
+          setIsSampleCreateDialogOpen(false);
+        });
+      }
+
+      if (shortcutDialogRef.current) {
+        shortcutDialogRef.current.removeEventListener("close", () => {
+          setIsShortcutDialogOpen(false);
+        });
+      }
+    };
+  }, []);
+
   return (
     <div className="w-full h-full relative" id="workspace_view">
-      <WorkspaceUnity unityProvider={unityProvider} />
-      <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden">
-        <WorkspaceSampleCreateDialog
-          dialogRef={sampleCreateDialogRef}
-          initDialog={initSampleCreateDialog}
-          materials={materials}
-          generateHandler={generateSampleHandler}
-          generateError={generateSampleError}
-          createMaterialImageHandler={createMaterialImageHandler}
-          removeBackgroundHandler={removeBackgroundHandler}
-          resetErrorHandler={() => {
-            setGenerateSampleError(false);
+      <div
+        className="absolute left-0 right-0 top-0 bottom-0"
+        style={{ pointerEvents: isDialogOpen() ? "none" : "auto" }}
+      >
+        <WorkspaceUnity unityProvider={unityProvider} />
+      </div>
+      <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden pointer-events-none">
+        <div
+          style={{
+            pointerEvents:
+              sampleCreateDialogRef.current &&
+              sampleCreateDialogRef.current.open
+                ? "auto"
+                : "none",
           }}
-        />
-        <WorkspaceShortcutDialog
-          dialogRef={shortcutDialogRef}
-          changeHandler={null}
-        />
+        >
+          <WorkspaceSampleCreateDialog
+            dialogRef={sampleCreateDialogRef}
+            initDialog={initSampleCreateDialog}
+            materials={materials}
+            generateHandler={generateSampleHandler}
+            generateError={generateSampleError}
+            createMaterialImageHandler={createMaterialImageHandler}
+            removeBackgroundHandler={removeBackgroundHandler}
+            resetErrorHandler={() => {
+              setGenerateSampleError(false);
+            }}
+          />
+        </div>
+        <div
+          style={{
+            pointerEvents:
+              shortcutDialogRef.current && shortcutDialogRef.current.open
+                ? "auto"
+                : "none",
+          }}
+        >
+          <WorkspaceShortcutDialog
+            dialogRef={shortcutDialogRef}
+            changeHandler={null}
+          />
+        </div>
         {showDetailView && (
           <WorkspaceSampleDetailPanel id={selectedSampleItem} />
         )}
@@ -389,7 +464,7 @@ export default function Index() {
           showRestoreMenu={showRestoreMenu}
         />
         <div
-          className="absolute left-[50%] bottom-12 h-12 flex justify-center"
+          className="absolute left-[50%] bottom-12 h-12 flex justify-center pointer-events-auto select-none"
           style={{
             transform: "translateX(-50%)",
           }}
@@ -408,7 +483,7 @@ export default function Index() {
             <Image
               width={32}
               height={32}
-              alt="undo button"
+              alt="redo button"
               src="/admin/images/icon/redo-icon.svg"
               className="cursor-pointer"
               onClick={() => {
@@ -418,7 +493,7 @@ export default function Index() {
             <Image
               width={32}
               height={32}
-              alt="undo button"
+              alt="visibility button"
               src={
                 showDetailView
                   ? "/admin/images/icon/visibility-on-icon.svg"
@@ -432,12 +507,13 @@ export default function Index() {
             <Image
               width={32}
               height={32}
-              alt="undo button"
+              alt="shortcut button"
               src="/admin/images/icon/help-icon.svg"
               className="cursor-pointer"
               onClick={() => {
                 if (shortcutDialogRef.current) {
                   shortcutDialogRef.current.showModal();
+                  setIsShortcutDialogOpen(true);
                 }
               }}
             />
@@ -445,7 +521,7 @@ export default function Index() {
         </div>
         <div
           className="absolute bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
-            flex justify-center items-center cursor-pointer"
+            flex justify-center items-center cursor-pointer pointer-events-auto select-none"
           onClick={addButtonHandler}
         >
           <Image
@@ -457,7 +533,7 @@ export default function Index() {
         </div>
         <div
           className="absolute bottom-[178px] right-16 w-18 h-[72px] rounded-full bg-secondary 
-            flex justify-center items-center cursor-pointer"
+            flex justify-center items-center cursor-pointer pointer-events-auto select-none"
           onClick={() => {
             setShowListView(!showListView);
           }}
@@ -472,7 +548,7 @@ export default function Index() {
         {showRestoreMenu && !showListView && (
           <div
             className={`absolute w-[${REMOVE_PANEL_WIDTH}px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
-              flex flex-col justify-center items-center z-10 select-none`}
+              flex flex-col justify-center items-center z-10 pointer-events-auto select-none`}
           >
             <Image
               width={48}
