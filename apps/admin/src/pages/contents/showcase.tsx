@@ -4,7 +4,6 @@ import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -385,9 +384,11 @@ const Showcase = () => {
             </Button>
           )}
         </div>
-        {showSampleDetailView && (
-          <ShowcaseSampleDetail id={selectedSampleItem} />
-        )}
+        <ShowcaseSampleDetail
+          showSampleDetailView={showSampleDetailView}
+          showDetailView={showDetailView}
+          id={selectedSampleItem}
+        />
         {/* Align component in the center */}
         {/* 320px: width of left component. 424px: width of right component. */}
         <div
@@ -493,22 +494,6 @@ const Showcase = () => {
               updateUnityViewSettings(wt, ft, st, sb, pt, pb);
             }}
           />
-        )}
-        {!showDetailView && (
-          <div className="fixed mt-[24px] ml-[38px]">
-            <Link
-              href="/contents"
-              className="rounded-lg bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-md p-2"
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="Link back Icon"
-                src="/admin/images/icon/arrow-back-icon.svg"
-              />
-              <span>Exit</span>
-            </Link>
-          </div>
         )}
         {showRestoreMenu && !showDetailView && (
           <div
