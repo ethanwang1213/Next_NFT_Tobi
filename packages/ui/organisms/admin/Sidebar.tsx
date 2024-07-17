@@ -121,12 +121,6 @@ const Sidebar = ({ children }: Props) => {
       visible: user.hasBusinessAccount,
     },
     {
-      name: "SAIDAN/SHOWCASE",
-      icon: "/admin/images/icon/saidan.svg",
-      href: "/saidan",
-      visible: user.hasBusinessAccount,
-    },
-    {
       name: "アカウントの設定",
       icon: "/admin/images/icon/account.svg",
       href: "/account",
