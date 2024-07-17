@@ -1,7 +1,7 @@
 import { useLeavePage } from "contexts/LeavePageProvider";
 import {
-  ImageType,
   getDownloadUrlFromPath,
+  ImageType,
   uploadImage,
 } from "fetchers/UploadActions";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
@@ -346,7 +346,8 @@ export default function Index() {
       generateMaterialImage.current = null;
       requestItemThumbnail({
         modelType: ModelType.MessageCard,
-        modelUrl: modelResp["url"],
+        modelUrl: generateModelUrl.current,
+        imageUrl: image1,
       });
     }
 
