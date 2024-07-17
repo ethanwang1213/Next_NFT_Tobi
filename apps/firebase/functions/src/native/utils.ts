@@ -27,15 +27,37 @@ export const statusOfShowcase = {
   publicSchedule: 2,
 };
 
-export const statusOfDigitalItem = {
+// export const statusOfDigitalItem = {
+//   draft: 1,
+//   private: 2,
+//   public: 3,
+//   onSale: 4,
+//   unListed: 5,
+//   publicSchedule: 6,
+//   saleSchedule: 7,
+// };
+
+export const metaDataStatus = {
   draft: 1,
-  private: 2,
+  fixed: 2,
+}
+
+export const visibilityStatus = {
+  private: 1,
+  unlisted: 2,
   public: 3,
-  onSale: 4,
-  unListed: 5,
-  publicSchedule: 6,
-  saleSchedule: 7,
-};
+}
+
+export const salesStatus = {
+  viewingOnly: 1,
+  sales: 2,
+}
+
+export const mintStatus = {
+  minting: 1,
+  minted: 2,
+  opened: 3,
+}
 
 export function getStatusOfDigitalItem(
     schedules: {
