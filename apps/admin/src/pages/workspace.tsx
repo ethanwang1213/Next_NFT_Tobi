@@ -156,6 +156,7 @@ export default function Index() {
 
   const {
     unityProvider,
+    isLoaded,
     selectedSampleId,
     setLoadData: setWorkspaceData,
     requestSaveData,
@@ -420,6 +421,11 @@ export default function Index() {
       >
         <WorkspaceUnity unityProvider={unityProvider} />
       </div>
+      {!isLoaded && (
+        <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+          <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+        </div>
+      )}
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden pointer-events-none">
         <div
           style={{
