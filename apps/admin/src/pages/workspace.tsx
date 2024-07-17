@@ -376,29 +376,32 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (sampleCreateDialogRef.current) {
-      sampleCreateDialogRef.current.addEventListener("close", () => {
-        setIsSampleCreateDialogOpen(false);
-      });
+    const sampleDialog = sampleCreateDialogRef.current;
+    const shortcutDialog = shortcutDialogRef.current;
+
+    const handleSampleDialogClose = () => {
+      setIsSampleCreateDialogOpen(false);
+    };
+
+    const handleShortcutDialogClose = () => {
+      setIsShortcutDialogOpen(false);
+    };
+
+    if (sampleDialog) {
+      sampleDialog.addEventListener("close", handleSampleDialogClose);
     }
 
-    if (shortcutDialogRef.current) {
-      shortcutDialogRef.current.addEventListener("close", () => {
-        setIsShortcutDialogOpen(false);
-      });
+    if (shortcutDialog) {
+      shortcutDialog.addEventListener("close", handleShortcutDialogClose);
     }
 
     return () => {
-      if (sampleCreateDialogRef.current) {
-        sampleCreateDialogRef.current.removeEventListener("close", () => {
-          setIsSampleCreateDialogOpen(false);
-        });
+      if (sampleDialog) {
+        sampleDialog.removeEventListener("close", handleSampleDialogClose);
       }
 
-      if (shortcutDialogRef.current) {
-        shortcutDialogRef.current.removeEventListener("close", () => {
-          setIsShortcutDialogOpen(false);
-        });
+      if (shortcutDialog) {
+        shortcutDialog.removeEventListener("close", handleShortcutDialogClose);
       }
     };
   }, []);
