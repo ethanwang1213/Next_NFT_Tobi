@@ -169,12 +169,12 @@ const Sidebar = ({ children }: Props) => {
                       pathname.split("/")[1] === item.href.split("/")[1]
                         ? `bg-${selectedColor}`
                         : `bg-${normalIconColor}`,
+                        "flex-shrink-0"
                     )}
                     style={{
                       WebkitMaskImage: `url(${item.icon})`,
                       WebkitMaskRepeat: "no-repeat",
                       WebkitMaskPosition: "center",
-                      WebkitMaskSize: "contain",
                     }}
                   ></div>
                   <div

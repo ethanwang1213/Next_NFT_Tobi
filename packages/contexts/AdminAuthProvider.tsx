@@ -252,7 +252,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 };
 
 export const isApplyPage = (path: string) => {
-  return path === "/apply" || path.startsWith("/apply/");
+  return (
+    path === "/apply" ||
+    (path.startsWith("/apply/") && path !== "/apply/finish")
+  );
 };
 
 export const isPageForNonBusinessAccount = (path: string) => {
