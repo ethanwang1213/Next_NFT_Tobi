@@ -128,16 +128,13 @@ const Showcase = () => {
     placeNewNftWithDrag,
     updateSettings,
     inputWasd,
+    selectedItem,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onRemoveItemRequested,
-    onItemSelected(itemType, itemId) {
-      setShowSampleDetailView(true);
-      setSelectedSampleItem(itemId);
-    },
   });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -216,6 +213,15 @@ const Showcase = () => {
       setLoadData(showcaseData);
     }
   }, [showcaseData, setLoadData]);
+
+  useEffect(() => {
+    if (selectedItem) {
+      setShowSampleDetailView(true);
+      setSelectedSampleItem(selectedItem.itemId);
+    } else {
+      setShowSampleDetailView(false);
+    }
+  }, [selectedItem]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes
   useEffect(() => {
@@ -340,9 +346,9 @@ const Showcase = () => {
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
         </div>
       )}
-      <div className="absolute left-0 right-0 top-0 bottom-0">
+      <div className="pointer-events-none absolute left-0 right-0 top-0 bottom-0">
         <div
-          className="absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
+          className="pointer-events-auto absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
           style={{
             width: `${containerWidth}px`,
             left: `${320 - 424}px`,
@@ -399,7 +405,7 @@ const Showcase = () => {
           {!mainToast && <CustomToast show={showToast} message={message} />}
         </div>
         <div
-          className="w-[336px] bottom-0 absolute"
+          className="pointer-events-auto w-[336px] bottom-0 absolute"
           style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
         >
           <div className="absolute bottom-12 w-full flex justify-center">
@@ -497,7 +503,7 @@ const Showcase = () => {
         )}
         {showRestoreMenu && !showDetailView && (
           <div
-            className="absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+            className="pointer-events-auto absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
               flex flex-col justify-center items-center z-10 select-none"
           >
             <Image

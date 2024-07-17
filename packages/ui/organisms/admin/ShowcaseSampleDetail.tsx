@@ -13,7 +13,7 @@ const ShowcaseSampleDetail = ({
   showDetailView: boolean;
 }) => {
   return (
-    <div>
+    <div className="pointer-events-auto">
       {showSampleDetailView && (
         <div className="absolute top-[21px] left-4 w-[320px] bottom-[18px] rounded-3xl bg-gray-600 bg-opacity-50 backdrop-blur-[25px] px-[40px] pt-[154px] pb-[81px]">
           <SampleDetailView id={id} />

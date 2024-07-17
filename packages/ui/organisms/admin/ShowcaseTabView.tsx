@@ -67,7 +67,7 @@ const ShowcaseTabView = ({
 
   return (
     <div
-      className="w-[424px] absolute right-4 top-[21px] bottom-4
+      className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4
         flex flex-col items-center text-base-white"
     >
       {showRestoreMenu && (

@@ -36,7 +36,6 @@ type Props = {
     itemId: number,
     sendSampleRemovalResult: SendSampleRemovalResult,
   ) => void;
-  onSampleSelected?: (itemId: number) => void;
 };
 
 export const useWorkspaceUnityContext = ({
@@ -46,12 +45,12 @@ export const useWorkspaceUnityContext = ({
   onRemoveSampleEnabled,
   onRemoveSampleDisabled,
   onRemoveSampleRequested,
-  onSampleSelected,
 }: Props) => {
   const {
     unityProvider,
     isLoaded,
     isDragging,
+    selectedItem,
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -68,6 +67,7 @@ export const useWorkspaceUnityContext = ({
     handleDragPlacingEnded,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
+    handleItemSelected,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
@@ -245,21 +245,6 @@ export const useWorkspaceUnityContext = ({
     [onRemoveSampleRequested, sendRemovalResult],
   );
 
-  const handleSampleSelected = useCallback(
-    (msgObj: UnityMessageJson) => {
-      if (!onSampleSelected) return;
-
-      const messageBody = JSON.parse(msgObj.messageBody) as {
-        itemId: number;
-      };
-
-      if (!messageBody) return;
-
-      onSampleSelected(messageBody.itemId);
-    },
-    [onSampleSelected],
-  );
-
   useUnityMessageHandler({
     addEventListener,
     removeEventListener,
@@ -272,13 +257,15 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
-    handleItemSelected: handleSampleSelected,
+    handleItemSelected,
   });
 
   return {
     unityProvider,
     isLoaded,
     isDragging,
+    selectedSampleId:
+      !!selectedItem && selectedItem.itemId >= 0 ? selectedItem.itemId : -1,
     setLoadData,
     requestSaveData,
     placeNewSample,
