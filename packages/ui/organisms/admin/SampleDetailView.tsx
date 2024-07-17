@@ -51,7 +51,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
       {loading ? (
         <span className="h-full w-full loading loading-spinner"></span>
       ) : (
-        <div className="gap-6 flex flex-col justify-center items-center text-base-white">
+        <div className="w-full h-full gap-6 flex flex-col justify-center items-center text-base-white">
           <span className="text-base font-semibold ">{data?.content.name}</span>
           <span className="text-2xl font-bold text-center">
             {data ? data.name || "Unnamed Sample item" : ""}
