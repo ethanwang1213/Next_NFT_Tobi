@@ -51,7 +51,7 @@ const Finish = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-[50px]">
         <Button
           className="w-[608px] h-[71px] rounded-[88px] mt-[80px] bg-primary text-[32px] text-center text-primary-content"
           onClick={() => {
