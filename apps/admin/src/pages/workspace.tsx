@@ -156,6 +156,7 @@ export default function Index() {
 
   const {
     unityProvider,
+    selectedSampleId,
     setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
@@ -177,6 +178,10 @@ export default function Index() {
       setWorkspaceData(workspaceData);
     }
   }, [workspaceData, setWorkspaceData]);
+
+  useEffect(() => {
+    setSelectedSampleItem(selectedSampleId);
+  }, [selectedSampleId]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
