@@ -91,37 +91,37 @@ const Sidebar = ({ children }: Props) => {
 
   const items = [
     {
-      name: "Tobiratory Creator Programに参加",
+      name: "Tobiratory Creator Program",
       icon: "/admin/images/icon/contents.svg",
       href: "/apply",
       visible: !user.hasBusinessAccount,
     },
     {
-      name: "ワークスペース",
+      name: "Workspace",
       icon: "/admin/images/icon/workspace.svg",
       href: "/workspace",
       visible: user.hasBusinessAccount,
     },
     {
-      name: "アイテム管理",
+      name: "Items",
       icon: "/admin/images/icon/tag.svg",
       href: "/items",
       visible: user.hasBusinessAccount,
     },
     {
-      name: "コンテンツ管理",
+      name: "Content",
       icon: "/admin/images/icon/contents.svg",
       href: "/contents",
       visible: user.hasBusinessAccount,
     },
     {
-      name: "ギフト受け取り設定",
+      name: "Gift",
       icon: "/admin/images/icon/gift.svg",
       href: "/gift",
       visible: user.hasBusinessAccount,
     },
     {
-      name: "アカウントの設定",
+      name: "Account",
       icon: "/admin/images/icon/account.svg",
       href: "/account",
       visible: true,
