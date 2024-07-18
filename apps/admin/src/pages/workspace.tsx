@@ -346,7 +346,7 @@ export default function Index() {
         return false;
       }
       generateModelUrl.current = await getDownloadUrlFromPath(modelResp["url"]);
-      generateMaterialImage.current = null;
+      generateMaterialImage.current = image1;
       requestItemThumbnail({
         modelType: ModelType.AcrylicStand,
         modelUrl: generateModelUrl.current,
