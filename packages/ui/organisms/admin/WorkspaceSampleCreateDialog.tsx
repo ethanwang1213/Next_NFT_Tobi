@@ -533,7 +533,8 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
         <SampleTypeSelectComponent
           selectTypeHandler={(value) => {
             setSampleType(value);
-            setStep(1);
+            if (value != "Acrylic Keyholder") setStep(1);
+            else setStep(0);
           }}
         />
       );
