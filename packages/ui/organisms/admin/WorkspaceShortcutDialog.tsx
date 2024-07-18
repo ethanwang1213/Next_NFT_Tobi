@@ -60,7 +60,10 @@ const WorkspaceShortcutDialog = ({
             />
           </button>
         </form>
-        <div className="h-[440px] flex flex-col gap-1 overflow-y-auto">
+        <div
+          className="h-[440px] flex flex-col gap-1 overflow-y-auto"
+          style={{ scrollbarWidth: "none" }}
+        >
           <ShortcutComponent />
           <ShortcutComponent />
           <ShortcutComponent />

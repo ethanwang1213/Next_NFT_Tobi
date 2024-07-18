@@ -2,6 +2,7 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
 import { SampleItem } from "ui/types/adminTypes";
+import DeleteConfirmDialog2 from "./DeleteConfirmDialog2";
 
 type ItemProps = {
   thumbnail: string;
@@ -94,6 +95,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
   const [selectState, setSelectState] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const panelRef = useRef(null);
+  const deleteConfirmDlgRef = useRef<HTMLDialogElement>(null);
 
   const selectionChangeHandler = (selId: number, checked: boolean) => {
     const prevIndex = selectedItems.findIndex((value) => value === selId);
@@ -116,6 +118,15 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
     setSelectedItems([]);
   }, [props.data]);
 
+  const deleteConfirmDialogHandler = useCallback(
+    (value: string) => {
+      if (value == "delete") {
+        props.deleteHandler(selectedItems);
+      }
+    },
+    [props, selectedItems],
+  );
+
   return (
     <div
       className="absolute top-0 w-[448px] bg-[#001327] h-full pt-8 
@@ -126,7 +137,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
       {props.showRestoreMenu && (
         <div
           className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
-            flex flex-col gap-6 justify-center items-center z-10"
+            flex flex-col gap-6 justify-center items-center z-10 select-none"
         >
           <span className="text-white text-[32px] font-bold">
             Return to the Inventory
@@ -151,7 +162,10 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
         <span
           className="material-symbols-outlined text-base-white cursor-pointer"
           style={{ fontSize: 26.7 }}
-          onClick={() => props.closeHandler()}
+          onClick={() => {
+            setSelectState(false);
+            props.closeHandler();
+          }}
         >
           close
         </span>
@@ -203,7 +217,9 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
             className="bg-[#EA1010] rounded-[88px] w-[160px] h-[48px]
               text-xl font-normal text-white text-center"
             onClick={() => {
-              props.deleteHandler(selectedItems);
+              if (deleteConfirmDlgRef.current) {
+                deleteConfirmDlgRef.current.showModal();
+              }
             }}
           >
             DELETE
@@ -215,6 +231,10 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
           selected {selectedItems.length} item
         </span>
       )}
+      <DeleteConfirmDialog2
+        dialogRef={deleteConfirmDlgRef}
+        changeHandler={deleteConfirmDialogHandler}
+      />
     </div>
   );
 };

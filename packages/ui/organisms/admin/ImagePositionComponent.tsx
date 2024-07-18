@@ -165,7 +165,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
       onMouseLeave={onMouseUp}
     >
       {processing && !props.error && (
-        <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center bg-white/50">
+        <div className="absolute left-0 right-0 top-0 bottom-0 z-20 flex justify-center items-center bg-white/50">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
         </div>
       )}

@@ -156,6 +156,8 @@ export default function Index() {
 
   const {
     unityProvider,
+    isLoaded,
+    selectedSampleId,
     setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
@@ -177,6 +179,10 @@ export default function Index() {
       setWorkspaceData(workspaceData);
     }
   }, [workspaceData, setWorkspaceData]);
+
+  useEffect(() => {
+    setSelectedSampleItem(selectedSampleId);
+  }, [selectedSampleId]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
@@ -340,7 +346,7 @@ export default function Index() {
         return false;
       }
       generateModelUrl.current = await getDownloadUrlFromPath(modelResp["url"]);
-      generateMaterialImage.current = null;
+      generateMaterialImage.current = image1;
       requestItemThumbnail({
         modelType: ModelType.AcrylicStand,
         modelUrl: generateModelUrl.current,
@@ -415,6 +421,11 @@ export default function Index() {
       >
         <WorkspaceUnity unityProvider={unityProvider} />
       </div>
+      {!isLoaded && (
+        <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+          <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+        </div>
+      )}
       <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden pointer-events-none">
         <div
           style={{

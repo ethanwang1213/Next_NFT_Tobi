@@ -205,6 +205,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
 
   const generateAcrylicStandSample = useCallback(
     async (image: string, coords: string) => {
+      const bodyImage = thirdImageRef.current;
       thirdImageRef.current = secondImageRef.current;
       if (
         await checkAndUploadImage(
@@ -216,7 +217,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
       )
         generateSample(
           ModelType.AcrylicStand,
-          firstImageRef.current,
+          bodyImage,
           thirdImageRef.current,
           coords,
         );
@@ -251,9 +252,9 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             backHandler={() => setStep(1)}
             nextHandler={(image: string) =>
               checkAndUploadImage(
-                firstImageRef,
+                thirdImageRef,
                 image,
-                ImageType.ModelTempImage,
+                ImageType.MaterialImage,
                 3,
               )
             }
@@ -533,7 +534,8 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
         <SampleTypeSelectComponent
           selectTypeHandler={(value) => {
             setSampleType(value);
-            setStep(1);
+            if (value != "Acrylic Keyholder") setStep(1);
+            else setStep(0);
           }}
         />
       );
