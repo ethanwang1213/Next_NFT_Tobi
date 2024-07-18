@@ -220,7 +220,7 @@ model nft_cameras {
 model nft_owners {
     id                Int               @id @default(autoincrement())
     flow_address      String            @db.VarChar(255)
-    nick_name         String            @db.VarChar(255)
+    nick_name         String?           @db.VarChar(255)
     status            String            @db.VarChar(255)
     nft               digital_item_nfts @relation(fields: [nft_id], references: [id])
     nft_id            Int               @unique

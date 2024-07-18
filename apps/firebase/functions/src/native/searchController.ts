@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {FirebaseError} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {prisma} from "../prisma";
-import {statusOfDigitalItem, statusOfShowcase} from "./utils";
+import {statusOfShowcase, visibilityStatus} from "./utils";
 
 export const searchAll = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -113,9 +113,7 @@ export const searchAll = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
-          status: {
-            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
-          },
+          visibility_status: visibilityStatus.public,
           is_deleted: false,
         },
         take: 10,
@@ -239,9 +237,7 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
-          status: {
-            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
-          },
+          visibility_status: visibilityStatus.public,
           is_deleted: false,
         },
         orderBy: {
@@ -403,9 +399,7 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
         skip: skip,
         take: defaultPageSize,
         where: {
-          status: {
-            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
-          },
+          visibility_status: visibilityStatus.public,
           is_deleted: false,
         },
         orderBy: [
@@ -417,9 +411,7 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
       });
       const totalRecord = await prisma.digital_items.findMany({
         where: {
-          status: {
-            in: [statusOfDigitalItem.public, statusOfDigitalItem.onSale, statusOfDigitalItem.saleSchedule],
-          },
+          visibility_status: visibilityStatus.public,
           is_deleted: false,
         },
         orderBy: [

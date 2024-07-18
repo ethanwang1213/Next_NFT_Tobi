@@ -4,7 +4,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import {getStatusOfDigitalItem, statusOfDigitalItem} from "./utils";
+import {metaDataStatus, visibilityStatus} from "./utils";
 
 interface ModelApiResponse {
   url: string;
@@ -195,7 +195,8 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           model_url: modelUrl,
           material_id: materialId,
           type: type,
-          status: 1,
+          metadata_status: metaDataStatus.draft,
+          visibility_status: visibilityStatus.private,
         },
       });
       await prisma.sample_items.create({
@@ -337,10 +338,10 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
 export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
-  const {digitalStatus}: { digitalStatus: number } = req.body;
+  const {metaDataStatus, visibilityStatus}: { metaDataStatus: number, visibilityStatus: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     try {
-      if (digitalStatus < 5) {
+      if (metaDataStatus > 2 || metaDataStatus < 1 || visibilityStatus > 3 || visibilityStatus < 1) {
         res.status(401).send({
           status: "error",
           data: "invalid-statusCode",
@@ -352,13 +353,13 @@ export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
           is_deleted: false,
         },
         data: {
-          status: digitalStatus,
-          updated_status_time: new Date(),
+          visibility_status: visibilityStatus,
+          metadata_status: metaDataStatus,
         },
       });
       res.status(200).send({
         status: "success",
-        data: digitalStatus,
+        data: "changed",
       });
     } catch (error) {
       res.status(401).send({
@@ -409,13 +410,8 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           name: digitalItem.name,
           thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           price: digitalItem.price,
-          status: getStatusOfDigitalItem(
-              digitalItem.schedules.map((schedule)=>{
-                return JSON.parse(schedule);
-              }),
-              digitalItem.status,
-              digitalItem.updated_status_time,
-          ),
+          metaDataStatus: digitalItem.metadata_status,
+          visibilityStatus: digitalItem.visibility_status,
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
           createDate: digitalItem.created_date_time,
@@ -592,13 +588,8 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         customThumbnailUrl: sample.digital_item.custom_thumb_url,
         isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
         price: sample.digital_item.price,
-        status: getStatusOfDigitalItem(
-            sample.digital_item.schedules.map((schedule)=>{
-              return JSON.parse(schedule);
-            }),
-            sample.digital_item.status,
-            sample.digital_item.updated_status_time,
-        ),
+        metaDataStatus: digitalItem.metadata_status,
+        visibilityStatus: digitalItem.visibility_status,
         quantityLimit: sample.digital_item.limit,
         license: sample.digital_item.license,
         copyrights: copyrights,
@@ -659,13 +650,8 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
           name: digitalItem.name,
           thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           price: digitalItem.price,
-          status: getStatusOfDigitalItem(
-              digitalItem.schedules.map((schedule)=>{
-                return JSON.parse(schedule);
-              }),
-              digitalItem.status,
-              digitalItem.updated_status_time,
-          ),
+          metaDataStatus: digitalItem.metadata_status,
+          visibilityStatus: digitalItem.visibility_status,
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
           mintedCount: digitalItem.minted_count,
@@ -837,13 +823,8 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         customThumbnailUrl: digitalItem.custom_thumb_url,
         isCustomThumbnailSelected: !digitalItem.is_default_thumb,
         price: digitalItem.price,
-        status: getStatusOfDigitalItem(
-            digitalItem.schedules.map((schedule)=>{
-              return JSON.parse(schedule);
-            }),
-            digitalItem.status,
-            digitalItem.updated_status_time,
-        ),
+        metaDataStatus: digitalItem.metadata_status,
+        visibilityStatus: digitalItem.visibility_status,
         schedules: digitalItem.schedules.map((schedule)=>{
           return JSON.parse(schedule);
         }),
