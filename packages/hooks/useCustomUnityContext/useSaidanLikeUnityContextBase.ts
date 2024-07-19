@@ -7,6 +7,7 @@ import {
   ItemType,
   ItemTypeParam,
   NftBaseDataForLoading,
+  ParentId,
   SampleBaseDataForLoading,
 } from "types/unityTypes";
 import { SaidanLikeData, UnityMessageJson, UnitySceneType } from "./types";
@@ -29,7 +30,7 @@ export const useSaidanLikeUnityContextBase = ({
     useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<
-    (ItemTypeParam & ItemBaseId) | null
+    (ItemTypeParam & ItemBaseId & ParentId) | null
   >(null);
 
   const {
@@ -225,6 +226,7 @@ export const useSaidanLikeUnityContextBase = ({
       const messageBody = JSON.parse(msgObj.messageBody) as {
         itemType: ItemType;
         itemId: number;
+        digitalItemId: number;
       };
 
       if (!messageBody) return;
