@@ -10,7 +10,7 @@ import SampleDetailDialog from "./SampleDetailDialog";
 
 const SampleDetailView = ({ id }: { id: number }) => {
   const dialogRef = useRef(null);
-  const apiUrl = `native/admin/samples/${id}`;
+  const apiUrl = `native/admin/digital_items/${id}`;
   const { data, loading, getData, postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();

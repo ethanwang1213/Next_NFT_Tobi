@@ -217,7 +217,7 @@ const Showcase = () => {
   useEffect(() => {
     if (selectedItem) {
       setShowSampleDetailView(true);
-      setSelectedSampleItem(selectedItem.itemId);
+      setSelectedSampleItem(selectedItem.digitalItemId);
     } else {
       setShowSampleDetailView(false);
     }
@@ -267,14 +267,16 @@ const Showcase = () => {
       // place a new item
       if (!isDrag)
         placeNewSample({
-          itemId: sample.id,
+          sampleItemId: sample.id,
+          digitalItemId: sample.digitalItemId,
           modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
           imageUrl: materialData[materialImageIndex].image,
         });
       else
         placeNewSampleWithDrag({
-          itemId: sample.id,
+          sampleItemId: sample.id,
+          digitalItemId: sample.digitalItemId,
           modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
           imageUrl: materialData[materialImageIndex].image,
@@ -288,14 +290,16 @@ const Showcase = () => {
       // place a new item
       if (!isDrag)
         placeNewNft({
-          itemId: nft.id,
+          nftId: nft.id,
+          digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
         });
       else
         placeNewNftWithDrag({
-          itemId: nft.id,
+          nftId: nft.id,
+          digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
