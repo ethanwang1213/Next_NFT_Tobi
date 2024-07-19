@@ -6,8 +6,8 @@ import {
   ItemId,
   ItemType,
   ItemTypeParam,
-  NftBaseData,
-  SampleBaseData,
+  NftBaseDataForLoading,
+  SampleBaseDataForLoading,
 } from "types/unityTypes";
 import { SaidanLikeData, UnityMessageJson, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
@@ -62,16 +62,21 @@ export const useSaidanLikeUnityContextBase = ({
 
   const placeNewSample = useCallback(
     ({
-      itemId,
+      sampleItemId,
       modelType,
       modelUrl,
       imageUrl = "",
+      digitalItemId,
       isDebug = false,
-    }: SampleBaseData) => {
-      const params = { itemId, modelType, modelUrl, imageUrl, isDebug };
+    }: SampleBaseDataForLoading) => {
       const data: ItemBaseData = {
         itemType: ItemType.Sample,
-        ...params,
+        itemId: sampleItemId,
+        modelType,
+        modelUrl,
+        imageUrl,
+        digitalItemId,
+        isDebug,
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
     },
@@ -79,12 +84,21 @@ export const useSaidanLikeUnityContextBase = ({
   );
 
   const placeNewNft = useCallback(
-    ({ itemId, modelType, modelUrl, isDebug = false }: NftBaseData) => {
-      const params = { itemId, modelType, modelUrl, isDebug };
+    ({
+      nftId,
+      modelType,
+      modelUrl,
+      digitalItemId,
+      isDebug = false,
+    }: NftBaseDataForLoading) => {
       const data: ItemBaseData = {
         itemType: ItemType.DigitalItemNft,
+        itemId: nftId,
+        modelType,
+        modelUrl,
         imageUrl: "",
-        ...params,
+        digitalItemId,
+        isDebug,
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
     },
@@ -93,16 +107,21 @@ export const useSaidanLikeUnityContextBase = ({
 
   const placeNewSampleWithDrag = useCallback(
     ({
-      itemId,
+      sampleItemId,
       modelType,
       modelUrl,
       imageUrl = "",
+      digitalItemId,
       isDebug = false,
-    }: SampleBaseData) => {
-      const params = { itemId, modelType, modelUrl, imageUrl, isDebug };
+    }: SampleBaseDataForLoading) => {
       const data: ItemBaseData = {
         itemType: ItemType.Sample,
-        ...params,
+        itemId: sampleItemId,
+        modelType,
+        modelUrl,
+        imageUrl,
+        digitalItemId,
+        isDebug,
       };
       postMessageToUnity(
         "NewItemWithDragMessageReceiver",
@@ -113,12 +132,21 @@ export const useSaidanLikeUnityContextBase = ({
   );
 
   const placeNewNftWithDrag = useCallback(
-    ({ itemId, modelType, modelUrl, isDebug = false }: NftBaseData) => {
-      const params = { itemId, modelType, modelUrl, isDebug };
+    ({
+      nftId,
+      modelType,
+      modelUrl,
+      digitalItemId,
+      isDebug = false,
+    }: NftBaseDataForLoading) => {
       const data: ItemBaseData = {
         itemType: ItemType.DigitalItemNft,
+        itemId: nftId,
+        modelType,
+        modelUrl,
         imageUrl: "",
-        ...params,
+        digitalItemId,
+        isDebug,
       };
       postMessageToUnity(
         "NewItemWithDragMessageReceiver",

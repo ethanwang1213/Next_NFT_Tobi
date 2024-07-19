@@ -81,6 +81,7 @@ export const useWorkspaceUnityContext = ({
 
     var saidanItemList = loadData.workspaceItemList.map((v) => {
       return {
+        itemId: v.sampleItemId,
         ...v,
         itemType: ItemType.Sample,
         canScale: true,

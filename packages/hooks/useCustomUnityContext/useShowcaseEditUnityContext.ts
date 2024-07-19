@@ -9,7 +9,7 @@ import {
   ItemSaveData,
   ItemType,
   SaidanItemData,
-  ShowcaseSettings,
+  ShowcaseSettigs,
 } from "types/unityTypes";
 import { DefaultItemMeterHeight } from "./constants";
 import {
@@ -86,6 +86,7 @@ export const useShowcaseEditUnityContext = ({
 
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
         return {
+          itemId: v.sampleItemId,
           ...v,
           itemType: ItemType.Sample,
           canScale: true,
@@ -94,6 +95,7 @@ export const useShowcaseEditUnityContext = ({
       });
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
         return {
+          itemId: v.nftId,
           ...v,
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
@@ -148,7 +150,7 @@ export const useShowcaseEditUnityContext = ({
   );
 
   const updateSettings = useCallback(
-    ({ wallpaper, floor, lighting }: ShowcaseSettings) => {
+    ({ wallpaper, floor, lighting }: ShowcaseSettigs) => {
       postMessageToUnity(
         "UpdateSettingsMessageReceiver",
         JSON.stringify({ wallpaper, floor, lighting }),

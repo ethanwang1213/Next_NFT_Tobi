@@ -42,6 +42,17 @@ export type ItemBaseId = {
   itemId: number;
 };
 
+export type SampleBaseIdForLoading = {
+  sampleItemId: number;
+};
+export type NftBaseIdForLoading = {
+  nftId: number;
+};
+
+export type ParentId = {
+  digitalItemId: number;
+};
+
 export type ModelParams = {
   modelType: ModelType;
   modelUrl: string;
@@ -59,9 +70,21 @@ export type ItemBaseData = ItemTypeParam &
   ItemBaseId &
   ModelParams &
   TextureParam &
+  ParentId &
   DebugFlag;
 export type SampleBaseData = Omit<ItemBaseData, "itemType">;
 export type NftBaseData = Omit<ItemBaseData, "itemType" | "imageUrl">;
+
+export type SampleBaseDataForLoading = SampleBaseIdForLoading &
+  ModelParams &
+  TextureParam &
+  ParentId &
+  DebugFlag;
+export type NftBaseDataForLoading = NftBaseIdForLoading &
+  ModelParams &
+  TextureParam &
+  ParentId &
+  DebugFlag;
 
 export type ItemId = {
   id: number;
@@ -81,8 +104,8 @@ export type SaidanItemData = ItemBaseData &
     itemMeterHeight: number;
   };
 
-export type SampleLoadData = SampleBaseData & ItemId & ItemPosture;
-export type NftLoadData = NftBaseData &
+export type SampleLoadData = SampleBaseDataForLoading & ItemId & ItemPosture;
+export type NftLoadData = NftBaseDataForLoading &
   ItemId &
   ItemPosture & {
     itemMeterHeight: number;
@@ -105,10 +128,10 @@ type LightSettings = {
   pointLight: LightParams;
 };
 
-export type ShowcaseSettings = {
+export type SaidanSettings = {
   wallpaper: WallpaperSettings;
   floor: FloorSettings;
   lighting: LightSettings;
 };
 
-export type SaidanSettings = ShowcaseSettings;
+export type ShowcaseSettigs = SaidanSettings;
