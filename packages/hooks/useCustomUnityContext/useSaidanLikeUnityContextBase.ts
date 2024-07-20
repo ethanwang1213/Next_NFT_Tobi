@@ -69,7 +69,13 @@ export const useSaidanLikeUnityContextBase = ({
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
-  }, [loadData, currentSaidanId, postMessageToUnity]);
+  }, [
+    loadData,
+    currentSaidanId,
+    sampleIdToDigitalItemIdMap,
+    nftIdToDigitalItemIdMap,
+    postMessageToUnity,
+  ]);
 
   const requestSaveData = () => {
     postMessageToUnity("SaveSaidanDataMessageReceiver", "");
@@ -97,7 +103,7 @@ export const useSaidanLikeUnityContextBase = ({
 
       sampleIdToDigitalItemIdMap.set(sampleItemId, digitalItemId);
     },
-    [postMessageToUnity],
+    [sampleIdToDigitalItemIdMap, postMessageToUnity],
   );
 
   const placeNewNft = useCallback(
@@ -121,7 +127,7 @@ export const useSaidanLikeUnityContextBase = ({
 
       nftIdToDigitalItemIdMap.set(nftId, digitalItemId);
     },
-    [postMessageToUnity],
+    [nftIdToDigitalItemIdMap, postMessageToUnity],
   );
 
   const placeNewSampleWithDrag = useCallback(
@@ -149,7 +155,7 @@ export const useSaidanLikeUnityContextBase = ({
 
       sampleIdToDigitalItemIdMap.set(sampleItemId, digitalItemId);
     },
-    [postMessageToUnity],
+    [sampleIdToDigitalItemIdMap, postMessageToUnity],
   );
 
   const placeNewNftWithDrag = useCallback(
@@ -176,7 +182,7 @@ export const useSaidanLikeUnityContextBase = ({
 
       nftIdToDigitalItemIdMap.set(nftId, digitalItemId);
     },
-    [postMessageToUnity],
+    [nftIdToDigitalItemIdMap, postMessageToUnity],
   );
 
   const removeItem = useCallback(
@@ -270,7 +276,7 @@ export const useSaidanLikeUnityContextBase = ({
             },
       );
     },
-    [setSelectedItem],
+    [sampleIdToDigitalItemIdMap, nftIdToDigitalItemIdMap, setSelectedItem],
   );
 
   return {

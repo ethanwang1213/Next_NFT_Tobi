@@ -134,4 +134,4 @@ export type SaidanSettings = {
   lighting: LightSettings;
 };
 
-export type ShowcaseSettigs = SaidanSettings;
+export type ShowcaseSettings = SaidanSettings;

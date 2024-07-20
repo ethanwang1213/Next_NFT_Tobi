@@ -9,7 +9,7 @@ import {
   ItemSaveData,
   ItemType,
   SaidanItemData,
-  ShowcaseSettigs,
+  ShowcaseSettings,
 } from "types/unityTypes";
 import { DefaultItemMeterHeight } from "./constants";
 import {
@@ -150,7 +150,7 @@ export const useShowcaseEditUnityContext = ({
   );
 
   const updateSettings = useCallback(
-    ({ wallpaper, floor, lighting }: ShowcaseSettigs) => {
+    ({ wallpaper, floor, lighting }: ShowcaseSettings) => {
       postMessageToUnity(
         "UpdateSettingsMessageReceiver",
         JSON.stringify({ wallpaper, floor, lighting }),
