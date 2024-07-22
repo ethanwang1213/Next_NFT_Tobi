@@ -157,7 +157,7 @@ export default function Index() {
   const {
     unityProvider,
     isLoaded,
-    selectedSampleId,
+    selectedSample,
     setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
@@ -181,8 +181,10 @@ export default function Index() {
   }, [workspaceData, setWorkspaceData]);
 
   useEffect(() => {
-    setSelectedSampleItem(selectedSampleId);
-  }, [selectedSampleId]);
+    if (selectedSample) {
+      setSelectedSampleItem(selectedSample.digitalItemId);
+    }
+  }, [selectedSample]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
@@ -225,7 +227,8 @@ export default function Index() {
         (value) => value.id === sample.materialId,
       );
       placeNewSample({
-        itemId: sample.id,
+        sampleItemId: sample.id,
+        digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
         imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
         modelType: sample.type as ModelType,
@@ -236,7 +239,7 @@ export default function Index() {
 
   const sampleSelectHandler = useCallback(
     (index: number) => {
-      setSelectedSampleItem(samples[index].id);
+      setSelectedSampleItem(samples[index].digitalItemId);
       placeSampleHandler(samples[index]);
     },
     [samples, placeSampleHandler],
@@ -249,7 +252,8 @@ export default function Index() {
         (value) => value.id === samples[index].materialId,
       );
       placeNewSampleWithDrag({
-        itemId: samples[index].id,
+        sampleItemId: samples[index].id,
+        digitalItemId: samples[index].digitalItemId,
         modelUrl: samples[index].modelUrl,
         imageUrl: materials[materialIndex].image,
         modelType: samples[index].type as ModelType,

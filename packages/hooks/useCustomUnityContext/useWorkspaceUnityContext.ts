@@ -81,6 +81,7 @@ export const useWorkspaceUnityContext = ({
 
     var saidanItemList = loadData.workspaceItemList.map((v) => {
       return {
+        itemId: v.sampleItemId,
         ...v,
         itemType: ItemType.Sample,
         canScale: true,
@@ -264,8 +265,12 @@ export const useWorkspaceUnityContext = ({
     unityProvider,
     isLoaded,
     isDragging,
-    selectedSampleId:
-      !!selectedItem && selectedItem.itemId >= 0 ? selectedItem.itemId : -1,
+    selectedSample: !selectedItem
+      ? null
+      : {
+          sampleItemId: selectedItem.itemId,
+          digitalItemId: selectedItem.digitalItemId,
+        },
     setLoadData,
     requestSaveData,
     placeNewSample,
