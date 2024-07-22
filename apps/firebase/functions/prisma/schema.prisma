@@ -8,32 +8,31 @@ datasource db {
 }
 
 model accounts {
-    id                     Int                      @id @default(autoincrement())
-    uuid                   String                   @unique @db.VarChar(100)
-    email                  String                   @unique @db.VarChar(255)
-    username               String                   @db.VarChar(255)
-    user_id                String?                  @db.VarChar(255)
-    sns                    String?                  @db.VarChar(255)
-    icon_url               String?                  @db.VarChar(255)
-    about_me               String?                  @db.VarChar(255)
-    social_links           String[]                 @default([]) @db.VarChar(255)
-    gender                 String?                  @db.VarChar(255)
-    birth                  String?                  @db.VarChar(255)
-    gift_permission        Boolean                  @default(false)
-    digital_items          digital_items[]
-    flow_account           flow_accounts?
-    favorite_saidans       saidans_favorite[]
-    boxes                  boxes[]
-    material_images        material_images[]
-    saidans                saidans[]
-    owned_nfts             nft_owner_history[]
-    business               businesses?
-    favorite_contents      contents_favorite[]
-    workspace_sample_items workspace_sample_items[]
-    showcases              showcases[]
-    is_deleted             Boolean                  @default(false)
-    updated_date_time      DateTime                 @default(now()) @db.Timestamp(6)
-    created_date_time      DateTime                 @default(now()) @db.Timestamp(6)
+    id                Int                 @id @default(autoincrement())
+    uuid              String              @unique @db.VarChar(100)
+    email             String              @unique @db.VarChar(255)
+    username          String              @db.VarChar(255)
+    user_id           String?             @db.VarChar(255)
+    sns               String?             @db.VarChar(255)
+    icon_url          String?             @db.VarChar(255)
+    about_me          String?             @db.VarChar(255)
+    social_links      String[]            @default([]) @db.VarChar(255)
+    gender            String?             @db.VarChar(255)
+    birth             String?             @db.VarChar(255)
+    gift_permission   Boolean             @default(false)
+    digital_items     digital_items[]
+    flow_account      flow_accounts?
+    favorite_saidans  saidans_favorite[]
+    boxes             boxes[]
+    material_images   material_images[]
+    saidans           saidans[]
+    business          businesses?
+    favorite_contents contents_favorite[]
+    showcases         showcases[]
+    nfts              nft_owners[]
+    is_deleted        Boolean             @default(false)
+    updated_date_time DateTime            @default(now()) @db.Timestamp(6)
+    created_date_time DateTime            @default(now()) @db.Timestamp(6)
 }
 
 model flow_accounts {
@@ -173,10 +172,19 @@ model sample_items {
     created_date_time      DateTime                 @default(now()) @db.Timestamp(6)
 }
 
+model workspaces {
+    id                Int                      @id @default(autoincrement())
+    account_uuid      String                   @db.VarChar(255)
+    sample_items      workspace_sample_items[]
+    updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
+    created_date_time DateTime                 @default(now()) @db.Timestamp(6)
+}
+
 model workspace_sample_items {
     id                Int          @id @default(autoincrement())
-    account_uuid      String
-    account           accounts     @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String       @db.VarChar(255)
+    workspace         workspaces   @relation(fields: [workspaces_id], references: [id])
+    workspaces_id     Int
     sample_id         Int
     sample_item       sample_items @relation(fields: [sample_id], references: [id])
     position          Float[]
@@ -193,7 +201,6 @@ model digital_item_nfts {
     digital_item       digital_items        @relation(fields: [digital_item_id], references: [id])
     digital_item_id    Int
     metadata           String?              @db.Text
-    saidan_id          Int?
     mint_status        Int                  @default(0)
     gift_status        String?              @db.VarChar(255)
     tx_id              String?              @db.VarChar(255)
@@ -218,27 +225,31 @@ model nft_cameras {
 }
 
 model nft_owners {
-    id                Int               @id @default(autoincrement())
-    flow_address      String            @db.VarChar(255)
-    nick_name         String?           @db.VarChar(255)
-    status            String            @db.VarChar(255)
-    nft               digital_item_nfts @relation(fields: [nft_id], references: [id])
-    nft_id            Int               @unique
-    box_id            Int?
-    updated_date_time DateTime          @default(now()) @db.Timestamp(6)
-    created_date_time DateTime          @default(now()) @db.Timestamp(6)
+    id                 Int               @id @default(autoincrement())
+    account_uuid       String?           @db.VarChar(255)
+    account            accounts?         @relation(fields: [account_uuid], references: [uuid])
+    owner_flow_address String
+    nick_name          String?           @db.VarChar(255)
+    status             String            @db.VarChar(255)
+    nft                digital_item_nfts @relation(fields: [nft_id], references: [id])
+    saidan_id          Int?
+    nft_id             Int               @unique
+    box_id             Int?
+    updated_date_time  DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time  DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model nft_owner_history {
-    id                 Int               @id @default(autoincrement())
-    account            accounts          @relation(fields: [account_uuid], references: [uuid])
-    account_uuid       String            @db.VarChar(100)
-    owner_flow_address String            @db.VarChar(255)
-    nfts               digital_item_nfts @relation(fields: [nft_id], references: [id])
-    nft_id             Int
-    tx_id              String            @db.VarChar(255)
-    updated_date_time  DateTime          @default(now()) @db.Timestamp(6)
-    created_date_time  DateTime          @default(now()) @db.Timestamp(6)
+    id                    Int               @id @default(autoincrement())
+    sender_uuid           String?           @db.VarChar(100)
+    sender_flow_address   String            @db.VarChar(255)
+    receiver_uuid         String?           @db.VarChar(100)
+    receiver_flow_address String            @db.VarChar(255)
+    nft                   digital_item_nfts @relation(fields: [nft_id], references: [id])
+    nft_id                Int
+    tx_id                 String            @db.VarChar(255)
+    updated_date_time     DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time     DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model boxes {

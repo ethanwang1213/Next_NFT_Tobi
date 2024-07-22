@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import {getBoxAddress} from "./utils";
+import {getBoxAddress, mintStatus} from "./utils";
 
 export const updateBoxInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -165,12 +165,16 @@ export const getInventoryData = async (req: Request, res: Response) => {
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.digital_item_nfts.findMany({
+        const itemsInBox = await prisma.nft_owners.findMany({
           where: {
             box_id: box.id,
           },
           include: {
-            digital_item: true,
+            nft: {
+              include: {
+                digital_item: true,
+              },
+            },
           },
           orderBy: {
             updated_date_time: "desc",
@@ -180,8 +184,8 @@ export const getInventoryData = async (req: Request, res: Response) => {
             .map((item)=>{
               return {
                 id: item.id,
-                name: item.digital_item.name,
-                image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
+                name: item.nft.digital_item.name,
+                image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
               };
             });
         return {
@@ -190,15 +194,19 @@ export const getInventoryData = async (req: Request, res: Response) => {
           items: items4,
         };
       }));
-      const items = await prisma.digital_item_nfts.findMany({
+      const items = await prisma.nft_owners.findMany({
         where: {
           account_uuid: uid,
           box_id: 0,
         },
         include: {
-          digital_item: {
+          nft: {
             include: {
-              material_images: true,
+              digital_item: {
+                include: {
+                  material_images: true,
+                }
+              },
             },
           },
         },
@@ -209,13 +217,13 @@ export const getInventoryData = async (req: Request, res: Response) => {
       const returnItems = items.map((item)=>{
         return {
           id: item.id,
-          name: item.digital_item.name,
-          image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
-          modelType: item.digital_item.type,
-          modelUrl: item.digital_item.model_url,
-          materialImage: item.digital_item.material_images.image,
+          name: item.nft.digital_item.name,
+          image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
+          modelType: item.nft.digital_item.type,
+          modelUrl: item.nft.digital_item.model_url,
+          materialImage: item.nft.digital_item.material_images.image,
           saidanId: item.saidan_id,
-          status: item?.mint_status,
+          status: item?.nft.mint_status,
         };
       });
       res.status(200).send({
@@ -265,28 +273,32 @@ export const getBoxData = async (req: Request, res: Response) => {
       });
       return;
     }
-    const items = await prisma.digital_item_nfts.findMany({
+    const items = await prisma.nft_owners.findMany({
       where: {
         box_id: parseInt(id),
       },
       include: {
-        digital_item: {
+        nft: {
           include: {
-            material_images: true,
-          },
-        },
+            digital_item: {
+              include: {
+                material_images: true,
+              },
+            },
+          }
+        }
       },
     });
     const returnItem = items.map((item)=>{
       return {
         id: item.id,
-        name: item.digital_item.name,
-        image: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
-        modelType: item.digital_item.type,
-        modelUrl: item.digital_item.model_url,
-        materialImage: item.digital_item.material_images.image,
+        name: item.nft.digital_item.name,
+        image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
+        modelType: item.nft.digital_item.type,
+        modelUrl: item.nft.digital_item.model_url,
+        materialImage: item.nft.digital_item.material_images.image,
         saidanId: item.saidan_id,
-        status: item?.mint_status,
+        status: item?.nft.mint_status,
       };
     });
     res.status(200).send({
@@ -358,6 +370,9 @@ export const openNFT = async (req: Request, res: Response) => {
       where: {
         id: id,
       },
+      include: {
+        nft_owner: true,
+      }
     });
     if (!nftData) {
       res.status(404).send({
@@ -366,21 +381,21 @@ export const openNFT = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (nftData.account_uuid != uid) {
+    if (nftData.nft_owner?.account_uuid != uid) {
       res.status(404).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    if (nftData.mint_status == "minting") {
+    if (nftData.mint_status == mintStatus.minting) {
       res.status(401).send({
         status: "error",
         data: "minting",
       });
       return;
     }
-    if (nftData.mint_status == "opened") {
+    if (nftData.mint_status == mintStatus.opened) {
       res.status(401).send({
         status: "error",
         data: "already-opened",
@@ -393,10 +408,11 @@ export const openNFT = async (req: Request, res: Response) => {
           id: id,
         },
         data: {
-          mint_status: "opened",
+          mint_status: mintStatus.opened,
         },
         include: {
           digital_item: true,
+          nft_owner: true,
         },
       });
       res.status(200).send({
@@ -405,7 +421,7 @@ export const openNFT = async (req: Request, res: Response) => {
           id: updatedNFT.id,
           name: updatedNFT.digital_item.name,
           image: updatedNFT.digital_item?.is_default_thumb?updatedNFT.digital_item.default_thumb_url:updatedNFT.digital_item?.custom_thumb_url,
-          saidanId: updatedNFT.saidan_id,
+          saidanId: updatedNFT.nft_owner?.saidan_id,
           status: updatedNFT.mint_status,
         },
       });
@@ -520,6 +536,9 @@ export const moveNFT = async (req: Request, res: Response) => {
           where: {
             id: nftId,
           },
+          include: {
+            nft_owner: true,
+          }
         });
         if (!nftData) {
           res.status(401).send({
@@ -528,7 +547,7 @@ export const moveNFT = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (nftData.account_uuid != uid) {
+        if (nftData.nft_owner?.account_uuid != uid) {
           res.status(401).send({
             status: "error",
             data: "exist-not-yours",
@@ -536,9 +555,9 @@ export const moveNFT = async (req: Request, res: Response) => {
           return;
         }
       }
-      await prisma.digital_item_nfts.updateMany({
+      await prisma.nft_owners.updateMany({
         where: {
-          id: {
+          nft_id: {
             in: nfts,
           },
         },
@@ -556,12 +575,16 @@ export const moveNFT = async (req: Request, res: Response) => {
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.digital_item_nfts.findMany({
+        const itemsInBox = await prisma.nft_owners.findMany({
           where: {
             box_id: box.id,
           },
           include: {
-            digital_item: true,
+            nft: {
+              include: {
+                digital_item: true,
+              }
+            }
           },
           orderBy: {
             updated_date_time: "desc",
@@ -571,8 +594,8 @@ export const moveNFT = async (req: Request, res: Response) => {
             .map((item)=>{
               return {
                 id: item.id,
-                name: item.digital_item?.name,
-                image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+                name: item.nft.digital_item?.name,
+                image: item.nft.digital_item?.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item?.custom_thumb_url,
               };
             });
         return {
@@ -581,13 +604,17 @@ export const moveNFT = async (req: Request, res: Response) => {
           items: items4,
         };
       }));
-      const items = await prisma.digital_item_nfts.findMany({
+      const items = await prisma.nft_owners.findMany({
         where: {
           account_uuid: uid,
           box_id: 0,
         },
         include: {
-          digital_item: true,
+          nft: {
+            include: {
+              digital_item: true,
+            }
+          }
         },
         orderBy: {
           updated_date_time: "desc",
@@ -596,10 +623,10 @@ export const moveNFT = async (req: Request, res: Response) => {
       const returnItems = items.map((item)=>{
         return {
           id: item.id,
-          name: item.digital_item?.name,
-          image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+          name: item.nft.digital_item?.name,
+          image: item.nft.digital_item?.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item?.custom_thumb_url,
           saidanId: item.saidan_id,
-          status: item.mint_status,
+          status: item.nft.mint_status,
         };
       });
       res.status(200).send({
@@ -634,6 +661,9 @@ export const deleteNFT = async (req: Request, res: Response) => {
           where: {
             id: nftId,
           },
+          include: {
+            nft_owner: true,
+          }
         });
         if (!nftData) {
           res.status(401).send({
@@ -642,7 +672,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
           });
           return;
         }
-        if (nftData.account_uuid != uid) {
+        if (nftData.nft_owner?.account_uuid != uid) {
           res.status(401).send({
             status: "error",
             data: "exist-not-yours",
@@ -669,12 +699,16 @@ export const deleteNFT = async (req: Request, res: Response) => {
         },
       });
       const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.digital_item_nfts.findMany({
+        const itemsInBox = await prisma.nft_owners.findMany({
           where: {
             box_id: box.id,
           },
           include: {
-            digital_item: true,
+            nft: {
+              include: {
+                digital_item: true,
+              }
+            }
           },
           orderBy: {
             updated_date_time: "desc",
@@ -684,8 +718,8 @@ export const deleteNFT = async (req: Request, res: Response) => {
             .map((item)=>{
               return {
                 id: item.id,
-                name: item.digital_item?.name,
-                image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+                name: item.nft.digital_item?.name,
+                image: item.nft.digital_item?.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item?.custom_thumb_url,
               };
             });
         return {
@@ -694,13 +728,17 @@ export const deleteNFT = async (req: Request, res: Response) => {
           items: items4,
         };
       }));
-      const items = await prisma.digital_item_nfts.findMany({
+      const items = await prisma.nft_owners.findMany({
         where: {
           account_uuid: uid,
           box_id: 0,
         },
         include: {
-          digital_item: true,
+          nft: {
+            include: {
+              digital_item: true,
+            }
+          }
         },
         orderBy: {
           updated_date_time: "desc",
@@ -709,10 +747,10 @@ export const deleteNFT = async (req: Request, res: Response) => {
       const returnItems = items.map((item)=>{
         return {
           id: item.id,
-          name: item.digital_item?.name,
-          image: item.digital_item?.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item?.custom_thumb_url,
+          name: item.nft.digital_item?.name,
+          image: item.nft.digital_item?.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item?.custom_thumb_url,
           saidanId: item.saidan_id,
-          status: item.mint_status,
+          status: item.nft.mint_status,
         };
       });
       res.status(200).send({
