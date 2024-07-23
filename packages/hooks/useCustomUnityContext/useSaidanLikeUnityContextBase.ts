@@ -6,9 +6,9 @@ import {
   ItemId,
   ItemType,
   ItemTypeParam,
-  NftBaseDataForLoading,
+  NftBaseDataForPlacing,
   ParentId,
-  SampleBaseDataForLoading,
+  SampleBaseDataForPlacing,
 } from "types/unityTypes";
 import { SaidanLikeData, UnityMessageJson, UnitySceneType } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
@@ -89,7 +89,7 @@ export const useSaidanLikeUnityContextBase = ({
       imageUrl = "",
       digitalItemId,
       isDebug = false,
-    }: SampleBaseDataForLoading) => {
+    }: SampleBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.Sample,
         itemId: sampleItemId,
@@ -113,7 +113,7 @@ export const useSaidanLikeUnityContextBase = ({
       modelUrl,
       digitalItemId,
       isDebug = false,
-    }: NftBaseDataForLoading) => {
+    }: NftBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.DigitalItemNft,
         itemId: nftId,
@@ -138,7 +138,7 @@ export const useSaidanLikeUnityContextBase = ({
       imageUrl = "",
       digitalItemId,
       isDebug = false,
-    }: SampleBaseDataForLoading) => {
+    }: SampleBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.Sample,
         itemId: sampleItemId,
@@ -165,7 +165,7 @@ export const useSaidanLikeUnityContextBase = ({
       modelUrl,
       digitalItemId,
       isDebug = false,
-    }: NftBaseDataForLoading) => {
+    }: NftBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.DigitalItemNft,
         itemId: nftId,

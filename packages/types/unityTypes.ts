@@ -85,11 +85,13 @@ export type WorkspaceSampleBaseDataForLoading = SampleBaseIdForLoading &
   WorkspaceTextureParamForLoading &
   ParentId &
   DebugFlag;
-export type ShowcaseSampleBaseDataForLoading = SampleBaseIdForLoading &
+type SampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
   DebugFlag;
+export type ShowcaseSampleBaseDataForLoading = SampleBaseDataForLoading;
+export type SampleBaseDataForPlacing = SampleBaseDataForLoading;
 
 // nft base data for loading
 export type NftBaseDataForLoading = NftBaseIdForLoading &
@@ -97,6 +99,7 @@ export type NftBaseDataForLoading = NftBaseIdForLoading &
   TextureParam &
   ParentId &
   DebugFlag;
+export type NftBaseDataForPlacing = NftBaseDataForLoading;
 
 // item data for arrangement
 export type ItemId = {
