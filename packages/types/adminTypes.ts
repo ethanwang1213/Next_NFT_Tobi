@@ -2,9 +2,10 @@ import {
   ItemSaveData,
   ItemType,
   NftLoadData,
-  SampleLoadData,
+  ShowcaseSampleLoadData,
   ShowcaseSettings,
   ShowcaseType,
+  WorkspaceSampleLoadData,
 } from "./unityTypes";
 
 export type User = {
@@ -88,7 +89,7 @@ export type TcpFormType = {
 };
 
 export type WorkspaceLoadData = {
-  workspaceItemList: SampleLoadData[];
+  workspaceItemList: WorkspaceSampleLoadData[];
   isDebug?: boolean;
 };
 
@@ -100,7 +101,7 @@ export type ShowcaseLoadData = {
   showcaseId: number;
   showcaseType: ShowcaseType;
   showcaseUrl: string;
-  sampleItemList: SampleLoadData[];
+  sampleItemList: ShowcaseSampleLoadData[];
   nftItemList: NftLoadData[];
   settings: ShowcaseSettings;
   isDebug?: boolean;
