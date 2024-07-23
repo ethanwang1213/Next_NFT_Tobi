@@ -62,6 +62,10 @@ export type TextureParam = {
   imageUrl?: string;
 };
 
+export type WorkspaceTextureParamForLoading = {
+  materialUrl?: string;
+};
+
 export type DebugFlag = {
   isDebug?: boolean;
 };
@@ -75,17 +79,29 @@ export type ItemBaseData = ItemTypeParam &
 export type SampleBaseData = Omit<ItemBaseData, "itemType">;
 export type NftBaseData = Omit<ItemBaseData, "itemType" | "imageUrl">;
 
-export type SampleBaseDataForLoading = SampleBaseIdForLoading &
+// sample base data for loading
+export type WorkspaceSampleBaseDataForLoading = SampleBaseIdForLoading &
+  ModelParams &
+  WorkspaceTextureParamForLoading &
+  ParentId &
+  DebugFlag;
+type SampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
   DebugFlag;
+export type ShowcaseSampleBaseDataForLoading = SampleBaseDataForLoading;
+export type SampleBaseDataForPlacing = SampleBaseDataForLoading;
+
+// nft base data for loading
 export type NftBaseDataForLoading = NftBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
   DebugFlag;
+export type NftBaseDataForPlacing = NftBaseDataForLoading;
 
+// item data for arrangement
 export type ItemId = {
   id: number;
 };
@@ -104,7 +120,15 @@ export type SaidanItemData = ItemBaseData &
     itemMeterHeight: number;
   };
 
-export type SampleLoadData = SampleBaseDataForLoading & ItemId & ItemPosture;
+// sample load data
+export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
+  ItemId &
+  ItemPosture;
+export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
+  ItemId &
+  ItemPosture;
+
+// nft load data
 export type NftLoadData = NftBaseDataForLoading &
   ItemId &
   ItemPosture & {
