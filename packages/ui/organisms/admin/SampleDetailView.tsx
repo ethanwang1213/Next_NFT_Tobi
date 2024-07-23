@@ -75,7 +75,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
             className="rounded-lg"
           />
           <div
-            className="w-full flex-1 overflow-y-auto flex flex-col gap-6"
+            className="w-full shrink overflow-y-auto flex flex-col gap-6"
             style={{ scrollbarWidth: "none" }}
           >
             <span className="text-[10px] font-normal text-center">
@@ -163,7 +163,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
           )}
           {id > 0 && (
             <Button
-              className="w-[192px] h-[46px] rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
+              className="w-[192px] h-[46px] shrink-0 rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
               onClick={() => {
                 if (mintConfirmDialogRef.current) {
                   mintConfirmDialogRef.current.showModal();
