@@ -118,47 +118,46 @@ model contents {
 }
 
 model digital_items {
-    id                  Int                       @id @default(autoincrement())
-    account             accounts                  @relation(fields: [account_uuid], references: [uuid])
-    account_uuid        String                    @db.VarChar(100)
-    name                String?                   @db.VarChar(255)
-    model_url           String                    @db.Text
-    default_thumb_url   String                    @db.Text
-    custom_thumb_url    String                    @db.Text
-    is_default_thumb    Boolean                   @default(true)
-    material_images     material_images           @relation(fields: [material_id], references: [id])
-    material_id         Int
-    type                Int
-    description         String?                   @db.Text
-    limit               Int?
-    license             String?                   @db.VarChar(255)
-    copyrights          digital_items_copyright[]
-    sample_item         sample_items?
-    nfts                digital_item_nfts[]
-    sales               sales[]
-    flow_item_id        Int?
-    tx_id               String?                   @db.VarChar(255)
-    metadata_status     Int
-    visibility_status   Int
-    updated_status_time DateTime                  @default(now()) @db.Timestamp(6)
-    minted_count        Int                       @default(0)
-    schedules           String[]
-    is_deleted          Boolean                   @default(false)
-    updated_date_time   DateTime                  @default(now()) @db.Timestamp(6)
-    created_date_time   DateTime                  @default(now()) @db.Timestamp(6)
+    id                Int                       @id @default(autoincrement())
+    account           accounts                  @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String                    @db.VarChar(100)
+    name              String?                   @db.VarChar(255)
+    model_url         String                    @db.Text
+    default_thumb_url String                    @db.Text
+    custom_thumb_url  String                    @db.Text
+    is_default_thumb  Boolean                   @default(true)
+    material_image    material_images           @relation(fields: [material_id], references: [id])
+    material_id       Int
+    type              Int
+    description       String?                   @db.Text
+    limit             Int?
+    license           String?                   @db.VarChar(255)
+    copyrights        digital_items_copyright[]
+    sample_item       sample_items?
+    nfts              digital_item_nfts[]
+    sales             sales[]
+    tx_id             String?                   @db.VarChar(255)
+    is_finalized      Boolean                   @default(false)
+    is_public         Boolean                   @default(false)
+    minted_count      Int                       @default(0)
+    sale_quantity     Int?
+    is_deleted        Boolean                   @default(false)
+    updated_date_time DateTime                  @default(now()) @db.Timestamp(6)
+    created_date_time DateTime                  @default(now()) @db.Timestamp(6)
 }
 
 model sales {
-    id                Int           @id @default(autoincrement())
-    digital_item_id   Int
-    digital_item      digital_items @relation(fields: [digital_item_id], references: [id])
-    price             Int?
-    start_time        DateTime
-    end_time          DateTime
-    priority          Int
-    sale_quantity     Int?
-    updated_date_time DateTime      @default(now()) @db.Timestamp(6)
-    created_date_time DateTime      @default(now()) @db.Timestamp(6)
+    id                 Int           @id @default(autoincrement())
+    digital_item_id    Int
+    digital_item       digital_items @relation(fields: [digital_item_id], references: [id])
+    price              Int?
+    visible_start_time DateTime?
+    visible_end_time   DateTime?
+    sales_start_time   DateTime?
+    sales_end_time     DateTime?
+    sale_quantity      Int?
+    updated_date_time  DateTime      @default(now()) @db.Timestamp(6)
+    created_date_time  DateTime      @default(now()) @db.Timestamp(6)
 }
 
 model sample_items {
@@ -174,7 +173,7 @@ model sample_items {
 
 model workspaces {
     id                Int                      @id @default(autoincrement())
-    account_uuid      String                   @db.VarChar(255)
+    account_uuid      String                   @unique @db.VarChar(255)
     sample_items      workspace_sample_items[]
     updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
     created_date_time DateTime                 @default(now()) @db.Timestamp(6)
@@ -204,6 +203,7 @@ model digital_item_nfts {
     mint_status        Int                  @default(0)
     gift_status        String?              @db.VarChar(255)
     tx_id              String?              @db.VarChar(255)
+    flow_item_id       Int?
     showcase_nft_items showcase_nft_items[]
     owner_history      nft_owner_history[]
     nft_camera         nft_cameras?

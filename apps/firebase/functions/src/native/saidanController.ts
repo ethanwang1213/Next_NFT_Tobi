@@ -38,17 +38,21 @@ export const getSaidansById = async (req: Request, res: Response) => {
         return;
       }
 
-      const digitalNFT = await prisma.digital_item_nfts.findMany({
+      const digitalNFT = await prisma.nft_owners.findMany({
         where: {
           saidan_id: saidanData.id,
         },
         include: {
-          digital_item: true,
+          nft: {
+            include: {
+              digital_item: true,
+            }
+          }
         },
       });
 
       const items = digitalNFT.map((nft)=> {
-        return nft.digital_item.is_default_thumb?nft.digital_item.default_thumb_url:nft.digital_item.custom_thumb_url;
+        return nft.nft.digital_item.is_default_thumb?nft.nft.digital_item.default_thumb_url:nft.nft.digital_item.custom_thumb_url;
       });
 
       const resData = {
@@ -524,17 +528,22 @@ export const decorationSaidan = async (req: Request, res: Response) => {
       });
       const items = await Promise.all(
           itemList.map(async (item)=>{
-            const updateItem = await prisma.digital_item_nfts.update({
+            const updateItem = await prisma.digital_item_nfts.findUnique({
               where: {
                 id: item.itemId,
-              },
-              data: {
-                saidan_id: parseInt(saidanId),
               },
               include: {
                 digital_item: true,
               },
             });
+            await prisma.nft_owners.update({
+              where: {
+                nft_id: item.itemId,
+              },
+              data: {
+                saidan_id: parseInt(saidanId),
+              }
+            })
             const updateCamera = await prisma.nft_cameras.update({
               where: {
                 nft_id: item.itemId,
@@ -555,7 +564,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                 scale: item.scale,
               },
             });
-            return {...updateItem, ...updateItem.digital_item, ...updateCamera};
+            return {...updateItem, ...updateItem?.digital_item, ...updateCamera};
           })
       );
       const saidanItemList = items.map((saidanItem)=>{
@@ -659,34 +668,38 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
           saidan_id: saidanData.id,
         },
       });
-      const saidanItems = await prisma.digital_item_nfts.findMany({
+      const saidanItems = await prisma.nft_owners.findMany({
         where: {
           saidan_id: saidanData.id,
         },
         include: {
-          nft_camera: true,
-          digital_item: true,
+          nft: {
+            include: {
+              nft_camera: true,
+              digital_item: true,
+            }
+          }
         },
       });
       const saidanItemList = saidanItems.map((item)=>{
         return {
           itemId: item.id,
-          modelType: item.digital_item.type,
-          modelUrl: item.digital_item.model_url,
-          imageUrl: item.digital_item.is_default_thumb?item.digital_item.default_thumb_url:item.digital_item.custom_thumb_url,
-          stageType: item.nft_camera?.stage_type,
+          modelType: item.nft.digital_item.type,
+          modelUrl: item.nft.digital_item.model_url,
+          imageUrl: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
+          stageType: item.nft.nft_camera?.stage_type,
           position: {
-            x: item.nft_camera?.position[0],
-            y: item.nft_camera?.position[1],
-            z: item.nft_camera?.position[2],
+            x: item.nft.nft_camera?.position[0],
+            y: item.nft.nft_camera?.position[1],
+            z: item.nft.nft_camera?.position[2],
           },
           rotation: {
-            x: item.nft_camera?.rotation[0],
-            y: item.nft_camera?.rotation[1],
-            z: item.nft_camera?.rotation[2],
+            x: item.nft.nft_camera?.rotation[0],
+            y: item.nft.nft_camera?.rotation[1],
+            z: item.nft.nft_camera?.rotation[2],
           },
-          itemMeterHeight: item.nft_camera?.meter_height,
-          scale: item.nft_camera?.scale,
+          itemMeterHeight: item.nft.nft_camera?.meter_height,
+          scale: item.nft.nft_camera?.scale,
         };
       });
       const returnData = {
@@ -753,9 +766,9 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.digital_item_nfts.update({
+      await prisma.nft_owners.update({
         where: {
-          id: itemId,
+          nft_id: itemId,
         },
         data: {
           saidan_id: 0,

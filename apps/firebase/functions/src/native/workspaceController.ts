@@ -26,6 +26,17 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     try {
       const idPair: {previous: number, next: number}[] = [];
+      const workspace = await prisma.workspaces.upsert({
+        where: {
+          account_uuid: uid,
+        },
+        create: {
+          account_uuid: uid,
+        },
+        update: {
+
+        }
+      })
       await Promise.all(
           itemList.map(async (item)=>{
             const workspaceSample = await prisma.workspace_sample_items.upsert({
@@ -49,6 +60,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
               create: {
                 id: item.id>0?item.id:undefined,
                 account_uuid: uid,
+                workspaces_id: workspace.id,
                 sample_id: item.itemId,
                 stage_type: item.stageType,
                 scale: item.scale,
@@ -105,7 +117,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
             include: {
               digital_item: {
                 include: {
-                  material_images: true,
+                  material_image: true,
                 },
               },
             },
@@ -118,7 +130,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
           itemId: workspaceSample.sample_item.id,
           modelType: workspaceSample.sample_item.digital_item.type,
           modelUrl: workspaceSample.sample_item.digital_item.model_url,
-          imageUrl: workspaceSample.sample_item.digital_item.material_images.image,
+          imageUrl: workspaceSample.sample_item.digital_item.material_image.image,
           thumbImage: workspaceSample.sample_item.digital_item.is_default_thumb?workspaceSample.sample_item.digital_item.default_thumb_url:workspaceSample.sample_item.digital_item.custom_thumb_url,
           stageType: workspaceSample.stage_type,
           position: {

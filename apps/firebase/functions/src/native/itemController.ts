@@ -195,9 +195,10 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           model_url: modelUrl,
           material_id: materialId,
           type: type,
-          metadata_status: metaDataStatus.draft,
-          visibility_status: visibilityStatus.private,
         },
+        include: {
+          material_image: true,
+        }
       });
       await prisma.sample_items.create({
         data: {
@@ -209,6 +210,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
         data: {
           id: digitalItem.id,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          materialUrl: digitalItem.material_image.image,
           modelUrl: digitalItem.model_url,
           materialId: digitalItem.material_id,
           type: digitalItem.type,
@@ -240,6 +242,9 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
           account_uuid: uid,
           is_deleted: false,
         },
+        include: {
+          material_image: true,
+        }
       });
       const returnData = digitalItems.map((digitalItem) => {
         return {
@@ -247,6 +252,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
           name: digitalItem.name,
           description: digitalItem.description,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          materialUrl: digitalItem.material_image.image,
           modelUrl: digitalItem.model_url,
           materialId: digitalItem.material_id,
           type: digitalItem.type,
@@ -403,6 +409,51 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           account_uuid: uid,
           is_deleted: false,
         },
+        include: {
+          sales: {
+            where: {
+              OR: [
+                {
+                  AND: [
+                    {
+                      sales_start_time: {
+                        lt: new Date()
+                      },
+                    },
+                    {
+                      sales_end_time: {
+                        gt: new Date()
+                      }
+                    },
+                  ]
+                },
+                {
+                  AND: [
+                    {
+                      visible_start_time: {
+                        lt: new Date()
+                      },
+                    },
+                    {
+                      visible_end_time: {
+                        gt: new Date()
+                      }
+                    }
+                  ]
+                },
+                {
+                  sales_end_time: null,
+                },
+                {
+                  visible_end_time: null,
+                }
+              ]
+            },
+            orderBy: {
+              created_date_time: "desc",
+            }
+          },
+        }
       });
       const returnData = allDigitalItems.map((digitalItem) => {
         return {
@@ -410,8 +461,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           name: digitalItem.name,
           thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           price: digitalItem.price,
-          metaDataStatus: digitalItem.metadata_status,
-          visibilityStatus: digitalItem.visibility_status,
+          status: digitalItem.sales,
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
           createDate: digitalItem.created_date_time,

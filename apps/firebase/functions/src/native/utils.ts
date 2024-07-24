@@ -16,8 +16,8 @@ export function isEmptyObject(obj: object): boolean {
 export function getBoxAddress(userId: number, boxId: number): string {
   const userIdPad = userId.toString().padStart(4, "0");
   const boxIdPad = boxId.toString().padStart(5, "0");
-  let address = Buffer.from(userIdPad+"_"+boxIdPad, "ascii").toString("base64");
-  address = "TB"+address.replace("==", "");
+  let address = Buffer.from(userIdPad + "_" + boxIdPad, "ascii").toString("base64");
+  address = "TB" + address.replace("==", "");
   return address;
 }
 
@@ -57,38 +57,6 @@ export const mintStatus = {
   minting: 1,
   minted: 2,
   opened: 3,
-}
-
-export function getStatusOfDigitalItem(
-    schedules: {
-    status: number,
-    datetime: string,
-  }[],
-    status: number,
-    updateTime: Date,
-): number {
-  const nowTime = Date.now();
-  const updateStatusTime = +new Date(updateTime);
-  let latestSchedule:{
-    status: number,
-    datetime: string,
-    timeStamp: number,
-  } = {
-    status: 0,
-    datetime: "",
-    timeStamp: 0,
-  };
-  for (const schedule of schedules) {
-    const scheduleTime = +new Date(schedule.datetime);
-    if (scheduleTime>updateStatusTime&&scheduleTime<nowTime&&scheduleTime>latestSchedule.timeStamp) {
-      latestSchedule = {...schedule, timeStamp: scheduleTime};
-    }
-  }
-  if (latestSchedule.timeStamp==0) {
-    return status;
-  } else {
-    return latestSchedule.status;
-  }
 }
 
 // export function getStatusOfShowcase(
