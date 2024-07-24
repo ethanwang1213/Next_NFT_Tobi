@@ -136,6 +136,7 @@ model digital_items {
     sample_item       sample_items?
     nfts              digital_item_nfts[]
     sales             sales[]
+    flow_item_id      Int?
     tx_id             String?                   @db.VarChar(255)
     is_finalized      Boolean                   @default(false)
     is_public         Boolean                   @default(false)
@@ -203,7 +204,6 @@ model digital_item_nfts {
     mint_status        Int                  @default(0)
     gift_status        String?              @db.VarChar(255)
     tx_id              String?              @db.VarChar(255)
-    flow_item_id       Int?
     showcase_nft_items showcase_nft_items[]
     owner_history      nft_owner_history[]
     nft_camera         nft_cameras?
