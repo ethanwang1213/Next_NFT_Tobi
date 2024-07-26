@@ -205,7 +205,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
               digital_item: {
                 include: {
                   material_image: true,
-                }
+                },
               },
             },
           },
@@ -285,8 +285,8 @@ export const getBoxData = async (req: Request, res: Response) => {
                 material_image: true,
               },
             },
-          }
-        }
+          },
+        },
       },
     });
     const returnItem = items.map((item)=>{
@@ -372,7 +372,7 @@ export const openNFT = async (req: Request, res: Response) => {
       },
       include: {
         nft_owner: true,
-      }
+      },
     });
     if (!nftData) {
       res.status(404).send({
@@ -538,7 +538,7 @@ export const moveNFT = async (req: Request, res: Response) => {
           },
           include: {
             nft_owner: true,
-          }
+          },
         });
         if (!nftData) {
           res.status(401).send({
@@ -583,8 +583,8 @@ export const moveNFT = async (req: Request, res: Response) => {
             nft: {
               include: {
                 digital_item: true,
-              }
-            }
+              },
+            },
           },
           orderBy: {
             updated_date_time: "desc",
@@ -613,8 +613,8 @@ export const moveNFT = async (req: Request, res: Response) => {
           nft: {
             include: {
               digital_item: true,
-            }
-          }
+            },
+          },
         },
         orderBy: {
           updated_date_time: "desc",
@@ -663,7 +663,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
           },
           include: {
             nft_owner: true,
-          }
+          },
         });
         if (!nftData) {
           res.status(401).send({
@@ -707,8 +707,8 @@ export const deleteNFT = async (req: Request, res: Response) => {
             nft: {
               include: {
                 digital_item: true,
-              }
-            }
+              },
+            },
           },
           orderBy: {
             updated_date_time: "desc",
@@ -737,8 +737,8 @@ export const deleteNFT = async (req: Request, res: Response) => {
           nft: {
             include: {
               digital_item: true,
-            }
-          }
+            },
+          },
         },
         orderBy: {
           updated_date_time: "desc",

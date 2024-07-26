@@ -138,8 +138,7 @@ model digital_items {
     sales             sales[]
     flow_item_id      Int?
     tx_id             String?                   @db.VarChar(255)
-    is_finalized      Boolean                   @default(false)
-    is_public         Boolean                   @default(false)
+    metadata_status   Int
     minted_count      Int                       @default(0)
     sale_quantity     Int?
     is_deleted        Boolean                   @default(false)
@@ -148,17 +147,15 @@ model digital_items {
 }
 
 model sales {
-    id                 Int           @id @default(autoincrement())
-    digital_item_id    Int
-    digital_item       digital_items @relation(fields: [digital_item_id], references: [id])
-    price              Int?
-    visible_start_time DateTime?
-    visible_end_time   DateTime?
-    sales_start_time   DateTime?
-    sales_end_time     DateTime?
-    sale_quantity      Int?
-    updated_date_time  DateTime      @default(now()) @db.Timestamp(6)
-    created_date_time  DateTime      @default(now()) @db.Timestamp(6)
+    id                  Int           @id @default(autoincrement())
+    digital_item_id     Int
+    digital_item        digital_items @relation(fields: [digital_item_id], references: [id])
+    price               Int?
+    schedule_start_time DateTime
+    status              Int
+    sale_quantity       Int           @default(0)
+    updated_date_time   DateTime      @default(now()) @db.Timestamp(6)
+    created_date_time   DateTime      @default(now()) @db.Timestamp(6)
 }
 
 model sample_items {
@@ -230,7 +227,7 @@ model nft_owners {
     account            accounts?         @relation(fields: [account_uuid], references: [uuid])
     owner_flow_address String
     nick_name          String?           @db.VarChar(255)
-    status             String            @db.VarChar(255)
+    status             Int
     nft                digital_item_nfts @relation(fields: [nft_id], references: [id])
     saidan_id          Int?
     nft_id             Int               @unique

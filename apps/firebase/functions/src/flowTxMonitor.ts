@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import {statusOfDigitalItem} from "./native/utils";
+import { digitalItemStatus, mintStatus } from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -199,9 +199,9 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   const limit = await fetchMintLimit(itemId, creatorAddress);
   const mintedCount = await fetchMintedCount(itemId, creatorAddress);
 
-  let status = statusOfDigitalItem.private;
-  if (digitalItem.account.business) {
-    status = statusOfDigitalItem.public;
+  let status = digitalItemStatus.private;
+  if (digitalItem.metadata_status == digitalItemStatus.hidden) {
+    status = digitalItemStatus.hidden;
   }
 
   await prisma.digital_item_nfts.update({
@@ -209,9 +209,8 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
       id: digitalItemNftId,
     },
     data: {
-      mint_status: "minted",
+      mint_status: mintStatus.minted,
       serial_no: Number(serialNumber),
-      box_id: 0,
     },
   });
   await prisma.digital_items.update({
@@ -221,7 +220,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     data: {
       limit: Number(limit),
       minted_count: Number(mintedCount),
-      status: status,
+      metadata_status: status,
     },
   });
   const flowAccount = await prisma.flow_accounts.findFirst({
@@ -232,12 +231,14 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   if (!flowAccount) {
     throw new Error("FLOW_ACCOUNT_NOT_FOUND");
   }
-  await prisma.nft_ownerships.create({
+  await prisma.nft_owner_history.create({
     data: {
       nft_id: digitalItemNftId,
       tx_id: txId,
-      account_uuid: flowAccount.account_uuid,
-      owner_flow_address: to,
+      receiver_uuid: flowAccount.account_uuid,
+      receiver_flow_address: to,
+      sender_flow_address: "",
+      sender_uuid: null,
     },
   });
   pushToDevice(fcmToken, {
@@ -340,46 +341,30 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
         flow_address: deposit.to,
       },
     });
-    if (toFlowRef) {
-      const toFlowAccountUuid = toFlowRef.account_uuid;
-      await prisma.nft_ownerships.create({
-        data: {
-          nft_id: nftId,
-          tx_id: txId,
-          account_uuid: toFlowAccountUuid,
-          owner_flow_address: deposit.to,
-        },
-      });
-      await prisma.digital_item_nfts.update({
-        where: {
-          id: nftId,
-        },
-        data: {
-          account_uuid: toFlowAccountUuid,
-          box_id: 0,
-          gift_status: "",
-        },
-      });
-    } else {
-      await prisma.nft_ownerships.create({
-        data: {
-          nft_id: nftId,
-          tx_id: txId,
-          account_uuid: null,
-          owner_flow_address: deposit.to,
-        },
-      });
-      await prisma.digital_item_nfts.update({
-        where: {
-          id: nftId,
-        },
-        data: {
-          account_uuid: null,
-          box_id: 0,
-          gift_status: "",
-        },
-      });
-    }
+    const sender = await prisma.flow_accounts.findFirst({
+      where: {
+        flow_address: withdraw.from,
+      }
+    })
+    const toFlowAccountUuid = toFlowRef?.account_uuid;
+    await prisma.nft_owner_history.create({
+      data: {
+        nft_id: nftId,
+        tx_id: txId,
+        receiver_uuid: toFlowAccountUuid,
+        receiver_flow_address: deposit.to,
+        sender_uuid: sender?.account_uuid,
+        sender_flow_address: withdraw.from,
+      },
+    });
+    await prisma.digital_item_nfts.update({
+      where: {
+        id: nftId,
+      },
+      data: {
+        gift_status: "",
+      },
+    });
     pushToDevice(fcmToken, {
       title: "NFTのギフトが完了しました",
       body: "",

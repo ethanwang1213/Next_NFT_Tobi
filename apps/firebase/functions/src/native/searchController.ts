@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {FirebaseError} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {prisma} from "../prisma";
-import {statusOfShowcase} from "./utils";
+import {digitalItemStatus, statusOfShowcase} from "./utils";
 
 export const searchAll = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -113,7 +113,7 @@ export const searchAll = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
-          is_public: true,
+          metadata_status: digitalItemStatus.hidden,
           is_deleted: false,
         },
         take: 10,
@@ -237,7 +237,7 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
-          is_public: true,
+          metadata_status: digitalItemStatus.hidden,
           is_deleted: false,
         },
         orderBy: {
@@ -399,7 +399,7 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
         skip: skip,
         take: defaultPageSize,
         where: {
-          is_public: true,
+          metadata_status: digitalItemStatus.hidden,
           is_deleted: false,
         },
         orderBy: [
@@ -411,7 +411,7 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
       });
       const totalRecord = await prisma.digital_items.findMany({
         where: {
-          is_public: true,
+          metadata_status: digitalItemStatus.hidden,
           is_deleted: false,
         },
         orderBy: [

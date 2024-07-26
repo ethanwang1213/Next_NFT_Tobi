@@ -37,27 +37,20 @@ export const statusOfShowcase = {
 //   saleSchedule: 7,
 // };
 
-export const metaDataStatus = {
+export const digitalItemStatus = {
   draft: 1,
-  fixed: 2,
-}
-
-export const visibilityStatus = {
-  private: 1,
-  unlisted: 2,
-  public: 3,
-}
-
-export const salesStatus = {
-  viewingOnly: 1,
-  sales: 2,
-}
+  private: 2,
+  hidden: 3,
+  viewingOnly: 4,
+  onSale: 5,
+};
 
 export const mintStatus = {
+  error: 0,
   minting: 1,
   minted: 2,
   opened: 3,
-}
+};
 
 // export function getStatusOfShowcase(
 //   status: number,

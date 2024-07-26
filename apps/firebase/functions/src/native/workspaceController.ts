@@ -35,8 +35,8 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
         },
         update: {
 
-        }
-      })
+        },
+      });
       await Promise.all(
           itemList.map(async (item)=>{
             const workspaceSample = await prisma.workspace_sample_items.upsert({

@@ -4,7 +4,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import {metaDataStatus, visibilityStatus} from "./utils";
+import {digitalItemStatus} from "./utils";
 
 interface ModelApiResponse {
   url: string;
@@ -72,7 +72,7 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string, mode
     coords1: coords,
   };
   const urlParams = new URLSearchParams();
-  Object.keys(params).forEach((key)=>{
+  Object.keys(params).forEach((key) => {
     if (params[key]) {
       urlParams.append(key, params[key] as string);
     }
@@ -96,7 +96,7 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string, mode
 };
 
 const createMessageCard = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
-  const {url}: { url: string} = req.body;
+  const {url}: { url: string } = req.body;
 
   if (!url) {
     res.status(400).send({
@@ -113,7 +113,7 @@ const createMessageCard = async (req: Request, res: Response, uid: string, model
     image1: url,
   };
   const urlParams = new URLSearchParams();
-  Object.keys(params).forEach((key)=>{
+  Object.keys(params).forEach((key) => {
     if (params[key]) {
       urlParams.append(key, params[key] as string);
     }
@@ -153,7 +153,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
     image1: url,
   };
   const urlParams = new URLSearchParams();
-  Object.keys(params).forEach((key)=>{
+  Object.keys(params).forEach((key) => {
     if (params[key]) {
       urlParams.append(key, params[key] as string);
     }
@@ -194,21 +194,22 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           custom_thumb_url: thumbUrl,
           model_url: modelUrl,
           material_id: materialId,
+          metadata_status: digitalItemStatus.draft,
           type: type,
+          sample_item: {
+            create: {},
+          },
         },
         include: {
           material_image: true,
-        }
-      });
-      await prisma.sample_items.create({
-        data: {
-          digital_item_id: digitalItem.id,
+          sample_item: true,
         },
       });
       res.status(200).send({
         status: "success",
         data: {
-          id: digitalItem.id,
+          digitalItemId: digitalItem.id,
+          sampleItemId: digitalItem.sample_item?.id,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           materialUrl: digitalItem.material_image.image,
           modelUrl: digitalItem.model_url,
@@ -244,17 +245,33 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
         },
         include: {
           material_image: true,
-        }
+          sample_item: true,
+          sales: {
+            where: {
+              schedule_start_time: {
+                lt: new Date(),
+              },
+            },
+            orderBy: {
+              schedule_start_time: "desc",
+            },
+            take: 1,
+          },
+        },
       });
       const returnData = digitalItems.map((digitalItem) => {
         return {
-          id: digitalItem.id,
+          digitalItemId: digitalItem.id,
+          sampleItemId: digitalItem.sample_item?.id,
           name: digitalItem.name,
           description: digitalItem.description,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           materialUrl: digitalItem.material_image.image,
           modelUrl: digitalItem.model_url,
           materialId: digitalItem.material_id,
+          saleQuantity: digitalItem.sale_quantity,
+          quantityLimit: digitalItem.limit,
+          status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
           type: digitalItem.type,
         };
       });
@@ -344,13 +361,13 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
 export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
-  const {metaDataStatus, visibilityStatus}: { metaDataStatus: number, visibilityStatus: number } = req.body;
+  const {status}: { status: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     try {
-      if (metaDataStatus > 2 || metaDataStatus < 1 || visibilityStatus > 3 || visibilityStatus < 1) {
+      if (status > digitalItemStatus.onSale || status < digitalItemStatus.hidden) {
         res.status(401).send({
           status: "error",
-          data: "invalid-statusCode",
+          data: "invalid-status-code",
         });
       }
       await prisma.digital_items.update({
@@ -359,8 +376,12 @@ export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
           is_deleted: false,
         },
         data: {
-          visibility_status: visibilityStatus,
-          metadata_status: metaDataStatus,
+          sales: {
+            create: {
+              status: status,
+              schedule_start_time: new Date(),
+            },
+          },
         },
       });
       res.status(200).send({
@@ -412,56 +433,26 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
         include: {
           sales: {
             where: {
-              OR: [
-                {
-                  AND: [
-                    {
-                      sales_start_time: {
-                        lt: new Date()
-                      },
-                    },
-                    {
-                      sales_end_time: {
-                        gt: new Date()
-                      }
-                    },
-                  ]
-                },
-                {
-                  AND: [
-                    {
-                      visible_start_time: {
-                        lt: new Date()
-                      },
-                    },
-                    {
-                      visible_end_time: {
-                        gt: new Date()
-                      }
-                    }
-                  ]
-                },
-                {
-                  sales_end_time: null,
-                },
-                {
-                  visible_end_time: null,
-                }
-              ]
+              schedule_start_time: {
+                lt: new Date(),
+              },
             },
             orderBy: {
-              created_date_time: "desc",
-            }
+              schedule_start_time: "desc",
+            },
+            take: 1,
           },
-        }
+          material_image: true,
+        },
       });
       const returnData = allDigitalItems.map((digitalItem) => {
         return {
           id: digitalItem.id,
           name: digitalItem.name,
-          thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-          price: digitalItem.price,
-          status: digitalItem.sales,
+          thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          materialUrl: digitalItem.material_image.image,
+          price: digitalItem.sales.length > 0 ? digitalItem.sales[0].price : null,
+          status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
           createDate: digitalItem.created_date_time,
@@ -602,6 +593,18 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         include: {
           digital_item: {
             include: {
+              material_image: true,
+              sales: {
+                where: {
+                  schedule_start_time: {
+                    lt: new Date(),
+                  },
+                },
+                orderBy: {
+                  schedule_start_time: "desc",
+                },
+                take: 1,
+              },
               copyrights: {
                 include: {
                   copyright: true,
@@ -637,9 +640,9 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         defaultThumbnailUrl: sample.digital_item.default_thumb_url,
         customThumbnailUrl: sample.digital_item.custom_thumb_url,
         isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
-        price: sample.digital_item.price,
-        metaDataStatus: digitalItem.metadata_status,
-        visibilityStatus: digitalItem.visibility_status,
+        materialUrl: sample.digital_item.material_image.image,
+        price: sample.digital_item.sales.length > 0 ? sample.digital_item.sales[0].price : null,
+        status: sample.digital_item.sales.length > 0 ? sample.digital_item.sales[0].status : sample.digital_item.metadata_status,
         quantityLimit: sample.digital_item.limit,
         license: sample.digital_item.license,
         copyrights: copyrights,
@@ -692,16 +695,28 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
         },
         include: {
           sample_item: true,
+          material_image: true,
+          sales: {
+            where: {
+              schedule_start_time: {
+                lt: new Date(),
+              },
+            },
+            orderBy: {
+              schedule_start_time: "desc",
+            },
+            take: 1,
+          },
         },
       });
       const returnData = allDigitalItems.map((digitalItem) => {
         return {
           id: digitalItem.id,
           name: digitalItem.name,
-          thumbnail: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-          price: digitalItem.price,
-          metaDataStatus: digitalItem.metadata_status,
-          visibilityStatus: digitalItem.visibility_status,
+          thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          materialUrl: digitalItem.material_image.image,
+          price: digitalItem.sales.length > 0 ? digitalItem.sales[0].price : null,
+          status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
           mintedCount: digitalItem.minted_count,
@@ -844,10 +859,22 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
               copyright: true,
             },
           },
+          sales: {
+            where: {
+              schedule_start_time: {
+                lt: new Date(),
+              },
+            },
+            orderBy: {
+              schedule_start_time: "desc",
+            },
+            take: 1,
+          },
           sample_item: true,
+          material_image: true,
         },
       });
-      if (!digitalItem||digitalItem.is_deleted) {
+      if (!digitalItem || digitalItem.is_deleted) {
         res.status(401).send({
           status: "error",
           data: "not-exist",
@@ -872,11 +899,15 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         defaultThumbnailUrl: digitalItem.default_thumb_url,
         customThumbnailUrl: digitalItem.custom_thumb_url,
         isCustomThumbnailSelected: !digitalItem.is_default_thumb,
-        price: digitalItem.price,
-        metaDataStatus: digitalItem.metadata_status,
-        visibilityStatus: digitalItem.visibility_status,
-        schedules: digitalItem.schedules.map((schedule)=>{
-          return JSON.parse(schedule);
+        materialUrl: digitalItem.material_image.image,
+        price: digitalItem.sales.length>0?digitalItem.sales[0].price:null,
+        status: digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status,
+        schedules: digitalItem.sales.map((schedule) => {
+          return {
+            id: schedule.id,
+            status: schedule.status,
+            datetime: schedule.schedule_start_time,
+          };
         }),
         quantityLimit: digitalItem.limit,
         license: digitalItem.license,
@@ -930,6 +961,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     license?: string,
     copyrights?: { id: number | null, name: string }[],
     schedules?: {
+      id: number | null,
       status: number,
       datetime: string,
     }[],
@@ -960,9 +992,20 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         },
         include: {
           sample_item: true,
+          sales: {
+            where: {
+              schedule_start_time: {
+                lt: new Date(),
+              },
+            },
+            orderBy: {
+              schedule_start_time: "desc",
+            },
+            take: 1,
+          },
         },
       });
-      if (!digitalItem||digitalItem.is_deleted) {
+      if (!digitalItem || digitalItem.is_deleted) {
         res.status(404).send({
           status: "error",
           data: "not-exist",
@@ -977,14 +1020,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         return;
       }
       if (status) {
-        if (status<1||status>7) {
-          res.status(401).send({
-            status: "error",
-            data: "wrong-status",
-          });
-          return;
-        }
-        if ([statusOfDigitalItem.private, statusOfDigitalItem.draft].includes(digitalItem.status) && status ==statusOfDigitalItem.unListed) {
+        if (status < digitalItemStatus.hidden || status > digitalItemStatus.onSale) {
           res.status(401).send({
             status: "error",
             data: "wrong-status",
@@ -992,10 +1028,10 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           return;
         }
       }
-      if (schedules&&schedules.length>2) {
+      if (schedules && schedules.length > 2) {
         for (let i = 0; i < schedules.length; i++) {
           const element1 = schedules[i];
-          if (element1.status<1||element1.status>7) {
+          if (element1.status < digitalItemStatus.hidden || element1.status > digitalItemStatus.onSale) {
             res.status(401).send({
               status: "error",
               data: "wrong-status",
@@ -1004,7 +1040,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           }
           for (let j = i + 1; j < schedules.length; j++) {
             const element2 = schedules[j];
-            if (element1.datetime==element2.datetime) {
+            if (element1.datetime == element2.datetime) {
               res.status(401).send({
                 status: "error",
                 data: "wrong-schedule",
@@ -1014,26 +1050,65 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
           }
         }
       }
-      if (name || description || price || customThumbnailUrl || isCustomThumbnailSelected || status || license || schedules || quantityLimit) {
+      if (name || description || customThumbnailUrl || isCustomThumbnailSelected || license || quantityLimit) {
         await prisma.digital_items.update({
           where: {
             id: parseInt(digitalId),
           },
           data: {
             name: name,
-            price: price,
             description: description,
             custom_thumb_url: customThumbnailUrl,
             is_default_thumb: !isCustomThumbnailSelected,
-            status: status,
-            updated_status_time: new Date(),
             limit: quantityLimit,
             license: license,
-            schedules: schedules?.map((schedule) => {
-              return JSON.stringify(schedule);
-            }),
           },
         });
+      }
+      const currentPrice = digitalItem.sales.length>0?digitalItem.sales[0].price:null;
+      const currentStatus = digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status;
+      if (price && status &&(currentPrice != price||currentStatus != status)) {
+        await prisma.sales.create({
+          data: {
+            digital_item_id: digitalItem.id,
+            price: price,
+            status: status,
+            schedule_start_time: new Date(),
+          },
+        });
+      }
+      if (schedules) {
+        const scheduleIds = schedules.map((schedule)=>{
+          return schedule.id??0;
+        });
+        await prisma.sales.deleteMany({
+          where: {
+            id: {
+              notIn: scheduleIds,
+            },
+          },
+        });
+        await Promise.all(
+            schedules.map(async (schedule)=>{
+              if (!schedule.id) {
+                await prisma.sales.upsert({
+                  where: {
+                    id: schedule.id??0,
+                  },
+                  create: {
+                    price: currentPrice,
+                    status: schedule.status,
+                    schedule_start_time: schedule.datetime,
+                    digital_item_id: digitalItem.id,
+                  },
+                  update: {
+                    status: schedule.status,
+                    schedule_start_time: schedule.datetime,
+                  },
+                });
+              }
+            })
+        );
       }
       if (copyrights) {
         await prisma.digital_items_copyright.deleteMany({
@@ -1050,7 +1125,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
                 update: {},
                 create: {
                   name: copyright.name,
-                  content_id: admin.content?.id??0,
+                  content_id: admin.content?.id ?? 0,
                 },
               });
               await prisma.digital_items_copyright.create({
@@ -1102,6 +1177,18 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
             },
           },
           account: true,
+          material_image: true,
+          sales: {
+            where: {
+              schedule_start_time: {
+                lt: new Date(),
+              },
+            },
+            orderBy: {
+              schedule_start_time: "desc",
+            },
+            take: 1,
+          },
         },
       });
       if (!digitalItemData) {
@@ -1117,7 +1204,7 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
         description: digitalItemData.description,
         modelType: digitalItemData.type,
         modelUrl: digitalItemData.model_url,
-        thumbUrl: digitalItemData.is_default_thumb?digitalItemData.default_thumb_url:digitalItemData.custom_thumb_url,
+        thumbUrl: digitalItemData.is_default_thumb ? digitalItemData.default_thumb_url : digitalItemData.custom_thumb_url,
         creator: {
           uuid: digitalItemData.account.uuid,
           username: digitalItemData.account.username,
@@ -1129,7 +1216,8 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
           };
         }),
         license: digitalItemData.license,
-        price: digitalItemData.price,
+        price: digitalItemData.sales.length>0?digitalItemData.sales[0].price: null,
+        status: digitalItemData.sales.length>0?digitalItemData.sales[0].status: digitalItemData.metadata_status,
         dateAcquired: digitalItemData.created_date_time,
       };
       res.status(200).send({

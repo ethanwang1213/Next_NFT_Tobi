@@ -46,8 +46,8 @@ export const getSaidansById = async (req: Request, res: Response) => {
           nft: {
             include: {
               digital_item: true,
-            }
-          }
+            },
+          },
         },
       });
 
@@ -542,8 +542,8 @@ export const decorationSaidan = async (req: Request, res: Response) => {
               },
               data: {
                 saidan_id: parseInt(saidanId),
-              }
-            })
+              },
+            });
             const updateCamera = await prisma.nft_cameras.update({
               where: {
                 nft_id: item.itemId,
@@ -677,8 +677,8 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
             include: {
               nft_camera: true,
               digital_item: true,
-            }
-          }
+            },
+          },
         },
       });
       const saidanItemList = saidanItems.map((item)=>{
