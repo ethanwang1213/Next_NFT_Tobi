@@ -163,6 +163,27 @@ ${link}`,
   return response[0].statusCode;
 });
 
+exports.removeRedeemEmail = functions.region(REGION).https.onCall(async (data: {email: string}, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+  const email = data.email;
+  if (!email) {
+    throw new functions.https.HttpsError("invalid-argument", "The function must be called with email.");
+  }
+  const uid = context.auth.uid;
+  const redeemEmails = await getRedeemEmails(uid);
+  if (!redeemEmails) {
+    throw new functions.https.HttpsError("not-found", "The user doesn't have redeem emails.");
+  }
+  if (!(email in redeemEmails)) {
+    throw new functions.https.HttpsError("not-found", "The user doesn't have redeem email.");
+  }
+  delete redeemEmails[email];
+  await getRedeemEmailsCollection().doc(uid).set({redeemEmails});
+  return true;
+});
+
 /*
  * structure of redeemLinkCodes collection
  * redeemLinkCodes > uid > {linkCodes: {hash1: {email: "foo@bar.com", expireAt: timestamp-value}, hash2: ...}}
