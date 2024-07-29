@@ -86,7 +86,7 @@ export const getContentById = async (req: Request, res: Response) => {
           thumbImage: relationSample.sample_item.digital_item.is_default_thumb ?
             relationSample.sample_item.digital_item.default_thumb_url :
             relationSample.sample_item.digital_item?.custom_thumb_url,
-          imageUrl: relationSample.sample_item.digital_item.material_image.image,
+          materialUrl: relationSample.sample_item.digital_item.material_image.image,
           modelType: relationSample.sample_item.digital_item.type,
           modelUrl: relationSample.sample_item.digital_item.model_url,
           stageType: relationSample.stage_type,
@@ -111,7 +111,7 @@ export const getContentById = async (req: Request, res: Response) => {
           thumbImage: relationNFT.digital_item_nft.digital_item.is_default_thumb ?
             relationNFT.digital_item_nft.digital_item.default_thumb_url :
             relationNFT.digital_item_nft.digital_item.custom_thumb_url,
-          imageUrl: relationNFT.digital_item_nft.digital_item.material_image.image,
+          materialUrl: relationNFT.digital_item_nft.digital_item.material_image.image,
           modelType: relationNFT.digital_item_nft.digital_item.type,
           modelUrl: relationNFT.digital_item_nft.digital_item.model_url,
           stageType: relationNFT.stage_type,
@@ -287,7 +287,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           thumbImage: relationSample.sample_item.digital_item.is_default_thumb ?
             relationSample.sample_item.digital_item.default_thumb_url :
             relationSample.sample_item.digital_item?.custom_thumb_url,
-          imageUrl: relationSample.sample_item.digital_item.material_image.image,
+          materialUrl: relationSample.sample_item.digital_item.material_image.image,
           modelType: relationSample.sample_item.digital_item.type,
           modelUrl: relationSample.sample_item.digital_item.model_url,
           stageType: relationSample.stage_type,
@@ -312,7 +312,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           thumbImage: relationNFT.digital_item_nft.digital_item.is_default_thumb ?
             relationNFT.digital_item_nft.digital_item.default_thumb_url :
             relationNFT.digital_item_nft.digital_item.custom_thumb_url,
-          imageUrl: relationNFT.digital_item_nft.digital_item.material_image.image,
+          materialUrl: relationNFT.digital_item_nft.digital_item.material_image.image,
           modelType: relationNFT.digital_item_nft.digital_item.type,
           modelUrl: relationNFT.digital_item_nft.digital_item.model_url,
           stageType: relationNFT.stage_type,

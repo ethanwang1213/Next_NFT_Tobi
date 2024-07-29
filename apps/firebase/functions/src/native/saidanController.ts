@@ -152,7 +152,7 @@ export const createSaidan = async (req: Request, res: Response) => {
         title: saveData.title,
         description: saveData.description,
         modelUrl: saidanTemplate.model_url,
-        imageUrl: saveData.thumbnail_image,
+        thumbUrl: saveData.thumbnail_image,
         modelType: saidanTemplate.type,
         isPublic: saveData.is_public,
         favorite: favorite.length!=0,
@@ -195,7 +195,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
         saidanId: saidan.id,
         title: saidan.title,
         modelUrl: saidan.saidans_template.model_url,
-        imageUrl: saidan.thumbnail_image,
+        thumbUrl: saidan.thumbnail_image,
         modelType: saidan.saidans_template.type,
         description: saidan.description,
         isPublic: saidan.is_public,
@@ -339,7 +339,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       saidanId: updatedSaidan?.id,
       title: updatedSaidan?.title,
       modelUrl: template?.model_url,
-      imageUrl: updatedSaidan?.thumbnail_image,
+      thumbUrl: updatedSaidan?.thumbnail_image,
       modelType: template?.type,
       description: updatedSaidan?.description,
       isPublic: updatedSaidan?.is_public,
@@ -533,7 +533,11 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                 id: item.itemId,
               },
               include: {
-                digital_item: true,
+                digital_item: {
+                  include: {
+                    material_image: true,
+                  }
+                },
               },
             });
             await prisma.nft_owners.update({
@@ -572,7 +576,8 @@ export const decorationSaidan = async (req: Request, res: Response) => {
           itemId: saidanItem.id,
           modelType: saidanItem.type,
           modelUrl: saidanItem.model_url,
-          imageUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
+          thumbUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
+          materialUrl: saidanItem.digital_item?.material_image.image,
           stageType: saidanItem.stage_type,
           position: {
             x: saidanItem.position[0],
@@ -686,7 +691,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
           itemId: item.id,
           modelType: item.nft.digital_item.type,
           modelUrl: item.nft.digital_item.model_url,
-          imageUrl: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
+          thumbUrl: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
           stageType: item.nft.nft_camera?.stage_type,
           position: {
             x: item.nft.nft_camera?.position[0],
