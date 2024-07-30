@@ -8,9 +8,10 @@ export const getSaidansById = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
 
@@ -22,9 +23,10 @@ export const getSaidansById = async (req: Request, res: Response) => {
         return;
       }
 
-      const userData = await prisma.tobiratory_accounts.findUnique({
+      const userData = await prisma.accounts.findUnique({
         where: {
-          uuid: saidanData.owner_uuid,
+          uuid: saidanData.account_uuid,
+          is_deleted: false,
         },
       });
 
@@ -36,17 +38,21 @@ export const getSaidansById = async (req: Request, res: Response) => {
         return;
       }
 
-      const digitalNFT = await prisma.tobiratory_digital_item_nfts.findMany({
+      const digitalNFT = await prisma.nft_owners.findMany({
         where: {
           saidan_id: saidanData.id,
         },
         include: {
-          digital_item: true,
+          nft: {
+            include: {
+              digital_item: true,
+            },
+          },
         },
       });
 
       const items = digitalNFT.map((nft)=> {
-        return nft.digital_item.is_default_thumb?nft.digital_item.default_thumb_url:nft.digital_item.custom_thumb_url;
+        return nft.nft.digital_item.is_default_thumb?nft.nft.digital_item.default_thumb_url:nft.nft.digital_item.custom_thumb_url;
       });
 
       const resData = {
@@ -74,7 +80,7 @@ export const getSaidansById = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -82,9 +88,9 @@ export const getSaidansById = async (req: Request, res: Response) => {
 
 export const getSaidanTemplates = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  await auth().verifyIdToken(authorization??"").then(async (/* decodedToken: DecodedIdToken*/)=>{
+  await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
     try {
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findMany();
+      const saidanTemplate = await prisma.saidans_template.findMany();
       const returnData = saidanTemplate.map((template)=>{
         return {
           templateId: template.id,
@@ -104,7 +110,7 @@ export const getSaidanTemplates = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -115,7 +121,7 @@ export const createSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
+      const saidanTemplate = await prisma.saidans_template.findUnique({
         where: {
           id: templateId,
         },
@@ -127,18 +133,18 @@ export const createSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      const saveData = await prisma.tobiratory_saidans.create({
+      const saveData = await prisma.saidans.create({
         data: {
           title: title,
           template_id: templateId,
-          owner_uuid: uid,
+          account_uuid: uid,
           thumbnail_image: saidanTemplate.cover_image,
         },
       });
-      const favorite = await prisma.tobiratory_saidans_favorite.findMany({
+      const favorite = await prisma.saidans_favorite.findMany({
         where: {
           saidan_id: saveData.id,
-          favorite_user_id: uid,
+          account_uuid: uid,
         },
       });
       const returnData = {
@@ -146,7 +152,7 @@ export const createSaidan = async (req: Request, res: Response) => {
         title: saveData.title,
         description: saveData.description,
         modelUrl: saidanTemplate.model_url,
-        imageUrl: saveData.thumbnail_image,
+        thumbUrl: saveData.thumbnail_image,
         modelType: saidanTemplate.type,
         isPublic: saveData.is_public,
         favorite: favorite.length!=0,
@@ -164,7 +170,7 @@ export const createSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -174,25 +180,26 @@ export const getMySaidans = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const mySaidans = await prisma.tobiratory_saidans.findMany({
+    const mySaidans = await prisma.saidans.findMany({
       where: {
-        owner_uuid: uid,
+        account_uuid: uid,
+        is_deleted: false,
       },
       include: {
-        favorite_user: true,
-        template: true,
+        favorite_users: true,
+        saidans_template: true,
       },
     });
     const returnData = mySaidans.map((saidan)=>{
       return {
         saidanId: saidan.id,
         title: saidan.title,
-        modelUrl: saidan.template.model_url,
-        imageUrl: saidan.thumbnail_image,
-        modelType: saidan.template.type,
+        modelUrl: saidan.saidans_template.model_url,
+        thumbUrl: saidan.thumbnail_image,
+        modelType: saidan.saidans_template.type,
         description: saidan.description,
         isPublic: saidan.is_public,
-        favorite: saidan.favorite_user.length!=0,
+        favorite: saidan.favorite_users.length!=0,
       };
     });
 
@@ -203,7 +210,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -214,13 +221,14 @@ export const getMySaidansById = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const saidanData = await prisma.tobiratory_saidans.findUnique({
+    const saidanData = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
+        is_deleted: false,
       },
     });
 
-    if (saidanData == null) {
+    if (!saidanData) {
       res.status(404).send({
         status: "error",
         data: "not-exist",
@@ -228,7 +236,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
       return;
     }
 
-    if (saidanData.owner_uuid != uid) {
+    if (saidanData.account_uuid != uid) {
       res.status(404).send({
         status: "error",
         data: "not-yours",
@@ -241,7 +249,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
       title: saidanData.title,
       description: saidanData.description,
       owner: {
-        uuid: saidanData.owner_uuid,
+        uuid: saidanData.account_uuid,
       },
     };
     res.status(200).send({
@@ -251,7 +259,7 @@ export const getMySaidansById = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -263,9 +271,10 @@ export const updateMySaidan = async (req: Request, res: Response) => {
   const {isPublic, title, description, thumbnailImage, favorite}: {isPublic?: boolean, title?: string, description?: string, thumbnailImage?: string, favorite?: boolean} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const saidanData = await prisma.tobiratory_saidans.findUnique({
+    const saidanData = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
+        is_deleted: false,
       },
     });
     if (!saidanData) {
@@ -275,14 +284,14 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       });
       return;
     }
-    if (saidanData.owner_uuid != uid) {
+    if (saidanData.account_uuid != uid) {
       res.status(401).send({
         status: "error",
         data: "not-yours",
       });
       return;
     }
-    await prisma.tobiratory_saidans.update({
+    await prisma.saidans.update({
       where: {
         id: parseInt(saidanId),
       },
@@ -294,33 +303,34 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       },
     });
     if (favorite != undefined) {
-      const nowFavor = await prisma.tobiratory_saidans_favorite.findMany({
+      const nowFavor = await prisma.saidans_favorite.findMany({
         where: {
-          favorite_user_id: uid,
+          account_uuid: uid,
           saidan_id: parseInt(saidanId),
         },
       });
       if (favorite&&!nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.create({
+        await prisma.saidans_favorite.create({
           data: {
-            favorite_user_id: uid,
+            account_uuid: uid,
             saidan_id: parseInt(saidanId),
           },
         });
       } else if (!favorite&&nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.delete({
+        await prisma.saidans_favorite.delete({
           where: {
             id: nowFavor[0].id,
           },
         });
       }
     }
-    const updatedSaidan = await prisma.tobiratory_saidans.findUnique({
+    const updatedSaidan = await prisma.saidans.findUnique({
       where: {
         id: parseInt(saidanId),
+        is_deleted: false,
       },
     });
-    const template = await prisma.tobiratory_saidans_template.findUnique({
+    const template = await prisma.saidans_template.findUnique({
       where: {
         id: updatedSaidan?.template_id,
       },
@@ -329,7 +339,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       saidanId: updatedSaidan?.id,
       title: updatedSaidan?.title,
       modelUrl: template?.model_url,
-      imageUrl: updatedSaidan?.thumbnail_image,
+      thumbUrl: updatedSaidan?.thumbnail_image,
       modelType: template?.type,
       description: updatedSaidan?.description,
       isPublic: updatedSaidan?.is_public,
@@ -342,7 +352,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -355,9 +365,10 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(id),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -367,21 +378,21 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      const nowFavor = await prisma.tobiratory_saidans_favorite.findMany({
+      const nowFavor = await prisma.saidans_favorite.findMany({
         where: {
-          favorite_user_id: uid,
+          account_uuid: uid,
           saidan_id: parseInt(id),
         },
       });
       if (favorite&&!nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.create({
+        await prisma.saidans_favorite.create({
           data: {
-            favorite_user_id: uid,
+            account_uuid: uid,
             saidan_id: parseInt(id),
           },
         });
       } else if (!favorite&&nowFavor.length) {
-        await prisma.tobiratory_saidans_favorite.delete({
+        await prisma.saidans_favorite.delete({
           where: {
             id: nowFavor[0].id,
           },
@@ -402,7 +413,7 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -445,9 +456,10 @@ export const decorationSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -457,14 +469,14 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (saidanData.owner_uuid != uid) {
+      if (saidanData.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
         });
         return;
       }
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
+      const saidanTemplate = await prisma.saidans_template.findUnique({
         where: {
           id: saidanData.template_id,
         },
@@ -476,7 +488,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.tobiratory_saidans.update({
+      await prisma.saidans.update({
         where: {
           id: parseInt(saidanId),
         },
@@ -484,7 +496,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
           thumbnail_image: thumbImage,
         },
       });
-      const cameraUpdate = await prisma.tobiratory_saidan_camera.upsert({
+      const cameraUpdate = await prisma.saidan_camera.upsert({
         where: {
           saidan_id: parseInt(saidanId),
         },
@@ -516,13 +528,32 @@ export const decorationSaidan = async (req: Request, res: Response) => {
       });
       const items = await Promise.all(
           itemList.map(async (item)=>{
-            const updateItem = await prisma.tobiratory_digital_item_nfts.update({
+            const updateItem = await prisma.digital_item_nfts.findUnique({
               where: {
                 id: item.itemId,
               },
+              include: {
+                digital_item: {
+                  include: {
+                    material_image: true,
+                  }
+                },
+              },
+            });
+            await prisma.nft_owners.update({
+              where: {
+                nft_id: item.itemId,
+              },
               data: {
                 saidan_id: parseInt(saidanId),
-                state_type: item.stageType,
+              },
+            });
+            const updateCamera = await prisma.nft_cameras.update({
+              where: {
+                nft_id: item.itemId,
+              },
+              data: {
+                stage_type: item.stageType,
                 position: [
                   item.position.x,
                   item.position.y,
@@ -533,26 +564,21 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                   item.rotation.y,
                   item.rotation.z,
                 ],
-                can_scale: item.canScale,
                 meter_height: item.itemMeterHeight,
                 scale: item.scale,
               },
             });
-            const digitalData = await prisma.tobiratory_digital_items.findUnique({
-              where: {
-                id: updateItem.digital_item_id,
-              },
-            });
-            return {...updateItem, ...digitalData};
+            return {...updateItem, ...updateItem?.digital_item, ...updateCamera};
           })
       );
       const saidanItemList = items.map((saidanItem)=>{
         return {
           itemId: saidanItem.id,
           modelType: saidanItem.type,
-          modelUrl: saidanItem.nft_model,
-          imageUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
-          stageType: saidanItem.state_type,
+          modelUrl: saidanItem.model_url,
+          thumbUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
+          materialUrl: saidanItem.digital_item?.material_image.image,
+          stageType: saidanItem.stage_type,
           position: {
             x: saidanItem.position[0],
             y: saidanItem.position[1],
@@ -563,7 +589,6 @@ export const decorationSaidan = async (req: Request, res: Response) => {
             y: saidanItem.rotation[1],
             z: saidanItem.rotation[2],
           },
-          canScale: saidanItem.can_scale,
           itemMeterHeight: saidanItem.meter_height,
           scale: saidanItem.scale,
         };
@@ -599,7 +624,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -611,9 +636,10 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -623,14 +649,14 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (saidanData.owner_uuid != uid) {
+      if (saidanData.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
         });
         return;
       }
-      const saidanTemplate = await prisma.tobiratory_saidans_template.findUnique({
+      const saidanTemplate = await prisma.saidans_template.findUnique({
         where: {
           id: saidanData.template_id,
         },
@@ -642,46 +668,45 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
         });
         return;
       }
-      const saidanCamera = await prisma.tobiratory_saidan_camera.findUnique({
+      const saidanCamera = await prisma.saidan_camera.findUnique({
         where: {
           saidan_id: saidanData.id,
         },
       });
-      const saidanItems = await prisma.tobiratory_digital_item_nfts.findMany({
+      const saidanItems = await prisma.nft_owners.findMany({
         where: {
           saidan_id: saidanData.id,
         },
+        include: {
+          nft: {
+            include: {
+              nft_camera: true,
+              digital_item: true,
+            },
+          },
+        },
       });
-      const saidanItemList = await Promise.all(
-          saidanItems.map(async (item)=>{
-            const digitalData = await prisma.tobiratory_digital_items.findUnique({
-              where: {
-                id: item.digital_item_id,
-              },
-            });
-            const saidanItem = {...digitalData, ...item};
-            return {
-              itemId: saidanItem.id,
-              modelType: saidanItem.type,
-              modelUrl: saidanItem.nft_model,
-              imageUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
-              stageType: saidanItem.state_type,
-              position: {
-                x: saidanItem.position[0],
-                y: saidanItem.position[1],
-                z: saidanItem.position[2],
-              },
-              rotation: {
-                x: saidanItem.rotation[0],
-                y: saidanItem.rotation[1],
-                z: saidanItem.rotation[2],
-              },
-              canScale: saidanItem.can_scale,
-              itemMeterHeight: saidanItem.meter_height,
-              scale: saidanItem.scale,
-            };
-          })
-      );
+      const saidanItemList = saidanItems.map((item)=>{
+        return {
+          itemId: item.id,
+          modelType: item.nft.digital_item.type,
+          modelUrl: item.nft.digital_item.model_url,
+          thumbUrl: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
+          stageType: item.nft.nft_camera?.stage_type,
+          position: {
+            x: item.nft.nft_camera?.position[0],
+            y: item.nft.nft_camera?.position[1],
+            z: item.nft.nft_camera?.position[2],
+          },
+          rotation: {
+            x: item.nft.nft_camera?.rotation[0],
+            y: item.nft.nft_camera?.rotation[1],
+            z: item.nft.nft_camera?.rotation[2],
+          },
+          itemMeterHeight: item.nft.nft_camera?.meter_height,
+          scale: item.nft.nft_camera?.scale,
+        };
+      });
       const returnData = {
         saidanId: saidanData.id,
         saidanType: saidanTemplate.type,
@@ -713,7 +738,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });
@@ -726,9 +751,10 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const saidanData = await prisma.tobiratory_saidans.findUnique({
+      const saidanData = await prisma.saidans.findUnique({
         where: {
           id: parseInt(saidanId),
+          is_deleted: false,
         },
       });
       if (!saidanData) {
@@ -738,16 +764,16 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (saidanData.owner_uuid != uid) {
+      if (saidanData.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
         });
         return;
       }
-      await prisma.tobiratory_digital_item_nfts.update({
+      await prisma.nft_owners.update({
         where: {
-          id: itemId,
+          nft_id: itemId,
         },
         data: {
           saidan_id: 0,
@@ -766,7 +792,7 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
     return;
   });

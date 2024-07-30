@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import {statusOfSample} from "./native/utils";
+import { digitalItemStatus, mintStatus } from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -97,9 +97,9 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
 });
 
 const fetchFlowAccount = async (creatorUuid: string) => {
-  const flowAccount = await prisma.tobiratory_flow_accounts.findUnique({
+  const flowAccount = await prisma.flow_accounts.findUnique({
     where: {
-      uuid: creatorUuid,
+      account_uuid: creatorUuid,
     },
   });
 
@@ -110,7 +110,7 @@ const fetchFlowAccount = async (creatorUuid: string) => {
 };
 
 const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
-  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+  const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: digitalItemId,
     },
@@ -122,14 +122,13 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
   if (!txId) {
     throw new Error("TX_NOT_FOUND");
   }
-  const {id, creatorAddress} = await fetchCreateItem(txId);
-  await prisma.tobiratory_digital_items.update({
+  const {id} = await fetchCreateItem(txId);
+  await prisma.digital_items.update({
     where: {
       id: digitalItemId,
     },
     data: {
-      creator_flow_address: creatorAddress,
-      item_id: Number(id),
+      flow_item_id: Number(id),
     },
   });
   return {id};
@@ -148,12 +147,19 @@ const fetchCreateItem = async (txId: string) => {
 };
 
 const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, digitalItemNftId: number) => {
-  const digitalItem = await prisma.tobiratory_digital_items.findUnique({
+  const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: digitalItemId,
     },
+    include: {
+      account: {
+        include: {
+          business: true,
+        },
+      },
+    },
   });
-  const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
+  const nft = await prisma.digital_item_nfts.findUnique({
     where: {
       id: digitalItemNftId,
     },
@@ -169,53 +175,55 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     throw new Error("TX_NOT_FOUND");
   }
 
-  const sampleItem = await prisma.tobiratory_sample_items.findUnique({
-    where: {
-      digital_item_id: digitalItemId,
-    },
-  });
-  if (!sampleItem) {
-    throw new Error("SAMPLE_ITEM_NOT_FOUND");
+  if (!digitalItem) {
+    throw new Error("DIGITAL_ITEM_NOT_FOUND");
   }
 
   const {serialNumber, to} = await fetchMintNFT(txId);
-  const itemId = digitalItem.item_id;
-  const creatorAddress = digitalItem.creator_flow_address;
+  const itemId = digitalItem.flow_item_id;
+  const creatorFlowAccount = await prisma.flow_accounts.findUnique({
+    where: {
+      account_uuid: digitalItem.account_uuid,
+    }
+  });
   if (!itemId) {
     throw new Error("ITEM_ID_NOT_FOUND");
   }
+  if (!creatorFlowAccount) {
+    throw new Error("CREATOR_FLOW_ACCOUNT_NOT_FOUND");
+  }
+  const creatorAddress = creatorFlowAccount.flow_address;
   if (!creatorAddress) {
     throw new Error("CREATOR_ADDRESS_NOT_FOUND");
   }
   const limit = await fetchMintLimit(itemId, creatorAddress);
   const mintedCount = await fetchMintedCount(itemId, creatorAddress);
 
-  let status = statusOfSample.private;
-  if (sampleItem.content_id) {
-    status = statusOfSample.public;
+  let status = digitalItemStatus.private;
+  if (digitalItem.metadata_status == digitalItemStatus.hidden) {
+    status = digitalItemStatus.hidden;
   }
 
-  await prisma.tobiratory_digital_item_nfts.update({
+  await prisma.digital_item_nfts.update({
     where: {
       id: digitalItemNftId,
     },
     data: {
-      mint_status: "minted",
+      mint_status: mintStatus.minted,
       serial_no: Number(serialNumber),
-      box_id: 0,
     },
   });
-  await prisma.tobiratory_digital_items.update({
+  await prisma.digital_items.update({
     where: {
       id: digitalItemId,
     },
     data: {
       limit: Number(limit),
       minted_count: Number(mintedCount),
-      status: status,
+      metadata_status: status,
     },
   });
-  const flowAccount = await prisma.tobiratory_flow_accounts.findFirst({
+  const flowAccount = await prisma.flow_accounts.findFirst({
     where: {
       flow_address: to,
     },
@@ -223,12 +231,14 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   if (!flowAccount) {
     throw new Error("FLOW_ACCOUNT_NOT_FOUND");
   }
-  await prisma.tobiratory_digital_nft_ownership.create({
+  await prisma.nft_owner_history.create({
     data: {
       nft_id: digitalItemNftId,
       tx_id: txId,
-      owner_uuid: flowAccount.uuid,
-      owner_flow_address: to,
+      receiver_uuid: flowAccount.account_uuid,
+      receiver_flow_address: to,
+      sender_flow_address: "",
+      sender_uuid: null,
     },
   });
   pushToDevice(fcmToken, {
@@ -312,7 +322,7 @@ pub fun main(address: Address, itemID: UInt64): UInt32? {
 };
 
 const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
-  const nft = await prisma.tobiratory_digital_item_nfts.findUnique({
+  const nft = await prisma.digital_item_nfts.findUnique({
     where: {
       id: nftId,
     },
@@ -326,51 +336,35 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
   }
   const {withdraw, deposit} = await fetchGiftNFT(txId);
   if (withdraw && deposit) {
-    const toFlowRef = await prisma.tobiratory_flow_accounts.findFirst({
+    const toFlowRef = await prisma.flow_accounts.findFirst({
       where: {
         flow_address: deposit.to,
       },
     });
-    if (toFlowRef) {
-      const toFlowAccountUuid = toFlowRef.uuid;
-      await prisma.tobiratory_digital_nft_ownership.create({
-        data: {
-          nft_id: nftId,
-          tx_id: txId,
-          owner_uuid: toFlowAccountUuid,
-          owner_flow_address: deposit.to,
-        },
-      });
-      await prisma.tobiratory_digital_item_nfts.update({
-        where: {
-          id: nftId,
-        },
-        data: {
-          owner_uuid: toFlowAccountUuid,
-          box_id: 0,
-          gift_status: "",
-        },
-      });
-    } else {
-      await prisma.tobiratory_digital_nft_ownership.create({
-        data: {
-          nft_id: nftId,
-          tx_id: txId,
-          owner_uuid: null,
-          owner_flow_address: deposit.to,
-        },
-      });
-      await prisma.tobiratory_digital_item_nfts.update({
-        where: {
-          id: nftId,
-        },
-        data: {
-          owner_uuid: null,
-          box_id: 0,
-          gift_status: "",
-        },
-      });
-    }
+    const sender = await prisma.flow_accounts.findFirst({
+      where: {
+        flow_address: withdraw.from,
+      }
+    })
+    const toFlowAccountUuid = toFlowRef?.account_uuid;
+    await prisma.nft_owner_history.create({
+      data: {
+        nft_id: nftId,
+        tx_id: txId,
+        receiver_uuid: toFlowAccountUuid,
+        receiver_flow_address: deposit.to,
+        sender_uuid: sender?.account_uuid,
+        sender_flow_address: withdraw.from,
+      },
+    });
+    await prisma.digital_item_nfts.update({
+      where: {
+        id: nftId,
+      },
+      data: {
+        gift_status: "",
+      },
+    });
     pushToDevice(fcmToken, {
       title: "NFTのギフトが完了しました",
       body: "",
@@ -467,9 +461,9 @@ const upsertFlowAccountRecord = async (
       flowJobId: any,
     }
 ) => {
-  await prisma.tobiratory_flow_accounts.upsert({
+  await prisma.flow_accounts.upsert({
     where: {
-      uuid: tobiratoryAccountUuid,
+      account_uuid: tobiratoryAccountUuid,
     },
     update: {
       flow_address: address,
@@ -477,7 +471,7 @@ const upsertFlowAccountRecord = async (
       tx_id: txId,
     },
     create: {
-      uuid: tobiratoryAccountUuid,
+      account_uuid: tobiratoryAccountUuid,
       flow_address: address,
       public_key: publicKey,
       tx_id: txId,

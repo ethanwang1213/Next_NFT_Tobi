@@ -32,8 +32,7 @@ import {
   adminGetAllSamples,
   adminDeleteSamples,
   adminDetailOfSample,
-  adminUpdateSample,
-  getSampleInfo,
+  getDigitalItemInfo,
   adminGetAllDigitalItems,
   adminDeleteDigitalItems,
   adminDetailOfDigitalItem,
@@ -169,7 +168,7 @@ app.post("/posts/:id/notinterested", dummyResponse);
 app.post("/my/nfts/open", openNFT);
 app.post("/my/items/:id/sale", dummyResponse);
 app.post("/my/nfts/:id/listing", dummyResponse);
-app.get("/items/:id", getSampleInfo);
+app.get("/items/:id", getDigitalItemInfo);
 app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", giftNFT);
@@ -193,7 +192,6 @@ app.post("/admin/digital/status", adminChangeDigitalStatus);
 app.get("/admin/samples", adminGetAllSamples);
 app.delete("/admin/samples", adminDeleteSamples);
 app.get("/admin/samples/:sampleId", adminDetailOfSample);
-app.post("/admin/samples/:sampleId", adminUpdateSample);
 
 // management digital items
 app.get("/admin/digital_items", adminGetAllDigitalItems);

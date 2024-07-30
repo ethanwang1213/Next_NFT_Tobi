@@ -1,369 +1,380 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-model tobiratory_accounts {
-  id                               Int                                @id @default(autoincrement())
-  uuid                             String                             @unique @db.VarChar(100)
-  email                            String                             @unique @db.VarChar(255)
-  username                         String                             @db.VarChar(255)
-  user_id                          String?                            @db.VarChar(255)
-  sns                              String                             @default("") @db.VarChar(255)
-  icon_url                         String                             @default("") @db.VarChar(255)
-  about_me                         String                             @default("") @db.VarChar(255)
-  social_link                      String[]                           @default([]) @db.VarChar(255)
-  gender                           String                             @default("") @db.VarChar(255)
-  birth                            String                             @default("") @db.VarChar(255)
-  gift_permission                  Boolean                            @default(false)
-  digital_item                     tobiratory_digital_items[]
-  flow_account                     tobiratory_flow_accounts?
-  favorite_saidans                 tobiratory_saidans_favorite[]
-  digital_nft                      tobiratory_digital_item_nfts[]
-  boxes                            tobiratory_boxes[]
-  material_iamges                  tobiratory_material_images[]
-  saidans                          tobiratory_saidans[]
-  samples                          tobiratory_sample_items[]
-  updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
-  tobiratory_businesses            tobiratory_businesses?
-  tobiratory_favorite_content      tobiratory_favorite_content[]
-  tobiratory_workspace_items       tobiratory_workspace_items[]
+model accounts {
+    id                Int                 @id @default(autoincrement())
+    uuid              String              @unique @db.VarChar(100)
+    email             String              @unique @db.VarChar(255)
+    username          String              @db.VarChar(255)
+    user_id           String?             @db.VarChar(255)
+    sns               String?             @db.VarChar(255)
+    icon_url          String?             @db.VarChar(255)
+    about_me          String?             @db.VarChar(255)
+    social_links      String[]            @default([]) @db.VarChar(255)
+    gender            String?             @db.VarChar(255)
+    birth             String?             @db.VarChar(255)
+    gift_permission   Boolean             @default(false)
+    digital_items     digital_items[]
+    flow_account      flow_accounts?
+    favorite_saidans  saidans_favorite[]
+    boxes             boxes[]
+    material_images   material_images[]
+    saidans           saidans[]
+    business          businesses?
+    favorite_contents contents_favorite[]
+    showcases         showcases[]
+    nfts              nft_owners[]
+    is_deleted        Boolean             @default(false)
+    updated_date_time DateTime            @default(now()) @db.Timestamp(6)
+    created_date_time DateTime            @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_flow_accounts {
-  user              tobiratory_accounts @relation(fields: [uuid], references: [uuid])
-  uuid              String              @id @db.VarChar(100)
-  flow_address      String              @default("") @db.VarChar(255)
-  public_key        String              @default("") @db.VarChar(255)
-  tx_id             String              @default("") @db.VarChar(255)
-  flow_job_id       String              @default("") @db.VarChar(255)
-  updated_date_time DateTime            @default(now()) @db.Timestamp(6)
-  created_date_time DateTime            @default(now()) @db.Timestamp(6)
+model flow_accounts {
+    account           accounts @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String   @id @db.VarChar(100)
+    flow_address      String?  @db.VarChar(255)
+    public_key        String?  @db.VarChar(255)
+    tx_id             String?  @db.VarChar(255)
+    flow_job_id       String?  @db.VarChar(255)
+    is_deleted        Boolean  @default(false)
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_saidans {
-  id                Int                           @id @default(autoincrement())
-  title             String                        @db.VarChar(255)
-  description       String                        @default("") @db.Text
-  template          tobiratory_saidans_template   @relation(fields: [template_id], references: [id])
-  template_id       Int
-  thumbnail_image   String                        @db.VarChar(255)
-  is_public         Boolean                       @default(true)
-  max_item_count    Int                           @default(0)
-  user              tobiratory_accounts           @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid        String                        @db.VarChar(255)
-  camera_data       tobiratory_saidan_camera?
-  favorite_user     tobiratory_saidans_favorite[]
-  updated_date_time DateTime                      @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                      @default(now()) @db.Timestamp(6)
+model saidans {
+    id                Int                @id @default(autoincrement())
+    title             String             @db.VarChar(255)
+    description       String?            @db.Text
+    saidans_template  saidans_template   @relation(fields: [template_id], references: [id])
+    template_id       Int
+    thumbnail_image   String             @db.VarChar(255)
+    is_public         Boolean            @default(true)
+    max_item_count    Int                @default(0)
+    account           accounts           @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String             @db.VarChar(255)
+    camera_data       saidan_camera?
+    favorite_users    saidans_favorite[]
+    is_deleted        Boolean            @default(false)
+    updated_date_time DateTime           @default(now()) @db.Timestamp(6)
+    created_date_time DateTime           @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_saidan_camera {
-  id                Int                @id @default(autoincrement())
-  saidan            tobiratory_saidans @relation(fields: [saidan_id], references: [id])
-  saidan_id         Int                @unique
-  position          Float[]
-  rotation          Float[]
-  updated_date_time DateTime           @default(now()) @db.Timestamp(6)
-  created_date_time DateTime           @default(now()) @db.Timestamp(6)
+model saidan_camera {
+    id                Int      @id @default(autoincrement())
+    saidan            saidans  @relation(fields: [saidan_id], references: [id])
+    saidan_id         Int      @unique
+    position          Float[]
+    rotation          Float[]
+    is_deleted        Boolean  @default(false)
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_saidans_template {
-  id                Int                  @id @default(autoincrement())
-  saidans           tobiratory_saidans[]
-  cover_image       String               @db.VarChar(255)
-  model_url         String               @db.VarChar(255)
-  type              Int
-  updated_date_time DateTime             @default(now()) @db.Timestamp(6)
-  created_date_time DateTime             @default(now()) @db.Timestamp(6)
+model saidans_template {
+    id                Int       @id @default(autoincrement())
+    saidans           saidans[]
+    cover_image       String    @db.VarChar(255)
+    model_url         String    @db.VarChar(255)
+    type              Int
+    updated_date_time DateTime  @default(now()) @db.Timestamp(6)
+    created_date_time DateTime  @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_saidans_favorite {
-  id                Int                 @id @default(autoincrement())
-  user              tobiratory_accounts @relation(fields: [favorite_user_id], references: [uuid])
-  favorite_user_id  String              @db.VarChar(255)
-  saidan            tobiratory_saidans  @relation(fields: [saidan_id], references: [id])
-  saidan_id         Int
-  updated_date_time DateTime            @default(now()) @db.Timestamp(6)
-  created_date_time DateTime            @default(now()) @db.Timestamp(6)
+model saidans_favorite {
+    id                Int      @id @default(autoincrement())
+    account           accounts @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String   @db.VarChar(255)
+    saidan            saidans  @relation(fields: [saidan_id], references: [id])
+    saidan_id         Int
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_contents {
-  id                          Int                           @id @default(autoincrement())
-  owner                       tobiratory_businesses?        @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid                  String                        @unique @db.VarChar(255)
-  name                        String                        @db.VarChar(255)
-  changed_name                String?                       @db.VarChar(255)
-  changed_name_time           DateTime                      @default(now()) @db.Timestamp(6)
-  image                       String                        @db.VarChar(255)
-  sticker                     String?                       @db.VarChar(255)
-  url                         String                        @db.VarChar(255)
-  description                 String                        @db.VarChar(255)
-  license                     String                        @db.VarChar(255)
-  license_data                String[]                      @default([]) @db.VarChar(255)
-  copyrights                  tobiratory_copyright[]
-  showcase                    tobiratory_showcase[]
-  updated_date_time           DateTime                      @default(now()) @db.Timestamp(6)
-  created_date_time           DateTime                      @default(now()) @db.Timestamp(6)
-  tobiratory_favorite_content tobiratory_favorite_content[]
+model contents {
+    id                Int                 @id @default(autoincrement())
+    businesses        businesses?         @relation(fields: [businesses_uuid], references: [uuid])
+    businesses_uuid   String              @unique @db.VarChar(255)
+    name              String              @db.VarChar(255)
+    changed_name      String?             @db.VarChar(255)
+    changed_name_time DateTime            @default(now()) @db.Timestamp(6)
+    image             String              @db.VarChar(255)
+    sticker           String?             @db.VarChar(255)
+    url               String              @db.VarChar(255)
+    description       String              @db.VarChar(255)
+    license           String              @db.VarChar(255)
+    license_data      String[]            @default([]) @db.VarChar(255)
+    copyrights        copyrights[]
+    showcases         showcases[]
+    favorite_users    contents_favorite[]
+    is_deleted        Boolean             @default(false)
+    updated_date_time DateTime            @default(now()) @db.Timestamp(6)
+    created_date_time DateTime            @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_digital_items {
-  id                   Int                                  @id @default(autoincrement())
-  user                 tobiratory_accounts                  @relation(fields: [creator_uuid], references: [uuid])
-  creator_uuid         String                               @db.VarChar(100)
-  creator_flow_address String?                              @db.VarChar(255)
-  name                 String                               @default("") @db.VarChar(255)
-  default_thumb_url    String                               @db.Text
-  custom_thumb_url     String                               @db.Text
-  is_default_thumb     Boolean                              @default(true)
-  material             tobiratory_material_images           @relation(fields: [material_id], references: [id])
-  material_id          Int                                  @default(0)
-  type                 Int
-  description          String                               @default("") @db.Text
-  limit                Int?
-  license              String                               @default("") @db.VarChar(255)
-  copyright            tobiratory_digital_items_copyright[]
-  sample_item          tobiratory_sample_items?
-  digital_nft          tobiratory_digital_item_nfts[]
-  item_id              Int?
-  tx_id                String?                              @db.VarChar(255)
-  status               Int
-  minted_count         Int                                  @default(0)
-  schedules            String[]
-  is_deleted           Boolean                              @default(false)
-  updated_date_time    DateTime                             @default(now()) @db.Timestamp(6)
-  created_date_time    DateTime                             @default(now()) @db.Timestamp(6)
+model digital_items {
+    id                Int                       @id @default(autoincrement())
+    account           accounts                  @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String                    @db.VarChar(100)
+    name              String?                   @db.VarChar(255)
+    model_url         String                    @db.Text
+    default_thumb_url String                    @db.Text
+    custom_thumb_url  String                    @db.Text
+    is_default_thumb  Boolean                   @default(true)
+    material_image    material_images           @relation(fields: [material_id], references: [id])
+    material_id       Int
+    type              Int
+    description       String?                   @db.Text
+    limit             Int?
+    license           String?                   @db.VarChar(255)
+    copyrights        digital_items_copyright[]
+    sample_item       sample_items?
+    nfts              digital_item_nfts[]
+    sales             sales[]
+    flow_item_id      Int?
+    tx_id             String?                   @db.VarChar(255)
+    metadata_status   Int
+    minted_count      Int                       @default(0)
+    sale_quantity     Int?
+    is_deleted        Boolean                   @default(false)
+    updated_date_time DateTime                  @default(now()) @db.Timestamp(6)
+    created_date_time DateTime                  @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_sample_items {
-  id                               Int                                @id @default(autoincrement())
-  digital_item                     tobiratory_digital_items           @relation(fields: [digital_item_id], references: [id])
-  digital_item_id                  Int                                @unique
-  user                             tobiratory_accounts                @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid                       String                             @db.VarChar(100)
-  model_url                        String                             @db.VarChar(255)
-  content_id                       Int                                @default(0)
-  price                            Int?
-  start_date                       DateTime?                          @db.Timestamp(6)
-  end_date                         DateTime?                          @db.Timestamp(6)
-  sale_quantity                    Int                                @default(0)
-  is_deleted                       Boolean                            @default(false)
-  updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
-  tobiratory_workspace             tobiratory_workspace_items[]
+model sales {
+    id                  Int           @id @default(autoincrement())
+    digital_item_id     Int
+    digital_item        digital_items @relation(fields: [digital_item_id], references: [id])
+    price               Int?
+    schedule_start_time DateTime
+    status              Int
+    sale_quantity       Int           @default(0)
+    updated_date_time   DateTime      @default(now()) @db.Timestamp(6)
+    created_date_time   DateTime      @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_workspace_items {
-  id                Int                     @id @default(autoincrement())
-  owner_uuid        String
-  user              tobiratory_accounts     @relation(fields: [owner_uuid], references: [uuid])
-  sample_id         Int
-  sample            tobiratory_sample_items @relation(fields: [sample_id], references: [id])
-  position          Float[]
-  rotation          Float[]
-  scale             Float?
-  stage_type        Int?
-  updated_date_time DateTime                @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                @default(now()) @db.Timestamp(6)
+model sample_items {
+    id                     Int                      @id @default(autoincrement())
+    digital_item           digital_items            @relation(fields: [digital_item_id], references: [id])
+    digital_item_id        Int                      @unique
+    is_deleted             Boolean                  @default(false)
+    showcase_sample_items  showcase_sample_items[]
+    workspace_sample_items workspace_sample_items[]
+    updated_date_time      DateTime                 @default(now()) @db.Timestamp(6)
+    created_date_time      DateTime                 @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_digital_item_nfts {
-  id                               Int                                @id @default(autoincrement())
-  serial_no                        Int?
-  digital_item                     tobiratory_digital_items           @relation(fields: [digital_item_id], references: [id])
-  digital_item_id                  Int
-  user                             tobiratory_accounts?               @relation(fields: [owner_uuid], references: [uuid])
-  nft_model                        String                             @default("") @db.VarChar(255)
-  nft_metadata                     String                             @default("") @db.Text
-  owner_uuid                       String?                            @db.VarChar(100)
-  saidan_id                        Int                                @default(0)
-  content_id                       Int                                @default(0)
-  state_type                       Int                                @default(0)
-  can_scale                        Boolean                            @default(false)
-  meter_height                     Float                              @default(0)
-  scale                            Float                              @default(0)
-  position                         Float[]                            @default([0, 0, 0])
-  rotation                         Float[]                            @default([0, 0, 0])
-  box_id                           Int                                @default(0)
-  mint_status                      String                             @default("minting") // "minted", "opened"
-  gift_status                      String                             @default("") @db.VarChar(255)
-  tx_id                            String?                            @db.VarChar(255)
-  updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  tobiratory_showcase_nfts         tobiratory_showcase_nft_items[]
-  tobiratory_digital_nft_ownership tobiratory_digital_nft_ownership[]
+model workspaces {
+    id                Int                      @id @default(autoincrement())
+    account_uuid      String                   @unique @db.VarChar(255)
+    sample_items      workspace_sample_items[]
+    updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
+    created_date_time DateTime                 @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_digital_nft_ownership {
-  id                       Int                           @id @default(autoincrement())
-  tobiratory_accounts      tobiratory_accounts?          @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid               String?                       @db.VarChar(100)
-  owner_flow_address       String                        @db.VarChar(255)
-  tobiratory_digital_items tobiratory_digital_item_nfts? @relation(fields: [nft_id], references: [id])
-  nft_id                   Int
-  tx_id                    String?                       @db.VarChar(255)
-  updated_date_time        DateTime                      @default(now()) @db.Timestamp(6)
-  created_date_time        DateTime                      @default(now()) @db.Timestamp(6)
+model workspace_sample_items {
+    id                Int          @id @default(autoincrement())
+    account_uuid      String       @db.VarChar(255)
+    workspace         workspaces   @relation(fields: [workspaces_id], references: [id])
+    workspaces_id     Int
+    sample_id         Int
+    sample_item       sample_items @relation(fields: [sample_id], references: [id])
+    position          Float[]
+    rotation          Float[]
+    scale             Float?
+    stage_type        Int?
+    updated_date_time DateTime     @default(now()) @db.Timestamp(6)
+    created_date_time DateTime     @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_boxes {
-  id                Int                 @id @default(autoincrement())
-  user              tobiratory_accounts @relation(fields: [creator_uuid], references: [uuid])
-  creator_uuid      String              @db.VarChar(100)
-  name              String              @db.VarChar(255)
-  gift_permission   Boolean             @default(false)
-  updated_date_time DateTime            @default(now()) @db.Timestamp(6)
-  created_date_time DateTime            @default(now()) @db.Timestamp(6)
+model digital_item_nfts {
+    id                 Int                  @id @default(autoincrement())
+    serial_no          Int?
+    digital_item       digital_items        @relation(fields: [digital_item_id], references: [id])
+    digital_item_id    Int
+    metadata           String?              @db.Text
+    mint_status        Int                  @default(0)
+    gift_status        String?              @db.VarChar(255)
+    tx_id              String?              @db.VarChar(255)
+    showcase_nft_items showcase_nft_items[]
+    nft_camera         nft_cameras?
+    nft_owner          nft_owners?
+    updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    created_date_time  DateTime             @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_businesses {
-  id                  Int                   @id @default(autoincrement())
-  user                tobiratory_accounts   @relation(fields: [uuid], references: [uuid])
-  uuid                String                @unique @db.VarChar(255)
-  first_name          String                @db.VarChar(255)
-  last_name           String                @db.VarChar(255)
-  birth               DateTime              @db.Date()
-  email               String                @db.VarChar(255)
-  country             String                @db.VarChar(255)
-  postal_code         String                @db.VarChar(255)
-  province            String                @db.VarChar(255)
-  city                String                @db.VarChar(255)
-  street              String                @db.VarChar(255)
-  building            String                @db.VarChar(255)
-  phone               String                @db.VarChar(255)
-  bank_account        String                @db.VarChar(255)
-  balance             Int                   @default(0)
-  content             tobiratory_contents?
-  updated_date_time   DateTime              @default(now()) @db.Timestamp(6)
-  created_date_time   DateTime              @default(now()) @db.Timestamp(6)
-  tobiratory_showcase tobiratory_showcase[]
+model nft_cameras {
+    nft_id            Int               @id @unique
+    nft               digital_item_nfts @relation(references: [id], fields: [nft_id])
+    stage_type        Int               @default(0)
+    meter_height      Float             @default(0)
+    scale             Float             @default(0)
+    position          Float[]           @default([0, 0, 0])
+    rotation          Float[]           @default([0, 0, 0])
+    updated_date_time DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time DateTime          @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_sales {
-  id                Int      @id @default(autoincrement())
-  item_id           Int
-  amount            Int
-  span              String   @db.VarChar(255)
-  price             String   @db.VarChar(255)
-  image             String   @db.VarChar(255)
-  name              String   @db.VarChar(255)
-  license           String   @db.VarChar(255)
-  updated_date_time DateTime @default(now()) @db.Timestamp(6)
-  created_date_time DateTime @default(now()) @db.Timestamp(6)
+model nft_owners {
+    id                 Int               @id @default(autoincrement())
+    account_uuid       String?           @db.VarChar(255)
+    account            accounts?         @relation(fields: [account_uuid], references: [uuid])
+    owner_flow_address String
+    nick_name          String?           @db.VarChar(255)
+    status             Int
+    nft                digital_item_nfts @relation(fields: [nft_id], references: [id])
+    saidan_id          Int?
+    nft_id             Int               @unique
+    box_id             Int?
+    updated_date_time  DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time  DateTime          @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_material_images {
-  id                       Int                        @id @default(autoincrement())
-  user                     tobiratory_accounts        @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid               String                     @db.VarChar(255)
-  image                    String                     @db.VarChar(255)
-  updated_date_time        DateTime                   @default(now()) @db.Timestamp(6)
-  created_date_time        DateTime                   @default(now()) @db.Timestamp(6)
-  tobiratory_digital_items tobiratory_digital_items[]
+model boxes {
+    id                Int      @id @default(autoincrement())
+    account           accounts @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String   @db.VarChar(100)
+    name              String   @db.VarChar(255)
+    gift_permission   Boolean  @default(false)
+    is_deleted        Boolean  @default(false)
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_copyright {
-  id                Int                                  @id @default(autoincrement())
-  copyright_name    String                               @db.VarChar(255)
-  content           tobiratory_contents                  @relation(fields: [content_id], references: [id])
-  content_id        Int
-  digital_items     tobiratory_digital_items_copyright[]
-  updated_date_time DateTime                             @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                             @default(now()) @db.Timestamp(6)
+model businesses {
+    id                Int       @id @default(autoincrement())
+    account           accounts  @relation(fields: [uuid], references: [uuid])
+    uuid              String    @unique @db.VarChar(255)
+    first_name        String    @db.VarChar(255)
+    last_name         String    @db.VarChar(255)
+    birth             DateTime  @db.Date()
+    email             String    @db.VarChar(255)
+    country           String    @db.VarChar(255)
+    postal_code       String    @db.VarChar(255)
+    province          String    @db.VarChar(255)
+    city              String    @db.VarChar(255)
+    street            String    @db.VarChar(255)
+    building          String    @db.VarChar(255)
+    phone             String    @db.VarChar(255)
+    bank_account      String    @db.VarChar(255)
+    balance           Int       @default(0)
+    content           contents?
+    is_deleted        Boolean   @default(false)
+    updated_date_time DateTime  @default(now()) @db.Timestamp(6)
+    created_date_time DateTime  @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_digital_items_copyright {
-  id                Int                      @id @default(autoincrement())
-  digital_item      tobiratory_digital_items @relation(fields: [digital_item_id], references: [id])
-  digital_item_id   Int
-  copyright         tobiratory_copyright     @relation(fields: [copyright_id], references: [id])
-  copyright_id      Int
-  updated_date_time DateTime                 @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                 @default(now()) @db.Timestamp(6)
+model material_images {
+    id                Int             @id @default(autoincrement())
+    account           accounts        @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String          @db.VarChar(255)
+    image             String          @db.VarChar(255)
+    digital_items     digital_items[]
+    is_deleted        Boolean         @default(false)
+    updated_date_time DateTime        @default(now()) @db.Timestamp(6)
+    created_date_time DateTime        @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_showcase {
-  id                               Int                                @id @default(autoincrement())
-  title                            String                             @db.VarChar(255)
-  description                      String                             @db.Text
-  owner                            tobiratory_businesses              @relation(fields: [owner_uuid], references: [uuid])
-  owner_uuid                       String
-  content                          tobiratory_contents                @relation(fields: [content_id], references: [id])
-  content_id                       Int
-  status                           Int                                @default(0)
-  tobiratory_showcase_template     tobiratory_showcase_template?      @relation(fields: [template_id], references: [id])
-  template_id                      Int
-  thumb_url                        String                             @db.VarChar(255)
-  position                         Float[]                            @default([0, 0, 0])
-  rotation                         Float[]                            @default([0, 0, 0])
-  wallpaper_tint                   String?                            @db.VarChar(255)
-  floor_tint                       String?                            @db.VarChar(255)
-  lighting_scene_tint              String?                            @db.VarChar(255)
-  lighting_scene_brightness        Int?
-  lighting_point_tint              String?                            @db.VarChar(255)
-  lighting_point_bright            Int?
-  schedule_time                    DateTime?                          @default(now()) @db.Timestamp(6)
-  updated_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  created_date_time                DateTime                           @default(now()) @db.Timestamp(6)
-  tobiratory_showcase_sample_items tobiratory_showcase_sample_items[]
-  tobiratory_showcase_nfts         tobiratory_showcase_nft_items[]
+model copyrights {
+    id                Int                       @id @default(autoincrement())
+    name              String                    @db.VarChar(255)
+    content           contents                  @relation(fields: [content_id], references: [id])
+    content_id        Int
+    digital_items     digital_items_copyright[]
+    updated_date_time DateTime                  @default(now()) @db.Timestamp(6)
+    created_date_time DateTime                  @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_showcase_template {
-  id                Int                   @id @default(autoincrement())
-  showcase          tobiratory_showcase[]
-  cover_image       String                @db.VarChar(255)
-  model_url         String                @db.Text
-  type              Int
-  title             String                @db.VarChar(255)
-  description       String                @db.Text
-  updated_date_time DateTime              @default(now()) @db.Timestamp(6)
-  created_date_time DateTime              @default(now()) @db.Timestamp(6)
+model digital_items_copyright {
+    id                Int           @id @default(autoincrement())
+    digital_item      digital_items @relation(fields: [digital_item_id], references: [id])
+    digital_item_id   Int
+    copyright         copyrights    @relation(fields: [copyright_id], references: [id])
+    copyright_id      Int
+    updated_date_time DateTime      @default(now()) @db.Timestamp(6)
+    created_date_time DateTime      @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_showcase_sample_items {
-  id                Int                     @id @default(autoincrement())
-  showcase          tobiratory_showcase     @relation(fields: [showcase_id], references: [id])
-  showcase_id       Int
-  sample            tobiratory_sample_items @relation(fields: [sample_id], references: [id])
-  sample_id         Int
-  stage_type        Int                     @default(0)
-  scale             Float                   @default(1)
-  position          Float[]
-  rotation          Float[]
-  updated_date_time DateTime                @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                @default(now()) @db.Timestamp(6)
+model showcases {
+    id                        Int                     @id @default(autoincrement())
+    title                     String                  @db.VarChar(255)
+    description               String                  @db.Text
+    account_uuid              String
+    account                   accounts                @relation(fields: [account_uuid], references: [uuid])
+    content                   contents                @relation(fields: [content_id], references: [id])
+    content_id                Int
+    status                    Int                     @default(0)
+    showcase_template         showcase_template?      @relation(fields: [template_id], references: [id])
+    template_id               Int
+    thumb_url                 String                  @db.VarChar(255)
+    position                  Float[]                 @default([0, 0, 0])
+    rotation                  Float[]                 @default([0, 0, 0])
+    wallpaper_tint            String?                 @db.VarChar(255)
+    floor_tint                String?                 @db.VarChar(255)
+    lighting_scene_tint       String?                 @db.VarChar(255)
+    lighting_scene_brightness Int?
+    lighting_point_tint       String?                 @db.VarChar(255)
+    lighting_point_bright     Int?
+    schedule_time             DateTime?               @default(now()) @db.Timestamp(6)
+    showcase_sample_items     showcase_sample_items[]
+    showcase_nft_items        showcase_nft_items[]
+    is_deleted                Boolean                 @default(false)
+    updated_date_time         DateTime                @default(now()) @db.Timestamp(6)
+    created_date_time         DateTime                @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_showcase_nft_items {
-  id                Int                          @id @default(autoincrement())
-  showcase          tobiratory_showcase          @relation(fields: [showcase_id], references: [id])
-  showcase_id       Int
-  nft               tobiratory_digital_item_nfts @relation(fields: [nft_id], references: [id])
-  nft_id            Int                          @unique
-  stage_type        Int                          @default(0)
-  scale             Float                        @default(1)
-  meter_height      Float                        @default(0)
-  position          Float[]
-  rotation          Float[]
-  updated_date_time DateTime                     @default(now()) @db.Timestamp(6)
-  created_date_time DateTime                     @default(now()) @db.Timestamp(6)
+model showcase_template {
+    id                Int         @id @default(autoincrement())
+    showcases         showcases[]
+    cover_image       String      @db.VarChar(255)
+    model_url         String      @db.Text
+    type              Int
+    title             String      @db.VarChar(255)
+    description       String      @db.Text
+    updated_date_time DateTime    @default(now()) @db.Timestamp(6)
+    created_date_time DateTime    @default(now()) @db.Timestamp(6)
 }
 
-model tobiratory_favorite_content {
-  id                Int                 @id @default(autoincrement())
-  content           tobiratory_contents @relation(fields: [content_id], references: [id])
-  content_id        Int
-  user              tobiratory_accounts @relation(fields: [favor_uuid], references: [uuid])
-  favor_uuid        String              @db.VarChar(255)
-  updated_date_time DateTime            @default(now()) @db.Timestamp(6)
-  created_date_time DateTime            @default(now()) @db.Timestamp(6)
+model showcase_sample_items {
+    id                Int          @id @default(autoincrement())
+    showcase          showcases    @relation(fields: [showcase_id], references: [id])
+    showcase_id       Int
+    sample_item       sample_items @relation(fields: [sample_item_id], references: [id])
+    sample_item_id    Int
+    stage_type        Int          @default(0)
+    scale             Float        @default(1)
+    position          Float[]
+    rotation          Float[]
+    updated_date_time DateTime     @default(now()) @db.Timestamp(6)
+    created_date_time DateTime     @default(now()) @db.Timestamp(6)
+}
+
+model showcase_nft_items {
+    id                Int               @id @default(autoincrement())
+    showcase          showcases         @relation(fields: [showcase_id], references: [id])
+    showcase_id       Int
+    digital_item_nft  digital_item_nfts @relation(fields: [nft_id], references: [id])
+    nft_id            Int               @unique
+    stage_type        Int               @default(0)
+    scale             Float             @default(1)
+    meter_height      Float             @default(0)
+    position          Float[]
+    rotation          Float[]
+    updated_date_time DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time DateTime          @default(now()) @db.Timestamp(6)
+}
+
+model contents_favorite {
+    id                Int      @id @default(autoincrement())
+    content           contents @relation(fields: [content_id], references: [id])
+    content_id        Int
+    account           accounts @relation(fields: [account_uuid], references: [uuid])
+    account_uuid      String   @db.VarChar(255)
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }

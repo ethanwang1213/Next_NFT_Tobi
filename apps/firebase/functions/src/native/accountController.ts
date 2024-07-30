@@ -6,17 +6,17 @@ import {prisma} from "../prisma";
 export const getAccountById = async (req: Request, res: Response) => {
   const {uid} = req.params;
   const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization ?? "").then(async (/* decodedToken: DecodedIdToken*/) => {
-    // const uid = decodedToken.uid;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const accountData = await prisma.tobiratory_accounts.findUnique({
+      const accountData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
 
-      if (accountData == null) {
-        res.status(401).send({
+      if (!accountData) {
+        res.status(404).send({
           status: "error",
           data: "not-exist",
         });
@@ -31,7 +31,7 @@ export const getAccountById = async (req: Request, res: Response) => {
         icon: accountData.icon_url,
         sns: accountData.sns,
         aboutMe: accountData.about_me,
-        socialLinks: accountData.social_link,
+        socialLinks: accountData.social_links,
         gender: accountData.gender,
         birth: accountData.birth,
         createdAt: accountData.created_date_time,
@@ -49,7 +49,7 @@ export const getAccountById = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };
@@ -59,17 +59,22 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization ?? "").then(async (_decodedToken: DecodedIdToken) => {
     try {
-      const accountData = await prisma.tobiratory_accounts.findUnique({
+      const accountData = await prisma.accounts.findUnique({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
         include: {
-          saidans: true,
+          saidans: {
+            where: {
+              is_deleted: false,
+            },
+          },
         },
       });
 
-      if (accountData == null) {
-        res.status(401).send({
+      if (!accountData) {
+        res.status(404).send({
           status: "error",
           data: "not-exist",
         });
@@ -95,7 +100,7 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error.code,
+      data: error,
     });
   });
 };

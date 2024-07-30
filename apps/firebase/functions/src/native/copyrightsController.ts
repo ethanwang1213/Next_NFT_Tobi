@@ -8,9 +8,10 @@ export const getCopyrights = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
+          is_deleted: false,
         },
       });
       if (!admin) {
@@ -20,9 +21,12 @@ export const getCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findUnique({
+      const content = await prisma.contents.findUnique({
         where: {
-          owner_uuid: uid,
+          businesses_uuid: uid,
+        },
+        include: {
+          copyrights: true,
         },
       });
       if (!content) {
@@ -32,15 +36,10 @@ export const getCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const copyrights = await prisma.tobiratory_copyright.findMany({
-        where: {
-          content_id: content.id,
-        },
-      });
-      const returnData = copyrights.map((copyright)=> {
+      const returnData = content.copyrights.map((copyright)=> {
         return {
           id: copyright.id,
-          name: copyright.copyright_name,
+          name: copyright.name,
         };
       });
       res.status(200).send({
@@ -69,7 +68,7 @@ export const updateCopyrights = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -81,9 +80,9 @@ export const updateCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findUnique({
+      const content = await prisma.contents.findUnique({
         where: {
-          owner_uuid: uid,
+          businesses_uuid: uid,
         },
       });
       if (!content) {
@@ -93,7 +92,7 @@ export const updateCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const copyright = await prisma.tobiratory_copyright.findUnique({
+      const copyright = await prisma.copyrights.findUnique({
         where: {
           id: parseInt(id),
           content_id: content.id,
@@ -106,17 +105,17 @@ export const updateCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const updatedCopyrights = await prisma.tobiratory_copyright.update({
+      const updatedCopyrights = await prisma.copyrights.update({
         where: {
           id: parseInt(id),
         },
         data: {
-          copyright_name: name,
+          name: name,
         },
       });
       const returnData = {
         id: updatedCopyrights.id,
-        name: updatedCopyrights.copyright_name,
+        name: updatedCopyrights.name,
       };
       res.status(200).send({
         status: "success",
@@ -143,7 +142,7 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const admin = await prisma.tobiratory_businesses.findFirst({
+      const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
         },
@@ -155,9 +154,9 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const content = await prisma.tobiratory_contents.findUnique({
+      const content = await prisma.contents.findUnique({
         where: {
-          owner_uuid: uid,
+          businesses_uuid: uid,
         },
       });
       if (!content) {
@@ -167,7 +166,7 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      const copyright = await prisma.tobiratory_copyright.findUnique({
+      const copyright = await prisma.copyrights.findUnique({
         where: {
           id: parseInt(id),
           content_id: content.id,
@@ -180,12 +179,12 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.tobiratory_digital_items_copyright.deleteMany({
+      await prisma.digital_items_copyright.deleteMany({
         where: {
           copyright_id: copyright.id,
         },
       });
-      const deletedCopyrights = await prisma.tobiratory_copyright.delete({
+      const deletedCopyrights = await prisma.copyrights.delete({
         where: {
           id: parseInt(id),
         },
