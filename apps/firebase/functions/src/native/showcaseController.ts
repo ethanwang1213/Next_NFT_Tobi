@@ -396,7 +396,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
                   digital_item: {
                     include: {
                       material_image: true,
-                    }
+                    },
                   },
                 },
               },
@@ -409,7 +409,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
                   digital_item: {
                     include: {
                       material_image: true,
-                    }
+                    },
                   },
                 },
               },
@@ -441,7 +441,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           modelType: digitalData.type,
           modelUrl: digitalData.model_url,
           thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
-          materialUrl: digitalData.material_image.image,
+          materialUrl: digitalData.material_image?.image,
           stageType: relationSample.stage_type,
           scale: relationSample.scale,
           position: {
@@ -465,7 +465,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           modelType: digitalData.type,
           modelUrl: digitalData.model_url,
           thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
-          materialUrl: digitalData.material_image.image,
+          materialUrl: digitalData.material_image?.image,
           stageType: relationNft.stage_type,
           scale: relationNft.scale,
           itemMeterHeight: relationNft.meter_height,

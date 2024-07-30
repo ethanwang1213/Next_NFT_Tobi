@@ -183,7 +183,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
     modelUrl,
     materialId,
     type,
-  }: { thumbUrl: string, modelUrl: string, materialId: number, type: number } = req.body;
+  }: { thumbUrl: string, modelUrl: string, materialId?: number, type: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
@@ -211,7 +211,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           digitalItemId: digitalItem.id,
           sampleItemId: digitalItem.sample_item?.id,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-          materialUrl: digitalItem.material_image.image,
+          materialUrl: digitalItem.material_image?.image,
           modelUrl: digitalItem.model_url,
           materialId: digitalItem.material_id,
           type: digitalItem.type,
@@ -266,7 +266,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
           name: digitalItem.name,
           description: digitalItem.description,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-          materialUrl: digitalItem.material_image.image,
+          materialUrl: digitalItem.material_image?.image,
           modelUrl: digitalItem.model_url,
           materialId: digitalItem.material_id,
           saleQuantity: digitalItem.sale_quantity,
@@ -450,7 +450,7 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
           id: digitalItem.id,
           name: digitalItem.name,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-          materialUrl: digitalItem.material_image.image,
+          materialUrl: digitalItem.material_image?.image,
           price: digitalItem.sales.length > 0 ? digitalItem.sales[0].price : null,
           status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
           saleQuantity: digitalItem.sale_quantity,
@@ -640,7 +640,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
         defaultThumbnailUrl: sample.digital_item.default_thumb_url,
         customThumbnailUrl: sample.digital_item.custom_thumb_url,
         isCustomThumbnailSelected: !sample.digital_item.is_default_thumb,
-        materialUrl: sample.digital_item.material_image.image,
+        materialUrl: sample.digital_item.material_image?.image,
         price: sample.digital_item.sales.length > 0 ? sample.digital_item.sales[0].price : null,
         status: sample.digital_item.sales.length > 0 ? sample.digital_item.sales[0].status : sample.digital_item.metadata_status,
         quantityLimit: sample.digital_item.limit,
@@ -714,7 +714,7 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
           id: digitalItem.id,
           name: digitalItem.name,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-          materialUrl: digitalItem.material_image.image,
+          materialUrl: digitalItem.material_image?.image,
           price: digitalItem.sales.length > 0 ? digitalItem.sales[0].price : null,
           status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
           saleQuantity: digitalItem.sale_quantity,
@@ -899,7 +899,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         defaultThumbnailUrl: digitalItem.default_thumb_url,
         customThumbnailUrl: digitalItem.custom_thumb_url,
         isCustomThumbnailSelected: !digitalItem.is_default_thumb,
-        materialUrl: digitalItem.material_image.image,
+        materialUrl: digitalItem.material_image?.image,
         price: digitalItem.sales.length>0?digitalItem.sales[0].price:null,
         status: digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status,
         schedules: digitalItem.sales.map((schedule) => {

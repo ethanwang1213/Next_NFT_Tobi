@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import { digitalItemStatus, mintStatus } from "./native/utils";
+import {digitalItemStatus, mintStatus} from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -82,7 +82,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
     }
   } else if (txType == "giftNFT") {
     try {
-      await fetchAndUpdateGiftNFT(params.nftId, params.fcmToken);
+      await fetchAndUpdateGiftNFT(params.digitalItemNftId, params.fcmToken);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -170,7 +170,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   if (!nft) {
     throw new Error("NFT_NOT_FOUND");
   }
-  const txId = nft.tx_id;
+  const txId = nft.mint_tx_id;
   if (!txId) {
     throw new Error("TX_NOT_FOUND");
   }
@@ -179,12 +179,12 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     throw new Error("DIGITAL_ITEM_NOT_FOUND");
   }
 
-  const {serialNumber, to} = await fetchMintNFT(txId);
+  const {id, serialNumber, to} = await fetchMintNFT(txId);
   const itemId = digitalItem.flow_item_id;
   const creatorFlowAccount = await prisma.flow_accounts.findUnique({
     where: {
       account_uuid: digitalItem.account_uuid,
-    }
+    },
   });
   if (!itemId) {
     throw new Error("ITEM_ID_NOT_FOUND");
@@ -211,6 +211,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
     data: {
       mint_status: mintStatus.minted,
       serial_no: Number(serialNumber),
+      flow_nft_id: Number(id),
     },
   });
   await prisma.digital_items.update({
@@ -231,16 +232,6 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   if (!flowAccount) {
     throw new Error("FLOW_ACCOUNT_NOT_FOUND");
   }
-  await prisma.nft_owner_history.create({
-    data: {
-      nft_id: digitalItemNftId,
-      tx_id: txId,
-      receiver_uuid: flowAccount.account_uuid,
-      receiver_flow_address: to,
-      sender_flow_address: "",
-      sender_uuid: null,
-    },
-  });
   pushToDevice(fcmToken, {
     title: "NFTの作成が完了しました",
     body: "タップして見に行ってみよう!",
@@ -330,33 +321,12 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
   if (!nft) {
     throw new Error("NFT_NOT_FOUND");
   }
-  const txId = nft.tx_id;
+  const txId = nft.gift_tx_id;
   if (!txId) {
     throw new Error("TX_NOT_FOUND");
   }
   const {withdraw, deposit} = await fetchGiftNFT(txId);
   if (withdraw && deposit) {
-    const toFlowRef = await prisma.flow_accounts.findFirst({
-      where: {
-        flow_address: deposit.to,
-      },
-    });
-    const sender = await prisma.flow_accounts.findFirst({
-      where: {
-        flow_address: withdraw.from,
-      }
-    })
-    const toFlowAccountUuid = toFlowRef?.account_uuid;
-    await prisma.nft_owner_history.create({
-      data: {
-        nft_id: nftId,
-        tx_id: txId,
-        receiver_uuid: toFlowAccountUuid,
-        receiver_flow_address: deposit.to,
-        sender_uuid: sender?.account_uuid,
-        sender_flow_address: withdraw.from,
-      },
-    });
     await prisma.digital_item_nfts.update({
       where: {
         id: nftId,
@@ -395,9 +365,9 @@ const fetchGiftNFT = async (txId: string) => {
     };
   for (const event of tx.events) {
     if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Withdraw`) {
-      result.withdraw = {id: event.data.id, from: event.data.from, date: new Date().getDate()};
+      result.withdraw = {id: event.data.id, from: event.data.from, date: new Date().getTime()};
     } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Deposit`) {
-      result.deposit = {id: event.data.id, to: event.data.to, date: new Date().getDate()};
+      result.deposit = {id: event.data.id, to: event.data.to, date: new Date().getTime()};
     }
   }
   if (result.withdraw && result.deposit) {

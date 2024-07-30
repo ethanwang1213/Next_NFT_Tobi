@@ -126,8 +126,8 @@ model digital_items {
     default_thumb_url String                    @db.Text
     custom_thumb_url  String                    @db.Text
     is_default_thumb  Boolean                   @default(true)
-    material_image    material_images           @relation(fields: [material_id], references: [id])
-    material_id       Int
+    material_image    material_images?          @relation(fields: [material_id], references: [id])
+    material_id       Int?
     type              Int
     description       String?                   @db.Text
     limit             Int?
@@ -194,13 +194,15 @@ model workspace_sample_items {
 
 model digital_item_nfts {
     id                 Int                  @id @default(autoincrement())
+    flow_nft_id        Int?
     serial_no          Int?
     digital_item       digital_items        @relation(fields: [digital_item_id], references: [id])
     digital_item_id    Int
     metadata           String?              @db.Text
     mint_status        Int                  @default(0)
     gift_status        String?              @db.VarChar(255)
-    tx_id              String?              @db.VarChar(255)
+    mint_tx_id         String?              @db.VarChar(255)
+    gift_tx_id         String?              @db.VarChar(255)
     showcase_nft_items showcase_nft_items[]
     nft_camera         nft_cameras?
     nft_owner          nft_owners?

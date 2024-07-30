@@ -536,7 +536,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
                 digital_item: {
                   include: {
                     material_image: true,
-                  }
+                  },
                 },
               },
             });
@@ -577,7 +577,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
           modelType: saidanItem.type,
           modelUrl: saidanItem.model_url,
           thumbUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
-          materialUrl: saidanItem.digital_item?.material_image.image,
+          materialUrl: saidanItem.digital_item?.material_image?.image,
           stageType: saidanItem.stage_type,
           position: {
             x: saidanItem.position[0],

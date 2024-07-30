@@ -221,7 +221,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
           image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
           modelType: item.nft.digital_item.type,
           modelUrl: item.nft.digital_item.model_url,
-          materialImage: item.nft.digital_item.material_image.image,
+          materialImage: item.nft.digital_item.material_image?.image,
           saidanId: item.saidan_id,
           status: item?.nft.mint_status,
         };
@@ -296,7 +296,7 @@ export const getBoxData = async (req: Request, res: Response) => {
         image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
         modelType: item.nft.digital_item.type,
         modelUrl: item.nft.digital_item.model_url,
-        materialImage: item.nft.digital_item.material_image.image,
+        materialImage: item.nft.digital_item.material_image?.image,
         saidanId: item.saidan_id,
         status: item?.nft.mint_status,
       };

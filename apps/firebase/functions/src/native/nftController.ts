@@ -276,7 +276,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
           account: {
             include: {
               flow_account: true,
-            }
+            },
           },
         },
       },
