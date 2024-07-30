@@ -242,6 +242,9 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           is_deleted: false,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         include: {
           material_image: true,
@@ -374,6 +377,9 @@ export const adminChangeDigitalStatus = async (req: Request, res: Response) => {
         where: {
           id: parseInt(id),
           is_deleted: false,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         data: {
           sales: {
@@ -429,6 +435,9 @@ export const adminGetAllSamples = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           is_deleted: false,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         include: {
           sales: {
@@ -692,6 +701,9 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
         where: {
           account_uuid: uid,
           is_deleted: false,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         include: {
           sample_item: true,
@@ -852,6 +864,9 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         where: {
           id: parseInt(digitalId),
           is_deleted: false,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         include: {
           copyrights: {
@@ -989,6 +1004,9 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         where: {
           id: parseInt(digitalId),
           is_deleted: false,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         include: {
           sample_item: true,
@@ -1169,6 +1187,9 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
         where: {
           id: parseInt(id),
           is_deleted: false,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         include: {
           copyrights: {
