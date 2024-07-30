@@ -122,16 +122,16 @@ export const flowTxSend = functions.region(REGION)
       }
     });
 
-    const updateGiftTxId = async (id: number, txId: string) => {
-      await prisma.digital_item_nfts.update({
-        where: {
-          id: id,
-        },
-        data: {
-          gift_tx_id: txId,
-        }
-      });
-    }
+const updateGiftTxId = async (id: number, txId: string) => {
+  await prisma.digital_item_nfts.update({
+    where: {
+      id: id,
+    },
+    data: {
+      gift_tx_id: txId,
+    },
+  });
+};
 
 const updateDigitalItemRecord = async (id: number, txId: string) => {
   await prisma.digital_items.update({
@@ -990,7 +990,7 @@ const authzBase = async () => {
     throw new Error("The environment of flow signer is not defined.");
   }
   let addr = process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_ADDRESS;
-  let keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
+  const keyId = Number(process.env.FLOW_ACCOUNT_CREATION_ACCOUNT_KEY_ID);
   let privateKey: string | undefined;
   if (process.env.PUBSUB_EMULATOR_HOST) {
     privateKey = process.env.FLOW_ACCOUNT_PRIVATE_KEY;
