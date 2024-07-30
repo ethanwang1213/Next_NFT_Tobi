@@ -202,7 +202,6 @@ model digital_item_nfts {
     gift_status        String?              @db.VarChar(255)
     tx_id              String?              @db.VarChar(255)
     showcase_nft_items showcase_nft_items[]
-    owner_history      nft_owner_history[]
     nft_camera         nft_cameras?
     nft_owner          nft_owners?
     updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
@@ -234,19 +233,6 @@ model nft_owners {
     box_id             Int?
     updated_date_time  DateTime          @default(now()) @db.Timestamp(6)
     created_date_time  DateTime          @default(now()) @db.Timestamp(6)
-}
-
-model nft_owner_history {
-    id                    Int               @id @default(autoincrement())
-    sender_uuid           String?           @db.VarChar(100)
-    sender_flow_address   String            @db.VarChar(255)
-    receiver_uuid         String?           @db.VarChar(100)
-    receiver_flow_address String            @db.VarChar(255)
-    nft                   digital_item_nfts @relation(fields: [nft_id], references: [id])
-    nft_id                Int
-    tx_id                 String            @db.VarChar(255)
-    updated_date_time     DateTime          @default(now()) @db.Timestamp(6)
-    created_date_time     DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model boxes {

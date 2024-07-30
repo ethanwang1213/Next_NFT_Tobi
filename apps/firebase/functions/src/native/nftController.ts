@@ -191,16 +191,6 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         },
       },
     });
-    await prisma.nft_owner_history.create({
-      data: {
-        sender_uuid: null,
-        sender_flow_address: "",
-        receiver_uuid: uid,
-        receiver_flow_address: creatorData?.flow_account?.flow_address ?? "",
-        nft_id: nft.id,
-        tx_id: "",
-      },
-    });
     const flowJobId = uuidv4();
     const message = {
       flowJobId, txType: "createItem", params: {
@@ -289,11 +279,6 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
             }
           },
         },
-      },
-      owner_history: {
-        orderBy: {
-          created_date_time: "desc",
-        }
       },
     },
   });
@@ -536,12 +521,6 @@ export const getNftInfo = async (req: Request, res: Response) => {
               },
             },
           },
-          owner_history: {
-            orderBy: {
-              created_date_time: "asc",
-            },
-          },
-
         },
       });
       if (!nftData) {
@@ -552,23 +531,6 @@ export const getNftInfo = async (req: Request, res: Response) => {
         return;
       }
 
-      const owners = await Promise.all(
-          nftData.owner_history.map(async (ownership) => {
-            const sender = await prisma.accounts.findUnique({
-              where: {
-                uuid: ownership.sender_uuid ?? "",
-              },
-              include: {
-                business: true,
-              },
-            });
-            return {
-              uid: sender?.uuid,
-              avatarUrl: sender == null ? "" : sender.icon_url,
-              isBusinnessAccount: sender?.business != null,
-            };
-          })
-      );
       const ownerData = await prisma.nft_owners.findUnique({
         where: {
           nft_id: parseInt(id),
@@ -585,11 +547,6 @@ export const getNftInfo = async (req: Request, res: Response) => {
           },
         },
       });
-      const creator = await prisma.accounts.findUnique({
-        where: {
-          uuid: nftData.owner_history[0].receiver_uuid ?? "",
-        },
-      });
       const copyrights = nftData.digital_item.copyrights.map((relate) => {
         return relate.copyright.name;
       });
@@ -601,16 +558,10 @@ export const getNftInfo = async (req: Request, res: Response) => {
         name: nftData.digital_item.name,
         modelUrl: nftData.digital_item.model_url,
         description: nftData.digital_item.description,
-        creator: creator == null ? null : {
-          uid: creator.uuid,
-          name: creator.username,
-        },
         copyrights: copyrights,
         license: nftData.digital_item.license,
-        acquiredDate: nftData.owner_history[0].created_date_time,
         certImageUrl: "",
         sn: nftData.serial_no,
-        owners: owners,
       };
       res.status(200).send({
         status: "success",
