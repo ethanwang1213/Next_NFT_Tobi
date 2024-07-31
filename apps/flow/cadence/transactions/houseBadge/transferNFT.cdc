@@ -3,22 +3,22 @@ import HouseBadge from "../../contracts/HouseBadge.cdc"
 
 transaction(recipient: Address, withdrawID: UInt64) {
     /// Reference to the withdrawer's collection
-    let withdrawRef: &HouseBadge.Collection
+    let withdrawRef: auth(NonFungibleToken.Withdraw) &HouseBadge.Collection
 
     /// Reference of the collection to deposit the NFT to
     let depositRef: &{NonFungibleToken.CollectionPublic}
 
-    prepare(acct: AuthAccount) {
+    prepare(acct: auth(BorrowValue, GetStorageCapabilityController) &Account) {
         self.withdrawRef = acct
-            .borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath)
+            .storage.borrow<auth(NonFungibleToken.Withdraw) &HouseBadge.Collection>(from: HouseBadge.collectionStoragePath)
             ?? panic("Account does not store an object at the specified path")
 
         // get the recipients public account object
         let recipient = getAccount(recipient)
 
         self.depositRef = recipient
-            .getCapability(HouseBadge.collectionPublicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            .capabilities.get<&{NonFungibleToken.CollectionPublic}>(HouseBadge.collectionPublicPath)
+            .borrow()
             ?? panic("Could not borrow a reference to the receiver's collection")
     }
     execute {

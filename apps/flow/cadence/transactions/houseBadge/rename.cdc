@@ -7,11 +7,10 @@ transaction(address: Address) {
     let admin: &HouseBadge.Admin
     let collection: &HouseBadge.Collection
 
-    prepare(acct: AuthAccount) {
-        HouseBadge.createAdmin()
-        self.admin = acct.borrow<&HouseBadge.Admin>(from: HouseBadge.adminStoragePath)
+    prepare(acct: auth(BorrowValue) &Account) {
+        self.admin = acct.storage.borrow<&HouseBadge.Admin>(from: HouseBadge.adminStoragePath)
             ?? panic("Could not borrow Admin")
-        self.collection = acct.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath)
+        self.collection = acct.storage.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath)
             ?? panic("Could not borrow Collection")
     }
 
