@@ -165,6 +165,13 @@ export const getMyProfile = async (req: Request, res: Response) => {
           uuid: uid,
           is_deleted: false,
         },
+        include: {
+          saidans: {
+            orderBy: {
+              created_date_time: "asc",
+            },
+          },
+        },
       });
 
       if (!accountData) {
@@ -201,6 +208,12 @@ export const getMyProfile = async (req: Request, res: Response) => {
         gender: accountData.gender,
         birth: accountData.birth,
         giftPermission: accountData.gift_permission,
+        firstSaidan: accountData.saidans.length==0?
+          null :
+          {
+            id: accountData.saidans[0].id,
+            removedDefaultItem: accountData.removed_default_items,
+          },
         flow: {
           flowAddress: flowAccountData.flow_address,
           publicKey: flowAccountData.public_key,

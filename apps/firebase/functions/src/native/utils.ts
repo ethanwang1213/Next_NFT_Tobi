@@ -4,6 +4,8 @@
  * @returns {boolean} The if obj is empty.
  */
 
+import { prisma } from "../prisma";
+
 export function isEmptyObject(obj: object): boolean {
   const len = Object.keys(obj).length;
   if (len) {
@@ -27,16 +29,6 @@ export const statusOfShowcase = {
   publicSchedule: 2,
 };
 
-// export const statusOfDigitalItem = {
-//   draft: 1,
-//   private: 2,
-//   public: 3,
-//   onSale: 4,
-//   unListed: 5,
-//   publicSchedule: 6,
-//   saleSchedule: 7,
-// };
-
 export const digitalItemStatus = {
   draft: 1,
   private: 2,
@@ -52,20 +44,48 @@ export const mintStatus = {
   opened: 3,
 };
 
-// export function getStatusOfShowcase(
-//   status: number,
-//   updatedTime: Date,
-//   scheduleDate: Date|null,
-// ): number{
-//   if (!scheduleDate) {
-//     return status;
-//   }
-//   const scheduleTime = +new Date(scheduleDate);
-//   const nowTime = Date.now();
-//   if (nowTime>scheduleTime) {
-//     return status;
-//   }else {
+export enum statusOfLimitTransaction {
+  notExistAccount,
+  limitedTransaction,
+  permitted,
+}
 
-//   }
-//   return 1;
-// }
+export async function increaseTrasactionAmmount(uuid: string): Promise<statusOfLimitTransaction> {
+  const userData = await prisma.accounts.findUnique({
+    where: {
+      uuid: uuid,
+    }
+  });
+  if (!userData) {
+    return statusOfLimitTransaction.notExistAccount;
+  }
+  if (userData.transaction_amount>=1000) {
+    const now = Date.now();
+    const lastUpdatedTIme = new Date(userData.last_limit_updated_time).getTime()
+    if (now-lastUpdatedTIme>=24*60*60*1000) {
+      const today5h = new Date(new Date().setHours(5,0,0,0))
+      await prisma.accounts.update({
+        where: {
+          uuid: uuid,
+        },
+        data: {
+          last_limit_updated_time: today5h,
+          transaction_amount: 1,
+        }
+      })
+      return statusOfLimitTransaction.permitted;
+    }
+    return statusOfLimitTransaction.limitedTransaction;
+  }
+  await prisma.accounts.update({
+    where: {
+      uuid: uuid,
+    },
+    data: {
+      transaction_amount: {
+        increment: 1,
+      },
+    }
+  })
+  return statusOfLimitTransaction.permitted;
+}
