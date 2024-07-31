@@ -44,12 +44,14 @@ import {
   createSaidan,
   decorationSaidan,
   favoriteSaidan,
+  getDefaultItems,
   getMySaidans,
   getMySaidansById,
   getSaidanDecorationData,
   getSaidanTemplates,
   getSaidansById,
   putAwayItemInSaidan,
+  removeDefaultItems,
   updateMySaidan,
 } from "./saidanController";
 import {deleteMaterial, getMaterial, removeMaterials, uploadMaterial} from "./fileController";
@@ -135,6 +137,8 @@ app.post("/model/acrylic-stand", modelApiHandler(ModelRequestType.AcrylicStand))
 app.post("/model/remove-bg", modelApiHandler(ModelRequestType.RemoveBg));
 app.post("/model/message-card", modelApiHandler(ModelRequestType.MessageCard));
 
+app.get("/default-items", getDefaultItems);
+app.delete("/default-items/:id", removeDefaultItems);
 app.get("/my/saidans", getMySaidans);
 app.post("/my/saidans", createSaidan);
 app.post("/my/saidans/:saidanId/update", updateMySaidan);
