@@ -25,6 +25,7 @@ export type BookIndex = {
   nekoPage: PageIndexData;
   nftPage: PageIndexData;
   redeemPage: PageIndexData;
+  settingPage: PageIndexData;
 };
 
 // journal 本の画像の左上隅座標を表す型

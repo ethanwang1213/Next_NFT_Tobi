@@ -1,6 +1,8 @@
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
+import { httpsCallable } from "firebase/functions";
 import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { functions } from "journal-pkg/fetchers/firebase/journal-client";
 import { BookIndex, tagType } from "journal-pkg/types/journal-types";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -21,6 +23,7 @@ import NftPage from "../components/pages/NftPage/NftPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
+import SettingPage from "../components/pages/SettingPage/SettingPage";
 import { useHoldNfts } from "./journal-HoldNftsProvider";
 
 type Props = {
@@ -73,12 +76,16 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       start: 0,
       end: 0,
     },
+    settingPage: {
+      start: 0,
+      end: 0,
+    },
   });
 
   const router = useRouter();
   const logoutModal = useRef<HTMLInputElement>();
 
-  const { user } = useAuth();
+  const { user, redeemLinkCode } = useAuth();
   const { nekoNfts, otherNfts } = useHoldNfts();
 
   // プロフィールタグ
@@ -100,7 +107,37 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
   );
 
   useEffect(() => {
+    // Do not execute if the login is anonymous or if there is no link code.
+    if (!user?.email || !redeemLinkCode) return;
+    console.log("start verify code");
+    const callable = httpsCallable<{ linkCode: String }, boolean>(
+      functions,
+      "journalNfts-validateRedeemEmailLink",
+    );
+    callable({ linkCode: redeemLinkCode })
+      .then(() => {
+        setPageNo(bookIndex.settingPage.start);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (
+          error.code === "functions/not-found" ||
+          error.code === "functions/already-exists" ||
+          error.code === "functions/out-of-range"
+        ) {
+          alert("無効なリンクです");
+        } else {
+          alert("エラーが発生しました");
+        }
+      });
+
+    // Remove the parameter from the URL to prevent it from remaining in the URL
+    removeRedeemLinkCodeFromURL();
+  }, [user]);
+
+  useEffect(() => {
     const profilePageNum = 2;
+    const redeemPageNum = 2;
 
     const nekoLength =
       process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
@@ -125,6 +162,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
     const nekoPageIndex = profilePageIndex + profilePageNum;
     const nftPageIndex = nekoPageIndex + nekoPageNum;
     const redeemPageIndex = nftPageIndex + nftPageNum;
+    const settingPageIndex = redeemPageIndex + redeemPageNum;
 
     // nekoやnftのページ数が増えたとき、それより後ろにいる場合は追加分だけページ番号をずらす
     const nekoIncreases =
@@ -158,6 +196,10 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
         start: redeemPageIndex,
         end: redeemPageIndex + 1,
       },
+      settingPage: {
+        start: settingPageIndex,
+        end: settingPageIndex + 1,
+      },
     });
 
     // 各ページを生成し配列に格納する
@@ -175,6 +217,8 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       )),
       <RedeemPage pageNum={0} key={redeemPageIndex + 0} />,
       <RedeemPage pageNum={1} key={redeemPageIndex + 1} />,
+      <SettingPage pageNum={0} key={settingPageIndex + 0} />,
+      <SettingPage pageNum={1} key={settingPageIndex + 1} />,
     ]);
 
     // 各ページの開始ページ番号にタグを設定
@@ -191,6 +235,10 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       {
         image: "/journal/images/icon/Serial_journal.svg",
         page: redeemPageIndex,
+      },
+      {
+        image: "/journal/images/icon/Setting_journal.svg",
+        page: settingPageIndex,
       },
       {
         image: "/journal/images/icon/logout_journal.svg",
@@ -232,6 +280,19 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
     }),
     [pageNo, pages, tags, bookIndex, setPageNo, setPages, setTags],
   );
+
+  const removeRedeemLinkCodeFromURL = () => {
+    const { pathname, query } = router;
+    const { code, ...newQuery } = query;
+
+    if (!code) return;
+
+    const newUrl = {
+      pathname,
+      query: newQuery,
+    };
+    router.replace(newUrl, undefined, { shallow: true });
+  };
 
   return (
     <BookContext.Provider value={contextValue}>

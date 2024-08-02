@@ -21,6 +21,7 @@ import {
   User,
 } from "journal-pkg/types/journal-types";
 import _ from "lodash";
+import { useRouter } from "next/router";
 import React, {
   createContext,
   Dispatch,
@@ -46,6 +47,7 @@ type ContextType = {
     newBirthday: Birthday,
     newDbIconPath: string,
   ) => void;
+  redeemLinkCode?: string;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
   // TOBIRAPOLIS祭スタンプラリー用
@@ -87,6 +89,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User | null>(null);
   const [dbIconUrl, setDbIconUrl] = useState<string>("");
+  const [redeemLinkCode, setRedeemLinkCode] = useState<string | null>(null);
+  const router = useRouter();
   const MAX_NAME_LENGTH = 12;
 
   // ユーザー作成用関数
@@ -121,6 +125,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         console.log(`UID: ${firebaseUser.uid}`);
         console.log(`メールアドレス: ${firebaseUser.email}`);
 
+        setRedeemLinkCodeFromURL();
+
         try {
           // ユーザーコレクションからユーザーデータを参照
           const ref = doc(db, `users/${firebaseUser.uid}`);
@@ -154,6 +160,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
       return () => unsubscribe();
     });
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
   const updateProfile = (
@@ -255,6 +262,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const setRedeemLinkCodeFromURL = () => {
+    const { query } = router;
+    const { code } = query;
+    if (code) {
+      setRedeemLinkCode(code as string);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -262,6 +277,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         dbIconUrl,
         MAX_NAME_LENGTH: MAX_NAME_LENGTH,
         updateProfile,
+        redeemLinkCode,
         setDbIconUrl,
         setJoinTobiratoryInfo,
         // TOBIRAPOLIS祭スタンプラリー用

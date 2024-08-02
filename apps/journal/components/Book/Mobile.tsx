@@ -14,6 +14,7 @@ import NftPage from "../pages/NftPage/NftPage";
 import DiscordOAuthButton from "../pages/ProfilePage/sub/DiscordOAuthButton";
 import SuccessDiscordStamp from "../pages/ProfilePage/sub/SuccessDiscordStamp";
 import RedeemPage from "../pages/RedeemPage/RedeemPage";
+import SettingPage from "../pages/SettingPage/SettingPage";
 import Tag from "../Tag";
 
 /**
@@ -54,7 +55,8 @@ const Mobile = () => {
     if (
       pages[pageNo].type === NftPage ||
       pages[pageNo].type === NekoPage ||
-      pages[pageNo].type === RedeemPage
+      pages[pageNo].type === RedeemPage ||
+      pages[pageNo].type === SettingPage
     ) {
       setIsArrowShown(false);
     } else {
