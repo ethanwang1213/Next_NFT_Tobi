@@ -4,6 +4,7 @@
  * @returns {boolean} The if obj is empty.
  */
 
+import { numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime } from "../lib/constants";
 import { prisma } from "../prisma";
 
 export function isEmptyObject(obj: object): boolean {
@@ -50,7 +51,7 @@ export enum statusOfLimitTransaction {
   permitted,
 }
 
-export async function increaseTrasactionAmmount(uuid: string): Promise<statusOfLimitTransaction> {
+export async function increaseTransactionAmount(uuid: string): Promise<statusOfLimitTransaction> {
   const userData = await prisma.accounts.findUnique({
     where: {
       uuid: uuid,
@@ -59,17 +60,17 @@ export async function increaseTrasactionAmmount(uuid: string): Promise<statusOfL
   if (!userData) {
     return statusOfLimitTransaction.notExistAccount;
   }
-  if (userData.transaction_amount>=1000) {
+  if (userData.transaction_amount>=numberOfLimitTransaction) {
     const now = Date.now();
-    const lastUpdatedTIme = new Date(userData.last_limit_updated_time).getTime()
-    if (now-lastUpdatedTIme>=24*60*60*1000) {
-      const today5h = new Date(new Date().setHours(5,0,0,0))
+    const lastUpdatedTime = new Date(userData.last_limit_updated_time).getTime()
+    if (now-lastUpdatedTime>=resetLimitTransactionDuration) {
+      const todayResetTime = new Date(new Date().setHours(resetLimitTransactionTime,0,0,0))
       await prisma.accounts.update({
         where: {
           uuid: uuid,
         },
         data: {
-          last_limit_updated_time: today5h,
+          last_limit_updated_time: todayResetTime,
           transaction_amount: 1,
         }
       })

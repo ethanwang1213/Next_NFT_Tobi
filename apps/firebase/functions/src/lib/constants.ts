@@ -391,3 +391,7 @@ export const MAIL_FOOT = `
 </body>
 </html>
 `;
+
+export const resetLimitTransactionDuration = 1 * 24 * 60 * 60 * 1000;
+export const numberOfLimitTransaction = 1000;
+export const resetLimitTransactionTime = 5;
