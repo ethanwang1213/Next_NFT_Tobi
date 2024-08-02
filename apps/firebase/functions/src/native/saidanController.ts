@@ -829,7 +829,7 @@ export const removeDefaultItems = async (req: Request, res: Response) => {
       const defaultItem = await prisma.default_items.findUnique({
         where: {
           id: Number(id),
-        }
+        },
       });
       if (!defaultItem) {
         res.status(404).send({
@@ -845,8 +845,8 @@ export const removeDefaultItems = async (req: Request, res: Response) => {
         data: {
           removed_default_items: {
             push: defaultItem.id,
-          }
-        }
+          },
+        },
       });
       res.status(200).send({
         status: "success",

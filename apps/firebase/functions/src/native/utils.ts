@@ -4,8 +4,8 @@
  * @returns {boolean} The if obj is empty.
  */
 
-import { numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime } from "../lib/constants";
-import { prisma } from "../prisma";
+import {numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime} from "../lib/constants";
+import {prisma} from "../prisma";
 
 export function isEmptyObject(obj: object): boolean {
   const len = Object.keys(obj).length;
@@ -55,16 +55,16 @@ export async function increaseTransactionAmount(uuid: string): Promise<statusOfL
   const userData = await prisma.accounts.findUnique({
     where: {
       uuid: uuid,
-    }
+    },
   });
   if (!userData) {
     return statusOfLimitTransaction.notExistAccount;
   }
   if (userData.transaction_amount>=numberOfLimitTransaction) {
     const now = Date.now();
-    const lastUpdatedTime = new Date(userData.last_limit_updated_time).getTime()
+    const lastUpdatedTime = new Date(userData.last_limit_updated_time).getTime();
     if (now-lastUpdatedTime>=resetLimitTransactionDuration) {
-      const todayResetTime = new Date(new Date().setHours(resetLimitTransactionTime,0,0,0))
+      const todayResetTime = new Date(new Date().setHours(resetLimitTransactionTime, 0, 0, 0));
       await prisma.accounts.update({
         where: {
           uuid: uuid,
@@ -72,8 +72,8 @@ export async function increaseTransactionAmount(uuid: string): Promise<statusOfL
         data: {
           last_limit_updated_time: todayResetTime,
           transaction_amount: 1,
-        }
-      })
+        },
+      });
       return statusOfLimitTransaction.permitted;
     }
     return statusOfLimitTransaction.limitedTransaction;
@@ -86,7 +86,7 @@ export async function increaseTransactionAmount(uuid: string): Promise<statusOfL
       transaction_amount: {
         increment: 1,
       },
-    }
-  })
+    },
+  });
   return statusOfLimitTransaction.permitted;
 }
