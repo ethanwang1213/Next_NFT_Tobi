@@ -184,6 +184,14 @@ exports.removeRedeemEmail = functions.region(REGION).https.onCall(async (data: {
   return true;
 });
 
+exports.getRedeemEmails = functions.region(REGION).https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+  const uid = context.auth.uid;
+  return await getRedeemEmails(uid);
+});
+
 /*
  * structure of redeemLinkCodes collection
  * redeemLinkCodes > uid > {linkCodes: {hash1: {email: "foo@bar.com", expireAt: timestamp-value}, hash2: ...}}
