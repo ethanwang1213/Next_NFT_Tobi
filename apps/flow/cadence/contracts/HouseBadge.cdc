@@ -13,7 +13,6 @@ access(all) contract HouseBadge: NonFungibleToken {
     access(all) var collectionStoragePath: StoragePath
     // access(all) var minterPublicPath: PublicPath
     access(all) var minterStoragePath: StoragePath
-    access(all) var adminStoragePath: StoragePath
 
     /************************************************/
     /******************** EVENTS ********************/
@@ -57,12 +56,6 @@ access(all) contract HouseBadge: NonFungibleToken {
 
         access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
             return <- HouseBadge.createEmptyCollection(nftType: Type<@HouseBadge.NFT>())
-        }
-    }
-
-    access(all) resource Admin {
-        access(all) fun rename(nft: &NFT, newName: String) {
-            nft.rename(newName: newName)
         }
     }
 
@@ -180,13 +173,6 @@ access(all) contract HouseBadge: NonFungibleToken {
         }
     }
 
-    access(all) fun createAdmin() {
-        self.adminStoragePath = /storage/HouseBadgeAdmin
-        if self.account.storage.borrow<&Admin>(from: self.adminStoragePath) == nil {
-            self.account.storage.save(<- create Admin(), to: self.adminStoragePath)
-        }
-    }
-
     // access(all) fun minter(): Capability<&Minter> {
     //     return self.account.getCapability<&Minter>(self.minterPublicPath)
     // }
@@ -198,14 +184,9 @@ access(all) contract HouseBadge: NonFungibleToken {
         self.collectionStoragePath = /storage/HouseBadgeCollection
         // self.minterPublicPath = /public/HouseBadgeMinter
         self.minterStoragePath = /storage/HouseBadgeMinter
-        self.adminStoragePath = /storage/HouseBadgeAdmin
 
         if self.account.storage.borrow<&Minter>(from: self.minterStoragePath) == nil {
             self.account.storage.save(<- create Minter(), to: self.minterStoragePath)
-        }
-
-        if self.account.storage.borrow<&Admin>(from: self.adminStoragePath) == nil {
-            self.account.storage.save(<- create Admin(), to: self.adminStoragePath)
         }
 
         if self.account.storage.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath) == nil {

@@ -22,7 +22,6 @@
     "getAchievementBadgeIds2": "flow-c1 scripts execute ./cadence/scripts/achievementBadge/getIds.cdc --network=emulator 179b6b1cb6755e31",
     "getMetadata": "flow-c1 scripts execute ./cadence/scripts/getMetadata.cdc --network=emulator f8d6e0586b0a20c7 100",
     "getHouseBadgeMetadata": "flow-c1 scripts execute ./cadence/scripts/houseBadge/getMetadata.cdc --network=emulator f8d6e0586b0a20c7 0",
-    "renameHouseBadge": "flow-c1 transactions send ./cadence/transactions/houseBadge/rename.cdc --network=emulator f8d6e0586b0a20c7",
     "getAchievementBadgeMetadata": "flow-c1 scripts execute ./cadence/scripts/achievementBadge/getMetadata.cdc --network=emulator f8d6e0586b0a20c7 0",
     "transfer": "flow-c1 transactions send ./cadence/transactions/transferNFT.cdc --network=emulator 179b6b1cb6755e31 0",
     "transferHouseBadge": "flow-c1 transactions send ./cadence/transactions/houseBadge/transferNFT.cdc --network=emulator 179b6b1cb6755e31 0",
