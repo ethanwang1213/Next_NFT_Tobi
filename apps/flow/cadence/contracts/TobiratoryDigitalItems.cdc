@@ -31,7 +31,7 @@ access(all) contract TobiratoryDigitalItems: NonFungibleToken {
     access(all) resource NFT: NonFungibleToken.NFT {
         access(all) let id: UInt64
         access(all) let itemID: UInt64
-        access(all) let itemsCapability: Capability<&{ItemsPublic}>
+        access(all) let itemsCapability: Capability<&Items>
         access(all) let serialNumber: UInt32
         access(contract) var extraMetadata: {String: AnyStruct}
         access(contract) var ownerHistory: {UFix64: Address}
@@ -39,7 +39,7 @@ access(all) contract TobiratoryDigitalItems: NonFungibleToken {
 
         init(
             itemID: UInt64,
-            itemsCapability: Capability<&{ItemsPublic}>,
+            itemsCapability: Capability<&Items>,
             serialNumber: UInt32,
             extraMetadata: {String: AnyStruct},
         ) {
@@ -552,7 +552,7 @@ access(all) contract TobiratoryDigitalItems: NonFungibleToken {
             pre {
                 self.ownerAddress == self.owner!.address: "Invalid minter"
             }
-            let itemsCapability = getAccount(itemCreatorAddress).capabilities.get<&{ItemsPublic}>(TobiratoryDigitalItems.ItemsPublicPath)
+            let itemsCapability = getAccount(itemCreatorAddress).capabilities.get<&Items>(TobiratoryDigitalItems.ItemsPublicPath)
             let itemsRef = itemsCapability.borrow() ?? panic("Not found")
             let itemRef = itemsRef.borrowItem(itemID: itemID) ?? panic("Missing Item")
             assert(itemRef.limit == nil || itemRef.mintedCount < itemRef.limit!, message: "Limit over")
