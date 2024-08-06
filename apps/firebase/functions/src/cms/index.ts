@@ -1,0 +1,25 @@
+/**
+ * Import function triggers from their respective submodules:
+ *
+ * import {onCall} from "firebase-functions/v2/https";
+ * import {onDocumentWritten} from "firebase-functions/v2/firestore";
+ *
+ * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ */
+
+import * as functions from "firebase-functions";
+import * as cors from "cors";
+import * as express from "express";
+import {REGION} from "./constants";
+import {authRouter} from "./lib/authRoute";
+import {userRouter} from "./lib/userRoute";
+import {contentRouter} from "./lib/contentRoute";
+
+const app = express();
+app.use(cors({origin: true}));
+
+app.use("/auth", authRouter);
+app.use("/users", userRouter);
+app.use("/contents", contentRouter);
+
+export const tobiratory_cms = functions.region(REGION).https.onRequest(app);

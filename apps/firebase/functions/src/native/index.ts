@@ -21,7 +21,9 @@ import {
   getContentByUuid,
   getFavoriteContents,
   getMyContentInfo,
+  reportContent,
   setFavoriteContent,
+  submitDocumentReportContent,
   updateMyContentInfo,
 } from "./contentController";
 import {
@@ -103,6 +105,7 @@ app.get("/business/:uid/content", getContentByUuid);
 app.get("/contents/favor", getFavoriteContents);
 app.get("/contents/:id", getContentById);
 app.post("/contents/:id", setFavoriteContent);
+app.put("/contents/:id", reportContent);
 
 app.get("/nfts/:id", getNftInfo);
 
@@ -219,6 +222,7 @@ app.post("/admin/showcases/:id/throw", throwItemShowcase);
 // management content
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
+app.post("/admin/content/documents", submitDocumentReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);
