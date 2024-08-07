@@ -2,21 +2,30 @@ import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import JournalStampRally from "../../contracts/JournalStampRally.cdc"
 
 transaction(recipient: Address, withdrawID: UInt64) {
-    let withdrawRef: &JournalStampRally.Collection
+    /// Reference to the withdrawer's collection
+    let withdrawRef: auth(NonFungibleToken.Withdraw) &JournalStampRally.Collection
+
+    /// Reference of the collection to deposit the NFT to
     let depositRef: &{NonFungibleToken.CollectionPublic}
 
-    prepare(acct: AuthAccount) {
+    prepare(acct: auth(BorrowValue, GetStorageCapabilityController) &Account) {
         self.withdrawRef = acct
-            .borrow<&JournalStampRally.Collection>(from: JournalStampRally.collectionStoragePath)
+            .storage.borrow<auth(NonFungibleToken.Withdraw) &JournalStampRally.Collection>(from: JournalStampRally.collectionStoragePath)
             ?? panic("Account does not store an object at the specified path")
+
+        // get the recipients public account object
         let recipient = getAccount(recipient)
+
         self.depositRef = recipient
-            .getCapability(JournalStampRally.collectionPublicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            .capabilities.get<&{NonFungibleToken.CollectionPublic}>(JournalStampRally.collectionPublicPath)
+            .borrow()
             ?? panic("Could not borrow a reference to the receiver's collection")
     }
     execute {
+        // withdraw the NFT from the owner's collection
         let nft <- self.withdrawRef.withdraw(withdrawID: withdrawID)
+
+        // Deposit the NFT in the recipient's collection
         self.depositRef.deposit(token: <-nft)
     }
     post {
