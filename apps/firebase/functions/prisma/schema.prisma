@@ -30,6 +30,7 @@ model accounts {
     favorite_contents       contents_favorite[]
     showcases               showcases[]
     nfts                    nft_owners[]
+    reported_contents       reported_contents[]
     removed_default_items   Int[]
     transaction_amount      Int                 @default(0)
     last_limit_updated_time DateTime            @default(now()) @db.Timestamp(6)
@@ -123,9 +124,24 @@ model contents {
     copyrights        copyrights[]
     showcases         showcases[]
     favorite_users    contents_favorite[]
+    reported_contents reported_contents[]
     is_deleted        Boolean             @default(false)
     updated_date_time DateTime            @default(now()) @db.Timestamp(6)
     created_date_time DateTime            @default(now()) @db.Timestamp(6)
+}
+
+model reported_contents {
+    id                Int      @id @default(autoincrement())
+    content_id        Int
+    content           contents @relation(fields: [content_id], references: [id])
+    reporter_uuid     String   @db.VarChar(255)
+    reporter          accounts @relation(fields: [reporter_uuid], references: [uuid])
+    title             String   @db.VarChar(255)
+    description       String   @db.Text
+    documents         String[] @db.Text
+    is_solved         Boolean?
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
 model digital_items {

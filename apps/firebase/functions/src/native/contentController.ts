@@ -23,6 +23,22 @@ export const getContentById = async (req: Request, res: Response) => {
         });
         return;
       }
+      const reportList = await prisma.reported_contents.findMany({
+        where: {
+          content_id: content.id,
+          is_solved: {
+            not: true,
+          },
+        }
+      });
+
+      if (!reportList.length) {
+        res.status(401).send({
+          status: "error",
+          data: "reported",
+        });
+        return;
+      }
       const showcase = await prisma.showcases.findFirst({
         where: {
           content_id: content.id,
@@ -225,6 +241,22 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         });
         return;
       }
+      const reportList = await prisma.reported_contents.findMany({
+        where: {
+          content_id: content.id,
+          is_solved: {
+            not: true,
+          },
+        }
+      });
+
+      if (!reportList.length) {
+        res.status(401).send({
+          status: "error",
+          data: "reported",
+        });
+        return;
+      }
       const showcase = await prisma.showcases.findFirst({
         where: {
           content_id: content.id,
@@ -419,6 +451,22 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         });
         return;
       }
+      const reportList = await prisma.reported_contents.findMany({
+        where: {
+          content_id: admin.content?.id,
+          is_solved: {
+            not: true,
+          },
+        }
+      });
+
+      if (!reportList.length) {
+        res.status(401).send({
+          status: "error",
+          data: "reported",
+        });
+        return;
+      }
       const timeDifference = new Date().getTime() - new Date(admin.content?.changed_name_time??"").getTime();
       if (timeDifference<3*30*24*60*60*1000&&name) {// 3 months
         res.status(401).send({
@@ -533,6 +581,22 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         });
         return;
       }
+      const reportList = await prisma.reported_contents.findMany({
+        where: {
+          content_id: admin.content?.id,
+          is_solved: {
+            not: true,
+          },
+        }
+      });
+
+      if (!reportList.length) {
+        res.status(401).send({
+          status: "error",
+          data: "reported",
+        });
+        return;
+      }
 
       const returnData = {
         id: admin.content?.id,
@@ -587,6 +651,22 @@ export const setFavoriteContent = async (req: Request, res: Response) => {
         res.status(404).send({
           status: "error",
           data: "not-content",
+        });
+        return;
+      }
+      const reportList = await prisma.reported_contents.findMany({
+        where: {
+          content_id: content.id,
+          is_solved: {
+            not: true,
+          },
+        }
+      });
+
+      if (!reportList.length) {
+        res.status(401).send({
+          status: "error",
+          data: "reported",
         });
         return;
       }
@@ -662,6 +742,121 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "success",
         data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const reportContent = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  const {title, description} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    try {
+      const uid = decodedToken.uid;
+      const content = await prisma.contents.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (!content) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exits",
+        });
+        return;
+      }
+      const createReport = await prisma.reported_contents.create({
+        data: {
+          title: title,
+          description: description,
+          reporter_uuid: uid,
+          content_id: content.id,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: createReport.id,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const submitDocumentReportContent = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {documents}:{documents: string} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    try {
+      const uid = decodedToken.uid;
+      const admin = await prisma.businesses.findFirst({
+        where: {
+          uuid: uid,
+          is_deleted: false,
+        },
+        include: {
+          content: {
+            include: {
+              reported_contents: true,
+              copyrights: true,
+            },
+          },
+        },
+      });
+      if (!admin) {
+        res.status(401).send({
+          status: "error",
+          data: "not-admin",
+        });
+        return;
+      }
+      if (!admin.content) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exits",
+        });
+        return;
+      }
+      const reportedContent = await prisma.reported_contents.findFirst({
+        where: {
+          content_id: admin.content.id,
+          is_solved: null,
+        },
+      });
+      const updateDocuments = await prisma.reported_contents.update({
+        where: {
+          id: reportedContent?.id
+        },
+        data: {
+          documents: {
+            push: documents,
+          },
+        },
+      })
+      res.status(200).send({
+        status: "success",
+        data: updateDocuments.id,
       });
     } catch (error) {
       res.status(401).send({
