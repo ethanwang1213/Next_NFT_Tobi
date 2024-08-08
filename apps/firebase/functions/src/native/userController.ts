@@ -441,7 +441,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
       balance: 0,
     };
     const contentData = {
-      business_uuid: uid,
+      businesses_uuid: uid,
       name: contentName,
       image: "",
       url,
@@ -459,7 +459,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
         });
         const copyrights = copyrightHolder.map((copyright: string)=>{
           return {
-            copyright_name: copyright,
+            name: copyright,
             content_id: savedContentData.id,
           };
         });
