@@ -468,11 +468,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
         });
         const showcaseTemplate = await tx.showcase_template.findFirst();
         if (!showcaseTemplate) {
-          res.status(401).send({
-            status: "error",
-            data: "not-template",
-          });
-          return;
+          throw new Error("not-template");
         }
         await tx.showcases.create({
           data: {
@@ -492,11 +488,18 @@ export const businessSubmission = async (req: Request, res: Response) => {
         status: "success",
         data: returnData,
       });
-    } catch (error) {
-      res.status(500).send({
-        status: "error",
-        data: error,
-      });
+    } catch (error: any) {
+      if (error.message === "not-template") {
+        res.status(401).send({
+          status: "error",
+          data: "not-template",
+        });
+      } else {
+        res.status(500).send({
+          status: "error",
+          data: error,
+        });
+      }
     }
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
