@@ -726,18 +726,32 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
         include: {
           content: {
             include: {
+              reported_contents: {
+                where: {
+                  is_solved: {
+                    not: true,
+                  },
+                },
+              },
               showcases: true,
             },
           },
         },
       });
-      const returnData = favorContents.map((content) => {
+      let returnData:{
+        id: number,
+        name: string,
+        thumbImage: string,
+      }[] = [];
+      favorContents.forEach((content) => {
         const mainShowcase = content.content.showcases.filter((showcase) => showcase.status == statusOfShowcase.public);
-        return {
-          id: content.content_id,
-          name: content.content.name,
-          thumbImage: mainShowcase[0].thumb_url,
-        };
+        if (!content.content.reported_contents.length) {
+          returnData.push({
+            id: content.content_id,
+            name: content.content.name,
+            thumbImage: mainShowcase[0].thumb_url,
+          });  
+        }
       });
       res.status(200).send({
         status: "success",
@@ -844,6 +858,13 @@ export const submitDocumentReportContent = async (req: Request, res: Response) =
           is_solved: null,
         },
       });
+      if (!reportedContent) {
+        res.status(401).send({
+          status: "error",
+          data: "not-reported",
+        });
+        return;
+      }
       const updateDocuments = await prisma.reported_contents.update({
         where: {
           id: reportedContent?.id,
