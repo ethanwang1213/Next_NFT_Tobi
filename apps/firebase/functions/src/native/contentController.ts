@@ -29,7 +29,7 @@ export const getContentById = async (req: Request, res: Response) => {
           is_solved: {
             not: true,
           },
-        }
+        },
       });
 
       if (!reportList.length) {
@@ -247,7 +247,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
           is_solved: {
             not: true,
           },
-        }
+        },
       });
 
       if (!reportList.length) {
@@ -457,7 +457,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
           is_solved: {
             not: true,
           },
-        }
+        },
       });
 
       if (!reportList.length) {
@@ -587,7 +587,7 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
           is_solved: {
             not: true,
           },
-        }
+        },
       });
 
       if (!reportList.length) {
@@ -660,7 +660,7 @@ export const setFavoriteContent = async (req: Request, res: Response) => {
           is_solved: {
             not: true,
           },
-        }
+        },
       });
 
       if (!reportList.length) {
@@ -846,14 +846,14 @@ export const submitDocumentReportContent = async (req: Request, res: Response) =
       });
       const updateDocuments = await prisma.reported_contents.update({
         where: {
-          id: reportedContent?.id
+          id: reportedContent?.id,
         },
         data: {
           documents: {
             push: documents,
           },
         },
-      })
+      });
       res.status(200).send({
         status: "success",
         data: updateDocuments.id,

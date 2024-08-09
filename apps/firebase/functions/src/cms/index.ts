@@ -22,4 +22,4 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/contents", contentRouter);
 
-export const tobiratory_cms = functions.region(REGION).https.onRequest(app);
+export const tobiratoryCms = functions.region(REGION).https.onRequest(app);
