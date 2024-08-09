@@ -32,7 +32,7 @@ export const getContentById = async (req: Request, res: Response) => {
         },
       });
 
-      if (!reportList.length) {
+      if (reportList.length) {
         res.status(401).send({
           status: "error",
           data: "reported",
@@ -250,7 +250,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         },
       });
 
-      if (!reportList.length) {
+      if (reportList.length) {
         res.status(401).send({
           status: "error",
           data: "reported",
@@ -460,7 +460,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         },
       });
 
-      if (!reportList.length) {
+      if (reportList.length) {
         res.status(401).send({
           status: "error",
           data: "reported",
@@ -590,7 +590,7 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         },
       });
 
-      if (!reportList.length) {
+      if (reportList.length) {
         res.status(401).send({
           status: "error",
           data: "reported",
@@ -663,7 +663,7 @@ export const setFavoriteContent = async (req: Request, res: Response) => {
         },
       });
 
-      if (!reportList.length) {
+      if (reportList.length) {
         res.status(401).send({
           status: "error",
           data: "reported",
