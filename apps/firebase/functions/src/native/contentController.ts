@@ -738,7 +738,7 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
           },
         },
       });
-      let returnData:{
+      const returnData:{
         id: number,
         name: string,
         thumbImage: string,
@@ -750,7 +750,7 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
             id: content.content_id,
             name: content.content.name,
             thumbImage: mainShowcase[0].thumb_url,
-          });  
+          });
         }
       });
       res.status(200).send({
