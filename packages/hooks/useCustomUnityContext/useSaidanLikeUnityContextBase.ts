@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { UpdateIdValues, WasdParams } from "types/adminTypes";
 import {
+  ActionType,
   ItemBaseData,
   ItemBaseId,
   ItemId,
@@ -10,7 +11,12 @@ import {
   ParentId,
   SampleBaseDataForPlacing,
 } from "types/unityTypes";
-import { SaidanLikeData, UnityMessageJson, UnitySceneType } from "./types";
+import {
+  SaidanLikeData,
+  UndoneOrRedone,
+  UnityMessageJson,
+  UnitySceneType,
+} from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 export const useSaidanLikeUnityContextBase = ({
@@ -18,12 +24,29 @@ export const useSaidanLikeUnityContextBase = ({
   itemMenuX,
   onRemoveItemEnabled,
   onRemoveItemDisabled,
+  onActionUndone,
+  onActionRedone,
 }: {
   sceneType: UnitySceneType;
   itemMenuX: number;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
+  onActionUndone?: UndoneOrRedone;
+  onActionRedone?: UndoneOrRedone;
 }) => {
+  const {
+    // states
+    unityProvider,
+    isLoaded,
+    // functions
+    addEventListener,
+    removeEventListener,
+    postMessageToUnity,
+    // event handler
+    handleSimpleMessage,
+  } = useCustomUnityContextBase({ sceneType });
+
+  // states
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
   const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
@@ -33,21 +56,16 @@ export const useSaidanLikeUnityContextBase = ({
     (ItemTypeParam & ItemBaseId & ParentId) | null
   >(null);
 
+  const [isUndoable, setIsUndoable] = useState<boolean>(false);
+  const [isRedoable, setIsRedoable] = useState<boolean>(false);
+
   const sampleIdToDigitalItemIdMap = useMemo(
     () => new Map<number, number>(),
     [],
   );
   const nftIdToDigitalItemIdMap = useMemo(() => new Map<number, number>(), []);
 
-  const {
-    unityProvider,
-    isLoaded,
-    addEventListener,
-    removeEventListener,
-    postMessageToUnity,
-    handleSimpleMessage,
-  } = useCustomUnityContextBase({ sceneType });
-
+  // functions
   const postMessageToLoadData = useCallback(() => {
     setIsSaidanSceneLoaded(true);
 
@@ -217,6 +235,20 @@ export const useSaidanLikeUnityContextBase = ({
     [postMessageToUnity],
   );
 
+  // undo/redo
+  const undoAction = useCallback(() => {
+    postMessageToUnity("UndoMessageReceiver", "");
+  }, [postMessageToUnity]);
+
+  const redoAction = useCallback(() => {
+    postMessageToUnity("RedoMessageReceiver", "");
+  }, [postMessageToUnity]);
+
+  const deleteAllActionHistory = useCallback(() => {
+    postMessageToUnity("DeleteAllActionHistoryMessageReceiver", "");
+  }, [postMessageToUnity]);
+
+  // load item data
   useEffect(() => {
     if (!isLoaded || !isSaidanSceneLoaded) return;
     postMessageToLoadData();
@@ -231,6 +263,7 @@ export const useSaidanLikeUnityContextBase = ({
     );
   }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
 
+  // event handler
   const handleDragPlacingStarted = useCallback(() => {
     setIsDragging(true);
   }, [setIsDragging]);
@@ -279,11 +312,39 @@ export const useSaidanLikeUnityContextBase = ({
     [sampleIdToDigitalItemIdMap, nftIdToDigitalItemIdMap, setSelectedItem],
   );
 
+  const handleActionUndone = useCallback((msgObj: UnityMessageJson) => {
+    if (!onActionUndone) return;
+    const messageBody = JSON.parse(msgObj.messageBody) as {
+      actionType: ActionType;
+      text: string;
+      isUndoable: boolean;
+    };
+    if (!messageBody) return;
+    setIsUndoable(messageBody.isUndoable);
+    onActionUndone(messageBody.actionType, messageBody.text);
+  }, []);
+
+  const handleActionRedone = useCallback((msgObj: UnityMessageJson) => {
+    if (!onActionRedone) return;
+    const messageBody = JSON.parse(msgObj.messageBody) as {
+      actionType: ActionType;
+      text: string;
+      isRedoable: boolean;
+    };
+    if (!messageBody) return;
+    setIsRedoable(messageBody.isRedoable);
+    onActionRedone(messageBody.actionType, messageBody.text);
+  }, []);
+
   return {
+    // states
     unityProvider,
     isLoaded,
     isDragging,
     selectedItem,
+    isUndoable,
+    isRedoable,
+    // functions
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -296,6 +357,10 @@ export const useSaidanLikeUnityContextBase = ({
     removeItem,
     updateIdValues,
     inputWasd,
+    undoAction,
+    redoAction,
+    deleteAllActionHistory,
+    // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
     handleDragPlacingStarted,
@@ -303,5 +368,7 @@ export const useSaidanLikeUnityContextBase = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionUndone,
+    handleActionRedone,
   };
 };
