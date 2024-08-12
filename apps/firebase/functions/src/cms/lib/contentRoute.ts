@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import { prisma } from "../../prisma";
+import {prisma} from "../../prisma";
 
 const router: Router = Router();
 
@@ -138,7 +138,6 @@ router.get("/:id", async (req: Request, res: Response) => {
       data: error,
     });
   }
-  
 });
 
 router.get("/notifications", async (req: Request, res: Response) => {
@@ -149,14 +148,14 @@ router.get("/notifications", async (req: Request, res: Response) => {
       },
       include: {
         content: true,
-      }
+      },
     });
     const returnData = reportedContents.map((reportedContent)=>{
       return {
         id: reportedContent.id,
         contentId: reportedContent.content_id,
-      }
-    })
+      };
+    });
     res.status(200).send({
       status: "success",
       data: returnData,
@@ -181,7 +180,7 @@ router.post("/:id/ignore-report", async (req: Request, res: Response) => {
         is_solved: true,
       },
     });
-    
+
     res.status(200).send({
       status: "success",
       data: "ignore",
@@ -206,7 +205,7 @@ router.post("/:id/freeze-report", async (req: Request, res: Response) => {
         is_solved: false,
       },
     });
-    
+
     res.status(200).send({
       status: "success",
       data: "freeze",

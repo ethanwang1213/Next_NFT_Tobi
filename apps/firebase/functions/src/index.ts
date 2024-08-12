@@ -12,7 +12,7 @@ import {pushDemo} from "./appSendPushMessage";
 import {flowTxSend} from "./flowTxSend";
 import {flowTxMonitor} from "./flowTxMonitor";
 import {taskWrapperLink} from "./taskWrapperLink";
-import {tobiratory_cms} from "./cms";
+import {tobiratoryCms} from "./cms";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -33,7 +33,7 @@ exports.flowTxSend = flowTxSend;
 exports.flowTxMonitor = flowTxMonitor;
 exports.native = native;
 exports.taskWrapperLink = taskWrapperLink;
-exports.tobiratory_cms = tobiratory_cms;
+exports.tobiratoryCms = tobiratoryCms;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
