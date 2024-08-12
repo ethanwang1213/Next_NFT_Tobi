@@ -237,11 +237,11 @@ export const useSaidanLikeUnityContextBase = ({
 
   // undo/redo
   const undoAction = useCallback(() => {
-    postMessageToUnity("UndoMessageReceiver", "");
+    postMessageToUnity("UndoActionMessageReceiver", "");
   }, [postMessageToUnity]);
 
   const redoAction = useCallback(() => {
-    postMessageToUnity("RedoMessageReceiver", "");
+    postMessageToUnity("RedoActionMessageReceiver", "");
   }, [postMessageToUnity]);
 
   const deleteAllActionHistory = useCallback(() => {
