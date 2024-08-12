@@ -36,6 +36,7 @@ const ShowcaseTabView = ({
   ) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
+  const [active, setActive] = useState('');
   const [wt, setWt] = useState(String);
   const [ft, setFt] = useState(String);
   const [st, setSt] = useState(String);
@@ -47,6 +48,7 @@ const ShowcaseTabView = ({
     if (active == tab) {
       return;
     }
+    setActive(active);
     setTab(active);
   };
 
@@ -59,6 +61,23 @@ const ShowcaseTabView = ({
       setPt(settings.lighting.pointLight.tint ?? "#717171");
       setPb(settings.lighting.pointLight.brightness ?? 1);
     }
+
+    // const handleZoom = (event) => {
+    //   if (event.ctrlKey) {
+    //     if (event.deltaY > 500) {
+    //       console.log("Zoom out event");
+    //     } else if (event.deltaY < 0) {
+    //       // Zoom in
+    //       console.log("Zoom in event");
+    //     }
+    //   }
+    // };
+  
+    // window.addEventListener("wheel", handleZoom);
+  
+    // return () => {
+    //   window.removeEventListener("wheel", handleZoom);
+    // };
   }, [settings]);
 
   const updateUnityTheme = () => {
@@ -67,8 +86,7 @@ const ShowcaseTabView = ({
 
   return (
     <div
-      className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4
-        flex flex-col items-center text-base-white"
+      className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4 flex flex-col items-center text-base-white"
     >
       {showRestoreMenu && (
         <div
@@ -87,10 +105,12 @@ const ShowcaseTabView = ({
           />
         </div>
       )}
-      <div className="tabs flex h-14 w-full">
+      <div className="tabs flex h-[56px] w-full overflow-hidden bg-[#B3B3B3] rounded-t-[24px]">
         <ShowcaseTabSelector
           isActive={tab === "Sample Items"}
           onClick={() => handleTabChange("Sample Items")}
+          title={"Sample Items"}
+          activeTitle={active}
         >
           <div className="flex items-center justify-center cursor-pointer">
             <Image
@@ -100,7 +120,7 @@ const ShowcaseTabView = ({
               src="/admin/images/icon/sample-icon.svg"
               className="mr-2"
             />
-            <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
+            <span className="text-xs font-medium leading-6 text-[#FAFAFA]">
               Samples Items
             </span>
           </div>
@@ -108,6 +128,8 @@ const ShowcaseTabView = ({
         <ShowcaseTabSelector
           isActive={tab === "Inventory"}
           onClick={() => handleTabChange("Inventory")}
+          title={"Inventory"}
+          activeTitle={active}
         >
           <div className="flex items-center justify-center cursor-pointer">
             <Image
@@ -117,7 +139,7 @@ const ShowcaseTabView = ({
               src="/admin/images/icon/inventory-icon.svg"
               className="mr-2"
             />
-            <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
+            <span className="text-xs font-medium leading-6 text-[#FAFAFA]">
               Inventory
             </span>
           </div>
@@ -125,6 +147,8 @@ const ShowcaseTabView = ({
         <ShowcaseTabSelector
           isActive={tab === "Settings"}
           onClick={() => handleTabChange("Settings")}
+          title={"Settings"}
+          activeTitle={active}
         >
           <div className="flex items-center justify-center cursor-pointer">
             <Image
@@ -134,14 +158,14 @@ const ShowcaseTabView = ({
               src="/admin/images/icon/setting-icon.svg"
               className="mr-2"
             />
-            <span className="text-xs font-semibold leading-6 text-[#FAFAFA]">
+            <span className="text-xs font-medium leading-6 text-[#FAFAFA]">
               Settings
             </span>
           </div>
         </ShowcaseTabSelector>
       </div>
-      <div className="tab-content flex flex-col w-full h-full bg-gray-600 bg-opacity-50 backdrop-blur-[25px] rounded-b-3xl">
-        <div className="flex flex-1 pl-8 pr-8 pt-12 pb-12 w-full flex-col">
+      <div className="tab-content flex flex-col w-full h-screen-minus-170 bg-[#828282] backdrop-blur-[25px] rounded-b-3xl">
+        <div className="flex flex-1 pl-8 pr-8 pt-12 pb-12 w-full flex-col overflow-auto">
           <TabPanel hidden={tab !== "Sample Items"}>
             <ShowcaseSampleTab
               clickSampleItem={clickSampleItem}

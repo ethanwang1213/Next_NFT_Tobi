@@ -1,18 +1,73 @@
-.tab-lifted.tab-active:not(.tab-disabled):not([disabled]):before,
-.tab-lifted.tab-active:not(.tab-disabled):not([disabled]):after {
-  --tab-border-color: rgb(75 85 99 / var(--tw-bg-opacity));
-  --tab-bg: rgb(75 85 99 / var(--tw-bg-opacity));
-  --tab-corner-bg: radial-gradient(
-    circle at var(--circle-pos),
-    transparent var(--tab-grad),
-    var(--tab-border-color) calc(var(--tab-grad) + 0.3px),
-    var(--tab-border-color) calc(var(--tab-grad) + var(--tab-border, 1px)),
-    var(--tab-bg) calc(var(--tab-grad) + var(--tab-border, 1px) + 0.3px)
-  );
+.tab.active {
+  z-index: 111;
+  color: var(--color-secondary);
+  pointer-events: none;
 }
 
-.tab-lifted {
-  --tab-radius: 0.3rem;
-  border-top-left-radius: 1.5rem;
-  border-top-right-radius: 1.5rem;
+.tabs .tab:before,
+.tabs .tab:after {
+  content: "";
+  background-color: #828282;
+  --tw-bg-opacity: 0.5;
+  position: absolute;
+  bottom: 0;
+  height: 1rem;
+  width: 1rem;
+  --size: 2rem;
+  transform: translateY(100%);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.tabs .tab:before {
+  -webkit-mask-image: radial-gradient(
+    var(--size) var(--size) at 0 0,
+    transparent 50%,
+    black 50%
+  );
+  mask-image: radial-gradient(
+    var(--size) var(--size) at 0 0,
+    transparent 50%,
+    black 50%
+  );
+  left: -1rem;
+}
+
+.tabs .tab:after {
+  -webkit-mask-image: radial-gradient(
+    var(--size) var(--size) at 100% 0,
+    transparent 50%,
+    black 50%
+  );
+  mask-image: radial-gradient(
+    var(--size) var(--size) at 100% 0,
+    transparent 50%,
+    black 50%
+  );
+  right: -1rem;
+}
+
+.tabs .tab.active {
+  z-index: 111;
+  color: var(--color-secondary);
+  pointer-events: none;
+}
+
+.tabs .tab.active:before,
+.tabs .tab.active:after {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tab:hover {
+  --tw-text-opacity: 0.5 !important;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }

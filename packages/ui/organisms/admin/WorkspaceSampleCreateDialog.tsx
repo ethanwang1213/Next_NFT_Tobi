@@ -570,7 +570,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
 
   return (
     <dialog ref={props.dialogRef} className="modal">
-      <div className="modal-box max-w-[650px] max-h-[540px] rounded-3xl p-4 pt-8 flex gap-3">
+      <div className="modal-box max-w-[650px] max-h-[540px] rounded-3xl p-4 pt-8 flex gap-3 overflow-hidden">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
             <NextImage
