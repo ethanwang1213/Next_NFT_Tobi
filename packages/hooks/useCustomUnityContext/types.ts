@@ -1,4 +1,9 @@
-import { ActionType, SaidanItemData, SaidanSettings, Vector3 } from "types/unityTypes";
+import {
+  ActionType,
+  SaidanItemData,
+  SaidanSettings,
+  Vector3,
+} from "types/unityTypes";
 
 export const UnitySceneType = {
   Standby: 0,
@@ -22,8 +27,9 @@ export const UnityMessageType = {
   RequestToOpenItemDetail: 10,
   DragStarted: 11,
   DragEnded: 12,
-  ActionUndone: 13,
-  ActionRedone: 14,
+  ScreenshotTaken: 13,
+  ActionUndone: 14,
+  ActionRedone: 15,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];
