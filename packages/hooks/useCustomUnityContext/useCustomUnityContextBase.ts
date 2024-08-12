@@ -17,8 +17,8 @@ type MessageDestination =
   | "UpdateItemIdMessageReceiver"
   | "UpdateSettingsMessageReceiver"
   | "InputWasdMessageReceiver"
-  | "UndoMessageReceiver"
-  | "RedoMessageReceiver"
+  | "UndoActionMessageReceiver"
+  | "RedoActionMessageReceiver"
   | "DeleteAllActionHistoryMessageReceiver";
 
 export const useCustomUnityContextBase = ({
