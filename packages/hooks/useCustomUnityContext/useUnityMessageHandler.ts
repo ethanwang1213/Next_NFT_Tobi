@@ -119,6 +119,8 @@ export const useUnityMessageHandler = ({
       handleRemoveItemDisabled,
       handleRemoveItemRequested,
       handleItemSelected,
+      handleActionUndone,
+      handleActionRedone,
     ],
   );
 

@@ -312,29 +312,35 @@ export const useSaidanLikeUnityContextBase = ({
     [sampleIdToDigitalItemIdMap, nftIdToDigitalItemIdMap, setSelectedItem],
   );
 
-  const handleActionUndone = useCallback((msgObj: UnityMessageJson) => {
-    if (!onActionUndone) return;
-    const messageBody = JSON.parse(msgObj.messageBody) as {
-      actionType: ActionType;
-      text: string;
-      isUndoable: boolean;
-    };
-    if (!messageBody) return;
-    setIsUndoable(messageBody.isUndoable);
-    onActionUndone(messageBody.actionType, messageBody.text);
-  }, []);
+  const handleActionUndone = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onActionUndone) return;
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        actionType: ActionType;
+        text: string;
+        isUndoable: boolean;
+      };
+      if (!messageBody) return;
+      setIsUndoable(messageBody.isUndoable);
+      onActionUndone(messageBody.actionType, messageBody.text);
+    },
+    [onActionUndone, setIsUndoable],
+  );
 
-  const handleActionRedone = useCallback((msgObj: UnityMessageJson) => {
-    if (!onActionRedone) return;
-    const messageBody = JSON.parse(msgObj.messageBody) as {
-      actionType: ActionType;
-      text: string;
-      isRedoable: boolean;
-    };
-    if (!messageBody) return;
-    setIsRedoable(messageBody.isRedoable);
-    onActionRedone(messageBody.actionType, messageBody.text);
-  }, []);
+  const handleActionRedone = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onActionRedone) return;
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        actionType: ActionType;
+        text: string;
+        isRedoable: boolean;
+      };
+      if (!messageBody) return;
+      setIsRedoable(messageBody.isRedoable);
+      onActionRedone(messageBody.actionType, messageBody.text);
+    },
+    [onActionRedone, setIsRedoable],
+  );
 
   return {
     // states
