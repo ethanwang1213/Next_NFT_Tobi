@@ -77,8 +77,8 @@ export const useShowcaseEditUnityContext = ({
     undoAction,
     redoAction,
     deleteAllActionHistory,
-    pauseUnityEvents,
-    resumeUnityEvents,
+    pauseUnityInputs,
+    resumeUnityInputs,
     // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded,
@@ -284,7 +284,7 @@ export const useShowcaseEditUnityContext = ({
     undoAction,
     redoAction,
     deleteAllActionHistory,
-    pauseUnityEvents,
-    resumeUnityEvents,
+    pauseUnityInputs,
+    resumeUnityInputs,
   };
 };

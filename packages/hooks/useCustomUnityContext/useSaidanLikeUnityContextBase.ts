@@ -42,8 +42,8 @@ export const useSaidanLikeUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    pauseUnityEvents,
-    resumeUnityEvents,
+    pauseUnityInputs,
+    resumeUnityInputs,
     // event handler
     handleSimpleMessage,
   } = useCustomUnityContextBase({ sceneType });
@@ -368,8 +368,8 @@ export const useSaidanLikeUnityContextBase = ({
     undoAction,
     redoAction,
     deleteAllActionHistory,
-    pauseUnityEvents,
-    resumeUnityEvents,
+    pauseUnityInputs,
+    resumeUnityInputs,
     // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,

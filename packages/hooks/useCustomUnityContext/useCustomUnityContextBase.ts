@@ -20,8 +20,8 @@ type MessageDestination =
   | "UndoActionMessageReceiver"
   | "RedoActionMessageReceiver"
   | "DeleteAllActionHistoryMessageReceiver"
-  | "PauseEventsMessageReceiver"
-  | "ResumeEventsMessageReceiver";
+  | "PauseInputsMessageReceiver"
+  | "ResumeInputsMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,
@@ -69,12 +69,12 @@ export const useCustomUnityContextBase = ({
   );
 
   // pause events
-  const pauseUnityEvents = useCallback(() => {
-    postMessageToUnity("PauseEventsMessageReceiver", "");
+  const pauseUnityInputs = useCallback(() => {
+    postMessageToUnity("PauseInputsMessageReceiver", "");
   }, [postMessageToUnity]);
 
-  const resumeUnityEvents = useCallback(() => {
-    postMessageToUnity("ResumeEventsMessageReceiver", "");
+  const resumeUnityInputs = useCallback(() => {
+    postMessageToUnity("ResumeInputsMessageReceiver", "");
   }, [postMessageToUnity]);
 
   useEffect(() => {
@@ -90,8 +90,8 @@ export const useCustomUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    pauseUnityEvents,
-    resumeUnityEvents,
+    pauseUnityInputs,
+    resumeUnityInputs,
     // event handlers
     handleSimpleMessage,
   };
