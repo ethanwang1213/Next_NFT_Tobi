@@ -257,6 +257,47 @@ export const giftNFT = async (req: Request, res: Response) => {
   });
 };
 
+export const deleteNFT = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {authorization} = req.headers;
+  const {fcmToken} = req.body;
+  if (!fcmToken) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  }
+  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", fcmToken);
+      res.status(200).send({
+        status: "success",
+        data: "NFT is gifting",
+      });
+    } catch (err) {
+      if (err instanceof GiftError) {
+        res.status(err.status).send({
+          status: "error",
+          data: err.message,
+        });
+      } else {
+        res.status(401).send({
+          status: "error",
+          data: err,
+        });
+      }
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    throw error;
+  });
+};
+
 class GiftError extends Error {
   status: number;
   constructor(status: number, message: string) {
