@@ -225,21 +225,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
           if (returnNFTs[i].digitalItemId == nft.digital_item.id) {
             returnNFTs[i].items = [
               ...returnNFTs[i].items,
-              {
-                id: nft.id,
-                name: nft.digital_item.name,
-                thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                modelUrl: nft.digital_item.model_url,
-                modelType: nft.digital_item.type,
-                saidanId: nftOwnerRelation.saidan_id,
-                materialUrl: nft.digital_item.material_image?.image,
-                status: nft.mint_status,
-                createDate: nft.created_date_time,
-                canAdd: nft.showcase_nft_items.length == 0,
-                content: nft.digital_item.account.business?{
-                  name: nft.digital_item.account.business.content?.name,
-                }:null,
-              },
+              nft.id,
             ];
             flag = true;
             break;
@@ -250,23 +236,19 @@ export const getInventoryData = async (req: Request, res: Response) => {
             ...returnNFTs,
             {
               digitalItemId: nft.digital_item.id,
-              items: [
-                {
-                  id: nft.id,
-                  name: nft.digital_item.name,
-                  thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                  modelUrl: nft.digital_item.model_url,
-                  modelType: nft.digital_item.type,
-                  saidanId: nftOwnerRelation.saidan_id,
-                  materialUrl: nft.digital_item.material_image?.image,
-                  status: nft.mint_status,
-                  createDate: nft.created_date_time,
-                  canAdd: nft.showcase_nft_items.length == 0,
-                  content: nft.digital_item.account.business?{
-                    name: nft.digital_item.account.business.content?.name,
-                  }:null,
-                },
-              ],
+              name: nft.digital_item.name,
+              thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
+              modelUrl: nft.digital_item.model_url,
+              modelType: nft.digital_item.type,
+              saidanId: nftOwnerRelation.saidan_id,
+              materialUrl: nft.digital_item.material_image?.image,
+              status: nft.mint_status,
+              createDate: nft.created_date_time,
+              canAdd: nft.showcase_nft_items.length == 0,
+              content: nft.digital_item.account.business?{
+                name: nft.digital_item.account.business.content?.name,
+              }:null,
+              items: [nft.id],
             },
           ];
         }
@@ -357,21 +339,7 @@ export const getBoxData = async (req: Request, res: Response) => {
         if (returnNFTs[i].digitalItemId == nft.digital_item.id) {
           returnNFTs[i].items = [
             ...returnNFTs[i].items,
-            {
-              id: nft.id,
-              name: nft.digital_item.name,
-              thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-              modelUrl: nft.digital_item.model_url,
-              modelType: nft.digital_item.type,
-              saidanId: nftOwnerRelation.saidan_id,
-              materialUrl: nft.digital_item.material_image?.image,
-              status: nft.mint_status,
-              createDate: nft.created_date_time,
-              canAdd: nft.showcase_nft_items.length == 0,
-              content: nft.digital_item.account.business?{
-                name: nft.digital_item.account.business.content?.name,
-              }:null,
-            },
+            nft.id,
           ];
           flag = true;
           break;
@@ -382,23 +350,19 @@ export const getBoxData = async (req: Request, res: Response) => {
           ...returnNFTs,
           {
             digitalItemId: nft.digital_item.id,
-            items: [
-              {
-                id: nft.id,
-                name: nft.digital_item.name,
-                thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                modelUrl: nft.digital_item.model_url,
-                modelType: nft.digital_item.type,
-                saidanId: nftOwnerRelation.saidan_id,
-                materialUrl: nft.digital_item.material_image?.image,
-                status: nft.mint_status,
-                createDate: nft.created_date_time,
-                canAdd: nft.showcase_nft_items.length == 0,
-                content: nft.digital_item.account.business?{
-                  name: nft.digital_item.account.business.content?.name,
-                }:null,
-              },
-            ],
+            name: nft.digital_item.name,
+            thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
+            modelUrl: nft.digital_item.model_url,
+            modelType: nft.digital_item.type,
+            saidanId: nftOwnerRelation.saidan_id,
+            materialUrl: nft.digital_item.material_image?.image,
+            status: nft.mint_status,
+            createDate: nft.created_date_time,
+            canAdd: nft.showcase_nft_items.length == 0,
+            content: nft.digital_item.account.business?{
+              name: nft.digital_item.account.business.content?.name,
+            }:null,
+            items: [nft.id],
           },
         ];
       }
