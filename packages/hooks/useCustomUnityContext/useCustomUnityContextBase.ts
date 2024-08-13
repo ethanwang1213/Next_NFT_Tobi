@@ -19,7 +19,9 @@ type MessageDestination =
   | "InputWasdMessageReceiver"
   | "UndoActionMessageReceiver"
   | "RedoActionMessageReceiver"
-  | "DeleteAllActionHistoryMessageReceiver";
+  | "DeleteAllActionHistoryMessageReceiver"
+  | "PauseEventsMessageReceiver"
+  | "ResumeEventsMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,
@@ -66,6 +68,15 @@ export const useCustomUnityContextBase = ({
     [postMessageToUnity],
   );
 
+  // pause events
+  const pauseUnityEvents = useCallback(() => {
+    postMessageToUnity("PauseEventsMessageReceiver", "");
+  }, [postMessageToUnity]);
+
+  const resumeUnityEvents = useCallback(() => {
+    postMessageToUnity("ResumeEventsMessageReceiver", "");
+  }, [postMessageToUnity]);
+
   useEffect(() => {
     if (!isLoaded) return;
     postMessageToSwitchScene(sceneType);
@@ -79,6 +90,8 @@ export const useCustomUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
+    pauseUnityEvents,
+    resumeUnityEvents,
     // event handlers
     handleSimpleMessage,
   };

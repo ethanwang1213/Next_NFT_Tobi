@@ -73,6 +73,8 @@ export const useWorkspaceUnityContext = ({
     undoAction,
     redoAction,
     deleteAllActionHistory,
+    pauseUnityEvents,
+    resumeUnityEvents,
     // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded,
@@ -308,5 +310,7 @@ export const useWorkspaceUnityContext = ({
     undoAction,
     redoAction,
     deleteAllActionHistory,
+    pauseUnityEvents,
+    resumeUnityEvents,
   };
 };
