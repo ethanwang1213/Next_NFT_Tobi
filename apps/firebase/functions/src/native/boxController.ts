@@ -148,13 +148,6 @@ export const getInventoryData = async (req: Request, res: Response) => {
           is_deleted: false,
         },
       });
-      if (!userData) {
-        res.status(403).send({
-          status: "error",
-          data: "user-not-exist",
-        });
-        return;
-      }
       const boxes = await prisma.boxes.findMany({
         where: {
           account_uuid: uid,
@@ -180,21 +173,21 @@ export const getInventoryData = async (req: Request, res: Response) => {
             updated_date_time: "desc",
           },
         });
-        const items4 = itemsInBox.slice(0, itemsInBox.length>4 ? 4 : itemsInBox.length)
-            .map((item)=>{
+        const items4 = itemsInBox.slice(0, itemsInBox.length > 4 ? 4 : itemsInBox.length)
+            .map((item) => {
               return {
                 id: item.id,
                 name: item.nft.digital_item.name,
-                image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
+                thumbUrl: item.nft.digital_item.is_default_thumb ? item.nft.digital_item.default_thumb_url : item.nft.digital_item.custom_thumb_url,
               };
             });
         return {
           id: box.id,
           name: box.name,
-          items: items4,
+          nfts: items4,
         };
       }));
-      const items = await prisma.nft_owners.findMany({
+      const allNfts = await prisma.nft_owners.findMany({
         where: {
           account_uuid: uid,
           box_id: 0,
@@ -204,47 +197,104 @@ export const getInventoryData = async (req: Request, res: Response) => {
             include: {
               digital_item: {
                 include: {
+                  account: {
+                    include: {
+                      business: {
+                        include: {
+                          content: true,
+                        },
+                      },
+                    },
+                  },
                   material_image: true,
                 },
               },
+              showcase_nft_items: true,
             },
           },
         },
         orderBy: {
-          updated_date_time: "desc",
+          created_date_time: "desc",
         },
       });
-      const returnItems = items.map((item)=>{
-        return {
-          id: item.id,
-          name: item.nft.digital_item.name,
-          image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
-          modelType: item.nft.digital_item.type,
-          modelUrl: item.nft.digital_item.model_url,
-          materialImage: item.nft.digital_item.material_image?.image,
-          saidanId: item.saidan_id,
-          status: item?.nft.mint_status,
-        };
+      let returnNFTs: any[] = [];
+      allNfts.forEach((nftOwnerRelation) => {
+        const nft = nftOwnerRelation.nft;
+        let flag = false;
+        for (let i = 0; i < returnNFTs.length; i++) {
+          if (returnNFTs[i].digitalItemId == nft.digital_item.id) {
+            returnNFTs[i].items = [
+              ...returnNFTs[i].items,
+              {
+                id: nft.id,
+                name: nft.digital_item.name,
+                thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
+                modelUrl: nft.digital_item.model_url,
+                modelType: nft.digital_item.type,
+                saidanId: nftOwnerRelation.saidan_id,
+                materialUrl: nft.digital_item.material_image?.image,
+                status: nft.mint_status,
+                createDate: nft.created_date_time,
+                canAdd: nft.showcase_nft_items.length == 0,
+                content: nft.digital_item.account.business?{
+                  name: nft.digital_item.account.business.content?.name,
+                }:null,
+              },
+            ];
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) {
+          returnNFTs = [
+            ...returnNFTs,
+            {
+              digitalItemId: nft.digital_item.id,
+              items: [
+                {
+                  id: nft.id,
+                  name: nft.digital_item.name,
+                  thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
+                  modelUrl: nft.digital_item.model_url,
+                  modelType: nft.digital_item.type,
+                  saidanId: nftOwnerRelation.saidan_id,
+                  materialUrl: nft.digital_item.material_image?.image,
+                  status: nft.mint_status,
+                  createDate: nft.created_date_time,
+                  canAdd: nft.showcase_nft_items.length == 0,
+                  content: nft.digital_item.account.business?{
+                    name: nft.digital_item.account.business.content?.name,
+                  }:null,
+                },
+              ],
+            },
+          ];
+        }
       });
       res.status(200).send({
         status: "success",
         data: {
-          giftPermission: userData.gift_permission,
-          items: returnItems,
+          giftPermission: userData?.gift_permission,
+          nfts: returnNFTs,
           boxes: returnBoxes,
         },
       });
     } catch (error) {
       res.status(401).send({
         status: "error",
-        data: error,
+        data: {
+          result: error,
+        },
       });
     }
   }).catch((error: FirebaseError) => {
     res.status(401).send({
       status: "error",
-      data: error,
+      data: {
+        result: error,
+      },
     });
+    return;
   });
 };
 
@@ -282,30 +332,82 @@ export const getBoxData = async (req: Request, res: Response) => {
           include: {
             digital_item: {
               include: {
+                account: {
+                  include: {
+                    business: {
+                      include: {
+                        content: true,
+                      },
+                    },
+                  },
+                },
                 material_image: true,
               },
             },
+            showcase_nft_items: true,
           },
         },
       },
     });
-    const returnItem = items.map((item)=>{
-      return {
-        id: item.id,
-        name: item.nft.digital_item.name,
-        image: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
-        modelType: item.nft.digital_item.type,
-        modelUrl: item.nft.digital_item.model_url,
-        materialImage: item.nft.digital_item.material_image?.image,
-        saidanId: item.saidan_id,
-        status: item?.nft.mint_status,
-      };
+    let returnNFTs: any[] = [];
+    items.forEach((nftOwnerRelation) => {
+      const nft = nftOwnerRelation.nft;
+      let flag = false;
+      for (let i = 0; i < returnNFTs.length; i++) {
+        if (returnNFTs[i].digitalItemId == nft.digital_item.id) {
+          returnNFTs[i].items = [
+            ...returnNFTs[i].items,
+            {
+              id: nft.id,
+              name: nft.digital_item.name,
+              thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
+              modelUrl: nft.digital_item.model_url,
+              modelType: nft.digital_item.type,
+              saidanId: nftOwnerRelation.saidan_id,
+              materialUrl: nft.digital_item.material_image?.image,
+              status: nft.mint_status,
+              createDate: nft.created_date_time,
+              canAdd: nft.showcase_nft_items.length == 0,
+              content: nft.digital_item.account.business?{
+                name: nft.digital_item.account.business.content?.name,
+              }:null,
+            },
+          ];
+          flag = true;
+          break;
+        }
+      }
+      if (!flag) {
+        returnNFTs = [
+          ...returnNFTs,
+          {
+            digitalItemId: nft.digital_item.id,
+            items: [
+              {
+                id: nft.id,
+                name: nft.digital_item.name,
+                thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
+                modelUrl: nft.digital_item.model_url,
+                modelType: nft.digital_item.type,
+                saidanId: nftOwnerRelation.saidan_id,
+                materialUrl: nft.digital_item.material_image?.image,
+                status: nft.mint_status,
+                createDate: nft.created_date_time,
+                canAdd: nft.showcase_nft_items.length == 0,
+                content: nft.digital_item.account.business?{
+                  name: nft.digital_item.account.business.content?.name,
+                }:null,
+              },
+            ],
+          },
+        ];
+      }
     });
     res.status(200).send({
       status: "success",
       data: {
         giftPermission: box.gift_permission,
-        items: returnItem,
+        nfts: returnNFTs,
       },
     });
   }).catch((error: FirebaseError) => {

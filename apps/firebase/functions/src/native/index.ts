@@ -59,8 +59,6 @@ import {
 import {deleteMaterial, getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
 import {
-  adminGetAllNFTs,
-  adminGetBoxData,
   fetchNftModel,
   fetchNftThumb,
   getNftInfo,
@@ -205,9 +203,6 @@ app.get("/admin/digital_items", adminGetAllDigitalItems);
 app.delete("/admin/digital_items", adminDeleteDigitalItems);
 app.get("/admin/digital_items/:digitalId", adminDetailOfDigitalItem);
 app.post("/admin/digital_items/:digitalId", adminUpdateDigitalItem);
-
-app.get("/admin/nfts", adminGetAllNFTs);
-app.get("/admin/boxes/:id", adminGetBoxData);
 
 // management showcase
 app.get("/admin/showcases/template", getShowcaseTemplate);
