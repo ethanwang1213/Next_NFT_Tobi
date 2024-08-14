@@ -365,7 +365,6 @@ export default function Index() {
       }
       generateModelUrl.current = await getDownloadUrlFromPath(modelResp["url"]);
       generateMaterialImage.current = null;
-      console.log(generateModelUrl.current, "Modelurl skdjflsjdfljfowif")
       requestItemThumbnail({
         modelType: ModelType.MessageCard,
         modelUrl: generateModelUrl.current,

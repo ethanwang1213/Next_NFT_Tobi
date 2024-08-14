@@ -265,7 +265,6 @@ const Showcase = () => {
         (value) => value.id === sample.materialId,
       );
       // place a new item
-      console.log(materialData[materialImageIndex].image, "sdjflskdfjiwkdjfiwfkd");
       if (!isDrag)
         placeNewSample({
           sampleItemId: sample.id,
