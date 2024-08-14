@@ -131,17 +131,27 @@ model contents {
 }
 
 model reported_contents {
-    id                Int      @id @default(autoincrement())
-    content_id        Int
-    content           contents @relation(fields: [content_id], references: [id])
-    reporter_uuid     String   @db.VarChar(255)
-    reporter          accounts @relation(fields: [reporter_uuid], references: [uuid])
-    title             String   @db.VarChar(255)
-    description       String   @db.Text
-    documents         String[] @db.Text
-    is_solved         Boolean?
-    updated_date_time DateTime @default(now()) @db.Timestamp(6)
-    created_date_time DateTime @default(now()) @db.Timestamp(6)
+    id                 Int                  @id @default(autoincrement())
+    content_id         Int
+    content            contents             @relation(fields: [content_id], references: [id])
+    reporter_uuid      String               @db.VarChar(255)
+    reporter           accounts             @relation(fields: [reporter_uuid], references: [uuid])
+    title              String               @db.VarChar(255)
+    description        String               @db.Text
+    is_solved          Boolean?
+    updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    created_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    reported_documents reported_documents[]
+}
+
+model reported_documents {
+    id                Int               @id @default(autoincrement())
+    reported_id       Int
+    reported_content  reported_contents @relation(fields: [reported_id], references: [id])
+    name              String            @db.VarChar(255)
+    document_link     String            @db.Text
+    updated_date_time DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model digital_items {

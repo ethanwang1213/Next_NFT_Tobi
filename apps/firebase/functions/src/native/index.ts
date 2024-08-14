@@ -23,7 +23,7 @@ import {
   getMyContentInfo,
   reportContent,
   setFavoriteContent,
-  submitDocumentReportContent,
+  submitDocumentsReportContent,
   updateMyContentInfo,
 } from "./contentController";
 import {
@@ -59,8 +59,6 @@ import {
 import {deleteMaterial, getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
 import {
-  adminGetAllNFTs,
-  adminGetBoxData,
   fetchNftModel,
   fetchNftThumb,
   getNftInfo,
@@ -206,9 +204,6 @@ app.delete("/admin/digital_items", adminDeleteDigitalItems);
 app.get("/admin/digital_items/:digitalId", adminDetailOfDigitalItem);
 app.post("/admin/digital_items/:digitalId", adminUpdateDigitalItem);
 
-app.get("/admin/nfts", adminGetAllNFTs);
-app.get("/admin/boxes/:id", adminGetBoxData);
-
 // management showcase
 app.get("/admin/showcases/template", getShowcaseTemplate);
 app.post("/admin/showcases", createMyShocase);
@@ -222,7 +217,7 @@ app.post("/admin/showcases/:id/throw", throwItemShowcase);
 // management content
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
-app.post("/admin/content/documents", submitDocumentReportContent);
+app.post("/admin/content/documents", submitDocumentsReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);

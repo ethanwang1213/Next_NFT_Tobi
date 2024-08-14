@@ -501,6 +501,19 @@ export const getNftInfo = async (req: Request, res: Response) => {
           id: parseInt(id),
         },
         include: {
+          nft_owner: {
+            include: {
+              account: {
+                include: {
+                  business: {
+                    include: {
+                      content: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           digital_item: {
             include: {
               copyrights: {
@@ -530,30 +543,13 @@ export const getNftInfo = async (req: Request, res: Response) => {
         });
         return;
       }
-
-      const ownerData = await prisma.nft_owners.findUnique({
-        where: {
-          nft_id: parseInt(id),
-        },
-        include: {
-          account: {
-            include: {
-              business: {
-                include: {
-                  content: true,
-                },
-              },
-            },
-          },
-        },
-      });
       const copyrights = nftData.digital_item.copyrights.map((relate) => {
         return relate.copyright.name;
       });
       const returnData = {
-        content: ownerData?.account?.business?.content != null ? {
-          name: ownerData?.account?.business?.content.name,
-          sticker: ownerData?.account?.business?.content.sticker,
+        content: nftData.nft_owner?.account?.business?.content != null ? {
+          name: nftData.nft_owner?.account?.business?.content.name,
+          sticker: nftData.nft_owner?.account?.business?.content.sticker,
         } : null,
         name: nftData.digital_item.name,
         modelUrl: nftData.digital_item.model_url,
@@ -579,271 +575,5 @@ export const getNftInfo = async (req: Request, res: Response) => {
       data: error,
     });
     return;
-  });
-};
-
-export const adminGetAllNFTs = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
-    const uid = decodedToken.uid;
-    try {
-      const admin = await prisma.businesses.findFirst({
-        where: {
-          uuid: uid,
-          is_deleted: false,
-        },
-      });
-      if (!admin) {
-        res.status(401).send({
-          status: "error",
-          data: "not-admin",
-        });
-        return;
-      }
-      const content = await prisma.contents.findFirst({
-        where: {
-          businesses_uuid: uid,
-          is_deleted: false,
-        },
-      });
-      if (!content) {
-        res.status(401).send({
-          status: "error",
-          data: "not-exist-content",
-        });
-        return;
-      }
-      const boxes = await prisma.boxes.findMany({
-        where: {
-          account_uuid: uid,
-          is_deleted: false,
-        },
-        orderBy: {
-          created_date_time: "desc",
-        },
-      });
-      const returnBoxes = await Promise.all(boxes.map(async (box) => {
-        const itemsInBox = await prisma.nft_owners.findMany({
-          where: {
-            box_id: box.id,
-          },
-          include: {
-            nft: {
-              include: {
-                digital_item: true,
-              },
-            },
-          },
-          orderBy: {
-            updated_date_time: "desc",
-          },
-        });
-        const items4 = itemsInBox.slice(0, itemsInBox.length > 4 ? 4 : itemsInBox.length)
-            .map((item) => {
-              return {
-                id: item.id,
-                name: item.nft.digital_item.name,
-                image: item.nft.digital_item.is_default_thumb ? item.nft.digital_item.default_thumb_url : item.nft.digital_item.custom_thumb_url,
-              };
-            });
-        return {
-          id: box.id,
-          name: box.name,
-          items: items4,
-        };
-      }));
-      const allNfts = await prisma.nft_owners.findMany({
-        where: {
-          account_uuid: uid,
-          box_id: 0,
-        },
-        include: {
-          nft: {
-            include: {
-              digital_item: true,
-              showcase_nft_items: true,
-            },
-          },
-        },
-        orderBy: {
-          created_date_time: "desc",
-        },
-      });
-      let returnNFTs: any[] = [];
-      allNfts.map((nftOwnerRelation) => {
-        const nft = nftOwnerRelation.nft;
-        let flag = false;
-        for (let i = 0; i < returnNFTs.length; i++) {
-          if (returnNFTs[i].digitalItemId == nft.digital_item.id) {
-            returnNFTs[i].items = [
-              ...returnNFTs[i].items,
-              {
-                id: nft.id,
-                name: nft.digital_item.name,
-                thumbnail: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                status: nft.mint_status,
-                createDate: nft.created_date_time,
-                canAdd: nft.showcase_nft_items.length == 0,
-              },
-            ];
-            flag = true;
-            break;
-          }
-        }
-        if (!flag) {
-          returnNFTs = [
-            ...returnNFTs,
-            {
-              digitalItemId: nft.digital_item.id,
-              items: [
-                {
-                  id: nft.id,
-                  name: nft.digital_item.name,
-                  thumbnail: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                  status: nft.mint_status,
-                  createDate: nft.created_date_time,
-                  canAdd: nft.showcase_nft_items.length == 0,
-                },
-              ],
-            },
-          ];
-        }
-
-        return {
-          id: nft.id,
-          name: nft.digital_item.name,
-          thumbnail: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-          status: nft.mint_status,
-          createDate: nft.created_date_time,
-          canAdd: nft.showcase_nft_items.length == 0,
-        };
-      });
-      res.status(200).send({
-        status: "success",
-        data: {
-          items: returnNFTs,
-          boxes: returnBoxes,
-        },
-      });
-    } catch (error) {
-      res.status(401).send({
-        status: "error",
-        data: {
-          result: error,
-        },
-      });
-    }
-  }).catch((error: FirebaseError) => {
-    res.status(401).send({
-      status: "error",
-      data: {
-        result: error,
-      },
-    });
-    return;
-  });
-};
-
-export const adminGetBoxData = async (req: Request, res: Response) => {
-  const {authorization} = req.headers;
-  const {id} = req.params;
-  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
-    const uuid = decodedToken.uid;
-    const box = await prisma.boxes.findUnique({
-      where: {
-        id: parseInt(id),
-        is_deleted: false,
-      },
-    });
-    if (!box) {
-      res.status(401).send({
-        status: "error",
-        data: "not-exist",
-      });
-      return;
-    }
-    if (box.account_uuid != uuid) {
-      res.status(401).send({
-        status: "error",
-        data: "not-yours",
-      });
-      return;
-    }
-    const allNfts = await prisma.nft_owners.findMany({
-      where: {
-        box_id: parseInt(id),
-      },
-      include: {
-        nft: {
-          include: {
-            digital_item: true,
-            showcase_nft_items: true,
-          },
-        },
-      },
-      orderBy: {
-        created_date_time: "desc",
-      },
-    });
-    let returnNFTs: any[] = [];
-    allNfts.map((nftOwnerRelation) => {
-      const nft = nftOwnerRelation.nft;
-      let flag = false;
-      for (let i = 0; i < returnNFTs.length; i++) {
-        if (returnNFTs[i].digitalItemId == nft.digital_item.id) {
-          returnNFTs[i].items = [
-            ...returnNFTs[i].items,
-            {
-              id: nft.id,
-              name: nft.digital_item.name,
-              thumbnail: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-              status: nft.mint_status,
-              createDate: nft.created_date_time,
-              canAdd: nft.showcase_nft_items.length == 0,
-            },
-          ];
-          flag = true;
-          break;
-        }
-      }
-      if (!flag) {
-        returnNFTs = [
-          ...returnNFTs,
-          {
-            digitalItemId: nft.digital_item.id,
-            items: [
-              {
-                id: nft.id,
-                name: nft.digital_item.name,
-                thumbnail: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                status: nft.mint_status,
-                createDate: nft.created_date_time,
-                canAdd: nft.showcase_nft_items.length == 0,
-              },
-            ],
-          },
-        ];
-      }
-
-      return {
-        id: nft.id,
-        name: nft.digital_item.name,
-        thumbnail: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-        status: nft.mint_status,
-        createDate: nft.created_date_time,
-        canAdd: nft.showcase_nft_items.length == 0,
-      };
-    });
-    res.status(200).send({
-      status: "success",
-      data: {
-        items: returnNFTs,
-      },
-    });
-  }).catch((error: FirebaseError) => {
-    res.status(401).send({
-      status: "error",
-      data: error,
-    });
   });
 };

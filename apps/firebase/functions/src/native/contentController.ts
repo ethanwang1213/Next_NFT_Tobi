@@ -569,31 +569,32 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         include: {
           content: {
             include: {
+              reported_contents: true,
               copyrights: true,
             },
           },
         },
       });
-      if (!admin) {
+      if (!admin||!admin.content) {
         res.status(401).send({
           status: "error",
           data: "not-admin",
         });
         return;
       }
-      const reportList = await prisma.reported_contents.findMany({
-        where: {
-          content_id: admin.content?.id,
-          is_solved: {
-            not: true,
-          },
-        },
-      });
 
-      if (reportList.length) {
-        res.status(401).send({
+      if (admin.content?.reported_contents.filter((report)=>report.is_solved==null).length>0) {
+        res.status(200).send({
           status: "error",
           data: "reported",
+        });
+        return;
+      }
+
+      if (admin.content?.reported_contents.filter((report)=>report.is_solved==false).length>0) {
+        res.status(200).send({
+          status: "error",
+          data: "freezed",
         });
         return;
       }
@@ -818,9 +819,12 @@ export const reportContent = async (req: Request, res: Response) => {
   });
 };
 
-export const submitDocumentReportContent = async (req: Request, res: Response) => {
+export const submitDocumentsReportContent = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {documents}:{documents: string} = req.body;
+  const {documents}:{documents: {
+    documentName: string,
+    documentLink: string,
+  }[]} = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -865,19 +869,89 @@ export const submitDocumentReportContent = async (req: Request, res: Response) =
         });
         return;
       }
-      const updateDocuments = await prisma.reported_contents.update({
+      await prisma.reported_documents.createMany({
+        data: documents.map((document)=>{
+          return {
+            reported_id: reportedContent.id,
+            name: document.documentName,
+            document_link: document.documentLink,
+          }
+        }),
+      })
+      res.status(200).send({
+        status: "success",
+        data: "uploaded",
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const getDocumentsReportContent = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      const content = await prisma.contents.findUnique({
         where: {
-          id: reportedContent?.id,
+          id: parseInt(id),
         },
-        data: {
-          documents: {
-            push: documents,
+      });
+      if (!content) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      if (content.businesses_uuid!=uid) {
+        res.status(401).send({
+          status: "error",
+          data: "not-owner",
+        });
+        return;
+      }
+      const reportedContent = await prisma.reported_contents.findFirst({
+        where: {
+          content_id: parseInt(id),
+          is_solved: null,
+        },
+        include: {
+          reported_documents: {
+            orderBy: {
+              created_date_time: "desc",
+            },
           },
         },
       });
+      if (!reportedContent) {
+        res.status(401).send({
+          status: "error",
+          data: "not-reported",
+        });
+        return;
+      }
+      const returnData = reportedContent.reported_documents.map((document)=>{
+        return {
+          documentName: document.name,
+          documentLink: document.document_link,
+          uploadedTime: document.created_date_time,
+        }
+      })
       res.status(200).send({
         status: "success",
-        data: updateDocuments.id,
+        data: returnData,
       });
     } catch (error) {
       res.status(401).send({
