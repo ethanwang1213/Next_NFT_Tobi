@@ -168,7 +168,7 @@ router.get("/notifications", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/:id/ignore-report", async (req: Request, res: Response) => {
+router.put("/:id/ignore-report", async (req: Request, res: Response) => {
   const {id} = req.params;
   try {
     await prisma.reported_contents.updateMany({
@@ -193,7 +193,7 @@ router.post("/:id/ignore-report", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/:id/freeze-report", async (req: Request, res: Response) => {
+router.put("/:id/freeze-report", async (req: Request, res: Response) => {
   const {id} = req.params;
   try {
     await prisma.reported_contents.updateMany({
@@ -218,4 +218,5 @@ router.post("/:id/freeze-report", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/documents")
 export const contentRouter = router;

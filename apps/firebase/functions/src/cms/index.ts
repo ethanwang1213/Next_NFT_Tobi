@@ -14,12 +14,13 @@ import {REGION} from "./constants";
 import {authRouter} from "./lib/authRoute";
 import {userRouter} from "./lib/userRoute";
 import {contentRouter} from "./lib/contentRoute";
+import { middlewareAuth } from "./middleware";
 
 const app = express();
 app.use(cors({origin: true}));
 
 app.use("/auth", authRouter);
-app.use("/users", userRouter);
-app.use("/contents", contentRouter);
+app.use("/users", middlewareAuth, userRouter);
+app.use("/contents", middlewareAuth, contentRouter);
 
 export const tobiratoryCms = functions.region(REGION).https.onRequest(app);

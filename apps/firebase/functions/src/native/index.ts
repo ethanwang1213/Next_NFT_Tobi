@@ -23,7 +23,7 @@ import {
   getMyContentInfo,
   reportContent,
   setFavoriteContent,
-  submitDocumentReportContent,
+  submitDocumentsReportContent,
   updateMyContentInfo,
 } from "./contentController";
 import {
@@ -217,7 +217,7 @@ app.post("/admin/showcases/:id/throw", throwItemShowcase);
 // management content
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
-app.post("/admin/content/documents", submitDocumentReportContent);
+app.post("/admin/content/documents", submitDocumentsReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);

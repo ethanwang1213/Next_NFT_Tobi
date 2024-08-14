@@ -27,3 +27,4 @@ export const userCredentials: User[] = [
     password: "password123",
   },
 ];
+export const jwtSecretKey = process.env.JWT_SECRET_KEY??"Tobiratory";
