@@ -45,6 +45,12 @@ export const mintStatus = {
   opened: 3,
 };
 
+export const giftStatus = {
+  none: 0,
+  error: 1,
+  gifting: 2,
+};
+
 export enum statusOfLimitTransaction {
   notExistAccount,
   limitedTransaction,

@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import {digitalItemStatus, mintStatus} from "./native/utils";
+import {digitalItemStatus, giftStatus, mintStatus} from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -343,7 +343,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
         },
       },
       data: {
-        gift_status: "",
+        gift_status: giftStatus.none,
       },
     });
     pushToDevice(fcmToken, {

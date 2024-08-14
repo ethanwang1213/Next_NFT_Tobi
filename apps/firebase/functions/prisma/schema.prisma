@@ -227,7 +227,7 @@ model digital_item_nfts {
     digital_item_id    Int
     metadata           String?              @db.Text
     mint_status        Int                  @default(0)
-    gift_status        String?              @db.VarChar(255)
+    gift_status        Int                  @default(0)
     mint_tx_id         String?              @db.VarChar(255)
     gift_tx_id         String?              @db.VarChar(255)
     showcase_nft_items showcase_nft_items[]
