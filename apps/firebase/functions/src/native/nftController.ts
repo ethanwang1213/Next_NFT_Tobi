@@ -6,7 +6,7 @@ import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import {mintStatus} from "./utils";
+import {giftStatus, mintStatus} from "./utils";
 
 const pubsub = new PubSub();
 
@@ -294,7 +294,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   if (digitalItemNft.nft_owner?.account?.flow_account.flow_address === receiveFlowId) {
     throw new GiftError(401, "You can not gift to yourself");
   }
-  if (digitalItemNft.gift_status === "gifting") {
+  if (digitalItemNft.gift_status !== giftStatus.none) {
     throw new GiftError(401, "This NFT is gifting now");
   }
   const flowJobId = uuidv4();

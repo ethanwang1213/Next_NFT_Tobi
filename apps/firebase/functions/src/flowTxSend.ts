@@ -15,7 +15,7 @@ import {sha256} from "js-sha256";
 import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
 import {prisma} from "./prisma";
-import {mintStatus} from "./native/utils";
+import {giftStatus, mintStatus} from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -116,7 +116,7 @@ export const flowTxSend = functions.region(REGION)
           const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
           console.log(`Message ${messageId} published.`);
         } catch (e) {
-          await updateGiftNFTRecord(params.digitalItemNftId, "error");
+          await updateGiftNFTRecord(params.digitalItemNftId, giftStatus.error);
           throw e;
         }
       }
@@ -163,7 +163,7 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const updateGiftNFTRecord = async (digitalItemNftId: number, status: string) => {
+const updateGiftNFTRecord = async (digitalItemNftId: number, status: number) => {
   await prisma.digital_item_nfts.update({
     where: {
       id: digitalItemNftId,
@@ -745,6 +745,8 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: nu
   if (!senderAccountDocData || !senderAccountDocData.address) {
     throw new functions.https.HttpsError("not-found", "The sender flow account does not exist.");
   }
+
+  await updateGiftNFTRecord(digitalItemNftId, giftStatus.gifting);
 
   const cadence = `
 import NonFungibleToken from ${nonFungibleTokenAddress}
