@@ -95,7 +95,7 @@ export const uploadImage = async (image, type) => {
 
 export const uploadFiles = async (file, extension, type) => {
   try {
-    if (!file) return ""; 
+    if (!file) return "";
     const storageFileName = `${Date.now()}.${extension}`;
     let blob;
     if (file instanceof Blob) {
@@ -148,11 +148,6 @@ export const uploadFiles = async (file, extension, type) => {
     return "";
   }
 };
-
-
-
-
-
 
 export const getDownloadUrlFromPath = async (
   fileUrl: string,

@@ -19,14 +19,19 @@ const ContentSuspendedComponent = () => {
     setLoading(true);
     for (const file of acceptedFiles) {
       const fileExtension = file.type.split("/")[1]; // Get the file extension from MIME type
-      if (file && (fileExtension === "png" || fileExtension === "jpeg" || fileExtension === "pdf")) {
+      if (
+        file &&
+        (fileExtension === "png" ||
+          fileExtension === "jpeg" ||
+          fileExtension === "pdf")
+      ) {
         const fileUrl = URL.createObjectURL(file);
         await uploadImageHandler(fileUrl, fileExtension);
       }
     }
-    setLoading(false); 
+    setLoading(false);
   }, []);
-  
+
   const uploadImageHandler = useCallback(
     async (image: string, extension: string): Promise<boolean> => {
       uploadImageRef.current = await uploadFiles(
@@ -39,7 +44,7 @@ const ContentSuspendedComponent = () => {
       }
       fileUrls.push(uploadImageRef.current);
       console.log(fileUrls);
-      return true; 
+      return true;
     },
     [],
   );

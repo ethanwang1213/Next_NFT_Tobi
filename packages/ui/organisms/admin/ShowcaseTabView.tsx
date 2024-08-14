@@ -36,7 +36,7 @@ const ShowcaseTabView = ({
   ) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
-  const [active, setActive] = useState('');
+  const [active, setActive] = useState("");
   const [wt, setWt] = useState(String);
   const [ft, setFt] = useState(String);
   const [st, setSt] = useState(String);
@@ -72,9 +72,9 @@ const ShowcaseTabView = ({
     //     }
     //   }
     // };
-  
+
     // window.addEventListener("wheel", handleZoom);
-  
+
     // return () => {
     //   window.removeEventListener("wheel", handleZoom);
     // };
@@ -85,9 +85,7 @@ const ShowcaseTabView = ({
   };
 
   return (
-    <div
-      className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4 flex flex-col items-center text-base-white"
-    >
+    <div className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4 flex flex-col items-center text-base-white">
       {showRestoreMenu && (
         <div
           className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
