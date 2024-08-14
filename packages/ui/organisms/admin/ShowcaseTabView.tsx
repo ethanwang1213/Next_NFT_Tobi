@@ -61,23 +61,6 @@ const ShowcaseTabView = ({
       setPt(settings.lighting.pointLight.tint ?? "#717171");
       setPb(settings.lighting.pointLight.brightness ?? 1);
     }
-
-    // const handleZoom = (event) => {
-    //   if (event.ctrlKey) {
-    //     if (event.deltaY > 500) {
-    //       console.log("Zoom out event");
-    //     } else if (event.deltaY < 0) {
-    //       // Zoom in
-    //       console.log("Zoom in event");
-    //     }
-    //   }
-    // };
-
-    // window.addEventListener("wheel", handleZoom);
-
-    // return () => {
-    //   window.removeEventListener("wheel", handleZoom);
-    // };
   }, [settings]);
 
   const updateUnityTheme = () => {
