@@ -501,6 +501,19 @@ export const getNftInfo = async (req: Request, res: Response) => {
           id: parseInt(id),
         },
         include: {
+          nft_owner: {
+            include: {
+              account: {
+                include: {
+                  business: {
+                    include: {
+                      content: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           digital_item: {
             include: {
               copyrights: {
@@ -530,30 +543,13 @@ export const getNftInfo = async (req: Request, res: Response) => {
         });
         return;
       }
-
-      const ownerData = await prisma.nft_owners.findUnique({
-        where: {
-          nft_id: parseInt(id),
-        },
-        include: {
-          account: {
-            include: {
-              business: {
-                include: {
-                  content: true,
-                },
-              },
-            },
-          },
-        },
-      });
       const copyrights = nftData.digital_item.copyrights.map((relate) => {
         return relate.copyright.name;
       });
       const returnData = {
-        content: ownerData?.account?.business?.content != null ? {
-          name: ownerData?.account?.business?.content.name,
-          sticker: ownerData?.account?.business?.content.sticker,
+        content: nftData.nft_owner?.account?.business?.content != null ? {
+          name: nftData.nft_owner?.account?.business?.content.name,
+          sticker: nftData.nft_owner?.account?.business?.content.sticker,
         } : null,
         name: nftData.digital_item.name,
         modelUrl: nftData.digital_item.model_url,

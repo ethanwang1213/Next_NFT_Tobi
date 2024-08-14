@@ -569,31 +569,32 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         include: {
           content: {
             include: {
+              reported_contents: true,
               copyrights: true,
             },
           },
         },
       });
-      if (!admin) {
+      if (!admin||!admin.content) {
         res.status(401).send({
           status: "error",
           data: "not-admin",
         });
         return;
       }
-      const reportList = await prisma.reported_contents.findMany({
-        where: {
-          content_id: admin.content?.id,
-          is_solved: {
-            not: true,
-          },
-        },
-      });
 
-      if (reportList.length) {
-        res.status(401).send({
+      if (admin.content?.reported_contents.filter((report)=>report.is_solved==null).length>0) {
+        res.status(200).send({
           status: "error",
           data: "reported",
+        });
+        return;
+      }
+
+      if (admin.content?.reported_contents.filter((report)=>report.is_solved==false).length>0) {
+        res.status(200).send({
+          status: "error",
+          data: "freezed",
         });
         return;
       }

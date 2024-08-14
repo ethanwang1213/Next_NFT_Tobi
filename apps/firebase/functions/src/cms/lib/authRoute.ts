@@ -10,7 +10,9 @@ router.post("/login", (req: Request, res: Response) => {
   const jwtSecretKey = process.env.JWT_SECRET_KEY??"Tobiratory";
   if (user) {
     if (password == user.password) {
-      const token = JWT.sign(user, jwtSecretKey);
+      const token = JWT.sign(user, jwtSecretKey, {
+        expiresIn: "4h",
+      });
       res.status(200).send({
         status: "success",
         data: {
