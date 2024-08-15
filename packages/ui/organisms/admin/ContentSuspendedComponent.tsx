@@ -91,9 +91,7 @@ const ContentSuspendedComponent = () => {
           </div>
         </div>
       ) : loading ? (
-        <div className="w-full h-full flex justify-center items-center">
-          <Spinner />
-        </div>
+        <Spinner />
       ) : (
         <>
           <div className="m-9 text-[#717171] text-[32px] font-semibold">
