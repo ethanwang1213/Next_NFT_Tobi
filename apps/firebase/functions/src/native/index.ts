@@ -57,6 +57,7 @@ import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, ope
 import {
   adminGetAllNFTs,
   adminGetBoxData,
+  deleteMyNFT,
   fetchNftModel,
   fetchNftThumb,
   getNftInfo,
@@ -172,6 +173,7 @@ app.get("/items/:id", getDigitalItemInfo);
 app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", giftNFT);
+app.post("/my/nfts/:id/delete", deleteMyNFT);
 app.post("/my/nfts/move", moveNFT);
 app.post("/my/nfts/delete", deleteNFT);
 app.post("/address/decoder", userInfoFromAddress);

@@ -257,7 +257,7 @@ export const giftNFT = async (req: Request, res: Response) => {
   });
 };
 
-export const deleteNFT = async (req: Request, res: Response) => {
+export const deleteMyNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
   const {fcmToken} = req.body;
