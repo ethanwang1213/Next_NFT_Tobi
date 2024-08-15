@@ -18,7 +18,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
@@ -30,7 +30,7 @@ const font = M_PLUS_2({ subsets: ["latin"] });
 
 const App = ({ Component, pageProps }: AppProps) => {
   const apiUrl = "native/admin/content";
-  const {loading, error, getData } = useRestfulAPI(apiUrl);
+  const { loading, error, getData } = useRestfulAPI(apiUrl);
 
   useEffect(() => {
     getData(apiUrl);
