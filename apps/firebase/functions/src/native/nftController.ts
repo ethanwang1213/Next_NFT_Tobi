@@ -257,6 +257,47 @@ export const giftNFT = async (req: Request, res: Response) => {
   });
 };
 
+export const deleteMyNFT = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {authorization} = req.headers;
+  const {fcmToken} = req.body;
+  if (!fcmToken) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  }
+  await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", fcmToken);
+      res.status(200).send({
+        status: "success",
+        data: "NFT is deleting",
+      });
+    } catch (err) {
+      if (err instanceof GiftError) {
+        res.status(err.status).send({
+          status: "error",
+          data: err.message,
+        });
+      } else {
+        res.status(401).send({
+          status: "error",
+          data: err,
+        });
+      }
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    throw error;
+  });
+};
+
 class GiftError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -308,9 +349,15 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   };
   const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
   console.log(`Message ${messageId} published.`);
+  let title = "NFTをギフトしています";
+  let body = "ギフト完了までしばらくお待ちください";
+  if (receiveFlowId === process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES) {
+    title = "NFTを削除しています";
+    body = "削除完了までしばらくお待ちください";
+  }
   pushToDevice(fcmToken, {
-    title: "NFTをギフトしています",
-    body: "ギフト完了までしばらくお待ちください",
+    title: title,
+    body: body,
   }, {
     body: JSON.stringify({
       type: "transferBegan",
