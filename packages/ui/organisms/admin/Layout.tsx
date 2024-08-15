@@ -52,8 +52,6 @@ const MainContents = ({ children }: Props) => {
 
 const Contents = ({ children, content }: Props) => {
   const { user } = useAuth();
-  console.log(content, "This is content");
-
   if (auth.currentUser && user?.hasFlowAccount) {
     return (
       <NavbarProvider>
