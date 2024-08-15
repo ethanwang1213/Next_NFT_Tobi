@@ -21,7 +21,9 @@ import {
   getContentByUuid,
   getFavoriteContents,
   getMyContentInfo,
+  reportContent,
   setFavoriteContent,
+  submitDocumentsReportContent,
   updateMyContentInfo,
 } from "./contentController";
 import {
@@ -44,25 +46,25 @@ import {
   createSaidan,
   decorationSaidan,
   favoriteSaidan,
+  getDefaultItems,
   getMySaidans,
   getMySaidansById,
   getSaidanDecorationData,
   getSaidanTemplates,
   getSaidansById,
   putAwayItemInSaidan,
+  removeDefaultItems,
   updateMySaidan,
 } from "./saidanController";
 import {deleteMaterial, getMaterial, removeMaterials, uploadMaterial} from "./fileController";
 import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
 import {
-  adminGetAllNFTs,
-  adminGetBoxData,
-  deleteMyNFT,
   fetchNftModel,
   fetchNftThumb,
   getNftInfo,
   giftNFT,
   mintNFT,
+  deleteMyNFT,
 } from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
@@ -102,6 +104,7 @@ app.get("/business/:uid/content", getContentByUuid);
 app.get("/contents/favor", getFavoriteContents);
 app.get("/contents/:id", getContentById);
 app.post("/contents/:id", setFavoriteContent);
+app.put("/contents/:id", reportContent);
 
 app.get("/nfts/:id", getNftInfo);
 
@@ -136,6 +139,8 @@ app.post("/model/acrylic-stand", modelApiHandler(ModelRequestType.AcrylicStand))
 app.post("/model/remove-bg", modelApiHandler(ModelRequestType.RemoveBg));
 app.post("/model/message-card", modelApiHandler(ModelRequestType.MessageCard));
 
+app.get("/default-items", getDefaultItems);
+app.delete("/default-items/:id", removeDefaultItems);
 app.get("/my/saidans", getMySaidans);
 app.post("/my/saidans", createSaidan);
 app.post("/my/saidans/:saidanId/update", updateMySaidan);
@@ -201,9 +206,6 @@ app.delete("/admin/digital_items", adminDeleteDigitalItems);
 app.get("/admin/digital_items/:digitalId", adminDetailOfDigitalItem);
 app.post("/admin/digital_items/:digitalId", adminUpdateDigitalItem);
 
-app.get("/admin/nfts", adminGetAllNFTs);
-app.get("/admin/boxes/:id", adminGetBoxData);
-
 // management showcase
 app.get("/admin/showcases/template", getShowcaseTemplate);
 app.post("/admin/showcases", createMyShocase);
@@ -217,6 +219,7 @@ app.post("/admin/showcases/:id/throw", throwItemShowcase);
 // management content
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
+app.post("/admin/content/documents", submitDocumentsReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);

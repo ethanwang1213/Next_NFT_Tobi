@@ -13,27 +13,15 @@ export const getSaidansById = async (req: Request, res: Response) => {
           id: parseInt(saidanId),
           is_deleted: false,
         },
+        include: {
+          account: true,
+        },
       });
 
       if (!saidanData) {
         res.status(404).send({
           status: "error",
           data: "not-exist",
-        });
-        return;
-      }
-
-      const userData = await prisma.accounts.findUnique({
-        where: {
-          uuid: saidanData.account_uuid,
-          is_deleted: false,
-        },
-      });
-
-      if (!userData) {
-        res.status(404).send({
-          status: "error",
-          data: "not-exist-owner",
         });
         return;
       }
@@ -62,8 +50,8 @@ export const getSaidansById = async (req: Request, res: Response) => {
         thumbImage: saidanData.thumbnail_image,
         items: items,
         owner: {
-          avatar: userData.icon_url,
-          username: userData.username,
+          avatar: saidanData.account?.icon_url,
+          username: saidanData.account?.username,
         },
       };
       res.status(200).send({
@@ -225,6 +213,9 @@ export const getMySaidansById = async (req: Request, res: Response) => {
       where: {
         id: parseInt(saidanId),
         is_deleted: false,
+      },
+      include: {
+        account: true,
       },
     });
 
@@ -777,6 +768,84 @@ export const putAwayItemInSaidan = async (req: Request, res: Response) => {
         },
         data: {
           saidan_id: 0,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: "removed",
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const getDefaultItems = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    try {
+      const defaultItems = await prisma.default_items.findMany();
+      const returnValue = defaultItems.map((item)=>{
+        return {
+          id: item.id,
+          name: item.name,
+          modelUrl: item.model_url,
+        };
+      });
+      res.status(200).send({
+        status: "success",
+        data: returnValue,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
+export const removeDefaultItems = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {id} = req.params;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    try {
+      const defaultItem = await prisma.default_items.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+      if (!defaultItem) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      await prisma.accounts.update({
+        where: {
+          uuid: uid,
+        },
+        data: {
+          removed_default_items: {
+            push: defaultItem.id,
+          },
         },
       });
       res.status(200).send({

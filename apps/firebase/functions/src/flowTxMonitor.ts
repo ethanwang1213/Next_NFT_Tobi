@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import {digitalItemStatus, mintStatus} from "./native/utils";
+import {digitalItemStatus, giftStatus, mintStatus} from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -327,12 +327,23 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
   }
   const {withdraw, deposit} = await fetchGiftNFT(txId);
   if (withdraw && deposit) {
+    const depositerFlowAccount = await prisma.flow_accounts.findFirst({
+      where: {
+        flow_address: deposit.to,
+      },
+    });
     await prisma.digital_item_nfts.update({
       where: {
         id: nftId,
+        nft_owner: {
+          account_uuid: depositerFlowAccount?.account_uuid,
+          owner_flow_address: deposit.to,
+          saidan_id: 0,
+          box_id: 0,
+        },
       },
       data: {
-        gift_status: "",
+        gift_status: giftStatus.none,
       },
     });
     pushToDevice(fcmToken, {

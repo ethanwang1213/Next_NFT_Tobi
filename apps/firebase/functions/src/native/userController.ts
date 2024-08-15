@@ -165,6 +165,13 @@ export const getMyProfile = async (req: Request, res: Response) => {
           uuid: uid,
           is_deleted: false,
         },
+        include: {
+          saidans: {
+            orderBy: {
+              created_date_time: "asc",
+            },
+          },
+        },
       });
 
       if (!accountData) {
@@ -201,6 +208,12 @@ export const getMyProfile = async (req: Request, res: Response) => {
         gender: accountData.gender,
         birth: accountData.birth,
         giftPermission: accountData.gift_permission,
+        firstSaidan: accountData.saidans.length==0?
+          null :
+          {
+            id: accountData.saidans[0].id,
+            removedDefaultItem: accountData.removed_default_items,
+          },
         flow: {
           flowAddress: flowAccountData.flow_address,
           publicKey: flowAccountData.public_key,
@@ -428,7 +441,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
       balance: 0,
     };
     const contentData = {
-      business_uuid: uid,
+      businesses_uuid: uid,
       name: contentName,
       image: "",
       url,
@@ -446,7 +459,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
         });
         const copyrights = copyrightHolder.map((copyright: string)=>{
           return {
-            copyright_name: copyright,
+            name: copyright,
             content_id: savedContentData.id,
           };
         });
@@ -455,11 +468,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
         });
         const showcaseTemplate = await tx.showcase_template.findFirst();
         if (!showcaseTemplate) {
-          res.status(401).send({
-            status: "error",
-            data: "not-template",
-          });
-          return;
+          throw new Error("not-template");
         }
         await tx.showcases.create({
           data: {
@@ -479,11 +488,18 @@ export const businessSubmission = async (req: Request, res: Response) => {
         status: "success",
         data: returnData,
       });
-    } catch (error) {
-      res.status(500).send({
-        status: "error",
-        data: error,
-      });
+    } catch (error: any) {
+      if (error.message === "not-template") {
+        res.status(401).send({
+          status: "error",
+          data: "not-template",
+        });
+      } else {
+        res.status(500).send({
+          status: "error",
+          data: error,
+        });
+      }
     }
   }).catch((error: FirebaseError)=>{
     res.status(401).send({

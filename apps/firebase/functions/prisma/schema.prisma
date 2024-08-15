@@ -8,31 +8,35 @@ datasource db {
 }
 
 model accounts {
-    id                Int                 @id @default(autoincrement())
-    uuid              String              @unique @db.VarChar(100)
-    email             String              @unique @db.VarChar(255)
-    username          String              @db.VarChar(255)
-    user_id           String?             @db.VarChar(255)
-    sns               String?             @db.VarChar(255)
-    icon_url          String?             @db.VarChar(255)
-    about_me          String?             @db.VarChar(255)
-    social_links      String[]            @default([]) @db.VarChar(255)
-    gender            String?             @db.VarChar(255)
-    birth             String?             @db.VarChar(255)
-    gift_permission   Boolean             @default(false)
-    digital_items     digital_items[]
-    flow_account      flow_accounts?
-    favorite_saidans  saidans_favorite[]
-    boxes             boxes[]
-    material_images   material_images[]
-    saidans           saidans[]
-    business          businesses?
-    favorite_contents contents_favorite[]
-    showcases         showcases[]
-    nfts              nft_owners[]
-    is_deleted        Boolean             @default(false)
-    updated_date_time DateTime            @default(now()) @db.Timestamp(6)
-    created_date_time DateTime            @default(now()) @db.Timestamp(6)
+    id                      Int                 @id @default(autoincrement())
+    uuid                    String              @unique @db.VarChar(100)
+    email                   String              @unique @db.VarChar(255)
+    username                String              @db.VarChar(255)
+    user_id                 String?             @db.VarChar(255)
+    sns                     String?             @db.VarChar(255)
+    icon_url                String?             @db.VarChar(255)
+    about_me                String?             @db.VarChar(255)
+    social_links            String[]            @default([]) @db.VarChar(255)
+    gender                  String?             @db.VarChar(255)
+    birth                   String?             @db.VarChar(255)
+    gift_permission         Boolean             @default(false)
+    digital_items           digital_items[]
+    flow_account            flow_accounts?
+    favorite_saidans        saidans_favorite[]
+    boxes                   boxes[]
+    material_images         material_images[]
+    saidans                 saidans[]
+    business                businesses?
+    favorite_contents       contents_favorite[]
+    showcases               showcases[]
+    nfts                    nft_owners[]
+    reported_contents       reported_contents[]
+    removed_default_items   Int[]
+    transaction_amount      Int                 @default(0)
+    last_limit_updated_time DateTime            @default(now()) @db.Timestamp(6)
+    is_deleted              Boolean             @default(false)
+    updated_date_time       DateTime            @default(now()) @db.Timestamp(6)
+    created_date_time       DateTime            @default(now()) @db.Timestamp(6)
 }
 
 model flow_accounts {
@@ -56,13 +60,21 @@ model saidans {
     thumbnail_image   String             @db.VarChar(255)
     is_public         Boolean            @default(true)
     max_item_count    Int                @default(0)
-    account           accounts           @relation(fields: [account_uuid], references: [uuid])
+    account           accounts?          @relation(fields: [account_uuid], references: [uuid])
     account_uuid      String             @db.VarChar(255)
     camera_data       saidan_camera?
     favorite_users    saidans_favorite[]
     is_deleted        Boolean            @default(false)
     updated_date_time DateTime           @default(now()) @db.Timestamp(6)
     created_date_time DateTime           @default(now()) @db.Timestamp(6)
+}
+
+model default_items {
+    id                Int      @id @default(autoincrement())
+    name              String   @db.VarChar(255)
+    model_url         String   @db.Text
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
 model saidan_camera {
@@ -112,9 +124,34 @@ model contents {
     copyrights        copyrights[]
     showcases         showcases[]
     favorite_users    contents_favorite[]
+    reported_contents reported_contents[]
     is_deleted        Boolean             @default(false)
     updated_date_time DateTime            @default(now()) @db.Timestamp(6)
     created_date_time DateTime            @default(now()) @db.Timestamp(6)
+}
+
+model reported_contents {
+    id                 Int                  @id @default(autoincrement())
+    content_id         Int
+    content            contents             @relation(fields: [content_id], references: [id])
+    reporter_uuid      String               @db.VarChar(255)
+    reporter           accounts             @relation(fields: [reporter_uuid], references: [uuid])
+    title              String               @db.VarChar(255)
+    description        String               @db.Text
+    is_solved          Boolean?
+    updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    created_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    reported_documents reported_documents[]
+}
+
+model reported_documents {
+    id                Int               @id @default(autoincrement())
+    reported_id       Int
+    reported_content  reported_contents @relation(fields: [reported_id], references: [id])
+    name              String            @db.VarChar(255)
+    document_link     String            @db.Text
+    updated_date_time DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model digital_items {
@@ -200,7 +237,7 @@ model digital_item_nfts {
     digital_item_id    Int
     metadata           String?              @db.Text
     mint_status        Int                  @default(0)
-    gift_status        String?              @db.VarChar(255)
+    gift_status        Int                  @default(0)
     mint_tx_id         String?              @db.VarChar(255)
     gift_tx_id         String?              @db.VarChar(255)
     showcase_nft_items showcase_nft_items[]

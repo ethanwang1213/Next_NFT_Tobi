@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {prisma} from "../prisma";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-import {statusOfShowcase} from "./utils";
+import {digitalItemStatus, statusOfShowcase} from "./utils";
 
 export const getShowcaseTemplate = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -395,6 +395,17 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
                 include: {
                   digital_item: {
                     include: {
+                      sales: {
+                        where: {
+                          schedule_start_time: {
+                            lt: new Date(),
+                          },
+                        },
+                        orderBy: {
+                          schedule_start_time: "desc",
+                        },
+                        take: 1,
+                      },
                       material_image: true,
                     },
                   },
@@ -408,6 +419,17 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
                 include: {
                   digital_item: {
                     include: {
+                      sales: {
+                        where: {
+                          schedule_start_time: {
+                            lt: new Date(),
+                          },
+                        },
+                        orderBy: {
+                          schedule_start_time: "desc",
+                        },
+                        take: 1,
+                      },
                       material_image: true,
                     },
                   },
@@ -432,55 +454,101 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         });
         return;
       }
-      const sampleItemList = showcase.showcase_sample_items.map((relationSample) => {
+      let sampleItemList: {
+        id: number;
+        itemId: number;
+        modelType: number;
+        modelUrl: string;
+        thumbUrl: string;
+        materialUrl: string | undefined;
+        stageType: number;
+        scale: number;
+        position: {
+          x: number;
+          y: number;
+          z: number;
+        };
+        rotation: {
+          x: number;
+          y: number;
+          z: number;
+        };
+      }[] = [];
+      for (const relationSample of showcase.showcase_sample_items) {
         const sampleData = relationSample.sample_item;
         const digitalData = relationSample.sample_item.digital_item;
-        return {
-          id: relationSample.id,
-          itemId: sampleData.id,
-          modelType: digitalData.type,
-          modelUrl: digitalData.model_url,
-          thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
-          materialUrl: digitalData.material_image?.image,
-          stageType: relationSample.stage_type,
-          scale: relationSample.scale,
-          position: {
-            x: relationSample.position[0] ?? 0,
-            y: relationSample.position[1] ?? 0,
-            z: relationSample.position[2] ?? 0,
-          },
-          rotation: {
-            x: relationSample.rotation[0] ?? 0,
-            y: relationSample.rotation[1] ?? 0,
-            z: relationSample.rotation[2] ?? 0,
-          },
+        if ([digitalItemStatus.onSale, digitalItemStatus.viewingOnly].includes(digitalData.sales.length > 0 ? digitalData.sales[0].status : digitalData.metadata_status)) {
+          sampleItemList = [...sampleItemList, {
+            id: relationSample.id,
+            itemId: sampleData.id,
+            modelType: digitalData.type,
+            modelUrl: digitalData.model_url,
+            thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
+            materialUrl: digitalData.material_image?.image,
+            stageType: relationSample.stage_type,
+            scale: relationSample.scale,
+            position: {
+              x: relationSample.position[0] ?? 0,
+              y: relationSample.position[1] ?? 0,
+              z: relationSample.position[2] ?? 0,
+            },
+            rotation: {
+              x: relationSample.rotation[0] ?? 0,
+              y: relationSample.rotation[1] ?? 0,
+              z: relationSample.rotation[2] ?? 0,
+            },
+          }];
+        }
+      }
+      let nftItemList:{
+        id: number;
+        itemId: number;
+        modelType: number;
+        modelUrl: string;
+        thumbUrl: string;
+        materialUrl: string | undefined;
+        stageType: number;
+        scale: number;
+        itemMeterHeight: number;
+        position: {
+            x: number;
+            y: number;
+            z: number;
         };
-      });
-      const nftItemList = showcase.showcase_nft_items.map((relationNft) => {
+        rotation: {
+          x: number;
+          y: number;
+          z: number;
+        };
+      }[] = [];
+
+      for (const relationNft of showcase.showcase_nft_items) {
         const nftData = relationNft.digital_item_nft;
         const digitalData = relationNft.digital_item_nft.digital_item;
-        return {
-          id: relationNft.id,
-          itemId: nftData.id,
-          modelType: digitalData.type,
-          modelUrl: digitalData.model_url,
-          thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
-          materialUrl: digitalData.material_image?.image,
-          stageType: relationNft.stage_type,
-          scale: relationNft.scale,
-          itemMeterHeight: relationNft.meter_height,
-          position: {
-            x: relationNft.position[0] ?? 0,
-            y: relationNft.position[1] ?? 0,
-            z: relationNft.position[2] ?? 0,
-          },
-          rotation: {
-            x: relationNft.rotation[0] ?? 0,
-            y: relationNft.rotation[1] ?? 0,
-            z: relationNft.rotation[2] ?? 0,
-          },
-        };
-      });
+        if ([digitalItemStatus.onSale, digitalItemStatus.viewingOnly].includes(digitalData.sales.length > 0 ? digitalData.sales[0].status : digitalData.metadata_status)) {
+          nftItemList = [...nftItemList, {
+            id: relationNft.id,
+            itemId: nftData.id,
+            modelType: digitalData.type,
+            modelUrl: digitalData.model_url,
+            thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
+            materialUrl: digitalData.material_image?.image,
+            stageType: relationNft.stage_type,
+            scale: relationNft.scale,
+            itemMeterHeight: relationNft.meter_height,
+            position: {
+              x: relationNft.position[0] ?? 0,
+              y: relationNft.position[1] ?? 0,
+              z: relationNft.position[2] ?? 0,
+            },
+            rotation: {
+              x: relationNft.rotation[0] ?? 0,
+              y: relationNft.rotation[1] ?? 0,
+              z: relationNft.rotation[2] ?? 0,
+            },
+          }];
+        }
+      }
       const settings = {
         wallpaper: {
           tint: showcase.wallpaper_tint,

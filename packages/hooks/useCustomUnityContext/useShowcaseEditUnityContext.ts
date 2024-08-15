@@ -17,6 +17,7 @@ import {
   SaidanLikeData,
   SaidanType,
   showcaseOffset,
+  UndoneOrRedone,
   UnityMessageJson,
   UnitySceneType,
 } from "./types";
@@ -37,6 +38,8 @@ type Props = {
     itemId: number,
     sendItemRemovalResult: SendItemRemovalResult,
   ) => void;
+  onActionUndone?: UndoneOrRedone;
+  onActionRedone?: UndoneOrRedone;
 };
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
@@ -47,12 +50,18 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemEnabled,
   onRemoveItemDisabled,
   onRemoveItemRequested,
+  onActionUndone,
+  onActionRedone,
 }: Props) => {
   const {
+    // state
     unityProvider,
     isLoaded,
     isDragging,
     selectedItem,
+    isUndoable,
+    isRedoable,
+    // functions
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -65,6 +74,12 @@ export const useShowcaseEditUnityContext = ({
     removeItem,
     updateIdValues,
     inputWasd,
+    undoAction,
+    redoAction,
+    deleteAllActionHistory,
+    pauseUnityInputs,
+    resumeUnityInputs,
+    // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragPlacingStarted,
@@ -72,13 +87,18 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionUndone,
+    handleActionRedone,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
+    onActionUndone,
+    onActionRedone,
   });
 
+  // functions
   const processLoadData: ProcessLoadData = useCallback(
     (loadData: ShowcaseLoadData) => {
       console.log(loadData);
@@ -159,6 +179,7 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  // event handlers
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
       if (!onSaveDataGenerated) return;
@@ -237,13 +258,19 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
     handleItemSelected,
+    handleActionUndone,
+    handleActionRedone,
   });
 
   return {
+    // states
     unityProvider,
     isLoaded,
     isDragging,
     selectedItem,
+    isUndoable,
+    isRedoable,
+    // functions
     setLoadData: processAndSetLoadData,
     requestSaveData,
     placeNewSample,
@@ -254,5 +281,10 @@ export const useShowcaseEditUnityContext = ({
     removeRecentItem,
     updateSettings,
     inputWasd,
+    undoAction,
+    redoAction,
+    deleteAllActionHistory,
+    pauseUnityInputs,
+    resumeUnityInputs,
   };
 };

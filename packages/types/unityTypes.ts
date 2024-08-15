@@ -159,3 +159,18 @@ export type SaidanSettings = {
 };
 
 export type ShowcaseSettings = SaidanSettings;
+
+export const ActionType = {
+  AddItem: 0,
+  RemoveItem: 1,
+  TranslateItem: 2,
+  RotateItem: 3,
+  ScaleItem: 4,
+  ChangeWallpaperColor: 5,
+  ChangeFloorColor: 6,
+  ChangeSceneLightColor: 7,
+  ChangeSceneLightBrightness: 8,
+  ChangePointLightColor: 9,
+  ChangePointLightBrightness: 10,
+} as const;
+export type ActionType = (typeof ActionType)[keyof typeof ActionType];

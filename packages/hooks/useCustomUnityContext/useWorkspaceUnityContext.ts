@@ -16,6 +16,7 @@ import { DefaultItemMeterHeight } from "./constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
+  UndoneOrRedone,
   UnityMessageJson,
   UnitySceneType,
 } from "./types";
@@ -36,6 +37,8 @@ type Props = {
     itemId: number,
     sendSampleRemovalResult: SendSampleRemovalResult,
   ) => void;
+  onActionUndone?: UndoneOrRedone;
+  onActionRedone?: UndoneOrRedone;
 };
 
 export const useWorkspaceUnityContext = ({
@@ -45,12 +48,18 @@ export const useWorkspaceUnityContext = ({
   onRemoveSampleEnabled,
   onRemoveSampleDisabled,
   onRemoveSampleRequested,
+  onActionUndone,
+  onActionRedone,
 }: Props) => {
   const {
+    // states
     unityProvider,
     isLoaded,
     isDragging,
     selectedItem,
+    isUndoable,
+    isRedoable,
+    // functions
     addEventListener,
     removeEventListener,
     postMessageToUnity,
@@ -61,6 +70,12 @@ export const useWorkspaceUnityContext = ({
     removeItem,
     updateIdValues,
     inputWasd,
+    undoAction,
+    redoAction,
+    deleteAllActionHistory,
+    pauseUnityInputs,
+    resumeUnityInputs,
+    // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleDragPlacingStarted,
@@ -68,13 +83,18 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionUndone,
+    handleActionRedone,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
     onRemoveItemEnabled: onRemoveSampleEnabled,
     onRemoveItemDisabled: onRemoveSampleDisabled,
+    onActionUndone,
+    onActionRedone,
   });
 
+  // functions
   const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
     console.log(loadData);
     if (loadData == null) return null;
@@ -187,6 +207,7 @@ export const useWorkspaceUnityContext = ({
     [postMessageToUnity],
   );
 
+  // event handlers
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
       if (!onSaveDataGenerated) return;
@@ -260,9 +281,12 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
     handleItemSelected,
+    handleActionUndone,
+    handleActionRedone,
   });
 
   return {
+    // states
     unityProvider,
     isLoaded,
     isDragging,
@@ -272,6 +296,9 @@ export const useWorkspaceUnityContext = ({
           sampleItemId: selectedItem.itemId,
           digitalItemId: selectedItem.digitalItemId,
         },
+    isUndoable,
+    isRedoable,
+    // functions
     setLoadData,
     requestSaveData,
     placeNewSample,
@@ -280,5 +307,10 @@ export const useWorkspaceUnityContext = ({
     removeSamplesByItemId,
     requestItemThumbnail,
     inputWasd,
+    undoAction,
+    redoAction,
+    deleteAllActionHistory,
+    pauseUnityInputs,
+    resumeUnityInputs,
   };
 };

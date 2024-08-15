@@ -1,0 +1,222 @@
+import {Request, Response, Router} from "express";
+import {prisma} from "../../prisma";
+
+const router: Router = Router();
+
+router.get("/", async (req: Request, res: Response) => {
+  const {pageNumber, pageSize, favorOrderBy} = req.query;
+  const favorOrderByString = favorOrderBy=="asc"?"asc":"desc";
+  const skip = (Number(pageNumber)-1)*Number(pageSize);
+  console.log(skip);
+
+  try {
+    const contents = await prisma.contents.findMany({
+      // skip: skip,
+      // take: Number(pageSize),
+      include: {
+        favorite_users: true,
+        businesses: {
+          include: {
+            account: true,
+          },
+        },
+        copyrights: true,
+      },
+      orderBy: {
+        favorite_users: {
+          _count: favorOrderByString,
+        },
+      },
+    });
+    const returnData = contents.map((content)=>{
+      const owner = content.businesses;
+      return {
+        id: content.id,
+        name: content.name,
+        description: content.description,
+        hpURL: content.url,
+        favorUserNum: content.favorite_users.length,
+        owner: owner==null?null:{
+          id: owner.id,
+          uuid: owner.uuid,
+          userId: owner.account.user_id,
+          name: owner.first_name + " " + owner.last_name,
+          email: owner.email,
+          phone: owner.phone,
+          address: owner.province +
+            " " + owner.city +
+            " " + owner.street +
+            " " + owner.building,
+          country: owner.country,
+          postalCode: owner.postal_code,
+          birth: owner.birth,
+        },
+        copyrights: content.copyrights.map((copyright)=>{
+          return {
+            id: copyright.id,
+            name: copyright.name,
+          };
+        }),
+        license: content.license,
+        licenseData: content.license_data,
+      };
+    });
+    res.status(200).send({
+      status: "success",
+      data: returnData,
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.get("/:id", async (req: Request, res: Response) => {
+  const {id} = req.params;
+  console.log(id);
+  try {
+    const content = await prisma.contents.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      include: {
+        favorite_users: true,
+        businesses: {
+          include: {
+            account: true,
+          },
+        },
+        copyrights: true,
+      },
+    });
+    if (!content) {
+      res.status(404).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+    const returnData = {
+      id: content.id,
+      name: content.name,
+      description: content.description,
+      hpURL: content.url,
+      favorUserNum: content.favorite_users.length,
+      owner: content.businesses==null?null:{
+        id: content.businesses.id,
+        uuid: content.businesses.uuid,
+        userId: content.businesses.account.user_id,
+        name: content.businesses.first_name + " " + content.businesses.last_name,
+        email: content.businesses.email,
+        phone: content.businesses.phone,
+        address: content.businesses.province +
+          " " + content.businesses.city +
+          " " + content.businesses.street +
+          " " + content.businesses.building,
+        country: content.businesses.country,
+        postalCode: content.businesses.postal_code,
+        birth: content.businesses.birth,
+      },
+      copyrights: content.copyrights.map((copyright)=>{
+        return {
+          id: copyright.id,
+          name: copyright.name,
+        };
+      }),
+      license: content.license,
+      licenseData: content.license_data,
+    };
+    res.status(200).send({
+      status: "success",
+      data: returnData,
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.get("/notifications", async (req: Request, res: Response) => {
+  try {
+    const reportedContents = await prisma.reported_contents.findMany({
+      where: {
+        is_solved: null,
+      },
+      include: {
+        content: true,
+      },
+    });
+    const returnData = reportedContents.map((reportedContent)=>{
+      return {
+        id: reportedContent.id,
+        contentId: reportedContent.content_id,
+      };
+    });
+    res.status(200).send({
+      status: "success",
+      data: returnData,
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.put("/:id/ignore-report", async (req: Request, res: Response) => {
+  const {id} = req.params;
+  try {
+    await prisma.reported_contents.updateMany({
+      where: {
+        content_id: parseInt(id),
+        is_solved: null,
+      },
+      data: {
+        is_solved: true,
+      },
+    });
+
+    res.status(200).send({
+      status: "success",
+      data: "ignore",
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.put("/:id/freeze-report", async (req: Request, res: Response) => {
+  const {id} = req.params;
+  try {
+    await prisma.reported_contents.updateMany({
+      where: {
+        content_id: parseInt(id),
+        is_solved: null,
+      },
+      data: {
+        is_solved: false,
+      },
+    });
+
+    res.status(200).send({
+      status: "success",
+      data: "freeze",
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.get("/documents")
+export const contentRouter = router;

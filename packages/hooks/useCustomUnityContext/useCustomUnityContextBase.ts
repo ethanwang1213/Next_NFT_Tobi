@@ -16,7 +16,12 @@ type MessageDestination =
   | "ItemMenuXMessageReceiver"
   | "UpdateItemIdMessageReceiver"
   | "UpdateSettingsMessageReceiver"
-  | "InputWasdMessageReceiver";
+  | "InputWasdMessageReceiver"
+  | "UndoActionMessageReceiver"
+  | "RedoActionMessageReceiver"
+  | "DeleteAllActionHistoryMessageReceiver"
+  | "PauseInputsMessageReceiver"
+  | "ResumeInputsMessageReceiver";
 
 export const useCustomUnityContextBase = ({
   sceneType,
@@ -63,17 +68,31 @@ export const useCustomUnityContextBase = ({
     [postMessageToUnity],
   );
 
+  // pause events
+  const pauseUnityInputs = useCallback(() => {
+    postMessageToUnity("PauseInputsMessageReceiver", "");
+  }, [postMessageToUnity]);
+
+  const resumeUnityInputs = useCallback(() => {
+    postMessageToUnity("ResumeInputsMessageReceiver", "");
+  }, [postMessageToUnity]);
+
   useEffect(() => {
     if (!isLoaded) return;
     postMessageToSwitchScene(sceneType);
   }, [isLoaded, sceneType, postMessageToSwitchScene]);
 
   return {
+    // states
     unityProvider,
     isLoaded,
+    // functions
     addEventListener,
     removeEventListener,
     postMessageToUnity,
+    pauseUnityInputs,
+    resumeUnityInputs,
+    // event handlers
     handleSimpleMessage,
   };
 };

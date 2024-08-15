@@ -4,6 +4,9 @@
  * @returns {boolean} The if obj is empty.
  */
 
+import {numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime} from "../lib/constants";
+import {prisma} from "../prisma";
+
 export function isEmptyObject(obj: object): boolean {
   const len = Object.keys(obj).length;
   if (len) {
@@ -27,16 +30,6 @@ export const statusOfShowcase = {
   publicSchedule: 2,
 };
 
-// export const statusOfDigitalItem = {
-//   draft: 1,
-//   private: 2,
-//   public: 3,
-//   onSale: 4,
-//   unListed: 5,
-//   publicSchedule: 6,
-//   saleSchedule: 7,
-// };
-
 export const digitalItemStatus = {
   draft: 1,
   private: 2,
@@ -52,20 +45,54 @@ export const mintStatus = {
   opened: 3,
 };
 
-// export function getStatusOfShowcase(
-//   status: number,
-//   updatedTime: Date,
-//   scheduleDate: Date|null,
-// ): number{
-//   if (!scheduleDate) {
-//     return status;
-//   }
-//   const scheduleTime = +new Date(scheduleDate);
-//   const nowTime = Date.now();
-//   if (nowTime>scheduleTime) {
-//     return status;
-//   }else {
+export const giftStatus = {
+  none: 0,
+  error: 1,
+  gifting: 2,
+};
 
-//   }
-//   return 1;
-// }
+export enum statusOfLimitTransaction {
+  notExistAccount,
+  limitedTransaction,
+  permitted,
+}
+
+export async function increaseTransactionAmount(uuid: string): Promise<statusOfLimitTransaction> {
+  const userData = await prisma.accounts.findUnique({
+    where: {
+      uuid: uuid,
+    },
+  });
+  if (!userData) {
+    return statusOfLimitTransaction.notExistAccount;
+  }
+  if (userData.transaction_amount>=numberOfLimitTransaction) {
+    const now = Date.now();
+    const lastUpdatedTime = new Date(userData.last_limit_updated_time).getTime();
+    if (now-lastUpdatedTime>=resetLimitTransactionDuration) {
+      const todayResetTime = new Date(new Date().setHours(resetLimitTransactionTime, 0, 0, 0));
+      await prisma.accounts.update({
+        where: {
+          uuid: uuid,
+        },
+        data: {
+          last_limit_updated_time: todayResetTime,
+          transaction_amount: 1,
+        },
+      });
+      return statusOfLimitTransaction.permitted;
+    }
+    return statusOfLimitTransaction.limitedTransaction;
+  }
+  await prisma.accounts.update({
+    where: {
+      uuid: uuid,
+    },
+    data: {
+      transaction_amount: {
+        increment: 1,
+      },
+    },
+  });
+  return statusOfLimitTransaction.permitted;
+}
