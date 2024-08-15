@@ -164,7 +164,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
     }
 
     props.nextHandler(blobUrlRef.current, coordsRef.current);
-  }, [props, rotate, position, cropImage, calculatePositionHandler]);
+  }, [props, position, cropImage, calculatePositionHandler]);
 
   return (
     <div

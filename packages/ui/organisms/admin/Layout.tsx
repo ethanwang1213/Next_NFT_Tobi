@@ -6,26 +6,26 @@ import {
 } from "contexts/AdminAuthProvider";
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { auth } from "fetchers/firebase/client";
-import useRestfulAPI from "hooks/useRestfulAPI";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
 import ContentSuspendedComponent from "./ContentSuspendedComponent";
 
 type Props = {
   children: ReactNode;
+  content?: String;
 };
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ children, content }: Props) => {
   return (
     <>
       <Head>
         <title>Tobiratory Admin</title>
       </Head>
       <AuthProvider>
-        <Contents>{children}</Contents>
+        <Contents content={content}>{children}</Contents>
       </AuthProvider>
     </>
   );
@@ -50,30 +50,17 @@ const MainContents = ({ children }: Props) => {
   return <>{children}</>;
 };
 
-const Contents = ({ children }: Props) => {
-  const spinner = (
-    <div className={"h-[100dvh] flex justify-center"}>
-      <span className={"loading loading-spinner text-info loading-md"} />
-    </div>
-  );
-
+const Contents = ({ children, content }: Props) => {
   const { user } = useAuth();
-  const apiUrl = "native/admin/content";
-  const { data: content, loading, error, getData } = useRestfulAPI(apiUrl);
-  useEffect(() => {
-    getData(apiUrl);
-  }, [""]);
+  console.log(content, "This is content");
 
-  if (loading) {
-    return spinner;
-  }
   if (auth.currentUser && user?.hasFlowAccount) {
     return (
       <NavbarProvider>
         <div className="flex flex-col h-screen">
           <Navbar />
           <Sidebar>
-            {error === "reported" ? (
+            {content === "reported" ? (
               <ContentSuspendedComponent />
             ) : (
               <MainContents>{children}</MainContents>

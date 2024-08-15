@@ -12,28 +12,12 @@ const ContentSuspendedComponent = () => {
   const [fileUrls, setFileUrls] = useState([]);
   const uploadImageRef = useRef<string>("");
 
-  // const apiUrl = "native/admin/content/documents";
-  // const { data, postData } = useRestfulAPI(apiUrl);
-
-  const onDrop = useCallback(async (acceptedFiles) => {
-    setLoading(true);
-    for (const file of acceptedFiles) {
-      const fileExtension = file.type.split("/")[1]; // Get the file extension from MIME type
-      if (
-        file &&
-        (fileExtension === "png" ||
-          fileExtension === "jpeg" ||
-          fileExtension === "pdf")
-      ) {
-        const fileUrl = URL.createObjectURL(file);
-        await uploadImageHandler(fileUrl, fileExtension);
-      }
-    }
-    setLoading(false);
-  }, []);
-
   const uploadImageHandler = useCallback(
-    async (image: string, extension: string): Promise<boolean> => {
+    async (
+      image: string,
+      name: String,
+      extension: string,
+    ): Promise<boolean> => {
       uploadImageRef.current = await uploadFiles(
         image,
         extension,
@@ -42,12 +26,36 @@ const ContentSuspendedComponent = () => {
       if (uploadImageRef.current === "") {
         return false;
       }
-      fileUrls.push(uploadImageRef.current);
-      console.log(fileUrls);
+      setFileUrls((prevFileUrls) => [
+        ...prevFileUrls,
+        {
+          documentUrl: uploadImageRef.current,
+          documentName: name,
+        },
+      ]);
       return true;
     },
     [],
   );
+
+  const onDrop = useCallback(async (acceptedFiles) => {
+    setLoading(true);
+    for (const file of acceptedFiles) {
+      const fileName = file.name.split(".")[0];
+      const fileExtension = file.type.split("/")[1];
+      if (
+        file &&
+        (fileExtension === "png" ||
+          fileExtension === "jpeg" ||
+          fileExtension === "pdf")
+      ) {
+        const fileUrl = URL.createObjectURL(file);
+        await uploadImageHandler(fileUrl, fileName, fileExtension);
+      }
+    }
+    setLoading(false);
+  }, [uploadImageHandler]);
+
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 

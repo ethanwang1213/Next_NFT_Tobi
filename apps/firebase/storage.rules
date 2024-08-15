@@ -43,5 +43,12 @@ service firebase.storage {
       allow delete: if request.auth != null
         && request.auth.uid == userId;
     }
+     match /documents/{userId} {
+      allow read: if true;
+      match /{fileName} {
+      	allow read: if true;
+      	allow write: if true;
+      }
+    }
   }
 }
