@@ -284,7 +284,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
                     objectFit: "contain",
                     left: position.x,
                     top: position.y,
-                    zIndex: 10,
+                    zIndex: 1,
                   }}
                   crossOrigin="anonymous"
                   draggable={false}

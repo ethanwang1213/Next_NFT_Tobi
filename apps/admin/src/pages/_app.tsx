@@ -3,11 +3,11 @@ import { default as NextApp } from "next/app";
 
 import "@/styles/CropStyles.css";
 import "@/styles/global.scss";
+import "@/styles/globalicons.css";
 import "@/styles/PublicSwitch.css";
 import "@/styles/Spinner.css";
 import "@/styles/TabView.css";
 import "@/styles/TripleToggleSwitch.scss";
-import "@/styles/globalicons.css";
 import "react-easy-crop/react-easy-crop.css";
 import "swiper/css";
 import "swiper/css/effect-cards";
@@ -17,6 +17,8 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
+import useRestfulAPI from "hooks/useRestfulAPI";
+import { useEffect } from "react";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
@@ -27,10 +29,28 @@ config.autoAddCss = false;
 const font = M_PLUS_2({ subsets: ["latin"] });
 
 const App = ({ Component, pageProps }: AppProps) => {
+  const apiUrl = "native/admin/content";
+  const { loading, error, getData } = useRestfulAPI(apiUrl);
+
+  useEffect(() => {
+    getData(apiUrl);
+  }, [getData, apiUrl]);
+
+  if (loading) {
+    return (
+      <>
+        <main className={font.className}>
+          <div className={"h-[100dvh] flex justify-center"}>
+            <span className={"loading loading-spinner text-info loading-md"} />
+          </div>
+        </main>
+      </>
+    );
+  }
   return (
     <>
       <main className={font.className}>
-        <Layout>
+        <Layout content={error}>
           <FcmTokenComp />
           <LeavePageProvider>
             <Component {...pageProps} />

@@ -16,14 +16,11 @@ const SampleDetailDialog = ({
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-opacity-90 bg-gray-800">
         <form method="dialog">
-          <button className="absolute w-4 h-4 top-3 right-3">
-            <Image
-              src={"/admin/images/icon/close2.svg"}
-              width={16}
-              height={16}
-              alt="close icon"
-              className="opacity-70 filter brightness-0 saturate-100 invert-100"
-            />
+          <button className="absolute w-4 h-4 top-3 right-5">
+            <span
+              className="material-symbols-outlined text-base-white cursor-pointer"
+              style={{ fontSize: 20 }}
+            >close</span>
           </button>
         </form>
         <span className="text-base-black text-base font-semibold text-gray-100">

@@ -50,13 +50,22 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
 
   const onMouseMove = (event: React.MouseEvent) => {
     if (isDragging && dragStartPos.current) {
-      const dx = event.clientX - dragStartPos.current.x;
-      const dy = event.clientY - dragStartPos.current.y;
-      setPosition((prevPosition) => ({
-        x: prevPosition.x + dx,
-        y: prevPosition.y + dy,
-      }));
-      dragStartPos.current = { x: event.clientX, y: event.clientY };
+      const targetElement = imgWrapperRef.current;
+      const targetRect = targetElement.getBoundingClientRect();
+      const isWithinTargetArea =
+        event.clientX >= targetRect.left + 50 &&
+        event.clientX <= targetRect.right - 50 &&
+        event.clientY >= targetRect.top + 50 &&
+        event.clientY <= targetRect.bottom - 50;
+      if (isWithinTargetArea) {
+        const dx = event.clientX - dragStartPos.current.x;
+        const dy = event.clientY - dragStartPos.current.y;
+        setPosition((prevPosition) => ({
+          x: prevPosition.x + dx,
+          y: prevPosition.y + dy,
+        }));
+        dragStartPos.current = { x: event.clientX, y: event.clientY };
+      }
     }
   };
 
@@ -137,10 +146,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
 
   const generateHandler = useCallback(async () => {
     setProcessing(true);
-    if (rotate !== 180) {
-      await cropImage();
-    }
-
+    await cropImage();
     if (
       position.x !=
         (imgWrapperRef.current.clientWidth -
@@ -155,7 +161,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
     }
 
     props.nextHandler(blobUrlRef.current, coordsRef.current);
-  }, [props, rotate, position, cropImage, calculatePositionHandler]);
+  }, [props, position, cropImage, calculatePositionHandler]);
 
   return (
     <div

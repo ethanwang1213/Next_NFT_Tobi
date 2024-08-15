@@ -371,7 +371,6 @@ export default function Index() {
         imageUrl: image1,
       });
     }
-
     return true;
   };
 
@@ -488,7 +487,7 @@ export default function Index() {
             transform: "translateX(-50%)",
           }}
         >
-          <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8">
+          <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
             <Image
               width={32}
               height={32}

@@ -66,12 +66,9 @@ const ImageRotateComponent: React.FC<Props> = (props) => {
 
   const nextHandler = useCallback(async () => {
     setProcessing(true);
-    if (rotate !== 180) {
       await cropImage();
-    }
-
     props.nextHandler(blobUrlRef.current);
-  }, [rotate, props, cropImage]);
+  }, [props, cropImage]);
 
   return (
     <div className="h-full relative">

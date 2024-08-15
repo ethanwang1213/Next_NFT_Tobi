@@ -343,7 +343,7 @@ const Showcase = () => {
   };
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-screen-minus-56 relative">
       <ShowcaseEditUnity unityProvider={unityProvider} />
       {!isLoaded && (
         <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
@@ -413,7 +413,7 @@ const Showcase = () => {
           style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
         >
           <div className="absolute bottom-12 w-full flex justify-center">
-            <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8">
+            <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
               <Image
                 width={32}
                 height={32}
@@ -445,6 +445,7 @@ const Showcase = () => {
                 }
                 className="cursor-pointer"
                 onClick={() => {
+                  setShowSampleDetailView(!showSampleDetailView);
                   setShowSmartFrame(!showSmartFrame);
                   handleButtonClick(
                     showSmartFrame
@@ -464,6 +465,7 @@ const Showcase = () => {
                 }
                 className="cursor-pointer"
                 onClick={() => {
+                  setShowSampleDetailView(!showDetailView);
                   setShowDetailView(!showDetailView);
                   handleButtonClick(
                     showDetailView ? "The UI is hidden" : "The UI is shown",
