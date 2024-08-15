@@ -274,7 +274,7 @@ export const deleteNFT = async (req: Request, res: Response) => {
       await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", fcmToken);
       res.status(200).send({
         status: "success",
-        data: "NFT is gifting",
+        data: "NFT is deleting",
       });
     } catch (err) {
       if (err instanceof GiftError) {
@@ -349,9 +349,15 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   };
   const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
   console.log(`Message ${messageId} published.`);
+  let title = "NFTをギフトしています";
+  let body = "ギフト完了までしばらくお待ちください";
+  if (receiveFlowId === process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES) {
+    title = "NFTを削除しています";
+    body = "削除完了までしばらくお待ちください";
+  }
   pushToDevice(fcmToken, {
-    title: "NFTをギフトしています",
-    body: "ギフト完了までしばらくお待ちください",
+    title: title,
+    body: body,
   }, {
     body: JSON.stringify({
       type: "transferBegan",
