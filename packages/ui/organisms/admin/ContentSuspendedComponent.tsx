@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Button from "../../atoms/Button";
+import Spinner from "./Spinner";
 
 const ContentSuspendedComponent = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(true);
@@ -38,24 +39,26 @@ const ContentSuspendedComponent = () => {
     [],
   );
 
-  const onDrop = useCallback(async (acceptedFiles) => {
-    setLoading(true);
-    for (const file of acceptedFiles) {
-      const fileName = file.name.split(".")[0];
-      const fileExtension = file.type.split("/")[1];
-      if (
-        file &&
-        (fileExtension === "png" ||
-          fileExtension === "jpeg" ||
-          fileExtension === "pdf")
-      ) {
-        const fileUrl = URL.createObjectURL(file);
-        await uploadImageHandler(fileUrl, fileName, fileExtension);
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      setLoading(true);
+      for (const file of acceptedFiles) {
+        const fileName = file.name.split(".")[0];
+        const fileExtension = file.type.split("/")[1];
+        if (
+          file &&
+          (fileExtension === "png" ||
+            fileExtension === "jpeg" ||
+            fileExtension === "pdf")
+        ) {
+          const fileUrl = URL.createObjectURL(file);
+          await uploadImageHandler(fileUrl, fileName, fileExtension);
+        }
       }
-    }
-    setLoading(false);
-  }, [uploadImageHandler]);
-
+      setLoading(false);
+    },
+    [uploadImageHandler],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -89,9 +92,7 @@ const ContentSuspendedComponent = () => {
         </div>
       ) : loading ? (
         <div className="w-full h-full flex justify-center items-center">
-          <div className="w-[400px] h-[379px] z-10 flex justify-center items-center">
-            <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
-          </div>
+          <Spinner />
         </div>
       ) : (
         <>

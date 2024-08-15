@@ -146,10 +146,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
 
   const generateHandler = useCallback(async () => {
     setProcessing(true);
-    // if (rotate !== 180) {
     await cropImage();
-    // }
-
     if (
       position.x !=
         (imgWrapperRef.current.clientWidth -
