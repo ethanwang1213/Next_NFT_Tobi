@@ -32,6 +32,7 @@
     "downshift": "^9.0.4",
     "firebase": "^9.23.0",
     "numeral": "^2.0.6",
+    "pdfjs-dist": "^4.5.136",
     "qrcode.react": "^3.1.0",
     "rc-slider": "^10.6.2",
     "rc-switch": "^4.1.0",

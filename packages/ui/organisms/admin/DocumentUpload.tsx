@@ -18,7 +18,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
       <div className="m-9 text-[#717171] text-[32px] font-semibold">
         Support Center
       </div>
-      <div className="px-20">
+      <div className="container mx-auto">
         <div className="font-semibold bg-[#E0E3E8] rounded-[20px] mx-auto">
           <div className="mt-[62px]">
             <div className="text-[20px] text-[#1D1F24] font-medium pt-[95px] pb-[30px] space-y-1">
@@ -56,12 +56,6 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
               </Button>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="px-20">
-        <div className="mt-[95px] p-8 mx-auto border border-[#E0E3E8]">
-          <p className="text-[24px] font-semibold text-[#1D1F24]">Document</p>
-          <div className="grid grid-cols-4"></div>
         </div>
       </div>
     </>
