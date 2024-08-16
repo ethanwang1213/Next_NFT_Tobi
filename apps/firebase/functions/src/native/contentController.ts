@@ -899,13 +899,12 @@ export const submitDocumentsReportContent = async (req: Request, res: Response) 
 
 export const getDocumentsReportContent = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {id} = req.params;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const content = await prisma.contents.findUnique({
         where: {
-          id: parseInt(id),
+          businesses_uuid: uid,
         },
       });
       if (!content) {
@@ -924,7 +923,7 @@ export const getDocumentsReportContent = async (req: Request, res: Response) => 
       }
       const reportedContent = await prisma.reported_contents.findFirst({
         where: {
-          content_id: parseInt(id),
+          content_id: content.id,
           is_solved: null,
         },
         include: {
