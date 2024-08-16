@@ -173,7 +173,6 @@ router.put("/requests", async (req: Request, res: Response) => {
 
 router.get("/:id", async (req: Request, res: Response) => {
   const {id} = req.params;
-  console.log(id);
   try {
     const content = await prisma.contents.findUnique({
       where: {
@@ -187,6 +186,16 @@ router.get("/:id", async (req: Request, res: Response) => {
           },
         },
         copyrights: true,
+        reported_documents: {
+          orderBy: {
+            created_date_time: "desc",
+          },
+        },
+        reported_contents: {
+          include: {
+            reporter: true,
+          }
+        },
       },
     });
     if (!content) {
@@ -196,6 +205,25 @@ router.get("/:id", async (req: Request, res: Response) => {
       });
       return;
     }
+    const documents = content.reported_documents.map((document)=>{
+      return {
+        documentName: document.name,
+        documentLink: document.document_link,
+        uploadedTime: document.created_date_time,
+      }
+    });
+    const reports = content.reported_contents.map((report)=>{
+      return {
+        date: report.created_date_time,
+        title: report.title,
+        description: report.description,
+        reporter: {
+          uuid: report.reporter.uuid,
+          avatar: report.reporter.icon_url,
+          username: report.reporter.username,
+        }
+      }
+    })
     const returnData = {
       id: content.id,
       name: content.name,
@@ -219,6 +247,8 @@ router.get("/:id", async (req: Request, res: Response) => {
         postalCode: content.businesses.postal_code,
         birth: content.businesses.birth,
       },
+      documents: documents,
+      reports: reports,
       copyrights: content.copyrights.map((copyright)=>{
         return {
           id: copyright.id,

@@ -873,6 +873,7 @@ export const submitDocumentsReportContent = async (req: Request, res: Response) 
         data: documents.map((document)=>{
           return {
             reported_id: reportedContent.id,
+            content_id: admin.content?.id??0,
             name: document.documentName,
             document_link: document.documentLink,
           }
