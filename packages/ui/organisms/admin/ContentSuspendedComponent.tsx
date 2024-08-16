@@ -70,8 +70,8 @@ const ContentSuspendedComponent = () => {
           await uploadImageHandler(fileUrl, fileName, fileExtension);
         }
       }
-      await postHandler();
-      setDocumentData([]);
+      // await postHandler();
+      // setDocumentData([]);
       setUploading(false);
     },
     [uploadImageHandler, postHandler],

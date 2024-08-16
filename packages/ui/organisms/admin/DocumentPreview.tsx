@@ -19,7 +19,9 @@ const ImagePreview: React.FC<{ document: Document; extension: String }> = ({
   return (
     <div>
       <div className="h-[200px] rounded-[20px] border-[1px] border-solid pl-4 border-[#E1E1E1] overflow-hidden">
-        <img
+        <Image
+          width={200}
+          height={150}
           src={document.documentLink}
           alt={document.documentName}
           className="w-full h-[150px] object-cover"

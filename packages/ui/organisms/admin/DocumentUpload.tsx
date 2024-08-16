@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import Button from "../../atoms/Button"; // Adjust the import based on your image handling
+import Button from "../../atoms/Button";
 
 interface DocumentUploadProps {
   onDrop: (acceptedFiles: File[]) => void;
@@ -52,7 +52,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
                   alt="add icon"
                   className="cursor-pointer"
                 />{" "}
-                add document
+                add documents
               </Button>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import * as pdfjsLib from "pdfjs-dist/webpack.mjs";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -17,7 +18,7 @@ const PdfToImage: React.FC<{ pdfUrl: string }> = ({ pdfUrl }) => {
         const originalViewport = page.getViewport({ scale: 1 });
 
         const desiredWidth = 200;
-        const desiredHeight = 180;
+        const desiredHeight = 150;
         const scale = Math.min(
           desiredWidth / originalViewport.width,
           desiredHeight / originalViewport.height,
@@ -51,7 +52,9 @@ const PdfToImage: React.FC<{ pdfUrl: string }> = ({ pdfUrl }) => {
   return (
     <div>
       {imgSrc ? (
-        <img
+        <Image
+          width={200}
+          height={150}
           src={imgSrc}
           alt="PDF Page"
           className="w-full h-[150px] object-cover"
