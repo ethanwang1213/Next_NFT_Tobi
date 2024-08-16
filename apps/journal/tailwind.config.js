@@ -64,6 +64,9 @@ const config = {
           900: "#7B3F03",
           1000: "#5B2E02",
         },
+        "active": {
+          DEFAULT: "#B91C1C",
+        }
       },
     },
   },
@@ -82,7 +85,7 @@ const config = {
           "neutral-focus": "#F0F0F0",
           "neutral-content": "#8C8C8C",
           "base-100": "#FBEED0",
-          info: "#137BB1",
+          info: "#1779DE",
           success: "#36D399",
           warning: "#B25748",
           error: "#FF4747",

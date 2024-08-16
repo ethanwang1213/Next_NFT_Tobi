@@ -1,6 +1,5 @@
-import { httpsCallable } from "firebase/functions";
+import { useSettingContext } from "@/contexts/journal-SettingProvider";
 import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
-import { functions } from "journal-pkg/fetchers/firebase/journal-client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -10,51 +9,13 @@ import { useEffect, useState } from "react";
  */
 const SettingPc0: React.FC = () => {
   const { user } = useAuth();
+  const { redeemEmails, loadRedeemEmails, openConfirmEmailRemovalModal,openEmailSentModal } =
+    useSettingContext();
   const [email, setEmail] = useState("");
-  const [redeemEmails, setRedeemEmails] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    getRedeemEmails();
+    loadRedeemEmails();
   }, []);
-
-  const getRedeemEmails = async () => {
-    const callable = httpsCallable<
-      { email: string },
-      Record<string, boolean> | null
-    >(functions, "journalNfts-getRedeemEmails");
-    const emails = await callable()
-      .then((result) => {
-        setRedeemEmails(result.data ?? {});
-        console.log("redeemEmails: ", result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const confirmDelete = async (email: string) => {
-    const callable = httpsCallable(functions, "journalNfts-removeRedeemEmail");
-    try {
-      await callable({ email });
-      await getRedeemEmails();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleAdd = async (email: string) => {
-    setEmail("");
-    const callable = httpsCallable(
-      functions,
-      "journalNfts-sendConfirmationRedeemEmail",
-    );
-    try {
-      await callable({ email });
-      await getRedeemEmails();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <div className="relative h-full pt-6 flex flex-col">
@@ -90,7 +51,7 @@ const SettingPc0: React.FC = () => {
           </div>
           <button
             className="w-[72px] h-[24px] px-[8px] py-[4px] flex justify-center items-center gap-[4px] rounded-[64px] bg-accent text-[10px] text-accent-content font-bold"
-            onClick={() => handleAdd(email)}
+            onClick={() => openEmailSentModal(email)}
           >
             add
           </button>
@@ -111,7 +72,7 @@ const SettingPc0: React.FC = () => {
               <NotVerifiedMailAddress
                 key={email}
                 email={email}
-                onClick={confirmDelete}
+                onClick={openConfirmEmailRemovalModal}
               />
             );
           })}
@@ -166,34 +127,6 @@ const NotVerifiedMailAddress: React.FC<{
         />
       </button>
     </div>
-  );
-};
-
-export const ConfirmModal: React.FC<{ title: string; isOpen: boolean }> = ({
-  title,
-  isOpen,
-}) => {
-  return (
-    <dialog className="modal" open={isOpen}>
-      <div className="modal-box w-[437px] rounded-[32px]">
-        <div className="flex justify-end mr-[2px] mt-[-2px]">
-          <form method={"dialog"}>
-            <button className="btn w-[16px] h-[19px] min-h-fit border-0 p-0 bg-base-100 hover:bg-base-100">
-              <Image
-                src={"/admin/images/icon/close.svg"}
-                alt={"close button"}
-                width={16}
-                height={19}
-                className={"border-0 p-0"}
-              />
-            </button>
-          </form>
-        </div>
-      </div>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
   );
 };
 

@@ -1,3 +1,4 @@
+import { useSettingContext } from "@/contexts/journal-SettingProvider";
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
 import { httpsCallable } from "firebase/functions";
@@ -87,6 +88,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
 
   const { user, redeemLinkCode } = useAuth();
   const { nekoNfts, otherNfts } = useHoldNfts();
+  const { openRedeemEmailAddedModal } = useSettingContext();
 
   // プロフィールタグ
   // アイコンが設定されている場合はタグにもアイコンを表示する
@@ -109,13 +111,13 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     // Do not execute if the login is anonymous or if there is no link code.
     if (!user?.email || !redeemLinkCode) return;
-    console.log("start verify code");
     const callable = httpsCallable<{ linkCode: String }, boolean>(
       functions,
       "journalNfts-validateRedeemEmailLink",
     );
     callable({ linkCode: redeemLinkCode })
       .then(() => {
+        openRedeemEmailAddedModal();
         setPageNo(bookIndex.settingPage.start);
       })
       .catch((error) => {
