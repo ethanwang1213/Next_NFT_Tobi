@@ -73,9 +73,106 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/requests", async (req: Request, res: Response) => {
+  const {pageNumber, pageSize} = req.query;
+  const skip = (Number(pageNumber)-1)*Number(pageSize);
+  console.log(skip);
+
+  try {
+    const contents = await prisma.contents.findMany({
+      // skip: skip,
+      // take: Number(pageSize),
+      where: {
+        changed_name: {
+          not: null,
+        }
+      },
+      orderBy: {
+        changed_name_time: "asc",
+      },
+    });
+    const returnData = contents.map((content)=>{
+      return {
+        id: content.id,
+        name: content.name,
+        sticker: content.sticker,
+        requestName: content.changed_name,
+        requestDate: content.changed_name_time,
+        hpURL: content.url,
+      };
+    });
+    res.status(200).send({
+      status: "success",
+      data: returnData,
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.put("/requests", async (req: Request, res: Response) => {
+  const {processType, contentIds}: {processType: boolean, contentIds: number[]} = req.body;
+  try {
+    if (processType) {
+      const allRequests = await prisma.contents.findMany({
+        where: {
+          id: {
+            in: contentIds,
+          }
+        },
+      });
+      await Promise.all(
+        allRequests.map(async (content)=>{
+          await prisma.contents.update({
+            where: {
+              id: content.id,
+            },
+            data: {
+              name: content.changed_name??"",
+              changed_name: null,
+            },
+          });
+        })
+      );
+    }else {
+      const allRequests = await prisma.contents.findMany({
+        where: {
+          id: {
+            in: contentIds,
+          }
+        },
+      });
+      await Promise.all(
+        allRequests.map(async (content)=>{
+          await prisma.contents.update({
+            where: {
+              id: content.id,
+            },
+            data: {
+              changed_name: null,
+            },
+          });
+        })
+      );
+    }
+    
+    res.status(200).send({
+      status: "success",
+      data: "approved",
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
 router.get("/:id", async (req: Request, res: Response) => {
   const {id} = req.params;
-  console.log(id);
   try {
     const content = await prisma.contents.findUnique({
       where: {
@@ -89,6 +186,16 @@ router.get("/:id", async (req: Request, res: Response) => {
           },
         },
         copyrights: true,
+        reported_documents: {
+          orderBy: {
+            created_date_time: "desc",
+          },
+        },
+        reported_contents: {
+          include: {
+            reporter: true,
+          }
+        },
       },
     });
     if (!content) {
@@ -98,11 +205,32 @@ router.get("/:id", async (req: Request, res: Response) => {
       });
       return;
     }
+    const documents = content.reported_documents.map((document)=>{
+      return {
+        documentName: document.name,
+        documentLink: document.document_link,
+        uploadedTime: document.created_date_time,
+      }
+    });
+    const reports = content.reported_contents.map((report)=>{
+      return {
+        date: report.created_date_time,
+        title: report.title,
+        description: report.description,
+        reporter: {
+          uuid: report.reporter.uuid,
+          avatar: report.reporter.icon_url,
+          username: report.reporter.username,
+        }
+      }
+    })
     const returnData = {
       id: content.id,
       name: content.name,
       description: content.description,
       hpURL: content.url,
+      sticker: content.sticker,
+      image: content.image,
       favorUserNum: content.favorite_users.length,
       owner: content.businesses==null?null:{
         id: content.businesses.id,
@@ -119,6 +247,8 @@ router.get("/:id", async (req: Request, res: Response) => {
         postalCode: content.businesses.postal_code,
         birth: content.businesses.birth,
       },
+      documents: documents,
+      reports: reports,
       copyrights: content.copyrights.map((copyright)=>{
         return {
           id: copyright.id,
@@ -218,5 +348,4 @@ router.put("/:id/freeze-report", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/documents")
 export const contentRouter = router;

@@ -19,6 +19,7 @@ import
 import {
   getContentById,
   getContentByUuid,
+  getDocumentsReportContent,
   getFavoriteContents,
   getMyContentInfo,
   reportContent,
@@ -220,6 +221,7 @@ app.post("/admin/showcases/:id/throw", throwItemShowcase);
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
 app.post("/admin/content/documents", submitDocumentsReportContent);
+app.get("/admin/content/documents", getDocumentsReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);

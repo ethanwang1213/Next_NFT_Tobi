@@ -9,9 +9,7 @@ router.post("/login", (req: Request, res: Response) => {
   const user = userCredentials.find((user)=> user.email == email);
   if (user) {
     if (password == user.password) {
-      const token = JWT.sign(user, jwtSecretKey, {
-        expiresIn: "4h",
-      });
+      const token = JWT.sign(user, jwtSecretKey);
       res.status(200).send({
         status: "success",
         data: {

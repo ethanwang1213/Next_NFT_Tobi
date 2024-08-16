@@ -1,5 +1,3 @@
-export const REGION = process.env.REGION || "asia-northeast1";
-
 export interface User {
     id: number,
     name: string,
