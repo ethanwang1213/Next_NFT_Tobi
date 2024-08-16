@@ -10,11 +10,11 @@
 import * as functions from "firebase-functions";
 import * as cors from "cors";
 import * as express from "express";
-import {REGION} from "./constants";
 import {authRouter} from "./lib/authRoute";
 import {userRouter} from "./lib/userRoute";
 import {contentRouter} from "./lib/contentRoute";
 import { middlewareAuth } from "./middleware";
+import { REGION } from "../lib/constants";
 
 const app = express();
 app.use(cors({origin: true}));
