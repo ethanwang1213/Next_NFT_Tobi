@@ -348,5 +348,4 @@ router.put("/:id/freeze-report", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/documents")
 export const contentRouter = router;
