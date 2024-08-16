@@ -165,6 +165,8 @@ export default function Index() {
     removeSamplesByItemId,
     requestItemThumbnail,
     inputWasd,
+    pauseUnityInputs,
+    resumeUnityInputs,
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
     onSaveDataGenerated,
@@ -173,6 +175,12 @@ export default function Index() {
     onRemoveSampleDisabled,
     onRemoveSampleRequested,
   });
+
+  useEffect(() => {
+    if (!isSampleCreateDialogOpen) {
+      resumeUnityInputs();
+    }
+  }, [isSampleCreateDialogOpen, resumeUnityInputs]);
 
   useEffect(() => {
     if (workspaceData) {
@@ -219,7 +227,8 @@ export default function Index() {
       sampleCreateDialogRef.current.showModal();
       setIsSampleCreateDialogOpen(true);
     }
-  }, [initSampleCreateDialog]);
+    pauseUnityInputs();
+  }, [initSampleCreateDialog, pauseUnityInputs]);
 
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
