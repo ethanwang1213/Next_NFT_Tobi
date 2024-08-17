@@ -1,4 +1,3 @@
-import Image from "next/image";
 import SampleDetailView from "./SampleDetailView";
 
 const WorkspaceSampleDetailPanel = ({ id }: { id: number }) => {

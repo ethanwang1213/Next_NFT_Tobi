@@ -218,6 +218,7 @@ const Showcase = () => {
     if (selectedItem) {
       setShowSampleDetailView(true);
       setSelectedSampleItem(selectedItem.digitalItemId);
+      debugger;
     } else {
       setShowSampleDetailView(false);
     }
@@ -260,29 +261,33 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      // show detail view
       const materialImageIndex = materialData.findIndex(
-        (value) => value.id === sample.materialId,
+        (value) => value.id === sample.materialId
       );
-      // place a new item
-      if (!isDrag)
+      if (materialImageIndex === -1) {
+        console.log('Material not found for ID:', sample.materialId);
+        return;
+      }
+      const imageUrl = materialData[materialImageIndex].image;
+      if (!isDrag) {
         placeNewSample({
           sampleItemId: sample.id,
           digitalItemId: sample.digitalItemId,
           modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
-          imageUrl: materialData[materialImageIndex].image,
+          imageUrl,
         });
-      else
+      } else {
         placeNewSampleWithDrag({
           sampleItemId: sample.id,
           digitalItemId: sample.digitalItemId,
           modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
-          imageUrl: materialData[materialImageIndex].image,
+          imageUrl,
         });
+      }
     },
-    [materialData, placeNewSample, placeNewSampleWithDrag],
+    [materialData, placeNewSample, placeNewSampleWithDrag]
   );
 
   const selectNftHandler = useCallback(

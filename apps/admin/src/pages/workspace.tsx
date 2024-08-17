@@ -257,6 +257,8 @@ export default function Index() {
   const sampleDragHandler = useCallback(
     (index: number) => {
       setSelectedSampleItem(samples[index].id);
+      debugger;
+      console.log(samples[index].id, "SampleIndexId");
       const materialIndex = materials.findIndex(
         (value) => value.id === samples[index].materialId,
       );
