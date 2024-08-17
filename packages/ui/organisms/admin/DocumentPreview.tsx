@@ -94,7 +94,6 @@ const getFileExtension = (url: string): string => {
 };
 
 const DocumentPreview: React.FC<DocumentPreview> = ({ documents }) => {
-  console.log(documents, "data");
   return (
     <div className="container mx-auto">
       <div className="mt-[95px] p-8 mx-auto border border-[#E0E3E8]">

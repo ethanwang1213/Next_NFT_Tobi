@@ -15,7 +15,7 @@ const ContentSuspendedComponent = () => {
   const uploadImageRef = useRef<string>("");
   const postApiUrl = "native/admin/content/documents";
   const getApiUrl = "native/admin/content/documents";
-  const { data, loading, setData, getData, postData } = useRestfulAPI(null);
+  const { data, loading, getData, postData } = useRestfulAPI(null);
 
   useEffect(() => {
     const fetchData = async () => {
