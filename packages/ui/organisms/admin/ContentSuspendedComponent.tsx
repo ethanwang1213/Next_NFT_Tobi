@@ -19,6 +19,13 @@ const ContentSuspendedComponent = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const apiHandle = async () => {
+        const result = await postData(postApiUrl, { documents: documentData });
+        if (result) {
+          setDocumentData([]);
+        }
+        setUploading(false);
+      };
       if (documentData.length > 0) {
         await apiHandle();
       } else if (documentData.length === 0) {
@@ -26,15 +33,8 @@ const ContentSuspendedComponent = () => {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentData]);
-
-  const apiHandle = async () => {
-    const result = await postData(postApiUrl, { documents: documentData });
-    if (result) {
-      setDocumentData([]);
-    }
-    setUploading(false);
-  };
 
   const uploadImageHandler = useCallback(
     async (
