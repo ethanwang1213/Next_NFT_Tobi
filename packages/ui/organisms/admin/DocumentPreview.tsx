@@ -5,12 +5,28 @@ import PdfToImage from "./PdfToImage ";
 interface Document {
   documentName: string;
   documentLink: string;
-  uploadedDate: string;
+  uploadedTime: string;
 }
 
 interface DocumentPreview {
   documents: Document[];
 }
+
+const formatDate = (isoString) => {
+  const date = new Date(isoString);
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const day = date.getUTCDate();
+  const month = date.toLocaleString("en-US", {
+    month: "short",
+    timeZone: "UTC",
+  });
+  const year = date.getUTCFullYear();
+  const formattedHours = hours % 12 || 12;
+  const period = hours >= 12 ? "PM" : "AM";
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  return `${formattedHours}.${formattedMinutes} ${period} - ${month} ${day}, ${year}`;
+};
 
 const ImagePreview: React.FC<{ document: Document; extension: String }> = ({
   document,
@@ -38,9 +54,8 @@ const ImagePreview: React.FC<{ document: Document; extension: String }> = ({
           </span>
         </div>
       </div>
-      {/* <p>{document.uploadedDate}</p> */}
       <p className="text-[12px] text-right pt-3 text-[#A5A1A1]">
-        8.30 AM - Oct 12, 2022
+        {formatDate(document.uploadedTime)}
       </p>
     </div>
   );
@@ -63,9 +78,8 @@ const PdfPreview: React.FC<{ document: Document }> = ({ document }) => {
           </span>
         </div>
       </div>
-      {/* <p>{document.uploadedDate}</p> */}
       <p className="text-[12px] text-right pt-3 text-[#A5A1A1]">
-        8.30 AM - Oct 12, 2022
+        {formatDate(document.uploadedTime)}
       </p>
     </div>
   );
@@ -80,6 +94,7 @@ const getFileExtension = (url: string): string => {
 };
 
 const DocumentPreview: React.FC<DocumentPreview> = ({ documents }) => {
+  console.log(documents, "data");
   return (
     <div className="container mx-auto">
       <div className="mt-[95px] p-8 mx-auto border border-[#E0E3E8]">

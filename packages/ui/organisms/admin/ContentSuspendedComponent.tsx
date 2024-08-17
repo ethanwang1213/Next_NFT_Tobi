@@ -18,8 +18,23 @@ const ContentSuspendedComponent = () => {
   const { data, loading, setData, getData, postData } = useRestfulAPI(null);
 
   useEffect(() => {
-    getData(getApiUrl);
-  }, []);
+    const fetchData = async () => {
+      if (documentData.length > 0) {
+        await apiHandle();
+      } else if (documentData.length === 0) {
+        await getData(getApiUrl);
+      }
+    };
+    fetchData();
+  }, [documentData]);
+
+  const apiHandle = async () => {
+    const result = await postData(postApiUrl, { documents: documentData });
+    if (result) {
+      setDocumentData([]);
+    }
+    setUploading(false);
+  };
 
   const uploadImageHandler = useCallback(
     async (
@@ -47,13 +62,6 @@ const ContentSuspendedComponent = () => {
     [],
   );
 
-  const postHandler = async () => {
-    const result = await postData(postApiUrl, { documents: documentData });
-    if (result) {
-      await getData(getApiUrl);
-    }
-  };
-
   const onDrop = useCallback(
     async (acceptedFiles) => {
       setUploading(true);
@@ -70,11 +78,8 @@ const ContentSuspendedComponent = () => {
           await uploadImageHandler(fileUrl, fileName, fileExtension);
         }
       }
-      // await postHandler();
-      // setDocumentData([]);
-      setUploading(false);
     },
-    [uploadImageHandler, postHandler],
+    [uploadImageHandler],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -96,7 +101,7 @@ const ContentSuspendedComponent = () => {
             getRootProps={getRootProps}
             getInputProps={getInputProps}
           />
-          <DocumentPreview documents={documentData} />
+          <DocumentPreview documents={data} />
         </>
       )}
     </>
