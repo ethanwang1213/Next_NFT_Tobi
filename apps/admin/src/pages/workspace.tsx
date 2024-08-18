@@ -10,6 +10,7 @@ import useWASDKeys from "hooks/useWASDKeys";
 import { Metadata } from "next";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useToggle } from "react-use";
 import {
   SendSampleRemovalResult,
   UpdateIdValues,
@@ -17,6 +18,7 @@ import {
 } from "types/adminTypes";
 import { ModelType } from "types/unityTypes";
 import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import CustomToast from "ui/organisms/admin/CustomToast";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
 import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
@@ -35,6 +37,10 @@ export default function Index() {
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
   const sampleCreateDialogRef = useRef<HTMLDialogElement>(null);
   const shortcutDialogRef = useRef<HTMLDialogElement>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [mainToast, toggleMainToast] = useToggle(true);
+  const timerId = useRef(null);
+  const [message, setMessage] = useState("");
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -158,6 +164,8 @@ export default function Index() {
     unityProvider,
     isLoaded,
     selectedSample,
+    isUndoable,
+    isRedoable,
     setLoadData: setWorkspaceData,
     requestSaveData,
     placeNewSample,
@@ -167,6 +175,8 @@ export default function Index() {
     inputWasd,
     pauseUnityInputs,
     resumeUnityInputs,
+    undoAction,
+    redoAction,
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
     onSaveDataGenerated,
@@ -190,7 +200,9 @@ export default function Index() {
 
   useEffect(() => {
     if (selectedSample) {
+      console.log("Sample Selected!");
       setSelectedSampleItem(selectedSample.digitalItemId);
+      setShowDetailView(true);
     }
   }, [selectedSample]);
 
@@ -245,6 +257,23 @@ export default function Index() {
     },
     [materials, placeNewSample],
   );
+
+  const handleButtonClick = (msg) => {
+    setShowToast(false);
+    toggleMainToast();
+    if (timerId.current) {
+      clearTimeout(timerId.current);
+    }
+    createToast(msg);
+  };
+
+  const createToast = (msg) => {
+    setMessage(msg);
+    setShowToast(true);
+    timerId.current = setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
 
   const sampleSelectHandler = useCallback(
     (index: number) => {
@@ -435,6 +464,8 @@ export default function Index() {
       >
         <WorkspaceUnity unityProvider={unityProvider} />
       </div>
+      {mainToast && <CustomToast show={showToast} message={message} />}
+      {!mainToast && <CustomToast show={showToast} message={message} />}
       {!isLoaded && (
         <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
@@ -499,26 +530,46 @@ export default function Index() {
           }}
         >
           <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-            <Image
-              width={32}
-              height={32}
-              alt="undo button"
-              src="/admin/images/icon/undo-icon.svg"
-              className="cursor-pointer"
-              onClick={() => {
-                console.log("undo button is clicked");
-              }}
-            />
-            <Image
-              width={32}
-              height={32}
-              alt="redo button"
-              src="/admin/images/icon/redo-icon.svg"
-              className="cursor-pointer"
-              onClick={() => {
-                console.log("redo button is clicked");
-              }}
-            />
+            {isUndoable ? (
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src="/admin/images/icon/undo-icon.svg"
+                className="cursor-pointer"
+                onClick={() =>
+                  handleButtonClick("undo: Deleted Sample Item A ")
+                }
+              />
+            ) : (
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src="/admin/images/icon/undo.svg"
+                className="cursor-pointer"
+              />
+            )}
+            {isRedoable ? (
+              <Image
+                width={32}
+                height={32}
+                alt="redo button"
+                src="/admin/images/icon/redo-icon.svg"
+                className="cursor-pointer"
+                onClick={() =>
+                  handleButtonClick("redo: Deleted Sample Item A ")
+                }
+              />
+            ) : (
+              <Image
+                width={32}
+                height={32}
+                alt="redo button"
+                src="/admin/images/icon/redo.svg"
+                className="cursor-pointer"
+              />
+            )}
             <Image
               width={32}
               height={32}
