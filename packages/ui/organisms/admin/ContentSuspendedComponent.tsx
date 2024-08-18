@@ -1,16 +1,40 @@
 "use client";
 import { ImageType, uploadFiles } from "fetchers/UploadActions";
-import { useCallback, useRef, useState } from "react";
+import useRestfulAPI from "hooks/useRestfulAPI";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ContentReportedNotification from "./ContentReportedNotification";
+import DocumentPreview from "./DocumentPreview";
 import DocumentUpload from "./DocumentUpload";
 import Spinner from "./Spinner";
 
 const ContentSuspendedComponent = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [fileUrls, setFileUrls] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [documentData, setDocumentData] = useState([]);
   const uploadImageRef = useRef<string>("");
+  const postApiUrl = "native/admin/content/documents";
+  const getApiUrl = "native/admin/content/documents";
+  const { data, loading, getData, postData } = useRestfulAPI(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const apiHandle = async () => {
+        const result = await postData(postApiUrl, { documents: documentData });
+        if (result) {
+          setDocumentData([]);
+        }
+        setUploading(false);
+      };
+      if (documentData.length > 0) {
+        await apiHandle();
+      } else if (documentData.length === 0) {
+        await getData(getApiUrl);
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentData]);
 
   const uploadImageHandler = useCallback(
     async (
@@ -26,10 +50,10 @@ const ContentSuspendedComponent = () => {
       if (uploadImageRef.current === "") {
         return false;
       }
-      setFileUrls((prevFileUrls) => [
+      setDocumentData((prevFileUrls) => [
         ...prevFileUrls,
         {
-          documentUrl: uploadImageRef.current,
+          documentLink: uploadImageRef.current,
           documentName: name,
         },
       ]);
@@ -40,7 +64,7 @@ const ContentSuspendedComponent = () => {
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
-      setLoading(true);
+      setUploading(true);
       for (const file of acceptedFiles) {
         const fileName = file.name.split(".")[0];
         const fileExtension = file.type.split("/")[1];
@@ -54,7 +78,6 @@ const ContentSuspendedComponent = () => {
           await uploadImageHandler(fileUrl, fileName, fileExtension);
         }
       }
-      setLoading(false);
     },
     [uploadImageHandler],
   );
@@ -69,14 +92,17 @@ const ContentSuspendedComponent = () => {
     <>
       {isButtonClicked ? (
         <ContentReportedNotification onButtonClick={handleButtonClick} />
-      ) : loading ? (
+      ) : uploading || loading ? (
         <Spinner />
       ) : (
-        <DocumentUpload
-          onDrop={onDrop}
-          getRootProps={getRootProps}
-          getInputProps={getInputProps}
-        />
+        <>
+          <DocumentUpload
+            onDrop={onDrop}
+            getRootProps={getRootProps}
+            getInputProps={getInputProps}
+          />
+          <DocumentPreview documents={data} />
+        </>
       )}
     </>
   );
