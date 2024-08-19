@@ -147,7 +147,7 @@ exports.sendConfirmationRedeemEmail = functions.region(REGION).https.onCall(asyn
   const linkCode = await addRedeemLinkCode(uid, email);
   const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
   sendgrid.setApiKey(sgAPIKey);
-  const link = `${SITE_HOST}/redeemMailConfirmation?code=${linkCode}`;
+  const link = `${SITE_HOST}?code=${linkCode}`;
   const mailOptions = {
     from: process.env.SENDGRID_SENDER_EMAIL || "",
     to: email,
