@@ -47,13 +47,13 @@
       "port": 9099
     },
     "functions": {
-      "port": 5001
+      "port": 5002
     },
     "pubsub": {
-      "port": 8085
+      "port": 8086
     },
     "firestore": {
-      "port": 8080
+      "port": 8081
     },
     "storage": {
       "port": 7777

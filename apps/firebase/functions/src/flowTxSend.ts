@@ -82,7 +82,7 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
-        const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata);
+        const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata, params.notificationBatchId);
         try {
           const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, params.digitalItemId);
           await flowJobDocRef.update({
@@ -103,7 +103,7 @@ export const flowTxSend = functions.region(REGION)
         }
       } else if (txType == "giftNFT") {
         try {
-          const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.digitalItemNftId, params.receiveFlowId);
+          const {txId} = await sendGiftNFTTx(params.tobiratoryAccountUuid, params.digitalItemNftId, params.receiveFlowId, params.notificationBatchId);
           await flowJobDocRef.update({
             flowJobId,
             txType,
@@ -116,7 +116,7 @@ export const flowTxSend = functions.region(REGION)
           const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
           console.log(`Message ${messageId} published.`);
         } catch (e) {
-          await updateGiftNFTRecord(params.digitalItemNftId, giftStatus.error);
+          await updateGiftNFTRecord(params.digitalItemNftId, giftStatus.error, -1);
           throw e;
         }
       }
@@ -163,15 +163,28 @@ const createOrGetFlowJobDocRef = async (flowJobId: string) => {
   return await firestore().collection("flowJobs").add({flowJobId});
 };
 
-const updateGiftNFTRecord = async (digitalItemNftId: number, status: number) => {
-  await prisma.digital_item_nfts.update({
-    where: {
-      id: digitalItemNftId,
-    },
-    data: {
-      gift_status: status,
-    },
-  });
+const updateGiftNFTRecord = async (digitalItemNftId: number, status: number, notificationBatchId: number) => {
+  if (notificationBatchId == -1) {
+    await prisma.digital_item_nfts.update({
+      where: {
+        id: digitalItemNftId,
+      },
+      data: {
+        gift_status: status,
+      },
+    });
+  } else {
+    await prisma.digital_item_nfts.update({
+      where: {
+        id: digitalItemNftId,
+      },
+      data: {
+        gift_status: status,
+        notification_batch_id: notificationBatchId,
+        notified: false,
+      },
+    });
+  }
 };
 
 const updateMintNFTRecord = async (digitalItemNftId: number, status: number) => {
@@ -189,7 +202,7 @@ const updateMintNFTRecord = async (digitalItemNftId: number, status: number) => 
   });
 };
 
-const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any) => {
+const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any, notificationBatchId: number) => {
   const digitalItemNftId = metadata.digitalItemNftId;
   if (digitalItemNftId) {
     await prisma.digital_item_nfts.update({
@@ -213,6 +226,8 @@ const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string,
     const nft = await prisma.digital_item_nfts.create({
       data: {
         digital_item_id: digitalItemId,
+        notification_batch_id: notificationBatchId,
+        notified: false,
         metadata: JSON.stringify(metadata),
         nft_owner: {
           create: {
@@ -417,7 +432,8 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     addr: fcl.sansPrefix(address),
     keyId: 0,
     signingFunction: async (signable: any) => {
-      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message, hash: "sha3", sign: "ECDSA_secp256k1"});
+      console.log("PRIVATEKEY: " + privateKey);
+      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message, hash: "sha3", sign: "ECDSA_P256"});
       return {
         addr: address,
         keyId: 0,
@@ -718,7 +734,7 @@ const createMintAuthz = (itemId: number) => async (account: any) => {
   };
 };
 
-const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: number, receiveFlowId: string) => {
+const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: number, receiveFlowId: string, notificationBatchId: number) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
@@ -730,6 +746,7 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: nu
   if (!digitalItemNft) {
     throw new functions.https.HttpsError("not-found", "The digital item NFT does not exist.");
   }
+
   const flowNftId = digitalItemNft.flow_nft_id;
   if (!flowNftId) {
     throw new functions.https.HttpsError("not-found", "The flow_nft_id of the digital item NFT does not exist.");
@@ -746,7 +763,7 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: nu
     throw new functions.https.HttpsError("not-found", "The sender flow account does not exist.");
   }
 
-  await updateGiftNFTRecord(digitalItemNftId, giftStatus.gifting);
+  await updateGiftNFTRecord(digitalItemNftId, giftStatus.gifting, notificationBatchId);
 
   const cadence = `
 import NonFungibleToken from ${nonFungibleTokenAddress}
