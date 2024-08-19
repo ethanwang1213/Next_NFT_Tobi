@@ -1,22 +1,32 @@
-import { httpsCallable } from "firebase/functions";
-import { functions } from "journal-pkg/fetchers/firebase/journal-client";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { useAddingRedeemEmail } from "journal-pkg/hooks/useAddingRedeemEmail";
+import { useRedeemEmails } from "journal-pkg/hooks/useRedeemEmails";
+import { useRemovingRedeemEmail } from "journal-pkg/hooks/useRemovingRedeemEmail";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type Props = {
   children: ReactNode;
 };
 
 type ContextType = {
+  addingRedeemEmail: boolean;
   isOpenConfirmEmailRemovalModal: boolean;
   isOpenEmailSentModal: boolean;
   isOpenRedeemEmailAddedModal: boolean;
+  loadingRedeemEmails: boolean;
   redeemEmails: Record<string, boolean>;
-  closeEmailSentModal: () => void;
+  removingRedeemEmail: boolean;
+  addRedeemEmail: (email: string) => Promise<boolean>;
   closeConfirmEmailRemovalModal: () => void;
+  closeEmailSentModal: () => void;
   closeRedeemEmailAddedModal: () => void;
   loadRedeemEmails: () => void;
   openConfirmEmailRemovalModal: (email: string) => void;
-  openEmailSentModal: (email: string) => void;
   openRedeemEmailAddedModal: () => void;
   removeRedeemEmail: () => void;
 };
@@ -29,6 +39,16 @@ const SettingContext = createContext<ContextType>({} as ContextType);
  * @returns
  */
 export const SettingProvider: React.FC<Props> = ({ children }) => {
+  const [addEmail, addingRedeemEmail, addingRedeemEmailError] =
+    useAddingRedeemEmail();
+  const [
+    loadRedeemEmails,
+    redeemEmails,
+    loadingRedeemEmails,
+    loadingRedeemEmailsError,
+  ] = useRedeemEmails();
+  const [removeEmail, removingRedeemEmail, removingRedeemEmailError] =
+    useRemovingRedeemEmail();
   const [isOpenConfirmEmailRemovalModal, setIsOpenConfirmEmailRemovalModal] =
     useState<boolean>(false);
   const [isOpenEmailSentModal, setIsOpenEmailSentModal] =
@@ -36,34 +56,36 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
   const [isOpenRedeemEmailAddedModal, setIsOpenRedeemEmailAddedModal] =
     useState<boolean>(false);
   const [redeemEmail, setRedeemEmail] = useState<string | null>(null);
-  const [redeemEmails, setRedeemEmails] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (addingRedeemEmailError) {
+      alert("Failed to add the email.");
+      console.log(addingRedeemEmailError);
+    }
+  }, [addingRedeemEmailError]);
+
+  useEffect(() => {
+    if (loadingRedeemEmailsError) {
+      alert("Failed to load the emails.");
+      console.log(loadingRedeemEmailsError);
+    }
+  }, [loadingRedeemEmailsError]);
+
+  useEffect(() => {
+    if (removingRedeemEmailError) {
+      alert("Failed to remove the email.");
+      console.log(removingRedeemEmailError);
+    }
+  }, [removingRedeemEmailError]);
 
   const addRedeemEmail = async (email: string) => {
-    const callable = httpsCallable(
-      functions,
-      "journalNfts-sendConfirmationRedeemEmail",
-    );
-    try {
-      await callable({ email });
-    } catch (error) {
-      console.log(error);
+    const status = await addEmail(email);
+    if (!status) {
+      return false;
     }
-    await loadRedeemEmails();
-  };
-
-  const loadRedeemEmails = async () => {
-    const callable = httpsCallable<
-      { email: string },
-      Record<string, boolean> | null
-    >(functions, "journalNfts-getRedeemEmails");
-    const emails = await callable()
-      .then((result) => {
-        setRedeemEmails(result.data ?? {});
-        console.log("redeemEmails: ", result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setIsOpenEmailSentModal(true);
+    loadRedeemEmails();
+    return true;
   };
 
   const closeConfirmEmailRemovalModal = () => {
@@ -79,14 +101,8 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
   };
 
   const openConfirmEmailRemovalModal = (email: string) => {
-    console.log("open with: ", email);
     setRedeemEmail(email);
     setIsOpenConfirmEmailRemovalModal(true);
-  };
-
-  const openEmailSentModal = (email: string) => {
-    addRedeemEmail(email);
-    setIsOpenEmailSentModal(true);
   };
 
   const openRedeemEmailAddedModal = () => {
@@ -94,33 +110,30 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
   };
 
   const removeRedeemEmail = async () => {
-    console.log("redeem email: ", redeemEmail);
     if (!redeemEmail) return;
 
-    const callable = httpsCallable(functions, "journalNfts-removeRedeemEmail");
-    try {
-      await callable({ email: redeemEmail });
-    } catch (error) {
-      console.log(error);
-    }
+    await removeEmail(redeemEmail);
     setRedeemEmail(null);
     closeConfirmEmailRemovalModal();
-    await loadRedeemEmails();
+    loadRedeemEmails();
   };
 
   return (
     <SettingContext.Provider
       value={{
+        addingRedeemEmail,
         isOpenConfirmEmailRemovalModal,
         isOpenEmailSentModal,
         isOpenRedeemEmailAddedModal,
+        loadingRedeemEmails,
+        removingRedeemEmail,
         redeemEmails,
+        addRedeemEmail,
         closeConfirmEmailRemovalModal,
         closeEmailSentModal,
         closeRedeemEmailAddedModal,
         loadRedeemEmails,
         openConfirmEmailRemovalModal,
-        openEmailSentModal,
         openRedeemEmailAddedModal,
         removeRedeemEmail,
       }}

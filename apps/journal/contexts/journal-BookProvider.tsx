@@ -306,7 +306,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       />
       <div className="modal">
         <div className="modal-box p-8">
-          <h3 className="font-bold text-xl pb-6 text-center text-accent">
+          <h3 className="font-bold text-xl pb-6 text-center text-text-1000">
             ログアウトしますか？
           </h3>
           <div className="flex flex-col gap-3">

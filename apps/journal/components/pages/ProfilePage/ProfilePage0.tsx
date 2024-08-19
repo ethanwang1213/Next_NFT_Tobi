@@ -97,7 +97,7 @@ const ProfilePage0: React.FC = () => {
         <NavButton label={"受け取り"} />
         <NavButton label={"送信"} /> */}
       </div>
-      <h3 className="text-center text-[18px] sm:text-[28px] text-primary font-bold mb-4 sm:mb-10">
+      <h3 className="text-center text-[18px] sm:text-[28px] text-text-1000 font-bold mb-4 sm:mb-10">
         Activity Record
       </h3>
       <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">

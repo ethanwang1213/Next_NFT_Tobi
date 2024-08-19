@@ -1,16 +1,14 @@
 import { useSettingContext } from "@/contexts/journal-SettingProvider";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 /**
  * A modal to confirm the deletion of an email address.
  * @returns
  */
 const ConfirmEmailRemovalModal: React.FC = () => {
-  const {
-    closeConfirmEmailRemovalModal,
-    isOpenConfirmEmailRemovalModal,
-    removeRedeemEmail,
-  } = useSettingContext();
+  const { closeConfirmEmailRemovalModal, isOpenConfirmEmailRemovalModal } =
+    useSettingContext();
   return (
     <dialog
       id="confirm-email-removal-modal"
@@ -51,14 +49,7 @@ const ConfirmEmailRemovalModal: React.FC = () => {
                 Cancel
               </div>
             </button>
-            <button
-              onClick={removeRedeemEmail}
-              className="btn bg-active w-[176px] h-[48px] rounded-[32px] text-primary-main hover:bg-active hover:text-primary-main shadow-[0_5px_5.4px_0_rgba(0,0,0,0.25)]"
-            >
-              <div className="flex w-[176px] h-[48px] flex-col justify-center shrink-0 text-neutral text-[20px] font-bold leading-normal">
-                Remove
-              </div>
-            </button>
+            <RemoveButton />
           </div>
         </form>
       </div>
@@ -66,6 +57,60 @@ const ConfirmEmailRemovalModal: React.FC = () => {
         <button onClick={closeConfirmEmailRemovalModal}>close</button>
       </form>
     </dialog>
+  );
+};
+
+const RemoveButton: React.FC = () => {
+  const { isOpenConfirmEmailRemovalModal, removingRedeemEmail } =
+    useSettingContext();
+
+  // This is used to prevent the button from reverting back after the deletion process is completed.
+  const [startRemoving, setStartRemoving] = useState(false);
+
+  useEffect(() => {
+    if (!isOpenConfirmEmailRemovalModal) {
+      setStartRemoving(false);
+    }
+  }, [isOpenConfirmEmailRemovalModal]);
+
+  if (removingRedeemEmail || startRemoving) {
+    if (!startRemoving) {
+      setStartRemoving(true);
+    }
+
+    return <RemovingButton />;
+  } else {
+    return <RemoveStartButton />;
+  }
+};
+
+const RemoveStartButton: React.FC = () => {
+  const { removeRedeemEmail } = useSettingContext();
+  return (
+    <button
+      onClick={removeRedeemEmail}
+      className="btn bg-active w-[176px] h-[48px] rounded-[32px] text-primary-main hover:bg-active hover:text-primary-main shadow-[0_5px_5.4px_0_rgba(0,0,0,0.25)]"
+    >
+      <div className="flex w-[176px] h-[48px] flex-col justify-center shrink-0 text-neutral text-[20px] font-bold leading-normal">
+        Remove
+      </div>
+    </button>
+  );
+};
+
+const RemovingButton: React.FC = () => {
+  return (
+    <button
+      disabled
+      className="btn bg-active w-[176px] h-[48px] rounded-[32px] text-primary-main hover:bg-active hover:text-primary-main shadow-[0_5px_5.4px_0_rgba(0,0,0,0.25)] disabled:bg-disabled-input disabled:text-disabled-input-content"
+    >
+      <div className="flex w-[176px] h-[48px] justify-center items-center shrink-0 text-[20px] font-bold leading-normal">
+        <div className="ml-[10px]">
+          Removing
+          <span className="loading loading-dots loading-xs align-bottom"></span>
+        </div>
+      </div>
+    </button>
   );
 };
 

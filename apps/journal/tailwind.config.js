@@ -64,6 +64,9 @@ const config = {
           900: "#7B3F03",
           1000: "#5B2E02",
         },
+        "button": {
+          DEFAULT: "#7C5236",
+        },
         "active": {
           DEFAULT: "#B91C1C",
         }

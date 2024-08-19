@@ -1,14 +1,14 @@
-import { useContext, useMemo, useState } from "react";
-import CloseModalButton from "./sub/CloseModalButton/CloseModalButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import IconSelect from "./sub/IconSelect";
-import BirthdaySelect from "./sub/BirthdaySelect";
-import NameInput from "./sub/NameInput";
-import { useForm } from "react-hook-form";
-import useUpdateProfile from "@/hooks/useUpdateProfile";
-import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
 import { useBookContext } from "@/contexts/journal-BookProvider";
+import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
+import useUpdateProfile from "@/hooks/useUpdateProfile";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import BirthdaySelect from "./sub/BirthdaySelect";
+import CloseModalButton from "./sub/CloseModalButton/CloseModalButton";
+import IconSelect from "./sub/IconSelect";
+import NameInput from "./sub/NameInput";
 
 export type EditProfileValues = {
   iconUrl: string;
@@ -65,7 +65,7 @@ const EditProfileModal: React.FC = () => {
     () =>
       pages.current.length > 0 &&
       pageNo.current === bookIndex.profilePage.start,
-    [pages.current, pageNo.current, bookIndex.profilePage.start]
+    [pages.current, pageNo.current, bookIndex.profilePage.start],
   );
 
   if (!isProfilePage0) {
@@ -82,7 +82,7 @@ const EditProfileModal: React.FC = () => {
         checked={isModalOpen}
         onChange={handleChange}
       />
-      <div className="modal">
+      <div className="modal backdrop-blur-[16.35px]">
         <div className="modal-box text-accent">
           <>
             <CloseModalButton
@@ -91,7 +91,9 @@ const EditProfileModal: React.FC = () => {
             >
               <FontAwesomeIcon icon={faXmark} fontSize={24} />
             </CloseModalButton>
-            <h3 className="font-bold text-lg">プロフィールの編集</h3>
+            <h3 className="font-bold text-lg text-text-1000">
+              プロフィールの編集
+            </h3>
             <form onSubmit={handleSubmit(onSubmit)} className="form-control">
               {/* ユーザーアイコン */}
               <p className="py-4 font-bold">Icon</p>
