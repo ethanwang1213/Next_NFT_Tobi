@@ -314,24 +314,33 @@ const Showcase = () => {
     setSb(sb);
     setPt(pt);
     setPb(pb);
-    updateSettings({
-      wallpaper: {
-        tint: wt,
-      },
-      floor: {
-        tint: ft,
-      },
-      lighting: {
-        sceneLight: {
-          tint: st,
-          brightness: sb,
-        },
-        pointLight: {
-          tint: pt,
-          brightness: pb,
-        },
-      },
-    });
+
+    /// TODO(Murat) by Toruto: modify updating settings for undo/redo feature
+    /// Set the phase argument as UpdatingSettingsPhase.Updating
+    ///   while operating a GUI for updating settings
+    ///   such like dragging a slider, dragging a color picker, etc.
+    /// Set the phase argument as UpdatingSettingsPhase.Ended
+    ///   when operating the GUI is ended
+    ///   such like releassed a slider, released a color picker, etc.
+
+    // updateSettings({
+    //   wallpaper: {
+    //     tint: wt,
+    //   },
+    //   floor: {
+    //     tint: ft,
+    //   },
+    //   lighting: {
+    //     sceneLight: {
+    //       tint: st,
+    //       brightness: sb,
+    //     },
+    //     pointLight: {
+    //       tint: pt,
+    //       brightness: pb,
+    //     },
+    //   },
+    // });
   };
 
   return (
