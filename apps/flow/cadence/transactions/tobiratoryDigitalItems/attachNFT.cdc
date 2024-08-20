@@ -2,10 +2,10 @@ import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import TobiratoryDigitalItems from "../../contracts/TobiratoryDigitalItems.cdc"
 
 transaction(parentID: UInt64, childID: UInt64) {
-    let collectionRef: &TobiratoryDigitalItems.Collection
+    let collectionRef: auth(NonFungibleToken.Withdraw, TobiratoryDigitalItems.AttachNFT) &TobiratoryDigitalItems.Collection
 
-    prepare(acct: AuthAccount) {
-        self.collectionRef = acct.borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) ?? panic("Not found")
+    prepare(acct: auth(BorrowValue) &Account) {
+        self.collectionRef = acct.storage.borrow<auth(NonFungibleToken.Withdraw, TobiratoryDigitalItems.AttachNFT) &TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) ?? panic("Not found")
     }
 
     execute {
