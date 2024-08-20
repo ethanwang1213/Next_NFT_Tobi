@@ -17,9 +17,9 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const updatedItems = sidebarItems.map((item) => ({
     ...item,
     visible:
-      item.name === "Tobiratory Creator Program"
-        ? !user.hasBusinessAccount
-        : user.hasBusinessAccount,
+      item.name === "Tobiratory Creator Program" ||
+      item.visible ||
+      user.hasBusinessAccount,
   }));
 
   const normalIconColor = "inactive";

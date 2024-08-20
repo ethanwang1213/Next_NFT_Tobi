@@ -93,9 +93,9 @@ const Sidebar = ({ children }: Props) => {
   const updatedItems = sidebarItems.map((item) => ({
     ...item,
     visible:
-      item.name === "Tobiratory Creator Program"
-        ? !user.hasBusinessAccount
-        : user.hasBusinessAccount,
+      item.name === "Tobiratory Creator Program" ||
+      item.visible ||
+      user.hasBusinessAccount,
   }));
 
   return (
