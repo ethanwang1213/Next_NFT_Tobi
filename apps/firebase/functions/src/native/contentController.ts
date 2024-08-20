@@ -876,9 +876,9 @@ export const submitDocumentsReportContent = async (req: Request, res: Response) 
             content_id: admin.content?.id??0,
             name: document.documentName,
             document_link: document.documentLink,
-          }
+          };
         }),
-      })
+      });
       res.status(200).send({
         status: "success",
         data: "uploaded",
@@ -947,8 +947,8 @@ export const getDocumentsReportContent = async (req: Request, res: Response) => 
           documentName: document.name,
           documentLink: document.document_link,
           uploadedTime: document.created_date_time,
-        }
-      })
+        };
+      });
       res.status(200).send({
         status: "success",
         data: returnData,
