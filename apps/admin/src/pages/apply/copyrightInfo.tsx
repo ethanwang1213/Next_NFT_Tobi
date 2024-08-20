@@ -63,7 +63,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
   return (
     <div className="text-title-color">
       <div className="md:mb-16 mb-6 text-center">
-        <span className="text-2xl md:mr-10 ">著作権情報</span>
+        <span className="text-2xl md:mr-10">著作権情報</span>
       </div>
       <div className="flex flex-row items-center sm:justify-start justify-between">
         <span className="text-base sm:mr-[15px]">コピーライト（版権表記）</span>
@@ -115,7 +115,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             <p className="md:w-auto w-[80%] text-base sm:mr-8">
               所有している著作権やライセンス情報の提供
             </p>
-              <OptionMark />
+            <OptionMark />
           </div>
           <div className="md:mb-12 mb-4 flex flex-row items-center gap-1">
             <Image
@@ -258,7 +258,7 @@ const FileUploadButton = ({
           handleChange(index, false, e);
         }}
       />
-      <div className="md:flex-1  text-title-color text-left mr-[15px] h-[24px]">
+      <div className="md:flex-1 text-title-color text-left mr-[15px] h-[24px]">
         {name && (
           <>
             <span className={"align-baseline"}>{truncateString(name)}</span>

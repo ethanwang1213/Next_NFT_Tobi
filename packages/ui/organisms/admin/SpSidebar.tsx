@@ -3,6 +3,7 @@ import { useAuth } from "contexts/AdminAuthProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { sidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -13,48 +14,18 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const { user } = useAuth();
   const pathname = usePathname();
 
+  const updatedItems = sidebarItems.map((item) => ({
+    ...item,
+    visible:
+      item.name === "Tobiratory Creator Program"
+        ? !user.hasBusinessAccount
+        : user.hasBusinessAccount,
+  }));
+
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
   const selectedColor = "primary";
 
-  const items = [
-    {
-      name: "Tobiratory Creator Program",
-      icon: "/admin/images/icon/contents.svg",
-      href: "/apply",
-      visible: !user.hasBusinessAccount,
-    },
-    {
-      name: "Workspace",
-      icon: "/admin/images/icon/workspace.svg",
-      href: "/workspace",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Items",
-      icon: "/admin/images/icon/tag.svg",
-      href: "/items",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Content",
-      icon: "/admin/images/icon/contents.svg",
-      href: "/contents",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Gift",
-      icon: "/admin/images/icon/gift.svg",
-      href: "/gift",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Account",
-      icon: "/admin/images/icon/account.svg",
-      href: "/account",
-      visible: true,
-    },
-  ];
   return (
     <div
       className="absolute z-10 top-[56px] h-full w-full"
@@ -85,7 +56,7 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </div>
           </div>
           <ul className="border-solid border-[1px] border-gray-300">
-            {items
+            {updatedItems
               .filter((item) => item.visible)
               .map((item, index) => (
                 <li key={index} className="mb-[3px] text-base-content">

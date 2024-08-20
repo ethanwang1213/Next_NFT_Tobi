@@ -7,7 +7,7 @@ type Props = {
 
 const NavbarEnd = ({ className, children }: Props) => {
   return (
-    <div className={`navbar-end  sm:inline-flex hidden${className ?? ""}`}>
+    <div className={`navbar-end  sm:inline-flex hidden ${className ?? ""}`}>
       {children}
     </div>
   );
