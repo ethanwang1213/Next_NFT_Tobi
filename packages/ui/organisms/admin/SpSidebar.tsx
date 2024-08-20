@@ -17,10 +17,11 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const updatedItems = sidebarItems.map((item) => ({
     ...item,
     visible:
-      item.name === "Tobiratory Creator Program" ||
-      item.visible ||
-      user.hasBusinessAccount,
+      item.name === "Tobiratory Creator Program"
+        ? !user.hasBusinessAccount
+        : item.visible || user.hasBusinessAccount,
   }));
+  
 
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
@@ -28,7 +29,11 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   return (
     <div
-      className="absolute z-10 top-[56px] h-full w-full"
+      className={`absolute z-10 top-[56px] h-full w-full ${
+        sidebarOpen
+          ? "translate-x-0 duration-300 ease-linear"
+          : "-translate-x-full duration-300 ease-linear"
+      }`}
       onClick={() => {
         setSidebarOpen(false);
       }}

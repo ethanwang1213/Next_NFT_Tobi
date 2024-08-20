@@ -93,10 +93,11 @@ const Sidebar = ({ children }: Props) => {
   const updatedItems = sidebarItems.map((item) => ({
     ...item,
     visible:
-      item.name === "Tobiratory Creator Program" ||
-      item.visible ||
-      user.hasBusinessAccount,
+      item.name === "Tobiratory Creator Program"
+        ? !user.hasBusinessAccount
+        : item.visible || user.hasBusinessAccount,
   }));
+  
 
   return (
     <div className="drawer drawer-open flex-1">
