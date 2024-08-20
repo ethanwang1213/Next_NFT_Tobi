@@ -5,19 +5,18 @@ import TobiraNeko from "../contracts/TobiraNeko.cdc"
 transaction(quantity: UInt64) {
     let minter: &TobiraNeko.Minter
     let receiver: Capability<&{NonFungibleToken.Receiver}>
-    prepare(acct: AuthAccount) {
-       // Setup Collection
-        if acct.borrow<&TobiraNeko.Collection>(from: TobiraNeko.collectionStoragePath) == nil {
-            let collection <- TobiraNeko.createEmptyCollection() as! @TobiraNeko.Collection
-            acct.save(<- collection, to: TobiraNeko.collectionStoragePath)
-            acct.link<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(TobiraNeko.collectionPublicPath, target: TobiraNeko.collectionStoragePath)
+    prepare(acct: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account) {
+        // Setup Collection
+        if acct.storage.borrow<&TobiraNeko.Collection>(from: TobiraNeko.collectionStoragePath) == nil {
+            let collection <- TobiraNeko.createEmptyCollection(nftType: Type<@TobiraNeko.NFT>())
+            acct.storage.save(<- collection, to: TobiraNeko.collectionStoragePath)
+            let cap: Capability = acct.capabilities.storage.issue<&TobiraNeko.Collection>(TobiraNeko.collectionStoragePath)
+            acct.capabilities.publish(cap, at: TobiraNeko.collectionPublicPath)
         }
-        // self.minter = TobiraNeko.minter()
-        self.minter = acct.borrow<&TobiraNeko.Minter>(from: TobiraNeko.minterStoragePath) ?? panic("Could not borrow minter reference")
-        self.receiver = acct.getCapability<&{NonFungibleToken.Receiver}>(TobiraNeko.collectionPublicPath)
+        self.minter = acct.storage.borrow<&TobiraNeko.Minter>(from: TobiraNeko.minterStoragePath) ?? panic("Could not borrow minter reference")
+        self.receiver = acct.capabilities.get<&{NonFungibleToken.Receiver}>(TobiraNeko.collectionPublicPath)
     }
     execute {
-        // let minter = self.minter.borrow() ?? panic("Could not borrow receiver capability (maybe receiver not configured?)")
         self.minter.batchMintTo(creator: self.receiver, quantity: quantity)
     }
 }

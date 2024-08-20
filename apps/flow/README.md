@@ -76,3 +76,42 @@ flow.json  mainnet-accounts.json  package.json  testnet-accounts.json
 
 $ flow project deploy -f flow.json -f testnet-accounts.json --network=testnet
 ```
+
+## Cadence 1.0 Migration
+
+```
+# testnet
+flow-c1 migrate stage TobiraNeko -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate stage HouseBadge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate stage AchievementBadge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate stage Festival23Badge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate stage TobiratoryDigitalItems -f flow.json -f testnet-accounts.json --network=testnet
+
+flow-c1 migrate is-staged TobiraNeko -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-staged HouseBadge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-staged AchievementBadge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-staged Festival23Badge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-staged TobiratoryDigitalItems -f flow.json -f testnet-accounts.json --network=testnet
+
+flow-c1 migrate is-validated TobiraNeko -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-validated HouseBadge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-validated AchievementBadge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-validated Festival23Badge -f flow.json -f testnet-accounts.json --network=testnet
+flow-c1 migrate is-validated TobiratoryDigitalItems -f flow.json -f testnet-accounts.json --network=testnet
+
+# mainnet
+flow-c1 migrate stage TobiraNeko -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate stage HouseBadge -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate stage AchievementBadge -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate stage Festival23Badge -f flow.json -f mainnet-accounts.json --network=mainnet
+
+flow-c1 migrate is-staged TobiraNeko -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate is-staged HouseBadge -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate is-staged AchievementBadge -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate is-staged Festival23Badge -f flow.json -f mainnet-accounts.json --network=mainnet
+
+flow-c1 migrate is-validated TobiraNeko -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate is-validated HouseBadge -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate is-validated AchievementBadge -f flow.json -f mainnet-accounts.json --network=mainnet
+flow-c1 migrate is-validated Festival23Badge -f flow.json -f mainnet-accounts.json --network=mainnet
+```

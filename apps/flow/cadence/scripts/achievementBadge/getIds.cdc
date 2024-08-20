@@ -1,10 +1,10 @@
 import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import AchievementBadge from "../../contracts/AchievementBadge.cdc"
 
-pub fun main(address: Address): [UInt64]? {
+access(all) fun main(address: Address): [UInt64]? {
     let collection = getAccount(address)
-        .getCapability(AchievementBadge.collectionPublicPath)
-        .borrow<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>()
+        .capabilities.get<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(AchievementBadge.collectionPublicPath)
+        .borrow()
         ?? panic("NFT Collection not found")
     return collection.getIDs()
 }

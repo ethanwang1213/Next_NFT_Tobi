@@ -2,10 +2,10 @@ import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import MetadataViews from "../../contracts/core/MetadataViews.cdc"
 import AchievementBadge from "../../contracts/AchievementBadge.cdc"
 
-pub struct NFTView {
-  pub let name: String
-  pub let description: String
-  pub let metaURI: String
+access(all) struct NFTView {
+  access(all) let name: String
+  access(all) let description: String
+  access(all) let metaURI: String
 
   init(
       name: String,
@@ -18,13 +18,13 @@ pub struct NFTView {
   }
 }
 
-pub fun main(address: Address, id: String): NFTView {
+access(all) fun main(address: Address, id: String): NFTView {
     let collection = getAccount(address)
-        .getCapability(AchievementBadge.collectionPublicPath)
-        .borrow<&{AchievementBadge.CollectionPublic,MetadataViews.ResolverCollection}>()
+        .capabilities.get<&AchievementBadge.Collection>(AchievementBadge.collectionPublicPath)
+        .borrow()
         ?? panic("NFT Collection not found")
 
-    let nft = collection.borrowViewResolver(id: UInt64.fromString(id)!)
+    let nft = collection.borrowViewResolver(id: UInt64.fromString(id)!)!
     let display = MetadataViews.getDisplay(nft)
     return NFTView(
         name: display!.name,

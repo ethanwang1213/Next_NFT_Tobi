@@ -1,6 +1,3 @@
-import type { AppContext, AppProps } from "next/app";
-import { default as NextApp } from "next/app";
-
 import "@/styles/CropStyles.css";
 import "@/styles/global.scss";
 import "@/styles/globalicons.css";
@@ -8,6 +5,9 @@ import "@/styles/PublicSwitch.css";
 import "@/styles/Spinner.css";
 import "@/styles/TabView.css";
 import "@/styles/TripleToggleSwitch.scss";
+import type { AppContext, AppProps } from "next/app";
+import { default as NextApp } from "next/app";
+import { useEffect } from "react";
 import "react-easy-crop/react-easy-crop.css";
 import "swiper/css";
 import "swiper/css/effect-cards";
@@ -18,7 +18,6 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import { useEffect } from "react";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
@@ -34,7 +33,8 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     getData(apiUrl);
-  }, [getData, apiUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return (

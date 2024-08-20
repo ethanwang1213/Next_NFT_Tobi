@@ -1,10 +1,10 @@
 import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import HouseBadge from "../../contracts/HouseBadge.cdc"
 
-pub fun main(address: Address): [UInt64]? {
+access(all) fun main(address: Address): [UInt64]? {
     let collection = getAccount(address)
-        .getCapability(HouseBadge.collectionPublicPath)
-        .borrow<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>()
+        .capabilities.get<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(HouseBadge.collectionPublicPath)
+        .borrow()
         ?? panic("NFT Collection not found")
     return collection.getIDs()
 }

@@ -19,6 +19,7 @@ import
 import {
   getContentById,
   getContentByUuid,
+  getDocumentsReportContent,
   getFavoriteContents,
   getMyContentInfo,
   reportContent,
@@ -64,6 +65,7 @@ import {
   getNftInfo,
   giftNFT,
   mintNFT,
+  deleteMyNFT,
 } from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
@@ -177,6 +179,7 @@ app.get("/items/:id", getDigitalItemInfo);
 app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", giftNFT);
+app.post("/my/nfts/:id/delete", deleteMyNFT);
 app.post("/my/nfts/move", moveNFT);
 app.post("/my/nfts/delete", deleteNFT);
 app.post("/address/decoder", userInfoFromAddress);
@@ -218,6 +221,7 @@ app.post("/admin/showcases/:id/throw", throwItemShowcase);
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
 app.post("/admin/content/documents", submitDocumentsReportContent);
+app.get("/admin/content/documents", getDocumentsReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);

@@ -1,7 +1,7 @@
 import Crypto
-// https://developers.flow.com/cadence/language/accounts#account-keys
+// https://cadence-lang.org/docs/language/accounts#account-keys
 transaction(keyIndex: Int) {
-    prepare(signer: AuthAccount) {
+    prepare(signer: auth(RevokeKey) &Account) {
         let key = signer.keys.revoke(keyIndex: keyIndex)
     }
 }
