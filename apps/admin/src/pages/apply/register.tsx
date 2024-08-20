@@ -251,7 +251,7 @@ const Register = () => {
 
   return (
     <div>
-      <div className="container mx-auto my-2 pt-16 px-0 md:px-20 font-normal">
+      <div className="md:container px-6 mx-auto my-2 sm:pt-16 pt-8 px-0 md:px-20 font-normal">
         <div className="flex flex-row justify-center mb-2">
           <TripleToggleSwitch
             labels={switchLabels}
@@ -259,7 +259,7 @@ const Register = () => {
             value={switchValue}
           />
         </div>
-        <div className="pt-20">
+        <div className="md:pt-16 pt-6">
           {switchValue === 0 && (
             <ContentInformation
               contentInfo={contentInfo}
@@ -331,10 +331,10 @@ const LoadingButton = ({
     );
   }
   return (
-    <div className="w-[568px] h-14 mx-auto flex flex-row justify-between">
+    <div className="sm:w-[568px] h-14 mx-auto flex flex-row justify-center gap-4">
       <Button
         type="button"
-        className={`w-[268px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
+        className={`sm:w-[268px] w-[127px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
               border border-[#1779DE] bg-transparent rounded-[30px] 
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
         onClick={handleBack}
@@ -344,7 +344,7 @@ const LoadingButton = ({
       <Button
         type="button"
         className={clsx(
-          `w-[268px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px] ${color}`,
+          `sm:w-[268px] w-[127px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px] ${color}`,
         )}
         onClick={handleNext}
         disabled={disabled}

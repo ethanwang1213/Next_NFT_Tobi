@@ -8,10 +8,11 @@ import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
 import ContentSuspendedComponent from "./ContentSuspendedComponent";
+import SpSidebar from "./SpSidebar";
 
 type Props = {
   children: ReactNode;
@@ -52,11 +53,17 @@ const MainContents = ({ children }: Props) => {
 
 const Contents = ({ children, content }: Props) => {
   const { user } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   if (auth.currentUser && user?.hasFlowAccount) {
     return (
       <NavbarProvider>
         <div className="flex flex-col h-screen">
-          <Navbar />
+          <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <SpSidebar
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
           <Sidebar>
             {content === "reported" ? (
               <ContentSuspendedComponent />

@@ -40,7 +40,7 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
       {labels.map((label, idx) => (
         <div
           key={`toggle-switch-${idx}`}
-          className="switch-item w-36 text-center"
+          className="switch-item sm:w-36 w-24 text-center sm:text-[16px] text-[12px]"
           ref={(el) => (switchItemRef.current[idx] = el)}
           onClick={() => onClickSwitchItem(idx)}
         >

@@ -135,7 +135,7 @@ const Sidebar = ({ children }: Props) => {
       <div className="bg-primary bg-inactive text-inactive hidden"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
-      <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
+      <div className="drawer-side border-r-base-content border-r-[0.5px] h-full sm:!block !hidden">
         <ul className="pt-[17px]">
           {items
             .filter((item) => item.visible)
@@ -163,7 +163,7 @@ const Sidebar = ({ children }: Props) => {
                       pathname.split("/")[1] === item.href.split("/")[1]
                         ? `bg-${selectedColor}`
                         : `bg-${normalIconColor}`,
-                        "flex-shrink-0"
+                      "flex-shrink-0",
                     )}
                     style={{
                       WebkitMaskImage: `url(${item.icon})`,

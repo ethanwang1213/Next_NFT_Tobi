@@ -62,14 +62,14 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
 
   return (
     <div className="text-title-color">
-      <div className="mb-16 ">
-        <span className="text-2xl mr-10">著作権情報</span>
+      <div className="md:mb-16 mb-6 text-center">
+        <span className="text-2xl md:mr-10 ">著作権情報</span>
       </div>
-      <div className="flex flex-row items-center">
-        <span className="text-base mr-[15px]">コピーライト（版権表記）</span>
+      <div className="flex flex-row items-center sm:justify-start justify-between">
+        <span className="text-base sm:mr-[15px]">コピーライト（版権表記）</span>
         <RequireMark />
       </div>
-      <div className="mb-[50px] flex flex-row justify-between items-center">
+      <div className="md:mb-[50px] mb-6 md:flex flex-row justify-between items-center md:space-y-0 space-y-4 md:mt-0 mt-4">
         <div className="flex flex-row items-center">
           <Image
             src="/admin/images/info-icon-2.svg"
@@ -109,22 +109,22 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
           />
         </label>
       </div>
-      <div className={"flex flex-row justify-between mb-[50px]"}>
-        <div className="flex flex-col text-nowrap">
-          <div className="mb-4 flex flex-row items-center">
-            <span className="text-base mr-8">
+      <div className={"md:flex flex-row justify-between md:mb-[50px] mb-1"}>
+        <div className="flex flex-col md:text-nowrap">
+          <div className="mb-4 flex flex-row items-center sm:justify-start justify-between">
+            <p className="md:w-auto w-[80%] text-base sm:mr-8">
               所有している著作権やライセンス情報の提供
-            </span>
-            <OptionMark />
+            </p>
+              <OptionMark />
           </div>
-          <div className="mb-12 flex flex-row items-center">
+          <div className="md:mb-12 mb-4 flex flex-row items-center gap-1">
             <Image
               src="/admin/images/info-icon-2.svg"
               width={16}
               height={16}
               alt="information"
             />
-            <span className="text-[12px] ml-4">
+            <span className="text-[12px] sm:ml-4">
               著作権やライセンスを証明する公式文書を提出できます。
               <br />
               20MB以内のJPEG、PNG、PDFファイルのみ対応しています。
@@ -139,15 +139,15 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
           />
         </div>
       </div>
-      <div className="mb-[50px] flex flex-row justify-between">
+      <div className="md:mb-[50px] mb-6 md:flex flex-row justify-between">
         <div className={"flex flex-col"}>
-          <div className="flex flex-row mb-4 items-center">
+          <div className="flex flex-row mb-4 items-center sm:justify-start justify-between">
             <span className="text-base mr-[15px]">
               著作物に関するライセンス
             </span>
             <OptionMark />
           </div>
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center md:mb-0 mb-4">
             <Image
               src="/admin/images/info-icon-2.svg"
               width={16}
@@ -160,7 +160,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         <textarea
           id="copyright_license"
           className={clsx(
-            "w-[508px] h-[137px] pl-5 pt-4 resize-none",
+            "md:w-[508px] w-full h-[137px] pl-5 pt-4 resize-none",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
@@ -176,7 +176,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
       <div className="flex flex-row justify-center items-center mt-6">
         <input
           type="checkbox"
-          className="w-6 h-6 mr-3 outline-none"
+          className="w-6 h-6 sm:mr-3 mr-1 outline-none"
           onChange={(e) =>
             copyrightInfoChangeHandler("agreement", e.target.checked)
           }
@@ -249,7 +249,7 @@ const FileUploadButton = ({
   };
 
   return (
-    <div className="flex flex-row items-center mb-6">
+    <div className="flex flex-row items-center md:mb-6 mb-4">
       <input
         className="hidden"
         type="file"
@@ -258,7 +258,7 @@ const FileUploadButton = ({
           handleChange(index, false, e);
         }}
       />
-      <div className="flex-1 text-title-color text-left mr-[15px] h-[24px]">
+      <div className="md:flex-1  text-title-color text-left mr-[15px] h-[24px]">
         {name && (
           <>
             <span className={"align-baseline"}>{truncateString(name)}</span>

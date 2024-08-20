@@ -5,7 +5,7 @@ type Props = {
   children: ReactNode;
 };
 const NavbarStart = ({ className, children }: Props) => {
-  return <div className={`navbar-start ${className ?? ""}`}>{children}</div>;
+  return <div className={`sm:navbar-start ${className ?? ""}`}>{children}</div>;
 };
 
 export default NavbarStart;
