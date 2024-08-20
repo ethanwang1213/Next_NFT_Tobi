@@ -3,7 +3,7 @@ import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
-import {isEmptyObject, statusOfShowcase} from "./utils";
+import {increaseTransactionAmount, isEmptyObject, statusOfLimitTransaction, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
@@ -106,6 +106,20 @@ export const createFlowAcc = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const checkLimit = await increaseTransactionAmount(uid);
+    if (checkLimit == statusOfLimitTransaction.notExistAccount) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist-account",
+      });
+      return;
+    }else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+      res.status(401).send({
+        status: "error",
+        data: "transaction-limit",
+      });
+      return;
+    }
     try {
       const flowAcc = await prisma.flow_accounts.findUnique({
         where: {
