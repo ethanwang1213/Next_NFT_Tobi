@@ -128,10 +128,7 @@ const Showcase = () => {
     placeNewNftWithDrag,
     updateSettings,
     inputWasd,
-    undoAction,
-    redoAction,
     isUndoable,
-    isRedoable,
     selectedItem,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),

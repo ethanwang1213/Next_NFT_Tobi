@@ -175,8 +175,6 @@ export default function Index() {
     inputWasd,
     pauseUnityInputs,
     resumeUnityInputs,
-    undoAction,
-    redoAction,
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
     onSaveDataGenerated,
@@ -200,7 +198,6 @@ export default function Index() {
 
   useEffect(() => {
     if (selectedSample) {
-      console.log("Sample Selected!");
       setSelectedSampleItem(selectedSample.digitalItemId);
       setShowDetailView(true);
     }
@@ -286,7 +283,6 @@ export default function Index() {
   const sampleDragHandler = useCallback(
     (index: number) => {
       setSelectedSampleItem(samples[index].id);
-      debugger;
       console.log(samples[index].id, "SampleIndexId");
       const materialIndex = materials.findIndex(
         (value) => value.id === samples[index].materialId,

@@ -26,6 +26,7 @@ const ContentSuspendedComponent = () => {
       }
     };
     fetchData();
+ // eslint-disable-next-line react-hooks/exhaustive-deps   
   }, [documentData]);
 
   const apiHandle = async () => {
