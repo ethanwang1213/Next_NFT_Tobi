@@ -128,6 +128,7 @@ const Showcase = () => {
     placeNewNftWithDrag,
     updateSettings,
     inputWasd,
+    isUndoable,
     selectedItem,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
@@ -260,27 +261,31 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      // show detail view
       const materialImageIndex = materialData.findIndex(
         (value) => value.id === sample.materialId,
       );
-      // place a new item
-      if (!isDrag)
+      if (materialImageIndex === -1) {
+        console.log("Material not found for ID:", sample.materialId);
+        return;
+      }
+      const imageUrl = materialData[materialImageIndex].image;
+      if (!isDrag) {
         placeNewSample({
           sampleItemId: sample.id,
           digitalItemId: sample.digitalItemId,
           modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
-          imageUrl: materialData[materialImageIndex].image,
+          imageUrl,
         });
-      else
+      } else {
         placeNewSampleWithDrag({
           sampleItemId: sample.id,
           digitalItemId: sample.digitalItemId,
           modelType: sample.type as ModelType,
           modelUrl: sample.modelUrl,
-          imageUrl: materialData[materialImageIndex].image,
+          imageUrl,
         });
+      }
     },
     [materialData, placeNewSample, placeNewSampleWithDrag],
   );
@@ -414,16 +419,19 @@ const Showcase = () => {
         >
           <div className="absolute bottom-12 w-full flex justify-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/undo-icon.svg"
-                className="cursor-pointer"
-                onClick={() =>
-                  handleButtonClick("undo: Deleted Sample Item A ")
-                }
-              />
+              <Button disabled={isUndoable}>
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/undo-icon.svg"
+                  className="cursor-pointer"
+                  onClick={() =>
+                    handleButtonClick("undo: Deleted Sample Item A ")
+                  }
+                />
+              </Button>
+
               <Image
                 width={32}
                 height={32}

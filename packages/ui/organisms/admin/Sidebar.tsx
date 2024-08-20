@@ -9,6 +9,7 @@ import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { sidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
 
 type Props = {
   children: ReactNode;
@@ -89,44 +90,13 @@ const Sidebar = ({ children }: Props) => {
   const normalTextColor = "inactive";
   const selectedColor = "primary";
 
-  const items = [
-    {
-      name: "Tobiratory Creator Program",
-      icon: "/admin/images/icon/contents.svg",
-      href: "/apply",
-      visible: !user.hasBusinessAccount,
-    },
-    {
-      name: "Workspace",
-      icon: "/admin/images/icon/workspace.svg",
-      href: "/workspace",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Items",
-      icon: "/admin/images/icon/tag.svg",
-      href: "/items",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Content",
-      icon: "/admin/images/icon/contents.svg",
-      href: "/contents",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Gift",
-      icon: "/admin/images/icon/gift.svg",
-      href: "/gift",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Account",
-      icon: "/admin/images/icon/account.svg",
-      href: "/account",
-      visible: true,
-    },
-  ];
+  const updatedItems = sidebarItems.map((item) => ({
+    ...item,
+    visible:
+      item.name === "Tobiratory Creator Program" ||
+      item.visible ||
+      user.hasBusinessAccount,
+  }));
 
   return (
     <div className="drawer drawer-open flex-1">
@@ -135,9 +105,9 @@ const Sidebar = ({ children }: Props) => {
       <div className="bg-primary bg-inactive text-inactive hidden"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
-      <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
+      <div className="drawer-side border-r-base-content border-r-[0.5px] h-full sm:!block !hidden">
         <ul className="pt-[17px]">
-          {items
+          {updatedItems
             .filter((item) => item.visible)
             .map((item, index) => (
               <li
@@ -163,7 +133,7 @@ const Sidebar = ({ children }: Props) => {
                       pathname.split("/")[1] === item.href.split("/")[1]
                         ? `bg-${selectedColor}`
                         : `bg-${normalIconColor}`,
-                        "flex-shrink-0"
+                      "flex-shrink-0",
                     )}
                     style={{
                       WebkitMaskImage: `url(${item.icon})`,

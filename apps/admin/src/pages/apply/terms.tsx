@@ -14,13 +14,15 @@ const Terms = () => {
     router.replace("/apply/register");
   };
   return (
-    <div className="container h-full flex flex-col items-center mx-auto py-20 text-center font-normal text-base text-[#717171]">
-      <div className="text-[40px] leading-[60px]">
+    <div className="md:container h-full px-6 flex flex-col items-center mx-auto sm:py-20 py-8 text-center font-normal text-base text-[#717171]">
+      <div className="md:text-[40px] sm:text-[30px] text-[20px] leading-[60px]">
         Tobiratory Creator Program
       </div>
-      <div className="text-[40px] leading-[60px]">利用規約</div>
+      <div className="md:text-[40px] text-[20px] md:leading-[60px]">
+        利用規約
+      </div>
       <textarea
-        className="w-full h-[24rem] mt-6 outline-none border border-[#717171]"
+        className="w-full h-[24rem] p-2 mt-6 outline-none shadow-[inset_4px_4px_4px_rgba(0,0,0,0.25)]"
         readOnly
         value={`Terms of Use
         Welcome to Tobiratory Creator Program!
@@ -31,12 +33,12 @@ const Terms = () => {
       <div className="flex flex-row items-center mt-6">
         <input
           type="checkbox"
-          className="w-6 h-6 mr-3 outline-none"
+          className="w-6 h-6 sm:mr-3 mr-1 outline-none"
           onChange={handleCheckboxChange}
           id="checkbox"
         />
         <label
-          className={`text-base font-normal ${
+          className={`text-base font-normal sm:text-[16px] text-[12px] ${
             isChecked ? "text-black" : "text-[#717171]"
           }`}
           htmlFor="checkbox"
@@ -46,7 +48,7 @@ const Terms = () => {
       </div>
       <Button
         type="button"
-        className={`w-[16rem] h-[3.5rem] rounded-[30px] mt-6 text-xl leading-[3.5rem] text-white
+        className={`w-[16rem] h-[3.5rem] rounded-[30px] mt-6 sm:text-xl text-[16px] leading-[3.5rem] text-white
           ${isChecked ? "bg-[#1779DE] " : "bg-[#B3B3B3]"}`}
         disabled={!isChecked}
         onClick={handleButtonClicked}
