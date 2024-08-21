@@ -261,31 +261,18 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      const materialImageIndex = materialData.findIndex(
-        (value) => value.id === sample.materialId,
-      );
-      if (materialImageIndex === -1) {
-        console.log("Material not found for ID:", sample.materialId);
-        return;
-      }
-      const imageUrl = materialData[materialImageIndex].image;
-      if (!isDrag) {
-        placeNewSample({
-          sampleItemId: sample.id,
-          digitalItemId: sample.digitalItemId,
-          modelType: sample.type as ModelType,
-          modelUrl: sample.modelUrl,
-          imageUrl,
-        });
-      } else {
-        placeNewSampleWithDrag({
-          sampleItemId: sample.id,
-          digitalItemId: sample.digitalItemId,
-          modelType: sample.type as ModelType,
-          modelUrl: sample.modelUrl,
-          imageUrl,
-        });
-      }
+      const imageUrl =
+        materialData.find((material) => material.id === sample.materialId)
+          ?.image || "";
+      const sampleData = {
+        sampleItemId: sample.id,
+        digitalItemId: sample.digitalItemId,
+        modelType: sample.type as ModelType,
+        modelUrl: sample.modelUrl,
+        imageUrl,
+      };
+
+      isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);
     },
     [materialData, placeNewSample, placeNewSampleWithDrag],
   );
