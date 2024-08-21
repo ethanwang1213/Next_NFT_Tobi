@@ -3,7 +3,7 @@ import { useAuth } from "contexts/AdminAuthProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { sidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
+import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -14,14 +14,7 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const { user } = useAuth();
   const pathname = usePathname();
 
-  const updatedItems = sidebarItems.map((item) => ({
-    ...item,
-    visible:
-      item.name === "Tobiratory Creator Program"
-        ? !user.hasBusinessAccount
-        : item.visible || user.hasBusinessAccount,
-  }));
-  
+  const items = useUpdatedSidebarItems();
 
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
@@ -61,7 +54,7 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </div>
           </div>
           <ul className="border-solid border-[1px] border-gray-300">
-            {updatedItems
+            {items
               .filter((item) => item.visible)
               .map((item, index) => (
                 <li key={index} className="mb-[3px] text-base-content">
