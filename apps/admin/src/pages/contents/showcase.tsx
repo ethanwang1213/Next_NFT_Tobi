@@ -126,7 +126,7 @@ const Showcase = () => {
     placeNewNft,
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
-    updateSettings,
+    // updateSettings, // NOTE(Toruto): I commented out this line for linting error
     inputWasd,
     isUndoable,
     selectedItem,

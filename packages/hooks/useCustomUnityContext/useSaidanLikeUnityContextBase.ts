@@ -32,13 +32,26 @@ const useUndoRedo = ({
   const [isUndoable, setIsUndoable] = useState<boolean>(false);
   const [isRedoable, setIsRedoable] = useState<boolean>(false);
   
+  /** 
+   * Process the result of undone or redone action.
+   * Result data includes default values which are not necessary for a result ActionType.
+   * So, this function processes the result data to remove default values.
+   * Before: 
+   *   { item: { itemType, itemId, position, rotation, scale }, settings: { wallpaper, floor, lighting } }
+   * After:
+   *   e.g. redo TranslateItem -> { item: { itemType, itemId, position } }
+   *   e.g. redo ChangeWallpaperColor -> { settings: { wallpaper: { tint } } }
+   *   e.g. redo RemoveItem -> { item: { itemType, itemId } }
+   */
   const processUndoneRedoneResult = useCallback(
     (result: RequiredUndoneRedoneResult): UndoneRedoneResult => {
       // item
+      // default values: { item: { itemType: ItemType.Sample, itemId: -1, position: { x: -999.0, y: -999.0, z: -999.0 }, rotation: { x: -999.0, y: -999.0, z: -999.0 }, scale: -1.0 } }
+      
       // itemType, itemId
-      // default item: { itemType: ItemType.Sample, itemId: -1, position: { x: -999.0, y: -999.0, z: -999.0 }, rotation: { x: -999.0, y: -999.0, z: -999.0 }, scale: -1.0 }
       const itemType = result.item.itemType;
       const itemId = result.item.itemId === -1 ? undefined : result.item.itemId;
+
       // position, rotation
       const isDefaultVec = (v: Vector3) => {
         return v.x === -999.0 && v.y === -999.0 && v.z === -999.0;
@@ -49,6 +62,7 @@ const useUndoRedo = ({
       const rotation = isDefaultVec(result.item.rotation)
         ? undefined
         : result.item.rotation;
+
       // scale
       const scale = result.item.scale === -1.0 ? undefined : result.item.scale;
 
@@ -60,19 +74,20 @@ const useUndoRedo = ({
         : undefined;
 
       // settings
-      // wallpaper, floor
-      // default stage: { tint: "" }
+      // default values: { settings: { wallpaper: { tint: "" }, floor: { tint: "" }, lighting: { sceneLight: { tint: "", brightness: -1.0 }, pointLight: { tint: "", brightness: -1.0 } } } }
+
+      // wallpaper
       const wallpaper =
         result.settings.wallpaper.tint === ""
           ? undefined
           : { tint: result.settings.wallpaper.tint };
+
+      // floor
       const floor =
         result.settings.floor.tint === ""
           ? undefined
           : { tint: result.settings.floor.tint };
 
-      // lighting
-      // default light: { tint: "", brightness: -1.0 }
       // sceneLight
       const resultSceneLight = result.settings.lighting.sceneLight;
       const sceneTint =
@@ -85,6 +100,7 @@ const useUndoRedo = ({
         !sceneTint && !sceneBrightness
           ? undefined
           : { ...sceneTint, ...sceneBrightness };
+
       // pointLight
       const resultPointLight = result.settings.lighting.pointLight;
       const pointTint =
@@ -136,7 +152,7 @@ const useUndoRedo = ({
         processUndoneRedoneResult(messageBody.result),
       );
     },
-    [onActionUndone, setIsUndoable],
+    [onActionUndone, setIsUndoable, processUndoneRedoneResult],
   );
 
   const handleActionRedone = useCallback(
@@ -158,7 +174,7 @@ const useUndoRedo = ({
         processUndoneRedoneResult(messageBody.result),
       );
     },
-    [onActionRedone, setIsRedoable],
+    [onActionRedone, setIsRedoable, processUndoneRedoneResult],
   );
 
   return {
