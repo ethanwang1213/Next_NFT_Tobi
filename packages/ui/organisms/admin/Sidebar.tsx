@@ -17,6 +17,7 @@ type Props = {
 const Sidebar = ({ children }: Props) => {
   const menuMinWidth = 60;
   const menuMaxWidth = 230;
+  const tabletMenuMaxWidth = 165;
   const screensMd = parseInt(config.theme.screens.md);
 
   const resizedBefore = useRef<boolean>(false);
@@ -24,6 +25,8 @@ const Sidebar = ({ children }: Props) => {
 
   const { displayWidth } = useWindowSize();
   const { clickedBefore, menuStatus } = useNavbar();
+
+  const itemWidth = displayWidth > 768 ? menuMaxWidth : tabletMenuMaxWidth;
 
   const pathname = usePathname();
 
@@ -36,30 +39,46 @@ const Sidebar = ({ children }: Props) => {
   // animate menu width on expand state change
   useEffect(() => {
     if (!resizedBefore.current && !clickedBefore) {
-      // prevent execution on the initial rendering.
+      // Prevent execution on the initial rendering.
       return;
-    } else if (expand) {
-      gsap.fromTo(
-        ".drawer-side",
-        { width: menuMinWidth },
-        {
-          width: menuMaxWidth,
-          duration: 0.4,
-          ease: Power2.easeOut,
-        },
-      );
-    } else {
-      gsap.fromTo(
-        ".drawer-side",
-        { width: menuMaxWidth },
-        {
-          width: menuMinWidth,
-          duration: 0.4,
-          ease: Power2.easeOut,
-        },
-      );
     }
-  }, [clickedBefore, expand, resizedBefore]);
+
+    const drawerSide = ".drawer-side";
+    const animationConfig = {
+      duration: 0.4,
+      ease: Power2.easeOut,
+    };
+
+    if (expand) {
+      if (displayWidth > 768) {
+        gsap.fromTo(
+          drawerSide,
+          { width: menuMinWidth },
+          { width: menuMaxWidth, ...animationConfig },
+        );
+      } else {
+        gsap.fromTo(
+          drawerSide,
+          { width: menuMinWidth },
+          { width: tabletMenuMaxWidth, ...animationConfig },
+        );
+      }
+    } else {
+      if (displayWidth > 768) {
+        gsap.fromTo(
+          drawerSide,
+          { width: menuMaxWidth },
+          { width: menuMinWidth, ...animationConfig },
+        );
+      } else {
+        gsap.fromTo(
+          drawerSide,
+          { width: tabletMenuMaxWidth },
+          { width: menuMinWidth, ...animationConfig },
+        );
+      }
+    }
+  }, [clickedBefore, expand, resizedBefore, displayWidth]);
 
   // toggle expand state on menuStatus change
   useEffect(() => {
@@ -106,7 +125,7 @@ const Sidebar = ({ children }: Props) => {
                 key={index}
                 className="mb-[3px] text-base-content"
                 style={{
-                  width: expand ? menuMaxWidth : menuMinWidth,
+                  width: expand ? itemWidth : menuMinWidth,
                 }}
               >
                 <Link

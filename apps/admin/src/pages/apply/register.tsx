@@ -331,10 +331,10 @@ const LoadingButton = ({
     );
   }
   return (
-    <div className="sm:w-[568px] h-14 mx-auto flex flex-row justify-center gap-4">
+    <div className="md:w-[568px] h-14 mx-auto flex flex-row justify-center gap-4">
       <Button
         type="button"
-        className={`sm:w-[268px] w-[127px] h-14 text-xl leading-[56px] text-center text-[#1779DE] 
+        className={`md:w-[268px] sm:w-[188px] w-[127px] h-14 text-[15px] text-xl leading-[56px] text-center text-[#1779DE] 
               border border-[#1779DE] bg-transparent rounded-[30px] 
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
         onClick={handleBack}
@@ -344,7 +344,7 @@ const LoadingButton = ({
       <Button
         type="button"
         className={clsx(
-          `sm:w-[268px] w-[127px] h-14 text-xl leading-[56px] text-center text-white rounded-[30px] ${color}`,
+          `md:w-[268px] sm:w-[188px] w-[127px] h-14 md:text-xl text-[15px] leading-[56px] text-center text-white rounded-[30px] ${color}`,
         )}
         onClick={handleNext}
         disabled={disabled}

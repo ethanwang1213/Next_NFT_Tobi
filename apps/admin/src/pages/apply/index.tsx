@@ -85,7 +85,7 @@ const Index = () => {
       </div>
       <Button
         type="button"
-        className={`text-[16px] sm:text-3xl bg-[#1779DE] text-white rounded-[88px] py-4 px-8 mt-6`}
+        className={`text-[16px] md:text-3xl bg-[#1779DE] text-white rounded-[88px] py-4 px-8 mt-6`}
         onClick={handleButtonClick}
       >
         Tobiratory Creator Program
