@@ -70,14 +70,13 @@ access(all) contract TobiratoryDigitalItems: NonFungibleToken {
 
         // Note: This function is called when an NFT is deposited into the Collection and records the owner of the NFT, 
         // but it cannot fully track the history. Users can hide the history of transfers. Please be careful when using this information.
-        access(contract) fun recordOwnerHistory() {
-            let owner = self.owner?.address
+        access(contract) fun recordOwnerHistory(owner: Address?) {
             if owner != nil {
                 let now = getCurrentBlock().timestamp
                 self.ownerHistory[now] = owner
                 for id in self.ownedNFTs.keys {
                     let nftRef = self.borrowTobiratoryNFT(id)!
-                    nftRef.recordOwnerHistory()
+                    nftRef.recordOwnerHistory(owner: self.owner?.address)
                 }
             }
         }
@@ -464,7 +463,7 @@ access(all) contract TobiratoryDigitalItems: NonFungibleToken {
 
         access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             let token <- token as! @TobiratoryDigitalItems.NFT
-            token.recordOwnerHistory()
+            token.recordOwnerHistory(owner: self.owner?.address)
             let id: UInt64 = token.id
             self.ownedNFTs[id] <-! token
         }

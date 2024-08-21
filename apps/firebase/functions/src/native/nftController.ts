@@ -2,11 +2,17 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError, storage} from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {TOPIC_NAMES} from "../lib/constants";
+import {TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
 import {giftStatus, increaseTransactionAmount, mintStatus, statusOfLimitTransaction} from "./utils";
+import * as fcl from "@onflow/fcl";
+
+fcl.config({
+  "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
+  "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
+});
 
 const pubsub = new PubSub();
 
@@ -405,6 +411,27 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
       type: "transferBegan",
       data: {id: id},
     }),
+  });
+};
+
+export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
+  const cadence = `
+import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
+
+access(all) fun main(address: Address, id: String): {UFix64: Address}? {
+    let collection = getAccount(address)
+        .capabilities.get<&TobiratoryDigitalItems.Collection>(TobiratoryDigitalItems.CollectionPublicPath)
+        .borrow()
+        ?? panic("NFT Collection not found")
+
+    let nft = collection.borrowTobiratoryNFT(UInt64.fromString(id)!)
+
+    return nft?.getOwnerHistory();
+}`;
+
+  return await fcl.query({
+    cadence,
+    args: (arg: any, t: any) => [arg(ownerFlowAddress, t.Address), arg(String(nftId), t.String)],
   });
 };
 
