@@ -6,7 +6,7 @@ import {TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import {giftStatus, mintStatus} from "./utils";
+import {giftStatus, increaseTransactionAmount, mintStatus, statusOfLimitTransaction} from "./utils";
 import * as fcl from "@onflow/fcl";
 
 fcl.config({
@@ -39,6 +39,20 @@ export const mintNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const checkLimit = await increaseTransactionAmount(uid);
+    if (checkLimit == statusOfLimitTransaction.notExistAccount) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist-account",
+      });
+      return;
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+      res.status(401).send({
+        status: "error",
+        data: "transaction-limit",
+      });
+      return;
+    }
     try {
       for (let i = 0; i < intAmount; i++) {
         await mint(id, uid, fcmToken, modelUrl);
@@ -235,6 +249,20 @@ export const giftNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const checkLimit = await increaseTransactionAmount(uid);
+    if (checkLimit == statusOfLimitTransaction.notExistAccount) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist-account",
+      });
+      return;
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+      res.status(401).send({
+        status: "error",
+        data: "transaction-limit",
+      });
+      return;
+    }
     try {
       await gift(parseInt(id), uid, receiveFlowId, fcmToken);
       res.status(200).send({
@@ -276,6 +304,20 @@ export const deleteMyNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const checkLimit = await increaseTransactionAmount(uid);
+    if (checkLimit == statusOfLimitTransaction.notExistAccount) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist-account",
+      });
+      return;
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+      res.status(401).send({
+        status: "error",
+        data: "transaction-limit",
+      });
+      return;
+    }
     try {
       await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", fcmToken);
       res.status(200).send({

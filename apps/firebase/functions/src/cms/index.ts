@@ -13,11 +13,12 @@ import * as express from "express";
 import {authRouter} from "./lib/authRoute";
 import {userRouter} from "./lib/userRoute";
 import {contentRouter} from "./lib/contentRoute";
-import { middlewareAuth } from "./middleware";
-import { REGION } from "../lib/constants";
+import {middlewareAuth} from "./middleware";
+import {REGION} from "../lib/constants";
 
 const app = express();
 app.use(cors({origin: true}));
+app.use(express.static("public"));
 
 app.use("/auth", authRouter);
 app.use("/users", middlewareAuth, userRouter);

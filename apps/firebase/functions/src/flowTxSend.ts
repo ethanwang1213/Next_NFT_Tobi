@@ -262,10 +262,9 @@ const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: nu
   }
 
   const cadence = `\
-import NonFungibleToken from ${nonFungibleTokenAddress}
-import MetadataViews from ${nonFungibleTokenAddress}
+import MetadataViews from 0x${nonFungibleTokenAddress}
 import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
-import FungibleToken from ${fungibleTokenAddress}
+import FungibleToken from 0x${fungibleTokenAddress}
 
 transaction(
     type: String,
@@ -280,29 +279,27 @@ transaction(
 ) {
     let itemsRef: &TobiratoryDigitalItems.Items
     let itemReviewerRef: &TobiratoryDigitalItems.ItemReviewer
-    let royaltyReceiver: Capability<&AnyResource{FungibleToken.Receiver}>
+    let royaltyReceiver: Capability<&{FungibleToken.Receiver}>
 
-    prepare(creator: AuthAccount, reviewer: AuthAccount) {
-        if creator.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) == nil {
+    prepare(
+        creator: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account,
+        reviewer: auth(BorrowValue) &Account
+    ) {
+        if creator.storage.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) == nil {
             let items <- TobiratoryDigitalItems.createItems()
-            creator.save(<- items, to: TobiratoryDigitalItems.ItemsStoragePath)
-            creator.link<&TobiratoryDigitalItems.Items{TobiratoryDigitalItems.ItemsPublic}>(
-                TobiratoryDigitalItems.ItemsPublicPath,
-                target: TobiratoryDigitalItems.ItemsStoragePath
-            )
+            creator.storage.save(<- items, to: TobiratoryDigitalItems.ItemsStoragePath)
+            let cap = creator.capabilities.storage.issue<&TobiratoryDigitalItems.Items>(TobiratoryDigitalItems.ItemsStoragePath)
+            creator.capabilities.publish(cap, at: TobiratoryDigitalItems.ItemsPublicPath)
         }
-        if creator.borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) == nil {
-            let collection: @TobiratoryDigitalItems.Collection <- TobiratoryDigitalItems.createEmptyCollection() as! @TobiratoryDigitalItems.Collection
-            creator.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
-            creator.link<&TobiratoryDigitalItems.Collection{NonFungibleToken.CollectionPublic, TobiratoryDigitalItems.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(
-                TobiratoryDigitalItems.CollectionPublicPath,
-                target: TobiratoryDigitalItems.CollectionStoragePath
-            )
+        if creator.storage.borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) == nil {
+            let collection <- TobiratoryDigitalItems.createEmptyCollection(nftType: Type<@TobiratoryDigitalItems.NFT>())
+            creator.storage.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
+            let cap = creator.capabilities.storage.issue<&TobiratoryDigitalItems.Collection>(TobiratoryDigitalItems.CollectionStoragePath)
+            creator.capabilities.publish(cap, at: TobiratoryDigitalItems.CollectionPublicPath)
         }
-        self.itemsRef = creator.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) ?? panic("Not found")
-        self.itemReviewerRef = reviewer.borrow<&TobiratoryDigitalItems.ItemReviewer>(from: TobiratoryDigitalItems.ItemReviewerStoragePath) ?? panic("Not found")
-        self.royaltyReceiver = creator.getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
-        // self.royaltyReceiver = creator.capabilities.get<&{FungibleToken.Receiver}>(/public/flowTokenReceiver) ?? panic("Not found")
+        self.itemsRef = creator.storage.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) ?? panic("Not found")
+        self.itemReviewerRef = reviewer.storage.borrow<&TobiratoryDigitalItems.ItemReviewer>(from: TobiratoryDigitalItems.ItemReviewerStoragePath) ?? panic("Not found")
+        self.royaltyReceiver = creator.capabilities.get<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
     }
 
     execute {
@@ -610,8 +607,7 @@ const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: 
   }
 
   const cadence = `\
-import NonFungibleToken from ${nonFungibleTokenAddress}
-import MetadataViews from ${nonFungibleTokenAddress}
+import NonFungibleToken from 0x${nonFungibleTokenAddress}
 import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
 
 transaction(
@@ -621,17 +617,18 @@ transaction(
     let receiverRef: &{NonFungibleToken.Receiver}
     let minterRef: &TobiratoryDigitalItems.Minter
 
-    prepare(user: AuthAccount, minter: AuthAccount) {
-        if user.borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) == nil {
-            let collection: @TobiratoryDigitalItems.Collection <- TobiratoryDigitalItems.createEmptyCollection() as! @TobiratoryDigitalItems.Collection
-            user.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
-            user.link<&TobiratoryDigitalItems.Collection{NonFungibleToken.CollectionPublic, TobiratoryDigitalItems.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(
-                TobiratoryDigitalItems.CollectionPublicPath,
-                target: TobiratoryDigitalItems.CollectionStoragePath
-            )
+    prepare(
+        user: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account,
+        minter: auth(BorrowValue) &Account
+    ) {
+        if user.storage.borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) == nil {
+            let collection <- TobiratoryDigitalItems.createEmptyCollection(nftType: Type<@TobiratoryDigitalItems.NFT>())
+            user.storage.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
+            let cap: Capability = user.capabilities.storage.issue<&TobiratoryDigitalItems.Collection>(TobiratoryDigitalItems.CollectionStoragePath)
+            user.capabilities.publish(cap, at: TobiratoryDigitalItems.CollectionPublicPath)
         }
-        self.receiverRef = user.getCapability<&{NonFungibleToken.Receiver}>(TobiratoryDigitalItems.CollectionPublicPath).borrow()!
-        self.minterRef = minter.borrow<&TobiratoryDigitalItems.Minter>(from: TobiratoryDigitalItems.MinterStoragePath) ?? panic("Not found")
+        self.receiverRef = user.capabilities.get<&{NonFungibleToken.Receiver}>(TobiratoryDigitalItems.CollectionPublicPath).borrow()!
+        self.minterRef = minter.storage.borrow<&TobiratoryDigitalItems.Minter>(from: TobiratoryDigitalItems.MinterStoragePath) ?? panic("Not found")
     }
 
     execute {
@@ -748,22 +745,22 @@ const sendGiftNFTTx = async (tobiratoryAccountUuid: string, digitalItemNftId: nu
 
   await updateGiftNFTRecord(digitalItemNftId, giftStatus.gifting);
 
-  const cadence = `
-import NonFungibleToken from ${nonFungibleTokenAddress}
+  const cadence = `\
+import NonFungibleToken from 0x${nonFungibleTokenAddress}
 import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
 
 transaction(recipient: Address, withdrawID: UInt64) {
-    let senderCollectionRef: &TobiratoryDigitalItems.Collection
+    let senderCollectionRef: auth(NonFungibleToken.Withdraw) &TobiratoryDigitalItems.Collection
     let recipientCollectionRef: &{NonFungibleToken.CollectionPublic}
 
-    prepare(acct: AuthAccount) {
+    prepare(acct: auth(BorrowValue, GetStorageCapabilityController) &Account) {
         self.senderCollectionRef = acct
-            .borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath)
+            .storage.borrow<auth(NonFungibleToken.Withdraw) &TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath)
             ?? panic("Not found")
 
         self.recipientCollectionRef = getAccount(recipient)
-            .getCapability(TobiratoryDigitalItems.CollectionPublicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            .capabilities.get<&{NonFungibleToken.CollectionPublic}>(TobiratoryDigitalItems.CollectionPublicPath)
+            .borrow()
             ?? panic("Not found")
     }
 
@@ -849,15 +846,15 @@ const sendCreateAccountTx = async () => {
 
   // TODO: Add initialization for Tobiratory-related NFT Collection
   const cadence = `\
-import NonFungibleToken from ${nonFungibleTokenAddress}
-import MetadataViews from ${nonFungibleTokenAddress}
+import NonFungibleToken from 0x${nonFungibleTokenAddress}
+import MetadataViews from 0x${nonFungibleTokenAddress}
 import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
 
 transaction(publicKey: String) {
     prepare(signer: AuthAccount) {
         let account = AuthAccount(payer: signer)
         account.keys.add(
-            publicKey: PublicKey(
+            PublicKey(
                 publicKey: publicKey.decodeHex(),
                 signatureAlgorithm: SignatureAlgorithm.ECDSA_secp256k1
             ),
@@ -865,7 +862,7 @@ transaction(publicKey: String) {
             weight: 1000.0
         )
 
-        // let collection: @TobiratoryDigitalItems.Collection <- TobiratoryDigitalItems.createEmptyCollection() as! @TobiratoryDigitalItems.Collection
+        // let collection <- TobiratoryDigitalItems.createEmptyCollection()
         // signer.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
         // signer.link<&TobiratoryDigitalItems.Collection{NonFungibleToken.CollectionPublic, TobiratoryDigitalItems.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(
         //     TobiratoryDigitalItems.CollectionPublicPath,

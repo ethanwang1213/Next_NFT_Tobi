@@ -2,14 +2,13 @@
 
 import config from "admin/tailwind.config";
 import clsx from "clsx";
-import { useAuth } from "contexts/AdminAuthProvider";
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import { gsap, Power2 } from "gsap";
 import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { sidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
+import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
 
 type Props = {
   children: ReactNode;
@@ -20,7 +19,6 @@ const Sidebar = ({ children }: Props) => {
   const menuMaxWidth = 230;
   const screensMd = parseInt(config.theme.screens.md);
 
-  const { user } = useAuth();
   const resizedBefore = useRef<boolean>(false);
   const [expand, setExpand] = useState(true);
 
@@ -90,13 +88,7 @@ const Sidebar = ({ children }: Props) => {
   const normalTextColor = "inactive";
   const selectedColor = "primary";
 
-  const updatedItems = sidebarItems.map((item) => ({
-    ...item,
-    visible:
-      item.name === "Tobiratory Creator Program" ||
-      item.visible ||
-      user.hasBusinessAccount,
-  }));
+  const items = useUpdatedSidebarItems();
 
   return (
     <div className="drawer drawer-open flex-1">
@@ -107,7 +99,7 @@ const Sidebar = ({ children }: Props) => {
       <div className="drawer-content">{children}</div>
       <div className="drawer-side border-r-base-content border-r-[0.5px] h-full sm:!block !hidden">
         <ul className="pt-[17px]">
-          {updatedItems
+          {items
             .filter((item) => item.visible)
             .map((item, index) => (
               <li

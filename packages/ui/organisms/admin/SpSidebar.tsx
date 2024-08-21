@@ -3,7 +3,7 @@ import { useAuth } from "contexts/AdminAuthProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { sidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
+import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -14,13 +14,7 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const { user } = useAuth();
   const pathname = usePathname();
 
-  const updatedItems = sidebarItems.map((item) => ({
-    ...item,
-    visible:
-      item.name === "Tobiratory Creator Program" ||
-      item.visible ||
-      user.hasBusinessAccount,
-  }));
+  const items = useUpdatedSidebarItems();
 
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
@@ -28,7 +22,11 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   return (
     <div
-      className="absolute z-10 top-[56px] h-full w-full"
+      className={`absolute z-10 top-[56px] h-full w-full ${
+        sidebarOpen
+          ? "translate-x-0 duration-300 ease-linear"
+          : "-translate-x-full duration-300 ease-linear"
+      }`}
       onClick={() => {
         setSidebarOpen(false);
       }}
@@ -56,7 +54,7 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </div>
           </div>
           <ul className="border-solid border-[1px] border-gray-300">
-            {updatedItems
+            {items
               .filter((item) => item.visible)
               .map((item, index) => (
                 <li key={index} className="mb-[3px] text-base-content">

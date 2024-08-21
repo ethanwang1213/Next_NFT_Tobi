@@ -21,6 +21,7 @@ router.get("/", async (req: Request, res: Response) => {
           },
         },
         copyrights: true,
+        reported_contents: true,
       },
       orderBy: {
         favorite_users: {
@@ -28,7 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
         },
       },
     });
-    const returnData = contents.map((content)=>{
+    const returnData = contents.map((content) => {
       const owner = content.businesses;
       return {
         id: content.id,
@@ -36,7 +37,7 @@ router.get("/", async (req: Request, res: Response) => {
         description: content.description,
         hpURL: content.url,
         favorUserNum: content.favorite_users.length,
-        owner: owner==null?null:{
+        owner: owner == null ? null : {
           id: owner.id,
           uuid: owner.uuid,
           userId: owner.account.user_id,
@@ -51,10 +52,17 @@ router.get("/", async (req: Request, res: Response) => {
           postalCode: owner.postal_code,
           birth: owner.birth,
         },
-        copyrights: content.copyrights.map((copyright)=>{
+        copyrights: content.copyrights.map((copyright) => {
           return {
             id: copyright.id,
             name: copyright.name,
+          };
+        }),
+        reports: content.reported_contents.filter((report) => report.is_solved != true).map((report) => {
+          return {
+            date: report.created_date_time,
+            title: report.title,
+            description: report.description,
           };
         }),
         license: content.license,
@@ -75,7 +83,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/requests", async (req: Request, res: Response) => {
   const {pageNumber, pageSize} = req.query;
-  const skip = (Number(pageNumber)-1)*Number(pageSize);
+  const skip = (Number(pageNumber) - 1) * Number(pageSize);
   console.log(skip);
 
   try {
@@ -85,13 +93,13 @@ router.get("/requests", async (req: Request, res: Response) => {
       where: {
         changed_name: {
           not: null,
-        }
+        },
       },
       orderBy: {
         changed_name_time: "asc",
       },
     });
-    const returnData = contents.map((content)=>{
+    const returnData = contents.map((content) => {
       return {
         id: content.id,
         name: content.name,
@@ -114,54 +122,79 @@ router.get("/requests", async (req: Request, res: Response) => {
 });
 
 router.put("/requests", async (req: Request, res: Response) => {
-  const {processType, contentIds}: {processType: boolean, contentIds: number[]} = req.body;
+  const {processType, contentIds}: { processType: boolean, contentIds: number[] } = req.body;
   try {
     if (processType) {
       const allRequests = await prisma.contents.findMany({
         where: {
           id: {
             in: contentIds,
-          }
+          },
         },
       });
       await Promise.all(
-        allRequests.map(async (content)=>{
-          await prisma.contents.update({
-            where: {
-              id: content.id,
-            },
-            data: {
-              name: content.changed_name??"",
-              changed_name: null,
-            },
-          });
-        })
+          allRequests.map(async (content) => {
+            await prisma.contents.update({
+              where: {
+                id: content.id,
+              },
+              data: {
+                name: content.changed_name ?? "",
+                changed_name: null,
+              },
+            });
+          })
       );
-    }else {
+    } else {
       const allRequests = await prisma.contents.findMany({
         where: {
           id: {
             in: contentIds,
-          }
+          },
         },
       });
       await Promise.all(
-        allRequests.map(async (content)=>{
-          await prisma.contents.update({
-            where: {
-              id: content.id,
-            },
-            data: {
-              changed_name: null,
-            },
-          });
-        })
+          allRequests.map(async (content) => {
+            await prisma.contents.update({
+              where: {
+                id: content.id,
+              },
+              data: {
+                changed_name: null,
+              },
+            });
+          })
       );
     }
-    
+
     res.status(200).send({
       status: "success",
       data: "approved",
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.get("/notifications", async (req: Request, res: Response) => {
+  try {
+    const reportedContents = await prisma.reported_contents.findMany({
+      include: {
+        content: true,
+      },
+    });
+    const returnData = reportedContents.filter((report)=>report.is_solved!=null).map((reportedContent) => {
+      return {
+        id: reportedContent.id,
+        contentId: reportedContent.content_id,
+      };
+    });
+    res.status(200).send({
+      status: "success",
+      data: returnData,
     });
   } catch (error) {
     res.status(401).send({
@@ -194,7 +227,7 @@ router.get("/:id", async (req: Request, res: Response) => {
         reported_contents: {
           include: {
             reporter: true,
-          }
+          },
         },
       },
     });
@@ -205,25 +238,26 @@ router.get("/:id", async (req: Request, res: Response) => {
       });
       return;
     }
-    const documents = content.reported_documents.map((document)=>{
+    const documents = content.reported_documents.map((document) => {
       return {
         documentName: document.name,
         documentLink: document.document_link,
         uploadedTime: document.created_date_time,
-      }
+      };
     });
-    const reports = content.reported_contents.map((report)=>{
+    const reports = content.reported_contents.map((report) => {
       return {
         date: report.created_date_time,
         title: report.title,
         description: report.description,
+        isSolved: report.is_solved,
         reporter: {
           uuid: report.reporter.uuid,
           avatar: report.reporter.icon_url,
           username: report.reporter.username,
-        }
-      }
-    })
+        },
+      };
+    });
     const returnData = {
       id: content.id,
       name: content.name,
@@ -232,7 +266,7 @@ router.get("/:id", async (req: Request, res: Response) => {
       sticker: content.sticker,
       image: content.image,
       favorUserNum: content.favorite_users.length,
-      owner: content.businesses==null?null:{
+      owner: content.businesses == null ? null : {
         id: content.businesses.id,
         uuid: content.businesses.uuid,
         userId: content.businesses.account.user_id,
@@ -249,7 +283,7 @@ router.get("/:id", async (req: Request, res: Response) => {
       },
       documents: documents,
       reports: reports,
-      copyrights: content.copyrights.map((copyright)=>{
+      copyrights: content.copyrights.map((copyright) => {
         return {
           id: copyright.id,
           name: copyright.name,
@@ -258,34 +292,6 @@ router.get("/:id", async (req: Request, res: Response) => {
       license: content.license,
       licenseData: content.license_data,
     };
-    res.status(200).send({
-      status: "success",
-      data: returnData,
-    });
-  } catch (error) {
-    res.status(401).send({
-      status: "error",
-      data: error,
-    });
-  }
-});
-
-router.get("/notifications", async (req: Request, res: Response) => {
-  try {
-    const reportedContents = await prisma.reported_contents.findMany({
-      where: {
-        is_solved: null,
-      },
-      include: {
-        content: true,
-      },
-    });
-    const returnData = reportedContents.map((reportedContent)=>{
-      return {
-        id: reportedContent.id,
-        contentId: reportedContent.content_id,
-      };
-    });
     res.status(200).send({
       status: "success",
       data: returnData,
