@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import PdfToImage from "./PdfToImage ";
+import PdfToImage from "./PdfToImage";
 
 interface Document {
   documentName: string;
