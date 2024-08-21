@@ -40,7 +40,7 @@ export const mintNFT = async (req: Request, res: Response) => {
         data: "not-exist-account",
       });
       return;
-    }else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
       res.status(401).send({
         status: "error",
         data: "transaction-limit",
@@ -250,7 +250,7 @@ export const giftNFT = async (req: Request, res: Response) => {
         data: "not-exist-account",
       });
       return;
-    }else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
       res.status(401).send({
         status: "error",
         data: "transaction-limit",
@@ -305,7 +305,7 @@ export const deleteMyNFT = async (req: Request, res: Response) => {
         data: "not-exist-account",
       });
       return;
-    }else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
       res.status(401).send({
         status: "error",
         data: "transaction-limit",
