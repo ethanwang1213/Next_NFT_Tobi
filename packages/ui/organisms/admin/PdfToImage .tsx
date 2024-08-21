@@ -1,8 +1,10 @@
-import Image from "next/image";
-import * as pdfjsLib from "pdfjs-dist/webpack.mjs";
-import React, { useEffect, useRef, useState } from "react";
+import Image from 'next/image';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import { GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
+import React, { useEffect, useRef, useState } from 'react';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Set the worker source for PDF.js
+GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 const PdfToImage: React.FC<{ pdfUrl: string }> = ({ pdfUrl }) => {
   const [imgSrc, setImgSrc] = useState<string | null>(null);
@@ -10,6 +12,8 @@ const PdfToImage: React.FC<{ pdfUrl: string }> = ({ pdfUrl }) => {
 
   useEffect(() => {
     const loadPdf = async () => {
+      if (!pdfUrl) return; // Ensure pdfUrl is provided
+
       try {
         const loadingTask = pdfjsLib.getDocument(pdfUrl);
         const pdf = await loadingTask.promise;
@@ -21,12 +25,12 @@ const PdfToImage: React.FC<{ pdfUrl: string }> = ({ pdfUrl }) => {
         const desiredHeight = 150;
         const scale = Math.min(
           desiredWidth / originalViewport.width,
-          desiredHeight / originalViewport.height,
+          desiredHeight / originalViewport.height
         );
         const viewport = page.getViewport({ scale });
 
         const canvas = canvasRef.current;
-        const context = canvas?.getContext("2d");
+        const context = canvas?.getContext('2d');
 
         if (canvas && context) {
           canvas.width = viewport.width;
@@ -34,15 +38,16 @@ const PdfToImage: React.FC<{ pdfUrl: string }> = ({ pdfUrl }) => {
 
           const renderContext = {
             canvasContext: context,
-            viewport: viewport,
+            viewport: viewport
           };
           await page.render(renderContext).promise;
 
-          const imgData = canvas.toDataURL("image/png");
+          // Convert canvas to image data URL
+          const imgData = canvas.toDataURL('image/png');
           setImgSrc(imgData);
         }
       } catch (error) {
-        console.error("Error loading PDF: ", error);
+        console.error('Error loading PDF: ', error);
       }
     };
 
@@ -60,7 +65,7 @@ const PdfToImage: React.FC<{ pdfUrl: string }> = ({ pdfUrl }) => {
           className="w-full h-[150px] object-cover"
         />
       ) : (
-        <canvas ref={canvasRef} style={{ display: "none" }} />
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
       )}
     </div>
   );
