@@ -137,17 +137,17 @@ export type NftLoadData = NftBaseDataForLoading &
 
 export type ItemSaveData = ItemBaseId & ItemId & ItemPosture;
 
-type RoomSurfaceParams = {
+export type RoomSurfaceParams = {
   tint: string;
 };
-type WallpaperSettings = RoomSurfaceParams;
-type FloorSettings = RoomSurfaceParams;
+export type WallpaperSettings = RoomSurfaceParams;
+export type FloorSettings = RoomSurfaceParams;
 
-type LightParams = {
+export type LightParams = {
   tint: string;
   brightness: number;
 };
-type LightSettings = {
+export type LightSettings = {
   sceneLight: LightParams;
   pointLight: LightParams;
 };

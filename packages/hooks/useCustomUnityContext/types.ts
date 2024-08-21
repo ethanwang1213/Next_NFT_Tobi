@@ -1,8 +1,14 @@
 import {
   ActionType,
+  FloorSettings,
+  ItemBaseId,
+  ItemPosture,
+  ItemTypeParam,
+  LightParams,
   SaidanItemData,
   SaidanSettings,
   Vector3,
+  WallpaperSettings,
 } from "types/unityTypes";
 
 export const UnitySceneType = {
@@ -71,4 +77,25 @@ export type SaidanLikeData = {
   isDebug: boolean;
 };
 
-export type UndoneOrRedone = (actionType: ActionType, text: string) => void;
+export type UndoneRedoneResult = {
+  item?: Partial<ItemTypeParam & ItemBaseId & Omit<ItemPosture, "stageType">>;
+  settings?: Partial<{
+    wallpaper?: Partial<WallpaperSettings>;
+    floor?: Partial<FloorSettings>;
+    lighting?: Partial<{
+      sceneLight?: Partial<LightParams>;
+      pointLight?: Partial<LightParams>;
+    }>;
+  }>;
+};
+
+export type RequiredUndoneRedoneResult = {
+  item: ItemTypeParam & ItemBaseId & Omit<ItemPosture, "stageType">;
+  settings: SaidanSettings;
+};
+
+export type UndoneOrRedone = (
+  actionType: ActionType,
+  text: string,
+  result: UndoneRedoneResult,
+) => void;

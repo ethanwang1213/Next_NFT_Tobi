@@ -10,14 +10,164 @@ import {
   NftBaseDataForPlacing,
   ParentId,
   SampleBaseDataForPlacing,
+  Vector3,
 } from "types/unityTypes";
 import {
+  RequiredUndoneRedoneResult,
   SaidanLikeData,
   UndoneOrRedone,
+  UndoneRedoneResult,
   UnityMessageJson,
   UnitySceneType,
 } from "./types";
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
+
+const useUndoRedo = ({
+  onActionUndone,
+  onActionRedone,
+}: {
+  onActionUndone?: UndoneOrRedone;
+  onActionRedone?: UndoneOrRedone;
+}) => {
+  const [isUndoable, setIsUndoable] = useState<boolean>(false);
+  const [isRedoable, setIsRedoable] = useState<boolean>(false);
+  
+  const processUndoneRedoneResult = useCallback(
+    (result: RequiredUndoneRedoneResult): UndoneRedoneResult => {
+      // item
+      // itemType, itemId
+      // default item: { itemType: ItemType.Sample, itemId: -1, position: { x: -999.0, y: -999.0, z: -999.0 }, rotation: { x: -999.0, y: -999.0, z: -999.0 }, scale: -1.0 }
+      const itemType = result.item.itemType;
+      const itemId = result.item.itemId === -1 ? undefined : result.item.itemId;
+      // position, rotation
+      const isDefaultVec = (v: Vector3) => {
+        return v.x === -999.0 && v.y === -999.0 && v.z === -999.0;
+      };
+      const position = isDefaultVec(result.item.position)
+        ? undefined
+        : result.item.position;
+      const rotation = isDefaultVec(result.item.rotation)
+        ? undefined
+        : result.item.rotation;
+      // scale
+      const scale = result.item.scale === -1.0 ? undefined : result.item.scale;
+
+      // merge item values
+      const item = result.item
+        ? itemId
+          ? { itemType, itemId, position, rotation, scale }
+          : undefined
+        : undefined;
+
+      // settings
+      // wallpaper, floor
+      // default stage: { tint: "" }
+      const wallpaper =
+        result.settings.wallpaper.tint === ""
+          ? undefined
+          : { tint: result.settings.wallpaper.tint };
+      const floor =
+        result.settings.floor.tint === ""
+          ? undefined
+          : { tint: result.settings.floor.tint };
+
+      // lighting
+      // default light: { tint: "", brightness: -1.0 }
+      // sceneLight
+      const resultSceneLight = result.settings.lighting.sceneLight;
+      const sceneTint =
+        resultSceneLight.tint === "" ? undefined : { tint: resultSceneLight.tint };
+      const sceneBrightness =
+        resultSceneLight.brightness === -1.0
+          ? undefined
+          : { brightness: resultSceneLight.brightness };
+      const sceneLight =
+        !sceneTint && !sceneBrightness
+          ? undefined
+          : { ...sceneTint, ...sceneBrightness };
+      // pointLight
+      const resultPointLight = result.settings.lighting.pointLight;
+      const pointTint =
+        resultPointLight.tint === "" ? undefined : { tint: resultPointLight.tint };
+      const pointBrightness =
+        resultPointLight.brightness === -1.0
+          ? undefined
+          : { brightness: resultPointLight.brightness };
+      const pointLight =
+        !pointTint && !pointBrightness
+          ? undefined
+          : { ...pointTint, ...pointBrightness };
+
+      // merge lighting values
+      const lighting =
+        !sceneLight && !pointLight ? undefined : { sceneLight, pointLight };
+
+      // merge settings values
+      const settings = result.settings
+        ? wallpaper || floor || lighting 
+          ? { wallpaper, floor, lighting } 
+          : undefined
+        : undefined;
+
+      return {
+        item,
+        settings,
+      };
+    },
+    [],
+  );
+
+  const handleActionUndone = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onActionUndone) return;
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        actionType: ActionType;
+        text: string;
+        isUndoable: boolean;
+        result: RequiredUndoneRedoneResult;
+      };
+      if (!messageBody) return;
+      setIsUndoable(messageBody.isUndoable);
+      setIsRedoable(true);
+
+      onActionUndone(
+        messageBody.actionType,
+        messageBody.text,
+        processUndoneRedoneResult(messageBody.result),
+      );
+    },
+    [onActionUndone, setIsUndoable],
+  );
+
+  const handleActionRedone = useCallback(
+    (msgObj: UnityMessageJson) => {
+      if (!onActionRedone) return;
+      const messageBody = JSON.parse(msgObj.messageBody) as {
+        actionType: ActionType;
+        text: string;
+        isRedoable: boolean;
+        result: RequiredUndoneRedoneResult;
+      };
+      if (!messageBody) return;
+      setIsRedoable(messageBody.isRedoable);
+      setIsUndoable(true);
+
+      onActionRedone(
+        messageBody.actionType,
+        messageBody.text,
+        processUndoneRedoneResult(messageBody.result),
+      );
+    },
+    [onActionRedone, setIsRedoable],
+  );
+
+  return {
+    isUndoable,
+    isRedoable,
+    handleActionUndone,
+    handleActionRedone,
+  };
+}
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
@@ -48,6 +198,13 @@ export const useSaidanLikeUnityContextBase = ({
     handleSimpleMessage,
   } = useCustomUnityContextBase({ sceneType });
 
+  const {
+    isUndoable,
+    isRedoable,
+    handleActionUndone,
+    handleActionRedone,
+  } = useUndoRedo({ onActionUndone, onActionRedone });
+
   // states
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
@@ -57,9 +214,6 @@ export const useSaidanLikeUnityContextBase = ({
   const [selectedItem, setSelectedItem] = useState<
     (ItemTypeParam & ItemBaseId & ParentId) | null
   >(null);
-
-  const [isUndoable, setIsUndoable] = useState<boolean>(false);
-  const [isRedoable, setIsRedoable] = useState<boolean>(false);
 
   const sampleIdToDigitalItemIdMap = useMemo(
     () => new Map<number, number>(),
@@ -312,36 +466,6 @@ export const useSaidanLikeUnityContextBase = ({
       );
     },
     [sampleIdToDigitalItemIdMap, nftIdToDigitalItemIdMap, setSelectedItem],
-  );
-
-  const handleActionUndone = useCallback(
-    (msgObj: UnityMessageJson) => {
-      if (!onActionUndone) return;
-      const messageBody = JSON.parse(msgObj.messageBody) as {
-        actionType: ActionType;
-        text: string;
-        isUndoable: boolean;
-      };
-      if (!messageBody) return;
-      setIsUndoable(messageBody.isUndoable);
-      onActionUndone(messageBody.actionType, messageBody.text);
-    },
-    [onActionUndone, setIsUndoable],
-  );
-
-  const handleActionRedone = useCallback(
-    (msgObj: UnityMessageJson) => {
-      if (!onActionRedone) return;
-      const messageBody = JSON.parse(msgObj.messageBody) as {
-        actionType: ActionType;
-        text: string;
-        isRedoable: boolean;
-      };
-      if (!messageBody) return;
-      setIsRedoable(messageBody.isRedoable);
-      onActionRedone(messageBody.actionType, messageBody.text);
-    },
-    [onActionRedone, setIsRedoable],
   );
 
   return {
