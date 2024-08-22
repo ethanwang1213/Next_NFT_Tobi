@@ -316,12 +316,14 @@ const Showcase = () => {
     setPb(pb);
 
     /// TODO(Murat) by Toruto: modify updating settings for undo/redo feature
-    /// Set the phase argument as UpdatingSettingsPhase.Updating
+    /// Set the `phase` argument as `SettingsUpdatePhase.Updating`
     ///   while operating a GUI for updating settings
     ///   such like dragging a slider, dragging a color picker, etc.
-    /// Set the phase argument as UpdatingSettingsPhase.Ended
+    /// Set the `phase` argument as `SettingsUpdatePhase.Ended`
     ///   when operating the GUI is ended
     ///   such like releassed a slider, released a color picker, etc.
+
+    /// NOTE(Toruto): I commented out these lines for avoiding error
 
     // updateSettings({
     //   wallpaper: {

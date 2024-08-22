@@ -158,15 +158,15 @@ export type SaidanSettings = {
   lighting: LightSettings;
 };
 
-export const UpdatingSettingsPhase = {
+export const SettingsUpdatePhase = {
   Updating: 0,
   Ended: 1,
 } as const;
-export type UpdatingSettingsPhase =
-  (typeof UpdatingSettingsPhase)[keyof typeof UpdatingSettingsPhase];
+export type SettingsUpdatePhase =
+  (typeof SettingsUpdatePhase)[keyof typeof SettingsUpdatePhase];
 
 export type UpdatingSaidanSettings = SaidanSettings & {
-  phase: UpdatingSettingsPhase;
+  phase: SettingsUpdatePhase;
 };
 
 export type ShowcaseSettings = SaidanSettings;
