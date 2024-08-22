@@ -31,12 +31,12 @@ const useUndoRedo = ({
 }) => {
   const [isUndoable, setIsUndoable] = useState<boolean>(false);
   const [isRedoable, setIsRedoable] = useState<boolean>(false);
-  
-  /** 
+
+  /**
    * Process the result of undone or redone action.
    * Result data includes default values which are not necessary for a result ActionType.
    * So, this function processes the result data to remove default values.
-   * Before: 
+   * Before:
    *   { item: { itemType, itemId, position, rotation, scale }, settings: { wallpaper, floor, lighting } }
    * After:
    *   e.g. redo TranslateItem -> { item: { itemType, itemId, position } }
@@ -47,7 +47,7 @@ const useUndoRedo = ({
     (result: RequiredUndoneRedoneResult): UndoneRedoneResult => {
       // item
       // default values: { item: { itemType: ItemType.Sample, itemId: -1, position: { x: -999.0, y: -999.0, z: -999.0 }, rotation: { x: -999.0, y: -999.0, z: -999.0 }, scale: -1.0 } }
-      
+
       // itemType, itemId
       const itemType = result.item.itemType;
       const itemId = result.item.itemId === -1 ? undefined : result.item.itemId;
@@ -91,7 +91,9 @@ const useUndoRedo = ({
       // sceneLight
       const resultSceneLight = result.settings.lighting.sceneLight;
       const sceneTint =
-        resultSceneLight.tint === "" ? undefined : { tint: resultSceneLight.tint };
+        resultSceneLight.tint === ""
+          ? undefined
+          : { tint: resultSceneLight.tint };
       const sceneBrightness =
         resultSceneLight.brightness === -1.0
           ? undefined
@@ -104,7 +106,9 @@ const useUndoRedo = ({
       // pointLight
       const resultPointLight = result.settings.lighting.pointLight;
       const pointTint =
-        resultPointLight.tint === "" ? undefined : { tint: resultPointLight.tint };
+        resultPointLight.tint === ""
+          ? undefined
+          : { tint: resultPointLight.tint };
       const pointBrightness =
         resultPointLight.brightness === -1.0
           ? undefined
@@ -120,8 +124,8 @@ const useUndoRedo = ({
 
       // merge settings values
       const settings = result.settings
-        ? wallpaper || floor || lighting 
-          ? { wallpaper, floor, lighting } 
+        ? wallpaper || floor || lighting
+          ? { wallpaper, floor, lighting }
           : undefined
         : undefined;
 
@@ -130,6 +134,14 @@ const useUndoRedo = ({
         settings,
       };
     },
+    [],
+  );
+
+  const replaceItemNameOnText = useCallback(
+    (notifText: string, itemName: string) =>
+      itemName === ""
+        ? notifText.replace("ITEM_NAME", "the Sample Item")
+        : notifText.replace("ITEM_NAME", itemName),
     [],
   );
 
@@ -150,6 +162,7 @@ const useUndoRedo = ({
         messageBody.actionType,
         messageBody.text,
         processUndoneRedoneResult(messageBody.result),
+        replaceItemNameOnText,
       );
     },
     [onActionUndone, setIsUndoable, processUndoneRedoneResult],
@@ -172,6 +185,7 @@ const useUndoRedo = ({
         messageBody.actionType,
         messageBody.text,
         processUndoneRedoneResult(messageBody.result),
+        replaceItemNameOnText,
       );
     },
     [onActionRedone, setIsRedoable, processUndoneRedoneResult],
@@ -183,7 +197,7 @@ const useUndoRedo = ({
     handleActionUndone,
     handleActionRedone,
   };
-}
+};
 
 export const useSaidanLikeUnityContextBase = ({
   sceneType,
@@ -214,12 +228,8 @@ export const useSaidanLikeUnityContextBase = ({
     handleSimpleMessage,
   } = useCustomUnityContextBase({ sceneType });
 
-  const {
-    isUndoable,
-    isRedoable,
-    handleActionUndone,
-    handleActionRedone,
-  } = useUndoRedo({ onActionUndone, onActionRedone });
+  const { isUndoable, isRedoable, handleActionUndone, handleActionRedone } =
+    useUndoRedo({ onActionUndone, onActionRedone });
 
   // states
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);

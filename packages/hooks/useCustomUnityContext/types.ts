@@ -98,4 +98,5 @@ export type UndoneOrRedone = (
   actionType: ActionType,
   text: string,
   result: UndoneRedoneResult,
+  replaceItemNameOnText: (notifText: string, itemName: string) => string,
 ) => void;
