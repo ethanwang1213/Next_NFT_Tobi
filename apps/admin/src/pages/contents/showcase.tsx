@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, ModelType } from "types/unityTypes";
+import { ItemType, ModelType, SettingsUpdatePhase } from "types/unityTypes";
 import Button from "ui/atoms/Button";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
@@ -126,7 +126,7 @@ const Showcase = () => {
     placeNewNft,
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
-    // updateSettings, // NOTE(Toruto): I commented out this line for linting error
+    updateSettings,
     inputWasd,
     isUndoable,
     selectedItem,
@@ -322,27 +322,29 @@ const Showcase = () => {
     /// Set the `phase` argument as `SettingsUpdatePhase.Ended`
     ///   when operating the GUI is ended
     ///   such like releassed a slider, released a color picker, etc.
+    ///   And, with this phase, the change of settings is registered on action history for undo/redo.
 
     /// NOTE(Toruto): I commented out these lines for avoiding error
 
-    // updateSettings({
-    //   wallpaper: {
-    //     tint: wt,
-    //   },
-    //   floor: {
-    //     tint: ft,
-    //   },
-    //   lighting: {
-    //     sceneLight: {
-    //       tint: st,
-    //       brightness: sb,
-    //     },
-    //     pointLight: {
-    //       tint: pt,
-    //       brightness: pb,
-    //     },
-    //   },
-    // });
+    updateSettings({
+      wallpaper: {
+        tint: wt,
+      },
+      floor: {
+        tint: ft,
+      },
+      lighting: {
+        sceneLight: {
+          tint: st,
+          brightness: sb,
+        },
+        pointLight: {
+          tint: pt,
+          brightness: pb,
+        },
+      },
+      phase: SettingsUpdatePhase.Updating, ///
+    });
   };
 
   return (
