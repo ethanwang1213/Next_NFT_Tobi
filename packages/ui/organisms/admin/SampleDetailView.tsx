@@ -146,7 +146,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
               />
             )}
           </div>
-          {id > 0 && (
+          {data && (
             <Link href={`/items/detail?id=${id}`}>
               <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
                 <Image
@@ -161,7 +161,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
               </Button>
             </Link>
           )}
-          {id > 0 && (
+          {data && (
             <Button
               className="w-[192px] h-[46px] shrink-0 rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
               onClick={() => {
