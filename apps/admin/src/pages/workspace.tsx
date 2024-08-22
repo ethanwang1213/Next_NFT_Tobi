@@ -199,7 +199,7 @@ export default function Index() {
   useEffect(() => {
     if (selectedSample) {
       setSelectedSampleItem(selectedSample.digitalItemId);
-      setShowDetailView(true);
+      // setShowDetailView(true);
     }
   }, [selectedSample]);
 
@@ -577,6 +577,7 @@ export default function Index() {
               className="cursor-pointer"
               onClick={() => {
                 setShowDetailView(!showDetailView);
+                setShowListView(false);
               }}
             />
             <Image
