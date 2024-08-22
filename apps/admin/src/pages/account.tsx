@@ -214,16 +214,16 @@ export default function Index() {
 
   const submitHandler = async () => {
     const submitData = {
-      userId: data.userId,
-      username: data.username,
-      email: data.email,
-      aboutMe: data.aboutMe,
-      socialLinks: data.socialLinks,
-      gender: data.gender,
-      birth: data.birth,
-      icon: data.icon,
+      userId: data?.userId,
+      username: data?.username,
+      email: data?.email,
+      aboutMe: data?.aboutMe,
+      socialLinks: data?.socialLinks,
+      gender: data?.gender,
+      birth: data?.birth,
+      icon: data?.icon,
     };
-    if (data.icon != dataRef.current.icon) {
+    if (data && data.icon != dataRef?.current.icon) {
       // upload image
       setLoading(true);
       const iconUrl = await uploadImage(data.icon, ImageType.AccountAvatar);
@@ -283,9 +283,7 @@ export default function Index() {
               width={144}
               height={144}
               src={
-                data.icon != ""
-                  ? data.icon
-                  : "/admin/images/png/account-place.png"
+                data?.icon ? data.icon : "/admin/images/png/account-place.png"
               }
               alt="avatar image"
               className="rounded-full"
@@ -306,7 +304,7 @@ export default function Index() {
               <input
                 type="text"
                 className={`${valueClass} outline-none`}
-                value={data.username}
+                value={data?.username}
                 onChange={(e) => fieldChangeHandler("username", e.target.value)}
               />
             </AccountFieldComponent>
@@ -314,25 +312,25 @@ export default function Index() {
               <input
                 type="text"
                 className={`${valueClass} outline-none`}
-                value={data.userId ?? ""}
+                value={data?.userId ?? ""}
                 onChange={(e) => fieldChangeHandler("userId", e.target.value)}
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={"About me"} alignTop={true}>
               <textarea
                 className={`${valueClass} h-[200px] outline-none resize-none`}
-                value={data.aboutMe}
+                value={data?.aboutMe}
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={"Social media"} alignTop={true}>
               <SocialLinksComponent
-                socialLinks={data.socialLinks}
+                socialLinks={data?.socialLinks}
                 changeHandler={(v) => fieldChangeHandler("socialLinks", v)}
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={"Gender"}>
-              <span className={`${valueClass}`}>{data.gender}</span>
+              <span className={`${valueClass}`}>{data?.gender}</span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -345,7 +343,7 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Birthday"}>
-              <span className={`${valueClass}`}>{data.birth}</span>
+              <span className={`${valueClass}`}>{data?.birth}</span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -358,7 +356,7 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
-              <span className={`${valueClass}`}>{data.email}</span>
+              <span className={`${valueClass}`}>{data?.email}</span>
               <button className={editBtnClass}>Edit</button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Password"}>
@@ -371,12 +369,12 @@ export default function Index() {
             </AccountFieldComponent>
           </div>
           <GenderEditDialog
-            initialValue={data.gender}
+            initialValue={data?.gender}
             dialogRef={genderEditDialogRef}
             changeHandler={(value) => fieldChangeHandler("gender", value)}
           />
           <BirthdayEditDialog
-            initialValue={data.birth}
+            initialValue={data?.birth}
             dialogRef={birthEditDialogRef}
             changeHandler={(value) => fieldChangeHandler("birth", value)}
           />
