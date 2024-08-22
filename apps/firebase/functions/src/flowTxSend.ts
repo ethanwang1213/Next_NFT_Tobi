@@ -841,33 +841,26 @@ const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
 const sendCreateAccountTx = async () => {
   const {privKey, pubKey} = generateKeyPair();
 
-  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
-  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  // const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
+  // const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
 
   // TODO: Add initialization for Tobiratory-related NFT Collection
   const cadence = `\
-import NonFungibleToken from 0x${nonFungibleTokenAddress}
-import MetadataViews from 0x${nonFungibleTokenAddress}
-import TobiratoryDigitalItems from 0x${tobiratoryDigitalItemsAddress}
-
 transaction(publicKey: String) {
-    prepare(signer: AuthAccount) {
-        let account = AuthAccount(payer: signer)
-        account.keys.add(
-            PublicKey(
-                publicKey: publicKey.decodeHex(),
-                signatureAlgorithm: SignatureAlgorithm.ECDSA_secp256k1
-            ),
-            hashAlgorithm: HashAlgorithm.SHA3_256,
-            weight: 1000.0
+    prepare(signer: auth(BorrowValue) &Account) {
+        let key = PublicKey(
+            publicKey: publicKey.decodeHex(),
+            signatureAlgorithm: SignatureAlgorithm.ECDSA_secp256k1
         )
 
-        // let collection <- TobiratoryDigitalItems.createEmptyCollection()
-        // signer.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
-        // signer.link<&TobiratoryDigitalItems.Collection{NonFungibleToken.CollectionPublic, TobiratoryDigitalItems.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(
-        //     TobiratoryDigitalItems.CollectionPublicPath,
-        //     target: TobiratoryDigitalItems.CollectionStoragePath
-        // )
+        let account = Account(payer: signer)
+
+        account.keys.add(
+            publicKey: key, 
+            hashAlgorithm: 
+            HashAlgorithm.SHA3_256, 
+            weight: 1000.0
+        )
     }
 }`;
   const args = (arg: any, t: any) => [arg(pubKey, t.String)];
