@@ -43,7 +43,7 @@ const useUndoRedo = ({
    *   e.g. redo ChangeWallpaperColor -> { settings: { wallpaper: { tint } } }
    *   e.g. redo RemoveItem -> { item: { itemType, itemId } }
    */
-  const processUndoneRedoneResult = useCallback(
+  const removeDefaultValues = useCallback(
     (result: RequiredUndoneRedoneResult): UndoneRedoneResult => {
       // item
       // default values: { item: { itemType: ItemType.Sample, itemId: -1, position: { x: -999.0, y: -999.0, z: -999.0 }, rotation: { x: -999.0, y: -999.0, z: -999.0 }, scale: -1.0 } }
@@ -161,11 +161,11 @@ const useUndoRedo = ({
       onActionUndone(
         messageBody.actionType,
         messageBody.text,
-        processUndoneRedoneResult(messageBody.result),
+        removeDefaultValues(messageBody.result),
         replaceItemNameOnText,
       );
     },
-    [onActionUndone, setIsUndoable, processUndoneRedoneResult],
+    [onActionUndone, setIsUndoable, removeDefaultValues],
   );
 
   const handleActionRedone = useCallback(
@@ -184,11 +184,11 @@ const useUndoRedo = ({
       onActionRedone(
         messageBody.actionType,
         messageBody.text,
-        processUndoneRedoneResult(messageBody.result),
+        removeDefaultValues(messageBody.result),
         replaceItemNameOnText,
       );
     },
-    [onActionRedone, setIsRedoable, processUndoneRedoneResult],
+    [onActionRedone, setIsRedoable, removeDefaultValues],
   );
 
   return {

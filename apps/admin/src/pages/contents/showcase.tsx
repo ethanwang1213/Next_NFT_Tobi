@@ -343,7 +343,7 @@ const Showcase = () => {
           brightness: pb,
         },
       },
-      phase: SettingsUpdatePhase.Updating, ///
+      phase: SettingsUpdatePhase.Updating, /// by Toruto
     });
   };
 
