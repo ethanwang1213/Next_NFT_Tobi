@@ -119,22 +119,41 @@ const SampleDetailView = ({ id }: { id: number }) => {
                       : "-"
                     : "-"}
                   {data && <br />}
-                  {data && `Owned for ${calculateTotalDays()} days`}
+                  {data.startDate && `Owned for ${calculateTotalDays()} days`}
                 </div>
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
                   History
                 </span>
-                <div className="w-[168px]">
-                  <span className="text-[10px] font-medium">-</span>
-                </div>
+                {data.ownerHistory ? (
+                  <div className="grid grid-cols-5">
+                    {data.ownerHistory.map((history) => (
+                      <div key={history.uid}>
+                        <Image
+                          src={history.avatar}
+                          className={
+                            "rounded-full cursor-pointer border-1 border-white"
+                          }
+                          alt="avatar"
+                          width={12}
+                          height={12}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-[10px] font-medium w-[168px]">-</span>
+                )}
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
                   Serial Number
                 </span>
-                <span className="text-[10px] font-medium w-[168px]">-</span>
+                <span className="text-[10px] font-medium w-[168px]">
+                  {" "}
+                  {data?.serialNumber ? data.serialNumber : "-"}
+                </span>
               </div>
             </div>
             {data && (
@@ -145,46 +164,50 @@ const SampleDetailView = ({ id }: { id: number }) => {
                 dialogRef={dialogRef}
               />
             )}
+            {data && (
+              <div className="mx-auto">
+                <Link href={`/items/detail?id=${id}`}>
+                  <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
+                    <Image
+                      src="/admin/images/icon/open_in_new.svg"
+                      width={24}
+                      height={24}
+                      alt="open icon"
+                    />
+                    <span className="text-base-white text-base font-bold">
+                      Edit Item Data
+                    </span>
+                  </Button>
+                </Link>
+              </div>
+            )}
+            {data && (
+              <div className="mx-auto">
+                <Button
+                  className="w-[192px] h-[46px] shrink-0 rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
+                  onClick={() => {
+                    if (mintConfirmDialogRef.current) {
+                      mintConfirmDialogRef.current.showModal();
+                    }
+                  }}
+                >
+                  <Image
+                    src="/admin/images/icon/sample-icon.svg"
+                    width={16}
+                    height={20}
+                    alt="mint icon"
+                  />
+                  <span className="text-base-white text-base font-bold">
+                    Mint as an NFT
+                  </span>
+                </Button>
+              </div>
+            )}
+            <MintConfirmDialog2
+              dialogRef={mintConfirmDialogRef}
+              changeHandler={mintConfirmDialogHandler}
+            />
           </div>
-          {id > 0 && (
-            <Link href={`/items/detail?id=${id}`}>
-              <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
-                <Image
-                  src="/admin/images/icon/open_in_new.svg"
-                  width={24}
-                  height={24}
-                  alt="open icon"
-                />
-                <span className="text-base-white text-base font-bold">
-                  Edit Item Data
-                </span>
-              </Button>
-            </Link>
-          )}
-          {id > 0 && (
-            <Button
-              className="w-[192px] h-[46px] shrink-0 rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
-              onClick={() => {
-                if (mintConfirmDialogRef.current) {
-                  mintConfirmDialogRef.current.showModal();
-                }
-              }}
-            >
-              <Image
-                src="/admin/images/icon/sample-icon.svg"
-                width={16}
-                height={20}
-                alt="mint icon"
-              />
-              <span className="text-base-white text-base font-bold">
-                Mint as an NFT
-              </span>
-            </Button>
-          )}
-          <MintConfirmDialog2
-            dialogRef={mintConfirmDialogRef}
-            changeHandler={mintConfirmDialogHandler}
-          />
         </div>
       )}
     </div>

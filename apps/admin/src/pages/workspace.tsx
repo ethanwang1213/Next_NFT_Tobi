@@ -199,7 +199,6 @@ export default function Index() {
   useEffect(() => {
     if (selectedSample) {
       setSelectedSampleItem(selectedSample.digitalItemId);
-      setShowDetailView(true);
     }
   }, [selectedSample]);
 
@@ -290,7 +289,7 @@ export default function Index() {
         sampleItemId: samples[index].id,
         digitalItemId: samples[index].digitalItemId,
         modelUrl: samples[index].modelUrl,
-        imageUrl: materials[materialIndex].image,
+        imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
         modelType: samples[index].type as ModelType,
       });
     },
@@ -577,6 +576,7 @@ export default function Index() {
               className="cursor-pointer"
               onClick={() => {
                 setShowDetailView(!showDetailView);
+                setShowListView(false);
               }}
             />
             <Image

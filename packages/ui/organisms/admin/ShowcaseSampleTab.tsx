@@ -55,7 +55,7 @@ const ShowcaseSampleTab = ({
         data.map((sample, index) => {
           return (
             <div
-              key={sample.id}
+              key={sample.sampleItemId}
               className="w-1/4 p-2"
               onMouseDown={onMouseDown}
               onMouseMove={(event) => {

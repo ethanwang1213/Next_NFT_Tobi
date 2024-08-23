@@ -265,7 +265,7 @@ const Showcase = () => {
         materialData.find((material) => material.id === sample.materialId)
           ?.image || "";
       const sampleData = {
-        sampleItemId: sample.id,
+        sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelType: sample.type as ModelType,
         modelUrl: sample.modelUrl,
@@ -282,7 +282,7 @@ const Showcase = () => {
       // place a new item
       if (!isDrag)
         placeNewNft({
-          nftId: nft.id,
+          nftId: nft.sampleItemId,
           digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
@@ -290,7 +290,7 @@ const Showcase = () => {
         });
       else
         placeNewNftWithDrag({
-          nftId: nft.id,
+          nftId: nft.sampleItemId,
           digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,

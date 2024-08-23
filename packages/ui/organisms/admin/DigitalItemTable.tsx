@@ -171,6 +171,8 @@ const DigitalItemTable = (filters: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, sortOrder]);
 
+  console.log(digitalItems,"digitalItems");
+
   return (
     <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -312,10 +314,10 @@ const DigitalItemTable = (filters: {
                   <td className="py-3">
                     <Link
                       href={`/items/detail?id=${item.id}`}
-                      className="flex items-center"
+                      className="flex items-center justify-center"
                     >
                       <Image
-                        src={item.thumbnail}
+                        src={item.thumbUrl}
                         className="rounded inline-block mx-2"
                         width={80}
                         height={80}
