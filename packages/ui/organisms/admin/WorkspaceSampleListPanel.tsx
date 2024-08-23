@@ -195,15 +195,15 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
           {props.data &&
             props.data.map((sample, index) => (
               <SampleItemComponent
-                key={`sample-${sample.id}`}
+                key={`sample-${sample.sampleItemId}`}
                 thumbnail={sample.thumbUrl}
                 name={sample.name}
                 selectState={selectState}
                 checked={
-                  selectedItems.findIndex((value) => value == sample.id) > -1
+                  selectedItems.findIndex((value) => value == sample.sampleItemId) > -1
                 }
                 changeHandler={(value) =>
-                  selectionChangeHandler(sample.id, value)
+                  selectionChangeHandler(sample.sampleItemId, value)
                 }
                 selectHandler={() => props.selectHandler(index)}
                 dragStartHandler={() => props.dragHandler(index)}
