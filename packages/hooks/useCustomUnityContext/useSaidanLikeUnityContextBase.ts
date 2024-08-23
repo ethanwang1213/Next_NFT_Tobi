@@ -24,9 +24,11 @@ import {
 import { useCustomUnityContextBase } from "./useCustomUnityContextBase";
 
 const useUndoRedo = ({
+  additionalItemDataMap,
   onActionUndone,
   onActionRedone,
 }: {
+  additionalItemDataMap: Map<ItemType, Map<number, ParentId & ItemName>>;
   onActionUndone?: UndoneOrRedone;
   onActionRedone?: UndoneOrRedone;
 }) => {
@@ -138,6 +140,11 @@ const useUndoRedo = ({
     [],
   );
 
+  const needReplaceItemName = (actionType: ActionType) =>
+    actionType === ActionType.AddItem ||
+    actionType === ActionType.RemoveItem ||
+    actionType === ActionType.TranslateItem;
+
   const replaceItemNameOnText = useCallback(
     (notifText: string, itemName: string) =>
       itemName === ""
@@ -159,11 +166,19 @@ const useUndoRedo = ({
       setIsUndoable(messageBody.isUndoable);
       setIsRedoable(true);
 
+      const processedText = !needReplaceItemName(messageBody.actionType)
+        ? messageBody.text
+        : replaceItemNameOnText(
+            messageBody.text,
+            additionalItemDataMap[messageBody.result.item.itemType].get(
+              messageBody.result.item.itemId,
+            )?.itemName ?? "",
+          );
+
       onActionUndone(
         messageBody.actionType,
-        messageBody.text,
+        processedText,
         removeDefaultValues(messageBody.result),
-        replaceItemNameOnText,
       );
     },
     [onActionUndone, setIsUndoable, removeDefaultValues],
@@ -182,11 +197,19 @@ const useUndoRedo = ({
       setIsRedoable(messageBody.isRedoable);
       setIsUndoable(true);
 
+      const processedText = !needReplaceItemName(messageBody.actionType)
+        ? messageBody.text
+        : replaceItemNameOnText(
+            messageBody.text,
+            additionalItemDataMap[messageBody.result.item.itemType].get(
+              messageBody.result.item.itemId,
+            )?.itemName ?? "",
+          );
+
       onActionRedone(
         messageBody.actionType,
-        messageBody.text,
+        processedText,
         removeDefaultValues(messageBody.result),
-        replaceItemNameOnText,
       );
     },
     [onActionRedone, setIsRedoable, removeDefaultValues],
@@ -229,9 +252,6 @@ export const useSaidanLikeUnityContextBase = ({
     handleSimpleMessage,
   } = useCustomUnityContextBase({ sceneType });
 
-  const { isUndoable, isRedoable, handleActionUndone, handleActionRedone } =
-    useUndoRedo({ onActionUndone, onActionRedone });
-
   // states
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
@@ -250,6 +270,9 @@ export const useSaidanLikeUnityContextBase = ({
       ]),
     [],
   );
+
+  const { isUndoable, isRedoable, handleActionUndone, handleActionRedone } =
+    useUndoRedo({ additionalItemDataMap, onActionUndone, onActionRedone });
 
   // functions
   const postMessageToLoadData = useCallback(() => {
