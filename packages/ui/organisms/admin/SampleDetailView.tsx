@@ -23,7 +23,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
   }, [id]);
 
   const calculateTotalDays = (): number => {
-    if (!data) return 0;
+    if (!data.startDate) return 0;
 
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
@@ -114,19 +114,21 @@ const SampleDetailView = ({ id }: { id: number }) => {
                 </span>
                 <div className="text-[10px] font-medium w-[168px]">
                   {data
-                    ? data.startDate
+                    ? data.stateDate
                       ? formatDateToLocal(data.startDate)
                       : "-"
                     : "-"}
                   {data && <br />}
-                  {data.startDate && `Owned for ${calculateTotalDays()} days`}
+                  {data?.stateDate && `Owned for ${calculateTotalDays()} days`}
                 </div>
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
                   History
                 </span>
-                {data.ownerHistory ? (
+                {data &&
+                Array.isArray(data.ownerHistory) &&
+                data.ownerHistory.length > 0 ? (
                   <div className="grid grid-cols-5">
                     {data.ownerHistory.map((history) => (
                       <div key={history.uid}>
