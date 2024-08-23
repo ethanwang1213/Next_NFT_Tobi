@@ -70,7 +70,7 @@ export type WorkspaceTextureParamForLoading = {
   materialUrl?: string;
 };
 
-type ItemName = {
+export type ItemName = {
   itemName: string;
 };
 

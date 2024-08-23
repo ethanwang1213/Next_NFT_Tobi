@@ -5,6 +5,7 @@ import {
   ItemBaseData,
   ItemBaseId,
   ItemId,
+  ItemName,
   ItemType,
   ItemTypeParam,
   NftBaseDataForPlacing,
@@ -241,11 +242,14 @@ export const useSaidanLikeUnityContextBase = ({
     (ItemTypeParam & ItemBaseId & ParentId) | null
   >(null);
 
-  const sampleIdToDigitalItemIdMap = useMemo(
-    () => new Map<number, number>(),
+  const additionalItemDataMap = useMemo(
+    () =>
+      new Map<ItemType, Map<number, ParentId & ItemName>>([
+        [ItemType.Sample, new Map<number, ParentId & ItemName>()],
+        [ItemType.DigitalItemNft, new Map<number, ParentId & ItemName>()],
+      ]),
     [],
   );
-  const nftIdToDigitalItemIdMap = useMemo(() => new Map<number, number>(), []);
 
   // functions
   const postMessageToLoadData = useCallback(() => {
@@ -260,22 +264,15 @@ export const useSaidanLikeUnityContextBase = ({
     postMessageToUnity("LoadSaidanDataMessageReceiver", json);
 
     loadData.saidanItemList.forEach((item) => {
-      if (item.itemType === ItemType.Sample) {
-        sampleIdToDigitalItemIdMap.set(item.itemId, item.digitalItemId);
-      } else if (item.itemType === ItemType.DigitalItemNft) {
-        nftIdToDigitalItemIdMap.set(item.itemId, item.digitalItemId);
-      }
+      additionalItemDataMap[item.itemType].set(item.itemId, {
+        digitalItemId: item.digitalItemId,
+        itemName: item.itemName,
+      });
     });
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
-  }, [
-    loadData,
-    currentSaidanId,
-    sampleIdToDigitalItemIdMap,
-    nftIdToDigitalItemIdMap,
-    postMessageToUnity,
-  ]);
+  }, [loadData, currentSaidanId, additionalItemDataMap, postMessageToUnity]);
 
   const requestSaveData = () => {
     postMessageToUnity("SaveSaidanDataMessageReceiver", "");
@@ -303,9 +300,12 @@ export const useSaidanLikeUnityContextBase = ({
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
 
-      sampleIdToDigitalItemIdMap.set(sampleItemId, digitalItemId);
+      additionalItemDataMap[ItemType.Sample].set(sampleItemId, {
+        digitalItemId,
+        itemName: sampleName,
+      });
     },
-    [sampleIdToDigitalItemIdMap, postMessageToUnity],
+    [additionalItemDataMap, postMessageToUnity],
   );
 
   const placeNewNft = useCallback(
@@ -329,9 +329,12 @@ export const useSaidanLikeUnityContextBase = ({
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
 
-      nftIdToDigitalItemIdMap.set(nftId, digitalItemId);
+      additionalItemDataMap[ItemType.DigitalItemNft].set(nftId, {
+        digitalItemId,
+        itemName: nftName,
+      });
     },
-    [nftIdToDigitalItemIdMap, postMessageToUnity],
+    [additionalItemDataMap, postMessageToUnity],
   );
 
   const placeNewSampleWithDrag = useCallback(
@@ -359,9 +362,12 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify(data),
       );
 
-      sampleIdToDigitalItemIdMap.set(sampleItemId, digitalItemId);
+      additionalItemDataMap[ItemType.Sample].set(sampleItemId, {
+        digitalItemId,
+        itemName: sampleName,
+      });
     },
-    [sampleIdToDigitalItemIdMap, postMessageToUnity],
+    [additionalItemDataMap, postMessageToUnity],
   );
 
   const placeNewNftWithDrag = useCallback(
@@ -388,9 +394,12 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify(data),
       );
 
-      nftIdToDigitalItemIdMap.set(nftId, digitalItemId);
+      additionalItemDataMap[ItemType.DigitalItemNft].set(nftId, {
+        digitalItemId,
+        itemName: nftName,
+      });
     },
-    [nftIdToDigitalItemIdMap, postMessageToUnity],
+    [additionalItemDataMap, postMessageToUnity],
   );
 
   const removeItem = useCallback(
@@ -483,12 +492,9 @@ export const useSaidanLikeUnityContextBase = ({
 
       // get digitalItemId
       var digitalItemId = -1;
-      if (messageBody.itemType === ItemType.Sample) {
-        digitalItemId =
-          sampleIdToDigitalItemIdMap.get(messageBody.itemId) ?? -1;
-      } else if (messageBody.itemType === ItemType.DigitalItemNft) {
-        digitalItemId = nftIdToDigitalItemIdMap.get(messageBody.itemId) ?? -1;
-      }
+      digitalItemId =
+        additionalItemDataMap[messageBody.itemType].get(messageBody.itemId)
+          ?.digitalItemId ?? -1;
 
       setSelectedItem(
         messageBody.itemId === -1
@@ -499,7 +505,7 @@ export const useSaidanLikeUnityContextBase = ({
             },
       );
     },
-    [sampleIdToDigitalItemIdMap, nftIdToDigitalItemIdMap, setSelectedItem],
+    [additionalItemDataMap, setSelectedItem],
   );
 
   return {
