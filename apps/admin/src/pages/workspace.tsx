@@ -199,7 +199,6 @@ export default function Index() {
   useEffect(() => {
     if (selectedSample) {
       setSelectedSampleItem(selectedSample.digitalItemId);
-      // setShowDetailView(true);
     }
   }, [selectedSample]);
 
