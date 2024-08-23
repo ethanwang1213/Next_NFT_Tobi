@@ -19,6 +19,7 @@ const SettingPc0: React.FC = () => {
 
   useEffect(() => {
     loadRedeemEmails();
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
   return (

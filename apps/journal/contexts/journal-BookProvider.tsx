@@ -1,9 +1,6 @@
-import { useSettingContext } from "@/contexts/journal-SettingProvider";
 import { mockNekoSrcList } from "@/libs/mocks/mockNekoSrcList";
 import { mockNftSrcList } from "@/libs/mocks/mockNftSrcList";
-import { httpsCallable } from "firebase/functions";
 import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
-import { functions } from "journal-pkg/fetchers/firebase/journal-client";
 import { BookIndex, tagType } from "journal-pkg/types/journal-types";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -46,6 +43,7 @@ type ContextType = {
     set: Dispatch<SetStateAction<tagType[]>>;
   };
   bookIndex: BookIndex;
+  setPageNo: Dispatch<SetStateAction<number>>;
 };
 
 const BookContext = createContext<ContextType>({} as ContextType);
@@ -86,9 +84,8 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const logoutModal = useRef<HTMLInputElement>();
 
-  const { user, redeemLinkCode } = useAuth();
+  const { user } = useAuth();
   const { nekoNfts, otherNfts } = useHoldNfts();
-  const { openRedeemEmailAddedModal } = useSettingContext();
 
   // プロフィールタグ
   // アイコンが設定されている場合はタグにもアイコンを表示する
@@ -107,35 +104,6 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
     ),
     [user],
   );
-
-  useEffect(() => {
-    // Do not execute if the login is anonymous or if there is no link code.
-    if (!user?.email || !redeemLinkCode) return;
-    const callable = httpsCallable<{ linkCode: String }, boolean>(
-      functions,
-      "journalNfts-validateRedeemEmailLink",
-    );
-    callable({ linkCode: redeemLinkCode })
-      .then(() => {
-        openRedeemEmailAddedModal();
-        setPageNo(bookIndex.settingPage.start);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (
-          error.code === "functions/not-found" ||
-          error.code === "functions/already-exists" ||
-          error.code === "functions/out-of-range"
-        ) {
-          alert("無効なリンクです");
-        } else {
-          alert("エラーが発生しました");
-        }
-      });
-
-    // Remove the parameter from the URL to prevent it from remaining in the URL
-    removeRedeemLinkCodeFromURL();
-  }, [user]);
 
   useEffect(() => {
     const profilePageNum = 2;
@@ -279,22 +247,10 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
         set: setTags,
       },
       bookIndex: bookIndex,
+      setPageNo,
     }),
     [pageNo, pages, tags, bookIndex, setPageNo, setPages, setTags],
   );
-
-  const removeRedeemLinkCodeFromURL = () => {
-    const { pathname, query } = router;
-    const { code, ...newQuery } = query;
-
-    if (!code) return;
-
-    const newUrl = {
-      pathname,
-      query: newQuery,
-    };
-    router.replace(newUrl, undefined, { shallow: true });
-  };
 
   return (
     <BookContext.Provider value={contextValue}>

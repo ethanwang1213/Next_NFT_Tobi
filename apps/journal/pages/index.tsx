@@ -48,10 +48,10 @@ const Index = () => {
   }, [router, user]);
 
   return (
-    <SettingProvider>
-      <RedeemStatusProvider>
-        <EditProfileProvider>
-          <BookProvider>
+    <RedeemStatusProvider>
+      <EditProfileProvider>
+        <BookProvider>
+          <SettingProvider>
             <div
               className={
                 process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" &&
@@ -80,10 +80,10 @@ const Index = () => {
               <EmailSentModal />
               <RedeemEmailAddedModal />
             </div>
-          </BookProvider>
-        </EditProfileProvider>
-      </RedeemStatusProvider>
-    </SettingProvider>
+          </SettingProvider>
+        </BookProvider>
+      </EditProfileProvider>
+    </RedeemStatusProvider>
   );
 };
 
