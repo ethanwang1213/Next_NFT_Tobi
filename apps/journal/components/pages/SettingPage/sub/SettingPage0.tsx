@@ -1,6 +1,7 @@
 import SettingPageTitle from "@/components/PageTitle/SettingPageTitle";
 import { useSettingContext } from "@/contexts/journal-SettingProvider";
 import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { EMAIL_REGEX } from "journal-pkg/types/journal-types";
 import Loading from "journal-pkg/ui/atoms/Loading";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -81,8 +82,6 @@ const AddButton: React.FC<{
     useSettingContext();
 
   const handleClick = async () => {
-    const emailPattern = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/;
-
     if (Object.keys(redeemEmails).length >= MAX_REDEEM_EMAILS_COUNT) {
       // Since there is one email address not included in the list,
       // the displayed email address count will be MAX_REDEEM_EMAILS_COUNT+1.
@@ -92,7 +91,7 @@ const AddButton: React.FC<{
       return;
     }
 
-    if (!emailPattern.test(email)) {
+    if (!EMAIL_REGEX.test(email)) {
       alert("Invalid email format.");
       return;
     }

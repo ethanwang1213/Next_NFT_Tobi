@@ -7,6 +7,8 @@ export type LoginFormType = {
   email: string;
 };
 
+export const EMAIL_REGEX = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/;
+
 // journal 本のタグのデータ型
 export type tagType = {
   page: number | (() => void);
