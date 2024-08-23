@@ -1,3 +1,5 @@
+///////////////////////////////////////
+// types for 3D space
 export const ShowcaseType = {
   First: 1,
   Second: 2,
@@ -5,6 +7,8 @@ export const ShowcaseType = {
 } as const;
 export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
 
+///////////////////////////////////////
+// partial types for item
 export const ItemType = {
   Sample: 0,
   DigitalItemNft: 1,
@@ -66,15 +70,30 @@ export type WorkspaceTextureParamForLoading = {
   materialUrl?: string;
 };
 
+type ItemName = {
+  itemName: string;
+};
+
+type SampleName = {
+  sampleName: string;
+};
+
+type NftName = {
+  nftName: string;
+};
+
 export type DebugFlag = {
   isDebug?: boolean;
 };
 
+///////////////////////////////////////
+// types for item base data
 export type ItemBaseData = ItemTypeParam &
   ItemBaseId &
   ModelParams &
   TextureParam &
   ParentId &
+  ItemName &
   DebugFlag;
 export type SampleBaseData = Omit<ItemBaseData, "itemType">;
 export type NftBaseData = Omit<ItemBaseData, "itemType" | "imageUrl">;
@@ -84,11 +103,13 @@ export type WorkspaceSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   WorkspaceTextureParamForLoading &
   ParentId &
+  SampleName &
   DebugFlag;
 type SampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
+  SampleName &
   DebugFlag;
 export type ShowcaseSampleBaseDataForLoading = SampleBaseDataForLoading;
 export type SampleBaseDataForPlacing = SampleBaseDataForLoading;
@@ -98,10 +119,13 @@ export type NftBaseDataForLoading = NftBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
+  NftName &
   DebugFlag;
 export type NftBaseDataForPlacing = NftBaseDataForLoading;
 
-// item data for arrangement
+///////////////////////////////////////
+// types for additional item data for arrangement
+
 export type ItemId = {
   id: number;
 };
@@ -120,7 +144,8 @@ export type SaidanItemData = ItemBaseData &
     itemMeterHeight: number;
   };
 
-// sample load data
+///////////////////////////////////////
+// types for load data with arrangement
 export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
   ItemId &
   ItemPosture;
@@ -135,8 +160,12 @@ export type NftLoadData = NftBaseDataForLoading &
     itemMeterHeight: number;
   };
 
+///////////////////////////////////////
+// types for item save data
 export type ItemSaveData = ItemBaseId & ItemId & ItemPosture;
 
+///////////////////////////////////////
+// types for settings data
 export type RoomSurfaceParams = {
   tint: string;
 };
@@ -158,6 +187,8 @@ export type SaidanSettings = {
   lighting: LightSettings;
 };
 
+///////////////////////////////////////
+// types for update settings
 export const SettingsUpdatePhase = {
   Updating: 0,
   Ended: 1,
@@ -171,6 +202,8 @@ export type UpdatingSaidanSettings = SaidanSettings & {
 
 export type ShowcaseSettings = SaidanSettings;
 
+///////////////////////////////////////
+// types for undo redo
 export const ActionType = {
   AddItem: 0,
   RemoveItem: 1,

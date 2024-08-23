@@ -107,6 +107,7 @@ export const useShowcaseEditUnityContext = ({
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
         return {
           itemId: v.sampleItemId,
+          itemName: v.sampleName,
           ...v,
           itemType: ItemType.Sample,
           canScale: true,
@@ -116,6 +117,7 @@ export const useShowcaseEditUnityContext = ({
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
         return {
           itemId: v.nftId,
+          itemName: v.nftName,
           ...v,
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",

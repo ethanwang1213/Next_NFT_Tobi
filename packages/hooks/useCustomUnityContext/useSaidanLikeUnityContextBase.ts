@@ -288,6 +288,7 @@ export const useSaidanLikeUnityContextBase = ({
       modelUrl,
       imageUrl = "",
       digitalItemId,
+      sampleName,
       isDebug = false,
     }: SampleBaseDataForPlacing) => {
       const data: ItemBaseData = {
@@ -297,6 +298,7 @@ export const useSaidanLikeUnityContextBase = ({
         modelUrl,
         imageUrl,
         digitalItemId,
+        itemName: sampleName,
         isDebug,
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
@@ -312,6 +314,7 @@ export const useSaidanLikeUnityContextBase = ({
       modelType,
       modelUrl,
       digitalItemId,
+      nftName,
       isDebug = false,
     }: NftBaseDataForPlacing) => {
       const data: ItemBaseData = {
@@ -321,6 +324,7 @@ export const useSaidanLikeUnityContextBase = ({
         modelUrl,
         imageUrl: "",
         digitalItemId,
+        itemName: nftName,
         isDebug,
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
@@ -337,6 +341,7 @@ export const useSaidanLikeUnityContextBase = ({
       modelUrl,
       imageUrl = "",
       digitalItemId,
+      sampleName,
       isDebug = false,
     }: SampleBaseDataForPlacing) => {
       const data: ItemBaseData = {
@@ -346,6 +351,7 @@ export const useSaidanLikeUnityContextBase = ({
         modelUrl,
         imageUrl,
         digitalItemId,
+        itemName: sampleName,
         isDebug,
       };
       postMessageToUnity(
@@ -364,6 +370,7 @@ export const useSaidanLikeUnityContextBase = ({
       modelType,
       modelUrl,
       digitalItemId,
+      nftName,
       isDebug = false,
     }: NftBaseDataForPlacing) => {
       const data: ItemBaseData = {
@@ -373,6 +380,7 @@ export const useSaidanLikeUnityContextBase = ({
         modelUrl,
         imageUrl: "",
         digitalItemId,
+        itemName: nftName,
         isDebug,
       };
       postMessageToUnity(
