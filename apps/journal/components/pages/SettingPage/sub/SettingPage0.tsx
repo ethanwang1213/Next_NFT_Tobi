@@ -17,10 +17,6 @@ const SettingPc0: React.FC = () => {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    if (!user) return;
-  }, [user]);
-
-  useEffect(() => {
     loadRedeemEmails();
   }, []);
 
