@@ -244,7 +244,7 @@ export default function Index() {
         (value) => value.id === sample.materialId,
       );
       placeNewSample({
-        sampleItemId: sample.id,
+        sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
         imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
