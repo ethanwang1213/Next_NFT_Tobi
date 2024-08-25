@@ -1,31 +1,34 @@
 import { useAuth } from "contexts/journal-AuthProvider";
 import { useStampRallyFetcher } from "fetchers/journal-useStampRallyFetcher";
-import { FormStatus, MintStatusType, Tmf2024StampType } from "types/stampRallyTypes";
+import {
+  FormStatus,
+  MintStatusType,
+  StampRallyEvents,
+  Tpfw2024StampType,
+} from "types/stampRallyTypes";
 import { BasicStampRallyForm } from "../../molecules/journal-BasicStampRallyForm";
 import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 import { useCallback, useMemo } from "react";
 import { BasicStampRallyTitle } from "../../atoms/journal-BasicStampRallyTitle";
 
 type StampDataType = {
-  key: Tmf2024StampType;
+  key: Tpfw2024StampType;
   blankSrc: string;
   src: string;
   status: MintStatusType;
 };
 
-export const Tmf2024StampRally: React.FC = () => {
-  const { requestStampRallyReward, checkMintedTmf2024Stamp: checkMintedStamp } =
-    useStampRallyFetcher();
+export const Tpfw2024StampRally: React.FC = () => {
+  const { requestStampRallyReward } = useStampRallyFetcher();
   const { isSubmitting, isIncorrect } = useStampRallyForm();
 
-  const keys: Tmf2024StampType[] = ["TobiraMusicFestival2024", "YouSoTotallyRock"];
+  const keys: Tpfw2024StampType[] = ["TobirapolisFireworks2024"];
   const user = useAuth().user;
-  const stampRally = user?.mintStatus?.TOBIRAMUSICFESTIVAL2024;
+  const stampRally = user?.mintStatus?.TOBIRAPOLISFIREWORKS2024;
   const statuses: MintStatusType[] = useMemo(
     () => keys.map((key) => (!stampRally || !stampRally[key] ? "NOTHING" : stampRally[key])),
     [stampRally]
   );
-  const isStampChecked = user?.isStampTmf2024Checked;
 
   const checkStatus: () => FormStatus = useCallback(() => {
     if (isSubmitting.current) {
@@ -34,22 +37,28 @@ export const Tmf2024StampRally: React.FC = () => {
       return "Incorrect";
     } else if (statuses.includes("IN_PROGRESS")) {
       return "Minting";
-    } else if ((statuses.includes("DONE") && !isStampChecked) || !statuses.includes("NOTHING")) {
+    } else if (statuses.includes("DONE") || !statuses.includes("NOTHING")) {
       return "Success";
     } else {
       return "Nothing";
     }
-  }, [statuses, isSubmitting.current, isIncorrect.current, isStampChecked]);
+  }, [statuses, isSubmitting.current, isIncorrect.current]);
+
+  const stampRallyMode = process.env.NEXT_PUBLIC_STAMPRALLY_MODE as StampRallyEvents;
+  const endDate = process.env.NEXT_PUBLIC_STAMPRALLY_END_DATE as string;
+  // console.log(endDate, Date.now(), new Date(endDate).getTime());
+  if (stampRallyMode !== "TOBIRAPOLISFIREWORKS2024" || Date.now() >= new Date(endDate).getTime()) {
+    return null;
+  }
 
   return (
     <div className="pb-2 sm:pb-0">
       <BasicStampRallyTitle />
       <div>
         <BasicStampRallyForm
-          event="TOBIRAMUSICFESTIVAL2024"
+          event="TOBIRAPOLISFIREWORKS2024"
           status={checkStatus()}
           onSubmit={requestStampRallyReward}
-          onRedirectClick={checkMintedStamp}
         />
       </div>
     </div>

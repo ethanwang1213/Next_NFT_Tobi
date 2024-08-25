@@ -2,10 +2,12 @@ import { useAuth } from "contexts/journal-AuthProvider";
 import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 import { httpsCallable } from "firebase/functions";
 import {
+  StampRallyEvents,
   StampRallyResultType,
   StampRallyRewardFormType,
   Tmf2024StampType,
   Tpf2023StampType,
+  Tpfw2024StampType,
 } from "types/stampRallyTypes";
 import { db, functions } from "./firebase/journal-client";
 import { doc, setDoc } from "firebase/firestore/lite";
@@ -19,31 +21,22 @@ type BodyType = {
  * @returns
  */
 export const useStampRallyFetcher = () => {
-  const {
-    user,
-    setMintStatus,
-    checkStampMinted: checkLocalStampMinted,
-  } = useAuth();
+  const { user, setMintStatus, checkStampMinted: checkLocalStampMinted } = useAuth();
   const { isSubmitting, isIncorrect } = useStampRallyForm();
 
   const requestTpf2023Reward = (data: StampRallyRewardFormType) => {
     console.log(data);
     isSubmitting.set(true);
 
-    const callable = httpsCallable<
-      BodyType,
-      StampRallyResultType<Tpf2023StampType>
-    >(functions, "journalStampRally-checkRewardTpf2023");
+    const callable = httpsCallable<BodyType, StampRallyResultType<Tpf2023StampType>>(
+      functions,
+      "journalStampRally-checkRewardTpf2023"
+    );
     callable({ keyword: data.keyword })
       .then((result) => {
         console.log(result);
         const d = result.data;
-        setMintStatus(
-          "TOBIRAPOLISFESTIVAL2023",
-          d.stamp,
-          "IN_PROGRESS",
-          d.isComplete
-        );
+        setMintStatus("TOBIRAPOLISFESTIVAL2023", d.stamp, "IN_PROGRESS", d.isComplete);
 
         isSubmitting.set(false);
       })
@@ -58,20 +51,15 @@ export const useStampRallyFetcher = () => {
     isSubmitting.set(true);
     isIncorrect.set(false);
 
-    const callable = httpsCallable<
-      BodyType,
-      StampRallyResultType<Tmf2024StampType>
-    >(functions, "journalStampRally-checkRewardTmf2024");
+    const callable = httpsCallable<BodyType, StampRallyResultType<Tmf2024StampType>>(
+      functions,
+      "journalStampRally-checkRewardTmf2024"
+    );
     callable({ keyword: data.keyword })
       .then((result) => {
         console.log(result);
         const d = result.data;
-        setMintStatus(
-          "TOBIRAMUSICFESTIVAL2024",
-          d.stamp,
-          "IN_PROGRESS",
-          d.isComplete
-        );
+        setMintStatus("TOBIRAMUSICFESTIVAL2024", d.stamp, "IN_PROGRESS", d.isComplete);
 
         isSubmitting.set(false);
         console.log("success");
@@ -84,7 +72,50 @@ export const useStampRallyFetcher = () => {
       });
   };
 
-  const checkMintedStamp = () => {
+  const requestTpfw2024Reward = (data: StampRallyRewardFormType) => {
+    console.log(data);
+    isSubmitting.set(true);
+    isIncorrect.set(false);
+
+    const callable = httpsCallable<BodyType, StampRallyResultType<Tpfw2024StampType>>(
+      functions,
+      "journalStampRally-checkRewardTpfw2024"
+    );
+    callable({ keyword: data.keyword })
+      .then((result) => {
+        console.log(result);
+        const d = result.data;
+        setMintStatus("TOBIRAPOLISFIREWORKS2024", d.stamp, "IN_PROGRESS", d.isComplete);
+
+        isSubmitting.set(false);
+        console.log("success");
+      })
+      .catch((error) => {
+        console.log(error);
+        isSubmitting.set(false);
+        isIncorrect.set(true);
+        console.log("error");
+      });
+  };
+
+  const requestStampRallyReward = (data: StampRallyRewardFormType) => {
+    switch (data.event) {
+      case "TOBIRAPOLISFESTIVAL2023":
+        requestTpf2023Reward(data);
+        break;
+      case "TOBIRAMUSICFESTIVAL2024":
+        requestTmf2024Reward(data);
+        break;
+      case "TOBIRAPOLISFIREWORKS2024":
+        console.log("tpfw2024");
+        requestTpfw2024Reward(data);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const checkMintedTmf2024Stamp = () => {
     try {
       if (user.isStampTmf2024Checked) return true;
 
@@ -100,8 +131,7 @@ export const useStampRallyFetcher = () => {
 
   return {
     isSubmitting,
-    requestTpf2023Reward,
-    requestTmf2024Reward,
-    checkMintedStamp,
+    requestStampRallyReward,
+    checkMintedTmf2024Stamp,
   };
 };

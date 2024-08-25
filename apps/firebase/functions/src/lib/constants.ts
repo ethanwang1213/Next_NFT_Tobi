@@ -1,5 +1,4 @@
-export const NEKO_NFT_ID =
-  process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
+export const NEKO_NFT_ID = process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
 export const TOPIC_NAMES = {
   ordersPaid: "shopify-orders-paid",
   ordersCreate: "shopify-orders-create",
@@ -27,6 +26,10 @@ export const TPF2023_STAMP_RALLY_KEYWORDS = {
 export const TMF2024_STAMP_RALLY_KEYWORDS = {
   TobiraMusicFestival2024: "TMF2024",
   YouSoTotallyRock: "uduPkemFFyamtIIP",
+};
+
+export const TPFW2024_STAMP_RALLY_KEYWORDS = {
+  TobirapolisFireworks2024: "TPFW2024",
 };
 
 export const NON_FUNGIBLE_TOKEN_ADDRESS =

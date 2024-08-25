@@ -3,10 +3,10 @@ import useSound from "use-sound";
 import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
 
 type Props = {
-  onClick: () => void;
+  onClick?: () => void;
 };
 
-export const Tmf2024RedirectButton: React.FC<Props> = ({ onClick }) => {
+export const BasicStampRallyRedirectButton: React.FC<Props> = ({ onClick }) => {
   const { pageNo, bookIndex } = useBookContext();
   const { set: setPageNo } = pageNo;
   const { nftPage } = bookIndex;
@@ -27,7 +27,7 @@ export const Tmf2024RedirectButton: React.FC<Props> = ({ onClick }) => {
           if (!isMute) {
             play();
           }
-          onClick();
+          onClick?.();
         }}
       >
         Check this out!

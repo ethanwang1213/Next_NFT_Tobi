@@ -39,9 +39,7 @@ export const Incorrect: React.FC = () => {
       <IconContainer>
         <Caution />
       </IconContainer>
-      <TextContainer>
-        Oh dear! It appears the keyword is incorrect. Please enter it precisely.
-      </TextContainer>
+      <TextContainer>Oh dear! It appears the keyword is incorrect. Please enter it precisely.</TextContainer>
     </div>
   );
 };
@@ -52,16 +50,12 @@ export const Success: React.FC = () => {
       <IconContainer>
         <FetherCheck />
       </IconContainer>
-      <TextContainer>
-        Success! A new stamp has been added to the library!
-      </TextContainer>
+      <TextContainer>Success! A new stamp has been added to the library!</TextContainer>
     </div>
   );
 };
 
-const IconContainer: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+const IconContainer: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <div className="h-[140px] sm:h-[160px] flex justify-center">
       <div className="h-full aspect-square">{children}</div>
@@ -69,9 +63,7 @@ const IconContainer: React.FC<{ children?: React.ReactNode }> = ({
   );
 };
 
-const TextContainer: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+const TextContainer: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <p className="py-5 min-h-[74px] max-h-[74px] sm:min-h-0 sm:max-h-[100px] text-sm sm:text-[15px] font-bold text-center flex flex-col">
       {children}

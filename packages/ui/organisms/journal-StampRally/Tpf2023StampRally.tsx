@@ -17,16 +17,10 @@ type StampDataType = {
  * @returns {ReactElement} The `StampRally` component
  */
 export const Tpf2023StampRally: React.FC = () => {
-  const { requestTpf2023Reward } = useStampRallyFetcher();
+  const { requestStampRallyReward } = useStampRallyFetcher();
 
   // preparing stamps data
-  const keys: Tpf2023StampType[] = [
-    "G0",
-    "G1alpha",
-    "G1beta",
-    "G1gamma",
-    "G1delta",
-  ];
+  const keys: Tpf2023StampType[] = ["G0", "G1alpha", "G1beta", "G1gamma", "G1delta"];
   const STAMP_DIR = "/journal/images/tobirapolisfestival/2023/";
   const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
   const stamps: StampDataType[] = keys.map((key) => ({
@@ -65,10 +59,7 @@ export const Tpf2023StampRally: React.FC = () => {
         </div>
       </div>
       <div className="w-full mt-4 sm:mt-10">
-        <Tpf2023RewardForm
-          onSubmit={requestTpf2023Reward}
-          event="TOBIRAPOLISFESTIVAL2023"
-        />
+        <Tpf2023RewardForm onSubmit={requestStampRallyReward} event="TOBIRAPOLISFESTIVAL2023" />
       </div>
       <p className="mt-1 text-[10px] sm:text-sm font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}

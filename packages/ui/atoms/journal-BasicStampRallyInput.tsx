@@ -1,11 +1,12 @@
 import { useForm } from "react-hook-form";
-import { StampRallyRewardFormType } from "types/stampRallyTypes";
+import { StampRallyEvents, StampRallyRewardFormType } from "types/stampRallyTypes";
 
 type Props = {
+  event: StampRallyEvents;
   onSubmit: (data: StampRallyRewardFormType) => void;
 };
 
-export const Tmf2024Input: React.FC<Props> = ({ onSubmit }) => {
+export const BasicStampRallyInput: React.FC<Props> = ({ event, onSubmit }) => {
   const { register, handleSubmit, reset } = useForm<StampRallyRewardFormType>({
     defaultValues: {
       keyword: "",
@@ -16,6 +17,7 @@ export const Tmf2024Input: React.FC<Props> = ({ onSubmit }) => {
     <form
       onSubmit={handleSubmit((data: StampRallyRewardFormType) => {
         reset();
+        data.event = event;
         onSubmit(data);
       })}
       className="flex justify-center gap-4 sm:pr-8 text-sm sm:text-[16px] font-bold"
@@ -36,9 +38,7 @@ export const Tmf2024Input: React.FC<Props> = ({ onSubmit }) => {
         />
       </div>
       <div className="flex items-center">
-        <button className="w-18 sm:w-[105px] max-h-8 min-h-8 btn btn-accent rounded-full">
-          send
-        </button>
+        <button className="w-18 sm:w-[105px] max-h-8 min-h-8 btn btn-accent rounded-full">send</button>
       </div>
     </form>
   );

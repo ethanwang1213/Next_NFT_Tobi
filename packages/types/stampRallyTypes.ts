@@ -3,21 +3,18 @@ export type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
 
 export type CompleteStampType = "Complete";
 
-export type FormStatus =
-  | "Nothing"
-  | "Checking"
-  | "Minting"
-  | "Incorrect"
-  | "Success";
+export type FormStatus = "Nothing" | "Checking" | "Minting" | "Incorrect" | "Success";
 
 export type StampRallyEvents =
   | "TOBIRAPOLISFESTIVAL2023"
-  | "TOBIRAMUSICFESTIVAL2024";
+  | "TOBIRAMUSICFESTIVAL2024"
+  | "TOBIRAPOLISFIREWORKS2024";
 
 // mint状態データ変更メソッド用（全てoptionalじゃなく設定）
 export type MintStatusForSetMethod = {
   TOBIRAPOLISFESTIVAL2023: Tpf2023StampRallyData;
   TOBIRAMUSICFESTIVAL2024: Tmf2024StampRallyData;
+  TOBIRAPOLISFIREWORKS2024: Tpfw2024StampRallyData;
 };
 
 // mint状態データ
@@ -42,24 +39,17 @@ export type StampRallyData<T extends string> = {
   [key in T]?: MintStatusType;
 };
 
-export type StampRallyEventType = "tpf2023" | "tmf2024";
+export type StampRallyEventType = "tpf2023" | "tmf2024" | "tpfw2024";
 
 ////////////////////////////////////
 /// TOBIRAPOLIS祭2023スタンプラリー ///
 ////////////////////////////////////
 
 // TOBIRAPOLIS祭2023スタンプラリーのスタンプタイプ
-export type Tpf2023StampType =
-  | "G0"
-  | "G1alpha"
-  | "G1beta"
-  | "G1gamma"
-  | "G1delta";
+export type Tpf2023StampType = "G0" | "G1alpha" | "G1beta" | "G1gamma" | "G1delta";
 
 // TOBIRAPOLIS祭2023スタンプラリーのmint状態データ
-export type Tpf2023StampRallyData = StampRallyData<
-  Tpf2023StampType | CompleteStampType
->;
+export type Tpf2023StampRallyData = StampRallyData<Tpf2023StampType | CompleteStampType>;
 
 //////////////////////////////////////////////////
 /// TOBIRAPOLIS MUSIC FESTIVAL2024スタンプラリー ///
@@ -82,5 +72,24 @@ export const Tmf2024StampMetadata: {
   YouSoTotallyRock: {
     name: "You so totally rock!",
     description: "",
-  }
+  },
+};
+
+/////////////////////////////////////////////
+/// TOBIRAPOLIS花火大会2024スタンプラリー ///
+/////////////////////////////////////////////
+
+// TOBIRAPOLIS花火大会2024のスタンプタイプ
+export type Tpfw2024StampType = "TobirapolisFireworks2024";
+
+export type Tpfw2024StampRallyData = StampRallyData<Tpfw2024StampType>;
+
+// TOBIRAPOLIS花火大会2024のNFT Metadata
+export const Tpfw2024StampMetadata: {
+  [key in Tpfw2024StampType]: { name: string; description: string };
+} = {
+  TobirapolisFireworks2024: {
+    name: "TOBIRAPOLIS FIREWORKS 2024",
+    description: "",
+  },
 };

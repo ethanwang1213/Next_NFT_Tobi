@@ -108,9 +108,4 @@ export type DBActivityRecord = {
   timestamp: Timestamp;
 };
 
-export type RedeemStatus =
-  | "NONE"
-  | "CHECKING"
-  | "SUCCESS"
-  | "INCORRECT"
-  | "SERVER_ERROR";
+export type RedeemStatus = "NONE" | "CHECKING" | "SUCCESS" | "INCORRECT" | "SERVER_ERROR";
