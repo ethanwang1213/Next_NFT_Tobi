@@ -75,7 +75,7 @@ const ProfilePage1: React.FC = () => {
       {/* // TOBIRAPOLIS祭スタンプラリー用 */}
       <div className="mt-6 sm:mt-12">
         {/* <Tpf2023StampRally /> */}
-        <Tmf2024StampRally />
+        {/* <Tmf2024StampRally /> */}
       </div>
     </div>
   );
