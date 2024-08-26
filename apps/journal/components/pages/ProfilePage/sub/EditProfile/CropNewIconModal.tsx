@@ -30,7 +30,7 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
     () =>
       pages.current.length > 0 &&
       pageNo.current === bookIndex.profilePage.start,
-    [pages.current, pageNo.current],
+    [pages.current, pageNo.current], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   if (!isProfilePage0) {

@@ -36,7 +36,7 @@ const Mobile = () => {
   const footerBottom = useMemo(
     // () => (!user || !user.email ? " bottom-[50px]" : "bottom-0"),
     () => "bottom-0",
-    [user],
+    [],
   );
   // タグ外部クリックでタグ一覧を閉じるため
   const tagRef = useRef<HTMLDivElement>();
@@ -46,7 +46,7 @@ const Mobile = () => {
     if (!isDisplayLeft) {
       setIsDisplayLeft(true);
     }
-  }, [pageNo]);
+  }, [pageNo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (pages.length === 0) return;
@@ -98,7 +98,7 @@ const Mobile = () => {
 
     document.addEventListener("click", handleOuterTagClick);
     return () => document.removeEventListener("click", handleOuterTagClick);
-  }, [tagRef.current]);
+  }, [tagRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="overflow-hidden">

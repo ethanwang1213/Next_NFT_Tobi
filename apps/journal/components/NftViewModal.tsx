@@ -17,14 +17,14 @@ const NftViewModal: React.FC = () => {
     () =>
       pageNo.current >= bookIndex.nekoPage.start &&
       pageNo.current <= bookIndex.nekoPage.end,
-    [pageNo.current, bookIndex.nekoPage.start, bookIndex.nekoPage.end],
+    [pageNo.current, bookIndex.nekoPage.start, bookIndex.nekoPage.end], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const isNftPage = useMemo(
     () =>
       pageNo.current >= bookIndex.nftPage.start &&
       pageNo.current <= bookIndex.nftPage.end,
-    [pageNo.current, bookIndex.nftPage.start, bookIndex.nftPage.end],
+    [pageNo.current, bookIndex.nftPage.start, bookIndex.nftPage.end], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   if (!(isNekoPage || isNftPage)) {

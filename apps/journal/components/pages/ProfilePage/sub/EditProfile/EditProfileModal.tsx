@@ -65,7 +65,7 @@ const EditProfileModal: React.FC = () => {
     () =>
       pages.current.length > 0 &&
       pageNo.current === bookIndex.profilePage.start,
-    [pages.current, pageNo.current, bookIndex.profilePage.start],
+    [pages.current, pageNo.current, bookIndex.profilePage.start], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   if (!isProfilePage0) {
