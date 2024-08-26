@@ -63,10 +63,10 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const deleteConfirmDialogHandler = useCallback(
     (value: string) => {
       if (value == "delete") {
-        const ids = [sampleitemId];
-        deleteHandler(ids);
+        deleteHandler([sampleitemId]);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [deleteHandler],
   );
 
