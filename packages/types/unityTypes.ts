@@ -74,6 +74,10 @@ export type ItemName = {
   itemName: string;
 };
 
+type ItemNameForLoading = {
+  name: string;
+};
+
 type SampleName = {
   sampleName: string;
 };
@@ -103,25 +107,34 @@ export type WorkspaceSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   WorkspaceTextureParamForLoading &
   ParentId &
-  SampleName &
+  ItemNameForLoading &
   DebugFlag;
-type SampleBaseDataForLoading = SampleBaseIdForLoading &
+export type ShowcaseSampleBaseDataForLoading = SampleBaseIdForLoading &
+  ModelParams &
+  TextureParam &
+  ParentId &
+  ItemNameForLoading &
+  DebugFlag;
+export type SampleBaseDataForPlacing = SampleBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
   SampleName &
   DebugFlag;
-export type ShowcaseSampleBaseDataForLoading = SampleBaseDataForLoading;
-export type SampleBaseDataForPlacing = SampleBaseDataForLoading;
 
 // nft base data for loading
 export type NftBaseDataForLoading = NftBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
+  ItemNameForLoading &
+  DebugFlag;
+export type NftBaseDataForPlacing = NftBaseIdForLoading &
+  ModelParams &
+  TextureParam &
+  ParentId &
   NftName &
   DebugFlag;
-export type NftBaseDataForPlacing = NftBaseDataForLoading;
 
 ///////////////////////////////////////
 // types for additional item data for arrangement

@@ -104,7 +104,7 @@ export const useWorkspaceUnityContext = ({
       return {
         itemId: v.sampleItemId,
         imageUrl: v.materialUrl,
-        itemName: v.sampleName,
+        itemName: v.name,
         ...v,
         itemType: ItemType.Sample,
         canScale: true,
