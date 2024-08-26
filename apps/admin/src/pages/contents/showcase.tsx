@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, ModelType } from "types/unityTypes";
+import { ItemType, ModelType, SettingsUpdatePhase } from "types/unityTypes";
 import Button from "ui/atoms/Button";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
@@ -270,6 +270,7 @@ const Showcase = () => {
         modelType: sample.type as ModelType,
         modelUrl: sample.modelUrl,
         imageUrl,
+        sampleName: sample.name !== null ? sample.name : "",
       };
 
       isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);
@@ -287,6 +288,7 @@ const Showcase = () => {
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
+          nftName: nft.name !== null ? nft.name : "",
         });
       else
         placeNewNftWithDrag({
@@ -295,6 +297,7 @@ const Showcase = () => {
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
+          nftName: nft.name !== null ? nft.name : "",
         });
     },
     [placeNewNft, placeNewNftWithDrag],
@@ -343,6 +346,7 @@ const Showcase = () => {
           brightness: pb,
         },
       },
+      phase: SettingsUpdatePhase.Updating,
     });
   };
 
