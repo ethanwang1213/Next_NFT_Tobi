@@ -16,7 +16,7 @@ import {
   UpdateIdValues,
   WorkspaceSaveData,
 } from "types/adminTypes";
-import { ModelType } from "types/unityTypes";
+import { ActionType, ModelType } from "types/unityTypes";
 import { WorkspaceUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
@@ -53,6 +53,7 @@ export default function Index() {
     useRestfulAPI(workspaceAPIUrl);
 
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
+  const [selectedSampleItemId, setSelectedSampleItemId] = useState(-1);
 
   const sampleAPIUrl = "native/my/samples";
   const {
@@ -141,6 +142,20 @@ export default function Index() {
     sendSampleRemovalResult(id, result !== false);
   };
 
+  const onActionUndone: (actionType: ActionType, text: string) => void = (
+    actionType,
+    text,
+  ) => {
+    console.log("Action undone:", actionType, text);
+  };
+
+  const onActionRedone: (actionType: ActionType, text: string) => void = (
+    actionType,
+    text,
+  ) => {
+    console.log("Action redone:", actionType, text);
+  };
+
   const [contentWidth, setContentWidth] = useState(0);
 
   useEffect(() => {
@@ -175,6 +190,8 @@ export default function Index() {
     inputWasd,
     pauseUnityInputs,
     resumeUnityInputs,
+    undoAction,
+    redoAction,
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
     onSaveDataGenerated,
@@ -182,6 +199,8 @@ export default function Index() {
     onRemoveSampleEnabled,
     onRemoveSampleDisabled,
     onRemoveSampleRequested,
+    onActionRedone,
+    onActionUndone,
   });
 
   useEffect(() => {
@@ -199,6 +218,7 @@ export default function Index() {
   useEffect(() => {
     if (selectedSample) {
       setSelectedSampleItem(selectedSample.digitalItemId);
+      setSelectedSampleItemId(selectedSample.sampleItemId);
     }
   }, [selectedSample]);
 
@@ -255,6 +275,8 @@ export default function Index() {
   );
 
   const handleButtonClick = (msg) => {
+    undoAction();
+    redoAction();
     setShowToast(false);
     toggleMainToast();
     if (timerId.current) {
@@ -274,6 +296,7 @@ export default function Index() {
   const sampleSelectHandler = useCallback(
     (index: number) => {
       setSelectedSampleItem(samples[index].digitalItemId);
+      setSelectedSampleItemId(samples[index].sampleItemId);
       placeSampleHandler(samples[index]);
     },
     [samples, placeSampleHandler],
@@ -281,12 +304,13 @@ export default function Index() {
 
   const sampleDragHandler = useCallback(
     (index: number) => {
-      setSelectedSampleItem(samples[index].id);
+      setSelectedSampleItem(samples[index].digitalItemId);
+      setSelectedSampleItemId(samples[index].sampleItemId);
       const materialIndex = materials.findIndex(
         (value) => value.id === samples[index].materialId,
       );
       placeNewSampleWithDrag({
-        sampleItemId: samples[index].id,
+        sampleItemId: samples[index].sampleItemId,
         digitalItemId: samples[index].digitalItemId,
         modelUrl: samples[index].modelUrl,
         imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
@@ -303,10 +327,9 @@ export default function Index() {
       });
       if (success) {
         const newSamples = samples.filter(
-          (sample) => ids.findIndex((id) => id === sample.id) === -1,
+          (sample) => ids.findIndex((id) => id === sample.digitalItemId) === -1,
         );
         setSamples(newSamples);
-
         // remove sample items in unity view
         removeSamplesByItemId(ids);
       }
@@ -502,7 +525,11 @@ export default function Index() {
           />
         </div>
         {showDetailView && (
-          <WorkspaceSampleDetailPanel id={selectedSampleItem} />
+          <WorkspaceSampleDetailPanel
+            id={selectedSampleItem}
+            sampleitemId={selectedSampleItemId}
+            deleteHandler={deleteSamplesHandler}
+          />
         )}
         <WorkspaceSampleListPanel
           closeHandler={() => setShowListView(false)}
@@ -524,46 +551,38 @@ export default function Index() {
           }}
         >
           <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-            {isUndoable ? (
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/undo-icon.svg"
-                className="cursor-pointer"
-                onClick={() =>
-                  handleButtonClick("undo: Deleted Sample Item A ")
-                }
-              />
-            ) : (
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/undo.svg"
-                className="cursor-pointer"
-              />
-            )}
-            {isRedoable ? (
-              <Image
-                width={32}
-                height={32}
-                alt="redo button"
-                src="/admin/images/icon/redo-icon.svg"
-                className="cursor-pointer"
-                onClick={() =>
-                  handleButtonClick("redo: Deleted Sample Item A ")
-                }
-              />
-            ) : (
-              <Image
-                width={32}
-                height={32}
-                alt="redo button"
-                src="/admin/images/icon/redo.svg"
-                className="cursor-pointer"
-              />
-            )}
+            <Image
+              width={32}
+              height={32}
+              alt="undo button"
+              src={
+                isUndoable
+                  ? "/admin/images/icon/undo-icon.svg"
+                  : "/admin/images/icon/undo.svg"
+              }
+              className="cursor-pointer"
+              onClick={
+                isUndoable
+                  ? () => handleButtonClick("undo: Deleted Sample Item A ")
+                  : undefined
+              }
+            />
+            <Image
+              width={32}
+              height={32}
+              alt="redo button"
+              src={
+                isRedoable
+                  ? "/admin/images/icon/redo-icon.svg"
+                  : "/admin/images/icon/redo.svg"
+              }
+              className="cursor-pointer"
+              onClick={
+                isRedoable
+                  ? () => handleButtonClick("redo: Deleted Sample Item A ")
+                  : undefined
+              }
+            />
             <Image
               width={32}
               height={32}

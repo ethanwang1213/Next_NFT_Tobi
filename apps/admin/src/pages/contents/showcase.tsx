@@ -120,6 +120,9 @@ const Showcase = () => {
   const {
     isLoaded,
     unityProvider,
+    isUndoable,
+    isRedoable,
+    selectedItem,
     setLoadData,
     requestSaveData,
     placeNewSample,
@@ -128,8 +131,8 @@ const Showcase = () => {
     placeNewNftWithDrag,
     updateSettings,
     inputWasd,
-    isUndoable,
-    selectedItem,
+    undoAction,
+    redoAction,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
@@ -406,28 +409,29 @@ const Showcase = () => {
         >
           <div className="absolute bottom-12 w-full flex justify-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-              <Button disabled={isUndoable}>
-                <Image
-                  width={32}
-                  height={32}
-                  alt="undo button"
-                  src="/admin/images/icon/undo-icon.svg"
-                  className="cursor-pointer"
-                  onClick={() =>
-                    handleButtonClick("undo: Deleted Sample Item A ")
-                  }
-                />
-              </Button>
-
               <Image
                 width={32}
                 height={32}
                 alt="undo button"
-                src="/admin/images/icon/redo-icon.svg"
-                className="cursor-pointer"
-                onClick={() =>
-                  handleButtonClick("redo: Deleted Sample Item A ")
+                src={
+                  isUndoable
+                    ? "/admin/images/icon/undo-icon.svg"
+                    : "/admin/images/icon/undo.svg"
                 }
+                className="cursor-pointer"
+                onClick={isUndoable ? undoAction : undefined}
+              />
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src={
+                  isRedoable
+                    ? "/admin/images/icon/redo-icon.svg"
+                    : "/admin/images/icon/redo.svg"
+                }
+                className="cursor-pointer"
+                onClick={isRedoable ? redoAction : undefined}
               />
               <Image
                 width={32}
