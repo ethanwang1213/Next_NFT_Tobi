@@ -186,7 +186,13 @@ const useUndoRedo = ({
         removeDefaultValues(messageBody.result),
       );
     },
-    [onActionUndone, setIsUndoable, removeDefaultValues],
+    [
+      additionalItemDataMap,
+      onActionUndone,
+      setIsUndoable,
+      replaceItemNameOnText,
+      removeDefaultValues,
+    ],
   );
 
   const handleActionRedone = useCallback(
@@ -217,7 +223,13 @@ const useUndoRedo = ({
         removeDefaultValues(messageBody.result),
       );
     },
-    [onActionRedone, setIsRedoable, removeDefaultValues],
+    [
+      additionalItemDataMap,
+      onActionRedone,
+      setIsRedoable,
+      replaceItemNameOnText,
+      removeDefaultValues,
+    ],
   );
 
   return {
