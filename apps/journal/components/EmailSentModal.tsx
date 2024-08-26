@@ -59,7 +59,13 @@ const EmailSentModal: React.FC = () => {
             ></div>
             <div className="flex w-[294px] h-[32px] justify-center">
               <div className="text-secondary-main text-center text-[20px] font-normal leading-normal underline">
-                Haven&apos;t received the email?
+                <a
+                  href="https://www.tobiratory.com/about"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Haven&apos;t received the email?
+                </a>
               </div>
             </div>
           </div>
