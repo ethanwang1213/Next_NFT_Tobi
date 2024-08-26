@@ -58,7 +58,8 @@ type ContextType = {
     isComplete: boolean,
   ) => void;
   refetchUserMintStatus: () => void;
-  //
+  // etc
+  removeRedeemLinkCode: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -270,6 +271,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const removeRedeemLinkCode = () => {
+    setRedeemLinkCode(null);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -283,7 +288,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         // TOBIRAPOLIS祭スタンプラリー用
         setMintStatus,
         refetchUserMintStatus,
-        //
+        // etc
+        removeRedeemLinkCode,
       }}
     >
       {children}

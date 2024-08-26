@@ -62,7 +62,7 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
   const [isOpenRedeemEmailAddedModal, setIsOpenRedeemEmailAddedModal] =
     useState<boolean>(false);
   const [redeemEmail, setRedeemEmail] = useState<string | null>(null);
-  const { user, redeemLinkCode } = useAuth();
+  const { user, redeemLinkCode, removeRedeemLinkCode } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -161,6 +161,7 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
 
     if (!code) return;
 
+    removeRedeemLinkCode();
     const newUrl = {
       pathname,
       query: newQuery,
