@@ -43,7 +43,6 @@ type ContextType = {
     set: Dispatch<SetStateAction<tagType[]>>;
   };
   bookIndex: BookIndex;
-  setPageNo: Dispatch<SetStateAction<number>>;
 };
 
 const BookContext = createContext<ContextType>({} as ContextType);
@@ -247,7 +246,6 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
         set: setTags,
       },
       bookIndex: bookIndex,
-      setPageNo,
     }),
     [pageNo, pages, tags, bookIndex, setPageNo, setPages, setTags],
   );

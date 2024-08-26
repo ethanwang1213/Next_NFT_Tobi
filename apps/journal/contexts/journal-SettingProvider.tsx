@@ -44,7 +44,7 @@ const SettingContext = createContext<ContextType>({} as ContextType);
  * @returns
  */
 export const SettingProvider: React.FC<Props> = ({ children }) => {
-  const { setPageNo, bookIndex } = useBookContext();
+  const { pageNo, bookIndex } = useBookContext();
   const [addEmail, addingRedeemEmail, addingRedeemEmailError] =
     useAddingRedeemEmail();
   const [
@@ -75,7 +75,7 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
     callable({ linkCode: redeemLinkCode })
       .then(() => {
         openRedeemEmailAddedModal();
-        setPageNo(bookIndex.settingPage.start);
+        pageNo.set(bookIndex.settingPage.start);
       })
       .catch((error) => {
         console.log(error);
