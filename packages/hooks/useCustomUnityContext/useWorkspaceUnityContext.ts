@@ -83,6 +83,7 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   } = useSaidanLikeUnityContextBase({
@@ -282,6 +283,7 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   });

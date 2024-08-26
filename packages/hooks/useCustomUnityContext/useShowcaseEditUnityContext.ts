@@ -87,6 +87,7 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   } = useSaidanLikeUnityContextBase({
@@ -260,6 +261,7 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   });

@@ -153,6 +153,11 @@ const useUndoRedo = ({
     [],
   );
 
+  const handleActionRegistered = useCallback(() => {
+    setIsUndoable(true);
+    setIsRedoable(false);
+  }, [setIsUndoable]);
+
   const handleActionUndone = useCallback(
     (msgObj: UnityMessageJson) => {
       if (!onActionUndone) return;
@@ -218,6 +223,7 @@ const useUndoRedo = ({
   return {
     isUndoable,
     isRedoable,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   };
@@ -271,8 +277,13 @@ export const useSaidanLikeUnityContextBase = ({
     [],
   );
 
-  const { isUndoable, isRedoable, handleActionUndone, handleActionRedone } =
-    useUndoRedo({ additionalItemDataMap, onActionUndone, onActionRedone });
+  const {
+    isUndoable,
+    isRedoable,
+    handleActionRegistered,
+    handleActionUndone,
+    handleActionRedone,
+  } = useUndoRedo({ additionalItemDataMap, onActionUndone, onActionRedone });
 
   // functions
   const postMessageToLoadData = useCallback(() => {
@@ -564,6 +575,7 @@ export const useSaidanLikeUnityContextBase = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   };

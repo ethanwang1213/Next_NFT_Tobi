@@ -34,8 +34,9 @@ export const UnityMessageType = {
   DragStarted: 11,
   DragEnded: 12,
   ScreenshotTaken: 13,
-  ActionUndone: 14,
-  ActionRedone: 15,
+  ActionRegistered: 14,
+  ActionUndone: 15,
+  ActionRedone: 16,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];
