@@ -574,6 +574,7 @@ export default function Index() {
                 height={32}
                 alt="undo button"
                 src="/admin/images/icon/redo-icon.svg"
+                // The height property is being ignored, so it’s set here.
                 className="cursor-pointer h-[32px]"
               />
             </button>
