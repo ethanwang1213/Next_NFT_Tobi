@@ -9,6 +9,7 @@ export enum ImageType {
   ShowcaseThumbnail,
   ModelTempImage,
   ContentDocument,
+  _3DModel,
 }
 
 export const uploadImage = async (image, type) => {
@@ -132,7 +133,9 @@ export const uploadFiles = async (file, extension, type) => {
       case ImageType.ContentDocument:
         path = `documents/${auth.currentUser.uid}/${storageFileName}`;
         break;
-
+      case ImageType._3DModel:
+        path = `3DModel/${auth.currentUser.uid}/${storageFileName}`;
+        break;
       default:
         break;
     }
