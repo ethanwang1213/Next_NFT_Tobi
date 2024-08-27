@@ -3,6 +3,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
+import { toast } from "react-toastify";
 import Button from "ui/atoms/Button";
 import { formatDateToLocal } from "ui/atoms/Formatters";
 import DeleteConfirmDialog2 from "./DeleteConfirmDialog2";
@@ -15,6 +16,19 @@ interface SampleDetailViewProps {
   section: string;
   deleteHandler: (ids: number[]) => void;
 }
+
+const MintNotification = ({ title, text }) => {
+  return (
+    <div className="p-[10px] bg-secondary-900 flex flex-col items-center gap-4">
+      <span className="text-base text-base-white font-bold text-center">
+        {title}
+      </span>
+      <span className="text-sm text-base-white font-normal text-center">
+        {text}
+      </span>
+    </div>
+  );
+};
 
 const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   id,
@@ -48,13 +62,24 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   };
 
   const mintConfirmDialogHandler = useCallback(
-    (value: string) => {
+    async (value: string) => {
       if (value == "mint") {
-        postData(`native/items/${id}/mint`, {
+        const result = await postData(`native/items/${id}/mint`, {
           fcmToken: fcmToken,
           amount: 1,
           modelUrl: data.modelUrl,
         });
+        if (!result) {
+          toast(
+            <MintNotification
+              title="Mint failed"
+              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+            />,
+            {
+              className: "mint-notification",
+            },
+          );
+        }
       }
     },
     [data, fcmToken, id, postData],

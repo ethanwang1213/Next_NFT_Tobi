@@ -18,11 +18,25 @@ import MintConfirmDialog1 from "ui/organisms/admin/MintConfirmDialog1";
 import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
+
 import {
   DigitalItemStatus,
-  ScheduleItem,
   getDigitalItemStatusTitle,
+  ScheduleItem,
 } from "ui/types/adminTypes";
+
+const MintNotification = ({ title, text }) => {
+  return (
+    <div className="p-[10px] bg-secondary-900 flex flex-col items-center gap-4">
+      <span className="text-base text-base-white font-bold text-center">
+        {title}
+      </span>
+      <span className="text-sm text-base-white font-normal text-center">
+        {text}
+      </span>
+    </div>
+  );
+};
 
 const Detail = () => {
   const router = useRouter();
@@ -327,11 +341,22 @@ const Detail = () => {
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
       if (value == "mint") {
-        postData(`native/items/${id}/mint`, {
+        const result = await postData(`native/items/${id}/mint`, {
           fcmToken: fcmToken,
           amount: 1,
           modelUrl: digitalItem.modelUrl,
         });
+        if (!result) {
+          toast(
+            <MintNotification
+              title="Mint failed"
+              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+            />,
+            {
+              className: "mint-notification",
+            },
+          );
+        }
       }
     },
     [postData, id, fcmToken, digitalItem],
