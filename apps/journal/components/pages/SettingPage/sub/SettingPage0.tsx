@@ -165,7 +165,10 @@ const MailAddressData: React.FC<{
         {verifiedMark(verified)}
       </div>
       {onClick && (
-        <button onClick={() => onClick(email)} className="shrink-0">
+        <button
+          onClick={() => onClick(email)}
+          className="btn btn-ghost shrink-0 hover:bg-none hover:bg-opacity-0 border-0 p-0"
+        >
           <Image
             alt="cancel"
             src="/journal/images/icon/Cancel_journal.svg"
