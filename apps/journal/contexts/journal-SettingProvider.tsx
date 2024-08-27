@@ -66,33 +66,48 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
+    let ignore = false;
+
     // Do not execute if the login is anonymous or if there is no link code.
     if (!user?.email || !redeemLinkCode) return;
-    const callable = httpsCallable<{ linkCode: String }, boolean>(
-      functions,
-      "journalNfts-validateRedeemEmailLink",
-    );
-    callable({ linkCode: redeemLinkCode })
-      .then(() => {
+
+    const validateRedeemLinkCode = async () => {
+      const callable = httpsCallable<{ linkCode: String }, boolean>(
+        functions,
+        "journalNfts-validateRedeemEmailLink",
+      );
+      try {
+        await callable({ linkCode: redeemLinkCode });
+        // An error should occur if this is called twice
         openRedeemEmailAddedModal();
         pageNo.set(bookIndex.settingPage.start);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (
-          error.code === "functions/not-found" ||
-          error.code === "functions/already-exists" ||
-          error.code === "functions/out-of-range"
-        ) {
-          alert("無効なリンクです");
-        } else {
-          alert("エラーが発生しました");
+      } catch (error) {
+        // If it is called twice and an error occurs, it will be ignored.
+        if (!ignore) {
+          console.log(error);
+          if (
+            error.code === "functions/not-found" ||
+            error.code === "functions/already-exists" ||
+            error.code === "functions/out-of-range"
+          ) {
+            alert("無効なリンクです");
+          } else {
+            alert("エラーが発生しました");
+          }
         }
-      });
+      }
+      removeRedeemLinkCode();
+      removeRedeemLinkCodeFromURL();
+    };
 
-    // Remove the parameter from the URL to prevent it from remaining in the URL
-    removeRedeemLinkCodeFromURL();
-  }, [user]);
+    validateRedeemLinkCode();
+
+    // Prevents the asynchronous process from being executed twice while it is already running.
+    // https://react.dev/learn/synchronizing-with-effects#fetching-data
+    return () => {
+      ignore = true;
+    };
+  }, [user, redeemLinkCode]);
 
   useEffect(() => {
     if (addingRedeemEmailError) {
@@ -155,13 +170,17 @@ export const SettingProvider: React.FC<Props> = ({ children }) => {
     loadRedeemEmails();
   };
 
+  /*
+   * When accessing a URL with redeemLinkCode while logged in,
+   * the URL will remain with the redeemLinkCode attached,
+   * so we remove the redeemLinkCode.
+   */
   const removeRedeemLinkCodeFromURL = () => {
     const { pathname, query } = router;
-    const { code, ...newQuery } = query;
+    const { redeemLinkCode, ...newQuery } = query;
 
-    if (!code) return;
+    if (!redeemLinkCode) return;
 
-    removeRedeemLinkCode();
     const newUrl = {
       pathname,
       query: newQuery,

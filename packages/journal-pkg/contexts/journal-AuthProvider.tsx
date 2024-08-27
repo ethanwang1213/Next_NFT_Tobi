@@ -118,6 +118,23 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     });
   }
 
+  /*
+   * When accessing a URL with redeemLinkCode, the user may not be logged in yet.
+   * To ensure redeemLinkCode can be used after logging in,
+   * simply use setRedeemLinkCode here to save the redeemLinkCode.
+   */
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    const code = router.query.redeemLinkCode;
+    if (!code || typeof code !== "string") {
+      return;
+    }
+    setRedeemLinkCode(code);
+  }, [user, router]);
+
   useEffect(() => {
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -125,8 +142,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (firebaseUser) {
         console.log(`UID: ${firebaseUser.uid}`);
         console.log(`メールアドレス: ${firebaseUser.email}`);
-
-        setRedeemLinkCodeFromURL();
 
         try {
           // ユーザーコレクションからユーザーデータを参照
@@ -161,7 +176,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
       return () => unsubscribe();
     });
-    /* eslint-disable react-hooks/exhaustive-deps */
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
   const updateProfile = (
@@ -260,14 +275,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         );
         setUser(appUser);
       }
-    }
-  };
-
-  const setRedeemLinkCodeFromURL = () => {
-    const { query } = router;
-    const { code } = query;
-    if (code) {
-      setRedeemLinkCode(code as string);
     }
   };
 
