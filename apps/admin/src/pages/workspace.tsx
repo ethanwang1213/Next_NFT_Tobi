@@ -578,34 +578,38 @@ export default function Index() {
                 className="cursor-pointer h-[32px]"
               />
             </button>
-            <Image
-              width={32}
-              height={32}
-              alt="visibility button"
-              src={
-                showDetailView
-                  ? "/admin/images/icon/visibility-on-icon.svg"
-                  : "/admin/images/icon/visibility-off-icon.svg"
-              }
-              className="cursor-pointer"
+            <button
               onClick={() => {
                 setShowDetailView(!showDetailView);
                 setShowListView(false);
               }}
-            />
-            <Image
-              width={32}
-              height={32}
-              alt="shortcut button"
-              src="/admin/images/icon/help-icon.svg"
-              className="cursor-pointer"
+            >
+              <Image
+                width={32}
+                height={32}
+                alt="visibility button"
+                src={
+                  showDetailView
+                    ? "/admin/images/icon/visibility-on-icon.svg"
+                    : "/admin/images/icon/visibility-off-icon.svg"
+                }
+              />
+            </button>
+            <button
               onClick={() => {
                 if (shortcutDialogRef.current) {
                   shortcutDialogRef.current.showModal();
                   setIsShortcutDialogOpen(true);
                 }
               }}
-            />
+            >
+              <Image
+                width={32}
+                height={32}
+                alt="shortcut button"
+                src="/admin/images/icon/help-icon.svg"
+              />
+            </button>
           </div>
         </div>
         <div

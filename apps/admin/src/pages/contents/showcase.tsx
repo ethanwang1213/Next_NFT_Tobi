@@ -437,16 +437,7 @@ const Showcase = () => {
                   className="cursor-pointer h-[32px]"
                 />
               </button>
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src={
-                  showSmartFrame
-                    ? "/admin/images/icon/crop-on-icon.svg"
-                    : "/admin/images/icon/crop-off-icon.svg"
-                }
-                className="cursor-pointer"
+              <button
                 onClick={() => {
                   setShowSampleDetailView(!showSampleDetailView);
                   setShowSmartFrame(!showSmartFrame);
@@ -456,17 +447,19 @@ const Showcase = () => {
                       : "The smartphone frame is disable",
                   );
                 }}
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="toggle button"
-                src={
-                  showDetailView
-                    ? "/admin/images/icon/visibility-on-icon.svg"
-                    : "/admin/images/icon/visibility-off-icon.svg"
-                }
-                className="cursor-pointer"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src={
+                    showSmartFrame
+                      ? "/admin/images/icon/crop-on-icon.svg"
+                      : "/admin/images/icon/crop-off-icon.svg"
+                  }
+                />
+              </button>
+              <button
                 onClick={() => {
                   setShowSampleDetailView(!showDetailView);
                   setShowDetailView(!showDetailView);
@@ -474,15 +467,28 @@ const Showcase = () => {
                     showDetailView ? "The UI is hidden" : "The UI is shown",
                   );
                 }}
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/help-icon.svg"
-                className="cursor-pointer"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="toggle button"
+                  src={
+                    showDetailView
+                      ? "/admin/images/icon/visibility-on-icon.svg"
+                      : "/admin/images/icon/visibility-off-icon.svg"
+                  }
+                />
+              </button>
+              <button
                 onClick={() => handleButtonClick("help button is clicked")}
-              />
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/help-icon.svg"
+                />
+              </button>
             </div>
           </div>
         </div>
