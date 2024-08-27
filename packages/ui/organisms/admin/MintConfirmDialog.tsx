@@ -31,7 +31,7 @@ const MintConfirmDialog = ({
             width={20}
             height={20}
             alt="redo button"
-            src="/admin/images/icon/redo.svg" // Ensure you have the correct path for the redo icon
+            src="/admin/images/icon/redo.svg"
             className="cursor-pointer inline"
           />
           any previous changes. Please confirm that you want to proceed.

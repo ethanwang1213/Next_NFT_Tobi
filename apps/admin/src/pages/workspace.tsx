@@ -551,38 +551,32 @@ export default function Index() {
           }}
         >
           <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-            <Image
-              width={32}
-              height={32}
-              alt="undo button"
-              src={
-                isUndoable
-                  ? "/admin/images/icon/undo-icon.svg"
-                  : "/admin/images/icon/undo.svg"
-              }
-              className="cursor-pointer"
-              onClick={
-                isUndoable
-                  ? () => handleButtonClick("undo: Deleted Sample Item A ")
-                  : undefined
-              }
-            />
-            <Image
-              width={32}
-              height={32}
-              alt="redo button"
-              src={
-                isRedoable
-                  ? "/admin/images/icon/redo-icon.svg"
-                  : "/admin/images/icon/redo.svg"
-              }
-              className="cursor-pointer"
-              onClick={
-                isRedoable
-                  ? () => handleButtonClick("redo: Deleted Sample Item A ")
-                  : undefined
-              }
-            />
+            <button
+              disabled={!isUndoable}
+              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+              onClick={() => handleButtonClick("undo: Deleted Sample Item A ")}
+            >
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src="/admin/images/icon/undo-icon.svg"
+                className="cursor-pointer h-[32px]"
+              />
+            </button>
+            <button
+              disabled={!isRedoable}
+              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+              onClick={() => handleButtonClick("redo: Deleted Sample Item A ")}
+            >
+              <Image
+                width={32}
+                height={32}
+                alt="undo button"
+                src="/admin/images/icon/redo-icon.svg"
+                className="cursor-pointer h-[32px]"
+              />
+            </button>
             <Image
               width={32}
               height={32}

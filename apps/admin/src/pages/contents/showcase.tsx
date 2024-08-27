@@ -409,30 +409,36 @@ const Showcase = () => {
         >
           <div className="absolute bottom-12 w-full flex justify-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src={
-                  isUndoable
-                    ? "/admin/images/icon/undo-icon.svg"
-                    : "/admin/images/icon/undo.svg"
+              <button
+                disabled={!isUndoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                onClick={() =>
+                  handleButtonClick("undo: Deleted Sample Item A ")
                 }
-                className="cursor-pointer"
-                onClick={isUndoable ? undoAction : undefined}
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src={
-                  isRedoable
-                    ? "/admin/images/icon/redo-icon.svg"
-                    : "/admin/images/icon/redo.svg"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/undo-icon.svg"
+                  className="cursor-pointer h-[32px]"
+                />
+              </button>
+              <button
+                disabled={!isRedoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                onClick={() =>
+                  handleButtonClick("redo: Deleted Sample Item A ")
                 }
-                className="cursor-pointer"
-                onClick={isRedoable ? redoAction : undefined}
-              />
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/redo-icon.svg"
+                  className="cursor-pointer h-[32px]"
+                />
+              </button>
               <Image
                 width={32}
                 height={32}
