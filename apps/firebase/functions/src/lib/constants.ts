@@ -43,6 +43,8 @@ export const FUNGIBLE_TOKEN_ADDRESS =
         process.env.FLOW_NETWORK === "testnet" ? "9a0766d93b6608b7" :
             "ee82856bf20e2aa6";
 
+export const REDEEM_LINK_CODE_EXPIRATION_TIME = 1000 * 60 * 60 * 24;
+
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `
 <!DOCTYPE html>
