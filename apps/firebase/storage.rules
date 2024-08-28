@@ -50,12 +50,5 @@ service firebase.storage {
       	allow write: if true;
       }
     }
-    match /3DModel/{userId} {
-      allow read: if true;
-      match /{fileName} {
-      	allow read: if true;
-      	allow write: if true;
-      }
-    }
   }
 }

@@ -133,9 +133,9 @@ export const uploadFiles = async (file, extension, type) => {
       case ImageType.ContentDocument:
         path = `documents/${auth.currentUser.uid}/${storageFileName}`;
         break;
-      case ImageType._3DModel:
-        path = `3DModel/${auth.currentUser.uid}/${storageFileName}`;
-        break;
+        case ImageType._3DModel:
+          path = `users/${auth.currentUser.uid}/item/uploaded/models/${storageFileName}`;
+          break;
       default:
         break;
     }
