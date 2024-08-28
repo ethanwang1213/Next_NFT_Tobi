@@ -437,7 +437,7 @@ const Showcase = () => {
                   className="cursor-pointer h-[32px]"
                 />
               </button>
-              <button
+              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showSampleDetailView);
                   setShowSmartFrame(!showSmartFrame);
@@ -459,7 +459,7 @@ const Showcase = () => {
                   }
                 />
               </button>
-              <button
+              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showDetailView);
                   setShowDetailView(!showDetailView);
@@ -479,7 +479,7 @@ const Showcase = () => {
                   }
                 />
               </button>
-              <button
+              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => handleButtonClick("help button is clicked")}
               >
                 <Image

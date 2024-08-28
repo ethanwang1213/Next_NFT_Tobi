@@ -578,7 +578,7 @@ export default function Index() {
                 className="cursor-pointer h-[32px]"
               />
             </button>
-            <button
+            <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
               onClick={() => {
                 setShowDetailView(!showDetailView);
                 setShowListView(false);
@@ -595,7 +595,7 @@ export default function Index() {
                 }
               />
             </button>
-            <button
+            <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
               onClick={() => {
                 if (shortcutDialogRef.current) {
                   shortcutDialogRef.current.showModal();
