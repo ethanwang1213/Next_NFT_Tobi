@@ -67,7 +67,7 @@ const SampleTypeSelectComponent = (props: {
       }
       return true;
     },
-    [],
+    [postData],
   );
 
   const onDrop = useCallback(
