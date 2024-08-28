@@ -3,16 +3,44 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
+import { toast } from "react-toastify";
 import Button from "ui/atoms/Button";
 import { formatDateToLocal } from "ui/atoms/Formatters";
+import DeleteConfirmDialog2 from "./DeleteConfirmDialog2";
 import MintConfirmDialog2 from "./MintConfirmDialog";
 import SampleDetailDialog from "./SampleDetailDialog";
 
-const SampleDetailView = ({ id }: { id: number }) => {
+interface SampleDetailViewProps {
+  id: number;
+  sampleitemId: number;
+  section: string;
+  deleteHandler: (ids: number[]) => void;
+}
+
+const MintNotification = ({ title, text }) => {
+  return (
+    <div className="p-[10px] bg-secondary-900 flex flex-col items-center gap-4">
+      <span className="text-base text-base-white font-bold text-center">
+        {title}
+      </span>
+      <span className="text-sm text-base-white font-normal text-center">
+        {text}
+      </span>
+    </div>
+  );
+};
+
+const SampleDetailView: React.FC<SampleDetailViewProps> = ({
+  id,
+  section,
+  sampleitemId,
+  deleteHandler,
+}) => {
   const dialogRef = useRef(null);
   const apiUrl = `native/admin/digital_items/${id}`;
   const { data, loading, getData, postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
+  const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
 
   useEffect(() => {
@@ -23,7 +51,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
   }, [id]);
 
   const calculateTotalDays = (): number => {
-    if (!data) return 0;
+    if (!data.startDate) return 0;
 
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
@@ -34,16 +62,37 @@ const SampleDetailView = ({ id }: { id: number }) => {
   };
 
   const mintConfirmDialogHandler = useCallback(
-    (value: string) => {
+    async (value: string) => {
       if (value == "mint") {
-        postData(`native/items/${id}/mint`, {
+        const result = await postData(`native/items/${id}/mint`, {
           fcmToken: fcmToken,
           amount: 1,
           modelUrl: data.modelUrl,
         });
+        if (!result) {
+          toast(
+            <MintNotification
+              title="Mint failed"
+              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+            />,
+            {
+              className: "mint-notification",
+            },
+          );
+        }
       }
     },
     [data, fcmToken, id, postData],
+  );
+
+  const deleteConfirmDialogHandler = useCallback(
+    (value: string) => {
+      if (value == "delete") {
+        deleteHandler([sampleitemId]);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [deleteHandler],
   );
 
   return (
@@ -114,19 +163,21 @@ const SampleDetailView = ({ id }: { id: number }) => {
                 </span>
                 <div className="text-[10px] font-medium w-[168px]">
                   {data
-                    ? data.startDate
+                    ? data.stateDate
                       ? formatDateToLocal(data.startDate)
                       : "-"
                     : "-"}
                   {data && <br />}
-                  {data.startDate && `Owned for ${calculateTotalDays()} days`}
+                  {data?.stateDate && `Owned for ${calculateTotalDays()} days`}
                 </div>
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
                   History
                 </span>
-                {data.ownerHistory ? (
+                {data &&
+                Array.isArray(data.ownerHistory) &&
+                data.ownerHistory.length > 0 ? (
                   <div className="grid grid-cols-5">
                     {data.ownerHistory.map((history) => (
                       <div key={history.uid}>
@@ -165,7 +216,7 @@ const SampleDetailView = ({ id }: { id: number }) => {
               />
             )}
             {data && (
-              <div className="mx-auto">
+              <div className="mx-auto mt-12">
                 <Link href={`/items/detail?id=${id}`}>
                   <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
                     <Image
@@ -207,6 +258,28 @@ const SampleDetailView = ({ id }: { id: number }) => {
               dialogRef={mintConfirmDialogRef}
               changeHandler={mintConfirmDialogHandler}
             />
+            <DeleteConfirmDialog2
+              dialogRef={deleteConfirmDialogRef}
+              changeHandler={deleteConfirmDialogHandler}
+            />
+            {data && section == "workspace" && (
+              <div className="mt-4 w-[244px] text-right">
+                <Button
+                  onClick={() => {
+                    if (deleteConfirmDialogRef.current) {
+                      deleteConfirmDialogRef.current.showModal();
+                    }
+                  }}
+                >
+                  <Image
+                    src="/admin/images/icon/trash.svg"
+                    width={24}
+                    height={24}
+                    alt="trash icon"
+                  />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}

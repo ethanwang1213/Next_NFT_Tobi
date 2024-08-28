@@ -200,7 +200,9 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
                 name={sample.name}
                 selectState={selectState}
                 checked={
-                  selectedItems.findIndex((value) => value == sample.sampleItemId) > -1
+                  selectedItems.findIndex(
+                    (value) => value == sample.sampleItemId,
+                  ) > -1
                 }
                 changeHandler={(value) =>
                   selectionChangeHandler(sample.sampleItemId, value)
@@ -217,7 +219,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
             className="bg-[#EA1010] rounded-[88px] w-[160px] h-[48px]
               text-xl font-normal text-white text-center"
             onClick={() => {
-              if (deleteConfirmDlgRef.current) {
+              if (deleteConfirmDlgRef.current && selectedItems.length > 0) {
                 deleteConfirmDlgRef.current.showModal();
               }
             }}

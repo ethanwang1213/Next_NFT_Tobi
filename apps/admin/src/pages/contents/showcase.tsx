@@ -120,6 +120,9 @@ const Showcase = () => {
   const {
     isLoaded,
     unityProvider,
+    isUndoable,
+    isRedoable,
+    selectedItem,
     setLoadData,
     requestSaveData,
     placeNewSample,
@@ -128,8 +131,6 @@ const Showcase = () => {
     placeNewNftWithDrag,
     updateSettings,
     inputWasd,
-    isUndoable,
-    selectedItem,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
@@ -422,39 +423,37 @@ const Showcase = () => {
         >
           <div className="absolute bottom-12 w-full flex justify-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-              <Button disabled={isUndoable}>
+              <button
+                disabled={!isUndoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                onClick={() =>
+                  handleButtonClick("undo: Deleted Sample Item A ")
+                }
+              >
                 <Image
                   width={32}
                   height={32}
                   alt="undo button"
                   src="/admin/images/icon/undo-icon.svg"
-                  className="cursor-pointer"
-                  onClick={() =>
-                    handleButtonClick("undo: Deleted Sample Item A ")
-                  }
+                  className="cursor-pointer h-[32px]"
                 />
-              </Button>
-
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/redo-icon.svg"
-                className="cursor-pointer"
+              </button>
+              <button
+                disabled={!isRedoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
                 onClick={() =>
                   handleButtonClick("redo: Deleted Sample Item A ")
                 }
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src={
-                  showSmartFrame
-                    ? "/admin/images/icon/crop-on-icon.svg"
-                    : "/admin/images/icon/crop-off-icon.svg"
-                }
-                className="cursor-pointer"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/redo-icon.svg"
+                  className="cursor-pointer h-[32px]"
+                />
+              </button>
+              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showSampleDetailView);
                   setShowSmartFrame(!showSmartFrame);
@@ -464,17 +463,19 @@ const Showcase = () => {
                       : "The smartphone frame is disable",
                   );
                 }}
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="toggle button"
-                src={
-                  showDetailView
-                    ? "/admin/images/icon/visibility-on-icon.svg"
-                    : "/admin/images/icon/visibility-off-icon.svg"
-                }
-                className="cursor-pointer"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src={
+                    showSmartFrame
+                      ? "/admin/images/icon/crop-on-icon.svg"
+                      : "/admin/images/icon/crop-off-icon.svg"
+                  }
+                />
+              </button>
+              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showDetailView);
                   setShowDetailView(!showDetailView);
@@ -482,15 +483,28 @@ const Showcase = () => {
                     showDetailView ? "The UI is hidden" : "The UI is shown",
                   );
                 }}
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/help-icon.svg"
-                className="cursor-pointer"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="toggle button"
+                  src={
+                    showDetailView
+                      ? "/admin/images/icon/visibility-on-icon.svg"
+                      : "/admin/images/icon/visibility-off-icon.svg"
+                  }
+                />
+              </button>
+              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => handleButtonClick("help button is clicked")}
-              />
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/help-icon.svg"
+                />
+              </button>
             </div>
           </div>
         </div>
