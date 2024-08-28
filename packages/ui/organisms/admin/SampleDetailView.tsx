@@ -162,13 +162,9 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                   Date Acquired
                 </span>
                 <div className="text-[10px] font-medium w-[168px]">
-                  {data
-                    ? data.stateDate
-                      ? formatDateToLocal(data.startDate)
-                      : "-"
-                    : "-"}
+                  {data?.startDate ? formatDateToLocal(data.startDate) : "-"}
                   {data && <br />}
-                  {data?.stateDate && `Owned for ${calculateTotalDays()} days`}
+                  {data?.startDate && `Owned for ${calculateTotalDays()} days`}
                 </div>
               </div>
               <div className="flex gap-4">
