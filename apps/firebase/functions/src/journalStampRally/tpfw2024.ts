@@ -9,33 +9,38 @@ import {
   verifyCorrectStampEntry,
   verifyFirstRequest,
 } from "./utils";
-// import { getFunctions } from "firebase-admin/functions";
+import { getFunctions } from "firebase-admin/functions";
 
-// const Tpfw2024StampMetadata: {
-//   [key in Tpfw2024StampType]: { name: string; description: string };
-// } = {
-//   TobirapolisFireworks2024: {
-//     name: "TOBIRAPOLIS FIREWORKS 2024",
-//     description: "",
-//   },
-// };
+const Tpfw2024StampMetadata: {
+  [key in Tpfw2024StampType]: { name: string; description: string };
+} = {
+  TobirapolisFireworks2024: {
+    name: "TOBIRAPOLIS FIREWORKS 2024",
+    description: "",
+  },
+};
 
-// const requestMint = async (userId: string, correctStampEntry: Tpfw2024StampType) => {
-//   const badge = Tpfw2024StampMetadata[correctStampEntry];
-//   const queue = getFunctions().taskQueue(`locations/${REGION}/functions/mintJournalStampRallyNftTask`);
-//   await queue.enqueue(
-//     {
-//       name: badge.name,
-//       description: badge.description,
-//       type: correctStampEntry,
-//       userId: userId,
-//       event: "tpfw2024",
-//     },
-//     {
-//       dispatchDeadlineSeconds: 60 * 5,
-//     }
-//   );
-// };
+const requestMint = async (
+  userId: string,
+  correctStampEntry: Tpfw2024StampType
+) => {
+  const badge = Tpfw2024StampMetadata[correctStampEntry];
+  const queue = getFunctions().taskQueue(
+    `locations/${REGION}/functions/mintJournalStampRallyNftTask`
+  );
+  await queue.enqueue(
+    {
+      name: badge.name,
+      description: badge.description,
+      type: correctStampEntry,
+      userId: userId,
+      event: "tpfw2024",
+    },
+    {
+      dispatchDeadlineSeconds: 60 * 5,
+    }
+  );
+};
 
 const writeMintStatusAsInProgress = async (userId: string, correctStampEntry: Tpfw2024StampType) => {
   const settingData: {
@@ -74,7 +79,7 @@ exports.checkRewardTpfw2024 = functions
 
     const isStampCompleted = checkStampCompleted(correctStampEntry, currentStampStatusMap);
 
-    // await requestMint(userId, correctStampEntry);
+    await requestMint(userId, correctStampEntry);
     await writeMintStatusAsInProgress(userId, correctStampEntry);
 
     return {

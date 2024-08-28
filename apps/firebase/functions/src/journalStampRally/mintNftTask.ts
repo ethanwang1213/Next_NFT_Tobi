@@ -58,6 +58,24 @@ const mintNFT = async (
         break;
       }
     }
+  } else if (stampRallyEventType === "tpfw2024") {
+    for (const mintEvent of events) {
+      if (mintEvent.type === `${process.env.FLOW_JOURNAL_STAMP_RALLY_CONTRACT_ID}.${process.env.FLOW_JOURNAL_STAMP_RALLY_EVENT_NAME}`) {
+        const totalSupply = mintEvent.data.totalSupply;
+        if (!totalSupply) {
+          return;
+        }
+        const nftId = totalSupply - 1;
+        const imageUrl = `${process.env.TPFW2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
+        await createMetadata(nftId, type, name, description, imageUrl);
+        await recordMintResult(userId, nftId, name, description, new Date(), imageUrl, type);
+
+        if (onComplete) {
+          await onComplete();
+        }
+        break;
+      }
+    }
   }
 };
 
@@ -98,6 +116,20 @@ export const mintJournalStampRallyNftTask = functions.region(REGION).runWith({})
       const setData: { mintStatus: MintStatus } = {
         mintStatus: {
           TOBIRAMUSICFESTIVAL2024: {
+            [type as Tmf2024StampType]: "DONE",
+          },
+        },
+      };
+      await recordNewActivity(userId, `${name} を獲得した`);
+      await firestore().collection("users").doc(userId).set(setData, {
+        merge: true,
+      });
+    });
+  } else if (event === "tpfw2024") {
+    await mintNFT(name, description, userId, type, event, async () => {
+      const setData: { mintStatus: MintStatus } = {
+        mintStatus: {
+          TOBIRAPOLISFIREWORKS2024: {
             [type as Tmf2024StampType]: "DONE",
           },
         },
