@@ -21,6 +21,7 @@ import {
   User,
 } from "journal-pkg/types/journal-types";
 import _ from "lodash";
+import { useRouter } from "next/router";
 import React, {
   createContext,
   Dispatch,
@@ -46,6 +47,7 @@ type ContextType = {
     newBirthday: Birthday,
     newDbIconPath: string,
   ) => void;
+  redeemLinkCode?: string;
   setDbIconUrl: Dispatch<SetStateAction<string>>;
   setJoinTobiratoryInfo: (discordId: string, joinDate: Date) => void;
   // TOBIRAPOLIS祭スタンプラリー用
@@ -56,7 +58,8 @@ type ContextType = {
     isComplete: boolean,
   ) => void;
   refetchUserMintStatus: () => void;
-  //
+  // etc
+  removeRedeemLinkCode: () => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -87,6 +90,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User | null>(null);
   const [dbIconUrl, setDbIconUrl] = useState<string>("");
+  const [redeemLinkCode, setRedeemLinkCode] = useState<string | null>(null);
+  const router = useRouter();
   const MAX_NAME_LENGTH = 12;
 
   // ユーザー作成用関数
@@ -112,6 +117,23 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       });
     });
   }
+
+  /*
+   * When accessing a URL with redeemLinkCode, the user may not be logged in yet.
+   * To ensure redeemLinkCode can be used after logging in,
+   * simply use setRedeemLinkCode here to save the redeemLinkCode.
+   */
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    const code = router.query.redeemLinkCode;
+    if (!code || typeof code !== "string") {
+      return;
+    }
+    setRedeemLinkCode(code);
+  }, [user, router]);
 
   useEffect(() => {
     // ログイン状態の変化を監視
@@ -154,6 +176,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
       return () => unsubscribe();
     });
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
   const updateProfile = (
@@ -255,6 +278,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const removeRedeemLinkCode = () => {
+    setRedeemLinkCode(null);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -262,12 +289,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         dbIconUrl,
         MAX_NAME_LENGTH: MAX_NAME_LENGTH,
         updateProfile,
+        redeemLinkCode,
         setDbIconUrl,
         setJoinTobiratoryInfo,
         // TOBIRAPOLIS祭スタンプラリー用
         setMintStatus,
         refetchUserMintStatus,
-        //
+        // etc
+        removeRedeemLinkCode,
       }}
     >
       {children}

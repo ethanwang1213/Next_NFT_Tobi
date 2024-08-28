@@ -66,7 +66,7 @@ const Discord = () => {
       // topへリダイレクト
       router.push("/");
     })();
-  }, [user, query, router]);
+  }, [user, query, router]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // テスト：dbへの書き込み
   useEffect(() => {
@@ -78,7 +78,7 @@ const Discord = () => {
       await updateDiscordOAuthData(mockId);
       router.push("/");
     })();
-  }, [user, router]);
+  }, [user, router]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={"flex justify-center items-center"}>

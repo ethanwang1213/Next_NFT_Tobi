@@ -14,7 +14,7 @@ const PageTitle: React.FC<Props> = ({ isShown, title }) => {
   return (
     <>
       {isShown && (
-        <h1 className="w-full text-center text-[42px] sm:text-[78px] font-bold text-accent drop-shadow-md">
+        <h1 className="w-full text-center text-[42px] sm:text-[78px] font-bold text-text-1000 drop-shadow-md">
           {title}
         </h1>
       )}

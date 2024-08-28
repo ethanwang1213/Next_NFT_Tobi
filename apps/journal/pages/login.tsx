@@ -228,9 +228,9 @@ const Login = () => {
         return (
           <AuthTemplate
             loading={isEmailLoading}
-            googleLabel={"Login in with Google"}
-            appleLabel={"Login in with Apple"}
-            mailLabel={"Login in"}
+            googleLabel={"Login with Google"}
+            appleLabel={"Login with Apple"}
+            mailLabel={"Login"}
             prompt={"Dont’t have an account?　- SIGN UP"}
             setAuthState={() => setAuthState(AuthStates.SignUp)}
             withMail={startMailSignIn}

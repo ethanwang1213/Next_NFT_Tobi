@@ -1,10 +1,10 @@
-import { useWindowSize } from "react-use";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCards } from "swiper";
-import NekoSwiperContent from "./NekoSwiperContent";
-import { mockNekoSrcList } from "../../../../../libs/mocks/mockNekoSrcList";
 import { useHoldNfts } from "@/contexts/journal-HoldNftsProvider";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useWindowSize } from "react-use";
+import { EffectCards } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { mockNekoSrcList } from "../../../../../libs/mocks/mockNekoSrcList";
+import NekoSwiperContent from "./NekoSwiperContent";
 
 type CardPos = {
   left: number;
@@ -34,7 +34,7 @@ const NekoSwiper: React.FC = () => {
   // 本の画像のアスペクト比を設定
   const setAspect = () => {
     setCardAspect(
-      cardImgRef.current.naturalWidth / cardImgRef.current.naturalHeight
+      cardImgRef.current.naturalWidth / cardImgRef.current.naturalHeight,
     );
   };
 
@@ -67,7 +67,7 @@ const NekoSwiper: React.FC = () => {
         }
       }
     }
-  }, [initNum]);
+  }, [initNum]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // レンダリングの瞬間の表示がキモくなったので、
   // 50ms後にinvisibleを解くようにする
@@ -120,7 +120,7 @@ const NekoSwiper: React.FC = () => {
         />
       </SwiperSlide>
     ),
-    [cardPos.width, cardPos.height, cardImgRef, cardAspect, setAspect]
+    [cardPos.width, cardPos.height, cardImgRef, cardAspect, setAspect], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return (
@@ -147,7 +147,7 @@ const NekoSwiper: React.FC = () => {
             {nekoNfts.current.length === 0
               ? createSwiperSlide(null, 0)
               : [...nekoNfts.current].map((v, i) =>
-                  createSwiperSlide(v.thumbnail, i)
+                  createSwiperSlide(v.thumbnail, i),
                 )}
           </>
         )}

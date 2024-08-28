@@ -1,8 +1,8 @@
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
 import { useEffect } from "react";
 import { useRedeemStatus } from "../../../contexts/journal-RedeemStatusProvider";
 import RedeemPage0 from "./sub/RedeemPage0";
 import RedeemPage1 from "./sub/RedeemPage1";
-import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
 
 type Props = {
   pageNum: number;
@@ -22,7 +22,7 @@ const RedeemPage: React.FC<Props> = ({ pageNum }) => {
     if (!user) return;
     selfAccount.set(user.name);
     selfJournalId.set("keisukeId");
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return pageNum % 2 === 0 ? <RedeemPage0 /> : <RedeemPage1 />;
 };

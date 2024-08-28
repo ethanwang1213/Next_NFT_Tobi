@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import PersonalIcon from "./sub/PersonalIcon";
-import PersonalInfo from "./sub/PersonalInfo";
-import DiscordOAuthButton from "./sub/DiscordOAuthButton";
-import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
-import ActivityRecord from "./sub/ActivityRecord";
 import useDateFormat from "@/hooks/useDateFormat";
 import JournalStampIcon from "@/public/images/icon/stamp_journal.svg";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { useEffect, useState } from "react";
+import ActivityRecord from "./sub/ActivityRecord";
+import DiscordOAuthButton from "./sub/DiscordOAuthButton";
+import PersonalIcon from "./sub/PersonalIcon";
+import PersonalInfo from "./sub/PersonalInfo";
 
 export type ActivityRecord = {
   id: number;
@@ -38,7 +38,7 @@ const ProfilePage0: React.FC = () => {
         setBirthday(formattedFromYMD(year, month, day));
       }
     }
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -64,20 +64,22 @@ const ProfilePage0: React.FC = () => {
                 dataValue={
                   !user.email || user.email === ""
                     ? "-"
-                    : `${user.email.length < 21
-                      ? user.email
-                      : user.email.slice(0, 20) + "..."
-                    }`
+                    : `${
+                        user.email.length < 21
+                          ? user.email
+                          : user.email.slice(0, 20) + "..."
+                      }`
                 }
                 hidable={true}
               />
               {/* EditProfileModalに紐づく */}
               <div className="hidden sm:block w-full relative sm:flex sm:justify-end shrink">
                 <label
-                  htmlFor={`${!user || !user.email
+                  htmlFor={`${
+                    !user || !user.email
                       ? "login-guide-modal"
                       : "edit-profile-modal"
-                    }`}
+                  }`}
                   className="
                   btn btn-outline btn-lg btn-primary 
                   min-h-[40px] h-[45px] 
@@ -97,7 +99,7 @@ const ProfilePage0: React.FC = () => {
         <NavButton label={"受け取り"} />
         <NavButton label={"送信"} /> */}
       </div>
-      <h3 className="text-center text-[18px] sm:text-[28px] text-primary font-bold mb-4 sm:mb-10">
+      <h3 className="text-center text-[18px] sm:text-[28px] text-text-1000 font-bold mb-4 sm:mb-10">
         Activity Record
       </h3>
       <div className="max-h-[30%] sm:max-h-[42%] grid gap-2 overflow-y-auto">

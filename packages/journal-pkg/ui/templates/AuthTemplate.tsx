@@ -1,6 +1,6 @@
 import { faApple } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LoginFormType } from "journal-pkg/types/journal-types";
+import { EMAIL_REGEX, LoginFormType } from "journal-pkg/types/journal-types";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { useForm } from "react-hook-form";
@@ -70,7 +70,7 @@ const AuthTemplate = ({
                 message: "Please input mail address.",
               },
               pattern: {
-                value: /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/,
+                value: EMAIL_REGEX,
                 message:
                   "Please enter the email address in the correct format.",
               },

@@ -1,10 +1,10 @@
+import { useBookContext } from "@/contexts/journal-BookProvider";
 import { useDebug } from "@/contexts/journal-DebugProvider";
 import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
-import StampIcon from "@/public/images/icon/stamp_TOBIRAPOLIS.svg";
 import StampIcon2 from "@/public/images/icon/stamp_TOBIRAPOLIS-cp.svg";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import StampIcon from "@/public/images/icon/stamp_TOBIRAPOLIS.svg";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
-import { useBookContext } from "@/contexts/journal-BookProvider";
 
 type Props = {
   isPc: boolean;
@@ -32,7 +32,7 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
   useEffect(() => {
     if (!stampRef.current) return;
     setStampW(stampRef.current.clientWidth);
-  }, [debugDiscordButtonMode, displayMode, stampRef.current, width, height]);
+  }, [debugDiscordButtonMode, displayMode, stampRef.current, width, height]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stamp = useMemo(
     () => (
@@ -55,7 +55,7 @@ const SuccessDiscordStamp: React.FC<Props> = ({ isPc }) => {
         </div>
       </div>
     ),
-    [isPc, stampW]
+    [isPc, stampW],
   );
 
   if (pageNo !== profilePage.start) return <></>;
