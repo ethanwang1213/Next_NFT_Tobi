@@ -1,8 +1,14 @@
 import {
   ActionType,
+  FloorSettings,
+  ItemBaseId,
+  ItemPosture,
+  ItemTypeParam,
+  LightParams,
   SaidanItemData,
   SaidanSettings,
   Vector3,
+  WallpaperSettings,
 } from "types/unityTypes";
 
 export const UnitySceneType = {
@@ -28,8 +34,9 @@ export const UnityMessageType = {
   DragStarted: 11,
   DragEnded: 12,
   ScreenshotTaken: 13,
-  ActionUndone: 14,
-  ActionRedone: 15,
+  ActionRegistered: 14,
+  ActionUndone: 15,
+  ActionRedone: 16,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];
@@ -71,4 +78,25 @@ export type SaidanLikeData = {
   isDebug: boolean;
 };
 
-export type UndoneOrRedone = (actionType: ActionType, text: string) => void;
+export type UndoneRedoneResult = {
+  item?: Partial<ItemTypeParam & ItemBaseId & Omit<ItemPosture, "stageType">>;
+  settings?: Partial<{
+    wallpaper?: Partial<WallpaperSettings>;
+    floor?: Partial<FloorSettings>;
+    lighting?: Partial<{
+      sceneLight?: Partial<LightParams>;
+      pointLight?: Partial<LightParams>;
+    }>;
+  }>;
+};
+
+export type RequiredUndoneRedoneResult = {
+  item: ItemTypeParam & ItemBaseId & Omit<ItemPosture, "stageType">;
+  settings: SaidanSettings;
+};
+
+export type UndoneOrRedone = (
+  actionType: ActionType,
+  text: string,
+  result: UndoneRedoneResult,
+) => void;

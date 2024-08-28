@@ -249,6 +249,7 @@ export default function Index() {
         modelUrl: sample.modelUrl,
         imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
         modelType: sample.type as ModelType,
+        sampleName: sample.name !== null ? sample.name : "",
       });
     },
     [materials, placeNewSample],
@@ -291,6 +292,7 @@ export default function Index() {
         modelUrl: samples[index].modelUrl,
         imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
         modelType: samples[index].type as ModelType,
+        sampleName: samples[index].name !== null ? samples[index].name : "",
       });
     },
     [samples, materials, placeNewSampleWithDrag],

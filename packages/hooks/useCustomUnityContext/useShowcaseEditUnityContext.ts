@@ -9,7 +9,7 @@ import {
   ItemSaveData,
   ItemType,
   SaidanItemData,
-  ShowcaseSettings,
+  UpdatingSaidanSettings,
 } from "types/unityTypes";
 import { DefaultItemMeterHeight } from "./constants";
 import {
@@ -87,6 +87,7 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   } = useSaidanLikeUnityContextBase({
@@ -107,6 +108,7 @@ export const useShowcaseEditUnityContext = ({
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
         return {
           itemId: v.sampleItemId,
+          itemName: v.name,
           ...v,
           itemType: ItemType.Sample,
           canScale: true,
@@ -116,6 +118,7 @@ export const useShowcaseEditUnityContext = ({
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
         return {
           itemId: v.nftId,
+          itemName: v.name,
           ...v,
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
@@ -170,10 +173,10 @@ export const useShowcaseEditUnityContext = ({
   );
 
   const updateSettings = useCallback(
-    ({ wallpaper, floor, lighting }: ShowcaseSettings) => {
+    ({ wallpaper, floor, lighting, phase }: UpdatingSaidanSettings) => {
       postMessageToUnity(
         "UpdateSettingsMessageReceiver",
-        JSON.stringify({ wallpaper, floor, lighting }),
+        JSON.stringify({ wallpaper, floor, lighting, phase }),
       );
     },
     [postMessageToUnity],
@@ -258,6 +261,7 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   });

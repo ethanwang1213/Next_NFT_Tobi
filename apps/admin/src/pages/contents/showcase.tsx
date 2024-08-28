@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, ModelType } from "types/unityTypes";
+import { ItemType, ModelType, SettingsUpdatePhase } from "types/unityTypes";
 import Button from "ui/atoms/Button";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
@@ -270,6 +270,7 @@ const Showcase = () => {
         modelType: sample.type as ModelType,
         modelUrl: sample.modelUrl,
         imageUrl,
+        sampleName: sample.name !== null ? sample.name : "",
       };
 
       isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);
@@ -287,6 +288,7 @@ const Showcase = () => {
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
+          nftName: nft.name !== null ? nft.name : "",
         });
       else
         placeNewNftWithDrag({
@@ -295,6 +297,7 @@ const Showcase = () => {
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
+          nftName: nft.name !== null ? nft.name : "",
         });
     },
     [placeNewNft, placeNewNftWithDrag],
@@ -314,6 +317,18 @@ const Showcase = () => {
     setSb(sb);
     setPt(pt);
     setPb(pb);
+
+    /// TODO(Murat) by Toruto: modify updating settings for undo/redo feature
+    /// Set the `phase` argument as `SettingsUpdatePhase.Updating`
+    ///   while operating a GUI for updating settings
+    ///   such like dragging a slider, dragging a color picker, etc.
+    /// Set the `phase` argument as `SettingsUpdatePhase.Ended`
+    ///   when operating the GUI is ended
+    ///   such like releassed a slider, released a color picker, etc.
+    ///   And, with this phase, the change of settings is registered on action history for undo/redo.
+
+    /// NOTE(Toruto): After the implementation, please remove this comment.
+
     updateSettings({
       wallpaper: {
         tint: wt,
@@ -331,6 +346,7 @@ const Showcase = () => {
           brightness: pb,
         },
       },
+      phase: SettingsUpdatePhase.Updating,
     });
   };
 
