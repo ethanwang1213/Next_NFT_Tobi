@@ -81,7 +81,7 @@ const BirthdaySelect: React.FC<Props> = ({
       setValue("month", 0);
       setValue("day", 0);
     }
-  }, [user, isModalOpen]);
+  }, [user, isModalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 今年を選択している場合のみ、月の選択肢を今月までに設定
   // それ以外は12月までに設定
@@ -104,7 +104,7 @@ const BirthdaySelect: React.FC<Props> = ({
         setValue("month", thisMonth);
       }
     }
-  }, [isModalOpen, watch("year")]);
+  }, [isModalOpen, watch("year")]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // その年月の末日を設定
   useEffect(() => {
@@ -136,7 +136,7 @@ const BirthdaySelect: React.FC<Props> = ({
         }
       }
     }
-  }, [isModalOpen, watch("month"), endMonth]);
+  }, [isModalOpen, watch("month"), endMonth]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleClearValues = () => {
     setValue("year", 0);

@@ -16,9 +16,9 @@ const LoginGuideModal: React.FC = () => {
   return (
     <>
       <input type="checkbox" className="modal-toggle" id="login-guide-modal" />
-      <div className="modal">
+      <div className="modal backdrop-blur-[16.35px]">
         <div className="modal-box p-8 pb-4">
-          <h3 className="pb-6 font-bold text-sm sm:text-base text-center text-accent sm:leading-8">
+          <h3 className="pb-6 font-bold text-sm sm:text-base text-center text-text-1000 sm:leading-8">
             全ての機能を利用するには、
             <br />
             メールアドレスでのアカウント登録が

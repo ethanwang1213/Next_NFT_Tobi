@@ -46,7 +46,7 @@ const IconSelect: React.FC<Props> = ({
 
     setValue("iconUrl", user.icon !== "" ? user.icon : "");
     cropData.set(null);
-  }, [user, isModalOpen]);
+  }, [user, isModalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // プロフィール編集モーダルのアイコンプレビューを表示
   // クロップのプレビューを軽量で表示するためにcanvasを使用している
@@ -89,6 +89,7 @@ const IconSelect: React.FC<Props> = ({
 
     // 実行
     displayCanvas();
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [
     canvasRef.current,
     imageRef.current,
@@ -97,6 +98,7 @@ const IconSelect: React.FC<Props> = ({
     naturalWidth,
     naturalHeight,
   ]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   // 画像選択時の処理
   const handleIconChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +120,7 @@ const IconSelect: React.FC<Props> = ({
       setValue("iconUrl", iconForCrop.current);
       iconForCrop.set("");
     }
-  }, [cropData.current]);
+  }, [cropData.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

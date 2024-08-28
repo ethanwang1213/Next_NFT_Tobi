@@ -22,7 +22,7 @@ const NameInput: React.FC<Props> = ({
     if (!user) return;
     if (!isModalOpen) return;
     setValue("newName", user.name);
-  }, [user, isModalOpen]);
+  }, [user, isModalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

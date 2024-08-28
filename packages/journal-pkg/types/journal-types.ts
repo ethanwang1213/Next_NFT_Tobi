@@ -3,6 +3,12 @@
 import { Timestamp } from "firebase/firestore/lite";
 import { ReactElement } from "react";
 
+export type LoginFormType = {
+  email: string;
+};
+
+export const EMAIL_REGEX = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/;
+
 // journal 本のタグのデータ型
 export type tagType = {
   page: number | (() => void);
@@ -21,6 +27,7 @@ export type BookIndex = {
   nekoPage: PageIndexData;
   nftPage: PageIndexData;
   redeemPage: PageIndexData;
+  settingPage: PageIndexData;
 };
 
 // journal 本の画像の左上隅座標を表す型
@@ -151,4 +158,9 @@ export type StampRallyResultType = {
   stamp: Tpf2023StampType;
   status: "IN_PROGRESS";
   isComplete: boolean;
+};
+
+export type ErrorMessage = {
+  code: string;
+  message: string;
 };
