@@ -2,11 +2,11 @@ name: Deploy Journal of Develop branch on Vercel
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - develop
-    types:
-      - closed
+  # pull_request:
+  #   branches:
+  #     - develop
+  #   types:
+  #     - closed
 
 jobs:
   deploy-journal-develop:
