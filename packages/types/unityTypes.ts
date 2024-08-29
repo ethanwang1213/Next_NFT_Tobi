@@ -20,6 +20,7 @@ export const ModelType = {
   AcrylicStand: 2,
   CanBadge: 3,
   MessageCard: 4,
+  UserUploadedModel: 5,
 } as const;
 export type ModelType = (typeof ModelType)[keyof typeof ModelType];
 
