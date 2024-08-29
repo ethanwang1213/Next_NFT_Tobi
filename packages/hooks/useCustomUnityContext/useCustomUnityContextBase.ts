@@ -1,27 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useUnityContext } from "react-unity-webgl";
-import { UnityMessageJson, UnitySceneType } from "./types";
-
-type MessageDestination =
-  | "SwitchSceneMessageReceiver"
-  | "LoadSaidanDataMessageReceiver"
-  | "SaveSaidanDataMessageReceiver"
-  | "ItemThumbnailGenerationMessageReceiver"
-  | "NewItemMessageReceiver"
-  | "NewItemWithDragMessageReceiver"
-  | "RemoveSingleItemMessageReceiver"
-  | "RemoveItemsMessageReceiver"
-  | "RemoveRecentItemMessageReceiver"
-  | "RemovalResultMessageReceiver"
-  | "ItemMenuXMessageReceiver"
-  | "UpdateItemIdMessageReceiver"
-  | "UpdateSettingsMessageReceiver"
-  | "InputWasdMessageReceiver"
-  | "UndoActionMessageReceiver"
-  | "RedoActionMessageReceiver"
-  | "DeleteAllActionHistoryMessageReceiver"
-  | "PauseInputsMessageReceiver"
-  | "ResumeInputsMessageReceiver";
+import { MessageDestination, UnityMessageJson, UnitySceneType } from "./types";
 
 export const useCustomUnityContextBase = ({
   sceneType,

@@ -19,6 +19,27 @@ export const UnitySceneType = {
 export type UnitySceneType =
   (typeof UnitySceneType)[keyof typeof UnitySceneType];
 
+export type MessageDestination =
+  | "SwitchSceneMessageReceiver"
+  | "LoadSaidanDataMessageReceiver"
+  | "SaveSaidanDataMessageReceiver"
+  | "ItemThumbnailGenerationMessageReceiver"
+  | "NewItemMessageReceiver"
+  | "NewItemWithDragMessageReceiver"
+  | "RemoveSingleItemMessageReceiver"
+  | "RemoveItemsMessageReceiver"
+  | "RemoveRecentItemMessageReceiver"
+  | "RemovalResultMessageReceiver"
+  | "ItemMenuXMessageReceiver"
+  | "UpdateItemIdMessageReceiver"
+  | "UpdateSettingsMessageReceiver"
+  | "InputWasdMessageReceiver"
+  | "UndoActionMessageReceiver"
+  | "RedoActionMessageReceiver"
+  | "DeleteAllActionHistoryMessageReceiver"
+  | "PauseInputsMessageReceiver"
+  | "ResumeInputsMessageReceiver";
+
 export const UnityMessageType = {
   SimpleMessage: 0,
   SceneIsLoaded: 1,

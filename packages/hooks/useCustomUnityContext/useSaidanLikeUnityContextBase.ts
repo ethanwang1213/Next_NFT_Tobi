@@ -14,6 +14,7 @@ import {
   Vector3,
 } from "types/unityTypes";
 import {
+  MessageDestination,
   RequiredUndoneRedoneResult,
   SaidanLikeData,
   UndoneOrRedone,
@@ -27,13 +28,30 @@ const useUndoRedo = ({
   additionalItemDataMap,
   onActionUndone,
   onActionRedone,
+  postMessageToUnity,
 }: {
   additionalItemDataMap: Map<ItemType, Map<number, ParentId & ItemName>>;
   onActionUndone?: UndoneOrRedone;
   onActionRedone?: UndoneOrRedone;
+  postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
   const [isUndoable, setIsUndoable] = useState<boolean>(false);
   const [isRedoable, setIsRedoable] = useState<boolean>(false);
+
+  // undo/redo
+  const undoAction = useCallback(() => {
+    postMessageToUnity("UndoActionMessageReceiver", "");
+  }, [postMessageToUnity]);
+
+  const redoAction = useCallback(() => {
+    postMessageToUnity("RedoActionMessageReceiver", "");
+  }, [postMessageToUnity]);
+
+  const deleteAllActionHistory = useCallback(() => {
+    postMessageToUnity("DeleteAllActionHistoryMessageReceiver", "");
+    setIsUndoable(false);
+    setIsRedoable(false);
+  }, [postMessageToUnity]);
 
   /**
    * Process the result of undone or redone action.
@@ -235,6 +253,9 @@ const useUndoRedo = ({
   return {
     isUndoable,
     isRedoable,
+    undoAction,
+    redoAction,
+    deleteAllActionHistory,
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
@@ -292,10 +313,18 @@ export const useSaidanLikeUnityContextBase = ({
   const {
     isUndoable,
     isRedoable,
+    undoAction,
+    redoAction,
+    deleteAllActionHistory,
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
-  } = useUndoRedo({ additionalItemDataMap, onActionUndone, onActionRedone });
+  } = useUndoRedo({
+    additionalItemDataMap,
+    onActionUndone,
+    onActionRedone,
+    postMessageToUnity,
+  });
 
   // functions
   const postMessageToLoadData = useCallback(() => {
@@ -479,19 +508,6 @@ export const useSaidanLikeUnityContextBase = ({
     },
     [postMessageToUnity],
   );
-
-  // undo/redo
-  const undoAction = useCallback(() => {
-    postMessageToUnity("UndoActionMessageReceiver", "");
-  }, [postMessageToUnity]);
-
-  const redoAction = useCallback(() => {
-    postMessageToUnity("RedoActionMessageReceiver", "");
-  }, [postMessageToUnity]);
-
-  const deleteAllActionHistory = useCallback(() => {
-    postMessageToUnity("DeleteAllActionHistoryMessageReceiver", "");
-  }, [postMessageToUnity]);
 
   // load item data
   useEffect(() => {
