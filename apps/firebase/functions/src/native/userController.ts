@@ -280,7 +280,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
     icon_url: account?.icon,
     sns: account?.sns,
     about_me: account?.aboutMe,
-    social_link: account?.socialLinks,
+    social_links: account?.socialLinks,
     gender: account?.gender,
     birth: account?.birth,
     gift_permission: account?.giftPermission,

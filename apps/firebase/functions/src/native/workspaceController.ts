@@ -128,6 +128,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
         return {
           id: workspaceSample.id,
           itemId: workspaceSample.sample_item.id,
+          name: workspaceSample.sample_item.digital_item.name??"",
           modelType: workspaceSample.sample_item.digital_item.type,
           modelUrl: workspaceSample.sample_item.digital_item.model_url,
           materialUrl: workspaceSample.sample_item.digital_item.material_image?.image,
