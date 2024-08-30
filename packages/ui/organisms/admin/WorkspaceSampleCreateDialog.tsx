@@ -2,7 +2,6 @@ import { ImageType, uploadImage } from "fetchers/UploadActions";
 import NextImage from "next/image";
 import React, {
   MutableRefObject,
-  RefObject,
   useCallback,
   useEffect,
   useRef,
@@ -16,8 +15,8 @@ import MaterialImageSelectComponent from "ui/organisms/admin/MaterialImageSelect
 import RoadMapComponent from "ui/organisms/admin/SampleCreateRoadmap";
 import SampleTypeSelectComponent from "ui/organisms/admin/SampleTypeSelect";
 import { MaterialItem } from "ui/types/adminTypes";
-import ImagePositionComponent from "./ImagePositionComponent";
 import ImageCombineComponent from "./ImageCombineComponent";
+import ImagePositionComponent from "./ImagePositionComponent";
 
 type Props = {
   dialogRef: MutableRefObject<HTMLDialogElement>;
@@ -532,6 +531,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
     if (!sampleType || !step) {
       return (
         <SampleTypeSelectComponent
+          generateSampleHandler={generateSample}
           selectTypeHandler={(value) => {
             setSampleType(value);
             if (value != "Acrylic Keyholder") setStep(1);
@@ -562,6 +562,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
     placeComponentForAcrylicStand,
     placeComponentForCanBadge,
     placeComponentForMessageCard,
+    generateSample,
     sampleType,
     step,
     setSampleType,

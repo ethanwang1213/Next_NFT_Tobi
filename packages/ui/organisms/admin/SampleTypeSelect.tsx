@@ -49,6 +49,7 @@ const SampleTypeSelectComponent = (props: {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const uploadFileRef = useRef<string>("");
+  const { generateSampleHandler } = props;
 
   const uploadImageHandler = useCallback(
     async (
@@ -70,15 +71,12 @@ const SampleTypeSelectComponent = (props: {
         if (!result) {
           setError(true);
           setUploading(false);
-          await props.generateSampleHandler(
-            ModelType.UserUploadedModel,
-            result.data,
-          );
+          await generateSampleHandler(ModelType.UserUploadedModel, result.data);
         }
       }
       return true;
     },
-    [postData, props.generateSampleHandler],
+    [postData, generateSampleHandler],
   );
 
   const onDrop = useCallback(
