@@ -142,18 +142,8 @@ export default function Index() {
     sendSampleRemovalResult(id, result !== false);
   };
 
-  const onActionUndone: (actionType: ActionType, text: string) => void = (
-    actionType,
-    text,
-  ) => {
-    console.log("Action undone:", actionType, text);
-  };
-
-  const onActionRedone: (actionType: ActionType, text: string) => void = (
-    actionType,
-    text,
-  ) => {
-    console.log("Action redone:", actionType, text);
+  const handleAction = (actionType: ActionType, text: string): void => {
+    notification(text);
   };
 
   const [contentWidth, setContentWidth] = useState(0);
@@ -199,8 +189,8 @@ export default function Index() {
     onRemoveSampleEnabled,
     onRemoveSampleDisabled,
     onRemoveSampleRequested,
-    onActionRedone,
-    onActionUndone,
+    onActionRedone: handleAction,
+    onActionUndone: handleAction,
   });
 
   useEffect(() => {
@@ -275,9 +265,7 @@ export default function Index() {
     [materials, placeNewSample],
   );
 
-  const handleButtonClick = (msg) => {
-    undoAction();
-    redoAction();
+  const notification = (msg) => {
     setShowToast(false);
     toggleMainToast();
     if (timerId.current) {
@@ -556,7 +544,7 @@ export default function Index() {
             <button
               disabled={!isUndoable}
               className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-              onClick={() => handleButtonClick("undo: Deleted Sample Item A ")}
+              onClick={undoAction}
             >
               <Image
                 width={32}
@@ -569,7 +557,7 @@ export default function Index() {
             <button
               disabled={!isRedoable}
               className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-              onClick={() => handleButtonClick("redo: Deleted Sample Item A ")}
+              onClick={redoAction}
             >
               <Image
                 width={32}
@@ -580,7 +568,8 @@ export default function Index() {
                 className="cursor-pointer h-[32px]"
               />
             </button>
-            <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+            <button
+              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
               onClick={() => {
                 setShowDetailView(!showDetailView);
                 setShowListView(false);
@@ -597,7 +586,8 @@ export default function Index() {
                 }
               />
             </button>
-            <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+            <button
+              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
               onClick={() => {
                 if (shortcutDialogRef.current) {
                   shortcutDialogRef.current.showModal();
