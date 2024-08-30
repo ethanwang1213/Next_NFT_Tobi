@@ -1,9 +1,46 @@
+import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
+import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useState } from "react";
+import { ActionType } from "types/unityTypes";
 
 const ShowcaseUnityUISetting = () => {
-  const [scale, setScale] = useState<number>(0.5);
+  const [scale, setScale] = useState<number>(1.0);
+  const [px, setpx] = useState<number>(0);
+  const [py, setpy] = useState<number>(0);
+  const [pz, setpz] = useState<number>(0);
+  const [rx, setrx] = useState<number>(0);
+  const [ry, setry] = useState<number>(0);
+  const [rz, setrz] = useState<number>(0);
+
+  const handleAction = (
+    actionType: ActionType,
+    text: string,
+    result: UndoneRedoneResult,
+  ) => {
+    switch (actionType) {
+      case 2:
+        setpx(result.item.position.x);
+        setpy(result.item.position.y);
+        setpz(result.item.position.z);
+        break;
+      case 3:
+        setrx(result.item.rotation.x);
+        setry(result.item.rotation.y);
+        setrz(result.item.rotation.z);
+        break;
+      case 4:
+        setScale(result.item.scale);
+        break;
+      default:
+    }
+  };
+
+  const {} = useShowcaseEditUnityContext({
+    onActionRedone: handleAction,
+    onActionUndone: handleAction,
+  });
 
   const handleStyle = {
     borderColor: "#FAFAFA",
@@ -32,16 +69,19 @@ const ShowcaseUnityUISetting = () => {
             type="text"
             placeholder="x"
             className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            value={px === 0 ? "" : px.toFixed(1)}
           />
           <input
             type="text"
             placeholder="y"
             className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            value={py === 0 ? "" : py.toFixed(1)}
           />
           <input
             type="text"
             placeholder="z"
             className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            value={pz === 0 ? "" : pz.toFixed(1)}
           />
         </div>
       </div>
@@ -52,16 +92,19 @@ const ShowcaseUnityUISetting = () => {
             type="text"
             placeholder="x"
             className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            value={rx === 0 ? "" : rx.toFixed(1)}
           />
           <input
             type="text"
             placeholder="y"
             className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            value={ry === 0 ? "" : ry.toFixed(1)}
           />
           <input
             type="text"
             placeholder="z"
             className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            value={rz === 0 ? "" : rz.toFixed(1)}
           />
         </div>
       </div>
@@ -72,12 +115,12 @@ const ShowcaseUnityUISetting = () => {
             type="text"
             placeholder="scale"
             className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[16px] rounded-[5px] text-right pl-[7px] pr-[10px]"
-            defaultValue={"1.0"} 
+            value={scale.toFixed(1)}
           />
         </div>
         <Slider
-          min={0}
-          max={100}
+          min={1}
+          max={10}
           styles={{
             handle: handleStyle,
             track: trackStyle,

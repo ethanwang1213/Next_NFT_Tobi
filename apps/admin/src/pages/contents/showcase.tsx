@@ -9,7 +9,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, ModelType, SettingsUpdatePhase } from "types/unityTypes";
+import {
+  ActionType,
+  ItemType,
+  ModelType,
+  SettingsUpdatePhase,
+} from "types/unityTypes";
 import Button from "ui/atoms/Button";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
@@ -115,6 +120,13 @@ const Showcase = () => {
     }
   };
 
+  const handleAction: (
+    actionType: ActionType,
+    text: string,
+  ) => void = (actionType, text) => {
+    notification(text);
+  };
+
   const [contentWidth, setContentWidth] = useState(0);
 
   const {
@@ -131,12 +143,16 @@ const Showcase = () => {
     placeNewNftWithDrag,
     updateSettings,
     inputWasd,
+    undoAction,
+    redoAction,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onRemoveItemRequested,
+    onActionRedone: handleAction,
+    onActionUndone: handleAction,
   });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -149,7 +165,7 @@ const Showcase = () => {
     }
   }, [leavingPage, setLeavingPage, requestSaveData]);
 
-  const handleButtonClick = (msg) => {
+  const notification = (msg) => {
     setShowToast(false);
     toggleMainToast();
     if (timerId.current) {
@@ -311,6 +327,7 @@ const Showcase = () => {
     sb: number,
     pt: string,
     pb: number,
+    phase: SettingsUpdatePhase,
   ) => {
     setWt(wt);
     setFt(ft);
@@ -318,18 +335,6 @@ const Showcase = () => {
     setSb(sb);
     setPt(pt);
     setPb(pb);
-
-    /// TODO(Murat) by Toruto: modify updating settings for undo/redo feature
-    /// Set the `phase` argument as `SettingsUpdatePhase.Updating`
-    ///   while operating a GUI for updating settings
-    ///   such like dragging a slider, dragging a color picker, etc.
-    /// Set the `phase` argument as `SettingsUpdatePhase.Ended`
-    ///   when operating the GUI is ended
-    ///   such like releassed a slider, released a color picker, etc.
-    ///   And, with this phase, the change of settings is registered on action history for undo/redo.
-
-    /// NOTE(Toruto): After the implementation, please remove this comment.
-
     updateSettings({
       wallpaper: {
         tint: wt,
@@ -347,7 +352,7 @@ const Showcase = () => {
           brightness: pb,
         },
       },
-      phase: SettingsUpdatePhase.Updating,
+      phase : phase,
     });
   };
 
@@ -426,9 +431,7 @@ const Showcase = () => {
               <button
                 disabled={!isUndoable}
                 className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-                onClick={() =>
-                  handleButtonClick("undo: Deleted Sample Item A ")
-                }
+                onClick={undoAction}
               >
                 <Image
                   width={32}
@@ -441,9 +444,7 @@ const Showcase = () => {
               <button
                 disabled={!isRedoable}
                 className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-                onClick={() =>
-                  handleButtonClick("redo: Deleted Sample Item A ")
-                }
+                onClick={redoAction}
               >
                 <Image
                   width={32}
@@ -453,11 +454,12 @@ const Showcase = () => {
                   className="cursor-pointer h-[32px]"
                 />
               </button>
-              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showSampleDetailView);
                   setShowSmartFrame(!showSmartFrame);
-                  handleButtonClick(
+                  notification(
                     showSmartFrame
                       ? "The smartphone frame is visibly"
                       : "The smartphone frame is disable",
@@ -475,11 +477,12 @@ const Showcase = () => {
                   }
                 />
               </button>
-              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showDetailView);
                   setShowDetailView(!showDetailView);
-                  handleButtonClick(
+                  notification(
                     showDetailView ? "The UI is hidden" : "The UI is shown",
                   );
                 }}
@@ -495,8 +498,9 @@ const Showcase = () => {
                   }
                 />
               </button>
-              <button className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
-                onClick={() => handleButtonClick("help button is clicked")}
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                onClick={() => notification("help button is clicked")}
               >
                 <Image
                   width={32}
@@ -527,8 +531,9 @@ const Showcase = () => {
               sb: number,
               pt: string,
               pb: number,
+              phase: SettingsUpdatePhase,
             ) => {
-              updateUnityViewSettings(wt, ft, st, sb, pt, pb);
+              updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
             }}
           />
         )}

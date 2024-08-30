@@ -1,3 +1,4 @@
+import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
@@ -42,6 +43,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
+  const { deleteAllActionHistory } = useWorkspaceUnityContext({});
 
   useEffect(() => {
     if (id > 0) {
@@ -69,25 +71,26 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
           amount: 1,
           modelUrl: data.modelUrl,
         });
-        if (!result) {
-          toast(
-            <MintNotification
-              title="Mint failed"
-              text="The daily transaction limit has been exceeded, so Mint could not be completed."
-            />,
-            {
-              className: "mint-notification",
-            },
-          );
-        }
+        !result
+          ? toast(
+              <MintNotification
+                title="Mint failed"
+                text="The daily transaction limit has been exceeded, so Mint could not be completed."
+              />,
+              {
+                className: "mint-notification",
+              },
+            )
+          : deleteAllActionHistory();
       }
     },
-    [data, fcmToken, id, postData],
+    [data, fcmToken, id, postData, deleteAllActionHistory],
   );
 
   const deleteConfirmDialogHandler = useCallback(
     (value: string) => {
       if (value == "delete") {
+        deleteAllActionHistory();
         deleteHandler([sampleitemId]);
       }
     },
