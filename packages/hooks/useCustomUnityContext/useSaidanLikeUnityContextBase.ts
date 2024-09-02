@@ -335,7 +335,11 @@ export const useSaidanLikeUnityContextBase = ({
       return;
     }
 
-    const json = JSON.stringify({ ...loadData });
+    const json = JSON.stringify({
+      ...loadData,
+      isFirstSaidan: false,
+      removedDefautItems: [],
+    });
     postMessageToUnity("LoadSaidanDataMessageReceiver", json);
 
     loadData.saidanItemList.forEach((item) => {

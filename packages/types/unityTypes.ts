@@ -12,6 +12,7 @@ export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
 export const ItemType = {
   Sample: 0,
   DigitalItemNft: 1,
+  DefaultItem: 2,
 } as const;
 export type ItemType = (typeof ItemType)[keyof typeof ItemType];
 
