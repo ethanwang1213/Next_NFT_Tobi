@@ -3,6 +3,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
 import React, { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { ModelType } from "types/unityTypes";
 import GenerateErrorComponent from "./GenerateErrorComponent";
 import UploadButton from "./UploadButton";
 
@@ -36,12 +37,19 @@ const SampleTypeComponent = (props: {
 
 const SampleTypeSelectComponent = (props: {
   selectTypeHandler: (value: string) => void;
+  generateSampleHandler: (
+    sampleType: ModelType,
+    imageUrl1: string,
+    imageUrl2?: string,
+    option?: string,
+  ) => Promise<void>;
 }) => {
   const postApiUrl = "native/zip-model";
   const { postData } = useRestfulAPI(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const uploadFileRef = useRef<string>("");
+  const { generateSampleHandler } = props;
 
   const uploadImageHandler = useCallback(
     async (
@@ -63,11 +71,12 @@ const SampleTypeSelectComponent = (props: {
         if (!result) {
           setError(true);
           setUploading(false);
+          await generateSampleHandler(ModelType.UserUploadedModel, result.data);
         }
       }
       return true;
     },
-    [postData],
+    [postData, generateSampleHandler],
   );
 
   const onDrop = useCallback(
