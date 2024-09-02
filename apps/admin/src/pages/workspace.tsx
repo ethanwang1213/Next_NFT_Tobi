@@ -417,13 +417,13 @@ export default function Index() {
         modelUrl: generateModelUrl.current,
         imageUrl: image1,
       });
-    }else if(sampleType == ModelType.UserUploadedModel){
+    } else if (sampleType == ModelType.UserUploadedModel) {
       generateModelUrl.current = image1;
       requestItemThumbnail({
         modelType: ModelType.UserUploadedModel,
         modelUrl: generateModelUrl.current,
         imageUrl: null,
-      })
+      });
     }
     return true;
   };
