@@ -40,9 +40,10 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, []);
 
   useEffect(() => {
+    const gaId = process.env.NEXT_PUBLIC_GA_ID;
     const handleRouteChange = (url: string) => {
       if (window.gtag) {
-        window.gtag("config", "G-91QHLJNXPV", {
+        window.gtag("config", gaId, {
           page_path: url,
         });
       }
@@ -52,7 +53,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
     // Load GA4 script
     const gaScript = document.createElement("script");
-    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=G-91QHLJNXPV`;
+    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
     gaScript.async = true;
     document.head.appendChild(gaScript);
 
@@ -60,7 +61,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     gaScript.onload = () => {
       if (window.gtag) {
         window.gtag("js", new Date());
-        window.gtag("config", "G-91QHLJNXPV", {
+        window.gtag("config", gaId, {
           page_path: window.location.pathname,
         });
       }
