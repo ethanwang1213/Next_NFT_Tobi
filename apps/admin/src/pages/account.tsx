@@ -2,9 +2,11 @@ import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
+import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
 
 export const metadata: Metadata = {
@@ -205,12 +207,14 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 export default function Index() {
   const apiUrl = "native/my/profile";
   const [modified, setModified] = useState(false);
+  const router = useRouter();
   const { data, dataRef, error, loading, setData, setLoading, postData } =
     useRestfulAPI(apiUrl);
 
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
   const imageFileRef = useRef(null);
+  const emailEditDialogRef = useRef(null);
 
   const submitHandler = async () => {
     const submitData = {
@@ -357,11 +361,27 @@ export default function Index() {
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
               <span className={`${valueClass}`}>{data?.email}</span>
-              <button className={editBtnClass}>Edit</button>
+              <button
+                className={editBtnClass}
+                onClick={() => {
+                  if (emailEditDialogRef.current) {
+                    emailEditDialogRef.current.showModal();
+                  }
+                }}
+              >
+                Edit
+              </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Password"}>
               <span className={`${valueClass}`}>****</span>
-              <button className={editBtnClass}>Edit</button>
+              <button
+                className={editBtnClass}
+                onClick={() => {
+                  router.push("/auth/password_update");
+                }}
+              >
+                Edit
+              </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Social Account"}>
               <span className={`${valueClass}`}></span>
@@ -376,6 +396,10 @@ export default function Index() {
           <BirthdayEditDialog
             initialValue={data?.birth}
             dialogRef={birthEditDialogRef}
+            changeHandler={(value) => fieldChangeHandler("birth", value)}
+          />
+          <EmailEditDialog
+            dialogRef={emailEditDialogRef}
             changeHandler={(value) => fieldChangeHandler("birth", value)}
           />
         </div>
