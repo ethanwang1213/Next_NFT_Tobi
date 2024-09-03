@@ -361,6 +361,25 @@ export default function Index() {
     [],
   );
 
+  const sampleTypeLabels: { [key: number]: string } = {
+    1: "Poster",
+    2: "AcrylicStand",
+    3: "CanBadge",
+    4: "MessageCard",
+    5: "UserUploadedModel",
+  };
+
+  const trackSampleCreation = (sampleType: number) => {
+    if (typeof window !== "undefined" && window.gtag) {
+      const eventLabel = sampleTypeLabels[sampleType] || "unknown";
+      window.gtag("event", "create_sample", {
+        event_category: "Sample",
+        event_label: eventLabel,
+        value: 1,
+      });
+    }
+  };
+
   const generateSampleHandler = async (
     sampleType: ModelType,
     image1: string,
@@ -368,6 +387,7 @@ export default function Index() {
     coords: string,
   ): Promise<boolean> => {
     generateSampleType.current = sampleType;
+    trackSampleCreation(sampleType as ModelType);
     if (sampleType === ModelType.Poster || sampleType === ModelType.CanBadge) {
       generateModelUrl.current =
         "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";

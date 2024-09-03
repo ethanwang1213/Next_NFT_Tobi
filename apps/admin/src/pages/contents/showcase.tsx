@@ -120,10 +120,10 @@ const Showcase = () => {
     }
   };
 
-  const handleAction: (
-    actionType: ActionType,
-    text: string,
-  ) => void = (actionType, text) => {
+  const handleAction: (actionType: ActionType, text: string) => void = (
+    actionType,
+    text,
+  ) => {
     notification(text);
   };
 
@@ -216,7 +216,7 @@ const Showcase = () => {
   const [pb, setPb] = useState(70);
 
   useEffect(() => {
-    if (showcaseData != undefined) {
+    if (showcaseData) {
       setWt(showcaseData.settings.wallpaper.tint ?? "#717171");
       setFt(showcaseData.settings.floor.tint ?? "#717171");
       setSt(showcaseData.settings.lighting.sceneLight.tint ?? "#717171");
@@ -256,11 +256,15 @@ const Showcase = () => {
 
   useEffect(() => {
     const updateContainerWidth = () => {
-      const height = document.querySelector(".w-full.h-full").clientHeight;
+      const height = document.querySelector(
+        ".w-full.h-screen-minus-56",
+      ).clientHeight;
       const width = Math.ceil((height / 16) * 9);
       setContainerWidth(width);
 
-      setContentWidth(document.querySelector(".w-full.h-full").clientWidth);
+      setContentWidth(
+        document.querySelector(".w-full.h-screen-minus-56").clientWidth,
+      );
     };
 
     // Update container width on mount and window resize
@@ -352,7 +356,7 @@ const Showcase = () => {
           brightness: pb,
         },
       },
-      phase : phase,
+      phase: phase,
     });
   };
 
