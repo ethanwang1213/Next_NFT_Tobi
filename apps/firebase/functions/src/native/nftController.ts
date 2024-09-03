@@ -6,7 +6,7 @@ import {TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import {giftStatus, increaseTransactionAmount, mintStatus, statusOfLimitTransaction} from "./utils";
+import {giftStatus, increaseTransactionAmount, isEmptyObject, mintStatus, statusOfLimitTransaction} from "./utils";
 import * as fcl from "@onflow/fcl";
 
 fcl.config({
@@ -621,6 +621,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
             include: {
               account: {
                 include: {
+                  flow_account: true,
                   business: {
                     include: {
                       content: true,
@@ -662,6 +663,37 @@ export const getNftInfo = async (req: Request, res: Response) => {
       const copyrights = nftData.digital_item.copyrights.map((relate) => {
         return relate.copyright.name;
       });
+      const owners:{
+        [key: number]: string;
+      } = await getOwnershipHistory(nftData.nft_owner?.account?.flow_account?.flow_address??"", nftData.id);
+      let acquiredDate = new Date();
+      let ownerHistory: {
+        avatarUrl: string | null | undefined;
+        uuid: string | undefined;
+        flowAddress: string;
+        acquiredDate: Date;
+      }[] = [];
+      if (isEmptyObject(owners)) {
+        acquiredDate = new Date(Object.keys(owners)[0])
+        ownerHistory = await Promise.all(
+          Object.entries(owners).map(async ([key, owner])=>{
+            const ownerData = await prisma.flow_accounts.findFirst({
+              where: {
+                flow_address: owner,
+              },
+              include: {
+                account: true,
+              }
+            })
+            return {
+              avatarUrl: ownerData?.account.icon_url,
+              uuid: ownerData?.account_uuid,
+              flowAddress: owner,
+              acquiredDate: new Date(key),
+            }
+          })
+        )
+      }
       const returnData = {
         content: nftData.nft_owner?.account?.business?.content != null ? {
           name: nftData.nft_owner?.account?.business?.content.name,
@@ -674,6 +706,8 @@ export const getNftInfo = async (req: Request, res: Response) => {
         license: nftData.digital_item.license,
         certImageUrl: "",
         sn: nftData.serial_no,
+        acquiredDate: acquiredDate,
+        owners: ownerHistory,
       };
       res.status(200).send({
         status: "success",

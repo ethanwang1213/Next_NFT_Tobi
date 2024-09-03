@@ -4,7 +4,9 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
-import {digitalItemStatus} from "./utils";
+import {allowedExtension, checkUri, digitalItemStatus} from "./utils";
+import * as AdmZip from "adm-zip";
+import * as admin from "firebase-admin";
 
 interface ModelApiResponse {
   url: string;
@@ -14,6 +16,7 @@ export const ModelRequestType = {
   AcrylicStand: "acrylic_stand",
   MessageCard: "message_card",
   RemoveBg: "remove_bg",
+  UserUploaded: "user_uploaded",
 } as const;
 
 export type ModelRequestType = (typeof ModelRequestType)[keyof typeof ModelRequestType];
@@ -914,6 +917,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         defaultThumbnailUrl: digitalItem.default_thumb_url,
         customThumbnailUrl: digitalItem.custom_thumb_url,
         isCustomThumbnailSelected: !digitalItem.is_default_thumb,
+        modelUrl: digitalItem.model_url,
         materialUrl: digitalItem.material_image?.image,
         price: digitalItem.sales.length>0?digitalItem.sales[0].price:null,
         status: digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status,
@@ -1256,6 +1260,179 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
     res.status(401).send({
       status: "error",
       data: error.code,
+    });
+    return;
+  });
+};
+
+export const handleZipModel = async (req: Request, res: Response) => {
+  const {fileUrl} = req.body;
+  const {authorization} = req.headers;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    try {
+      // Download the zip file
+      const response = await axios.get(fileUrl, {responseType: "arraybuffer"});
+      console.log("Response code for file URL >>>>>>>>>>>", response.status);
+
+      // Unzip the downloaded file
+      const zip = new AdmZip(response.data);
+      const entries = zip.getEntries(); // Get all entries in the zip file
+      console.log("Entries length >>>>>>>>>>>>>>", entries.length);
+      let jsonData;
+      // Relation with uri and entry
+      const relationUri:{
+        uri: string,
+        beforeUri: string,
+        entryName: string,
+      }[] = [];
+      // Check all exception, update uri
+      for (const entry of entries) {
+        const buffer = entry.getData(); // Get the data of the entry
+        const entryName = entry.entryName;
+        console.log("Entry Name >>>>>>>>>>>>", entryName);
+
+        // MacOS and folder exception.
+        if (entryName.startsWith("__MACOSX")||buffer.length==0) {
+          continue;
+        }
+        // Check if zip file includes only valid file.
+        let flag = false;
+        allowedExtension.forEach((extension) => {
+          if (entryName.endsWith(extension)) {
+            flag = true;
+          }
+        });
+        if (!flag) {
+          res.status(401).send({
+            status: "error",
+            data: "invalid-file",
+          });
+          return;
+        }
+        // Check if the entry is a .gltf file and get assets, buffers, images.
+        if (entryName.endsWith(".gltf")) {
+          // Change buffer to JSON.
+          const bufferString = buffer.toString("utf8");
+
+          jsonData = JSON.parse(bufferString); // Convert buffer to JSON
+          const version = jsonData.asset.version; // Access assets.version
+          if (version != "2.0") {
+            res.status(401).send({
+              status: "error",
+              data: "invalid-version",
+            });
+            return;
+          }
+
+          // Check uri and update uri
+          for (let i = 0; i < jsonData.buffers.length; i++) {
+            console.log("Buffers before >>>>>>>", jsonData.buffers[i].uri);
+            const check = checkUri(jsonData.buffers[i].uri, entries, entryName);
+            if (!check) {
+              res.status(401).send({
+                status: "error",
+                data: "invalid-uri",
+              });
+              return;
+            }
+            const beforeName = jsonData.buffers[i].uri;
+            jsonData.buffers[i].uri = jsonData.buffers[i].uri.split("/").pop();
+
+            // Check if there is file that has same name and update that
+            for (let i = 0; i < relationUri.length-1; i++) {
+              if (relationUri[i].uri==jsonData.buffers[i].uri) {
+                jsonData.buffers[i].uri = jsonData.buffers[i].uri + Date.now();
+              }
+            }
+            relationUri.push({
+              uri: jsonData.buffers[i].uri,
+              beforeUri: beforeName,
+              entryName: check,
+            });
+            console.log("Buffers after >>>>>>>", jsonData.buffers[i].uri);
+          }
+
+          for (let i = 0; i < jsonData.images.length; i++) {
+            console.log("Buffers before >>>>>>>", jsonData.images[i].uri);
+            const check = checkUri(jsonData.images[i].uri, entries, entryName);
+            if (!check) {
+              res.status(401).send({
+                status: "error",
+                data: "invalid-uri",
+              });
+              return;
+            }
+            const beforeName = jsonData.images[i].uri;
+            jsonData.images[i].uri = jsonData.images[i].uri.split("/").pop();
+
+            // Check if there is file that has same name and update that
+            for (let i = 0; i < relationUri.length-1; i++) {
+              if (relationUri[i].uri==jsonData.images[i].uri) {
+                jsonData.images[i].uri = jsonData.images[i].uri + Date.now();
+              }
+            }
+            relationUri.push({
+              uri: jsonData.images[i].uri,
+              beforeUri: beforeName,
+              entryName: check,
+            });
+            console.log("Buffers after >>>>>>>", jsonData.images[i].uri);
+          }
+
+          console.log(`GLTF File: ${entryName}, Version: ${version}`);
+        } else {
+          console.log(`File: ${entryName}, length (bytes): ${buffer.length}`);
+        }
+      }
+
+      console.log("relationUri >>>>>>>>>>>>>", relationUri);
+      // Upload to firebase
+      const modelUrl = "";
+      const bucket = admin.storage().bucket("tobiratory-f6ae1.appspot.com");
+      for (const entry of entries) {
+        let buffer = entry.getData(); // Get the data of the entry
+        const entryName = entry.entryName;
+        console.log(entryName);
+
+        // MacOS and folder exception.
+        if (entryName.startsWith("__MACOSX")||entryName.endsWith(".DS_Store")||buffer.length==0) {
+          continue;
+        }
+        let fileName;
+        if (entryName.endsWith(".gltf")) {
+          fileName = entryName.split("/").pop();
+          const jsonString = JSON.stringify(jsonData);
+          buffer = Buffer.from(jsonString);
+        } else {
+          fileName = relationUri.filter((relation)=>relation.entryName==entryName)[0].uri;
+        }
+        const destination = `/users/${uid}/item/${ModelRequestType.UserUploaded}/models/${Date.now()}/${fileName}`;
+        try {
+          const file = bucket.file(destination);
+          await file.save(buffer);
+          console.log(`File uploaded to ${destination} successfully.`);
+        } catch (error) {
+          console.error("Error uploading file:", error);
+        }
+      }
+      res.status(200).send({
+        status: "success",
+        data: modelUrl,
+      });
+      return;
+    } catch (error) {
+      console.error("Error downloading or unzipping the file:", error);
+      res.status(500).send({
+        status: "error",
+        data: error,
+      });
+      return;
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
     });
     return;
   });

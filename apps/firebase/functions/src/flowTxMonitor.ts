@@ -4,7 +4,7 @@ import {PubSub} from "@google-cloud/pubsub";
 import {
   REGION,
   TOBIRATORY_DIGITAL_ITEMS_ADDRESS,
-  TOPIC_NAMES
+  TOPIC_NAMES,
 } from "./lib/constants";
 import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
