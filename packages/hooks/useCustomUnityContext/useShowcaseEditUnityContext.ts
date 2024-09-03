@@ -131,8 +131,7 @@ export const useShowcaseEditUnityContext = ({
       return {
         saidanId: loadData.showcaseId,
         saidanType: (loadData.showcaseType + showcaseOffset) as SaidanType,
-        // saidanUrl: loadData.showcaseUrl,
-        saidanUrl: "dummy",
+        saidanUrl: loadData.showcaseUrl,
         saidanItemList,
         saidanCameraData: {
           position: { x: 0, y: 0, z: 0 },
