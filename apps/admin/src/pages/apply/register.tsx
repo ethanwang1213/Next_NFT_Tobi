@@ -201,12 +201,23 @@ const Register = () => {
     setSwitchValue(switchValue + 1);
   };
 
+  const trackCreateContent = () => {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "create_content", {
+        event_category: "Content Creation",
+        event_label: "TCP Content",
+        value: 1,
+      });
+    }
+  };
+
   const postTCPData = async () => {
     const data: TcpFormType = {
       content: contentInfo,
       user: userInfo,
       copyright: copyrightInfo,
     };
+    trackCreateContent();
     registerTcp(data);
   };
 

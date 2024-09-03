@@ -63,28 +63,51 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     return Math.floor(daysDifference);
   };
 
+  const trackSampleMint = useCallback((sampleType: number) => {
+    const sampleTypeLabels: { [key: number]: string } = {
+      1: "Poster",
+      2: "AcrylicStand",
+      3: "CanBadge",
+      4: "MessageCard",
+      5: "UserUploadedModel",
+    };
+
+    const eventLabel = sampleTypeLabels[sampleType] || "unknown";
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "mint_sample", {
+        event_category: "MintedCount",
+        event_label: eventLabel,
+        value: 1,
+      });
+    }
+  }, []);
+
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
-      if (value == "mint") {
+      if (value === "mint") {
         const result = await postData(`native/items/${id}/mint`, {
           fcmToken: fcmToken,
           amount: 1,
           modelUrl: data.modelUrl,
         });
-        !result
-          ? toast(
-              <MintNotification
-                title="Mint failed"
-                text="The daily transaction limit has been exceeded, so Mint could not be completed."
-              />,
-              {
-                className: "mint-notification",
-              },
-            )
-          : deleteAllActionHistory();
+
+        if (!result) {
+          toast(
+            <MintNotification
+              title="Mint failed"
+              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+            />,
+            {
+              className: "mint-notification",
+            },
+          );
+        } else {
+          deleteAllActionHistory();
+          trackSampleMint(data.modelType);
+        }
       }
     },
-    [data, fcmToken, id, postData, deleteAllActionHistory],
+    [data, fcmToken, id, postData, deleteAllActionHistory, trackSampleMint],
   );
 
   const deleteConfirmDialogHandler = useCallback(
