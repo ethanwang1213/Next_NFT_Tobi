@@ -190,6 +190,14 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
+      const content = await prisma.contents.findUnique({
+        where: {
+          businesses_uuid: uid,
+        },
+        include: {
+          copyrights: true,
+        },
+      });
       const digitalItem = await prisma.digital_items.create({
         data: {
           account_uuid: uid,
@@ -202,6 +210,14 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           sample_item: {
             create: {},
           },
+          copyrights: content?{
+            createMany: {
+              data: content?.copyrights.map((copyright)=>{
+                return {copyright_id: copyright.id};
+              }),
+            },
+          }:undefined,
+          license: content?content.license:undefined,
         },
         include: {
           material_image: true,
@@ -729,6 +745,8 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
           id: digitalItem.id,
           name: digitalItem.name,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
+          modelUrl: digitalItem.model_url,
+          modelType: digitalItem.type,
           materialUrl: digitalItem.material_image?.image,
           price: digitalItem.sales.length > 0 ? digitalItem.sales[0].price : null,
           status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
@@ -1388,7 +1406,7 @@ export const handleZipModel = async (req: Request, res: Response) => {
 
       console.log("relationUri >>>>>>>>>>>>>", relationUri);
       // Upload to firebase
-      const modelUrl = "";
+      let modelUrl = "";
       const bucket = admin.storage().bucket("tobiratory-f6ae1.appspot.com");
       for (const entry of entries) {
         let buffer = entry.getData(); // Get the data of the entry
@@ -1411,6 +1429,9 @@ export const handleZipModel = async (req: Request, res: Response) => {
         try {
           const file = bucket.file(destination);
           await file.save(buffer);
+          if (fileName?.endsWith(".gltf")) {
+            modelUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+          }
           console.log(`File uploaded to ${destination} successfully.`);
         } catch (error) {
           console.error("Error uploading file:", error);
