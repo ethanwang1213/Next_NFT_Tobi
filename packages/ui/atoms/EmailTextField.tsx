@@ -1,4 +1,5 @@
 import { UseFormRegister } from "react-hook-form/dist/types/form";
+import { EMAIL_REGEX } from "types/adminTypes";
 import { LoginFormType } from "ui/templates/AuthTemplate";
 
 type Props = {
@@ -18,7 +19,7 @@ const EmailTextField = ({ placeholder, className, register }: Props) => {
           message: "*メールアドレスを入力してください。",
         },
         pattern: {
-          value: /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/,
+          value: EMAIL_REGEX,
           message: "*メールアドレスの形式で入力してください",
         },
       })}

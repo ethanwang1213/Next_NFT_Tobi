@@ -1,7 +1,7 @@
 import useMailAuthForm from "hooks/useMailAuthForm";
 import Image from "next/image";
 import { SetStateAction, useState } from "react";
-import { ErrorMessage } from "types/adminTypes";
+import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/organisms/admin/BackLink";
 import { LoadingSpinnerButton } from "../AuthTemplate";
@@ -69,7 +69,7 @@ const FlowAgreementWithEmailAndPassword = ({
   };
 
   const validateEmail = (email: string) => {
-    if (email === "" || email.match(/^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/)) {
+    if (email === "" || email.match(EMAIL_REGEX)) {
       setEmailStatus({ email, valid: true, error: "" });
     } else {
       setEmailStatus({

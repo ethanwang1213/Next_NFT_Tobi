@@ -400,7 +400,6 @@ export default function Index() {
           />
           <EmailEditDialog
             dialogRef={emailEditDialogRef}
-            changeHandler={(value) => fieldChangeHandler("birth", value)}
           />
         </div>
       )}

@@ -268,4 +268,11 @@ export const isPageForNonBusinessAccount = (path: string) => {
   );
 };
 
+export const hasPassword = async (email: string) => {
+  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+  return signInMethods.includes(
+    EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
+  );
+};
+
 export const useAuth = () => useContext(AuthContext);

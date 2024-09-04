@@ -134,3 +134,5 @@ export type WasdParams = {
   sKey: boolean;
   dKey: boolean;
 };
+
+export const EMAIL_REGEX = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/;

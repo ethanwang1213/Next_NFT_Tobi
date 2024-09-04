@@ -15,6 +15,7 @@ const useReauthenticate = () => {
   const [error, setError] = useState<ErrorMessage | null>(null);
   const reauthenticate = async (password: string) => {
     setError(null);
+    setUserCredential(null);
     setReauthenticating(true);
     const credential = EmailAuthProvider.credential(
       auth.currentUser.email,
