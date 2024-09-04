@@ -115,7 +115,7 @@ export const useWorkspaceUnityContext = ({
     return {
       saidanId: -2,
       saidanType: SaidanType.Workspace,
-      saidanUrl: "todo:set-url-here",
+      saidanUrl: "",
       saidanItemList,
       saidanCameraData: {
         position: {
