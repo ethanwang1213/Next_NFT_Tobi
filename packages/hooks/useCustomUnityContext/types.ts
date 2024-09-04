@@ -73,6 +73,17 @@ export type MessageBodyForSavingSaidanData = {
   saidanThumbnailBase64: string;
 };
 
+/// NOTE(Toruto): All of Workspace, SAIDAN and Showcase views are handled almost the same way in Unity side.
+/// So, having all types in a single enum makes them easier to handle.
+///
+/// And, a saidanType will be used as a value of enum such like SaidanType.SaidanFirst.
+/// So, a number of a saidanType will be used only for communication between frontend (database) side and Unity side.
+///
+/// On database, there are types in each of the three views (saidan: 1, 2, 3, ..., showcase: 1, 2, 3, ...).
+/// It is better on database, but there is difference in convenience from Unity side.
+///
+/// Therefore, I used saidanTypeOffset.
+
 // export const saidanOffset = 10000;
 export const showcaseOffset = 20000;
 export const SaidanType = {
