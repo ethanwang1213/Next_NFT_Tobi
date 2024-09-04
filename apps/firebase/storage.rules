@@ -50,5 +50,8 @@ service firebase.storage {
       	allow write: if true;
       }
     }
+    match /users/{userId}/item/user_uploaded/models/{modelId}/{fileName} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
   }
 }
