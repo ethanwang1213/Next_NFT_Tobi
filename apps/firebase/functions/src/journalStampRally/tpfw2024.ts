@@ -42,15 +42,20 @@ const requestMint = async (
   );
 };
 
-const writeMintStatusAsInProgress = async (userId: string, correctStampEntry: Tpfw2024StampType) => {
+const writeMintStatusAsInProgress = async (
+  userId: string,
+  correctStampEntry: Tpfw2024StampType
+) => {
   const settingData: {
     mintStatus: MintStatus;
+    isStampTpfw2024Checked: boolean;
   } = {
     mintStatus: {
       TOBIRAPOLISFIREWORKS2024: {
         [correctStampEntry]: "IN_PROGRESS",
       },
     },
+    isStampTpfw2024Checked: false,
   };
   await firestore().collection("users").doc(userId).set(settingData, {
     merge: true,
@@ -70,7 +75,12 @@ exports.checkRewardTpfw2024 = functions
     const { user, userId } = await verifyAuthorizedUser(context);
     const correctStampEntry = verifyCorrectStampEntry(data, TPFW2024_STAMP_RALLY_KEYWORDS);
 
-    if (correctStampEntry === "TobirapolisFireworks2024" && !isBefore(new Date("2024-09-01T00:00:00+09:00"))) {
+    if (
+      (correctStampEntry === "TobirapolisFireworks2024" &&
+        !isBefore(new Date("2024-09-10T00:00:00+09:00"))) ||
+      (correctStampEntry === "ReflectedInTheRiver" &&
+        !isBefore(new Date("2024-09-12T00:00:00+09:00")))
+    ) {
       throw new functions.https.HttpsError("invalid-argument", "The keyword is expired.");
     }
 

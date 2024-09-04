@@ -1,3 +1,4 @@
+import { auth, db } from "fetchers/firebase/journal-client";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import {
   addDoc,
@@ -7,7 +8,6 @@ import {
   setDoc,
   Timestamp,
 } from "firebase/firestore/lite";
-import { auth, db } from "fetchers/firebase/journal-client";
 import _ from "lodash";
 import React, {
   createContext,
@@ -35,7 +35,7 @@ type SetMintStatus = <T extends keyof MintStatus>(
   event: T,
   type: keyof MintStatusForSetMethod[T],
   status: MintStatusType,
-  isComplete: boolean
+  isComplete: boolean,
 ) => void;
 
 // AuthContextのデータ型
@@ -242,9 +242,17 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const checkMintedStamp = () => {
     if (!user) return;
-    setUser((state) => {
-      return { ...state, isStampTmf2024Checked: true };
-    });
+
+    const mode = process.env.NEXT_PUBLIC_STAMPRALLY_MODE as StampRallyEvents;
+    if (mode === "TOBIRAMUSICFESTIVAL2024") {
+      setUser((state) => {
+        return { ...state, isStampTmf2024Checked: true };
+      });
+    } else if (mode === "TOBIRAPOLISFIREWORKS2024") {
+      setUser((state) => {
+        return { ...state, isStampTpfw2024Checked: true };
+      });
+    }
   };
 
   return (

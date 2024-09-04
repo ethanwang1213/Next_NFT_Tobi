@@ -129,9 +129,24 @@ export const useStampRallyFetcher = () => {
     }
   };
 
+  const checkMintedTpfw2024Stamp = () => {
+    try {
+      if (user.isStampTpfw2024Checked) return true;
+
+      const usersSrcRef = doc(db, `users/${user.id}`);
+      setDoc(usersSrcRef, { isStampTpfw2024Checked: true }, { merge: true });
+      checkLocalStampMinted();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   return {
     isSubmitting,
     requestStampRallyReward,
     checkMintedTmf2024Stamp,
+    checkMintedTpfw2024Stamp,
   };
 };

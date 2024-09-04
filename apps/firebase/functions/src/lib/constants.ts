@@ -30,6 +30,7 @@ export const TMF2024_STAMP_RALLY_KEYWORDS = {
 
 export const TPFW2024_STAMP_RALLY_KEYWORDS = {
   TobirapolisFireworks2024: "TPFW2024",
+  ReflectedInTheRiver: "TPFWEPT2024",
 };
 
 export const NON_FUNGIBLE_TOKEN_ADDRESS =

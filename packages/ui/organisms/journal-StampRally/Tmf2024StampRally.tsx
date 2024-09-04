@@ -6,13 +6,6 @@ import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 import { useCallback, useMemo } from "react";
 import { BasicStampRallyTitle } from "../../atoms/journal-BasicStampRallyTitle";
 
-type StampDataType = {
-  key: Tmf2024StampType;
-  blankSrc: string;
-  src: string;
-  status: MintStatusType;
-};
-
 export const Tmf2024StampRally: React.FC = () => {
   const { requestStampRallyReward, checkMintedTmf2024Stamp: checkMintedStamp } =
     useStampRallyFetcher();

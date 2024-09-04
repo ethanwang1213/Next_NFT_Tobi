@@ -80,7 +80,7 @@ export const Tmf2024StampMetadata: {
 /////////////////////////////////////////////
 
 // TOBIRAPOLIS花火大会2024のスタンプタイプ
-export type Tpfw2024StampType = "TobirapolisFireworks2024";
+export type Tpfw2024StampType = "TobirapolisFireworks2024" | "ReflectedInTheRiver";
 
 export type Tpfw2024StampRallyData = StampRallyData<Tpfw2024StampType>;
 
@@ -90,6 +90,10 @@ export const Tpfw2024StampMetadata: {
 } = {
   TobirapolisFireworks2024: {
     name: "TOBIRAPOLIS FIREWORKS 2024",
+    description: "",
+  },
+  ReflectedInTheRiver: {
+    name: "Reflected in the river",
     description: "",
   },
 };

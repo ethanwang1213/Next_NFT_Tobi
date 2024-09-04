@@ -11,24 +11,19 @@ import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
 import { useCallback, useMemo } from "react";
 import { BasicStampRallyTitle } from "../../atoms/journal-BasicStampRallyTitle";
 
-type StampDataType = {
-  key: Tpfw2024StampType;
-  blankSrc: string;
-  src: string;
-  status: MintStatusType;
-};
-
 export const Tpfw2024StampRally: React.FC = () => {
-  const { requestStampRallyReward } = useStampRallyFetcher();
+  const { requestStampRallyReward, checkMintedTpfw2024Stamp: checkMintedStamp } =
+    useStampRallyFetcher();
   const { isSubmitting, isIncorrect } = useStampRallyForm();
 
-  const keys: Tpfw2024StampType[] = ["TobirapolisFireworks2024"];
+  const keys: Tpfw2024StampType[] = ["TobirapolisFireworks2024", "ReflectedInTheRiver"];
   const user = useAuth().user;
   const stampRally = user?.mintStatus?.TOBIRAPOLISFIREWORKS2024;
   const statuses: MintStatusType[] = useMemo(
     () => keys.map((key) => (!stampRally || !stampRally[key] ? "NOTHING" : stampRally[key])),
     [stampRally]
   );
+  const isStampChecked = user?.isStampTpfw2024Checked;
 
   const checkStatus: () => FormStatus = useCallback(() => {
     if (isSubmitting.current) {
@@ -37,12 +32,12 @@ export const Tpfw2024StampRally: React.FC = () => {
       return "Incorrect";
     } else if (statuses.includes("IN_PROGRESS")) {
       return "Minting";
-    } else if (statuses.includes("DONE") || !statuses.includes("NOTHING")) {
+    } else if ((statuses.includes("DONE") && !isStampChecked) || !statuses.includes("NOTHING")) {
       return "Success";
     } else {
       return "Nothing";
     }
-  }, [statuses, isSubmitting.current, isIncorrect.current]);
+  }, [statuses, isSubmitting.current, isIncorrect.current, isStampChecked]);
 
   const stampRallyMode = process.env.NEXT_PUBLIC_STAMPRALLY_MODE as StampRallyEvents;
   const endDate = process.env.NEXT_PUBLIC_STAMPRALLY_END_DATE as string;
@@ -59,6 +54,7 @@ export const Tpfw2024StampRally: React.FC = () => {
           event="TOBIRAPOLISFIREWORKS2024"
           status={checkStatus()}
           onSubmit={requestStampRallyReward}
+          onRedirectClick={checkMintedStamp}
         />
       </div>
     </div>
