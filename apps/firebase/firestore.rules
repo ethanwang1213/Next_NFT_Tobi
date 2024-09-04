@@ -98,9 +98,5 @@ service cloud.firestore {
       allow read: if isAdmin() || isCurrentUser(userId);
       allow write: if isAdmin();
     }
-
-    match /users/{userId}/item/user_uploaded/models/{modelId}/{fileName} {
-      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
-    }
   }
 }
