@@ -563,18 +563,41 @@ export const openNFT = async (req: Request, res: Response) => {
           mint_status: mintStatus.opened,
         },
         include: {
-          digital_item: true,
+          digital_item: {
+            include: {
+              material_image: true,
+              account: {
+                include: {
+                  business: {
+                    include: {
+                      content: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           nft_owner: true,
+          showcase_nft_items: true,
         },
       });
       res.status(200).send({
         status: "success",
         data: {
-          id: updatedNFT.id,
+          digitalItemId: updatedNFT.digital_item.id,
           name: updatedNFT.digital_item.name,
-          image: updatedNFT.digital_item?.is_default_thumb?updatedNFT.digital_item.default_thumb_url:updatedNFT.digital_item?.custom_thumb_url,
+          thumbUrl: updatedNFT.digital_item?.is_default_thumb ? updatedNFT.digital_item?.default_thumb_url : updatedNFT.digital_item?.custom_thumb_url,
+          modelUrl: updatedNFT.digital_item.model_url,
+          modelType: updatedNFT.digital_item.type,
           saidanId: updatedNFT.nft_owner?.saidan_id,
+          materialUrl: updatedNFT.digital_item.material_image?.image,
           status: updatedNFT.mint_status,
+          createDate: updatedNFT.created_date_time,
+          canAdd: updatedNFT.showcase_nft_items.length == 0,
+          content: updatedNFT.digital_item.account.business?{
+            name: updatedNFT.digital_item.account.business.content?.name,
+          }:null,
+          items: [updatedNFT.id],
         },
       });
     } catch (error) {
