@@ -70,9 +70,10 @@ const SampleTypeSelectComponent = (props: {
         const result = await postData(postApiUrl, { fileUrl: uploadFile });
         if (!result) {
           setError(true);
-          setUploading(false);
-          await generateSampleHandler(ModelType.UserUploadedModel, result.data);
+        } else {
+          await generateSampleHandler(ModelType.UserUploadedModel, result);
         }
+        setUploading(false);
       }
       return true;
     },
