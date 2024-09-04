@@ -674,25 +674,25 @@ export const getNftInfo = async (req: Request, res: Response) => {
         acquiredDate: Date;
       }[] = [];
       if (isEmptyObject(owners)) {
-        acquiredDate = new Date(Object.keys(owners)[0])
+        acquiredDate = new Date(Object.keys(owners)[0]);
         ownerHistory = await Promise.all(
-          Object.entries(owners).map(async ([key, owner])=>{
-            const ownerData = await prisma.flow_accounts.findFirst({
-              where: {
-                flow_address: owner,
-              },
-              include: {
-                account: true,
-              }
+            Object.entries(owners).map(async ([key, owner])=>{
+              const ownerData = await prisma.flow_accounts.findFirst({
+                where: {
+                  flow_address: owner,
+                },
+                include: {
+                  account: true,
+                },
+              });
+              return {
+                avatarUrl: ownerData?.account.icon_url,
+                uuid: ownerData?.account_uuid,
+                flowAddress: owner,
+                acquiredDate: new Date(key),
+              };
             })
-            return {
-              avatarUrl: ownerData?.account.icon_url,
-              uuid: ownerData?.account_uuid,
-              flowAddress: owner,
-              acquiredDate: new Date(key),
-            }
-          })
-        )
+        );
       }
       const returnData = {
         content: nftData.nft_owner?.account?.business?.content != null ? {
