@@ -5,7 +5,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
@@ -50,6 +50,7 @@ const Detail = () => {
   );
   const [confirmDialogNotes, setConfirmDialogNotes] = useState([]);
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
+  const [status, setStatus] = useState(-1);
   const statusConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef1 = useRef(null);
@@ -64,6 +65,13 @@ const Detail = () => {
     setLoading,
     postData,
   } = useRestfulAPI(`${apiUrl}/${id}`);
+
+  useEffect(() => {
+    if (status === -1 && digitalItem) {
+      debugger;
+      setStatus(digitalItem.status);
+    }
+  }, [digitalItem]);
 
   const fieldChangeHandler = useCallback(
     (field, value) => {
@@ -298,7 +306,7 @@ const Detail = () => {
       customThumbnailUrl: digitalItem.customThumbnailUrl,
       isCustomThumbnailSelected: digitalItem.isCustomThumbnailSelected,
       price: parseInt(digitalItem.price ?? 0),
-      status: digitalItem.status,
+      ...(status !== digitalItem.status && { status }),
       startDate: digitalItem.startDate,
       endDate: digitalItem.endDate,
       quantityLimit: parseInt(digitalItem.quantityLimit),
