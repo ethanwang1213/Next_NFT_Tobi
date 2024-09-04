@@ -68,10 +68,9 @@ const Detail = () => {
 
   useEffect(() => {
     if (status === -1 && digitalItem) {
-      debugger;
       setStatus(digitalItem.status);
     }
-  }, [digitalItem]);
+  }, [status, digitalItem]);
 
   const fieldChangeHandler = useCallback(
     (field, value) => {
