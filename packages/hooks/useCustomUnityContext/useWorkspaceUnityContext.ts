@@ -115,8 +115,7 @@ export const useWorkspaceUnityContext = ({
     return {
       saidanId: -2,
       saidanType: SaidanType.Workspace,
-      saidanUrl:
-        "https://storage.googleapis.com/tobiratory-dev_media/saidan-templates/workspace/model.glb",
+      saidanUrl: "",
       saidanItemList,
       saidanCameraData: {
         position: {
