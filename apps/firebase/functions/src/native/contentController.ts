@@ -48,6 +48,11 @@ export const getContentById = async (req: Request, res: Response) => {
         include: {
           showcase_template: {},
           showcase_sample_items: {
+            where: {
+              sample_item: {
+                is_deleted: false,
+              },
+            },
             include: {
               sample_item: {
                 include: {
@@ -265,6 +270,11 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         include: {
           showcase_template: true,
           showcase_sample_items: {
+            where: {
+              sample_item: {
+                is_deleted: false,
+              },
+            },
             include: {
               sample_item: {
                 include: {
