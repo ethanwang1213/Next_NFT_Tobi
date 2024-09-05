@@ -181,7 +181,7 @@ app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", giftNFT);
 app.post("/my/nfts/move", moveNFT);
-app.post("/my/nfts/delete", deleteMyNFT);
+app.post("/my/nfts/:id/delete", deleteMyNFT);
 app.post("/address/decoder", userInfoFromAddress);
 app.post("/materials", uploadMaterial);
 app.get("/materials", getMaterial);
