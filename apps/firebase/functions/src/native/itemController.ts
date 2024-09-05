@@ -1408,6 +1408,7 @@ export const handleZipModel = async (req: Request, res: Response) => {
       // Upload to firebase
       let modelUrl = "";
       const bucket = admin.storage().bucket("tobiratory-f6ae1.appspot.com");
+      const timestamp = Date.now();
       for (const entry of entries) {
         let buffer = entry.getData(); // Get the data of the entry
         const entryName = entry.entryName;
@@ -1425,12 +1426,12 @@ export const handleZipModel = async (req: Request, res: Response) => {
         } else {
           fileName = relationUri.filter((relation)=>relation.entryName==entryName)[0].uri;
         }
-        const destination = `/users/${uid}/item/${ModelRequestType.UserUploaded}/models/${Date.now()}/${fileName}`;
+        const destination = `/users/${uid}/item/${ModelRequestType.UserUploaded}/models/${timestamp}/${fileName}`;
         try {
           const file = bucket.file(destination);
           await file.save(buffer);
           if (fileName?.endsWith(".gltf")) {
-            modelUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+            modelUrl = `https://storage.googleapis.com/${bucket.name}${file.name}`;
           }
           console.log(`File uploaded to ${destination} successfully.`);
         } catch (error) {
