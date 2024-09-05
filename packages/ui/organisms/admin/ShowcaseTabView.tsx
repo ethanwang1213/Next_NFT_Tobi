@@ -3,7 +3,6 @@ import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
-import { ToastContainer } from "react-toastify";
 import { ActionType, SettingsUpdatePhase } from "types/unityTypes";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import Collapse from "ui/organisms/admin/Collapse";
@@ -84,9 +83,9 @@ const ShowcaseTabView = ({
     onActionUndone: handleAction,
   });
 
-  const afterChangeHandle = () =>{
+  const afterChangeHandle = () => {
     updateUnityViewSettings(wt, ft, st, sb, pt, pb, SettingsUpdatePhase.Ended);
-  }
+  };
 
   const handleTabChange = (active) => {
     if (active == tab) {
@@ -305,16 +304,6 @@ const ShowcaseTabView = ({
               </div>
             </div>
           </TabPanel>
-          <ToastContainer
-            position="bottom-center"
-            autoClose={5000}
-            newestOnTop={false}
-            closeOnClick={true}
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable={false}
-            theme="dark"
-          />
         </div>
         <ShowcaseUnityUISetting />
       </div>
