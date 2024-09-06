@@ -23,6 +23,7 @@ import {
 } from "../types";
 import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContextBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
+import { useUpdateItemTransform } from "./useUpdateTransform";
 
 type Props = {
   itemMenuX?: number;
@@ -40,6 +41,7 @@ type Props = {
   ) => void;
   onActionUndone?: UndoneOrRedone;
   onActionRedone?: UndoneOrRedone;
+  onItemTransformUpdated?: (scale: number) => void;
 };
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
@@ -50,6 +52,7 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemEnabled,
   onRemoveItemDisabled,
   onRemoveItemRequested,
+  onItemTransformUpdated,
   onActionUndone,
   onActionRedone,
 }: Props) => {
@@ -67,6 +70,7 @@ export const useShowcaseEditUnityContext = ({
     postMessageToUnity,
     setLoadData,
     requestSaveData,
+    setSelectedItem,
     placeNewSample,
     placeNewNft,
     placeNewSampleWithDrag,
@@ -171,6 +175,13 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  const { updateItemTransform, handleItemTransformUpdated } =
+    useUpdateItemTransform({
+      selectedItem,
+      setSelectedItem,
+      postMessageToUnity,
+    });
+
   const updateSettings = useCallback(
     ({ wallpaper, floor, lighting, phase }: UpdatingSaidanSettings) => {
       postMessageToUnity(
@@ -263,6 +274,7 @@ export const useShowcaseEditUnityContext = ({
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
+    handleItemTransformUpdated,
   });
 
   return {
@@ -282,6 +294,7 @@ export const useShowcaseEditUnityContext = ({
     placeNewNftWithDrag,
     removeItem,
     removeRecentItem,
+    updateItemTransform,
     updateSettings,
     inputWasd,
     undoAction,

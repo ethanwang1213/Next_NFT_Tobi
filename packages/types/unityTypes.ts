@@ -145,7 +145,7 @@ export type ItemId = {
   id: number;
 };
 
-export type ItemPosture = {
+export type ItemTransform = {
   stageType: UnityStageType;
   position: Vector3;
   rotation: Vector3;
@@ -154,7 +154,7 @@ export type ItemPosture = {
 
 export type SaidanItemData = ItemBaseData &
   ItemId &
-  ItemPosture & {
+  ItemTransform & {
     canScale: boolean;
     itemMeterHeight: number;
   };
@@ -163,21 +163,21 @@ export type SaidanItemData = ItemBaseData &
 // types for load data with arrangement
 export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
   ItemId &
-  ItemPosture;
+  ItemTransform;
 export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
   ItemId &
-  ItemPosture;
+  ItemTransform;
 
 // nft load data
 export type NftLoadData = NftBaseDataForLoading &
   ItemId &
-  ItemPosture & {
+  ItemTransform & {
     itemMeterHeight: number;
   };
 
 ///////////////////////////////////////
 // types for item save data
-export type ItemSaveData = ItemBaseId & ItemId & ItemPosture;
+export type ItemSaveData = ItemBaseId & ItemId & ItemTransform;
 
 ///////////////////////////////////////
 // types for settings data
@@ -204,10 +204,14 @@ export type SaidanSettings = {
 
 ///////////////////////////////////////
 // types for update settings
-export const SettingsUpdatePhase = {
+const SliderUpdatePhase = {
   Updating: 0,
   Ended: 1,
 } as const;
+type SliderUpdatePhase =
+  (typeof SliderUpdatePhase)[keyof typeof SliderUpdatePhase];
+
+export const SettingsUpdatePhase = SliderUpdatePhase;
 export type SettingsUpdatePhase =
   (typeof SettingsUpdatePhase)[keyof typeof SettingsUpdatePhase];
 
@@ -216,6 +220,12 @@ export type UpdatingSaidanSettings = SaidanSettings & {
 };
 
 export type ShowcaseSettings = SaidanSettings;
+
+///////////////////////////////////////
+// types for update item transform
+export const ItemTransformUpdatePhase = SliderUpdatePhase;
+export type ItemTransformUpdatePhase =
+  (typeof ItemTransformUpdatePhase)[keyof typeof ItemTransformUpdatePhase];
 
 ///////////////////////////////////////
 // types for undo redo
