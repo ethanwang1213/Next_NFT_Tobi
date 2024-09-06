@@ -11,7 +11,7 @@ import {
   SaidanItemData,
   UpdatingSaidanSettings,
 } from "types/unityTypes";
-import { DefaultItemMeterHeight } from "./constants";
+import { DefaultItemMeterHeight } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -20,9 +20,9 @@ import {
   UndoneOrRedone,
   UnityMessageJson,
   UnitySceneType,
-} from "./types";
-import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
-import { useUnityMessageHandler } from "./useUnityMessageHandler";
+} from "../types";
+import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContextBase";
+import { useUnityMessageHandler } from "../useUnityMessageHandler";
 
 type Props = {
   itemMenuX?: number;
