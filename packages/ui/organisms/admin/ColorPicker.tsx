@@ -31,6 +31,12 @@ const ColorPicker = ({
     setShowPicker(!showPicker);
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = event.target.value;
+    setColor(newColor);
+    onColorChanged(newColor);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -67,8 +73,13 @@ const ColorPicker = ({
       )}
 
       {/* Color container */}
-      <div className="w-[144px] h-[32px] rounded-[5px] bg-[#A5A1A1] flex items-center justify-between px-4 font-[400]">
-        <span>{color}</span>
+      <div className="w-[144px] h-[32px] flex items-center justify-between">
+        <input
+          type="text"
+          value={color}
+          onChange={handleInputChange}
+          className="w-full h-full border-none outline-none rounded-[5px] bg-[#A5A1A1] flex items-center justify-between px-4 font-[400]"
+        />
       </div>
 
       <div
