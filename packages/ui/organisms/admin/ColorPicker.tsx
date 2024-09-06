@@ -73,7 +73,7 @@ const ColorPicker = ({
       )}
 
       {/* Color container */}
-      <div className="w-[144px] h-[32px] flex items-center justify-between">
+      <div className="w-[144px] h-[32px]">
         <input
           type="text"
           value={color}
