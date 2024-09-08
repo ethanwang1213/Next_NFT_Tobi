@@ -41,7 +41,6 @@ type Props = {
   ) => void;
   onActionUndone?: UndoneOrRedone;
   onActionRedone?: UndoneOrRedone;
-  onItemTransformUpdated?: (scale: number) => void;
 };
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
@@ -52,7 +51,6 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemEnabled,
   onRemoveItemDisabled,
   onRemoveItemRequested,
-  onItemTransformUpdated,
   onActionUndone,
   onActionRedone,
 }: Props) => {

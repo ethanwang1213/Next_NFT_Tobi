@@ -548,14 +548,10 @@ export const useSaidanLikeUnityContextBase = ({
 
   const handleItemSelected = useCallback(
     (msgObj: UnityMessageJson) => {
-      const messageBody = JSON.parse(msgObj.messageBody) as {
-        itemType: ItemType;
-        itemId: number;
-        id: number;
-        position: Vector3;
-        rotation: Vector3;
-        scale: number;
-      };
+      const messageBody = JSON.parse(msgObj.messageBody) as Omit<
+        SelectedItem,
+        "digitalItemId"
+      >;
 
       if (!messageBody) return;
 
