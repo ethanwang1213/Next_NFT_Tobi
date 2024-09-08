@@ -81,9 +81,9 @@ exports.checkRewardTpfw2024 = functions
 
     if (
       (correctStampEntry === "TobirapolisFireworks2024" &&
-        !isBefore(new Date("2024-09-10T00:00:00+09:00"))) ||
+        !isBefore(new Date("2024-09-23T00:00:00+09:00"))) ||
       (correctStampEntry === "ReflectedInTheRiver" &&
-        !isBefore(new Date("2024-09-12T00:00:00+09:00")))
+        !isBefore(new Date("2024-09-23T00:00:00+09:00")))
     ) {
       throw new functions.https.HttpsError("invalid-argument", "The keyword is expired.");
     }
