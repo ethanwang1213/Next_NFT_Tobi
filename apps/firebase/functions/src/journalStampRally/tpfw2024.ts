@@ -18,6 +18,10 @@ const Tpfw2024StampMetadata: {
     name: "TOBIRAPOLIS FIREWORKS 2024",
     description: "",
   },
+  ReflectedInTheRiver: {
+    name: "Reflected in the River",
+    description: "",
+  },
 };
 
 const requestMint = async (
