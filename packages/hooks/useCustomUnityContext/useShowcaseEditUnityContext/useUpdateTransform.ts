@@ -1,8 +1,7 @@
 import { useCallback } from "react";
-import { ItemTransformUpdatePhase } from "types/unityTypes";
+import { ItemTransformUpdatePhase, PositionOnPlane } from "types/unityTypes";
 import { MessageDestination, SelectedItem, UnityMessageJson } from "../types";
 
-/// NOTE(Toruto): position and rotation will be added when expert mode is implemented.
 export const useUpdateItemTransform = ({
   selectedItem,
   setSelectedItem,
@@ -13,13 +12,23 @@ export const useUpdateItemTransform = ({
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
   const updateItemTransform = useCallback(
-    ({ scale, phase }: { scale: number; phase: ItemTransformUpdatePhase }) => {
+    ({
+      positionOnPlane,
+      rotationAngle,
+      scale,
+      phase,
+    }: {
+      positionOnPlane: PositionOnPlane;
+      rotationAngle: number;
+      scale: number;
+      phase: ItemTransformUpdatePhase;
+    }) => {
       const data = {
         itemType: selectedItem?.itemType,
         itemId: selectedItem?.itemId,
         id: selectedItem?.id,
-        // position,
-        // rotation,
+        positionOnPlane,
+        rotationAngle,
         scale,
         phase,
       };
@@ -44,8 +53,8 @@ export const useUpdateItemTransform = ({
         (prev) =>
           prev && {
             ...prev,
-            position: messageBody.position,
-            rotation: messageBody.rotation,
+            positionOnPlane: messageBody.positionOnPlane,
+            rotationAngle: messageBody.rotationAngle,
             scale: messageBody.scale,
           },
       );
