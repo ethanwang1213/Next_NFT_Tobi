@@ -9,74 +9,48 @@ import {
   StampRallyEventType,
   Tpf2023StampType,
   Tmf2024StampType,
+  Tpfw2024StampType,
 } from "types/stampRallyTypes";
 
 const mintNFT = async (
     name: string,
     description: string,
     userId: string,
-    type: Tpf2023StampType | CompleteStampType | Tmf2024StampType,
+    type: Tpf2023StampType | CompleteStampType | Tmf2024StampType | Tpfw2024StampType,
     stampRallyEventType: StampRallyEventType,
     onComplete?: () => void
 ) => {
   const txDetails = await sendMintJournalStampRallyNftTx(name, description);
   console.log({txDetails});
   const events = txDetails.events;
+
+  let imageUrl = null;
+
   if (stampRallyEventType === "tpf2023") {
-    for (const mintEvent of events) {
-      if (mintEvent.type === `${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_CONTRACT_ID}.${process.env.FLOW_TOBIRAPOLIS_FESTIVAL23_BADGE_EVENT_NAME}`) {
-        const totalSupply = mintEvent.data.totalSupply;
-        if (!totalSupply) {
-          return;
-        }
-        const nftId = totalSupply - 1;
-        const imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_BADGE_IMAGE_URL}${type.toLowerCase()}.png`;
-        await createMetadata(nftId, type, name, description, imageUrl);
-        await recordMintResult(userId, nftId, name, description, new Date(), imageUrl, type);
-
-        if (onComplete) {
-          await onComplete();
-        }
-        break;
-      }
-    }
+    imageUrl = `${process.env.TOBIRAPOLIS_FESTIVAL23_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
   } else if (stampRallyEventType === "tmf2024") {
-    for (const mintEvent of events) {
-      if (mintEvent.type === `${process.env.FLOW_JOURNAL_STAMP_RALLY_CONTRACT_ID}.${process.env.FLOW_JOURNAL_STAMP_RALLY_EVENT_NAME}`) {
-        const totalSupply = mintEvent.data.totalSupply;
-        if (!totalSupply) {
-          return;
-        }
-        const nftId = totalSupply - 1;
-        const imageUrl = `${process.env.TMF2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
-        await createMetadata(nftId, type, name, description, imageUrl);
-        await recordMintResult(userId, nftId, name, description, new Date(), imageUrl, type);
-
-        if (onComplete) {
-          await onComplete();
-        }
-        break;
-      }
-    }
+    imageUrl = `${process.env.TMF2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
   } else if (stampRallyEventType === "tpfw2024") {
-    for (const mintEvent of events) {
-      if (mintEvent.type === `${process.env.FLOW_JOURNAL_STAMP_RALLY_CONTRACT_ID}.${process.env.FLOW_JOURNAL_STAMP_RALLY_EVENT_NAME}`) {
-        const totalSupply = mintEvent.data.totalSupply;
-        if (!totalSupply) {
-          return;
-        }
-        const nftId = totalSupply - 1;
-        const imageUrl = `${process.env.TPFW2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
-        await createMetadata(nftId, type, name, description, imageUrl);
-        await recordMintResult(userId, nftId, name, description, new Date(), imageUrl, type);
+    imageUrl = `${process.env.TPFW2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
+  }
 
-        if (onComplete) {
-          await onComplete();
-        }
-        break;
+  if (!imageUrl) {
+    throw new Error("Failed to mint NFT");
+  }
+
+  for (const mintEvent of events) {
+    if (mintEvent.type === `${process.env.FLOW_NON_FUNGIBLE_TOKEN_CONTRACT_ID}.${process.env.FLOW_NON_FUNGIBLE_TOKEN_DEPOSITED_EVENT_NAME}`) {
+      const nftId = mintEvent.data.id;
+      await createMetadata(nftId, type, name, description, imageUrl);
+      await recordMintResult(userId, nftId, name, description, new Date(), imageUrl, type);
+
+      if (onComplete) {
+        await onComplete();
       }
+      break;
     }
   }
+
 };
 
 export const mintJournalStampRallyNftTask = functions.region(REGION).runWith({}).tasks.taskQueue({
