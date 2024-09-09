@@ -40,15 +40,14 @@ export const useUpdateItemTransform = ({
       >;
       if (!messageBody) return;
 
-      setSelectedItem((prev) =>
-        prev
-          ? {
-              ...prev,
-              position: messageBody.position,
-              rotation: messageBody.rotation,
-              scale: messageBody.scale,
-            }
-          : null,
+      setSelectedItem(
+        (prev) =>
+          prev && {
+            ...prev,
+            position: messageBody.position,
+            rotation: messageBody.rotation,
+            scale: messageBody.scale,
+          },
       );
     },
     [setSelectedItem],
