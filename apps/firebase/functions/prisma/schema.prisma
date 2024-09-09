@@ -20,7 +20,7 @@ model accounts {
     gender                  String?             @db.VarChar(255)
     birth                   String?             @db.VarChar(255)
     gift_permission         Boolean             @default(false)
-    note                    String              @db.Text
+    note                    String?             @db.Text
     digital_items           digital_items[]
     flow_account            flow_accounts?
     favorite_saidans        saidans_favorite[]

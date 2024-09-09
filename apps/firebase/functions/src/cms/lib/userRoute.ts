@@ -47,13 +47,13 @@ router.put("/:uid/notes", async (req: Request, res: Response) => {
         uuid: uid,
       },
       data: {
-        note: note
-      }
+        note: note,
+      },
     });
     res.status(200).send({
       status: "success",
-      data: 'saved',
-    });    
+      data: "saved",
+    });
   } catch (error) {
     res.status(500).send({
       status: "error",

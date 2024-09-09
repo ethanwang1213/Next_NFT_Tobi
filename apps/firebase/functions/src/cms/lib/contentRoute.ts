@@ -349,8 +349,8 @@ router.put("/:id/freeze-report", async (req: Request, res: Response) => {
           title: "admin",
           description: "block",
           is_solved: false,
-        }
-      })
+        },
+      });
     }
     res.status(200).send({
       status: "success",
