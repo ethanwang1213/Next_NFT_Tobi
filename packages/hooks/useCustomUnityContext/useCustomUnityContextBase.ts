@@ -24,9 +24,9 @@ export const useCustomUnityContextBase = ({
   });
 
   const handleSimpleMessage = (msgObj: UnityMessageJson) => {
-    console.log(
-      `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
-    );
+    // console.log(
+    //   `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
+    // );
   };
 
   const postMessageToUnity = useCallback(

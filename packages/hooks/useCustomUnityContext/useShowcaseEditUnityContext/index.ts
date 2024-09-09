@@ -11,7 +11,7 @@ import {
   SaidanItemData,
   UpdatingSaidanSettings,
 } from "types/unityTypes";
-import { DefaultItemMeterHeight } from "./constants";
+import { DefaultItemMeterHeight } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -20,9 +20,10 @@ import {
   UndoneOrRedone,
   UnityMessageJson,
   UnitySceneType,
-} from "./types";
-import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
-import { useUnityMessageHandler } from "./useUnityMessageHandler";
+} from "../types";
+import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContextBase";
+import { useUnityMessageHandler } from "../useUnityMessageHandler";
+import { useUpdateItemTransform } from "./useUpdateTransform";
 
 type Props = {
   itemMenuX?: number;
@@ -67,6 +68,7 @@ export const useShowcaseEditUnityContext = ({
     postMessageToUnity,
     setLoadData,
     requestSaveData,
+    setSelectedItem,
     placeNewSample,
     placeNewNft,
     placeNewSampleWithDrag,
@@ -171,6 +173,13 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  const { updateItemTransform, handleItemTransformUpdated } =
+    useUpdateItemTransform({
+      selectedItem,
+      setSelectedItem,
+      postMessageToUnity,
+    });
+
   const updateSettings = useCallback(
     ({ wallpaper, floor, lighting, phase }: UpdatingSaidanSettings) => {
       postMessageToUnity(
@@ -263,6 +272,7 @@ export const useShowcaseEditUnityContext = ({
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
+    handleItemTransformUpdated,
   });
 
   return {
@@ -282,6 +292,7 @@ export const useShowcaseEditUnityContext = ({
     placeNewNftWithDrag,
     removeItem,
     removeRecentItem,
+    updateItemTransform,
     updateSettings,
     inputWasd,
     undoAction,

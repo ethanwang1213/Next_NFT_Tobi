@@ -17,6 +17,7 @@ import {
   MessageDestination,
   RequiredUndoneRedoneResult,
   SaidanLikeData,
+  SelectedItem,
   UndoneOrRedone,
   UndoneRedoneResult,
   UnityMessageJson,
@@ -297,9 +298,7 @@ export const useSaidanLikeUnityContextBase = ({
   const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
     useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<
-    (ItemTypeParam & ItemBaseId & ParentId) | null
-  >(null);
+  const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
 
   const additionalItemDataMap = useMemo(
     () =>
@@ -549,10 +548,10 @@ export const useSaidanLikeUnityContextBase = ({
 
   const handleItemSelected = useCallback(
     (msgObj: UnityMessageJson) => {
-      const messageBody = JSON.parse(msgObj.messageBody) as {
-        itemType: ItemType;
-        itemId: number;
-      };
+      const messageBody = JSON.parse(msgObj.messageBody) as Omit<
+        SelectedItem,
+        "digitalItemId"
+      >;
 
       if (!messageBody) return;
 
@@ -587,6 +586,7 @@ export const useSaidanLikeUnityContextBase = ({
     postMessageToUnity,
     setLoadData,
     requestSaveData,
+    setSelectedItem,
     placeNewSample,
     placeNewNft,
     placeNewSampleWithDrag,

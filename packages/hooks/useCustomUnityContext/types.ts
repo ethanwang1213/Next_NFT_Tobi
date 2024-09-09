@@ -2,9 +2,11 @@ import {
   ActionType,
   FloorSettings,
   ItemBaseId,
-  ItemPosture,
+  ItemId,
+  ItemTransform,
   ItemTypeParam,
   LightParams,
+  ParentId,
   SaidanItemData,
   SaidanSettings,
   Vector3,
@@ -38,7 +40,8 @@ export type MessageDestination =
   | "RedoActionMessageReceiver"
   | "DeleteAllActionHistoryMessageReceiver"
   | "PauseInputsMessageReceiver"
-  | "ResumeInputsMessageReceiver";
+  | "ResumeInputsMessageReceiver"
+  | "UpdateItemTransformMessageReceiver";
 
 export const UnityMessageType = {
   SimpleMessage: 0,
@@ -58,6 +61,7 @@ export const UnityMessageType = {
   ActionRegistered: 14,
   ActionUndone: 15,
   ActionRedone: 16,
+  ItemTransformUpdated: 17,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];
@@ -110,8 +114,14 @@ export type SaidanLikeData = {
   isDebug: boolean;
 };
 
+export type SelectedItem = ItemTypeParam &
+  ItemBaseId &
+  ParentId &
+  ItemId &
+  ItemTransform;
+
 export type UndoneRedoneResult = {
-  item?: Partial<ItemTypeParam & ItemBaseId & Omit<ItemPosture, "stageType">>;
+  item?: Partial<ItemTypeParam & ItemBaseId & ItemTransform>;
   settings?: Partial<{
     wallpaper?: Partial<WallpaperSettings>;
     floor?: Partial<FloorSettings>;
@@ -123,7 +133,7 @@ export type UndoneRedoneResult = {
 };
 
 export type RequiredUndoneRedoneResult = {
-  item: ItemTypeParam & ItemBaseId & Omit<ItemPosture, "stageType">;
+  item: ItemTypeParam & ItemBaseId & ItemTransform;
   settings: SaidanSettings;
 };
 

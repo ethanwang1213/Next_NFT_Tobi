@@ -145,16 +145,19 @@ export type ItemId = {
   id: number;
 };
 
-export type ItemPosture = {
-  stageType: UnityStageType;
+export type ItemTransform = {
   position: Vector3;
   rotation: Vector3;
   scale: number;
 };
 
+export type ItemTransformWithStageType = ItemTransform & {
+  stageType: UnityStageType;
+};
+
 export type SaidanItemData = ItemBaseData &
   ItemId &
-  ItemPosture & {
+  ItemTransformWithStageType & {
     canScale: boolean;
     itemMeterHeight: number;
   };
@@ -163,21 +166,21 @@ export type SaidanItemData = ItemBaseData &
 // types for load data with arrangement
 export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
   ItemId &
-  ItemPosture;
+  ItemTransformWithStageType;
 export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
   ItemId &
-  ItemPosture;
+  ItemTransformWithStageType;
 
 // nft load data
 export type NftLoadData = NftBaseDataForLoading &
   ItemId &
-  ItemPosture & {
+  ItemTransformWithStageType & {
     itemMeterHeight: number;
   };
 
 ///////////////////////////////////////
 // types for item save data
-export type ItemSaveData = ItemBaseId & ItemId & ItemPosture;
+export type ItemSaveData = ItemBaseId & ItemId & ItemTransformWithStageType;
 
 ///////////////////////////////////////
 // types for settings data
@@ -204,10 +207,14 @@ export type SaidanSettings = {
 
 ///////////////////////////////////////
 // types for update settings
-export const SettingsUpdatePhase = {
+const SliderUpdatePhase = {
   Updating: 0,
   Ended: 1,
 } as const;
+type SliderUpdatePhase =
+  (typeof SliderUpdatePhase)[keyof typeof SliderUpdatePhase];
+
+export const SettingsUpdatePhase = SliderUpdatePhase;
 export type SettingsUpdatePhase =
   (typeof SettingsUpdatePhase)[keyof typeof SettingsUpdatePhase];
 
@@ -216,6 +223,12 @@ export type UpdatingSaidanSettings = SaidanSettings & {
 };
 
 export type ShowcaseSettings = SaidanSettings;
+
+///////////////////////////////////////
+// types for update item transform
+export const ItemTransformUpdatePhase = SliderUpdatePhase;
+export type ItemTransformUpdatePhase =
+  (typeof ItemTransformUpdatePhase)[keyof typeof ItemTransformUpdatePhase];
 
 ///////////////////////////////////////
 // types for undo redo
