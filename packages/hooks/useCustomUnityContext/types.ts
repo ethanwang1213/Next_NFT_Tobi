@@ -91,13 +91,18 @@ export type MessageBodyForSavingSaidanData = {
 // export const saidanOffset = 10000;
 export const showcaseOffset = 20000;
 export const SaidanType = {
+  // for Workspace
   Workspace: 0,
-  SaidanFirst: 10001,
-  SaidanSecond: 10002,
-  SaidanThird: 10003,
-  ShowcaseFirst: 20001,
-  ShowcaseSecond: 20002,
-  ShowcaseThird: 20003,
+  // for SAIDAN
+  SaidanOpenShelf: 10001,
+  SaidanBookShelf: 10002,
+  SaidanWallShelf: 10003,
+  SaidanCollectionCase: 10004,
+  // for Showcase
+  ShowcaseWallShelf: 20001,
+  ShowcaseOpenShelf: 20002,
+  ShowcaseBookShelf: 20003,
+  ShowcaseCollectionCase: 20004,
 } as const;
 export type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
 
