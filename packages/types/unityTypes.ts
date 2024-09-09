@@ -145,19 +145,19 @@ export type ItemId = {
   id: number;
 };
 
-export type ItemTransformWithoutStageType = {
+export type ItemTransform = {
   position: Vector3;
   rotation: Vector3;
   scale: number;
 };
 
-export type ItemTransform = ItemTransformWithoutStageType & {
+export type ItemTransformWithStageType = ItemTransform & {
   stageType: UnityStageType;
 };
 
 export type SaidanItemData = ItemBaseData &
   ItemId &
-  ItemTransform & {
+  ItemTransformWithStageType & {
     canScale: boolean;
     itemMeterHeight: number;
   };
@@ -166,21 +166,21 @@ export type SaidanItemData = ItemBaseData &
 // types for load data with arrangement
 export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
   ItemId &
-  ItemTransform;
+  ItemTransformWithStageType;
 export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
   ItemId &
-  ItemTransform;
+  ItemTransformWithStageType;
 
 // nft load data
 export type NftLoadData = NftBaseDataForLoading &
   ItemId &
-  ItemTransform & {
+  ItemTransformWithStageType & {
     itemMeterHeight: number;
   };
 
 ///////////////////////////////////////
 // types for item save data
-export type ItemSaveData = ItemBaseId & ItemId & ItemTransform;
+export type ItemSaveData = ItemBaseId & ItemId & ItemTransformWithStageType;
 
 ///////////////////////////////////////
 // types for settings data
