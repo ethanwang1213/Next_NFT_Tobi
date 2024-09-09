@@ -16,7 +16,7 @@ export const ModelRequestType = {
   AcrylicStand: "acrylic_stand",
   MessageCard: "message_card",
   RemoveBg: "remove_bg",
-  UserUploaded: "user_uploaded",
+  UserUploaded: "uploaded",
 } as const;
 
 export type ModelRequestType = (typeof ModelRequestType)[keyof typeof ModelRequestType];

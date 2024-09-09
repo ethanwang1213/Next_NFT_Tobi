@@ -20,6 +20,7 @@ model accounts {
     gender                  String?             @db.VarChar(255)
     birth                   String?             @db.VarChar(255)
     gift_permission         Boolean             @default(false)
+    note                    String              @db.Text
     digital_items           digital_items[]
     flow_account            flow_accounts?
     favorite_saidans        saidans_favorite[]
@@ -135,8 +136,8 @@ model reported_contents {
     id                 Int                  @id @default(autoincrement())
     content_id         Int
     content            contents             @relation(fields: [content_id], references: [id])
-    reporter_uuid      String               @db.VarChar(255)
-    reporter           accounts             @relation(fields: [reporter_uuid], references: [uuid])
+    reporter_uuid      String?              @db.VarChar(255)
+    reporter           accounts?            @relation(fields: [reporter_uuid], references: [uuid])
     title              String               @db.VarChar(255)
     description        String               @db.Text
     is_solved          Boolean?
