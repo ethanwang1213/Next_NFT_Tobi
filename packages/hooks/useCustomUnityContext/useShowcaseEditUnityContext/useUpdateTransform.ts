@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { ItemTransformUpdatePhase as TransformUpdatePhase } from "types/unityTypes";
+import { ItemTransformUpdatePhase } from "types/unityTypes";
 import { MessageDestination, SelectedItem, UnityMessageJson } from "../types";
 
 /// NOTE(Toruto): position and rotation will be added when expert mode is implemented.
@@ -13,7 +13,7 @@ export const useUpdateItemTransform = ({
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
   const updateItemTransform = useCallback(
-    (scale: number, phase: TransformUpdatePhase) => {
+    ({ scale, phase }: { scale: number; phase: ItemTransformUpdatePhase }) => {
       const data = {
         itemType: selectedItem?.itemType,
         itemId: selectedItem?.itemId,
@@ -23,7 +23,6 @@ export const useUpdateItemTransform = ({
         scale,
         phase,
       };
-      console.log(JSON.stringify(data));
 
       postMessageToUnity(
         "UpdateItemTransformMessageReceiver",
@@ -39,7 +38,6 @@ export const useUpdateItemTransform = ({
         SelectedItem,
         "digitalItemId"
       >;
-
       if (!messageBody) return;
 
       setSelectedItem((prev) =>
