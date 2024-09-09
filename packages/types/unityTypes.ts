@@ -145,11 +145,14 @@ export type ItemId = {
   id: number;
 };
 
-export type ItemTransform = {
-  stageType: UnityStageType;
+export type ItemTransformWithoutStageType = {
   position: Vector3;
   rotation: Vector3;
   scale: number;
+};
+
+export type ItemTransform = ItemTransformWithoutStageType & {
+  stageType: UnityStageType;
 };
 
 export type SaidanItemData = ItemBaseData &

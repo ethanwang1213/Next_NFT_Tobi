@@ -3,7 +3,7 @@ import {
   FloorSettings,
   ItemBaseId,
   ItemId,
-  ItemTransform,
+  ItemTransformWithoutStageType,
   ItemTypeParam,
   LightParams,
   ParentId,
@@ -107,10 +107,10 @@ export type SelectedItem = ItemTypeParam &
   ItemBaseId &
   ParentId &
   ItemId &
-  Omit<ItemTransform, "stageType">;
+  ItemTransformWithoutStageType;
 
 export type UndoneRedoneResult = {
-  item?: Partial<ItemTypeParam & ItemBaseId & Omit<ItemTransform, "stageType">>;
+  item?: Partial<ItemTypeParam & ItemBaseId & ItemTransformWithoutStageType>;
   settings?: Partial<{
     wallpaper?: Partial<WallpaperSettings>;
     floor?: Partial<FloorSettings>;
@@ -122,7 +122,7 @@ export type UndoneRedoneResult = {
 };
 
 export type RequiredUndoneRedoneResult = {
-  item: ItemTypeParam & ItemBaseId & Omit<ItemTransform, "stageType">;
+  item: ItemTypeParam & ItemBaseId & ItemTransformWithoutStageType;
   settings: SaidanSettings;
 };
 
