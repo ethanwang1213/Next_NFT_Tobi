@@ -330,7 +330,7 @@ export const useSaidanLikeUnityContextBase = ({
     setIsSaidanSceneLoaded(true);
 
     if (!loadData || loadData.saidanId === currentSaidanId) {
-      console.log("loadData is null or same saidanId" + currentSaidanId);
+      console.log("loadData is null or same saidanId: " + currentSaidanId);
       return;
     }
 

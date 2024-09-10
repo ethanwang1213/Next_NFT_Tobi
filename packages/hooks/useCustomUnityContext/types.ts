@@ -17,6 +17,7 @@ export const UnitySceneType = {
   Standby: 0,
   Workspace: 1,
   ShowcaseEdit: 2,
+  ItemPreview: 3,
 } as const;
 export type UnitySceneType =
   (typeof UnitySceneType)[keyof typeof UnitySceneType];
@@ -41,7 +42,8 @@ export type MessageDestination =
   | "DeleteAllActionHistoryMessageReceiver"
   | "PauseInputsMessageReceiver"
   | "ResumeInputsMessageReceiver"
-  | "UpdateItemTransformMessageReceiver";
+  | "UpdateItemTransformMessageReceiver"
+  | "ViewItemModelMessageReceiver";
 
 export const UnityMessageType = {
   SimpleMessage: 0,
