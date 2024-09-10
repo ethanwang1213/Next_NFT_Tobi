@@ -1426,12 +1426,12 @@ export const handleZipModel = async (req: Request, res: Response) => {
         } else {
           fileName = relationUri.filter((relation)=>relation.entryName==entryName)[0].uri;
         }
-        const destination = `/users/${uid}/item/${ModelRequestType.UserUploaded}/models/${timestamp}/${fileName}`;
+        const destination = `users/${uid}/item/${ModelRequestType.UserUploaded}/models/${timestamp}/${fileName}`;
         try {
           const file = bucket.file(destination);
           await file.save(buffer);
           if (fileName?.endsWith(".gltf")) {
-            modelUrl = `https://storage.googleapis.com/${bucket.name}${file.name}`;
+            modelUrl = file.publicUrl();
           }
           console.log(`File uploaded to ${destination} successfully.`);
         } catch (error) {
