@@ -82,25 +82,19 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
       imageType: ImageType,
       step: number,
     ) => {
+      debugger
       if (imageRef.current != srcImage) {
         const uploadUrl = await uploadImage(srcImage, imageType);
         if (uploadUrl == "") {
           setError(true);
           return false;
         }
-        if (imageType == ImageType.MaterialImage) {
-          const result = await props.createMaterialImageHandler(uploadUrl);
-          if (!result) {
-            setError(true);
-            return false;
-          }
-        }
         imageRef.current = uploadUrl;
       }
       if (step) setStep(step);
       return true;
     },
-    [props],
+    [],
   );
 
   const removeImageBackground = useCallback(

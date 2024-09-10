@@ -290,7 +290,7 @@ const DigitalItemTable = (filters: {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {digitalItems?.slice().reverse().map((item) => (
+              {digitalItems?.map((item) => (
                 <tr key={item.id} className="w-full border-b py-3 text-sm">
                   <td className="py-3 text-center">
                     <input
