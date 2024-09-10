@@ -77,7 +77,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             height={16}
             alt="information"
           />
-          <span className="text-[12px] ml-4">
+          <span className="text-[12px] ml-2">
             ここでは１つのみ提出してください。あとから追加・変更が可能です。
           </span>
         </div>
@@ -87,7 +87,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         <label
           className={clsx(
             "input flex items-center gap-1",
-            "w-[178px] h-8 pl-5",
+            "w-[178px] h-8 pl-5 ml-7",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color",
             "focus:outline-none focus-within:outline-none sm:focus-within:border-focus-color md:focus-within:border-focus-color",
             "text-sm font-normal text-input-color",

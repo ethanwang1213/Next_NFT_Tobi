@@ -1,5 +1,6 @@
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
+import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useState } from "react";
@@ -9,10 +10,7 @@ const ShowcaseUnityUISetting = () => {
   const [scale, setScale] = useState<number>(1.0);
   const [px, setpx] = useState<number>(0);
   const [py, setpy] = useState<number>(0);
-  const [pz, setpz] = useState<number>(0);
   const [rx, setrx] = useState<number>(0);
-  const [ry, setry] = useState<number>(0);
-  const [rz, setrz] = useState<number>(0);
 
   const handleAction = (
     actionType: ActionType,
@@ -23,12 +21,9 @@ const ShowcaseUnityUISetting = () => {
       case 2:
         setpx(result.item.position.x);
         setpy(result.item.position.y);
-        setpz(result.item.position.z);
         break;
       case 3:
         setrx(result.item.rotation.x);
-        setry(result.item.rotation.y);
-        setrz(result.item.rotation.z);
         break;
       case 4:
         setScale(result.item.scale);
@@ -63,54 +58,60 @@ const ShowcaseUnityUISetting = () => {
   return (
     <div className="flex flex-col h-[192px] bg-[#565656] bg-opacity-75 backdrop-blur-[25px] w-full rounded-3xl shadow-xl pl-12 pr-12 pt-8 pb-8 gap-4">
       <div className="flex items-center h-8">
-        <span className="text-[16px] font-bold w-[100px]">Position</span>
-        <div className="flex gap-6">
+        <div className="flex items-center gap-2">
+          <Image
+            width={20}
+            height={20}
+            src="/admin/images/icon/position.svg"
+            alt="position icon"
+          />
+          <span className="text-[16px] font-bold w-[100px]">Position</span>
+        </div>
+        <div className="flex items-center justify-between w-full">
           <input
             type="text"
             placeholder="x"
-            className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
             value={px === 0 ? "" : px.toFixed(1)}
           />
           <input
             type="text"
             placeholder="y"
-            className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
             value={py === 0 ? "" : py.toFixed(1)}
-          />
-          <input
-            type="text"
-            placeholder="z"
-            className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
-            value={pz === 0 ? "" : pz.toFixed(1)}
           />
         </div>
       </div>
       <div className="flex items-center h-8">
-        <span className="text-[16px] font-bold w-[100px]">Rotation</span>
-        <div className="flex gap-6">
+        <div className="flex items-center gap-2">
+          <Image
+            width={20}
+            height={20}
+            src="/admin/images/icon/rotation.svg"
+            alt="rotation icon"
+          />
+          <span className="text-[16px] font-bold w-[100px]">Rotation</span>
+        </div>
+        <div className="flex items-center w-full">
           <input
             type="text"
             placeholder="x"
-            className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
+            className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
             value={rx === 0 ? "" : rx.toFixed(1)}
-          />
-          <input
-            type="text"
-            placeholder="y"
-            className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
-            value={ry === 0 ? "" : ry.toFixed(1)}
-          />
-          <input
-            type="text"
-            placeholder="z"
-            className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
-            value={rz === 0 ? "" : rz.toFixed(1)}
           />
         </div>
       </div>
       <div className="flex items-center h-8">
-        <span className="text-[16px] font-bold w-[100px]">Scale</span>
-        <div className="flex gap-6 items-center">
+        <div className="flex items-center gap-2">
+          <Image
+            width={20}
+            height={20}
+            src="/admin/images/icon/scale.svg"
+            alt="scale icon"
+          />
+          <span className="text-[16px] font-bold w-[80px]">Scale</span>
+        </div>
+        <div className="flex">
           <input
             type="text"
             placeholder="scale"
@@ -119,7 +120,7 @@ const ShowcaseUnityUISetting = () => {
           />
         </div>
         <Slider
-          min={1}
+          min={0}
           max={10}
           styles={{
             handle: handleStyle,
