@@ -24,7 +24,7 @@ type Props = {
   handleRemoveItemDisabled?: () => void;
   handleRemoveItemRequested?: MessageHandler;
   handleItemSelected?: MessageHandler;
-  handleActionRegistered: () => void;
+  handleActionRegistered?: () => void;
   handleActionUndone?: MessageHandler;
   handleActionRedone?: MessageHandler;
   handleItemTransformUpdated?: MessageHandler;
@@ -102,7 +102,7 @@ export const useUnityMessageHandler = ({
           handleItemSelected?.(msgObj);
           return;
         case UnityMessageType.ActionRegistered:
-          handleActionRegistered();
+          handleActionRegistered?.();
           return;
         case UnityMessageType.ActionUndone:
           handleActionUndone?.(msgObj);

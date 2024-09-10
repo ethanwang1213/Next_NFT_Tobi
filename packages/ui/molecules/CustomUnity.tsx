@@ -1,23 +1,26 @@
 import { Unity } from "react-unity-webgl";
 import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
 
-type SaidanLikeProps = {
-  id: string;
+type ProviderParam = {
   unityProvider: UnityProvider;
 };
 
-export const WorkspaceUnity = ({
-  unityProvider,
-}: {
-  unityProvider: UnityProvider;
-}) => <SaidanLikeUnityBase id="workspace" unityProvider={unityProvider} />;
+type IdParam = {
+  id: string;
+};
 
-export const ShowcaseEditUnity = ({
-  unityProvider,
-}: {
-  unityProvider: UnityProvider;
-}) => <SaidanLikeUnityBase id="showcaseEdit" unityProvider={unityProvider} />;
+export const WorkspaceUnity = ({ unityProvider }: ProviderParam) => (
+  <UnityBase id="workspace" unityProvider={unityProvider} />
+);
 
-const SaidanLikeUnityBase = ({ id, unityProvider }: SaidanLikeProps) => (
+export const ShowcaseEditUnity = ({ unityProvider }: ProviderParam) => (
+  <UnityBase id="showcaseEdit" unityProvider={unityProvider} />
+);
+
+export const ItemPreviewUnity = ({ unityProvider }: ProviderParam) => (
+  <UnityBase id="itemPreview" unityProvider={unityProvider} />
+);
+
+const UnityBase = ({ id, unityProvider }: ProviderParam & IdParam) => (
   <Unity id={id} unityProvider={unityProvider} className="w-full h-full" />
 );
