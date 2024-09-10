@@ -26,6 +26,7 @@ router.get("/", async (req: Request, res: Response) => {
       birthday: user.birth,
       gender: user.gender,
       avatar: user.icon_url,
+      note: user.note,
       tcp: user.business == null ? null: {
         joinTime: user.business.created_date_time,
       },
@@ -35,6 +36,30 @@ router.get("/", async (req: Request, res: Response) => {
     status: "success",
     data: returnData,
   });
+});
+
+router.put("/:uid/notes", async (req: Request, res: Response) => {
+  const {uid} = req.params;
+  const {note} = req.body;
+  try {
+    await prisma.accounts.update({
+      where: {
+        uuid: uid,
+      },
+      data: {
+        note: note,
+      },
+    });
+    res.status(200).send({
+      status: "success",
+      data: "saved",
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      data: error,
+    });
+  }
 });
 
 export const userRouter = router;

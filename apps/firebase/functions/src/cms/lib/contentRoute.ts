@@ -252,9 +252,9 @@ router.get("/:id", async (req: Request, res: Response) => {
         description: report.description,
         isSolved: report.is_solved,
         reporter: {
-          uuid: report.reporter.uuid,
-          avatar: report.reporter.icon_url,
-          username: report.reporter.username,
+          uuid: report.reporter?.uuid,
+          avatar: report.reporter?.icon_url,
+          username: report.reporter?.username,
         },
       };
     });
@@ -332,7 +332,7 @@ router.put("/:id/ignore-report", async (req: Request, res: Response) => {
 router.put("/:id/freeze-report", async (req: Request, res: Response) => {
   const {id} = req.params;
   try {
-    await prisma.reported_contents.updateMany({
+    const process = await prisma.reported_contents.updateMany({
       where: {
         content_id: parseInt(id),
         is_solved: null,
@@ -341,7 +341,17 @@ router.put("/:id/freeze-report", async (req: Request, res: Response) => {
         is_solved: false,
       },
     });
-
+    if (!process.count) {
+      await prisma.reported_contents.create({
+        data: {
+          reporter_uuid: null,
+          content_id: parseFloat(id),
+          title: "admin",
+          description: "block",
+          is_solved: false,
+        },
+      });
+    }
     res.status(200).send({
       status: "success",
       data: "freeze",

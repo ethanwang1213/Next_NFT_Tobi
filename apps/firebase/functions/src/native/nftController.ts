@@ -665,7 +665,9 @@ export const getNftInfo = async (req: Request, res: Response) => {
       });
       const owners:{
         [key: number]: string;
-      } = await getOwnershipHistory(nftData.nft_owner?.account?.flow_account?.flow_address??"", nftData.id);
+      } = await getOwnershipHistory(nftData.nft_owner?.account?.flow_account?.flow_address??"", nftData.flow_nft_id??0);
+      console.log(owners);
+
       let acquiredDate = new Date();
       let ownerHistory: {
         avatarUrl: string | null | undefined;
