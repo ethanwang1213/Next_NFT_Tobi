@@ -74,6 +74,9 @@ const SampleTypeSelectComponent = (props: {
           await generateSampleHandler(ModelType.UserUploadedModel, result);
         }
         setUploading(false);
+      } else {
+        await generateSampleHandler(ModelType.UserUploadedModel, uploadFile);
+        setUploading(false);
       }
       return true;
     },
@@ -82,16 +85,11 @@ const SampleTypeSelectComponent = (props: {
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
-      setUploading(true);
       for (const file of acceptedFiles) {
         const fileName = file.name.split(".")[0];
-        const fileExtension = file.type.split("/")[1];
-        if (
-          file &&
-          (fileExtension === "gltf" ||
-            fileExtension === "glb" ||
-            fileExtension === "zip")
-        ) {
+        const fileExtension = file.name.split(".")[1];
+        if (file && (fileExtension === "glb" || fileExtension === "zip")) {
+          setUploading(true);
           const fileUrl = URL.createObjectURL(file);
           await uploadImageHandler(fileUrl, fileName, fileExtension);
         }
