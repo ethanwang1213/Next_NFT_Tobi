@@ -238,7 +238,7 @@ const Showcase = () => {
       setShowSampleDetailView(true);
       setSelectedSampleItem(selectedItem.digitalItemId);
       setShowOperate(true);
-    }else{
+    } else {
       setShowOperate(false);
     }
   }, [selectedItem]);
@@ -530,7 +530,7 @@ const Showcase = () => {
             dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
             showRestoreMenu={showRestoreMenu}
             settings={showcaseData?.settings}
-            operateMenu = {showoperate}
+            operateMenu={showoperate}
             updateUnityViewSettings={(
               wt: string,
               ft: string,
