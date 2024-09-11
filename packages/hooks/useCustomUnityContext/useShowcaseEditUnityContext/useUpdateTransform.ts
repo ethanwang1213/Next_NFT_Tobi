@@ -1,8 +1,12 @@
 import { useCallback } from "react";
 import { ItemTransformUpdatePhase } from "types/unityTypes";
-import { MessageDestination, SelectedItem, UnityMessageJson } from "../types";
+import {
+  MessageDestination,
+  PositionOnPlane,
+  SelectedItem,
+  UnityMessageJson,
+} from "../types";
 
-/// NOTE(Toruto): position and rotation will be added when expert mode is implemented.
 export const useUpdateItemTransform = ({
   selectedItem,
   setSelectedItem,
@@ -13,13 +17,23 @@ export const useUpdateItemTransform = ({
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
   const updateItemTransform = useCallback(
-    ({ scale, phase }: { scale: number; phase: ItemTransformUpdatePhase }) => {
+    ({
+      positionOnPlane,
+      rotationAngle,
+      scale,
+      phase,
+    }: {
+      positionOnPlane: PositionOnPlane;
+      rotationAngle: number;
+      scale: number;
+      phase: ItemTransformUpdatePhase;
+    }) => {
       const data = {
         itemType: selectedItem?.itemType,
         itemId: selectedItem?.itemId,
         id: selectedItem?.id,
-        // position,
-        // rotation,
+        positionOnPlane,
+        rotationAngle,
         scale,
         phase,
       };
@@ -40,13 +54,21 @@ export const useUpdateItemTransform = ({
       >;
       if (!messageBody) return;
 
+      const fixNumber = (num: number) => parseFloat(num.toFixed(3));
+      const positionOnPlane: PositionOnPlane = {
+        x: fixNumber(messageBody.positionOnPlane.x),
+        y: fixNumber(messageBody.positionOnPlane.y),
+      };
+      const rotationAngle = fixNumber(messageBody.rotationAngle);
+      const scale = fixNumber(messageBody.scale);
+
       setSelectedItem(
         (prev) =>
           prev && {
             ...prev,
-            position: messageBody.position,
-            rotation: messageBody.rotation,
-            scale: messageBody.scale,
+            positionOnPlane,
+            rotationAngle,
+            scale,
           },
       );
     },

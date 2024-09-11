@@ -121,11 +121,19 @@ export type SaidanLikeData = {
   isDebug: boolean;
 };
 
+export type PositionOnPlane = {
+  x: number;
+  y: number;
+};
+
 export type SelectedItem = ItemTypeParam &
   ItemBaseId &
   ParentId &
-  ItemId &
-  ItemTransform;
+  ItemId & {
+    positionOnPlane: PositionOnPlane;
+    rotationAngle: number;
+    scale: number;
+  };
 
 export type UndoneRedoneResult = {
   item?: Partial<ItemTypeParam & ItemBaseId & ItemTransform>;

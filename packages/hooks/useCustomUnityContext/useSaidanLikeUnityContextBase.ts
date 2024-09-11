@@ -15,6 +15,7 @@ import {
 } from "types/unityTypes";
 import {
   MessageDestination,
+  PositionOnPlane,
   RequiredUndoneRedoneResult,
   SaidanLikeData,
   SelectedItem,
@@ -560,10 +561,21 @@ export const useSaidanLikeUnityContextBase = ({
         additionalItemDataMap.get(messageBody.itemType)?.get(messageBody.itemId)
           ?.digitalItemId ?? -1;
 
+      const fixNumber = (num: number) => parseFloat(num.toFixed(3));
+      const positionOnPlane: PositionOnPlane = {
+        x: fixNumber(messageBody.positionOnPlane.x),
+        y: fixNumber(messageBody.positionOnPlane.y),
+      };
+      const rotationAngle = fixNumber(messageBody.rotationAngle);
+      const scale = fixNumber(messageBody.scale);
+
       setSelectedItem(
         messageBody.itemId === -1
           ? null
           : {
+              positionOnPlane,
+              rotationAngle,
+              scale,
               ...messageBody,
               digitalItemId,
             },
