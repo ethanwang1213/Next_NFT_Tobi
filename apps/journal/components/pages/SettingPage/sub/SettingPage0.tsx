@@ -34,24 +34,24 @@ const SettingPc0: React.FC = () => {
               width={80}
               height={80}
             />
-            <div className="flex flex-col items-start shrink-0 text-[32px] text-text-1000 font-bold">
+            <div className="flex flex-col items-start shrink-0 text-[40px] text-text-1000 font-bold">
               <div>Redemption Address</div>
-              <div className="text-[12px] text-primary font-bold">
+              <div className="w-[534px] text-[16px] text-primary font-bold">
                 The default address cannot be changed. Add an additional address
                 here to redeem.
               </div>
             </div>
           </div>
         </div>
-        <div className="inline-flex flex-col items-start gap-[43px]">
+        <div className="inline-flex flex-col items-start gap-[43px] mt-[30px]">
           <div className="flex items-start gap-[16px]">
-            <div className="w-[121px] flex flex-col justify-center text-text-1000 text-[16px] font-bold">
+            <div className="w-[121px] flex flex-col justify-center text-text-1000 text-[20px] font-bold">
               New address
             </div>
             <div className="flex items-start gap-[4px]">
               <input
                 type="text"
-                className="w-[280px] h-[32px] bg-transparent rounded-[48px] shrink-0 border-[2px] border-button focus:outline-none focus-within:outline-none md:focus-within:border-button sm:focus-within:border-button pl-[10px] text-accent text-[16px] font-bold"
+                className="w-[280px] h-[32px] bg-transparent rounded-[48px] shrink-0 border-[2px] border-button focus:outline-none focus-within:outline-none md:focus-within:border-button sm:focus-within:border-button pl-[10px] text-accent text-[20px] font-bold"
                 value={email}
                 onChange={(e) => setEmail(e.target.value.trim())}
               />
@@ -61,7 +61,7 @@ const SettingPc0: React.FC = () => {
         </div>
         <div className="mt-[40px] flex items-start gap-[16px]">
           <div className={"w-[121px] h-[32px] flex flex-col items-start"}>
-            <div className="w-[121px] h-[32px] flex flex-col justify-center shrink-0 text-text-1000 text-[16px] font-bold">
+            <div className="w-[121px] h-[32px] flex flex-col justify-center shrink-0 text-text-1000 text-[20px] font-bold">
               Default
             </div>
           </div>
@@ -114,7 +114,7 @@ const AddButton: React.FC<{
   return (
     <button
       disabled={email === ""}
-      className="w-[105px] h-[32px] px-[8px] py-[4px] flex justify-center items-center gap-[4px] rounded-[64px] bg-button text-[16px] text-neutral-base-white font-bold disabled:bg-disabled-input disabled:text-disabled-input-content"
+      className="w-[105px] h-[32px] px-[8px] py-[4px] flex justify-center items-center gap-[4px] rounded-[64px] bg-button text-[20px] text-neutral-base-white font-bold disabled:bg-disabled-input disabled:text-disabled-input-content"
       onClick={handleClick}
     >
       add
@@ -157,7 +157,7 @@ const MailAddressData: React.FC<{
   return (
     <div className="flex items-center gap-[24px]">
       <div className="flex items-start gap-[2px]">
-        <div className="w-[280px] h-[32px] flex flex-col justify-center shrink-0 text-text text-[16px] font-bold">
+        <div className="w-[280px] h-[32px] flex flex-col justify-center shrink-0 text-text text-[20px] font-bold">
           <div className="text-nowrap text-ellipsis overflow-hidden">
             {email}
           </div>
@@ -195,9 +195,11 @@ const verifiedMark = (verified: boolean) => {
 
   return (
     <div
-      className={`w-[109px] h-[32px] px-[16px] py-[8px] flex justify-center items-center gap-x-[8px] shrink-0 rounded-[64px] ${markCss[key]}`}
+      className={`w-[120px] h-[32px] px-[16px] py-[8px] flex justify-center items-center gap-x-[8px] shrink-0 rounded-[64px] ${markCss[key]}`}
     >
-      <div className={`text-[12px] font-bold ${textColor[key]}`}>
+      <div
+        className={`text-[16px] font-bold ${textColor[key]} whitespace-nowrap`}
+      >
         {text[key]}
       </div>
     </div>
