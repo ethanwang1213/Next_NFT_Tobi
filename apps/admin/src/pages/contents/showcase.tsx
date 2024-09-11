@@ -26,8 +26,9 @@ import { NftItem, SampleItem } from "ui/types/adminTypes";
 const Showcase = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [showDetailView, setShowDetailView] = useState(false);
-  const [showSampleDetailView, setShowSampleDetailView] = useState(false);
+  const [showDetailView, setShowDetailView] = useState(true);
+  const [showSampleDetailView, setShowSampleDetailView] = useState(true);
+  const [showoperate, setShowOperate] = useState(false);
   const [showSmartFrame, setShowSmartFrame] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
@@ -236,8 +237,9 @@ const Showcase = () => {
     if (selectedItem) {
       setShowSampleDetailView(true);
       setSelectedSampleItem(selectedItem.digitalItemId);
-    } else {
-      setShowSampleDetailView(false);
+      setShowOperate(true);
+    }else{
+      setShowOperate(false);
     }
   }, [selectedItem]);
 
@@ -528,7 +530,7 @@ const Showcase = () => {
             dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
             showRestoreMenu={showRestoreMenu}
             settings={showcaseData?.settings}
-            operateMenu = {showSampleDetailView}
+            operateMenu = {showoperate}
             updateUnityViewSettings={(
               wt: string,
               ft: string,

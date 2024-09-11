@@ -210,7 +210,7 @@ const ShowcaseTabView = ({
           </TabPanel>
           <TabPanel hidden={tab !== "Settings"}>
             <div
-              className="h-[calc(100vh-450px)] overflow-y-auto"
+              className="overflow-y-auto"
               style={{ scrollbarWidth: "none" }}
             >
               <div className="mx-auto">
