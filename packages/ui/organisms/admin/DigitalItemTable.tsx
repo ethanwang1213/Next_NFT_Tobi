@@ -324,7 +324,7 @@ const DigitalItemTable = (filters: {
                         alt={`${item.name}'s profile picture`}
                         unoptimized
                       />
-                      <span className="inline-block">{item.name}</span>
+                      <span className="inline-block w-24 text-left truncate">{item.name}</span>
                     </Link>
                   </td>
                   <td className="px-3 py-3 text-center justify-center">

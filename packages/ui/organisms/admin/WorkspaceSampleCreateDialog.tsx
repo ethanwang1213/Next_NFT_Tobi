@@ -82,7 +82,6 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
       imageType: ImageType,
       step: number,
     ) => {
-      debugger
       if (imageRef.current != srcImage) {
         const uploadUrl = await uploadImage(srcImage, imageType);
         if (uploadUrl == "") {

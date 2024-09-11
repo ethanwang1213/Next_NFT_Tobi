@@ -528,6 +528,7 @@ const Showcase = () => {
             dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
             showRestoreMenu={showRestoreMenu}
             settings={showcaseData?.settings}
+            operateMenu = {showSampleDetailView}
             updateUnityViewSettings={(
               wt: string,
               ft: string,
