@@ -1,6 +1,11 @@
 import { useCallback } from "react";
-import { ItemTransformUpdatePhase, PositionOnPlane } from "types/unityTypes";
-import { MessageDestination, SelectedItem, UnityMessageJson } from "../types";
+import { ItemTransformUpdatePhase } from "types/unityTypes";
+import {
+  MessageDestination,
+  PositionOnPlane,
+  SelectedItem,
+  UnityMessageJson,
+} from "../types";
 
 export const useUpdateItemTransform = ({
   selectedItem,
@@ -49,13 +54,21 @@ export const useUpdateItemTransform = ({
       >;
       if (!messageBody) return;
 
+      const fixNumber = (num: number) => parseFloat(num.toFixed(3));
+      const positionOnPlane: PositionOnPlane = {
+        x: fixNumber(messageBody.positionOnPlane.x),
+        y: fixNumber(messageBody.positionOnPlane.y),
+      };
+      const rotationAngle = fixNumber(messageBody.rotationAngle);
+      const scale = fixNumber(messageBody.scale);
+
       setSelectedItem(
         (prev) =>
           prev && {
             ...prev,
-            positionOnPlane: messageBody.positionOnPlane,
-            rotationAngle: messageBody.rotationAngle,
-            scale: messageBody.scale,
+            positionOnPlane,
+            rotationAngle,
+            scale,
           },
       );
     },

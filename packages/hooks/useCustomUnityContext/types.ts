@@ -7,7 +7,6 @@ import {
   ItemTypeParam,
   LightParams,
   ParentId,
-  PositionOnPlane,
   SaidanItemData,
   SaidanSettings,
   Vector3,
