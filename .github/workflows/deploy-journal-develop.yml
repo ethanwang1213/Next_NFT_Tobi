@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy-journal-develop:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     uses: ./.github/workflows/_deploy-vercel.yml
     with:
       ENV_NAME: "journal-develop"
