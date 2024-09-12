@@ -21,6 +21,7 @@ const ShowcaseTabView = ({
   showRestoreMenu,
   settings,
   updateUnityViewSettings,
+  operateMenu,
 }: {
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
@@ -28,6 +29,7 @@ const ShowcaseTabView = ({
   dragNftItem: (item: NftItem) => void;
   showRestoreMenu: boolean;
   settings: any;
+  operateMenu: boolean;
   updateUnityViewSettings: (
     wt: string,
     ft: string,
@@ -207,10 +209,7 @@ const ShowcaseTabView = ({
             ></ShowcaseInventoryTab>
           </TabPanel>
           <TabPanel hidden={tab !== "Settings"}>
-            <div
-              className="h-[calc(100vh-450px)] overflow-y-auto"
-              style={{ scrollbarWidth: "none" }}
-            >
+            <div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
               <div className="mx-auto">
                 <Collapse title="WALLPAPER">
                   <ColorPicker
@@ -305,7 +304,7 @@ const ShowcaseTabView = ({
             </div>
           </TabPanel>
         </div>
-        <ShowcaseUnityUISetting />
+        <ShowcaseUnityUISetting menuShow={operateMenu} />
       </div>
     </div>
   );

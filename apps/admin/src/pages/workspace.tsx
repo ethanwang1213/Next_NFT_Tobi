@@ -599,7 +599,7 @@ export default function Index() {
               className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
               onClick={() => {
                 setShowDetailView(!showDetailView);
-                setShowListView(false);
+                setShowListView(!showDetailView);
               }}
             >
               <Image
