@@ -2,11 +2,17 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError, storage} from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {TOPIC_NAMES} from "../lib/constants";
+import {TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import {giftStatus, mintStatus, notificationBatchStatus} from "./utils";
+import {giftStatus, increaseTransactionAmount, isEmptyObject, mintStatus, statusOfLimitTransaction, notificationBatchStatus} from "./utils";
+import * as fcl from "@onflow/fcl";
+
+fcl.config({
+  "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
+  "accessNode.api": process.env.FLOW_ACCESS_NODE_API ?? "FLOW_ACCESS_NODE_API",
+});
 
 const pubsub = new PubSub();
 
@@ -34,6 +40,20 @@ export const mintNFT = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const notificationBatchId = await generateNotificationBatchId(fcmToken);
+    const checkLimit = await increaseTransactionAmount(uid);
+    if (checkLimit == statusOfLimitTransaction.notExistAccount) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist-account",
+      });
+      return;
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+      res.status(401).send({
+        status: "error",
+        data: "transaction-limit",
+      });
+      return;
+    }
     try {
       let mintCount = 0;
       let intervalId: NodeJS.Timer | null = null;
@@ -249,6 +269,20 @@ export const giftNFT = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     const notificationBatchId = await generateNotificationBatchId(fcmToken);
+    const checkLimit = await increaseTransactionAmount(uid);
+    if (checkLimit == statusOfLimitTransaction.notExistAccount) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist-account",
+      });
+      return;
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+      res.status(401).send({
+        status: "error",
+        data: "transaction-limit",
+      });
+      return;
+    }
     try {
       await gift(parseInt(id), uid, receiveFlowId, notificationBatchId);
       res.status(200).send({
@@ -290,6 +324,20 @@ export const deleteMyNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const checkLimit = await increaseTransactionAmount(uid);
+    if (checkLimit == statusOfLimitTransaction.notExistAccount) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist-account",
+      });
+      return;
+    } else if (checkLimit == statusOfLimitTransaction.limitedTransaction) {
+      res.status(401).send({
+        status: "error",
+        data: "transaction-limit",
+      });
+      return;
+    }
     try {
       const notificationBatchId = await generateNotificationBatchId(fcmToken);
       await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", notificationBatchId);
@@ -405,6 +453,27 @@ export const generateNotificationBatchId = async (fcmToken: string) => {
   });
   return column.id;
 }
+
+export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
+  const cadence = `
+import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
+
+access(all) fun main(address: Address, id: String): {UFix64: Address}? {
+    let collection = getAccount(address)
+        .capabilities.get<&TobiratoryDigitalItems.Collection>(TobiratoryDigitalItems.CollectionPublicPath)
+        .borrow()
+        ?? panic("NFT Collection not found")
+
+    let nft = collection.borrowTobiratoryNFT(UInt64.fromString(id)!)
+
+    return nft?.getOwnerHistory();
+}`;
+
+  return await fcl.query({
+    cadence,
+    args: (arg: any, t: any) => [arg(ownerFlowAddress, t.Address), arg(String(nftId), t.String)],
+  });
+};
 
 export const fetchNftThumb = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -592,6 +661,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
             include: {
               account: {
                 include: {
+                  flow_account: true,
                   business: {
                     include: {
                       content: true,
@@ -633,6 +703,39 @@ export const getNftInfo = async (req: Request, res: Response) => {
       const copyrights = nftData.digital_item.copyrights.map((relate) => {
         return relate.copyright.name;
       });
+      const owners:{
+        [key: number]: string;
+      } = await getOwnershipHistory(nftData.nft_owner?.account?.flow_account?.flow_address??"", nftData.flow_nft_id??0);
+      console.log(owners);
+
+      let acquiredDate = new Date();
+      let ownerHistory: {
+        avatarUrl: string | null | undefined;
+        uuid: string | undefined;
+        flowAddress: string;
+        acquiredDate: Date;
+      }[] = [];
+      if (isEmptyObject(owners)) {
+        acquiredDate = new Date(Object.keys(owners)[0]);
+        ownerHistory = await Promise.all(
+            Object.entries(owners).map(async ([key, owner])=>{
+              const ownerData = await prisma.flow_accounts.findFirst({
+                where: {
+                  flow_address: owner,
+                },
+                include: {
+                  account: true,
+                },
+              });
+              return {
+                avatarUrl: ownerData?.account.icon_url,
+                uuid: ownerData?.account_uuid,
+                flowAddress: owner,
+                acquiredDate: new Date(key),
+              };
+            })
+        );
+      }
       const returnData = {
         content: nftData.nft_owner?.account?.business?.content != null ? {
           name: nftData.nft_owner?.account?.business?.content.name,
@@ -645,6 +748,8 @@ export const getNftInfo = async (req: Request, res: Response) => {
         license: nftData.digital_item.license,
         certImageUrl: "",
         sn: nftData.serial_no,
+        acquiredDate: acquiredDate,
+        owners: ownerHistory,
       };
       res.status(200).send({
         status: "success",

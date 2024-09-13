@@ -12,7 +12,7 @@ type Props = {
 const TitleContainer: React.FC<Props> = ({ title, titleSize }) => {
   return (
     <h3
-      className={`w-full grow min-h-[60px] mt-2 text-[42px] text-accent font-bold grid content-center drop-shadow-lg`}
+      className={`w-full grow min-h-[60px] mt-2 text-[42px] text-text-1000 font-bold grid content-center drop-shadow-lg`}
       style={{ fontSize: `${titleSize}px` }}
     >
       {title}

@@ -4,7 +4,7 @@ export type MaterialItem = {
 };
 
 export type SampleItem = {
-  id: number;
+  sampleItemId: number;
   digitalItemId: number;
   name: string;
   thumbUrl: string;
@@ -14,7 +14,7 @@ export type SampleItem = {
 };
 
 export type NftItem = {
-  id: number;
+  sampleItemId: number;
   digitalItemId: number;
   name: string;
   image: string;

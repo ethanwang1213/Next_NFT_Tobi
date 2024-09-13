@@ -3,7 +3,8 @@ name: Deploy Journal Preview on Vercel
 on:
   pull_request:
     types: [opened]
-
+  workflow_dispatch:
+  
 jobs:
   deploy-journal-preview:
     uses: ./.github/workflows/_deploy-vercel.yml

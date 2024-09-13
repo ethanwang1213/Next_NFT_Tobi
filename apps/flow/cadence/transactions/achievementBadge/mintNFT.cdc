@@ -5,18 +5,18 @@ import AchievementBadge from "../../contracts/AchievementBadge.cdc"
 transaction(name: String, description: String) {
     let minter: &AchievementBadge.Minter
     let receiver: Capability<&{NonFungibleToken.Receiver}>
-    prepare(acct: AuthAccount) {
-       // Setup Collection
-        if acct.borrow<&AchievementBadge.Collection>(from: AchievementBadge.collectionStoragePath) == nil {
-            let collection <- AchievementBadge.createEmptyCollection() as! @AchievementBadge.Collection
-            acct.save(<- collection, to: AchievementBadge.collectionStoragePath)
-            acct.link<&{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver}>(AchievementBadge.collectionPublicPath, target: AchievementBadge.collectionStoragePath)
+    prepare(acct: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account) {
+        // Setup Collection
+        if acct.storage.borrow<&AchievementBadge.Collection>(from: AchievementBadge.collectionStoragePath) == nil {
+            let collection <- AchievementBadge.createEmptyCollection(nftType: Type<@AchievementBadge.NFT>())
+            acct.storage.save(<- collection, to: AchievementBadge.collectionStoragePath)
+            let cap: Capability = acct.capabilities.storage.issue<&AchievementBadge.Collection>(AchievementBadge.collectionStoragePath)
+            acct.capabilities.publish(cap, at: AchievementBadge.collectionPublicPath)
         }
-        self.minter = acct.borrow<&AchievementBadge.Minter>(from: AchievementBadge.minterStoragePath) ?? panic("Could not borrow minter reference")
-        self.receiver = acct.getCapability<&{NonFungibleToken.Receiver}>(AchievementBadge.collectionPublicPath)
+        self.minter = acct.storage.borrow<&AchievementBadge.Minter>(from: AchievementBadge.minterStoragePath) ?? panic("Could not borrow minter reference")
+        self.receiver = acct.capabilities.get<&{NonFungibleToken.Receiver}>(AchievementBadge.collectionPublicPath)
     }
     execute {
-        // let minter = self.minter.borrow() ?? panic("Could not borrow receiver capability (maybe receiver not configured?)")
         self.minter.mintTo(creator: self.receiver, metadata: {"name": name, "description": description})
     }
 }

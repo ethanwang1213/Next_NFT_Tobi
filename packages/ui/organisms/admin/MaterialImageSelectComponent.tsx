@@ -94,7 +94,7 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
           >
             <div className="flex flex-wrap gap-4">
               {props.data &&
-                props.data.map((image) => (
+                [...props.data].reverse().map((image) => (
                   <NextImage
                     key={`material-image-${image.id}`}
                     width={88}

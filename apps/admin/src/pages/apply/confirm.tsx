@@ -4,16 +4,20 @@ import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
 const Row1 = ({ label, wide, children }) => {
   return (
-    <div className="flex flex-row items-center py-4">
+    <div className="md:flex flex-row items-center py-4 w-full ">
       <div
         className={`${
-          wide ? "w-[550px]" : "w-64"
+          wide
+            ? "sm:w-[40%] w-full sm:justify-start justify-between"
+            : "sm:w-[40%] w-full sm:justify-start justify-between"
         } flex-none flex flex-row items-center`}
       >
-        <span className="text-base mr-4 text-nowrap">{label}</span>
+        <span className="text-base mr-4 md:text-wrap sm:text-nowrap text-wrap">
+          {label}
+        </span>
         {label.length ? <RequireMark /> : <></>}
       </div>
-      <div className={`flex-auto break-all ${wide ? "text-end" : ""}`}>
+      <div className={`flex-auto break-all md:pl-10${wide ? "" : ""}`}>
         {children}
       </div>
     </div>
@@ -22,26 +26,26 @@ const Row1 = ({ label, wide, children }) => {
 
 const Row3 = ({ label, children }) => {
   return (
-    <div className="flex flex-row items-center py-4">
-      <div className="w-64 flex-none flex flex-row items-center">
-        <span className="text-base mr-4 text-nowrap">{label}</span>
+    <div className="md:flex flex-row items-center py-4 w-full">
+      <div className="sm:w-[40%] w-full flex-none flex flex-row items-center sm:justify-start justify-between">
+        <span className="text-base mr-4 md:text-wrap text-nowrap">{label}</span>
         {label.length ? <OptionMark /> : <></>}
       </div>
-      <div className="flex-auto break-all">{children}</div>
+      <div className="flex-auto break-all md:pl-10">{children}</div>
     </div>
   );
 };
 
 const Row4 = ({ label, children }) => {
   return (
-    <div className="flex flex-col py-4">
-      <div className="w-64 h-12 flex-none flex flex-row items-center">
-        <span className="text-base mr-4 text-nowrap">{label}</span>
+    <div className="md:flex flex-row py-4">
+      <div className="sm:w-[40%] w-full  h-12 flex-none flex flex-row items-center sm:justify-start justify-between">
+        <span className="text-base mr-4 md:text-wrap sm:text-nowrap text-wrap">
+          {label}
+        </span>
         {label.length ? <OptionMark /> : <></>}
       </div>
-      <div className="flex-auto">
-        <div className={"flex justify-end"}>{children}</div>
-      </div>
+      <div className="flex items-center md:pl-10">{children}</div>
     </div>
   );
 };
@@ -67,10 +71,9 @@ const ConfirmInformation = ({
     ]
       .filter((f) => f !== undefined)
       .map((line, index) => (
-        <Fragment key={index}>
-          {line}
-          <br />
-        </Fragment>
+        <span key={index} className="pr-2">
+          {line},
+        </span>
       ));
   };
 
@@ -85,18 +88,20 @@ const ConfirmInformation = ({
 
   return (
     <div>
-      <div className="mb-6 text-title-color flex flex-row items-center">
-        <span className="text-2xl/[48x] mr-10">登録者情報</span>
-        <Image
-          src="/admin/images/info-icon-2.svg"
-          width={16}
-          height={16}
-          alt="information"
-          className=""
-        />
-        <span className="text-[12px]/[48x] ml-4">
-          申請されている方の情報をご記入ください
-        </span>
+      <div className="mb-6 text-title-color flex flex-col items-center">
+        <span className="text-2xl/[48x]">登録者情報</span>
+        <div className="flex flex-row gap-2 items-center">
+          <Image
+            src="/admin/images/info-icon-2.svg"
+            width={16}
+            height={16}
+            alt="information"
+            className=""
+          />
+          <span className="text-[12px]/[48x] ml-4">
+            申請されている方の情報をご記入ください
+          </span>
+        </div>
       </div>
       <Row1 label="コンテンツ名" wide={false}>
         <span className="">{contentInfo.name}</span>
@@ -137,7 +142,7 @@ const ConfirmInformation = ({
         <span className="">©{copyrightInfo.copyrightHolder}</span>
       </Row1>
       <Row3 label="著作物に関するライセンス">
-        <span className="">{copyrightFiles()}</span>
+        <div>{copyrightFiles()}</div>
       </Row3>
       <Row4 label="所有している著作権やライセンス情報の提供">
         <span className="">
@@ -155,7 +160,7 @@ const ConfirmInformation = ({
           id={"originalContentDeclaration"}
           type={"checkbox"}
           checked={originalContentDeclaration}
-          className="w-6 h-6 mr-3 outline-none"
+          className="w-6 h-6 sm:mr-3 mr-1 outline-none"
           onChange={(e) => setOriginalContentDeclaration(e.target.checked)}
         />
         <label

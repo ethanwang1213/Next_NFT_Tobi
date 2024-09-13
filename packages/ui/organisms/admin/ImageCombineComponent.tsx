@@ -24,7 +24,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [crop, setCrop] = useState<Crop>({
-    unit: "%", // Can be 'px' or '%'
+    unit: "%",
     x: 0,
     y: 0,
     width: 100,
@@ -107,7 +107,6 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     (rotate) => {
       setRotate(rotate);
 
-      // set outline crop
       const { width, height } = imgMessageRef.current;
       const { w: rotatedScreenWidth, h: rotatedScreenHeight } =
         calcRotatedScaledSize(width, height, 180 - rotate, scale);
@@ -125,7 +124,6 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     if (imgMessageRef.current) {
       const { width, height } = imgMessageRef.current;
 
-      // keep the center of crop rectangle
       newCrop.x = crop.x + (crop.width - newCrop.width) / 2;
       newCrop.y = crop.y + (crop.height - newCrop.height) / 2;
       setCrop(newCrop);
@@ -143,69 +141,76 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
   };
 
   const combineImage = useCallback(async () => {
-    const image = imgMessageRef.current;
+    const cardImage = imgCardRef.current;
+    const messageImage = imgMessageRef.current;
 
-    // Create a temporary canvas to draw the rotated image
+    if (!cardImage || !messageImage) {
+      throw new Error("Images are not available for combining");
+    }
+
     const rotateCanvas = document.createElement("canvas");
     const rotateCtx = rotateCanvas.getContext("2d");
 
     if (!rotateCtx) {
-      throw new Error("No 2d context for rotate image canvas");
+      throw new Error("No 2D context for rotate image canvas");
     }
 
-    // Calculate the bounding box of the rotated image
     const { w: rotatedScreenWidth, h: rotatedScreenHeight } =
-      calcRotatedScaledSize(image.width, image.height, 180 - rotate, scale);
+      calcRotatedScaledSize(
+        messageImage.width,
+        messageImage.height,
+        180 - rotate,
+        scale,
+      );
 
     rotateCanvas.width = rotatedScreenWidth;
     rotateCanvas.height = rotatedScreenHeight;
 
-    // Translate and rotate the canvas
     const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     rotateCtx.translate(rotatedScreenWidth / 2, rotatedScreenHeight / 2);
     rotateCtx.rotate(angleInRadians);
-    rotateCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
+    rotateCtx.translate(-messageImage.width / 2, -messageImage.height / 2);
 
-    // Draw the original image onto the canvas
-    rotateCtx.drawImage(image, 0, 0);
+    rotateCtx.drawImage(messageImage, 0, 0);
 
-    // Create a final canvas to draw the card and message image
     const finalCanvas = document.createElement("canvas");
     const finalCtx = finalCanvas.getContext("2d");
 
     if (!finalCtx) {
-      throw new Error("No 2d context for final image canvas");
+      throw new Error("No 2D context for final image canvas");
     }
 
-    finalCanvas.width = imgCardRef.current.width;
-    finalCanvas.height = imgCardRef.current.height;
+    finalCanvas.width = cardImage.naturalWidth;
+    finalCanvas.height = cardImage.naturalHeight;
 
-    // Draw the original card image onto the canvas
-    finalCtx.drawImage(imgCardRef.current, 0, 0);
+    finalCtx.drawImage(cardImage, 0, 0);
 
-    // Calculate offset
     const cardOffsetX =
-      crop.x -
-      (imgWrapperRef.current.clientWidth - imgCardRef.current.width) / 2;
+      position.x + (finalCanvas.width - rotatedScreenWidth) / 2;
     const cardOffsetY =
-      crop.y -
-      (imgWrapperRef.current.clientHeight - imgCardRef.current.height) / 2;
+      position.y + (finalCanvas.height - rotatedScreenHeight) / 2;
 
-    // Draw the rotated message image onto the card image
+    const messageOffsetX = Math.max(
+      0,
+      Math.min(finalCanvas.width - rotatedScreenWidth, cardOffsetX),
+    );
+    const messageOffsetY = Math.max(
+      0,
+      Math.min(finalCanvas.height - rotatedScreenHeight, cardOffsetY),
+    );
+
     finalCtx.drawImage(
       rotateCanvas,
       0,
       0,
       rotatedScreenWidth,
       rotatedScreenHeight,
-      cardOffsetX,
-      cardOffsetY,
+      messageOffsetX,
+      messageOffsetY,
       rotatedScreenWidth,
       rotatedScreenHeight,
     );
 
-    // You might want { type: "image/jpeg", quality: <0 to 1> } to
-    // reduce image size
     const blob = await new Promise<Blob | null>((resolve) =>
       finalCanvas.toBlob(resolve, "image/png"),
     );
@@ -214,7 +219,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       URL.revokeObjectURL(blobUrlRef.current);
     }
     blobUrlRef.current = URL.createObjectURL(blob);
-  }, [calcRotatedScaledSize, crop, rotate, scale]);
+  }, [calcRotatedScaledSize, rotate, scale, position]);
 
   const generateHandler = useCallback(async () => {
     setProcessing(true);

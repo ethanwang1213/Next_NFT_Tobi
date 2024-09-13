@@ -4,6 +4,7 @@
  * @returns {boolean} The if obj is empty.
  */
 
+import AdmZip from "adm-zip";
 import {numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime} from "../lib/constants";
 import {prisma} from "../prisma";
 
@@ -102,3 +103,22 @@ export async function increaseTransactionAmount(uuid: string): Promise<statusOfL
   });
   return statusOfLimitTransaction.permitted;
 }
+
+export const allowedExtension = [
+  ".gltf", ".bin", ".png", ".jpg", ".jpeg", ".DS_Store",
+];
+
+export const base64Pattern = /^[A-Za-z0-9+/]+={0,2}$/;
+
+export const checkUri = (uri: string, entries: AdmZip.IZipEntry[], modelName: string) => {
+  let flag = false;
+  const modelDir = modelName.replace(modelName.split("/").pop()??"", "");
+  for (const entry of entries) {
+    const entryName = entry.entryName;
+    if (entryName==(modelDir+uri)) {
+      flag = true;
+      return entryName;
+    }
+  }
+  return flag;
+};

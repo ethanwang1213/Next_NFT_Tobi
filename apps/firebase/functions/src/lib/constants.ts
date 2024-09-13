@@ -29,9 +29,9 @@ export const TPF2023_STAMP_RALLY_KEYWORDS: {
 };
 
 export const NON_FUNGIBLE_TOKEN_ADDRESS =
-    process.env.FLOW_NETWORK === "mainnet" ? "0x1d7e57aa55817448" :
-    process.env.FLOW_NETWORK === "testnet" ? "0x631e88ae7f1d7c20" :
-            "0xf8d6e0586b0a20c7";
+    process.env.FLOW_NETWORK === "mainnet" ? "1d7e57aa55817448" :
+        process.env.FLOW_NETWORK === "testnet" ? "631e88ae7f1d7c20" :
+            "f8d6e0586b0a20c7";
 
 export const TOBIRATORY_DIGITAL_ITEMS_ADDRESS =
     process.env.FLOW_NETWORK === "mainnet" ? "TODO" :
@@ -39,9 +39,11 @@ export const TOBIRATORY_DIGITAL_ITEMS_ADDRESS =
             "f8d6e0586b0a20c7";
 
 export const FUNGIBLE_TOKEN_ADDRESS =
-    process.env.FLOW_NETWORK === "mainnet" ? "0xf233dcee88fe0abe" :
-        process.env.FLOW_NETWORK === "testnet" ? "0x9a0766d93b6608b7" :
-            "0xee82856bf20e2aa6";
+    process.env.FLOW_NETWORK === "mainnet" ? "f233dcee88fe0abe" :
+        process.env.FLOW_NETWORK === "testnet" ? "9a0766d93b6608b7" :
+            "ee82856bf20e2aa6";
+
+export const REDEEM_LINK_CODE_EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `

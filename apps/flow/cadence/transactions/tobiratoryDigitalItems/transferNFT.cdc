@@ -2,17 +2,17 @@ import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import TobiratoryDigitalItems from "../../contracts/TobiratoryDigitalItems.cdc"
 
 transaction(recipient: Address, withdrawID: UInt64) {
-    let senderCollectionRef: &TobiratoryDigitalItems.Collection
+    let senderCollectionRef: auth(NonFungibleToken.Withdraw) &TobiratoryDigitalItems.Collection
     let recipientCollectionRef: &{NonFungibleToken.CollectionPublic}
 
-    prepare(acct: AuthAccount) {
+    prepare(acct: auth(BorrowValue, GetStorageCapabilityController) &Account) {
         self.senderCollectionRef = acct
-            .borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath)
+            .storage.borrow<auth(NonFungibleToken.Withdraw) &TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath)
             ?? panic("Not found")
 
         self.recipientCollectionRef = getAccount(recipient)
-            .getCapability(TobiratoryDigitalItems.CollectionPublicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            .capabilities.get<&{NonFungibleToken.CollectionPublic}>(TobiratoryDigitalItems.CollectionPublicPath)
+            .borrow()
             ?? panic("Not found")
     }
 

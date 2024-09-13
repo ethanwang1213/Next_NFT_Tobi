@@ -12,7 +12,7 @@ const Row1 = ({
   children: ReactNode;
 }) => {
   return (
-    <div className="flex flex-row py-4 pl-6">
+    <div className="sm:flex flex-row sm:py-4 sm:pl-6 py-3">
       <div className="w-52 h-12 flex-none flex flex-row items-center">
         <span className="text-base mr-4">{label ? label : ""}</span>
         {optional ? <OptionMark /> : <RequireMark />}
@@ -32,7 +32,9 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
 
   return (
     <>
-      <div className="mb-6 text-2xl/[48x] text-title-color">コンテンツ情報</div>
+      <div className="sm:mb-6 mb-3 text-2xl/[48x] text-title-color text-center">
+        コンテンツ情報
+      </div>
       <Row1 label="コンテンツ名">
         <input
           id="content_name"
@@ -67,7 +69,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
           id="content_description"
           className={clsx(
             "flex-1",
-            "w-full h-32 pl-5 pt-4 resize-none",
+            "w-full sm:h-32 h-[300px] pl-5 pt-4 resize-none",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",

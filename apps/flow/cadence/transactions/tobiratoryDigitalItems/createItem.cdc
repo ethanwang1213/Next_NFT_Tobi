@@ -1,7 +1,6 @@
-import NonFungibleToken from "../../contracts/core/NonFungibleToken.cdc"
 import MetadataViews from "../../contracts/core/MetadataViews.cdc"
 import TobiratoryDigitalItems from "../../contracts/TobiratoryDigitalItems.cdc"
-import FungibleToken from 0xee82856bf20e2aa6
+import "FungibleToken"
 
 transaction(
     type: String,
@@ -16,29 +15,27 @@ transaction(
 ) {
     let itemsRef: &TobiratoryDigitalItems.Items
     let itemReviewerRef: &TobiratoryDigitalItems.ItemReviewer
-    let royaltyReceiver: Capability<&AnyResource{FungibleToken.Receiver}>
+    let royaltyReceiver: Capability<&{FungibleToken.Receiver}>
 
-    prepare(creator: AuthAccount, reviewer: AuthAccount) {
-        if creator.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) == nil {
+    prepare(
+        creator: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account,
+        reviewer: auth(BorrowValue) &Account
+    ) {
+        if creator.storage.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) == nil {
             let items <- TobiratoryDigitalItems.createItems()
-            creator.save(<- items, to: TobiratoryDigitalItems.ItemsStoragePath)
-            creator.link<&TobiratoryDigitalItems.Items{TobiratoryDigitalItems.ItemsPublic}>(
-                TobiratoryDigitalItems.ItemsPublicPath,
-                target: TobiratoryDigitalItems.ItemsStoragePath
-            )
+            creator.storage.save(<- items, to: TobiratoryDigitalItems.ItemsStoragePath)
+            let cap = creator.capabilities.storage.issue<&TobiratoryDigitalItems.Items>(TobiratoryDigitalItems.ItemsStoragePath)
+            creator.capabilities.publish(cap, at: TobiratoryDigitalItems.ItemsPublicPath)
         }
-        if creator.borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) == nil {
-            let collection: @TobiratoryDigitalItems.Collection <- TobiratoryDigitalItems.createEmptyCollection() as! @TobiratoryDigitalItems.Collection
-            creator.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
-            creator.link<&TobiratoryDigitalItems.Collection{NonFungibleToken.CollectionPublic, TobiratoryDigitalItems.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(
-                TobiratoryDigitalItems.CollectionPublicPath,
-                target: TobiratoryDigitalItems.CollectionStoragePath
-            )
+        if creator.storage.borrow<&TobiratoryDigitalItems.Collection>(from: TobiratoryDigitalItems.CollectionStoragePath) == nil {
+            let collection <- TobiratoryDigitalItems.createEmptyCollection(nftType: Type<@TobiratoryDigitalItems.NFT>())
+            creator.storage.save(<- collection, to: TobiratoryDigitalItems.CollectionStoragePath)
+            let cap = creator.capabilities.storage.issue<&TobiratoryDigitalItems.Collection>(TobiratoryDigitalItems.CollectionStoragePath)
+            creator.capabilities.publish(cap, at: TobiratoryDigitalItems.CollectionPublicPath)
         }
-        self.itemsRef = creator.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) ?? panic("Not found")
-        self.itemReviewerRef = reviewer.borrow<&TobiratoryDigitalItems.ItemReviewer>(from: TobiratoryDigitalItems.ItemReviewerStoragePath) ?? panic("Not found")
-        self.royaltyReceiver = creator.getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
-        // self.royaltyReceiver = creator.capabilities.get<&{FungibleToken.Receiver}>(/public/flowTokenReceiver) ?? panic("Not found")
+        self.itemsRef = creator.storage.borrow<&TobiratoryDigitalItems.Items>(from: TobiratoryDigitalItems.ItemsStoragePath) ?? panic("Not found")
+        self.itemReviewerRef = reviewer.storage.borrow<&TobiratoryDigitalItems.ItemReviewer>(from: TobiratoryDigitalItems.ItemReviewerStoragePath) ?? panic("Not found")
+        self.royaltyReceiver = creator.capabilities.get<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
     }
 
     execute {

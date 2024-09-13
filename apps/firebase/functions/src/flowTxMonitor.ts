@@ -1,7 +1,11 @@
 import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {PubSub} from "@google-cloud/pubsub";
-import {REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "./lib/constants";
+import {
+  REGION,
+  TOBIRATORY_DIGITAL_ITEMS_ADDRESS,
+  TOPIC_NAMES,
+} from "./lib/constants";
 import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
@@ -320,11 +324,11 @@ const fetchMintNFT = async (txId: string) => {
 const fetchMintLimit = async (itemId: number, creatorFlowAccount: string) => {
   const cadence = `
 import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
-    
-pub fun main(address: Address, itemID: UInt64): UInt32? {
+
+access(all) fun main(address: Address, itemID: UInt64): UInt32? {
     let items = getAccount(address)
-        .getCapability(TobiratoryDigitalItems.ItemsPublicPath)
-        .borrow<&TobiratoryDigitalItems.Items{TobiratoryDigitalItems.ItemsPublic}>()
+        .capabilities.get<&TobiratoryDigitalItems.Items>(TobiratoryDigitalItems.ItemsPublicPath)
+        .borrow()
         ?? panic("Could not borrow the NFT collection reference")
     let item = items.borrowItem(itemID: itemID)
 
@@ -340,10 +344,10 @@ const fetchMintedCount = async (itemId: number, creatorFlowAccount: string) => {
   const cadence = `
 import TobiratoryDigitalItems from 0x${TOBIRATORY_DIGITAL_ITEMS_ADDRESS}
 
-pub fun main(address: Address, itemID: UInt64): UInt32? {
+access(all) fun main(address: Address, itemID: UInt64): UInt32? {
     let items = getAccount(address)
-        .getCapability(TobiratoryDigitalItems.ItemsPublicPath)
-        .borrow<&TobiratoryDigitalItems.Items{TobiratoryDigitalItems.ItemsPublic}>()
+        .capabilities.get<&TobiratoryDigitalItems.Items>(TobiratoryDigitalItems.ItemsPublicPath)
+        .borrow()
         ?? panic("Could not borrow the NFT collection reference")
     let item = items.borrowItem(itemID: itemID)
 

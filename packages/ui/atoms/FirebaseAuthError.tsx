@@ -5,14 +5,10 @@ type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 > & {
-  error?: ErrorMessage;
+  error: ErrorMessage;
 };
 const FirebaseAuthError = ({ error }: Props) => {
   const getErrorMessage = () => {
-    if (!error) {
-      return "";
-    }
-
     switch (error.code) {
       case "auth/invalid-action-code":
         return "リンクの有効期限が切れているため、サインアップを再度行ってください";
@@ -30,9 +26,6 @@ const FirebaseAuthError = ({ error }: Props) => {
     }
   };
 
-  if (!error) {
-    return null;
-  }
   return (
     <div className={"font-semibold text-[12px] text-attention"}>
       {getErrorMessage()}

@@ -9,7 +9,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
-import { ItemType, ModelType } from "types/unityTypes";
+import {
+  ActionType,
+  ItemType,
+  ModelType,
+  SettingsUpdatePhase,
+} from "types/unityTypes";
 import Button from "ui/atoms/Button";
 import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
@@ -21,8 +26,9 @@ import { NftItem, SampleItem } from "ui/types/adminTypes";
 const Showcase = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [showDetailView, setShowDetailView] = useState(false);
-  const [showSampleDetailView, setShowSampleDetailView] = useState(false);
+  const [showDetailView, setShowDetailView] = useState(true);
+  const [showSampleDetailView, setShowSampleDetailView] = useState(true);
+  const [showoperate, setShowOperate] = useState(false);
   const [showSmartFrame, setShowSmartFrame] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
@@ -115,11 +121,21 @@ const Showcase = () => {
     }
   };
 
+  const handleAction: (actionType: ActionType, text: string) => void = (
+    actionType,
+    text,
+  ) => {
+    notification(text);
+  };
+
   const [contentWidth, setContentWidth] = useState(0);
 
   const {
     isLoaded,
     unityProvider,
+    isUndoable,
+    isRedoable,
+    selectedItem,
     setLoadData,
     requestSaveData,
     placeNewSample,
@@ -128,13 +144,16 @@ const Showcase = () => {
     placeNewNftWithDrag,
     updateSettings,
     inputWasd,
-    selectedItem,
+    undoAction,
+    redoAction,
   } = useShowcaseEditUnityContext({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onRemoveItemRequested,
+    onActionRedone: handleAction,
+    onActionUndone: handleAction,
   });
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -147,7 +166,7 @@ const Showcase = () => {
     }
   }, [leavingPage, setLeavingPage, requestSaveData]);
 
-  const handleButtonClick = (msg) => {
+  const notification = (msg) => {
     setShowToast(false);
     toggleMainToast();
     if (timerId.current) {
@@ -198,7 +217,7 @@ const Showcase = () => {
   const [pb, setPb] = useState(70);
 
   useEffect(() => {
-    if (showcaseData != undefined) {
+    if (showcaseData) {
       setWt(showcaseData.settings.wallpaper.tint ?? "#717171");
       setFt(showcaseData.settings.floor.tint ?? "#717171");
       setSt(showcaseData.settings.lighting.sceneLight.tint ?? "#717171");
@@ -218,8 +237,9 @@ const Showcase = () => {
     if (selectedItem) {
       setShowSampleDetailView(true);
       setSelectedSampleItem(selectedItem.digitalItemId);
+      setShowOperate(true);
     } else {
-      setShowSampleDetailView(false);
+      setShowOperate(false);
     }
   }, [selectedItem]);
 
@@ -238,11 +258,15 @@ const Showcase = () => {
 
   useEffect(() => {
     const updateContainerWidth = () => {
-      const height = document.querySelector(".w-full.h-full").clientHeight;
+      const height = document.querySelector(
+        ".w-full.h-screen-minus-56",
+      ).clientHeight;
       const width = Math.ceil((height / 16) * 9);
       setContainerWidth(width);
 
-      setContentWidth(document.querySelector(".w-full.h-full").clientWidth);
+      setContentWidth(
+        document.querySelector(".w-full.h-screen-minus-56").clientWidth,
+      );
     };
 
     // Update container width on mount and window resize
@@ -260,27 +284,19 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      // show detail view
-      const materialImageIndex = materialData.findIndex(
-        (value) => value.id === sample.materialId,
-      );
-      // place a new item
-      if (!isDrag)
-        placeNewSample({
-          sampleItemId: sample.id,
-          digitalItemId: sample.digitalItemId,
-          modelType: sample.type as ModelType,
-          modelUrl: sample.modelUrl,
-          imageUrl: materialData[materialImageIndex].image,
-        });
-      else
-        placeNewSampleWithDrag({
-          sampleItemId: sample.id,
-          digitalItemId: sample.digitalItemId,
-          modelType: sample.type as ModelType,
-          modelUrl: sample.modelUrl,
-          imageUrl: materialData[materialImageIndex].image,
-        });
+      const imageUrl =
+        materialData.find((material) => material.id === sample.materialId)
+          ?.image || "";
+      const sampleData = {
+        sampleItemId: sample.sampleItemId,
+        digitalItemId: sample.digitalItemId,
+        modelType: sample.type as ModelType,
+        modelUrl: sample.modelUrl,
+        imageUrl,
+        sampleName: sample.name !== null ? sample.name : "",
+      };
+
+      isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);
     },
     [materialData, placeNewSample, placeNewSampleWithDrag],
   );
@@ -290,19 +306,21 @@ const Showcase = () => {
       // place a new item
       if (!isDrag)
         placeNewNft({
-          nftId: nft.id,
+          nftId: nft.sampleItemId,
           digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
+          nftName: nft.name !== null ? nft.name : "",
         });
       else
         placeNewNftWithDrag({
-          nftId: nft.id,
+          nftId: nft.sampleItemId,
           digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
           isDebug: true,
+          nftName: nft.name !== null ? nft.name : "",
         });
     },
     [placeNewNft, placeNewNftWithDrag],
@@ -315,6 +333,7 @@ const Showcase = () => {
     sb: number,
     pt: string,
     pb: number,
+    phase: SettingsUpdatePhase,
   ) => {
     setWt(wt);
     setFt(ft);
@@ -339,6 +358,7 @@ const Showcase = () => {
           brightness: pb,
         },
       },
+      phase: phase,
     });
   };
 
@@ -414,72 +434,87 @@ const Showcase = () => {
         >
           <div className="absolute bottom-12 w-full flex justify-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/undo-icon.svg"
-                className="cursor-pointer"
-                onClick={() =>
-                  handleButtonClick("undo: Deleted Sample Item A ")
-                }
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/redo-icon.svg"
-                className="cursor-pointer"
-                onClick={() =>
-                  handleButtonClick("redo: Deleted Sample Item A ")
-                }
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src={
-                  showSmartFrame
-                    ? "/admin/images/icon/crop-on-icon.svg"
-                    : "/admin/images/icon/crop-off-icon.svg"
-                }
-                className="cursor-pointer"
+              <button
+                disabled={!isUndoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                onClick={undoAction}
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/undo-icon.svg"
+                  className="cursor-pointer h-[32px]"
+                />
+              </button>
+              <button
+                disabled={!isRedoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                onClick={redoAction}
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/redo-icon.svg"
+                  className="cursor-pointer h-[32px]"
+                />
+              </button>
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showSampleDetailView);
                   setShowSmartFrame(!showSmartFrame);
-                  handleButtonClick(
+                  notification(
                     showSmartFrame
                       ? "The smartphone frame is visibly"
                       : "The smartphone frame is disable",
                   );
                 }}
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="toggle button"
-                src={
-                  showDetailView
-                    ? "/admin/images/icon/visibility-on-icon.svg"
-                    : "/admin/images/icon/visibility-off-icon.svg"
-                }
-                className="cursor-pointer"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src={
+                    showSmartFrame
+                      ? "/admin/images/icon/crop-on-icon.svg"
+                      : "/admin/images/icon/crop-off-icon.svg"
+                  }
+                />
+              </button>
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowSampleDetailView(!showDetailView);
                   setShowDetailView(!showDetailView);
-                  handleButtonClick(
+                  notification(
                     showDetailView ? "The UI is hidden" : "The UI is shown",
                   );
                 }}
-              />
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/help-icon.svg"
-                className="cursor-pointer"
-                onClick={() => handleButtonClick("help button is clicked")}
-              />
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="toggle button"
+                  src={
+                    showDetailView
+                      ? "/admin/images/icon/visibility-on-icon.svg"
+                      : "/admin/images/icon/visibility-off-icon.svg"
+                  }
+                />
+              </button>
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                onClick={() => notification("help button is clicked")}
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/help-icon.svg"
+                />
+              </button>
             </div>
           </div>
         </div>
@@ -495,6 +530,7 @@ const Showcase = () => {
             dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
             showRestoreMenu={showRestoreMenu}
             settings={showcaseData?.settings}
+            operateMenu={showoperate}
             updateUnityViewSettings={(
               wt: string,
               ft: string,
@@ -502,8 +538,9 @@ const Showcase = () => {
               sb: number,
               pt: string,
               pb: number,
+              phase: SettingsUpdatePhase,
             ) => {
-              updateUnityViewSettings(wt, ft, st, sb, pt, pb);
+              updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
             }}
           />
         )}

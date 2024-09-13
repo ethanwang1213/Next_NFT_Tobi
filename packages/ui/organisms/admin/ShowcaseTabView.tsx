@@ -1,7 +1,9 @@
+import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
+import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
-import { ToastContainer } from "react-toastify";
+import { ActionType, SettingsUpdatePhase } from "types/unityTypes";
 import { ShowcaseTabSelector } from "ui/atoms/ShowcaseTabSelector";
 import Collapse from "ui/organisms/admin/Collapse";
 import { ShowcaseInventoryTab } from "ui/organisms/admin/ShowcaseInventoryTab";
@@ -19,6 +21,7 @@ const ShowcaseTabView = ({
   showRestoreMenu,
   settings,
   updateUnityViewSettings,
+  operateMenu,
 }: {
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
@@ -26,6 +29,7 @@ const ShowcaseTabView = ({
   dragNftItem: (item: NftItem) => void;
   showRestoreMenu: boolean;
   settings: any;
+  operateMenu: boolean;
   updateUnityViewSettings: (
     wt: string,
     ft: string,
@@ -33,9 +37,13 @@ const ShowcaseTabView = ({
     sb: number,
     pt: string,
     pb: number,
+    phase: SettingsUpdatePhase,
   ) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
+  const [phars, setPhars] = useState<SettingsUpdatePhase>(
+    SettingsUpdatePhase.Updating,
+  );
   const [active, setActive] = useState("");
   const [wt, setWt] = useState(String);
   const [ft, setFt] = useState(String);
@@ -43,6 +51,43 @@ const ShowcaseTabView = ({
   const [sb, setSb] = useState(Number);
   const [pt, setPt] = useState(String);
   const [pb, setPb] = useState(Number);
+
+  const handleAction = (
+    actionType: ActionType,
+    text: string,
+    result: UndoneRedoneResult,
+  ) => {
+    switch (actionType) {
+      case 5:
+        setWt(result.settings.wallpaper.tint);
+        break;
+      case 6:
+        setFt(result.settings.floor.tint);
+        break;
+      case 7:
+        setSt(result.settings.lighting.sceneLight.tint);
+        break;
+      case 8:
+        setSb(result.settings.lighting.sceneLight.brightness);
+        break;
+      case 9:
+        setPt(result.settings.lighting.pointLight.tint);
+        break;
+      case 10:
+        setPb(result.settings.lighting.pointLight.brightness);
+        break;
+      default:
+    }
+  };
+
+  const {} = useShowcaseEditUnityContext({
+    onActionRedone: handleAction,
+    onActionUndone: handleAction,
+  });
+
+  const afterChangeHandle = () => {
+    updateUnityViewSettings(wt, ft, st, sb, pt, pb, SettingsUpdatePhase.Ended);
+  };
 
   const handleTabChange = (active) => {
     if (active == tab) {
@@ -53,7 +98,7 @@ const ShowcaseTabView = ({
   };
 
   useEffect(() => {
-    if (settings != undefined) {
+    if (settings) {
       setWt(settings.wallpaper.tint ?? "#717171");
       setFt(settings.floor.tint ?? "#717171");
       setSt(settings.lighting.sceneLight.tint ?? "#717171");
@@ -64,7 +109,8 @@ const ShowcaseTabView = ({
   }, [settings]);
 
   const updateUnityTheme = () => {
-    updateUnityViewSettings(wt, ft, st, sb, pt, pb);
+    updateUnityViewSettings(wt, ft, st, sb, pt, pb, phars);
+    setPhars(SettingsUpdatePhase.Updating);
   };
 
   return (
@@ -163,10 +209,7 @@ const ShowcaseTabView = ({
             ></ShowcaseInventoryTab>
           </TabPanel>
           <TabPanel hidden={tab !== "Settings"}>
-            <div
-              className="h-[calc(100vh-450px)] overflow-y-auto"
-              style={{ scrollbarWidth: "none" }}
-            >
+            <div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
               <div className="mx-auto">
                 <Collapse title="WALLPAPER">
                   <ColorPicker
@@ -215,6 +258,7 @@ const ShowcaseTabView = ({
                       />
                       <BrightnessPicker
                         initialValue={sb}
+                        afterChangeHandle={afterChangeHandle}
                         onBrightnessChanged={(val) => {
                           setSb(val);
                           updateUnityTheme();
@@ -247,6 +291,7 @@ const ShowcaseTabView = ({
                       />
                       <BrightnessPicker
                         initialValue={pb}
+                        afterChangeHandle={afterChangeHandle}
                         onBrightnessChanged={(val) => {
                           setPb(val);
                           updateUnityTheme();
@@ -258,18 +303,8 @@ const ShowcaseTabView = ({
               </div>
             </div>
           </TabPanel>
-          <ToastContainer
-            position="bottom-center"
-            autoClose={5000}
-            newestOnTop={false}
-            closeOnClick={true}
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable={false}
-            theme="dark"
-          />
         </div>
-        <ShowcaseUnityUISetting />
+        <ShowcaseUnityUISetting menuShow={operateMenu} />
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ import
 import {
   getContentById,
   getContentByUuid,
+  getDocumentsReportContent,
   getFavoriteContents,
   getMyContentInfo,
   reportContent,
@@ -41,6 +42,7 @@ import {
   adminUpdateDigitalItem,
   modelApiHandler,
   ModelRequestType,
+  handleZipModel,
 } from "./itemController";
 import {
   createSaidan,
@@ -57,7 +59,7 @@ import {
   updateMySaidan,
 } from "./saidanController";
 import {deleteMaterial, getMaterial, removeMaterials, uploadMaterial} from "./fileController";
-import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, deleteNFT, adminGetBoxList} from "./boxController";
+import {makeBox, getBoxData, deleteBoxData, getInventoryData, updateBoxInfo, openNFT, userInfoFromAddress, moveNFT, adminGetBoxList} from "./boxController";
 import {
   fetchNftModel,
   fetchNftThumb,
@@ -89,7 +91,6 @@ const dummyResponse = (_: express.Request, res: express.Response) => {
 app.post("/signup", signUp);
 app.post("/password-set", checkPasswordSet);
 app.post("/create-flow", createFlowAcc);
-
 app.get("/search", searchAll);
 app.get("/search/users", searchUsers);
 app.get("/search/contents", searchContents);
@@ -134,6 +135,7 @@ app.post("/my/samples", createDigitalItem);
 app.get("/my/samples", getMyDigitalItems);
 app.get("/my/samples/:id");
 app.delete("/my/samples/:id", deleteDigitalItem);
+app.post("/zip-model", handleZipModel);
 
 app.post("/model/acrylic-stand", modelApiHandler(ModelRequestType.AcrylicStand));
 app.post("/model/remove-bg", modelApiHandler(ModelRequestType.RemoveBg));
@@ -178,9 +180,8 @@ app.get("/items/:id", getDigitalItemInfo);
 app.post("/items/:id/mint", mintNFT);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", giftNFT);
-app.post("/my/nfts/:id/delete", deleteMyNFT);
 app.post("/my/nfts/move", moveNFT);
-app.post("/my/nfts/delete", deleteNFT);
+app.post("/my/nfts/:id/delete", deleteMyNFT);
 app.post("/address/decoder", userInfoFromAddress);
 app.post("/materials", uploadMaterial);
 app.get("/materials", getMaterial);
@@ -220,6 +221,7 @@ app.post("/admin/showcases/:id/throw", throwItemShowcase);
 app.get("/admin/content", getMyContentInfo);
 app.put("/admin/content", updateMyContentInfo);
 app.post("/admin/content/documents", submitDocumentsReportContent);
+app.get("/admin/content/documents", getDocumentsReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);

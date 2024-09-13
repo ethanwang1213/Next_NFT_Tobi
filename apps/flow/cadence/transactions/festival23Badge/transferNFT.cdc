@@ -3,22 +3,22 @@ import Festival23 from "../../contracts/Festival23.cdc"
 
 transaction(recipient: Address, withdrawID: UInt64) {
     /// Reference to the withdrawer's collection
-    let withdrawRef: &Festival23.Collection
+    let withdrawRef: auth(NonFungibleToken.Withdraw) &Festival23.Collection
 
     /// Reference of the collection to deposit the NFT to
     let depositRef: &{NonFungibleToken.CollectionPublic}
 
-    prepare(acct: AuthAccount) {
+    prepare(acct: auth(BorrowValue, GetStorageCapabilityController) &Account) {
         self.withdrawRef = acct
-            .borrow<&Festival23.Collection>(from: Festival23.collectionStoragePath)
+            .storage.borrow<auth(NonFungibleToken.Withdraw) &Festival23.Collection>(from: Festival23.collectionStoragePath)
             ?? panic("Account does not store an object at the specified path")
 
         // get the recipients public account object
         let recipient = getAccount(recipient)
 
         self.depositRef = recipient
-            .getCapability(Festival23.collectionPublicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            .capabilities.get<&{NonFungibleToken.CollectionPublic}>(Festival23.collectionPublicPath)
+            .borrow()
             ?? panic("Could not borrow a reference to the receiver's collection")
     }
     execute {

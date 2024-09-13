@@ -48,6 +48,11 @@ export const getContentById = async (req: Request, res: Response) => {
         include: {
           showcase_template: {},
           showcase_sample_items: {
+            where: {
+              sample_item: {
+                is_deleted: false,
+              },
+            },
             include: {
               sample_item: {
                 include: {
@@ -265,6 +270,11 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         include: {
           showcase_template: true,
           showcase_sample_items: {
+            where: {
+              sample_item: {
+                is_deleted: false,
+              },
+            },
             include: {
               sample_item: {
                 include: {
@@ -873,11 +883,12 @@ export const submitDocumentsReportContent = async (req: Request, res: Response) 
         data: documents.map((document)=>{
           return {
             reported_id: reportedContent.id,
+            content_id: admin.content?.id??0,
             name: document.documentName,
             document_link: document.documentLink,
-          }
+          };
         }),
-      })
+      });
       res.status(200).send({
         status: "success",
         data: "uploaded",
@@ -899,13 +910,12 @@ export const submitDocumentsReportContent = async (req: Request, res: Response) 
 
 export const getDocumentsReportContent = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {id} = req.params;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
       const content = await prisma.contents.findUnique({
         where: {
-          id: parseInt(id),
+          businesses_uuid: uid,
         },
       });
       if (!content) {
@@ -924,7 +934,7 @@ export const getDocumentsReportContent = async (req: Request, res: Response) => 
       }
       const reportedContent = await prisma.reported_contents.findFirst({
         where: {
-          content_id: parseInt(id),
+          content_id: content.id,
           is_solved: null,
         },
         include: {
@@ -947,8 +957,8 @@ export const getDocumentsReportContent = async (req: Request, res: Response) => 
           documentName: document.name,
           documentLink: document.document_link,
           uploadedTime: document.created_date_time,
-        }
-      })
+        };
+      });
       res.status(200).send({
         status: "success",
         data: returnData,

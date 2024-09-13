@@ -5,7 +5,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import NextImage from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
@@ -18,11 +18,25 @@ import MintConfirmDialog1 from "ui/organisms/admin/MintConfirmDialog1";
 import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
+
 import {
   DigitalItemStatus,
-  ScheduleItem,
   getDigitalItemStatusTitle,
+  ScheduleItem,
 } from "ui/types/adminTypes";
+
+const MintNotification = ({ title, text }) => {
+  return (
+    <div className="p-[10px] bg-secondary-900 flex flex-col items-center gap-4">
+      <span className="text-base text-base-white font-bold text-center">
+        {title}
+      </span>
+      <span className="text-sm text-base-white font-normal text-center">
+        {text}
+      </span>
+    </div>
+  );
+};
 
 const Detail = () => {
   const router = useRouter();
@@ -36,6 +50,7 @@ const Detail = () => {
   );
   const [confirmDialogNotes, setConfirmDialogNotes] = useState([]);
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
+  const [status, setStatus] = useState(-1);
   const statusConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef1 = useRef(null);
@@ -50,6 +65,12 @@ const Detail = () => {
     setLoading,
     postData,
   } = useRestfulAPI(`${apiUrl}/${id}`);
+
+  useEffect(() => {
+    if (status === -1 && digitalItem) {
+      setStatus(digitalItem.status);
+    }
+  }, [status, digitalItem]);
 
   const fieldChangeHandler = useCallback(
     (field, value) => {
@@ -284,7 +305,7 @@ const Detail = () => {
       customThumbnailUrl: digitalItem.customThumbnailUrl,
       isCustomThumbnailSelected: digitalItem.isCustomThumbnailSelected,
       price: parseInt(digitalItem.price ?? 0),
-      status: digitalItem.status,
+      ...(status !== digitalItem.status && { status }),
       startDate: digitalItem.startDate,
       endDate: digitalItem.endDate,
       quantityLimit: parseInt(digitalItem.quantityLimit),
@@ -327,11 +348,22 @@ const Detail = () => {
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
       if (value == "mint") {
-        postData(`native/items/${id}/mint`, {
+        const result = await postData(`native/items/${id}/mint`, {
           fcmToken: fcmToken,
           amount: 1,
           modelUrl: digitalItem.modelUrl,
         });
+        if (!result) {
+          toast(
+            <MintNotification
+              title="Mint failed"
+              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+            />,
+            {
+              className: "mint-notification",
+            },
+          );
+        }
       }
     },
     [postData, id, fcmToken, digitalItem],

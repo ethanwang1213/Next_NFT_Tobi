@@ -9,9 +9,9 @@ import {
   ItemSaveData,
   ItemType,
   SaidanItemData,
-  ShowcaseSettings,
+  UpdatingSaidanSettings,
 } from "types/unityTypes";
-import { DefaultItemMeterHeight } from "./constants";
+import { DefaultItemMeterHeight } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -20,9 +20,10 @@ import {
   UndoneOrRedone,
   UnityMessageJson,
   UnitySceneType,
-} from "./types";
-import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
-import { useUnityMessageHandler } from "./useUnityMessageHandler";
+} from "../types";
+import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContextBase";
+import { useUnityMessageHandler } from "../useUnityMessageHandler";
+import { useUpdateItemTransform } from "./useUpdateTransform";
 
 type Props = {
   itemMenuX?: number;
@@ -67,6 +68,7 @@ export const useShowcaseEditUnityContext = ({
     postMessageToUnity,
     setLoadData,
     requestSaveData,
+    setSelectedItem,
     placeNewSample,
     placeNewNft,
     placeNewSampleWithDrag,
@@ -87,6 +89,7 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   } = useSaidanLikeUnityContextBase({
@@ -107,6 +110,7 @@ export const useShowcaseEditUnityContext = ({
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
         return {
           itemId: v.sampleItemId,
+          itemName: v.name,
           ...v,
           itemType: ItemType.Sample,
           canScale: true,
@@ -116,6 +120,7 @@ export const useShowcaseEditUnityContext = ({
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
         return {
           itemId: v.nftId,
+          itemName: v.name,
           ...v,
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
@@ -128,8 +133,7 @@ export const useShowcaseEditUnityContext = ({
       return {
         saidanId: loadData.showcaseId,
         saidanType: (loadData.showcaseType + showcaseOffset) as SaidanType,
-        // saidanUrl: loadData.showcaseUrl,
-        saidanUrl: "dummy",
+        saidanUrl: loadData.showcaseUrl,
         saidanItemList,
         saidanCameraData: {
           position: { x: 0, y: 0, z: 0 },
@@ -169,11 +173,18 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  const { updateItemTransform, handleItemTransformUpdated } =
+    useUpdateItemTransform({
+      selectedItem,
+      setSelectedItem,
+      postMessageToUnity,
+    });
+
   const updateSettings = useCallback(
-    ({ wallpaper, floor, lighting }: ShowcaseSettings) => {
+    ({ wallpaper, floor, lighting, phase }: UpdatingSaidanSettings) => {
       postMessageToUnity(
         "UpdateSettingsMessageReceiver",
-        JSON.stringify({ wallpaper, floor, lighting }),
+        JSON.stringify({ wallpaper, floor, lighting, phase }),
       );
     },
     [postMessageToUnity],
@@ -258,8 +269,10 @@ export const useShowcaseEditUnityContext = ({
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
+    handleItemTransformUpdated,
   });
 
   return {
@@ -279,6 +292,7 @@ export const useShowcaseEditUnityContext = ({
     placeNewNftWithDrag,
     removeItem,
     removeRecentItem,
+    updateItemTransform,
     updateSettings,
     inputWasd,
     undoAction,

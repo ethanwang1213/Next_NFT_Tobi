@@ -7,7 +7,12 @@ import NavbarEnd from "ui/atoms/NavbarEnd";
 import NavbarStart from "ui/atoms/NavbarStart";
 import AccountConfirmDialog from "./AccountConfirmDialog";
 
-const Navbar = () => {
+interface SidebarProps {
+  sidebarOpen: boolean;
+  setSidebarOpen: (arg: boolean) => void;
+}
+
+const Navbar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <NavbarContainer
       className={
@@ -15,7 +20,10 @@ const Navbar = () => {
       }
     >
       <NavbarStart className={"min-h-[56px] h-[56px]"}>
-        <NavbarStartBlock />
+        <NavbarStartBlock
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
       </NavbarStart>
       <NavbarEnd>
         <UserMenu />
@@ -24,13 +32,16 @@ const Navbar = () => {
   );
 };
 
-const NavbarStartBlock = () => {
+const NavbarStartBlock = (props: {
+  sidebarOpen: string | boolean | undefined;
+  setSidebarOpen: (arg0: boolean) => void;
+}) => {
   const { onClickMenu } = useNavbar();
   return (
     <>
       <button
         className={
-          "btn btn-block bg-inactive hover:bg-inactive border-0 w-[24px] min-h-[24px] h-[24px] ml-[18px] p-0"
+          "btn btn-block bg-inactive hover:bg-inactive border-0 w-[24px] min-h-[24px] h-[24px] ml-[18px] p-0 sm:block hidden"
         }
         onClick={onClickMenu}
         style={{
@@ -40,15 +51,56 @@ const NavbarStartBlock = () => {
           WebkitMaskSize: "contain",
         }}
       ></button>
-
-      <Image
-        src={"/admin/images/logo.svg"}
-        alt={"logo"}
-        priority={true}
-        width={135.68}
-        height={32}
-        className={"ml-[36px]"}
-      />
+      <button
+        aria-controls="sidebar"
+        onClick={(e) => {
+          e.stopPropagation();
+          props.setSidebarOpen(!props.sidebarOpen);
+        }}
+        className="border-0 w-[20px] h-[20px] ml-[18px] p-0 sm:hidden block z-10"
+      >
+        <span className="relative block h-full w-full cursor-pointer">
+          <span className="du-block absolute right-0 h-full w-full">
+            <span
+              className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-[#7A7474] delay-[0] duration-200 ease-in-out ${
+                !props.sidebarOpen && "!w-full delay-300"
+              }`}
+            ></span>
+            <span
+              className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-[#7A7474] delay-150 duration-200 ease-in-out ${
+                !props.sidebarOpen && "delay-400 !w-full"
+              }`}
+            ></span>
+            <span
+              className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-[#7A7474] delay-200 duration-200 ease-in-out ${
+                !props.sidebarOpen && "!w-full delay-500"
+              }`}
+            ></span>
+          </span>
+          <span className="absolute right-0 h-full w-full rotate-45">
+            <span
+              className={`absolute left-2.5 top-0 block h-full w-0.5 rounded-sm bg-[#7A7474] delay-300 duration-200 ease-in-out ${
+                !props.sidebarOpen && "!h-0 !delay-[0]"
+              }`}
+            ></span>
+            <span
+              className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-[#7A7474] duration-200 ease-in-out ${
+                !props.sidebarOpen && "!h-0 !delay-200"
+              }`}
+            ></span>
+          </span>
+        </span>
+      </button>
+      <div className="sm:relative absolute sm:block flex justify-center sm:w-auto w-full">
+        <Image
+          src={"/admin/images/logo.svg"}
+          alt={"logo"}
+          priority={true}
+          width={135.68}
+          height={32}
+          className={"sm:ml-[36px]"}
+        />
+      </div>
     </>
   );
 };

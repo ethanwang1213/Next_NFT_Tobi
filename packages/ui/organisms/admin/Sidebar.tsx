@@ -2,13 +2,13 @@
 
 import config from "admin/tailwind.config";
 import clsx from "clsx";
-import { useAuth } from "contexts/AdminAuthProvider";
 import { useNavbar } from "contexts/AdminNavbarProvider";
 import { gsap, Power2 } from "gsap";
 import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
 
 type Props = {
   children: ReactNode;
@@ -17,14 +17,16 @@ type Props = {
 const Sidebar = ({ children }: Props) => {
   const menuMinWidth = 60;
   const menuMaxWidth = 230;
+  const tabletMenuMaxWidth = 165;
   const screensMd = parseInt(config.theme.screens.md);
 
-  const { user } = useAuth();
   const resizedBefore = useRef<boolean>(false);
   const [expand, setExpand] = useState(true);
 
   const { displayWidth } = useWindowSize();
   const { clickedBefore, menuStatus } = useNavbar();
+
+  const itemWidth = displayWidth > 768 ? menuMaxWidth : tabletMenuMaxWidth;
 
   const pathname = usePathname();
 
@@ -37,30 +39,46 @@ const Sidebar = ({ children }: Props) => {
   // animate menu width on expand state change
   useEffect(() => {
     if (!resizedBefore.current && !clickedBefore) {
-      // prevent execution on the initial rendering.
+      // Prevent execution on the initial rendering.
       return;
-    } else if (expand) {
-      gsap.fromTo(
-        ".drawer-side",
-        { width: menuMinWidth },
-        {
-          width: menuMaxWidth,
-          duration: 0.4,
-          ease: Power2.easeOut,
-        },
-      );
-    } else {
-      gsap.fromTo(
-        ".drawer-side",
-        { width: menuMaxWidth },
-        {
-          width: menuMinWidth,
-          duration: 0.4,
-          ease: Power2.easeOut,
-        },
-      );
     }
-  }, [clickedBefore, expand, resizedBefore]);
+
+    const drawerSide = ".drawer-side";
+    const animationConfig = {
+      duration: 0.4,
+      ease: Power2.easeOut,
+    };
+
+    if (expand) {
+      if (displayWidth > 768) {
+        gsap.fromTo(
+          drawerSide,
+          { width: menuMinWidth },
+          { width: menuMaxWidth, ...animationConfig },
+        );
+      } else {
+        gsap.fromTo(
+          drawerSide,
+          { width: menuMinWidth },
+          { width: tabletMenuMaxWidth, ...animationConfig },
+        );
+      }
+    } else {
+      if (displayWidth > 768) {
+        gsap.fromTo(
+          drawerSide,
+          { width: menuMaxWidth },
+          { width: menuMinWidth, ...animationConfig },
+        );
+      } else {
+        gsap.fromTo(
+          drawerSide,
+          { width: tabletMenuMaxWidth },
+          { width: menuMinWidth, ...animationConfig },
+        );
+      }
+    }
+  }, [clickedBefore, expand, resizedBefore, displayWidth]);
 
   // toggle expand state on menuStatus change
   useEffect(() => {
@@ -89,44 +107,7 @@ const Sidebar = ({ children }: Props) => {
   const normalTextColor = "inactive";
   const selectedColor = "primary";
 
-  const items = [
-    {
-      name: "Tobiratory Creator Program",
-      icon: "/admin/images/icon/contents.svg",
-      href: "/apply",
-      visible: !user.hasBusinessAccount,
-    },
-    {
-      name: "Workspace",
-      icon: "/admin/images/icon/workspace.svg",
-      href: "/workspace",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Items",
-      icon: "/admin/images/icon/tag.svg",
-      href: "/items",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Content",
-      icon: "/admin/images/icon/contents.svg",
-      href: "/contents",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Gift",
-      icon: "/admin/images/icon/gift.svg",
-      href: "/gift",
-      visible: user.hasBusinessAccount,
-    },
-    {
-      name: "Account",
-      icon: "/admin/images/icon/account.svg",
-      href: "/account",
-      visible: true,
-    },
-  ];
+  const items = useUpdatedSidebarItems();
 
   return (
     <div className="drawer drawer-open flex-1">
@@ -135,7 +116,7 @@ const Sidebar = ({ children }: Props) => {
       <div className="bg-primary bg-inactive text-inactive hidden"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
-      <div className="drawer-side border-r-base-content border-r-[0.5px] h-full">
+      <div className="drawer-side border-r-base-content border-r-[0.5px] h-full sm:!block !hidden">
         <ul className="pt-[17px]">
           {items
             .filter((item) => item.visible)
@@ -144,7 +125,7 @@ const Sidebar = ({ children }: Props) => {
                 key={index}
                 className="mb-[3px] text-base-content"
                 style={{
-                  width: expand ? menuMaxWidth : menuMinWidth,
+                  width: expand ? itemWidth : menuMinWidth,
                 }}
               >
                 <Link
@@ -163,7 +144,7 @@ const Sidebar = ({ children }: Props) => {
                       pathname.split("/")[1] === item.href.split("/")[1]
                         ? `bg-${selectedColor}`
                         : `bg-${normalIconColor}`,
-                        "flex-shrink-0"
+                      "flex-shrink-0",
                     )}
                     style={{
                       WebkitMaskImage: `url(${item.icon})`,

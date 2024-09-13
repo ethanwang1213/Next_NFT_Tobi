@@ -20,6 +20,7 @@ model accounts {
     gender                  String?             @db.VarChar(255)
     birth                   String?             @db.VarChar(255)
     gift_permission         Boolean             @default(false)
+    note                    String?             @db.Text
     digital_items           digital_items[]
     flow_account            flow_accounts?
     favorite_saidans        saidans_favorite[]
@@ -109,33 +110,34 @@ model saidans_favorite {
 }
 
 model contents {
-    id                Int                 @id @default(autoincrement())
-    businesses        businesses?         @relation(fields: [businesses_uuid], references: [uuid])
-    businesses_uuid   String              @unique @db.VarChar(255)
-    name              String              @db.VarChar(255)
-    changed_name      String?             @db.VarChar(255)
-    changed_name_time DateTime            @default(now()) @db.Timestamp(6)
-    image             String              @db.VarChar(255)
-    sticker           String?             @db.VarChar(255)
-    url               String              @db.VarChar(255)
-    description       String              @db.VarChar(255)
-    license           String              @db.VarChar(255)
-    license_data      String[]            @default([]) @db.VarChar(255)
-    copyrights        copyrights[]
-    showcases         showcases[]
-    favorite_users    contents_favorite[]
-    reported_contents reported_contents[]
-    is_deleted        Boolean             @default(false)
-    updated_date_time DateTime            @default(now()) @db.Timestamp(6)
-    created_date_time DateTime            @default(now()) @db.Timestamp(6)
+    id                 Int                  @id @default(autoincrement())
+    businesses         businesses?          @relation(fields: [businesses_uuid], references: [uuid])
+    businesses_uuid    String               @unique @db.VarChar(255)
+    name               String               @db.VarChar(255)
+    changed_name       String?              @db.VarChar(255)
+    changed_name_time  DateTime             @default(now()) @db.Timestamp(6)
+    image              String               @db.VarChar(255)
+    sticker            String?              @db.VarChar(255)
+    url                String               @db.VarChar(255)
+    description        String               @db.VarChar(255)
+    license            String               @db.VarChar(255)
+    license_data       String[]             @default([]) @db.VarChar(255)
+    copyrights         copyrights[]
+    showcases          showcases[]
+    favorite_users     contents_favorite[]
+    reported_contents  reported_contents[]
+    is_deleted         Boolean              @default(false)
+    updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    created_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    reported_documents reported_documents[]
 }
 
 model reported_contents {
     id                 Int                  @id @default(autoincrement())
     content_id         Int
     content            contents             @relation(fields: [content_id], references: [id])
-    reporter_uuid      String               @db.VarChar(255)
-    reporter           accounts             @relation(fields: [reporter_uuid], references: [uuid])
+    reporter_uuid      String?              @db.VarChar(255)
+    reporter           accounts?            @relation(fields: [reporter_uuid], references: [uuid])
     title              String               @db.VarChar(255)
     description        String               @db.Text
     is_solved          Boolean?
@@ -148,6 +150,8 @@ model reported_documents {
     id                Int               @id @default(autoincrement())
     reported_id       Int
     reported_content  reported_contents @relation(fields: [reported_id], references: [id])
+    content_id        Int
+    content           contents          @relation(fields: [content_id], references: [id])
     name              String            @db.VarChar(255)
     document_link     String            @db.Text
     updated_date_time DateTime          @default(now()) @db.Timestamp(6)

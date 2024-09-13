@@ -57,6 +57,19 @@ export default function FcmTokenComp() {
                 },
               );
             }
+            if(notificationObj["type"] &&
+              notificationObj["type"] == "mintFailed")
+              {
+                toast(
+                  <MintNotification
+                    title="Mint failed"
+                    text="The daily transaction limit has been exceeded, so Mint could not be completed."
+                  />,
+                  {
+                    className: "mint-notification",
+                  },
+                );
+            }
           }
         });
         return () => {
