@@ -35,9 +35,17 @@ export const mintNFT = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     const notificationBatchId = await generateNotificationBatchId(fcmToken);
     try {
-      for (let i = 0; i < intAmount; i++) {
+      let mintCount = 0;
+      let intervalId: NodeJS.Timer | null = null;
+      intervalId = setInterval(async () => {
+        if (mintCount >= intAmount) {
+          clearInterval(intervalId as NodeJS.Timer);
+          intervalId = null;
+          return;
+        }
         await mint(id, uid, notificationBatchId, modelUrl);
-      }
+        mintCount++;
+      }, 1000);
       res.status(200).send({
         status: "success",
         data: "NFT is minting",
