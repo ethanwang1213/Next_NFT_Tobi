@@ -432,7 +432,6 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     addr: fcl.sansPrefix(address),
     keyId: 0,
     signingFunction: async (signable: any) => {
-      console.log("PRIVATEKEY: " + privateKey);
       const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message, hash: "sha3", sign: "ECDSA_P256"});
       return {
         addr: address,
