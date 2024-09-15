@@ -234,21 +234,24 @@ model workspace_sample_items {
 }
 
 model digital_item_nfts {
-    id                 Int                  @id @default(autoincrement())
-    flow_nft_id        Int?
-    serial_no          Int?
-    digital_item       digital_items        @relation(fields: [digital_item_id], references: [id])
-    digital_item_id    Int
-    metadata           String?              @db.Text
-    mint_status        Int                  @default(0)
-    gift_status        Int                  @default(0)
-    mint_tx_id         String?              @db.VarChar(255)
-    gift_tx_id         String?              @db.VarChar(255)
-    showcase_nft_items showcase_nft_items[]
-    nft_camera         nft_cameras?
-    nft_owner          nft_owners?
-    updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
-    created_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    id                    Int                  @id @default(autoincrement())
+    flow_nft_id           Int?
+    serial_no             Int?
+    digital_item          digital_items        @relation(fields: [digital_item_id], references: [id])
+    digital_item_id       Int
+    metadata              String?              @db.Text
+    mint_status           Int                  @default(0)
+    gift_status           Int                  @default(0)
+    mint_tx_id            String?              @db.VarChar(255)
+    gift_tx_id            String?              @db.VarChar(255)
+    notification_batch_id Int?
+    notified              Boolean              @default(false)
+    notification_batch    notification_batch?  @relation(fields: [notification_batch_id], references: [id])
+    showcase_nft_items    showcase_nft_items[]
+    nft_camera            nft_cameras?
+    nft_owner             nft_owners?
+    updated_date_time     DateTime             @default(now()) @db.Timestamp(6)
+    created_date_time     DateTime             @default(now()) @db.Timestamp(6)
 }
 
 model nft_cameras {
@@ -418,6 +421,16 @@ model contents_favorite {
     content_id        Int
     account           accounts @relation(fields: [account_uuid], references: [uuid])
     account_uuid      String   @db.VarChar(255)
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model notification_batch {
+    id                Int      @id @default(autoincrement())
+    fcm_token         String   @db.VarChar(255)
+    status            Int      @default(0)
+    complete_time     DateTime?
+    nfts              digital_item_nfts[]
     updated_date_time DateTime @default(now()) @db.Timestamp(6)
     created_date_time DateTime @default(now()) @db.Timestamp(6)
 }

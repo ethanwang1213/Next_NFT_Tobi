@@ -6,7 +6,7 @@ import {TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import {giftStatus, increaseTransactionAmount, isEmptyObject, mintStatus, statusOfLimitTransaction} from "./utils";
+import {giftStatus, increaseTransactionAmount, isEmptyObject, mintStatus, statusOfLimitTransaction, notificationBatchStatus} from "./utils";
 import * as fcl from "@onflow/fcl";
 
 fcl.config({
@@ -39,6 +39,7 @@ export const mintNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const notificationBatchId = await generateNotificationBatchId(fcmToken);
     const checkLimit = await increaseTransactionAmount(uid);
     if (checkLimit == statusOfLimitTransaction.notExistAccount) {
       res.status(401).send({
@@ -54,9 +55,17 @@ export const mintNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
-      for (let i = 0; i < intAmount; i++) {
-        await mint(id, uid, fcmToken, modelUrl);
-      }
+      let mintCount = 0;
+      let intervalId: NodeJS.Timer | null = null;
+      intervalId = setInterval(async () => {
+        if (mintCount >= intAmount) {
+          clearInterval(intervalId as NodeJS.Timer);
+          intervalId = null;
+          return;
+        }
+        await mint(id, uid, notificationBatchId, modelUrl);
+        mintCount++;
+      }, 1000);
       res.status(200).send({
         status: "success",
         data: "NFT is minting",
@@ -91,7 +100,15 @@ class MintError extends Error {
   }
 }
 
-export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: string) => {
+export const mint = async (id: string, uid: string, notificationBatchId: number, modelUrl: string) => {
+  const notificationBatch = await prisma.notification_batch.findUnique({
+    where: {
+      id: notificationBatchId,
+    }
+  });
+  if (!notificationBatch) {
+    throw new MintError(404, "NotificationBatch does not found");
+  }
   const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: parseInt(id),
@@ -182,7 +199,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         digitalItemId,
         digitalItemNftId: undefined,
         metadata,
-        fcmToken,
+        notificationBatchId,
       },
     };
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
@@ -199,6 +216,8 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
     const nft = await prisma.digital_item_nfts.create({
       data: {
         digital_item_id: digitalItem.id,
+        notification_batch_id: notificationBatchId,
+        notified: false,
         nft_owner: {
           create: {
             account_uuid: uid,
@@ -218,14 +237,14 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         digitalItemNftId: nft.id,
         digitalItemId,
         metadata,
-        fcmToken,
+        notificationBatchId,
       },
     };
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   }
 
-  pushToDevice(fcmToken, {
+  pushToDevice(notificationBatch.fcm_token, {
     title: "NFTの作成を開始しました",
     body: "作成完了までしばらくお待ちください",
   }, {
@@ -249,6 +268,7 @@ export const giftNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const notificationBatchId = await generateNotificationBatchId(fcmToken);
     const checkLimit = await increaseTransactionAmount(uid);
     if (checkLimit == statusOfLimitTransaction.notExistAccount) {
       res.status(401).send({
@@ -264,7 +284,7 @@ export const giftNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
-      await gift(parseInt(id), uid, receiveFlowId, fcmToken);
+      await gift(parseInt(id), uid, receiveFlowId, notificationBatchId);
       res.status(200).send({
         status: "success",
         data: "NFT is gifting",
@@ -319,7 +339,8 @@ export const deleteMyNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
-      await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", fcmToken);
+      const notificationBatchId = await generateNotificationBatchId(fcmToken);
+      await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", notificationBatchId);
       res.status(200).send({
         status: "success",
         data: "NFT is deleting",
@@ -354,7 +375,15 @@ class GiftError extends Error {
   }
 }
 
-export const gift = async (id: number, uid: string, receiveFlowId: string, fcmToken: string) => {
+export const gift = async (id: number, uid: string, receiveFlowId: string, notificationBatchId: number) => {
+  const notificationBatch = await prisma.notification_batch.findUnique({
+    where: {
+      id: notificationBatchId,
+    }
+  });
+  if (!notificationBatch) {
+    throw new GiftError(404, "NotificationBatch does not found");
+  }
   const digitalItemNft = await prisma.digital_item_nfts.findUnique({
     where: {
       id: id,
@@ -386,13 +415,14 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   if (digitalItemNft.gift_status !== giftStatus.none) {
     throw new GiftError(401, "This NFT is gifting now");
   }
+  const fcmToken = notificationBatch.fcm_token;
   const flowJobId = uuidv4();
   const message = {
     flowJobId, txType: "giftNFT", params: {
       tobiratoryAccountUuid: uid,
       digitalItemNftId: digitalItemNft.id,
       receiveFlowId,
-      fcmToken,
+      notificationBatchId,
     },
   };
   const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
@@ -413,6 +443,16 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
     }),
   });
 };
+
+export const generateNotificationBatchId = async (fcmToken: string) => {
+  const column = await prisma.notification_batch.create({
+    data: {
+      status: notificationBatchStatus.progress,
+      fcm_token: fcmToken,
+    }
+  });
+  return column.id;
+}
 
 export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
   const cadence = `

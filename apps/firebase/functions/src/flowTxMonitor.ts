@@ -10,7 +10,7 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import {digitalItemStatus, giftStatus, mintStatus} from "./native/utils";
+import {digitalItemStatus, giftStatus, mintStatus, notificationBatchStatus} from "./native/utils";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -58,7 +58,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         digitalItemId,
         digitalItemNftId: params.digitalItemNftId,
         metadata: params.metadata,
-        fcmToken: params.fcmToken,
+        notificationBatchId: params.notificationBatchId,
       }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: mintMessage});
       console.log(`Message ${messageId} published.`);
@@ -73,7 +73,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
     }
   } else if (txType == "mintNFT") {
     try {
-      await fetchAndUpdateMintNFT(params.digitalItemId, params.fcmToken, params.digitalItemNftId);
+      await fetchAndUpdateMintNFT(params.digitalItemId, params.notificationBatchId, params.digitalItemNftId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -86,7 +86,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
     }
   } else if (txType == "giftNFT") {
     try {
-      await fetchAndUpdateGiftNFT(params.digitalItemNftId, params.fcmToken);
+      await fetchAndUpdateGiftNFT(params.digitalItemNftId, params.notificationBatchId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -150,7 +150,7 @@ const fetchCreateItem = async (txId: string) => {
   throw Error("TX_FAILED");
 };
 
-const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, digitalItemNftId: number) => {
+const fetchAndUpdateMintNFT = async (digitalItemId: number, notificationBatchId: number, digitalItemNftId: number) => {
   const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: digitalItemId,
@@ -236,15 +236,59 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, fcmToken: string, di
   if (!flowAccount) {
     throw new Error("FLOW_ACCOUNT_NOT_FOUND");
   }
-  pushToDevice(fcmToken, {
-    title: "NFTの作成が完了しました",
-    body: "タップして見に行ってみよう!",
-  }, {
-    body: JSON.stringify({
-      type: "mintCompleted",
-      data: {id: digitalItemId},
-    }),
+  const notificationBatch = await prisma.notification_batch.findUnique({
+    where: {
+      id: notificationBatchId,
+    },
+    include: {
+      nfts: true,
+    }
   });
+  if (notificationBatch) {
+    const nfts = notificationBatch.nfts;
+    const length = nfts.filter((nft) => !nft.notified).length;
+    console.log(length);
+    if (length == 1) {
+      pushToDevice(notificationBatch.fcm_token, {
+        title: "NFTの作成が完了しました",
+        body: "タップして見に行ってみよう!",
+      }, {
+        body: JSON.stringify({
+          type: "mintCompleted",
+          data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
+        }),
+      });
+      await prisma.digital_item_nfts.updateMany({
+        where: {
+          id: {
+            in: notificationBatch.nfts.map((nft) => nft.id),
+          },
+        },
+        data: {
+          notification_batch_id: null,
+          notified: false,
+        },
+      });
+      await prisma.notification_batch.update({
+        where: {
+          id: notificationBatchId,
+        },
+        data: {
+          status: notificationBatchStatus.completed,
+          complete_time: new Date(),
+        }
+      });
+    } else {
+      await prisma.digital_item_nfts.update({
+        where: {
+          id: digitalItemNftId,
+        },
+        data: {
+          notified: true,
+        },
+      });
+    }
+  }
 };
 
 const fetchMintNFT = async (txId: string) => {
@@ -316,7 +360,7 @@ access(all) fun main(address: Address, itemID: UInt64): UInt32? {
   });
 };
 
-const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
+const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number) => {
   const nft = await prisma.digital_item_nfts.findUnique({
     where: {
       id: nftId,
@@ -350,15 +394,59 @@ const fetchAndUpdateGiftNFT = async (nftId: number, fcmToken: string) => {
         gift_status: giftStatus.none,
       },
     });
-    pushToDevice(fcmToken, {
-      title: "NFTのギフトが完了しました",
-      body: "",
-    }, {
-      body: JSON.stringify({
-        type: "giftCompleted",
-        data: {nft_id: nftId},
-      }),
+    const notificationBatch = await prisma.notification_batch.findUnique({
+      where: {
+        id: notificationBatchId,
+      },
+      include: {
+        nfts: true,
+      },
     });
+    if (notificationBatch) {
+      const nfts = notificationBatch.nfts;
+      const length = nfts.filter((nft) => !nft.notified).length;
+      console.log(length);
+      if (length == 1) {
+        pushToDevice(notificationBatch.fcm_token, {
+          title: "NFTのプレゼントが完了しました",
+          body: "タップして受け取ってみよう!",
+        }, {
+          body: JSON.stringify({
+            type: "giftCompleted",
+            data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
+          }),
+        });
+        await prisma.digital_item_nfts.updateMany({
+          where: {
+            id: {
+              in: notificationBatch.nfts.map((nft) => nft.id),
+            },
+          },
+          data: {
+            notification_batch_id: null,
+            notified: false,
+          },
+        });
+        await prisma.notification_batch.update({
+          where: {
+            id: notificationBatchId,
+          },
+          data: {
+            status: notificationBatchStatus.completed,
+            complete_time: new Date(),
+          }
+        });
+      } else {
+        await prisma.digital_item_nfts.update({
+          where: {
+            id: nftId,
+          },
+          data: {
+            notified: true,
+          },
+        });
+      }
+    }
   }
 };
 

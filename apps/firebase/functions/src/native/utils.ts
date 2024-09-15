@@ -52,6 +52,12 @@ export const giftStatus = {
   gifting: 2,
 };
 
+export const notificationBatchStatus = {
+  error: 0,
+  progress: 1,
+  completed: 2,
+}
+
 export enum statusOfLimitTransaction {
   notExistAccount,
   limitedTransaction,
