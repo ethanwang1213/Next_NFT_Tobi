@@ -56,10 +56,10 @@ export const mintNFT = async (req: Request, res: Response) => {
     }
     try {
       let mintCount = 0;
-      let intervalId: NodeJS.Timer | null = null;
+      let intervalId: NodeJS.Timeout | null = null;
       intervalId = setInterval(async () => {
         if (mintCount >= intAmount) {
-          clearInterval(intervalId as NodeJS.Timer);
+          clearInterval(intervalId as NodeJS.Timeout);
           intervalId = null;
           return;
         }
@@ -104,7 +104,7 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
   const notificationBatch = await prisma.notification_batch.findUnique({
     where: {
       id: notificationBatchId,
-    }
+    },
   });
   if (!notificationBatch) {
     throw new MintError(404, "NotificationBatch does not found");
@@ -379,7 +379,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, notif
   const notificationBatch = await prisma.notification_batch.findUnique({
     where: {
       id: notificationBatchId,
-    }
+    },
   });
   if (!notificationBatch) {
     throw new GiftError(404, "NotificationBatch does not found");
@@ -449,10 +449,10 @@ export const generateNotificationBatchId = async (fcmToken: string) => {
     data: {
       status: notificationBatchStatus.progress,
       fcm_token: fcmToken,
-    }
+    },
   });
   return column.id;
-}
+};
 
 export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
   const cadence = `
