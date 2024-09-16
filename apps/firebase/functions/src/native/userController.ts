@@ -44,7 +44,7 @@ export const signUp = async (req: Request, res: Response) => {
       });
       return;
     }
-    const username = email.split("@")[0];
+    const username = "user-" + Math.random().toString(36).substring(2, 12);
     const userData = {
       uuid: uid,
       email: email,
