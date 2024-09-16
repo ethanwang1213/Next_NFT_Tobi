@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as cors from "cors";
 import * as express from "express";
-import {REGION} from "../lib/constants";
+import {REGION, timeoutTime, vpcName} from "../lib/constants";
 
 import {getAccountById, getOthersSaidans} from "./accountController";
 import
@@ -225,4 +225,7 @@ app.get("/admin/content/documents", getDocumentsReportContent);
 
 // management boxes
 app.get("/admin/boxes", adminGetBoxList);
-export const native = functions.region(REGION).https.onRequest(app);
+export const native = functions.runWith({
+  timeoutSeconds: timeoutTime,
+  vpcConnector: vpcName,
+}).region(REGION).https.onRequest(app);

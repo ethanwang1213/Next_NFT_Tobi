@@ -397,3 +397,5 @@ export const MAIL_FOOT = `
 export const resetLimitTransactionDuration = 1 * 24 * 60 * 60 * 1000;
 export const numberOfLimitTransaction = 1000;
 export const resetLimitTransactionTime = 5;
+export const timeoutTime = 300;
+export const vpcName = "projects/tobiratory-f6ae1/locations/asia-northeast1/connectors/tobiratory-app";

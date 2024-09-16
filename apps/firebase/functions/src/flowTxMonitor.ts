@@ -242,7 +242,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, notificationBatchId:
     },
     include: {
       nfts: true,
-    }
+    },
   });
   if (notificationBatch) {
     const nfts = notificationBatch.nfts;
@@ -276,7 +276,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, notificationBatchId:
         data: {
           status: notificationBatchStatus.completed,
           complete_time: new Date(),
-        }
+        },
       });
     } else {
       await prisma.digital_item_nfts.update({
@@ -434,7 +434,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
           data: {
             status: notificationBatchStatus.completed,
             complete_time: new Date(),
-          }
+          },
         });
       } else {
         await prisma.digital_item_nfts.update({
