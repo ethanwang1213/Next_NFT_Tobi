@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
+import { ShowcaseEditUnityContext } from "../../../../apps/admin/src/pages/contents/showcase";
 
 interface ColorPickerProps {
   initialColor?: string;
@@ -15,6 +16,10 @@ const ColorPicker = ({
   const [color, setColor] = useState<string>(initialColor);
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+
+  const unityContext = useContext(ShowcaseEditUnityContext);
+
+  const { pauseUnityInputs, resumeUnityInputs } = unityContext;
 
   useEffect(() => {
     if (!showPicker) {
@@ -33,6 +38,7 @@ const ColorPicker = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newColor = event.target.value;
+    // const isValidColor = /^#([0-9A-F]{3}){1,2}$/i.test(newColor);
     setColor(newColor);
     onColorChanged(newColor);
   };
@@ -78,6 +84,8 @@ const ColorPicker = ({
           type="text"
           value={color}
           onChange={handleInputChange}
+          onFocus={pauseUnityInputs}
+          onBlur={resumeUnityInputs}
           className="w-full h-full border-none outline-none rounded-[5px] bg-[#A5A1A1] flex items-center justify-between px-4 font-[400]"
         />
       </div>

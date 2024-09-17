@@ -5,7 +5,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
@@ -22,6 +22,8 @@ import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
+
+export const ShowcaseEditUnityContext = createContext(null);
 
 const Showcase = () => {
   const router = useRouter();
@@ -130,6 +132,16 @@ const Showcase = () => {
 
   const [contentWidth, setContentWidth] = useState(0);
 
+  const unityContext = useShowcaseEditUnityContext({
+    itemMenuX: contentWidth - (showDetailView ? 504 : 30),
+    onSaveDataGenerated,
+    onRemoveItemEnabled,
+    onRemoveItemDisabled,
+    onRemoveItemRequested,
+    onActionRedone: handleAction,
+    onActionUndone: handleAction,
+  });
+
   const {
     isLoaded,
     unityProvider,
@@ -146,15 +158,7 @@ const Showcase = () => {
     inputWasd,
     undoAction,
     redoAction,
-  } = useShowcaseEditUnityContext({
-    itemMenuX: contentWidth - (showDetailView ? 504 : 30),
-    onSaveDataGenerated,
-    onRemoveItemEnabled,
-    onRemoveItemDisabled,
-    onRemoveItemRequested,
-    onActionRedone: handleAction,
-    onActionUndone: handleAction,
-  });
+  } = unityContext;
 
   const { leavingPage, setLeavingPage } = useLeavePage();
 
@@ -363,29 +367,30 @@ const Showcase = () => {
   };
 
   return (
-    <div className="w-full h-screen-minus-56 relative">
-      <ShowcaseEditUnity unityProvider={unityProvider} />
-      {!isLoaded && (
-        <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
-          <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
-        </div>
-      )}
-      <div className="pointer-events-none absolute left-0 right-0 top-0 bottom-0">
-        <div
-          className="pointer-events-auto absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
-          style={{
-            width: `${containerWidth}px`,
-            left: `${320 - 424}px`,
-          }}
-        >
-          <span className="text-xl font-semibold text-[#858585] text-center mr-1">
-            {showcaseData ? (
-              showcaseData.title
-            ) : (
-              <span className="loading loading-spinner"></span>
-            )}
-          </span>
-          {/* <div className="relative">
+    <ShowcaseEditUnityContext.Provider value={unityContext}>
+      <div className="w-full h-screen-minus-56 relative">
+        <ShowcaseEditUnity unityProvider={unityProvider} />
+        {!isLoaded && (
+          <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+            <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+          </div>
+        )}
+        <div className="pointer-events-none absolute left-0 right-0 top-0 bottom-0">
+          <div
+            className="pointer-events-auto absolute top-0 right-0 flex justify-center mx-auto mt-[24px]"
+            style={{
+              width: `${containerWidth}px`,
+              left: `${320 - 424}px`,
+            }}
+          >
+            <span className="text-xl font-semibold text-[#858585] text-center mr-1">
+              {showcaseData ? (
+                showcaseData.title
+              ) : (
+                <span className="loading loading-spinner"></span>
+              )}
+            </span>
+            {/* <div className="relative">
             <button
               className={`${
                 loading
@@ -402,170 +407,171 @@ const Showcase = () => {
               </div>
             )}
           </div> */}
-          {loading && <span className="loading loading-spinner"></span>}
-          {!loading && (
-            <Button onClick={() => dialogRef.current.showModal()}>
-              <Image
-                width={24}
-                height={24}
-                src="/admin/images/icon/pencil.svg"
-                alt="pencil icon"
-              />
-            </Button>
-          )}
-        </div>
-        <ShowcaseSampleDetail
-          showSampleDetailView={showSampleDetailView}
-          showDetailView={showDetailView}
-          id={selectedSampleItem}
-        />
-        {/* Align component in the center */}
-        {/* 320px: width of left component. 424px: width of right component. */}
-        <div
-          className="w-[336px] mt-[72px] absolute"
-          style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
-        >
-          {mainToast && <CustomToast show={showToast} message={message} />}
-          {!mainToast && <CustomToast show={showToast} message={message} />}
-        </div>
-        <div
-          className="pointer-events-auto w-[336px] bottom-0 absolute"
-          style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
-        >
-          <div className="absolute bottom-12 w-full flex justify-center">
-            <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-              <button
-                disabled={!isUndoable}
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-                onClick={undoAction}
-              >
+            {loading && <span className="loading loading-spinner"></span>}
+            {!loading && (
+              <Button onClick={() => dialogRef.current.showModal()}>
                 <Image
-                  width={32}
-                  height={32}
-                  alt="undo button"
-                  src="/admin/images/icon/undo-icon.svg"
-                  className="cursor-pointer h-[32px]"
+                  width={24}
+                  height={24}
+                  src="/admin/images/icon/pencil.svg"
+                  alt="pencil icon"
                 />
-              </button>
-              <button
-                disabled={!isRedoable}
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-                onClick={redoAction}
-              >
-                <Image
-                  width={32}
-                  height={32}
-                  alt="undo button"
-                  src="/admin/images/icon/redo-icon.svg"
-                  className="cursor-pointer h-[32px]"
-                />
-              </button>
-              <button
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
-                onClick={() => {
-                  setShowSampleDetailView(!showSampleDetailView);
-                  setShowSmartFrame(!showSmartFrame);
-                  notification(
-                    showSmartFrame
-                      ? "The smartphone frame is visibly"
-                      : "The smartphone frame is disable",
-                  );
-                }}
-              >
-                <Image
-                  width={32}
-                  height={32}
-                  alt="undo button"
-                  src={
-                    showSmartFrame
-                      ? "/admin/images/icon/crop-on-icon.svg"
-                      : "/admin/images/icon/crop-off-icon.svg"
-                  }
-                />
-              </button>
-              <button
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
-                onClick={() => {
-                  setShowSampleDetailView(!showDetailView);
-                  setShowDetailView(!showDetailView);
-                  notification(
-                    showDetailView ? "The UI is hidden" : "The UI is shown",
-                  );
-                }}
-              >
-                <Image
-                  width={32}
-                  height={32}
-                  alt="toggle button"
-                  src={
-                    showDetailView
-                      ? "/admin/images/icon/visibility-on-icon.svg"
-                      : "/admin/images/icon/visibility-off-icon.svg"
-                  }
-                />
-              </button>
-              <button
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
-                onClick={() => notification("help button is clicked")}
-              >
-                <Image
-                  width={32}
-                  height={32}
-                  alt="undo button"
-                  src="/admin/images/icon/help-icon.svg"
-                />
-              </button>
+              </Button>
+            )}
+          </div>
+          <ShowcaseSampleDetail
+            showSampleDetailView={showSampleDetailView}
+            showDetailView={showDetailView}
+            id={selectedSampleItem}
+          />
+          {/* Align component in the center */}
+          {/* 320px: width of left component. 424px: width of right component. */}
+          <div
+            className="w-[336px] mt-[72px] absolute"
+            style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
+          >
+            {mainToast && <CustomToast show={showToast} message={message} />}
+            {!mainToast && <CustomToast show={showToast} message={message} />}
+          </div>
+          <div
+            className="pointer-events-auto w-[336px] bottom-0 absolute"
+            style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
+          >
+            <div className="absolute bottom-12 w-full flex justify-center">
+              <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
+                <button
+                  disabled={!isUndoable}
+                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                  onClick={undoAction}
+                >
+                  <Image
+                    width={32}
+                    height={32}
+                    alt="undo button"
+                    src="/admin/images/icon/undo-icon.svg"
+                    className="cursor-pointer h-[32px]"
+                  />
+                </button>
+                <button
+                  disabled={!isRedoable}
+                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                  onClick={redoAction}
+                >
+                  <Image
+                    width={32}
+                    height={32}
+                    alt="undo button"
+                    src="/admin/images/icon/redo-icon.svg"
+                    className="cursor-pointer h-[32px]"
+                  />
+                </button>
+                <button
+                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                  onClick={() => {
+                    setShowSampleDetailView(!showSampleDetailView);
+                    setShowSmartFrame(!showSmartFrame);
+                    notification(
+                      showSmartFrame
+                        ? "The smartphone frame is visibly"
+                        : "The smartphone frame is disable",
+                    );
+                  }}
+                >
+                  <Image
+                    width={32}
+                    height={32}
+                    alt="undo button"
+                    src={
+                      showSmartFrame
+                        ? "/admin/images/icon/crop-on-icon.svg"
+                        : "/admin/images/icon/crop-off-icon.svg"
+                    }
+                  />
+                </button>
+                <button
+                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                  onClick={() => {
+                    setShowSampleDetailView(!showDetailView);
+                    setShowDetailView(!showDetailView);
+                    notification(
+                      showDetailView ? "The UI is hidden" : "The UI is shown",
+                    );
+                  }}
+                >
+                  <Image
+                    width={32}
+                    height={32}
+                    alt="toggle button"
+                    src={
+                      showDetailView
+                        ? "/admin/images/icon/visibility-on-icon.svg"
+                        : "/admin/images/icon/visibility-off-icon.svg"
+                    }
+                  />
+                </button>
+                <button
+                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                  onClick={() => notification("help button is clicked")}
+                >
+                  <Image
+                    width={32}
+                    height={32}
+                    alt="undo button"
+                    src="/admin/images/icon/help-icon.svg"
+                  />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        {showDetailView && (
-          <ShowcaseTabView
-            clickSampleItem={(item: SampleItem) =>
-              selectSampleHandler(item, false)
-            }
-            dragSampleItem={(item: SampleItem) =>
-              selectSampleHandler(item, true)
-            }
-            clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
-            dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
-            showRestoreMenu={showRestoreMenu}
-            settings={showcaseData?.settings}
-            operateMenu={showoperate}
-            updateUnityViewSettings={(
-              wt: string,
-              ft: string,
-              st: string,
-              sb: number,
-              pt: string,
-              pb: number,
-              phase: SettingsUpdatePhase,
-            ) => {
-              updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
-            }}
-          />
-        )}
-        {showRestoreMenu && !showDetailView && (
-          <div
-            className="pointer-events-auto absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
-              flex flex-col justify-center items-center z-10 select-none"
-          >
-            <Image
-              width={48}
-              height={48}
-              src="/admin/images/icon/keyboard_return.svg"
-              alt="return icon"
-              draggable={false}
+          {showDetailView && (
+            <ShowcaseTabView
+              clickSampleItem={(item: SampleItem) =>
+                selectSampleHandler(item, false)
+              }
+              dragSampleItem={(item: SampleItem) =>
+                selectSampleHandler(item, true)
+              }
+              clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
+              dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
+              showRestoreMenu={showRestoreMenu}
+              settings={showcaseData?.settings}
+              operateMenu={showoperate}
+              updateUnityViewSettings={(
+                wt: string,
+                ft: string,
+                st: string,
+                sb: number,
+                pt: string,
+                pb: number,
+                phase: SettingsUpdatePhase,
+              ) => {
+                updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
+              }}
             />
-          </div>
-        )}
-        <ShowcaseNameEditDialog
-          showcaseTitle={showcaseData?.title ?? ""}
-          showcaseDescription={showcaseData?.description ?? ""}
-          dialogRef={dialogRef}
-          changeHandler={changeShowcaseDetail}
-        />
+          )}
+          {showRestoreMenu && !showDetailView && (
+            <div
+              className="pointer-events-auto absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+              flex flex-col justify-center items-center z-10 select-none"
+            >
+              <Image
+                width={48}
+                height={48}
+                src="/admin/images/icon/keyboard_return.svg"
+                alt="return icon"
+                draggable={false}
+              />
+            </div>
+          )}
+          <ShowcaseNameEditDialog
+            showcaseTitle={showcaseData?.title ?? ""}
+            showcaseDescription={showcaseData?.description ?? ""}
+            dialogRef={dialogRef}
+            changeHandler={changeShowcaseDetail}
+          />
+        </div>
       </div>
-    </div>
+    </ShowcaseEditUnityContext.Provider>
   );
 };
 

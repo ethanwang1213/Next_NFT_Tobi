@@ -1,41 +1,79 @@
-import Image from "next/image";
-import { MutableRefObject } from "react";
+import { useItemPreviewUnityContext } from "hooks/useCustomUnityContext";
+import { MutableRefObject, useContext, useEffect, useState } from "react";
+import {
+  DebugFlag,
+  ItemBaseId,
+  ItemTypeParam,
+  ModelParams,
+  TextureParam,
+} from "types/unityTypes";
+import { ShowcaseEditUnityContext } from "../../../../apps/admin/src/pages/contents/showcase";
+import { ItemPreviewUnity } from "../../molecules/CustomUnity";
+
+type PreviewItemData = ItemTypeParam &
+  ItemBaseId &
+  ModelParams &
+  TextureParam &
+  DebugFlag;
 
 const SampleDetailDialog = ({
-  thumbnail,
-  content,
-  item,
+  data,
   dialogRef,
 }: {
-  thumbnail: string;
-  content: string;
-  item: string;
+  data: any;
   dialogRef: MutableRefObject<HTMLDialogElement>;
 }) => {
+  const { setLoadData, unityProvider } = useItemPreviewUnityContext();
+  const [showUnity, setShowUnity] = useState(false);
+  const unityContext = useContext(ShowcaseEditUnityContext);
+  const { selectedItem } = unityContext;
+
+  useEffect(() => {
+    if (data && selectedItem) {
+      const itemData: PreviewItemData = {
+        itemType: selectedItem.itemType,
+        modelType: data.modelType,
+        itemId: selectedItem.itemId,
+        modelUrl: data.modelUrl,
+        imageUrl: data.customThumbnailUrl,
+        isDebug: true,
+      };
+      setLoadData(itemData);
+      setShowUnity(true);
+    } else {
+      setShowUnity(false);
+    }
+  }, [data, setLoadData, selectedItem]);
+
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-opacity-90 bg-gray-800">
+      <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-[#3F3F3FE5]">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-3 right-5">
             <span
               className="material-symbols-outlined text-base-white cursor-pointer"
               style={{ fontSize: 20 }}
-            >close</span>
+            >
+              close
+            </span>
           </button>
         </form>
         <span className="text-base-black text-base font-semibold text-gray-100">
-          {content}
+          {data?.content?.name || "Content Name"}
         </span>
         <span className="text-base-black text-2xl font-bold text-gray-100">
-          {item ? item : "Unnamed Sample Item"}
+          {data?.name || "Item Title"}
         </span>
         <div className="mb-[56px]">
-          <Image
-            src={thumbnail ?? "/admin/images/png/empty-image.png"}
-            width={400}
-            height={400}
-            alt="Thumbnail Image"
-          />
+          {showUnity ? (
+            <div className="w-[400px] h-[400px]">
+              <ItemPreviewUnity unityProvider={unityProvider} />
+            </div>
+          ) : (
+            <p className="text-center text-[#9F9C9C] text-[16px] h-[400px] flex items-center">
+              The 3D preview will be displayed here when an item is selected
+            </p>
+          )}
         </div>
       </div>
     </dialog>

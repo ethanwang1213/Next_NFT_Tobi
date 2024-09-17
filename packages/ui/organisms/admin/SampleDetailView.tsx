@@ -143,9 +143,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             }
             alt="image"
             onClick={() => {
-              if (data && dialogRef.current) {
-                dialogRef.current.showModal();
-              }
+              dialogRef.current.showModal();
             }}
             className="rounded-lg"
           />
@@ -229,13 +227,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
               </div>
             </div>
-            {data && (
-              <SampleDetailDialog
-                thumbnail={data?.customThumbnailUrl}
-                content={data?.content.name}
-                item={data?.name}
-                dialogRef={dialogRef}
-              />
+            {section === "showcase" && (
+              <SampleDetailDialog data={data} dialogRef={dialogRef} />
             )}
             {data && (
               <div className="mx-auto mt-12">

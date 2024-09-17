@@ -51,19 +51,22 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       if (isDragging && dragStartPos.current) {
         const dx = event.clientX - dragStartPos.current.x;
         const dy = event.clientY - dragStartPos.current.y;
+
         setPosition((prevPosition) => ({
           x: prevPosition.x + dx,
           y: prevPosition.y + dy,
         }));
 
-        crop.x += dx;
-        crop.y += dy;
-        setCrop(crop);
+        setCrop((prevCrop) => ({
+          ...prevCrop,
+          x: prevCrop.x + dx,
+          y: prevCrop.y + dy,
+        }));
 
         dragStartPos.current = { x: event.clientX, y: event.clientY };
       }
     },
-    [crop, isDragging],
+    [isDragging],
   );
 
   const onMouseUp = useCallback(() => {
@@ -78,13 +81,13 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       const { width, height } = e.currentTarget;
 
       setPosition({
-        x: (imgWrapperRef.current.clientWidth - width) / 2,
-        y: (imgWrapperRef.current.clientHeight - height) / 2,
+        x: (imgWrapperRef.current?.clientWidth - width) / 2 || 0,
+        y: (imgWrapperRef.current?.clientHeight - height) / 2 || 0,
       });
 
       const initialCrop = convertToPixelCrop(crop, width, height);
-      initialCrop.x = (imgWrapperRef.current.clientWidth - width) / 2;
-      initialCrop.y = (imgWrapperRef.current.clientHeight - height) / 2;
+      initialCrop.x = (imgWrapperRef.current?.clientWidth - width) / 2 || 0;
+      initialCrop.y = (imgWrapperRef.current?.clientHeight - height) / 2 || 0;
       setCrop(initialCrop);
       setAspect(width / height);
     },
@@ -106,39 +109,56 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
   const rotateChangeHandler = useCallback(
     (rotate) => {
       setRotate(rotate);
+      if (imgMessageRef.current) {
+        const { width, height } = imgMessageRef.current;
 
-      const { width, height } = imgMessageRef.current;
-      const { w: rotatedScreenWidth, h: rotatedScreenHeight } =
-        calcRotatedScaledSize(width, height, 180 - rotate, scale);
-      crop.x = position.x + width / 2 - rotatedScreenWidth / 2;
-      crop.width = rotatedScreenWidth;
-      crop.y = position.y + height / 2 - rotatedScreenHeight / 2;
-      crop.height = rotatedScreenHeight;
-      setCrop(crop);
-      setAspect(rotatedScreenWidth / rotatedScreenHeight);
+        // Recalculate size based on rotation and scale
+        const { w: rotatedWidth, h: rotatedHeight } = calcRotatedScaledSize(
+          width,
+          height,
+          180 - rotate,
+          scale,
+        );
+
+        // Center the rotated image on the canvas
+        setCrop((prevCrop) => ({
+          ...prevCrop,
+          x: position.x + width / 2 - rotatedWidth / 2,
+          y: position.y + height / 2 - rotatedHeight / 2,
+          width: rotatedWidth,
+          height: rotatedHeight,
+        }));
+
+        setAspect(rotatedWidth / rotatedHeight);
+      }
     },
-    [calcRotatedScaledSize, crop, position, scale],
+    [calcRotatedScaledSize, position, scale],
   );
 
-  const cropChangeHandler = (newCrop: Crop) => {
-    if (imgMessageRef.current) {
-      const { width, height } = imgMessageRef.current;
+  const cropChangeHandler = useCallback(
+    (newCrop: Crop) => {
+      if (imgMessageRef.current) {
+        const { width, height } = imgMessageRef.current;
 
-      newCrop.x = crop.x + (crop.width - newCrop.width) / 2;
-      newCrop.y = crop.y + (crop.height - newCrop.height) / 2;
-      setCrop(newCrop);
+        // Calculate crop's new center based on width and height
+        newCrop.x = crop.x + (crop.width - newCrop.width) / 2;
+        newCrop.y = crop.y + (crop.height - newCrop.height) / 2;
+        setCrop(newCrop);
 
-      const { w: rotatedWidth, h: rotatedHeight } = calcRotatedScaledSize(
-        width,
-        height,
-        180 - rotate,
-        1,
-      );
+        // Apply correct scaling to the image
+        const { w: rotatedWidth, h: rotatedHeight } = calcRotatedScaledSize(
+          width,
+          height,
+          180 - rotate,
+          1,
+        );
 
-      const newScale = newCrop.width / rotatedWidth;
-      setScale(newScale);
-    }
-  };
+        const newScale = newCrop.width / rotatedWidth;
+        setScale(newScale);
+      }
+    },
+    [rotate, crop, calcRotatedScaledSize],
+  );
 
   const combineImage = useCallback(async () => {
     const cardImage = imgCardRef.current;
@@ -155,6 +175,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       throw new Error("No 2D context for rotate image canvas");
     }
 
+    // Calculate the bounding box of the rotated image
     const { w: rotatedScreenWidth, h: rotatedScreenHeight } =
       calcRotatedScaledSize(
         messageImage.width,
@@ -169,10 +190,15 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     rotateCtx.translate(rotatedScreenWidth / 2, rotatedScreenHeight / 2);
     rotateCtx.rotate(angleInRadians);
-    rotateCtx.translate(-messageImage.width / 2, -messageImage.height / 2);
+    rotateCtx.translate(
+      -messageImage.naturalWidth / 2,
+      -messageImage.naturalHeight / 2,
+    );
 
+    // Draw the image on rotated canvas
     rotateCtx.drawImage(messageImage, 0, 0);
 
+    // Final canvas to draw card and message image
     const finalCanvas = document.createElement("canvas");
     const finalCtx = finalCanvas.getContext("2d");
 
@@ -180,24 +206,18 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       throw new Error("No 2D context for final image canvas");
     }
 
+    // Set canvas size to card's natural dimensions
     finalCanvas.width = cardImage.naturalWidth;
     finalCanvas.height = cardImage.naturalHeight;
 
+    // Draw card on final canvas
     finalCtx.drawImage(cardImage, 0, 0);
 
+    // Calculate the position to overlay the rotated message image
     const cardOffsetX =
-      position.x + (finalCanvas.width - rotatedScreenWidth) / 2;
+      position.x - (imgWrapperRef.current.clientWidth - cardImage.width) / 2;
     const cardOffsetY =
-      position.y + (finalCanvas.height - rotatedScreenHeight) / 2;
-
-    const messageOffsetX = Math.max(
-      0,
-      Math.min(finalCanvas.width - rotatedScreenWidth, cardOffsetX),
-    );
-    const messageOffsetY = Math.max(
-      0,
-      Math.min(finalCanvas.height - rotatedScreenHeight, cardOffsetY),
-    );
+      position.y - (imgWrapperRef.current.clientHeight - cardImage.height) / 2;
 
     finalCtx.drawImage(
       rotateCanvas,
@@ -205,8 +225,8 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       0,
       rotatedScreenWidth,
       rotatedScreenHeight,
-      messageOffsetX,
-      messageOffsetY,
+      cardOffsetX,
+      cardOffsetY,
       rotatedScreenWidth,
       rotatedScreenHeight,
     );
