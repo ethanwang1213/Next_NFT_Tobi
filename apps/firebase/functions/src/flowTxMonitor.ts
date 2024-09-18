@@ -311,7 +311,7 @@ const fetchMintNFT = async (txId: string) => {
       result.id = event.data.id;
       result.itemID = event.data.itemID;
       result.serialNumber = event.data.serialNumber;
-    } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Deposit`) {
+    } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.NonFungibleToken.Deposited`) {
       result.to = event.data.to;
     }
   }
