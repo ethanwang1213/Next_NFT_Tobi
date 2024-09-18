@@ -66,6 +66,15 @@ export const mintNFT = async (req: Request, res: Response) => {
         await mint(id, uid, notificationBatchId, modelUrl);
         mintCount++;
       }, 1000);
+      pushToDevice(fcmToken, {
+        title: "NFTの作成を開始しました",
+        body: "作成完了までしばらくお待ちください",
+      }, {
+        body: JSON.stringify({
+          type: "mintBegan",
+          data: {id: id},
+        }),
+      });
       res.status(200).send({
         status: "success",
         data: "NFT is minting",
@@ -243,16 +252,6 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   }
-
-  pushToDevice(notificationBatch.fcm_token, {
-    title: "NFTの作成を開始しました",
-    body: "作成完了までしばらくお待ちください",
-  }, {
-    body: JSON.stringify({
-      type: "mintBegan",
-      data: {id: digitalItemId},
-    }),
-  });
 };
 
 export const giftNFT = async (req: Request, res: Response) => {
