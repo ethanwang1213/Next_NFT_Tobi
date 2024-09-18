@@ -88,6 +88,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       const initialCrop = convertToPixelCrop(crop, width, height);
       initialCrop.x = (imgWrapperRef.current?.clientWidth - width) / 2 || 0;
       initialCrop.y = (imgWrapperRef.current?.clientHeight - height) / 2 || 0;
+
       setCrop(initialCrop);
       setAspect(width / height);
     },
@@ -168,37 +169,14 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       throw new Error("Images are not available for combining");
     }
 
-    const rotateCanvas = document.createElement("canvas");
-    const rotateCtx = rotateCanvas.getContext("2d");
+    // Get displayed dimensions of the card and message images
+    const cardDisplayedWidth = cardImage.clientWidth;
+    const cardDisplayedHeight = cardImage.clientHeight;
 
-    if (!rotateCtx) {
-      throw new Error("No 2D context for rotate image canvas");
-    }
+    const messageDisplayedWidth = messageImage.clientWidth;
+    const messageDisplayedHeight = messageImage.clientHeight;
 
-    // Calculate the bounding box of the rotated image
-    const { w: rotatedScreenWidth, h: rotatedScreenHeight } =
-      calcRotatedScaledSize(
-        messageImage.width,
-        messageImage.height,
-        180 - rotate,
-        scale,
-      );
-
-    rotateCanvas.width = rotatedScreenWidth;
-    rotateCanvas.height = rotatedScreenHeight;
-
-    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
-    rotateCtx.translate(rotatedScreenWidth / 2, rotatedScreenHeight / 2);
-    rotateCtx.rotate(angleInRadians);
-    rotateCtx.translate(
-      -messageImage.naturalWidth / 2,
-      -messageImage.naturalHeight / 2,
-    );
-
-    // Draw the image on rotated canvas
-    rotateCtx.drawImage(messageImage, 0, 0);
-
-    // Final canvas to draw card and message image
+    // Create a canvas to combine the images
     const finalCanvas = document.createElement("canvas");
     const finalCtx = finalCanvas.getContext("2d");
 
@@ -206,31 +184,83 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       throw new Error("No 2D context for final image canvas");
     }
 
-    // Set canvas size to card's natural dimensions
-    finalCanvas.width = cardImage.naturalWidth;
-    finalCanvas.height = cardImage.naturalHeight;
+    // Set the canvas size to match the displayed size of the card image
+    finalCanvas.width = cardDisplayedWidth;
+    finalCanvas.height = cardDisplayedHeight;
 
-    // Draw card on final canvas
-    finalCtx.drawImage(cardImage, 0, 0);
+    // Draw the card image at its displayed size
+    finalCtx.drawImage(
+      cardImage,
+      0,
+      0,
+      cardDisplayedWidth,
+      cardDisplayedHeight,
+    );
 
-    // Calculate the position to overlay the rotated message image
-    const cardOffsetX =
-      position.x - (imgWrapperRef.current.clientWidth - cardImage.width) / 2;
-    const cardOffsetY =
-      position.y - (imgWrapperRef.current.clientHeight - cardImage.height) / 2;
+    // Prepare to rotate and scale the message image
+    const rotateCanvas = document.createElement("canvas");
+    const rotateCtx = rotateCanvas.getContext("2d");
 
+    if (!rotateCtx) {
+      throw new Error("No 2D context for rotate canvas");
+    }
+
+    const angleInRadians = ((180 - rotate) * Math.PI) / 180;
+
+    // **Apply the scaling factor to the message image size**
+    const scaledMessageWidth = messageDisplayedWidth * scale;
+    const scaledMessageHeight = messageDisplayedHeight * scale;
+
+    // Calculate the bounding box of the rotated message image
+    const rotatedBoundingBox = calcRotatedScaledSize(
+      scaledMessageWidth,
+      scaledMessageHeight,
+      180 - rotate,
+      1, // Since scaling is already applied
+    );
+
+    // Set rotateCanvas size to handle the rotated and scaled message image
+    rotateCanvas.width = rotatedBoundingBox.w;
+    rotateCanvas.height = rotatedBoundingBox.h;
+
+    // Translate and rotate the canvas for the second image (message)
+    rotateCtx.translate(rotatedBoundingBox.w / 2, rotatedBoundingBox.h / 2);
+    rotateCtx.rotate(angleInRadians);
+    rotateCtx.translate(-scaledMessageWidth / 2, -scaledMessageHeight / 2);
+
+    // **Draw the scaled and rotated message image on the rotateCanvas**
+    rotateCtx.drawImage(
+      messageImage,
+      0,
+      0,
+      messageImage.naturalWidth,
+      messageImage.naturalHeight,
+      0,
+      0,
+      scaledMessageWidth,
+      scaledMessageHeight,
+    );
+
+    // Correct the position of the rotated image on the final canvas
+    const rotatedMessageOffsetX =
+      position.x - (rotatedBoundingBox.w - scaledMessageWidth) / 2;
+    const rotatedMessageOffsetY =
+      position.y - (rotatedBoundingBox.h - scaledMessageHeight) / 2;
+
+    // Draw the rotated message image (at scaled size) onto the final canvas
     finalCtx.drawImage(
       rotateCanvas,
       0,
       0,
-      rotatedScreenWidth,
-      rotatedScreenHeight,
-      cardOffsetX,
-      cardOffsetY,
-      rotatedScreenWidth,
-      rotatedScreenHeight,
+      rotatedBoundingBox.w,
+      rotatedBoundingBox.h,
+      rotatedMessageOffsetX,
+      rotatedMessageOffsetY,
+      rotatedBoundingBox.w,
+      rotatedBoundingBox.h,
     );
 
+    // Convert the final canvas to a blob and store its URL
     const blob = await new Promise<Blob | null>((resolve) =>
       finalCanvas.toBlob(resolve, "image/png"),
     );

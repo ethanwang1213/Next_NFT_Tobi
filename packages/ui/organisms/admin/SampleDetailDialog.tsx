@@ -1,20 +1,7 @@
 import { useItemPreviewUnityContext } from "hooks/useCustomUnityContext";
 import { MutableRefObject, useContext, useEffect, useState } from "react";
-import {
-  DebugFlag,
-  ItemBaseId,
-  ItemTypeParam,
-  ModelParams,
-  TextureParam,
-} from "types/unityTypes";
 import { ShowcaseEditUnityContext } from "../../../../apps/admin/src/pages/contents/showcase";
 import { ItemPreviewUnity } from "../../molecules/CustomUnity";
-
-type PreviewItemData = ItemTypeParam &
-  ItemBaseId &
-  ModelParams &
-  TextureParam &
-  DebugFlag;
 
 const SampleDetailDialog = ({
   data,
@@ -30,10 +17,10 @@ const SampleDetailDialog = ({
 
   useEffect(() => {
     if (data && selectedItem) {
-      const itemData: PreviewItemData = {
-        itemType: selectedItem.itemType,
-        modelType: data.modelType,
+      const itemData = {
         itemId: selectedItem.itemId,
+        itemType: selectedItem.itemType,
+        modelType: selectedItem.itemType,
         modelUrl: data.modelUrl,
         imageUrl: data.customThumbnailUrl,
         isDebug: true,
