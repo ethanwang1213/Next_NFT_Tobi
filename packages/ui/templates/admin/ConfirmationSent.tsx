@@ -11,10 +11,10 @@ const ConfirmationSent = ({ onClickBack }: Props) => {
     <>
       <div className="flex flex-col items-center justify-center h-[100dvh] p-8">
         <div className={"w-full"}>
-          <BackLink onClickBack={onClickBack} />
+          <BackLink hideText={true} onClickBack={onClickBack} />
         </div>
-        <div className={"font-bold text-[32px]"}>
-          確認メールを送信しました！
+        <div className={"font-bold text-[40px]"}>
+          Sent a confirmation email!
         </div>
         <Image
           src={"/admin/images/mail.svg"}
@@ -23,14 +23,20 @@ const ConfirmationSent = ({ onClickBack }: Props) => {
           height={282}
           className={"mt-[100px]"}
         />
-        <div className={"mt-[50px] font-medium text-[16px] text-base-content"}>
-          メールボックスをご確認下さい。
+        <div
+          className={
+            "w-[463px] mt-[50px] font-medium text-[20px] text-base-content text-center"
+          }
+        >
+          Please check your mailbox.
+          <br />
+          Authentication will be completed by clicking the authentication link
+          in the email.
         </div>
-        <div>メール内の認証リンクをクリックすることで認証が完了します。</div>
         <div className={"mt-[30px]"}>
           <InfoLink
             url={"https://www.tobiratory.com/about"}
-            text={"メールが届きませんか？"}
+            text={"Haven't received the email?"}
           />
         </div>
       </div>

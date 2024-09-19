@@ -97,7 +97,7 @@ const AuthTemplate = ({
   );
 };
 
-const GoogleButton = ({
+export const GoogleButton = ({
   label,
   onClick,
 }: {
@@ -108,7 +108,7 @@ const GoogleButton = ({
     <Button
       type={"button"}
       className={
-        "btn btn-block w-[408px] rounded-xl bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
+        "btn btn-block w-[408px] rounded-[16px] bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
       }
       onClick={onClick}
     >
@@ -129,7 +129,7 @@ const GoogleButton = ({
   );
 };
 
-const AppleButton = ({
+export const AppleButton = ({
   label,
   onClick,
 }: {
@@ -140,7 +140,7 @@ const AppleButton = ({
     <Button
       type={"button"}
       className={
-        "btn btn-block w-[408px] rounded-xl bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
+        "btn btn-block w-[408px] rounded-[16px] bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
       }
       onClick={onClick}
     >

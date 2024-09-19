@@ -27,6 +27,8 @@ const AuthStates = {
 } as const;
 type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
+export const PASSWORD_RESET_PATH = "admin/auth/password_reset";
+
 const Authentication = () => {
   const [email, setEmail] = useState("");
   const [authError, setAuthError] = useState<ErrorMessage>(null);
@@ -62,7 +64,7 @@ const Authentication = () => {
     const notSetPassword = await usedEmailLinkButNotSetPassword(data.email);
 
     if (notSetPassword) {
-      sendEmailForPasswordReset(data.email, "admin/auth/password_reset");
+      sendEmailForPasswordReset(data.email, PASSWORD_RESET_PATH);
     } else {
       setEmail(data.email);
       setAuthState(AuthStates.SignInWithEmailAndPassword);
@@ -234,7 +236,7 @@ const Authentication = () => {
           error={authError}
           onClickBack={() => handleClickBack(AuthStates.SignIn)}
           onClickPasswordReset={(email) =>
-            sendEmailForPasswordReset(email, "admin/auth/password_reset")
+            sendEmailForPasswordReset(email, PASSWORD_RESET_PATH)
           }
           withMailSignIn={withMailSignIn}
         />

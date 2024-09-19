@@ -55,9 +55,14 @@ const Contents = ({ children, content }: Props) => {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+  const pagesWithoutSidebar = [
+    "/auth/password_update",
+    "/auth/reauth_password",
+    "/auth/reauth_sns",
+  ];
 
   if (
-    router.pathname !== "/auth/password_update" &&
+    !pagesWithoutSidebar.includes(router.pathname) &&
     auth.currentUser &&
     user?.hasFlowAccount
   ) {

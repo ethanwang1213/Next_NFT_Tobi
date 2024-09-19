@@ -15,19 +15,26 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { User } from "types/adminTypes";
+import { ProviderId, User } from "types/adminTypes";
 import Loading from "ui/atoms/Loading";
 
 type Props = {
   children: ReactNode;
 };
 
+type ReauthStatus = {
+  [ProviderId.GOOGLE]: boolean;
+  [ProviderId.APPLE]: boolean;
+};
+
 // AuthContextのデータ型
 type ContextType = {
   user?: User;
+  reauthStatus: ReauthStatus;
   signOut: () => Promise<void>;
   finishFlowAccountRegistration: () => void;
   finishBusinessAccountRegistration: () => void;
+  setReauthStatus: React.Dispatch<React.SetStateAction<ReauthStatus>>;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -40,6 +47,10 @@ const AuthContext = createContext<ContextType>({} as ContextType);
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User | null>(null);
+  const [reauthStatus, setReauthStatus] = useState<ReauthStatus>({
+    [ProviderId.GOOGLE]: false,
+    [ProviderId.APPLE]: false,
+  });
   const router = useRouter();
   const unrestrictedPaths = useMemo(
     () => ["/authentication", "/auth/password_reset"],
@@ -234,9 +245,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       <AuthContext.Provider
         value={{
           user,
+          reauthStatus,
           signOut,
           finishFlowAccountRegistration: finishFlowAccountRegistration,
           finishBusinessAccountRegistration: finishBusinessAccountRegistration,
+          setReauthStatus,
         }}
       >
         {children}
@@ -273,6 +286,53 @@ export const hasPassword = async (email: string) => {
   return signInMethods.includes(
     EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
   );
+};
+
+export const hasAccountWithProviderId = (providerId: ProviderId) => {
+  return auth.currentUser.providerData.some(
+    (profile) => profile.providerId === providerId,
+  );
+};
+
+export const hasGoogleAccount = () => {
+  return hasAccountWithProviderId(ProviderId.GOOGLE);
+};
+
+export const hasAppleAccount = () => {
+  return hasAccountWithProviderId(ProviderId.APPLE);
+};
+
+export const hasPasswordAccount = () => {
+  return hasAccountWithProviderId(ProviderId.PASSWORD);
+};
+
+export const getMailAddressByProviderId = (providerId: ProviderId) => {
+  return auth.currentUser.providerData.find(
+    (profile) => profile.providerId === providerId,
+  )?.email;
+};
+
+export const getMailAddressOfPasswordAccount = () => {
+  return getMailAddressByProviderId(ProviderId.PASSWORD);
+};
+
+export const getMailAddressOfGoogleAccount = () => {
+  return getMailAddressByProviderId(ProviderId.GOOGLE);
+};
+
+export const getMailAddressOfAppleAccount = () => {
+  return getMailAddressByProviderId(ProviderId.APPLE);
+};
+
+export const getProviderName = (providerId: ProviderId) => {
+  switch (providerId) {
+    case ProviderId.GOOGLE:
+      return "Google";
+    case ProviderId.APPLE:
+      return "Apple";
+    default:
+      return "";
+  }
 };
 
 export const useAuth = () => useContext(AuthContext);

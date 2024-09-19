@@ -93,7 +93,7 @@ export const InfoLink = ({ url, text }: { url: string; text: string }) => {
     >
       <div className={"flex flex-row items-center"}>
         <div
-          className={"w-[12px] h-[12px] bg-primary"}
+          className={"w-[32px] h-[32px] bg-primary"}
           style={{
             WebkitMaskImage: "url(/admin/images/info-icon.svg)",
             WebkitMaskRepeat: "no-repeat",
@@ -101,7 +101,7 @@ export const InfoLink = ({ url, text }: { url: string; text: string }) => {
             WebkitMaskSize: "contain",
           }}
         ></div>
-        <div className={"font-medium text-[12px] ml-[5px] pb-[2px]"}>
+        <div className={"font-medium text-[20px] ml-[5px] pb-[2px]"}>
           {text}
         </div>
       </div>

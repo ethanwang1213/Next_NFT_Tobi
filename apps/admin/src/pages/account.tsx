@@ -1,3 +1,8 @@
+import {
+  hasAppleAccount,
+  hasGoogleAccount,
+  hasPasswordAccount,
+} from "contexts/AdminAuthProvider";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
@@ -5,10 +10,11 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import AppleIcon from "ui/atoms/AppleIcon";
+import GoogleIcon from "ui/atoms/GoogleIcon";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
 import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
-
 export const metadata: Metadata = {
   title: "Account Setting",
 };
@@ -30,7 +36,7 @@ const AccountFieldComponent = ({
       className={`flex border-b-[0.5px] border-secondary py-6 
     ${alignTop ? "items-start" : "items-center"} `}
     >
-      <span className="w-[172px] text-[26px] text-base-200-content font-normal break-words">
+      <span className="w-[172px] shrink-0 text-[26px] text-base-200-content font-normal break-words">
         {label}
       </span>
       {children}
@@ -373,7 +379,9 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Password"}>
-              <span className={`${valueClass}`}>****</span>
+              <span className={`${valueClass}`}>
+                {hasPasswordAccount() ? "****" : "未設定"}
+              </span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -384,8 +392,20 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Social Account"}>
-              <span className={`${valueClass}`}></span>
-              <button className={editBtnClass}>Edit</button>
+              <div className="flex w-full gap-[17px]">
+                <GoogleIcon
+                  width={48}
+                  height={48}
+                  disabled={!hasGoogleAccount()}
+                />
+                <AppleIcon size="3x" disabled={!hasAppleAccount()} />
+              </div>
+              <button
+                className={editBtnClass}
+                onClick={() => router.push("/auth/sns_account")}
+              >
+                Edit
+              </button>
             </AccountFieldComponent>
           </div>
           <GenderEditDialog
@@ -398,9 +418,7 @@ export default function Index() {
             dialogRef={birthEditDialogRef}
             changeHandler={(value) => fieldChangeHandler("birth", value)}
           />
-          <EmailEditDialog
-            dialogRef={emailEditDialogRef}
-          />
+          <EmailEditDialog dialogRef={emailEditDialogRef} />
         </div>
       )}
       <input

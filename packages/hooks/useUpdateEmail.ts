@@ -1,7 +1,9 @@
+import { isPasswordAuthEnabled } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
+import { FirebaseError } from "firebase/app";
 import {
   sendEmailVerification,
-  updateEmail as updateFirebaseEmail
+  updateEmail as updateFirebaseEmail,
 } from "firebase/auth";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
@@ -11,7 +13,7 @@ const useUpdateEmail = () => {
   const [isSuccessfull, setIsSuccessfull] = useState<boolean>(false);
   const [error, setError] = useState<ErrorMessage | null>(null);
 
-  const reauthenticate = async (email: string, path:string) => {
+  const reauthenticate = async (email: string, path: string) => {
     const actionCodeSettings = {
       url: `${window.location.origin}/${path}`,
       handleCodeInApp: true,

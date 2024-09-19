@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 
-const useReauthenticate = () => {
+const usePasswordReauthentication = () => {
   const [userCredential, setUserCredential] = useState<UserCredential | null>(
     null,
   );
@@ -36,4 +36,4 @@ const useReauthenticate = () => {
   return [reauthenticate, reauthenticating, userCredential, error] as const;
 };
 
-export default useReauthenticate;
+export default usePasswordReauthentication;

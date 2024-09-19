@@ -13,7 +13,7 @@ const VerifiedEmail = () => {
         </span>
       </div>
       <div className={"w-full"}>
-        <BackLink onClickBack={() => router.push("/account")} />
+        <BackLink hideText={true} onClickBack={() => router.push("/account")} />
       </div>
       <div className="flex flex-col items-center justify-center shrink-0">
         <span className="text-base-content text-center text-[48px] font-bold">
@@ -24,11 +24,11 @@ const VerifiedEmail = () => {
           alt="Tobiratory logo"
           width={317}
           height={317}
-          className="mt-[40px]"
+          className="mt-[127px]"
         />
         <Button
-          className="btn btn-block w-[125px] h-[33px] min-h-[33px] px-[14px] py-[8px] bg-primary rounded-[64px]
-              text-base-white text-[14px] leading-3 font-semibold hover:bg-primary hover:border-primary"
+          className="btn btn-block w-[179px] h-[48px] min-h-[48px] mt-[20px] px-[14px] py-[8px] bg-primary rounded-[64px]
+              text-base-white text-[20px] leading-3 font-normal hover:bg-primary hover:border-primary"
           onClick={() => router.push("/account")}
         >
           Done
