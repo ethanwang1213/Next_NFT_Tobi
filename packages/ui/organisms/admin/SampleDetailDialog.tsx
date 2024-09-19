@@ -1,7 +1,7 @@
+import ShowcaseEditUnityContext from "contexts/ShowcaseEditUnityContext";
 import { useItemPreviewUnityContext } from "hooks/useCustomUnityContext";
 import { MutableRefObject, useContext, useEffect, useState } from "react";
-import { ShowcaseEditUnityContext } from "../../../../apps/admin/src/pages/contents/showcase";
-import { ItemPreviewUnity } from "../../molecules/CustomUnity";
+import { ItemPreviewUnity } from "ui/molecules/CustomUnity";
 
 const SampleDetailDialog = ({
   data,

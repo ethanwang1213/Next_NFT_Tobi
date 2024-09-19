@@ -1,9 +1,9 @@
+import ShowcaseEditUnityContext from "contexts/ShowcaseEditUnityContext";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useContext, useEffect, useState } from "react";
 import { ItemTransformUpdatePhase } from "types/unityTypes";
-import { ShowcaseEditUnityContext } from "../../../../apps/admin/src/pages/contents/showcase";
 
 const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   const [scale, setScale] = useState<number>(1.0);
@@ -25,7 +25,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   }, [selectedItem]);
 
   const updatePosition = (x: number, y: number) => {
-    if (!selectedItem) return;
+    if (!selectedItem || !updateItemTransform) return;
     const updatedData = {
       positionOnPlane: { x, y },
       rotationAngle: selectedItem?.rotationAngle ?? 0,
@@ -36,7 +36,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   };
 
   const updateRotation = (rotation: number) => {
-    if (!selectedItem) return;
+    if (!selectedItem || !updateItemTransform) return;
     const updatedData = {
       positionOnPlane: selectedItem?.positionOnPlane,
       rotationAngle: rotation,
@@ -47,7 +47,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   };
 
   const updateScale = (scale: number) => {
-    if (!selectedItem) return;
+    if (!selectedItem || !updateItemTransform) return;
     const updatedData = {
       positionOnPlane: selectedItem?.positionOnPlane,
       rotationAngle: selectedItem?.rotationAngle ?? 0,
@@ -58,7 +58,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   };
 
   const updateFinish = () => {
-    if (!selectedItem) return;
+    if (!selectedItem || !updateItemTransform) return;
     const updatedData = {
       positionOnPlane: selectedItem?.positionOnPlane,
       rotationAngle: selectedItem?.rotationAngle ?? 0,

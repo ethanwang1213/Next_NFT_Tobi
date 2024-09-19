@@ -5,7 +5,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
 import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
@@ -22,8 +22,7 @@ import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
-
-export const ShowcaseEditUnityContext = createContext(null);
+import ShowcaseEditUnityContext from "../../../../../packages/contexts/ShowcaseEditUnityContext";
 
 const Showcase = () => {
   const router = useRouter();
@@ -172,7 +171,9 @@ const Showcase = () => {
 
   const notification = (msg) => {
     setShowToast(false);
-    toggleMainToast();
+    if (mainToast) {
+      toggleMainToast();
+    }
     if (timerId.current) {
       clearTimeout(timerId.current);
     }
@@ -424,14 +425,11 @@ const Showcase = () => {
             showDetailView={showDetailView}
             id={selectedSampleItem}
           />
-          {/* Align component in the center */}
-          {/* 320px: width of left component. 424px: width of right component. */}
           <div
             className="w-[336px] mt-[72px] absolute"
             style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
           >
-            {mainToast && <CustomToast show={showToast} message={message} />}
-            {!mainToast && <CustomToast show={showToast} message={message} />}
+            <CustomToast show={showToast} message={message} />
           </div>
           <div
             className="pointer-events-auto w-[336px] bottom-0 absolute"

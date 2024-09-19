@@ -1,6 +1,6 @@
+import ShowcaseEditUnityContext from "contexts/ShowcaseEditUnityContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { ShowcaseEditUnityContext } from "../../../../apps/admin/src/pages/contents/showcase";
 
 interface ColorPickerProps {
   initialColor?: string;
@@ -38,7 +38,6 @@ const ColorPicker = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newColor = event.target.value;
-    // const isValidColor = /^#([0-9A-F]{3}){1,2}$/i.test(newColor);
     setColor(newColor);
     onColorChanged(newColor);
   };
