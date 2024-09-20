@@ -399,3 +399,4 @@ export const numberOfLimitTransaction = 1000;
 export const resetLimitTransactionTime = 5;
 export const timeoutTime = 300;
 export const vpcName = "projects/tobiratory-f6ae1/locations/asia-northeast1/connectors/tobiratory-app";
+export const allTraffic = "ALL_TRAFFIC";
