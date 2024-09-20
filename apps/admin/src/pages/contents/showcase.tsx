@@ -369,7 +369,7 @@ const Showcase = () => {
 
   return (
     <ShowcaseEditUnityContext.Provider value={unityContext}>
-      <div className="w-full h-screen-minus-56 relative">
+      <div className="w-full h-screen-minus-56 relative no-select">
         <ShowcaseEditUnity unityProvider={unityProvider} />
         {!isLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
@@ -569,7 +569,7 @@ const Showcase = () => {
           />
         </div>
       </div>
-    </ShowcaseEditUnityContext.Provider>
+      </ShowcaseEditUnityContext.Provider>
   );
 };
 

@@ -7,6 +7,13 @@
   font-weight: 600;
 }
 
+.no-select {
+  user-select: none; 
+  -webkit-user-select: none; 
+  -moz-user-select: none;    
+  -ms-user-select: none;    
+}
+
 @layer components {
   .modal {
     @apply bg-black/40;
