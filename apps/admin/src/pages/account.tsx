@@ -330,7 +330,7 @@ export default function Index() {
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={"Gender"}>
-              <span className={`${valueClass}`}>{data?.gender}</span>
+              <span className={`${valueClass}`}>{data?.gender ? data.gender : "Not Set"}</span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -343,7 +343,7 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Birthday"}>
-              <span className={`${valueClass}`}>{data?.birth}</span>
+              <span className={`${valueClass}`}>{data?.birth ? data.birth : "Not Set"}</span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -356,7 +356,7 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
-              <span className={`${valueClass}`}>{data?.email}</span>
+              <span className={`${valueClass}`}>{data?.email ? data.email : "Not Set"}</span>
               <button className={editBtnClass}>Edit</button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Password"}>
