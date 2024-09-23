@@ -70,7 +70,7 @@ const EmailAndPasswordSignIn = ({
         </div>
         <div className={"mt-[10px]"}>
           <LoadingSpinnerButton
-            label={"サインイン"}
+            label={"ログイン"}
             disabled={!!!password}
             loading={loading}
             onClick={() => withMailSignIn(email, password)}
