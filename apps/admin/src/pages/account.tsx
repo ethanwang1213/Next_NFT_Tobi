@@ -119,6 +119,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           className={`${valueClass} flex-1 outline-none`}
           value={twitterUrl}
           onChange={(e) => urlChangeHandler(0, e.target.value)}
+          placeholder="@userID"
         />
       </div>
       <div className={`${layoutClass}`}>
@@ -133,6 +134,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           className={`${valueClass} flex-1 outline-none`}
           value={instagramUrl}
           onChange={(e) => urlChangeHandler(1, e.target.value)}
+          placeholder="@userID"
         />
       </div>
       <div className={`${layoutClass}`}>
@@ -147,6 +149,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           className={`${valueClass} flex-1 outline-none`}
           value={facebookUrl}
           onChange={(e) => urlChangeHandler(2, e.target.value)}
+          placeholder="http://example.com"
         />
       </div>
       <div className={`${layoutClass}`}>
@@ -161,6 +164,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           className={`${valueClass} flex-1 outline-none`}
           value={youtubeUrl}
           onChange={(e) => urlChangeHandler(3, e.target.value)}
+          placeholder="http://example.com"
         />
       </div>
       {urls &&
@@ -177,6 +181,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
               className={`${valueClass} flex-1 outline-none`}
               value={url}
               onChange={(e) => urlChangeHandler(index + 4, e.target.value)}
+              placeholder="http://example.com"
             />
           </div>
         ))}
@@ -330,7 +335,9 @@ export default function Index() {
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={"Gender"}>
-              <span className={`${valueClass}`}>{data?.gender ? data.gender : "Not Set"}</span>
+              <span className={`${valueClass}`}>
+                {data?.gender ? data.gender : "Not Set"}
+              </span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -343,7 +350,9 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Birthday"}>
-              <span className={`${valueClass}`}>{data?.birth ? data.birth : "Not Set"}</span>
+              <span className={`${valueClass}`}>
+                {data?.birth ? data.birth : "Not Set"}
+              </span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -356,7 +365,9 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
-              <span className={`${valueClass}`}>{data?.email ? data.email : "Not Set"}</span>
+              <span className={`${valueClass}`}>
+                {data?.email ? data.email : "Not Set"}
+              </span>
               <button className={editBtnClass}>Edit</button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Password"}>
