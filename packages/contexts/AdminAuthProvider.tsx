@@ -199,7 +199,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       }
       router.push("/authentication");
     } catch (error) {
-      console.error("サインアウトに失敗しました。", error);
+      console.error("ログアウトに失敗しました。", error);
     }
   };
 

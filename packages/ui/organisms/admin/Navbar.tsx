@@ -211,10 +211,10 @@ const ConfirmSignOutModal = ({
   const { signOut, user } = useAuth();
   return (
     <AccountConfirmDialog
-      title="サインアウトしますか?"
+      title="ログアウトしますか?"
       account={user}
       firstButtonProp={{
-        caption: "サインアウト",
+        caption: "ログアウト",
         isPrimary: true,
         callback: signOut,
       }}
