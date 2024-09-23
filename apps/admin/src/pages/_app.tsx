@@ -107,7 +107,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           </LeavePageProvider>
           <ToastContainer
             position="bottom-center"
-            autoClose={3000}
+            autoClose={7000}
             hideProgressBar
             newestOnTop={false}
             closeOnClick={false}
@@ -116,7 +116,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             draggable={false}
             pauseOnHover
             transition={Slide}
-            closeButton={false}
+            closeButton={true}
             theme="colored"
           />
         </Layout>
