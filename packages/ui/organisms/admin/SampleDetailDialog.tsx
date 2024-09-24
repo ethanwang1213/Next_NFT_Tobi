@@ -1,6 +1,6 @@
-import ShowcaseEditUnityContext from "contexts/ShowcaseEditUnityContext";
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useItemPreviewUnityContext } from "hooks/useCustomUnityContext";
-import { MutableRefObject, useContext, useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useState } from "react";
 import { ItemPreviewUnity } from "ui/molecules/CustomUnity";
 
 const SampleDetailDialog = ({
@@ -12,8 +12,7 @@ const SampleDetailDialog = ({
 }) => {
   const { setLoadData, unityProvider } = useItemPreviewUnityContext();
   const [showUnity, setShowUnity] = useState(false);
-  const unityContext = useContext(ShowcaseEditUnityContext);
-  const { selectedItem } = unityContext;
+  const { selectedItem } = useShowcaseEditUnity();
 
   useEffect(() => {
     if (data && selectedItem) {
