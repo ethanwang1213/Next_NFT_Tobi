@@ -52,17 +52,17 @@ const Index = () => {
         alt="Tobiratory"
         className="mx-auto sm:w-[191px] sm:h-[194px] w-[78px] h-[79px]"
       />
-      <div className="text-[20px] sm:text-[40px] sm:mt-28 mt-10">
+      <div className="text-[20px] sm:text-[48px] sm:mt-28 mt-10 font-bold">
         Tobiratory Creator Program
       </div>
-      <div className="mt-10 mb-3 sm:text-[16px] text-[13px] sm:text-center text-left">
+      <div className="mt-10 mb-3 sm:text-[16px] text-[13px] sm:text-center text-left font-semibold">
         Tobiratory Creator Programに参加すると以下のことが可能になります。
       </div>
       <p className="sm:block hidden">
         内容は過去のもの
         <br />
       </p>
-      <div className="sm:text-[16px] text-[15px] sm:text-center text-left">
+      <div className="sm:text-[16px] text-[15px] sm:text-center text-left font-medium">
         <p>Creator Basic/Pro</p>
         <p>・独自のコンテンツページ</p>
         <p>・デジタルアイテムの無料配布</p>
@@ -85,7 +85,7 @@ const Index = () => {
       </div>
       <Button
         type="button"
-        className={`text-[16px] md:text-3xl bg-[#1779DE] text-white rounded-[88px] py-4 px-8 mt-6`}
+        className={`text-[16px] md:text-3xl bg-[#1779DE] text-white rounded-[88px] py-4 px-8 mt-16`}
         onClick={handleButtonClick}
       >
         Tobiratory Creator Program

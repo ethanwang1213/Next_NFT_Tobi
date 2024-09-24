@@ -57,11 +57,15 @@ const Register = () => {
   const [copyrightInfo, setCopyrightInfo] = useState<CopyrightInfo>({
     agreement: false,
     copyrightHolder: "",
-    license: "",
     file1: null,
     file2: null,
     file3: null,
     file4: null,
+    COM: "OK",
+    ADP: "OK",
+    DER: "OK",
+    DST: "OK",
+    NCR: "OK",
   });
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
