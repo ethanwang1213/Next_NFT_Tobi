@@ -243,9 +243,13 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
 
     // Correct the position of the rotated image on the final canvas
     const rotatedMessageOffsetX =
-      position.x - (rotatedBoundingBox.w - scaledMessageWidth) / 2;
+      position.x -
+      (rotatedBoundingBox.w - scaledMessageWidth) / 2 -
+      (400 - cardDisplayedWidth) / 2;
     const rotatedMessageOffsetY =
-      position.y - (rotatedBoundingBox.h - scaledMessageHeight) / 2;
+      position.y -
+      (rotatedBoundingBox.h - scaledMessageHeight) / 2 -
+      (385 - cardDisplayedHeight) / 2;
 
     // Draw the rotated message image (at scaled size) onto the final canvas
     finalCtx.drawImage(
