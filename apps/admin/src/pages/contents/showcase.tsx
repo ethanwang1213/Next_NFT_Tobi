@@ -131,6 +131,16 @@ const Showcase = () => {
 
   const [contentWidth, setContentWidth] = useState(0);
 
+  const unityContext = useShowcaseEditUnityContext({
+    itemMenuX: contentWidth - (showDetailView ? 504 : 30),
+    onSaveDataGenerated,
+    onRemoveItemEnabled,
+    onRemoveItemDisabled,
+    onRemoveItemRequested,
+    onActionRedone: handleAction,
+    onActionUndone: handleAction,
+  });
+
   const {
     isLoaded,
     unityProvider,
@@ -147,7 +157,7 @@ const Showcase = () => {
     inputWasd,
     undoAction,
     redoAction,
-  } = useShowcaseEditUnityContext({});
+  } = unityContext;
 
   const { leavingPage, setLeavingPage } = useLeavePage();
 
@@ -358,15 +368,7 @@ const Showcase = () => {
   };
 
   return (
-    <ShowcaseEditUnityProvider
-      itemMenuX={contentWidth - (showDetailView ? 504 : 30)}
-      onSaveDataGenerated={onSaveDataGenerated}
-      onRemoveItemEnabled={onRemoveItemEnabled}
-      onRemoveItemDisabled={onRemoveItemDisabled}
-      onRemoveItemRequested={onRemoveItemRequested}
-      onActionRedone={handleAction}
-      onActionUndone={handleAction}
-    >
+    <ShowcaseEditUnityProvider unityContext={unityContext}>
       <div className="w-full h-screen-minus-56 relative no-select">
         <ShowcaseEditUnity unityProvider={unityProvider} />
         {!isLoaded && (
