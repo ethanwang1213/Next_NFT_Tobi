@@ -63,6 +63,17 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     return Math.floor(daysDifference);
   };
 
+  const getDefaultLicense = (license) => {
+    return Object.entries(license)
+      .map(([key, value]) => (
+        <>
+          {key} : {value}
+          <br />
+        </>
+      ))
+      .filter(Boolean);
+  };
+
   const trackSampleMint = useCallback((sampleType: number) => {
     const sampleTypeLabels: { [key: number]: string } = {
       1: "Poster",
@@ -178,7 +189,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                   License
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
-                  {data?.license ? data.license : "-"}
+                  {data?.license ? getDefaultLicense(data.license) : "-"}
                 </span>
               </div>
               <div className="flex gap-4">

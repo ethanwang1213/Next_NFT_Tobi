@@ -191,18 +191,22 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             title="Commercial Use (COM/NCM)"
             onChange={(value) => copyrightInfoChangeHandler("COM", value)}
           />
+          <hr className="pb-3 border-[#1779DE]" />
           <RadioButtonGroup
             title="Adaptation (ADP)"
             onChange={(value) => copyrightInfoChangeHandler("ADP", value)}
           />
+          <hr className="pb-3 border-[#1779DE]" />
           <RadioButtonGroup
             title="Derivative Works (DER)"
             onChange={(value) => copyrightInfoChangeHandler("DER", value)}
           />
+          <hr className="pb-3 border-[#1779DE]" />
           <RadioButtonGroup
             title="Distribution for Free (DST)"
             onChange={(value) => copyrightInfoChangeHandler("DST", value)}
           />
+          <hr className="pb-3 border-[#1779DE]" />
           <RadioButtonGroup
             title="Credit Omission (NCR)"
             onChange={(value) => copyrightInfoChangeHandler("NCR", value)}
