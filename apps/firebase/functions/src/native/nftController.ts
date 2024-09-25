@@ -39,7 +39,6 @@ export const mintNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const notificationBatchId = await generateNotificationBatchId(fcmToken);
     const checkLimit = await increaseTransactionAmount(uid);
     if (checkLimit == statusOfLimitTransaction.notExistAccount) {
       res.status(401).send({
@@ -55,6 +54,7 @@ export const mintNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
+      const notificationBatchId = await generateNotificationBatchId(fcmToken);
       let mintCount = 0;
       let intervalId: NodeJS.Timeout | null = null;
       intervalId = setInterval(async () => {
@@ -63,7 +63,9 @@ export const mintNFT = async (req: Request, res: Response) => {
           intervalId = null;
           return;
         }
-        await mint(id, uid, notificationBatchId, modelUrl);
+        console.log("mintStart", intervalId, mintCount, intAmount);
+        mint(id, uid, notificationBatchId, modelUrl);
+        console.log("mintEnd", intervalId, mintCount, intAmount);
         mintCount++;
       }, 1000);
       pushToDevice(fcmToken, {
@@ -267,7 +269,6 @@ export const giftNFT = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const notificationBatchId = await generateNotificationBatchId(fcmToken);
     const checkLimit = await increaseTransactionAmount(uid);
     if (checkLimit == statusOfLimitTransaction.notExistAccount) {
       res.status(401).send({
@@ -283,6 +284,7 @@ export const giftNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
+      const notificationBatchId = await generateNotificationBatchId(fcmToken);
       await gift(parseInt(id), uid, receiveFlowId, notificationBatchId);
       res.status(200).send({
         status: "success",

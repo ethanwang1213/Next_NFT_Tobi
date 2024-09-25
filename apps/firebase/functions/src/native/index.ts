@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as cors from "cors";
 import * as express from "express";
-import {REGION, timeoutTime, vpcName} from "../lib/constants";
+import {allTraffic, REGION, timeoutTime, vpcName} from "../lib/constants";
 
 import {getAccountById, getOthersSaidans} from "./accountController";
 import
@@ -228,4 +228,5 @@ app.get("/admin/boxes", adminGetBoxList);
 export const native = functions.runWith({
   timeoutSeconds: timeoutTime,
   vpcConnector: vpcName,
+  vpcConnectorEgressSettings: allTraffic,
 }).region(REGION).https.onRequest(app);
