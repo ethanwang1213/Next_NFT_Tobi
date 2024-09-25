@@ -1,6 +1,10 @@
+import React, { createContext, ReactNode, useContext } from "react";
 import { ItemTransformUpdatePhase } from "types/unityTypes";
-import { createContext, useContext } from "react";
 
+interface ShowcaseEditUnityProviderProps {
+  children: ReactNode;
+  unityContext: any;
+}
 interface ShowcaseEditUnityContextType {
   isLoaded: boolean;
   unityProvider: any;
@@ -27,14 +31,23 @@ interface ShowcaseEditUnityContextType {
   }) => void;
 }
 
-const ShowcaseEditUnityContext = createContext<ShowcaseEditUnityContextType | null>(null);
+const ShowcaseEditUnityContext = createContext<ShowcaseEditUnityContextType>(
+  {} as ShowcaseEditUnityContextType,
+);
 
-export const useShowcaseEditUnityContext = () => {
-  const context = useContext(ShowcaseEditUnityContext);
-  if (!context) {
-    throw new Error("useShowcaseEditUnityContext must be used within a ShowcaseEditUnityProvider");
+export const ShowcaseEditUnityProvider: React.FC<
+  ShowcaseEditUnityProviderProps
+> = ({ children, unityContext }) => {
+  if (!unityContext) {
+    console.error("Unity context is not initialized.");
+    return null;
   }
-  return context;
+
+  return (
+    <ShowcaseEditUnityContext.Provider value={unityContext}>
+      {children}
+    </ShowcaseEditUnityContext.Provider>
+  );
 };
 
-export default ShowcaseEditUnityContext;
+export const useShowcaseEditUnity = () => useContext(ShowcaseEditUnityContext);

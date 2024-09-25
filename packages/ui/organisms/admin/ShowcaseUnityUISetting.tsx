@@ -1,8 +1,8 @@
-import ShowcaseEditUnityContext from "contexts/ShowcaseEditUnityContext";
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ItemTransformUpdatePhase } from "types/unityTypes";
 
 const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
@@ -11,9 +11,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   const [py, setpy] = useState<number>(0);
   const [rx, setrx] = useState<number>(0);
 
-  const unityContext = useContext(ShowcaseEditUnityContext);
-
-  const { selectedItem, updateItemTransform } = unityContext;
+  const { selectedItem, updateItemTransform } = useShowcaseEditUnity();
 
   useEffect(() => {
     if (selectedItem) {

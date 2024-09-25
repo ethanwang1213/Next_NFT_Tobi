@@ -1,5 +1,5 @@
-import ShowcaseEditUnityContext from "contexts/ShowcaseEditUnityContext";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
+import { useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 
 interface ColorPickerProps {
@@ -17,9 +17,7 @@ const ColorPicker = ({
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const pickerRef = useRef<HTMLDivElement>(null);
 
-  const unityContext = useContext(ShowcaseEditUnityContext);
-
-  const { pauseUnityInputs, resumeUnityInputs } = unityContext;
+  const { pauseUnityInputs, resumeUnityInputs } = useShowcaseEditUnity();
 
   useEffect(() => {
     if (!showPicker) {

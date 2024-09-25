@@ -22,7 +22,7 @@ import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
-import ShowcaseEditUnityContext from "../../../../../packages/contexts/ShowcaseEditUnityContext";
+import { ShowcaseEditUnityProvider } from "../../../../../packages/contexts/ShowcaseEditUnityContext";
 
 const Showcase = () => {
   const router = useRouter();
@@ -368,7 +368,7 @@ const Showcase = () => {
   };
 
   return (
-    <ShowcaseEditUnityContext.Provider value={unityContext}>
+    <ShowcaseEditUnityProvider unityContext={unityContext}>
       <div className="w-full h-screen-minus-56 relative no-select">
         <ShowcaseEditUnity unityProvider={unityProvider} />
         {!isLoaded && (
@@ -569,7 +569,7 @@ const Showcase = () => {
           />
         </div>
       </div>
-      </ShowcaseEditUnityContext.Provider>
+    </ShowcaseEditUnityProvider>
   );
 };
 
