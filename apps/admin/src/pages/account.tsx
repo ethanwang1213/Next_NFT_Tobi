@@ -70,6 +70,23 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const platforms = {
+    X: "https://x.com/",
+    Instagram: "https://instagram.com/",
+  };
+
+  const handleRedirect = (platform, userInput) => {
+    let redirectUrl = userInput;
+    if (platform === "X" || platform === "Instagram") {
+      const baseUrl = platforms[platform];
+      const userName = userInput.startsWith("@")
+        ? userInput.slice(1)
+        : userInput;
+      redirectUrl = `${baseUrl}${userName}`;
+    }
+    window.open(redirectUrl, "_blank");
+  };
+
   const urlChangeHandler = (type, url) => {
     const newUrls = [
       twitterUrl,
@@ -113,6 +130,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={30}
           src="/admin/images/icon/twitter-icon.svg"
           alt="twitter icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("X", twitterUrl);
+          }}
         />
         <input
           type="text"
@@ -128,6 +149,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={34}
           src="/admin/images/icon/instagram-icon.svg"
           alt="instagram icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("Instagram", instagramUrl);
+          }}
         />
         <input
           type="text"
@@ -143,6 +168,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={34}
           src="/admin/images/icon/facebook-icon.svg"
           alt="facebook icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("facebook", facebookUrl);
+          }}
         />
         <input
           type="text"
@@ -158,6 +187,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={28}
           src="/admin/images/icon/youtube-icon.svg"
           alt="youtube icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("youtube", youtubeUrl);
+          }}
         />
         <input
           type="text"
@@ -175,6 +208,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
               height={34}
               src="/admin/images/icon/globe-icon.svg"
               alt="social icon"
+              className="cursor-pointer"
+              onClick={() => {
+                handleRedirect("social", url);
+              }}
             />
             <input
               type="text"
