@@ -58,7 +58,7 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
           {showUnity && unityProvider && (
             <ItemPreviewUnity unityProvider={unityProvider} />
           )}
-          {!isLoaded && (
+          {!isLoaded && showUnity && (
             <div className="absolute inset-0 flex justify-center items-center">
               <Spinner />
             </div>
