@@ -12,7 +12,7 @@ interface SampleDetailDialogProps {
 const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
   const { setLoadData, isLoaded, unityProvider } = useItemPreviewUnityContext();
   const [showUnity, setShowUnity] = useState(false);
-  const { selectedItem } = useShowcaseEditUnity();
+  const { selectedItem, resumeUnityInputs } = useShowcaseEditUnity();
 
   useEffect(() => {
     if (data && selectedItem) {
@@ -34,7 +34,10 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-[#3F3F3FE5]">
         <form method="dialog">
-          <button className="absolute w-4 h-4 top-3 right-5">
+          <button
+            className="absolute w-4 h-4 top-3 right-5"
+            onClick={resumeUnityInputs}
+          >
             <span
               className="material-symbols-outlined text-base-white cursor-pointer"
               style={{ fontSize: 20 }}
