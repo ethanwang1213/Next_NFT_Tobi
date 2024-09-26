@@ -11,16 +11,20 @@ export const metadata: Metadata = {
 export default function Index() {
   const [selectedTab, setSelectedTab] = useState("showcase");
   const { postData } = useRestfulAPI(null);
+  const apiUrl = "native/admin/showcases";
+  const [reload, setReload] = useState(0);
 
   const links = {
     showcase: {
       label: "new showcase",
       clickHandler: () => {
         // This is temporary function. This function will be replaced by routing in next sprint.
-        postData("native/admin/showcases", {
+        postData(apiUrl, {
           title: "The showcase title",
           description: "",
           templateId: 1,
+        }).then(() => {
+          setReload(reload + 1);
         });
       },
     },
@@ -39,7 +43,7 @@ export default function Index() {
         <CreateButton {...(links[selectedTab] ?? links.showcase)} height={56} />
       </div>
       <div>
-        <ContentsManageTab onTabChange={setSelectedTab} />
+        <ContentsManageTab onTabChange={setSelectedTab} reload={reload} />
       </div>
     </>
   );
