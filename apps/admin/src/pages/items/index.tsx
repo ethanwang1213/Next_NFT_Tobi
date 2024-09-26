@@ -16,7 +16,8 @@ export default function Index() {
   const links = {
     item: {
       label: "new item",
-      clickHandler: () => router.push("/workspace"),
+      clickHandler: () =>
+        router.push("/workspace?trigger=true"),
     },
   };
 

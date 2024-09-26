@@ -9,6 +9,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import { Metadata } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useToggle } from "react-use";
 import {
@@ -41,6 +42,7 @@ export default function Index() {
   const [mainToast, toggleMainToast] = useToggle(true);
   const timerId = useRef(null);
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -237,6 +239,13 @@ export default function Index() {
   useEffect(() => {
     inputWasd(wasdKeys);
   }, [inputWasd, wasdKeys]);
+
+  useEffect(() => {
+    if (router.query.trigger === "true" && isLoaded) {
+      addButtonHandler();
+      router.replace(`/workspace?trigger=false`);
+    }
+  }, [router.query.trigger, isLoaded]);
 
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
@@ -499,7 +508,6 @@ export default function Index() {
         <WorkspaceUnity unityProvider={unityProvider} />
       </div>
       {mainToast && <CustomToast show={showToast} message={message} />}
-      {!mainToast && <CustomToast show={showToast} message={message} />}
       {!isLoaded && (
         <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
