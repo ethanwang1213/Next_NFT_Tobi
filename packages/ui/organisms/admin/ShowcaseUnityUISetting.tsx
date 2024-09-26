@@ -102,7 +102,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
               type="number"
               placeholder="x"
               step={0.1}
-              className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
+              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
               value={px === 0 ? "" : px.toFixed(3)}
               onChange={(e) => {
                 const newX = parseFloat(e.target.value) || 0;
@@ -115,7 +115,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
               type="number"
               placeholder="y"
               step={0.1}
-              className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
+              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
               value={py === 0 ? "" : py.toFixed(3)}
               onChange={(e) => {
                 const newY = parseFloat(e.target.value) || 0;

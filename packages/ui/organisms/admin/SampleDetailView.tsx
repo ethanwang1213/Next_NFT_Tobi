@@ -71,7 +71,6 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
           <br />
         </>
       ))
-      .filter(Boolean);
   };
 
   const trackSampleMint = useCallback((sampleType: number) => {

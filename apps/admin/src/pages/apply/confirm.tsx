@@ -94,7 +94,6 @@ const ConfirmInformation = ({
         }
         return null; 
       })
-      .filter(Boolean);
   };
 
   return (
@@ -158,7 +157,6 @@ const ConfirmInformation = ({
       <Row4 label="所有している著作権やライセンス情報の提供">
         <span className="">
           {getDefaultLicense(copyrightInfo)}
-          {/* {replaceNewLinesWithBreaks(copyrightInfo.license)} */}
         </span>
       </Row4>
       <Row1

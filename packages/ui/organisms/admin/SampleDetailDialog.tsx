@@ -19,7 +19,7 @@ const SampleDetailDialog = ({
       const itemData = {
         itemId: selectedItem.itemId,
         itemType: selectedItem.itemType,
-        modelType: selectedItem.itemType,
+        modelType: data.type,
         modelUrl: data.modelUrl,
         imageUrl: data.customThumbnailUrl,
         isDebug: true,
