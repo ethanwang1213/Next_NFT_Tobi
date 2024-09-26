@@ -15,6 +15,7 @@ import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
 import MintConfirmDialog1 from "ui/organisms/admin/MintConfirmDialog1";
+import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
 import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
@@ -418,7 +419,9 @@ const Detail = () => {
           <div className="flex gap-40">
             <div className="flex-grow flex flex-col gap-8">
               <div className="flex flex-col gap-4 pr-11">
-                <h3 className="text-xl text-secondary">ITEM DETAIL</h3>
+                <h3 className="text-[20px] text-secondary font-bold">
+                  ITEM DETAIL
+                </h3>
                 <div className="flex flex-col gap-6">
                   <StyledTextInput
                     className=""
@@ -443,7 +446,7 @@ const Detail = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-6">
-                <h3 className="text-xl text-secondary">
+                <h3 className="text-[20px] text-secondary font-bold">
                   PRICE & DETAILS SETTINGS
                 </h3>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-6">
@@ -564,7 +567,9 @@ const Detail = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-6">
-                <h3 className="text-xl text-secondary">LICENSE & COPYRIGHTS</h3>
+                <h3 className="text-[20px] text-secondary font-bold">
+                  COPYRIGHTS
+                </h3>
                 <div className="flex flex-col gap-6">
                   <div className="flex gap-6">
                     <CopyrightMultiSelect
@@ -607,53 +612,92 @@ const Detail = () => {
                     />
                   </div>
                   <div className="flex items-start gap-6">
-                    <StyledTextArea
-                      className="flex-grow"
-                      label="License"
-                      placeholder="License"
-                      value={digitalItem.license}
-                      changeHandler={(value) =>
-                        fieldChangeHandler("license", value)
-                      }
-                      readOnly={isReadOnly()}
-                    />
-                    <NextImage
-                      src="/admin/images/info-icon-2.svg"
-                      width={16}
-                      height={16}
-                      alt="information"
-                      className="pt-2"
-                      id="image_license_info"
-                      data-tooltip-id={`tooltip_license_info`}
-                      data-tooltip-content={`Please enter the license notation in this field. \n ex) "CC0" or detailed license information.`}
-                    />
-                    <Tooltip
-                      id={`tooltip_license_info`}
-                      data-tooltip-id={`image_license_info`}
-                      place="right"
-                      noArrow={false}
-                      border="1px solid #717171"
-                      style={{
-                        whiteSpace: "pre-line",
-                        backgroundColor: "#FFFFFF",
-                        color: "#1779DE",
-                        width: "420px",
-                        fontSize: "12px",
-                        lineHeight: "18px",
-                        paddingLeft: "8px",
-                        paddingRight: "6px",
-                        paddingTop: "6px",
-                        paddingBottom: "6px",
-                        borderRadius: "4px",
-                        textAlign: "center",
-                        zIndex: 1,
-                      }}
-                    />
+                    <div className="flex flex-col gap-2">
+                      <div className="md:flex flex-row justify-between">
+                        <p className="md:w-auto w-[80%] sm:mr-8 text-[20px] font-bold">
+                          LICENSE
+                        </p>
+                      </div>
+                      <div className="px-6 mt-2">
+                        <div className="border rounded-lg p-6 border-primary text-primary">
+                          <p className="text-[14px] font-bold">
+                            Prohibited Actions under All Licenses
+                          </p>
+                          <div className="text-[12px]">
+                            <p>
+                              &bull; Use that violates public order and morals.
+                            </p>
+                            <p>
+                              &bull; Use that significantly damages the image of
+                              our company, products, or characters.
+                            </p>
+                            <p>
+                              &bull; Use that harms or could potentially harm
+                              the social reputation of the author of the work
+                              being used.
+                            </p>
+                            <p>
+                              &bull; Use that infringes or could potentially
+                              infringe the rights of others.
+                            </p>
+                            <p>
+                              &bull; Use that creates or could create the
+                              misconception that we support or endorse specific
+                              individuals, political parties, religious
+                              organizations, etc.
+                            </p>
+                            <p>
+                              &bull; Copying or reproducing works without adding
+                              substantial modifications is considered
+                              “replication” and is prohibited.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-8">
+                          <RadioButtonGroup
+                            title="Commercial Use (COM/NCM)"
+                            onChange={(value) =>
+                              fieldChangeHandler("COM", value)
+                            }
+                          />
+                          <hr className="pb-3 border-primary" />
+                          <RadioButtonGroup
+                            title="Adaptation (ADP)"
+                            onChange={(value) =>
+                              fieldChangeHandler("ADP", value)
+                            }
+                          />
+                          <hr className="pb-3 border-primary" />
+                          <RadioButtonGroup
+                            title="Derivative Works (DER)"
+                            onChange={(value) =>
+                              fieldChangeHandler("DER", value)
+                            }
+                          />
+                          <hr className="pb-3 border-primary" />
+                          <RadioButtonGroup
+                            title="Distribution for Free (DST)"
+                            onChange={(value) =>
+                              fieldChangeHandler("DST", value)
+                            }
+                          />
+                          <hr className="pb-3 border-primary" />
+                          <RadioButtonGroup
+                            title="Credit Omission (NCR)"
+                            onChange={(value) =>
+                              fieldChangeHandler("NCR", value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col gap-6 pr-11">
-                <h3 className="text-xl text-secondary">SCHEDULE</h3>
+                <h3 className="text-[20px] text-secondary font-bold">
+                  SCHEDULE
+                </h3>
                 <ScheduleCalendar
                   originStatus={dataRef.current.status}
                   currentStatus={digitalItem.status}

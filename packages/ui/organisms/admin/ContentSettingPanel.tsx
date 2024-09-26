@@ -2,7 +2,8 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import StyledTextArea from "../../molecules/StyledTextArea";
+import StyledTextArea from "ui/molecules/StyledTextArea";
+import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
 import ContentNameConfirmDialog from "./ContentNameConfirmDialog";
 import ContentNameEditDialog from "./ContentNameEditDialog";
 import CopyrightEditMenu from "./CopyrightEditMenu";
@@ -289,18 +290,73 @@ const ContentSettingPanel = ({
           />
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-secondary text-2xl font-bold">License</h2>
-          <span className="text-neutral-400 text-xs font-medium py-2">
-            Set the default license for each DigitalItem record.
-          </span>
-          <StyledTextArea
-            className=""
-            label="License"
-            placeholder="License"
-            value={data.license}
-            changeHandler={(value) => fieldChangeHandler("license", value)}
-            maxLen={1300}
-          />
+          <div className="md:flex flex-row justify-between">
+            <div className="flex flex-col md:text-nowrap">
+              <p className="md:w-auto w-[80%] sm:mr-8 text-[24px] font-bold">
+                Default license setting
+              </p>
+              <span className="text-[12px] font-medium text-neutral-400 py-2">
+                Set the default license for each DigitalItem record.
+              </span>
+            </div>
+          </div>
+          <div className="px-6 mt-2">
+            <div className="border rounded-lg p-6 border-primary text-primary">
+              <p className="text-[14px] font-bold">
+                Prohibited Actions under All Licenses
+              </p>
+              <div className="text-[12px]">
+                <p>&bull; Use that violates public order and morals.</p>
+                <p>
+                  &bull; Use that significantly damages the image of our
+                  company, products, or characters.
+                </p>
+                <p>
+                  &bull; Use that harms or could potentially harm the social
+                  reputation of the author of the work being used.
+                </p>
+                <p>
+                  &bull; Use that infringes or could potentially infringe the
+                  rights of others.
+                </p>
+                <p>
+                  &bull; Use that creates or could create the misconception that
+                  we support or endorse specific individuals, political parties,
+                  religious organizations, etc.
+                </p>
+                <p>
+                  &bull; Copying or reproducing works without adding substantial
+                  modifications is considered “replication” and is prohibited.
+                </p>
+              </div>
+            </div>
+            <div className="mt-8">
+              <RadioButtonGroup
+                title="Commercial Use (COM/NCM)"
+                onChange={(value) => fieldChangeHandler("COM", value)}
+              />
+              <hr className="pb-3 border-primary" />
+              <RadioButtonGroup
+                title="Adaptation (ADP)"
+                onChange={(value) => fieldChangeHandler("ADP", value)}
+              />
+              <hr className="pb-3 border-primary" />
+              <RadioButtonGroup
+                title="Derivative Works (DER)"
+                onChange={(value) => fieldChangeHandler("DER", value)}
+              />
+              <hr className="pb-3 border-primary" />
+              <RadioButtonGroup
+                title="Distribution for Free (DST)"
+                onChange={(value) => fieldChangeHandler("DST", value)}
+              />
+              <hr className="pb-3 border-primary" />
+              <RadioButtonGroup
+                title="Credit Omission (NCR)"
+                onChange={(value) => fieldChangeHandler("NCR", value)}
+              />
+            </div>
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-secondary text-2xl font-bold">

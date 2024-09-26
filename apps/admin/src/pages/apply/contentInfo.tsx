@@ -13,7 +13,7 @@ const Row1 = ({
 }) => {
   return (
     <div className="sm:flex flex-row sm:py-4 sm:pl-6 py-3">
-      <div className="w-52 h-12 flex-none flex flex-row items-center">
+      <div className="w-60 h-12 flex-none flex flex-row items-center">
         <span className="text-base mr-4">{label ? label : ""}</span>
         {optional ? <OptionMark /> : <RequireMark />}
       </div>
@@ -32,7 +32,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
 
   return (
     <>
-      <div className="sm:mb-6 mb-3 text-2xl/[48x] text-title-color text-center">
+      <div className="sm:mb-6 mb-3 sm:text-[40px] font-medium text-title-color text-center">
         コンテンツ情報
       </div>
       <Row1 label="コンテンツ名">
@@ -50,20 +50,6 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
           ref={refs["name"]}
         />
       </Row1>
-      <Row1 label="サイトURL" optional={true}>
-        <input
-          id="content_url"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder="ホームページ"
-          value={contentInfo.url}
-          onChange={(e) => contentInfoChangeHandler("url", e)}
-        />
-      </Row1>
       <Row1 label="コンテンツ概要">
         <textarea
           id="content_description"
@@ -78,6 +64,20 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
           value={contentInfo.description}
           onChange={(e) => contentInfoChangeHandler("description", e)}
           ref={refs["description"]}
+        />
+      </Row1>
+      <Row1 label="サイトURL" optional={true}>
+        <input
+          id="content_url"
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
+          placeholder="ホームページ"
+          value={contentInfo.url}
+          onChange={(e) => contentInfoChangeHandler("url", e)}
         />
       </Row1>
     </>

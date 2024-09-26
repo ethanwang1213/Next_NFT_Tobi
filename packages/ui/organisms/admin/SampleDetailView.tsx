@@ -63,6 +63,16 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     return Math.floor(daysDifference);
   };
 
+  const getDefaultLicense = (license) => {
+    return Object.entries(license)
+      .map(([key, value]) => (
+        <>
+          {key} : {value}
+          <br />
+        </>
+      ))
+  };
+
   const trackSampleMint = useCallback((sampleType: number) => {
     const sampleTypeLabels: { [key: number]: string } = {
       1: "Poster",
@@ -143,9 +153,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             }
             alt="image"
             onClick={() => {
-              if (data && dialogRef.current) {
-                dialogRef.current.showModal();
-              }
+              dialogRef.current.showModal();
             }}
             className="rounded-lg"
           />
@@ -180,7 +188,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                   License
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
-                  {data?.license ? data.license : "-"}
+                  {data?.license ? getDefaultLicense(data.license) : "-"}
                 </span>
               </div>
               <div className="flex gap-4">
@@ -229,13 +237,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
               </div>
             </div>
-            {data && (
-              <SampleDetailDialog
-                thumbnail={data?.customThumbnailUrl}
-                content={data?.content.name}
-                item={data?.name}
-                dialogRef={dialogRef}
-              />
+            {section === "showcase" && (
+              <SampleDetailDialog data={data} dialogRef={dialogRef} />
             )}
             {data && (
               <div className="mx-auto mt-12">

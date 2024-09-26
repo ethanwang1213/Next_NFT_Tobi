@@ -15,7 +15,7 @@ const BirthdayEditDialog = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   changeHandler: (value: string) => void;
 }) => {
-  const [birthday, setBirthday] = useState(new Date());
+  const [birthday, setBirthday] = useState<Date | null>(new Date());
   const datePickerRef = useRef(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const BirthdayEditDialog = ({
 
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box max-w-[440px] rounded-3xl pt-4 flex flex-col gap-3 relative">
+      <div className="modal-box max-w-[440px] rounded-3xl pt-4 flex flex-col gap-3 relative overflow-visible">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
             <Image
@@ -42,49 +42,26 @@ const BirthdayEditDialog = ({
         <div className="text-neutral-700 text-sm font-normal mb-2">
           Your birthday will not be displayed on public profile.
         </div>
-        <div className="my-12 flex justify-between items-center gap-4">
+        <div className="my-12 flex items-center gap-4">
           <span className="text-base-black text-sm font-semibold">
             Birthday
           </span>
-          <span
-            className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
-              text-base-black text-sm leading-4 font-normal"
-            onClick={() => {
-              if (datePickerRef.current && datePickerRef.current.input) {
-                datePickerRef.current.input.click();
-              }
-            }}
-          >
-            {birthday.toLocaleString("ja-JP", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            })}
-          </span>
-          <div
-            style={{
-              position: "relative",
-              top: "-20px",
-              left: "-70px",
-            }}
-          >
-            <DatePicker
-              ref={datePickerRef}
-              selected={birthday}
-              onChange={(date) => {
-                setBirthday(date);
-              }}
-              dateFormat="yyyy/MM/dd"
-              showPopperArrow={false}
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              className="hidden"
-              popperPlacement="auto"
-              popperClassName=""
-              locale="ja"
-            />
-          </div>
+          <DatePicker
+            ref={datePickerRef}
+            selected={birthday}
+            onChange={(date: Date) => setBirthday(date)}
+            dateFormat="yyyy/MM/dd"
+            showPopperArrow={false}
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            locale="ja"
+            className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none text-base-black text-sm leading-4 font-normal"
+            placeholderText="yyyy/MM/dd"
+            popperPlacement="top-start"
+            popperClassName="custom-datepicker-popper"
+            isClearable
+          />
         </div>
         <div className="modal-action flex justify-end gap-4">
           <button
@@ -102,13 +79,15 @@ const BirthdayEditDialog = ({
               hover:shadow-xl hover:-top-[3px] transition-shadow
               text-base-white text-sm leading-4 font-semibold"
             onClick={() => {
-              changeHandler(
-                birthday.toLocaleString("ja-JP", {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                }),
-              );
+              if (birthday) {
+                changeHandler(
+                  birthday.toLocaleString("ja-JP", {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                  }),
+                );
+              }
               dialogRef.current.close();
             }}
           >

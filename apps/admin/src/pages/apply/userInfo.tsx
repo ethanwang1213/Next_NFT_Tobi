@@ -6,7 +6,7 @@ const Row1 = ({ label, children }) => {
   return (
     <div className="sm:flex flex-row sm:py-4 py-3 sm:pl-6">
       <div
-        className={`w-44 h-12 flex-none flex flex-row items-center ${
+        className={`w-52 h-12 flex-none flex flex-row items-center mr-4 ${
           label ? "" : "sm:block hidden"
         }`}
       >
@@ -65,7 +65,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-col items-center">
-        <span className="text-2xl/[48x]">登録者情報</span>
+        <span className="sm:text-[40px] font-medium">登録者情報</span>
         <div className="flex flex-row items-center">
           <Image
             src="/admin/images/info-icon-2.svg"
@@ -125,7 +125,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               onChange={handleYearChange}
               ref={refs["birthdayYear"]}
             />
-            <span className="mx-4">年</span>
+            <span className="mx-4">/</span>
           </div>
           <div className="flex flex-row items-end w-[30%]">
             <input
@@ -140,7 +140,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               onChange={handleMonthChange}
               ref={refs["birthdayMonth"]}
             />
-            <span className="mx-4">月</span>
+            <span className="mx-4">/</span>
           </div>
           <div className="flex flex-row items-end w-[30%]">
             <input
@@ -155,7 +155,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               onChange={handleDateChange}
               ref={refs["birthdayDate"]}
             />
-            <span className="mx-4">日</span>
+            <span className="mx-4">/</span>
           </div>
         </div>
       </Row1>
@@ -206,21 +206,6 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="">
         <input
-          id="user_street"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder="番地"
-          value={userInfo.street}
-          onChange={(e) => userInfoChangeHandler("street", e)}
-          ref={refs["street"]}
-        />
-      </Row1>
-      <Row1 label="">
-        <input
           id="user_city"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
@@ -235,11 +220,26 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         />
       </Row1>
       <Row1 label="">
-        <div className={"flex flex-row"}>
+        <input
+          id="user_street"
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
+          placeholder="番地"
+          value={userInfo.street}
+          onChange={(e) => userInfoChangeHandler("street", e)}
+          ref={refs["street"]}
+        />
+      </Row1>
+      <Row1 label="">
+        <div className={"grid grid-cols-2 gap-1"}>
           <input
             id="user_province"
             className={clsx(
-              "w-[108px] h-12 pl-5",
+              "h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
@@ -252,7 +252,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           <input
             id="user_postal_code"
             className={clsx(
-              "w-[108px] h-12 ml-[25px] pl-5",
+              "h-12 ml-[25px] pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",

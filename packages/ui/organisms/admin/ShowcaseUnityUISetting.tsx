@@ -1,10 +1,9 @@
-import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
-import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useState } from "react";
-import { ActionType } from "types/unityTypes";
+import { useEffect, useState } from "react";
+import { ItemTransformUpdatePhase } from "types/unityTypes";
 
 const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   const [scale, setScale] = useState<number>(1.0);
@@ -12,30 +11,60 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   const [py, setpy] = useState<number>(0);
   const [rx, setrx] = useState<number>(0);
 
-  const handleAction = (
-    actionType: ActionType,
-    text: string,
-    result: UndoneRedoneResult,
-  ) => {
-    switch (actionType) {
-      case 2:
-        setpx(result.item.position.x);
-        setpy(result.item.position.y);
-        break;
-      case 3:
-        setrx(result.item.rotation.x);
-        break;
-      case 4:
-        setScale(result.item.scale);
-        break;
-      default:
+  const { selectedItem, updateItemTransform } = useShowcaseEditUnity();
+
+  useEffect(() => {
+    if (selectedItem) {
+      setpx(selectedItem.positionOnPlane.x);
+      setpy(selectedItem.positionOnPlane.y);
+      setrx(selectedItem.rotationAngle);
+      setScale(selectedItem.scale);
     }
+  }, [selectedItem]);
+
+  const updatePosition = (x: number, y: number) => {
+    if (!selectedItem || !updateItemTransform) return;
+    const updatedData = {
+      positionOnPlane: { x, y },
+      rotationAngle: selectedItem?.rotationAngle ?? 0,
+      scale: selectedItem?.scale ?? 1,
+      phase: ItemTransformUpdatePhase.Updating,
+    };
+    updateItemTransform(updatedData);
   };
 
-  const {} = useShowcaseEditUnityContext({
-    onActionRedone: handleAction,
-    onActionUndone: handleAction,
-  });
+  const updateRotation = (rotation: number) => {
+    if (!selectedItem || !updateItemTransform) return;
+    const updatedData = {
+      positionOnPlane: selectedItem?.positionOnPlane,
+      rotationAngle: rotation,
+      scale: selectedItem?.scale ?? 1,
+      phase: ItemTransformUpdatePhase.Updating,
+    };
+    updateItemTransform(updatedData);
+  };
+
+  const updateScale = (scale: number) => {
+    if (!selectedItem || !updateItemTransform) return;
+    const updatedData = {
+      positionOnPlane: selectedItem?.positionOnPlane,
+      rotationAngle: selectedItem?.rotationAngle ?? 0,
+      scale,
+      phase: ItemTransformUpdatePhase.Updating,
+    };
+    updateItemTransform(updatedData);
+  };
+
+  const updateFinish = () => {
+    if (!selectedItem || !updateItemTransform) return;
+    const updatedData = {
+      positionOnPlane: selectedItem?.positionOnPlane,
+      rotationAngle: selectedItem?.rotationAngle ?? 0,
+      scale: selectedItem?.scale ?? 1,
+      phase: ItemTransformUpdatePhase.Ended,
+    };
+    updateItemTransform(updatedData);
+  };
 
   const handleStyle = {
     borderColor: "#FAFAFA",
@@ -70,16 +99,30 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
           </div>
           <div className="flex items-center justify-between w-full">
             <input
-              type="text"
+              type="number"
               placeholder="x"
-              className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
-              value={px === 0 ? "" : px.toFixed(1)}
+              step={0.1}
+              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
+              value={px === 0 ? "" : px.toFixed(3)}
+              onChange={(e) => {
+                const newX = parseFloat(e.target.value) || 0;
+                setpx(newX);
+                updatePosition(newX, py);
+              }}
+              onBlur={updateFinish}
             />
             <input
-              type="text"
+              type="number"
               placeholder="y"
-              className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
-              value={py === 0 ? "" : py.toFixed(1)}
+              step={0.1}
+              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
+              value={py === 0 ? "" : py.toFixed(3)}
+              onChange={(e) => {
+                const newY = parseFloat(e.target.value) || 0;
+                setpy(newY);
+                updatePosition(px, newY);
+              }}
+              onBlur={updateFinish}
             />
           </div>
         </div>
@@ -95,10 +138,18 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
           </div>
           <div className="flex items-center w-full">
             <input
-              type="text"
+              type="number"
+              min={0}
+              max={359}
               placeholder="x"
-              className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px]"
-              value={rx === 0 ? "" : rx.toFixed(1)}
+              step={1}
+              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
+              value={rx.toFixed(1)}
+              onChange={(e) => {
+                const newRotation = parseFloat(e.target.value) || 0;
+                updateRotation(newRotation);
+              }}
+              onBlur={updateFinish}
             />
           </div>
         </div>
@@ -114,15 +165,23 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
           </div>
           <div className="flex">
             <input
-              type="text"
+              min={0}
+              max={5}
+              type="number"
+              step={0.1}
               placeholder="scale"
-              className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[16px] rounded-[5px] text-right pl-[7px] pr-[10px]"
+              className="input input-bordered max-w-xs w-14 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px]"
               value={scale.toFixed(1)}
+              onChange={(e) => {
+                const newScale = parseFloat(e.target.value) || 0;
+                updateScale(newScale);
+              }}
+              onBlur={updateFinish}
             />
           </div>
           <Slider
             min={0}
-            max={10}
+            max={5}
             styles={{
               handle: handleStyle,
               track: trackStyle,
@@ -131,9 +190,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             style={{ width: "130px" }}
             className="ml-6"
             value={scale}
-            onChange={(value: number) => {
-              setScale(value);
-            }}
+            onChange={updateScale}
           />
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 
@@ -15,6 +16,8 @@ const ColorPicker = ({
   const [color, setColor] = useState<string>(initialColor);
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+
+  const { pauseUnityInputs, resumeUnityInputs } = useShowcaseEditUnity();
 
   useEffect(() => {
     if (!showPicker) {
@@ -78,6 +81,8 @@ const ColorPicker = ({
           type="text"
           value={color}
           onChange={handleInputChange}
+          onFocus={pauseUnityInputs}
+          onBlur={resumeUnityInputs}
           className="w-full h-full border-none outline-none rounded-[5px] bg-[#A5A1A1] flex items-center justify-between px-4 font-[400]"
         />
       </div>

@@ -86,10 +86,15 @@ const ConfirmInformation = ({
     ));
   };
 
+  const getDefaultLicense = (license) =>
+    Object.entries(license)
+      .filter(([, value]) => value === "OK")
+      .map(([key]) => <Fragment key={key}>{key}, </Fragment>);
+
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-col items-center">
-        <span className="text-2xl/[48x]">登録者情報</span>
+        <span className="sm:text-[40px] font-medium">登録者情報</span>
         <div className="flex flex-row gap-2 items-center">
           <Image
             src="/admin/images/info-icon-2.svg"
@@ -145,9 +150,7 @@ const ConfirmInformation = ({
         <div>{copyrightFiles()}</div>
       </Row3>
       <Row4 label="所有している著作権やライセンス情報の提供">
-        <span className="">
-          {replaceNewLinesWithBreaks(copyrightInfo.license)}
-        </span>
+        <span className="">{getDefaultLicense(copyrightInfo)}</span>
       </Row4>
       <Row1
         label="提供するコンテンツが著作権に違反していないことに同意します。"

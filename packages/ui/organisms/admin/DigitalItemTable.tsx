@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Button from "ui/atoms/Button";
 import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
-import { FilterItem } from "./DigitalItemFilterMenu";
 import { getDigitalItemStatusTitle } from "ui/types/adminTypes";
+import { FilterItem } from "./DigitalItemFilterMenu";
 
 export enum DigitalItemTableColumn {
   Name = 1,
@@ -171,8 +171,6 @@ const DigitalItemTable = (filters: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, sortOrder]);
 
-  console.log(digitalItems,"digitalItems");
-
   return (
     <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -180,10 +178,14 @@ const DigitalItemTable = (filters: {
           <table className="min-w-full text-secondary">
             <thead className="">
               <tr className="text-base/[56px] bg-primary text-white">
-                <th className="min-w-10"></th>
+                <th className="min-w-8"></th>
                 <th
                   scope="col"
-                  className="min-w-80 w-80 py-0 hover:bg-[#1363B6] text-center group relative"
+                  className="min-w-40 w-40 py-0 hover:bg-[#1363B6]"
+                ></th>
+                <th
+                  scope="col"
+                  className="min-w-60 w-60 py-0 hover:bg-[#1363B6] text-center group relative"
                   onClick={() =>
                     toggleSortingDirection(DigitalItemTableColumn.Name)
                   }
@@ -324,8 +326,12 @@ const DigitalItemTable = (filters: {
                         alt={`${item.name}'s profile picture`}
                         unoptimized
                       />
-                      <span className="inline-block w-24 text-left truncate">{item.name}</span>
                     </Link>
+                  </td>
+                  <td className="px-3">
+                    <p className="inline-block w-60 text-left break-words">
+                      {item.name ? item.name : "no name"}
+                    </p>
                   </td>
                   <td className="px-3 py-3 text-center justify-center">
                     {formatCurrency(item.price)}
