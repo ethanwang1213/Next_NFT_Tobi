@@ -401,3 +401,4 @@ export const timeoutTime = 300;
 export const vpcName = "projects/tobiratory-f6ae1/locations/asia-northeast1/connectors/tobiratory-app";
 export const limitModelSize = 15; // this is limit of uploaded model size. 15MB
 export const allCharacter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+export const allTraffic = "ALL_TRAFFIC";

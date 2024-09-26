@@ -22,7 +22,7 @@
     "db:studio": "npx prisma studio"
   },
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "main": "lib/index.js",
   "dependencies": {
