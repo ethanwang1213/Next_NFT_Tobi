@@ -5,7 +5,7 @@
  */
 
 import AdmZip from "adm-zip";
-import {numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime} from "../lib/constants";
+import {allCharacter, numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime} from "../lib/constants";
 import {prisma} from "../prisma";
 
 export function isEmptyObject(obj: object): boolean {
@@ -121,4 +121,18 @@ export const checkUri = (uri: string, entries: AdmZip.IZipEntry[], modelName: st
     }
   }
   return flag;
+};
+
+export const convertBaseString = (num: number): string => {
+  let result = "";
+
+  if (num === 0) return "0"; // Edge case for zero
+
+  while (num > 0) {
+    const remainder = num % allCharacter.length;
+    result = allCharacter[remainder] + result;
+    num = Math.floor(num / allCharacter.length);
+  }
+
+  return result;
 };

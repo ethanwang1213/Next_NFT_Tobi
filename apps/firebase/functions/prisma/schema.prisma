@@ -12,7 +12,7 @@ model accounts {
     uuid                    String              @unique @db.VarChar(100)
     email                   String              @unique @db.VarChar(255)
     username                String              @db.VarChar(255)
-    user_id                 String?             @db.VarChar(255)
+    user_id                 String              @unique @db.VarChar(255)
     sns                     String?             @db.VarChar(255)
     icon_url                String?             @db.VarChar(255)
     about_me                String?             @db.VarChar(255)
@@ -426,11 +426,11 @@ model contents_favorite {
 }
 
 model notification_batch {
-    id                Int      @id @default(autoincrement())
-    fcm_token         String   @db.VarChar(255)
-    status            Int      @default(0)
+    id                Int                 @id @default(autoincrement())
+    fcm_token         String              @db.VarChar(255)
+    status            Int                 @default(0)
     complete_time     DateTime?
     nfts              digital_item_nfts[]
-    updated_date_time DateTime @default(now()) @db.Timestamp(6)
-    created_date_time DateTime @default(now()) @db.Timestamp(6)
+    updated_date_time DateTime            @default(now()) @db.Timestamp(6)
+    created_date_time DateTime            @default(now()) @db.Timestamp(6)
 }

@@ -7,6 +7,7 @@ import {prisma} from "../prisma";
 import {allowedExtension, checkUri, digitalItemStatus} from "./utils";
 import * as AdmZip from "adm-zip";
 import * as admin from "firebase-admin";
+import {limitModelSize} from "../lib/constants";
 
 interface ModelApiResponse {
   url: string;
@@ -936,6 +937,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         customThumbnailUrl: digitalItem.custom_thumb_url,
         isCustomThumbnailSelected: !digitalItem.is_default_thumb,
         modelUrl: digitalItem.model_url,
+        type: digitalItem.type,
         materialUrl: digitalItem.material_image?.image,
         price: digitalItem.sales.length>0?digitalItem.sales[0].price:null,
         status: digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status,
@@ -1297,6 +1299,17 @@ export const handleZipModel = async (req: Request, res: Response) => {
       const zip = new AdmZip(response.data);
       const entries = zip.getEntries(); // Get all entries in the zip file
       console.log("Entries length >>>>>>>>>>>>>>", entries.length);
+      let totalSize = 0;
+      entries.forEach((entry) => {
+        totalSize += entry.getData().length; // Get the size of each file
+      });
+      if (totalSize > limitModelSize * 1024 * 1024) {
+        res.status(401).send({
+          status: "error",
+          data: "too-large",
+        });
+        return;
+      }
       let jsonData;
       // Relation with uri and entry
       const relationUri:{
@@ -1431,7 +1444,7 @@ export const handleZipModel = async (req: Request, res: Response) => {
           const file = bucket.file(destination);
           await file.save(buffer);
           if (fileName?.endsWith(".gltf")) {
-            modelUrl = file.publicUrl();
+            modelUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(destination)}?alt=media`;
           }
           console.log(`File uploaded to ${destination} successfully.`);
         } catch (error) {

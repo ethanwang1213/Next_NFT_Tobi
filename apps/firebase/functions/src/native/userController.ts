@@ -3,7 +3,7 @@ import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
-import {increaseTransactionAmount, isEmptyObject, statusOfLimitTransaction, statusOfShowcase} from "./utils";
+import {convertBaseString, increaseTransactionAmount, isEmptyObject, statusOfLimitTransaction, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
@@ -44,11 +44,16 @@ export const signUp = async (req: Request, res: Response) => {
       });
       return;
     }
-    const username = "user-" + Math.random().toString(36).substring(2, 12);
+
+    // Get unique string using timestamp.
+    const timestamp = Date.now();
+    const randomString = convertBaseString(timestamp);
+    const username = "user-" + randomString;
     const userData = {
       uuid: uid,
       email: email,
       username: username,
+      user_id: username,
     };
     try {
       const savedUser = await prisma.accounts.upsert({
