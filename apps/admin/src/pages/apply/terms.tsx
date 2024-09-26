@@ -18,7 +18,7 @@ const Terms = () => {
       <div className="md:text-[40px] sm:text-[30px] text-[20px] leading-[60px]">
         Tobiratory Creator Program
       </div>
-      <div className="md:text-[40px] text-[20px] md:leading-[60px] font-medium text-[#AEAEAE]">
+      <div className="md:text-[40px] text-[20px] md:leading-[60px] font-medium text-secondary-400">
         利用規約
       </div>
       <textarea

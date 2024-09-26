@@ -22,7 +22,7 @@ import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
-import { ShowcaseEditUnityProvider } from "../../../../../packages/contexts/ShowcaseEditUnityContext";
+import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 
 const Showcase = () => {
   const router = useRouter();
@@ -373,7 +373,7 @@ const Showcase = () => {
         <ShowcaseEditUnity unityProvider={unityProvider} />
         {!isLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
-            <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+            <span className="dots-circle-spinner loading2 text-[80px] text-active"></span>
           </div>
         )}
         <div className="pointer-events-none absolute left-0 right-0 top-0 bottom-0">
@@ -384,7 +384,7 @@ const Showcase = () => {
               left: `${320 - 424}px`,
             }}
           >
-            <span className="text-xl font-semibold text-[#858585] text-center mr-1">
+            <span className="text-xl font-semibold text-seconday-600 text-center mr-1">
               {showcaseData ? (
                 showcaseData.title
               ) : (

@@ -349,8 +349,8 @@ const LoadingButton = ({
     <div className="md:w-[568px] md:h-14 h-[35px] mx-auto flex flex-row justify-center gap-4">
       <Button
         type="button"
-        className={`md:w-[268px] sm:w-[188px] w-[127px] md:h-14 h-[35px] text-[15px] md:text-xl md:leading-[56px] text-center text-[#1779DE] 
-              border border-[#1779DE] bg-transparent rounded-[30px] 
+        className={`md:w-[268px] sm:w-[188px] w-[127px] md:h-14 h-[35px] text-[15px] md:text-xl md:leading-[56px] text-center text-primary 
+              border border-primary bg-transparent rounded-[30px] 
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
         onClick={handleBack}
       >

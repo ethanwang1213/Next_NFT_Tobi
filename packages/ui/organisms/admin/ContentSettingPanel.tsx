@@ -2,8 +2,8 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import StyledTextArea from "ui/molecules/StyledTextArea";
 import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
-import StyledTextArea from "../../molecules/StyledTextArea";
 import ContentNameConfirmDialog from "./ContentNameConfirmDialog";
 import ContentNameEditDialog from "./ContentNameEditDialog";
 import CopyrightEditMenu from "./CopyrightEditMenu";
@@ -295,13 +295,13 @@ const ContentSettingPanel = ({
               <p className="md:w-auto w-[80%] sm:mr-8 text-[24px] font-bold">
                 Default license setting
               </p>
-              <span className="text-[12px] font-medium text-[#9F9C9C] py-2">
+              <span className="text-[12px] font-medium text-neutral-400 py-2">
                 Set the default license for each DigitalItem record.
               </span>
             </div>
           </div>
           <div className="px-6 mt-2">
-            <div className="border rounded-lg p-6 border-[#1779DE] text-[#1779DE]">
+            <div className="border rounded-lg p-6 border-primary text-primary">
               <p className="text-[14px] font-bold">
                 Prohibited Actions under All Licenses
               </p>
@@ -335,22 +335,22 @@ const ContentSettingPanel = ({
                 title="Commercial Use (COM/NCM)"
                 onChange={(value) => fieldChangeHandler("COM", value)}
               />
-              <hr className="pb-3 border-[#1779DE]" />
+              <hr className="pb-3 border-primary" />
               <RadioButtonGroup
                 title="Adaptation (ADP)"
                 onChange={(value) => fieldChangeHandler("ADP", value)}
               />
-              <hr className="pb-3 border-[#1779DE]" />
+              <hr className="pb-3 border-primary" />
               <RadioButtonGroup
                 title="Derivative Works (DER)"
                 onChange={(value) => fieldChangeHandler("DER", value)}
               />
-              <hr className="pb-3 border-[#1779DE]" />
+              <hr className="pb-3 border-primary" />
               <RadioButtonGroup
                 title="Distribution for Free (DST)"
                 onChange={(value) => fieldChangeHandler("DST", value)}
               />
-              <hr className="pb-3 border-[#1779DE]" />
+              <hr className="pb-3 border-primary" />
               <RadioButtonGroup
                 title="Credit Omission (NCR)"
                 onChange={(value) => fieldChangeHandler("NCR", value)}

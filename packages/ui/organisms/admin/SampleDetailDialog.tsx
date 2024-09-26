@@ -56,7 +56,7 @@ const SampleDetailDialog = ({
               <ItemPreviewUnity unityProvider={unityProvider} />
             </div>
           ) : (
-            <p className="text-center text-[#9F9C9C] text-[16px] h-[400px] flex items-center">
+            <p className="text-center text-neutral-400 text-[16px] h-[400px] flex items-center">
               The 3D preview will be displayed here when an item is selected
             </p>
           )}

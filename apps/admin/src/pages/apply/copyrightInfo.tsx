@@ -157,7 +157,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         </div>
       </div>
       <div className="px-6 mt-6">
-        <div className="border rounded-lg p-6 border-[#1779DE] text-[#1779DE]">
+        <div className="border rounded-lg p-6 border-primary text-primary">
           <p className="text-[14px] font-bold">
             Prohibited Actions under All Licenses
           </p>
@@ -191,22 +191,22 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             title="Commercial Use (COM/NCM)"
             onChange={(value) => copyrightInfoChangeHandler("COM", value)}
           />
-          <hr className="pb-3 border-[#1779DE]" />
+          <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Adaptation (ADP)"
             onChange={(value) => copyrightInfoChangeHandler("ADP", value)}
           />
-          <hr className="pb-3 border-[#1779DE]" />
+          <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Derivative Works (DER)"
             onChange={(value) => copyrightInfoChangeHandler("DER", value)}
           />
-          <hr className="pb-3 border-[#1779DE]" />
+          <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Distribution for Free (DST)"
             onChange={(value) => copyrightInfoChangeHandler("DST", value)}
           />
-          <hr className="pb-3 border-[#1779DE]" />
+          <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Credit Omission (NCR)"
             onChange={(value) => copyrightInfoChangeHandler("NCR", value)}

@@ -143,7 +143,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
               max={359}
               placeholder="x"
               step={1}
-              className="input input-bordered max-w-xs w-24 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
+              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center"
               value={rx.toFixed(1)}
               onChange={(e) => {
                 const newRotation = parseFloat(e.target.value) || 0;
@@ -170,7 +170,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
               type="number"
               step={0.1}
               placeholder="scale"
-              className="input input-bordered max-w-xs w-14 h-8 bg-[#C2C2C2] text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px]"
+              className="input input-bordered max-w-xs w-14 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px]"
               value={scale.toFixed(1)}
               onChange={(e) => {
                 const newScale = parseFloat(e.target.value) || 0;

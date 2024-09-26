@@ -619,7 +619,7 @@ const Detail = () => {
                         </p>
                       </div>
                       <div className="px-6 mt-2">
-                        <div className="border rounded-lg p-6 border-[#1779DE] text-[#1779DE]">
+                        <div className="border rounded-lg p-6 border-primary text-primary">
                           <p className="text-[14px] font-bold">
                             Prohibited Actions under All Licenses
                           </p>
@@ -660,28 +660,28 @@ const Detail = () => {
                               fieldChangeHandler("COM", value)
                             }
                           />
-                          <hr className="pb-3 border-[#1779DE]" />
+                          <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title="Adaptation (ADP)"
                             onChange={(value) =>
                               fieldChangeHandler("ADP", value)
                             }
                           />
-                          <hr className="pb-3 border-[#1779DE]" />
+                          <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title="Derivative Works (DER)"
                             onChange={(value) =>
                               fieldChangeHandler("DER", value)
                             }
                           />
-                          <hr className="pb-3 border-[#1779DE]" />
+                          <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title="Distribution for Free (DST)"
                             onChange={(value) =>
                               fieldChangeHandler("DST", value)
                             }
                           />
-                          <hr className="pb-3 border-[#1779DE]" />
+                          <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title="Credit Omission (NCR)"
                             onChange={(value) =>

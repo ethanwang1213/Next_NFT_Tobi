@@ -37,7 +37,7 @@ const RadioButtonGroup: React.FC<Props> = ({ title, onChange }) => {
           />
           <span
             className={`pl-2 ${
-              selectedOption === "OK" ? "text-[#1779DE]" : ""
+              selectedOption === "OK" ? "text-primary" : ""
             }`}
           >
             OK
@@ -53,7 +53,7 @@ const RadioButtonGroup: React.FC<Props> = ({ title, onChange }) => {
           />
           <span
             className={`pl-2 ${
-              selectedOption === "NG" ? "text-[#1779DE]" : ""
+              selectedOption === "NG" ? "text-primary" : ""
             }`}
           >
             NG
