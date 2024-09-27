@@ -2,40 +2,41 @@ import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useItemPreviewUnityContext } from "hooks/useCustomUnityContext";
 import { MutableRefObject, useEffect, useState } from "react";
 import { ItemPreviewUnity } from "ui/molecules/CustomUnity";
+import Spinner from "./Spinner";
 
-const SampleDetailDialog = ({
-  data,
-  dialogRef,
-}: {
+interface SampleDetailDialogProps {
   data: any;
   dialogRef: MutableRefObject<HTMLDialogElement>;
-}) => {
-  const { setLoadData, unityProvider } = useItemPreviewUnityContext();
+}
+
+const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
+  const { setLoadData, isLoaded, unityProvider } = useItemPreviewUnityContext();
   const [showUnity, setShowUnity] = useState(false);
-  const { selectedItem } = useShowcaseEditUnity();
+  const { selectedItem, resumeUnityInputs } = useShowcaseEditUnity();
 
   useEffect(() => {
     if (data && selectedItem) {
-      const itemData = {
-        itemId: selectedItem.itemId,
+      setLoadData({
+        itemId: selectedItem.id,
         itemType: selectedItem.itemType,
         modelType: data.type,
         modelUrl: data.modelUrl,
         imageUrl: data.customThumbnailUrl,
-        isDebug: true,
-      };
-      setLoadData(itemData);
+      });
       setShowUnity(true);
     } else {
       setShowUnity(false);
     }
-  }, [data, setLoadData, selectedItem]);
+  }, [data, selectedItem, setLoadData]);
 
   return (
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-[#3F3F3FE5]">
         <form method="dialog">
-          <button className="absolute w-4 h-4 top-3 right-5">
+          <button
+            className="absolute w-4 h-4 top-3 right-5"
+            onClick={resumeUnityInputs}
+          >
             <span
               className="material-symbols-outlined text-base-white cursor-pointer"
               style={{ fontSize: 20 }}
@@ -50,15 +51,19 @@ const SampleDetailDialog = ({
         <span className="text-base-black text-2xl font-bold text-gray-100">
           {data?.name || "Item Title"}
         </span>
-        <div className="mb-[56px]">
-          {showUnity ? (
-            <div className="w-[400px] h-[400px]">
-              <ItemPreviewUnity unityProvider={unityProvider} />
-            </div>
-          ) : (
-            <p className="text-center text-neutral-400 text-[16px] h-[400px] flex items-center">
+        <div className="relative mb-[56px] w-full h-full">
+          {!showUnity && (
+            <p className="text-center text-neutral-400 text-[16px] h-[400px] flex items-center justify-center flex">
               The 3D preview will be displayed here when an item is selected
             </p>
+          )}
+          {showUnity && unityProvider && (
+            <ItemPreviewUnity unityProvider={unityProvider} />
+          )}
+          {!isLoaded && showUnity && (
+            <div className="absolute inset-0 flex justify-center items-center">
+              <Spinner />
+            </div>
           )}
         </div>
       </div>

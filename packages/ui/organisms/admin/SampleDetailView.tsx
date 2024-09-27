@@ -1,3 +1,4 @@
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
@@ -44,6 +45,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
   const { deleteAllActionHistory } = useWorkspaceUnityContext({});
+  const { pauseUnityInputs } = useShowcaseEditUnity();
 
   useEffect(() => {
     if (id > 0) {
@@ -64,13 +66,12 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   };
 
   const getDefaultLicense = (license) => {
-    return Object.entries(license)
-      .map(([key, value]) => (
-        <>
-          {key} : {value}
-          <br />
-        </>
-      ))
+    return Object.entries(license).map(([key, value]) => (
+      <>
+        {key} : {value}
+        <br />
+      </>
+    ));
   };
 
   const trackSampleMint = useCallback((sampleType: number) => {
@@ -154,6 +155,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             alt="image"
             onClick={() => {
               dialogRef.current.showModal();
+              pauseUnityInputs();
             }}
             className="rounded-lg"
           />

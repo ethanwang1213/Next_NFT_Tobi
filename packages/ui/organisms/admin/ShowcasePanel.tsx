@@ -344,18 +344,17 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   );
 };
 
-const ShowcasePanel = () => {
+const ShowcasePanel = ({ reload }) => {
   const apiUrl = "native/admin/showcases";
   const { data, getData } = useRestfulAPI(apiUrl);
-
-  const [reload, setReload] = useState(0);
+  const [localReload, setLocalReload] = useState(0);
 
   useEffect(() => {
-    if (reload > 0) {
+    if (localReload > 0 || reload > 0) {
       getData(apiUrl);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reload]);
+  }, [reload, localReload]);
 
   return (
     <>
@@ -373,7 +372,7 @@ const ShowcasePanel = () => {
                 thumbImage={showcase.thumbImage}
                 scheduleTime={showcase.scheduleTime}
                 updateTime={showcase.updateTime}
-                refreshHandler={() => setReload(reload + 1)}
+                refreshHandler={() => setLocalReload(localReload + 1)}
               />
             );
           })}
