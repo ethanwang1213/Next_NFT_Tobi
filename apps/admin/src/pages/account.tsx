@@ -84,7 +84,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         : userInput;
       redirectUrl = `${baseUrl}${userName}`;
     }
-    window.open(redirectUrl, "_blank");
+    window.open(redirectUrl, "_blank", "noreferrer");
   };
 
   const urlChangeHandler = (type, url) => {

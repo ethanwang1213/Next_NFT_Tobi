@@ -240,13 +240,6 @@ export default function Index() {
     inputWasd(wasdKeys);
   }, [inputWasd, wasdKeys]);
 
-  useEffect(() => {
-    if (router.query.trigger === "true" && isLoaded) {
-      addButtonHandler();
-      router.replace(`/workspace?trigger=false`);
-    }
-  }, [router.query.trigger, isLoaded]);
-
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
       setInitSampleCreateDialog(initSampleCreateDialog + 1);
@@ -256,6 +249,13 @@ export default function Index() {
     }
     pauseUnityInputs();
   }, [initSampleCreateDialog, pauseUnityInputs]);
+
+  useEffect(() => {
+    if (router.query.trigger === "true" && isLoaded) {
+      addButtonHandler();
+      router.replace(`/workspace?trigger=false`);
+    }
+  }, [router.query.trigger, isLoaded, addButtonHandler, router]);
 
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
