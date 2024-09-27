@@ -22,7 +22,6 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
         modelType: data.type,
         modelUrl: data.modelUrl,
         imageUrl: data.customThumbnailUrl,
-        isDebug: true,
       });
       setShowUnity(true);
     } else {
