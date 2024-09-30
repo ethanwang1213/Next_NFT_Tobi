@@ -79,11 +79,14 @@ export type TcpCopyright = {
   file2?: File;
   file3?: File;
   file4?: File;
-  COM: String;
-  ADP: String;
-  DER: String;
-  DST: String;
-  NCR: String;
+  license: {
+    com: Boolean;
+    adp: Boolean;
+    der: Boolean;
+    mer: Boolean;
+    dst: Boolean;
+    ncr: Boolean;
+  };
 };
 
 export type TcpFormType = {

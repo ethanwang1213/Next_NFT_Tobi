@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
 const Row1 = ({ label, wide, children }) => {
@@ -88,7 +88,7 @@ const ConfirmInformation = ({
 
   const getDefaultLicense = (license) =>
     Object.entries(license)
-      .filter(([, value]) => value === "OK")
+      .filter(([, value]) => value === true)
       .map(([key]) => <Fragment key={key}>{key}, </Fragment>);
 
   return (
@@ -150,7 +150,7 @@ const ConfirmInformation = ({
         <div>{copyrightFiles()}</div>
       </Row3>
       <Row4 label="所有している著作権やライセンス情報の提供">
-        <span className="">{getDefaultLicense(copyrightInfo)}</span>
+        <span className="uppercase">{getDefaultLicense(copyrightInfo.license)}</span>
       </Row4>
       <Row1
         label="提供するコンテンツが著作権に違反していないことに同意します。"

@@ -61,12 +61,16 @@ const Register = () => {
     file2: null,
     file3: null,
     file4: null,
-    COM: "OK",
-    ADP: "OK",
-    DER: "OK",
-    DST: "OK",
-    NCR: "OK",
+    license: {
+      com: true,
+      adp: true,
+      der: true,
+      mer: true,
+      dst: true,
+      ncr: true,
+    },
   });
+
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
 
