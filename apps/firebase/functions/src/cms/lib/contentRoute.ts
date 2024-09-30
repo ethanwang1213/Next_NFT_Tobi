@@ -22,6 +22,7 @@ router.get("/", async (req: Request, res: Response) => {
         },
         copyrights: true,
         reported_contents: true,
+        license: true,
       },
       orderBy: {
         favorite_users: {
@@ -66,7 +67,6 @@ router.get("/", async (req: Request, res: Response) => {
           };
         }),
         license: content.license,
-        licenseData: content.license_data,
       };
     });
     res.status(200).send({
@@ -229,6 +229,7 @@ router.get("/:id", async (req: Request, res: Response) => {
             reporter: true,
           },
         },
+        license: true,
       },
     });
     if (!content) {
@@ -290,7 +291,6 @@ router.get("/:id", async (req: Request, res: Response) => {
         };
       }),
       license: content.license,
-      licenseData: content.license_data,
     };
     res.status(200).send({
       status: "success",

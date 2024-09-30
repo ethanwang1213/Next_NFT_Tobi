@@ -476,6 +476,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
               },
             },
           },
+          license: true,
         },
       });
       if (!digitalItem) {
