@@ -59,14 +59,16 @@ router.get("/", async (req: Request, res: Response) => {
             name: copyright.name,
           };
         }),
-        reports: content.reported_contents.filter((report) => report.is_solved != true).map((report) => {
+        reports: content.reported_contents.map((report) => {
           return {
             date: report.created_date_time,
             title: report.title,
             description: report.description,
+            isSolved: report.is_solved,
           };
         }),
         license: content.license,
+        licenseData: content.license_data,
       };
     });
     res.status(200).send({
@@ -291,6 +293,7 @@ router.get("/:id", async (req: Request, res: Response) => {
         };
       }),
       license: content.license,
+      licenseData: content.license_data,
     };
     res.status(200).send({
       status: "success",
@@ -310,7 +313,6 @@ router.put("/:id/ignore-report", async (req: Request, res: Response) => {
     await prisma.reported_contents.updateMany({
       where: {
         content_id: parseInt(id),
-        is_solved: null,
       },
       data: {
         is_solved: true,
