@@ -197,6 +197,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
         },
         include: {
           copyrights: true,
+          license: true,
         },
       });
       const digitalItem = await prisma.digital_items.create({
@@ -218,7 +219,16 @@ export const createDigitalItem = async (req: Request, res: Response) => {
               }),
             },
           }:undefined,
-          license: content?content.license:undefined,
+          license: (content&&content.license)?{
+            create: {
+              com: content.license?.com,
+              adp: content.license?.adp,
+              der: content.license?.der,
+              dst: content.license?.dst,
+              mer: content.license?.mer,
+              ncr: content.license?.ncr,
+            },
+          }:undefined,
         },
         include: {
           material_image: true,
@@ -639,6 +649,7 @@ export const adminDetailOfSample = async (req: Request, res: Response) => {
                   copyright: true,
                 },
               },
+              license: true,
             },
           },
         },
@@ -909,6 +920,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
           },
           sample_item: true,
           material_image: true,
+          license: true,
         },
       });
       if (!digitalItem || digitalItem.is_deleted) {
@@ -997,7 +1009,14 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     price?: number,
     status?: number,
     quantityLimit?: number,
-    license?: string,
+    license?: {
+      com: boolean,
+      adp: boolean,
+      der: boolean,
+      dst: boolean,
+      mer: boolean,
+      ncr: boolean,
+    },
     copyrights?: { id: number | null, name: string }[],
     schedules?: {
       id: number | null,
@@ -1103,7 +1122,9 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             custom_thumb_url: customThumbnailUrl,
             is_default_thumb: !isCustomThumbnailSelected,
             limit: quantityLimit,
-            license: license,
+            license: {
+              update: license,
+            },
           },
         });
       }
@@ -1234,6 +1255,7 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
             },
             take: 1,
           },
+          license: true,
         },
       });
       if (!digitalItemData) {

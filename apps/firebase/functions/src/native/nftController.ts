@@ -135,6 +135,7 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
           flow_account: true,
         },
       },
+      license: true,
     },
   });
   if (!digitalItem) {
@@ -690,6 +691,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
                 },
                 take: 1,
               },
+              license: true,
             },
           },
         },
