@@ -56,11 +56,11 @@ const Register = () => {
 
   const [copyrightInfo, setCopyrightInfo] = useState<CopyrightInfo>({
     agreement: false,
-    copyrightHolder: "",
-    file1: null,
-    file2: null,
-    file3: null,
-    file4: null,
+    copyrightHolder: [],
+    file1: "",
+    file2: "",
+    file3: "",
+    file4: "",
     license: {
       com: true,
       adp: true,
