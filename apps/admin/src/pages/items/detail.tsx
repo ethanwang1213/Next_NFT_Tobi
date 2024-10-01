@@ -656,36 +656,50 @@ const Detail = () => {
                         <div className="mt-8">
                           <RadioButtonGroup
                             title="Commercial Use (COM/NCM)"
+                            initialValue={digitalItem.license.com}
                             onChange={(value) =>
-                              fieldChangeHandler("COM", value)
+                              fieldChangeHandler("com", value)
                             }
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title="Adaptation (ADP)"
+                            initialValue={digitalItem.license.adp}
                             onChange={(value) =>
-                              fieldChangeHandler("ADP", value)
+                              fieldChangeHandler("adp", value)
                             }
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title="Derivative Works (DER)"
+                            initialValue={digitalItem.license.der}
                             onChange={(value) =>
-                              fieldChangeHandler("DER", value)
+                              fieldChangeHandler("der", value)
                             }
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
-                            title="Distribution for Free (DST)"
+                            title="Merchandising (MER)"
+                            initialValue={digitalItem.license.mer}
                             onChange={(value) =>
-                              fieldChangeHandler("DST", value)
+                              fieldChangeHandler("mer", value)
+                            }
+                          />
+                          <hr className="pb-3 border-primary" />
+
+                          <RadioButtonGroup
+                            title="Distribution for Free (dst)"
+                            initialValue={digitalItem.license.dst}
+                            onChange={(value) =>
+                              fieldChangeHandler("dst", value)
                             }
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
-                            title="Credit Omission (NCR)"
+                            title="Credit Omission (ncr)"
+                            initialValue={digitalItem.license.ncr}
                             onChange={(value) =>
-                              fieldChangeHandler("NCR", value)
+                              fieldChangeHandler("ncr", value)
                             }
                           />
                         </div>

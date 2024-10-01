@@ -66,12 +66,16 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   };
 
   const getDefaultLicense = (license) => {
-    return Object.entries(license).map(([key, value]) => (
-      <>
-        {key} : {value}
-        <br />
-      </>
-    ));
+    return Object.entries(license).map(([key, value]) => {
+      if (typeof value === "boolean") {
+        return (
+          <div key={key}>
+            {key.toUpperCase()} : {value ? "OK" : "NG"}
+            <br />
+          </div>
+        );
+      }
+    });
   };
 
   const trackSampleMint = useCallback((sampleType: number) => {
@@ -181,7 +185,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.copyrights.length
-                    ? `@${data?.copyrights.join(" @")}`
+                    ? `@${data.copyrights[0].name}`
                     : "-"}
                 </span>
               </div>
