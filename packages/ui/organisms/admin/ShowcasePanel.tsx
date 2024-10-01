@@ -237,6 +237,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         )}
         <div
           className="absolute bottom-[12px] right-[13px] flex flex-row-reverse justify-between z-20"
+          ref={popupRef}
           onClick={status !== ShowcaseStatus.Public ? handleClick : undefined}
         >
           <div
@@ -320,7 +321,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
             </div>
           )}
           {isMenuOpen && (
-            <div className="absolute left-0 top-10 z-10" ref={popupRef}>
+            <div className="absolute left-0 top-10 z-10">
               <ShowcaseEditMenu
                 clickHandler={statusChangeHandler}
                 status={status}
