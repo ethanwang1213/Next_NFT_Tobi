@@ -3,6 +3,7 @@ import {
   hasGoogleAccount,
   hasPasswordAccount,
 } from "contexts/AdminAuthProvider";
+import { auth } from "fetchers/firebase/client";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
@@ -15,6 +16,7 @@ import GoogleIcon from "ui/atoms/GoogleIcon";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
 import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
+
 export const metadata: Metadata = {
   title: "Account Setting",
 };
@@ -266,6 +268,12 @@ export default function Index() {
     }
   };
 
+  const isEmailVerified = () => {
+    return (
+      auth.currentUser.emailVerified && data?.email === auth.currentUser.email
+    );
+  };
+
   return (
     <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
       <div className="h-14 flex justify-between items-start">
@@ -367,6 +375,13 @@ export default function Index() {
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
               <span className={`${valueClass}`}>{data?.email}</span>
+              {!isEmailVerified() && (
+                <div className="flex w-[148px] h-[48px] py-[8px] px-[16px] mr-[10px] justify-center items-center gap-[8px] rounded-[64px] bg-secondary">
+                  <span className="text-base-white text-[20px] font-bold leading-[120%]">
+                    unverified
+                  </span>
+                </div>
+              )}
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -384,9 +399,7 @@ export default function Index() {
               </span>
               <button
                 className={editBtnClass}
-                onClick={() => {
-                  router.push("/auth/password_update");
-                }}
+                onClick={() => router.push("/auth/password_update")}
               >
                 Edit
               </button>

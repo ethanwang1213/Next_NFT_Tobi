@@ -1,12 +1,11 @@
-import { isPasswordAuthEnabled } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
-import { FirebaseError } from "firebase/app";
 import {
-  sendEmailVerification,
+  sendEmailVerification, sendSignInLinkToEmail,
   updateEmail as updateFirebaseEmail,
 } from "firebase/auth";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
+import {hasPassword, PASSWORD_RESET_PATH} from "contexts/AdminAuthProvider";
 
 const useUpdateEmail = () => {
   const [updating, setUpdating] = useState<boolean>(false);
@@ -14,17 +13,26 @@ const useUpdateEmail = () => {
   const [error, setError] = useState<ErrorMessage | null>(null);
 
   const reauthenticate = async (email: string, path: string) => {
-    const actionCodeSettings = {
-      url: `${window.location.origin}/${path}`,
-      handleCodeInApp: true,
-    };
-
     setError(null);
     setIsSuccessfull(false);
     setUpdating(true);
     try {
       await updateFirebaseEmail(auth.currentUser, email);
-      await sendEmailVerification(auth.currentUser, actionCodeSettings);
+      const usedPassword = await hasPassword(email);
+
+      if (usedPassword) {
+        const actionCodeSettings = {
+          url: `${window.location.origin}/${path}`,
+          handleCodeInApp: true,
+        };
+        await sendEmailVerification(auth.currentUser, actionCodeSettings);
+      }else{
+        const actionCodeSettings = {
+          url: `${window.location.origin}/${PASSWORD_RESET_PATH}`,
+          handleCodeInApp: true,
+        };
+        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      }
       setIsSuccessfull(true);
       setUpdating(false);
     } catch (error) {

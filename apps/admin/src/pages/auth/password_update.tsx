@@ -1,3 +1,4 @@
+import { hasPasswordAccount } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import { updatePassword } from "firebase/auth";
 import Image from "next/image";
@@ -5,8 +6,11 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import Button from "ui/atoms/Button";
-import FlowAgreementWithEmailAndPassword from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
+import FlowAgreementWithEmailAndPassword, {
+  PageType,
+} from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import ReauthPassword from "ui/templates/admin/ReauthPassword";
+import ReauthSns from "ui/templates/admin/ReauthSns";
 
 const AuthStates = {
   Reauth: 0,
@@ -22,7 +26,7 @@ const PasswordUpdate = () => {
   const [updatedPassword, setUpdatedPassword] = useState(false);
   const [authError, setAuthError] = useState<ErrorMessage>(null);
 
-  const back = () => {
+  const handleClickBack = () => {
     router.push("/account");
   };
 
@@ -40,13 +44,18 @@ const PasswordUpdate = () => {
   };
 
   if (updatedPassword) {
-    return <PasswordUpdated onClick={back} />;
+    return <PasswordUpdated onClick={handleClickBack} />;
   } else {
     switch (authState) {
       case AuthStates.Reauth:
-        return (
+        return hasPasswordAccount() ? (
           <ReauthPassword
-            onClickBack={back}
+            onClickBack={handleClickBack}
+            onClickNext={() => setAuthState(AuthStates.NewPassword)}
+          />
+        ) : (
+          <ReauthSns
+            onClickBack={handleClickBack}
             onClickNext={() => setAuthState(AuthStates.NewPassword)}
           />
         );
@@ -57,8 +66,9 @@ const PasswordUpdate = () => {
             buttonText={"リセット"}
             email={""}
             isSubmitting={updatingPassword}
-            isPasswordReset={true}
+            pageType={PageType.PasswordUpdate}
             authError={authError}
+            onClickBack={handleClickBack}
             onClickSubmit={resetPassword}
           />
         );

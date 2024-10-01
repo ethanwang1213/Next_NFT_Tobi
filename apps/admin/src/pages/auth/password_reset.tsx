@@ -8,7 +8,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import FlowAgreementWithEmailAndPassword from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
+import FlowAgreementWithEmailAndPassword, {
+  PageType,
+} from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 
 const PasswordReset = () => {
   const router = useRouter();
@@ -72,7 +74,7 @@ const PasswordReset = () => {
         buttonText={"リセット"}
         email={""}
         isSubmitting={updatingPassword}
-        isPasswordReset={true}
+        pageType={PageType.PasswordReset}
         authError={authError}
         onClickSubmit={resetPassword}
       />

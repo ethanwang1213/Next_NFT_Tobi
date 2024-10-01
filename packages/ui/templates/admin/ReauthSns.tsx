@@ -1,3 +1,4 @@
+import { hasAppleAccount, hasGoogleAccount } from "contexts/AdminAuthProvider";
 import useSnsReauthentication from "hooks/useSnsReauthentication";
 import { useEffect } from "react";
 import { ErrorMessage, ProviderId } from "types/adminTypes";
@@ -12,7 +13,7 @@ const ReauthSns = ({
   onClickBack,
   onClickNext,
 }: {
-  providerId: ProviderId;
+  providerId?: ProviderId;
   error?: ErrorMessage;
   onClickBack: () => void;
   onClickNext: () => void;
@@ -38,17 +39,20 @@ const ReauthSns = ({
           <Loading className="w-6 h-6" />
         ) : (
           <>
-            {providerId === ProviderId.GOOGLE ? (
-              <GoogleButton
-                label={"Googleでログイン"}
-                onClick={() => reauthenticate(providerId)}
-              />
-            ) : (
-              <AppleButton
-                label={"Appleでログイン"}
-                onClick={() => reauthenticate(providerId)}
-              />
-            )}
+            {hasGoogleAccount() &&
+              (!providerId || providerId === ProviderId.GOOGLE) && (
+                <GoogleButton
+                  label={"Googleでログイン"}
+                  onClick={() => reauthenticate(ProviderId.GOOGLE)}
+                />
+              )}
+            {hasAppleAccount() &&
+              (!providerId || providerId === ProviderId.APPLE) && (
+                <AppleButton
+                  label={"Appleでログイン"}
+                  onClick={() => reauthenticate(ProviderId.APPLE)}
+                />
+              )}
           </>
         )}
       </div>

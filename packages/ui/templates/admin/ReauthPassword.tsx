@@ -1,5 +1,7 @@
-import { PASSWORD_RESET_PATH } from "admin/src/pages/authentication";
-import { getMailAddressOfPasswordAccount } from "contexts/AdminAuthProvider";
+import {
+  getMailAddressOfPasswordAccount,
+  PASSWORD_RESET_PATH,
+} from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import { sendSignInLinkToEmail } from "firebase/auth";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";

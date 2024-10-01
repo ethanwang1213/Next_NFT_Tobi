@@ -5,6 +5,7 @@ import BackLink from "ui/organisms/admin/BackLink";
 
 const VerifiedEmail = () => {
   const router = useRouter();
+
   return (
     <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
       <div className="h-14 flex justify-between items-start">

@@ -7,7 +7,7 @@ import {
 import { auth } from "fetchers/firebase/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { ErrorMessage, ProviderId } from "types/adminTypes";
+import { ErrorMessage, isProviderId, ProviderId } from "types/adminTypes";
 import Reauth from "ui/templates/admin/ReauthPassword";
 
 const ReauthPassword = () => {
@@ -16,11 +16,17 @@ const ReauthPassword = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const param = router.query.provider;
+    const param = router.query.providerId;
     if (!param || typeof param !== "string") {
       router.push("/");
       return;
     }
+
+    if (!isProviderId(param)) {
+      router.push("/");
+      return;
+    }
+
     const targetProvider = getProvider(param);
     if (!targetProvider) {
       router.push("/");
@@ -30,7 +36,7 @@ const ReauthPassword = () => {
     setProvider(targetProvider);
   }, []);
 
-  const getProvider = (providerId: string) => {
+  const getProvider = (providerId: ProviderId) => {
     switch (providerId) {
       case ProviderId.GOOGLE:
         return new GoogleAuthProvider();

@@ -56,9 +56,12 @@ const Contents = ({ children, content }: Props) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
   const pagesWithoutSidebar = [
+    "/authentication",
+    "/auth/password_reset",
     "/auth/password_update",
     "/auth/reauth_password",
     "/auth/reauth_sns",
+    "/auth/confirmation_email_for_auth_page",
   ];
 
   if (

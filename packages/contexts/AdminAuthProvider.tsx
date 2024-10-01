@@ -6,6 +6,7 @@ import {
   fetchSignInMethodsForEmail,
   onAuthStateChanged,
 } from "firebase/auth";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Router, { useRouter } from "next/router";
 import React, {
   createContext,
@@ -35,9 +36,13 @@ type ContextType = {
   finishFlowAccountRegistration: () => void;
   finishBusinessAccountRegistration: () => void;
   setReauthStatus: React.Dispatch<React.SetStateAction<ReauthStatus>>;
+  updateUserEmail: (email: string) => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
+
+export const PASSWORD_RESET_PATH = "/admin/auth/password_reset";
+export const VERIFIED_EMAIL_PATH = "/admin/auth/verified_email";
 
 /**
  * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー
@@ -47,16 +52,43 @@ const AuthContext = createContext<ContextType>({} as ContextType);
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User | null>(null);
+  const [
+    shouldRedirectToVerifiedEmailPath,
+    setShouldRedirectToVerifiedEmailPath,
+  ] = useState<boolean>(false);
   const [reauthStatus, setReauthStatus] = useState<ReauthStatus>({
     [ProviderId.GOOGLE]: false,
     [ProviderId.APPLE]: false,
   });
   const router = useRouter();
   const unrestrictedPaths = useMemo(
-    () => ["/authentication", "/auth/password_reset"],
+    () => [
+      "/authentication",
+      "/auth/password_reset",
+      "/auth/confirmation_email_for_auth_page",
+    ],
     [],
   );
-  const maxNameLength = 12;
+  const apiUrl = "native/my/profile";
+  const { postData: saveEmail } = useRestfulAPI(null);
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    // Enable navigation to VERIFIED_EMAIL_PATH after logging in.
+    if (VERIFIED_EMAIL_PATH.endsWith(router.pathname) && !user) {
+      setShouldRedirectToVerifiedEmailPath(true);
+    } else if (
+      !VERIFIED_EMAIL_PATH.endsWith(router.pathname) &&
+      user &&
+      shouldRedirectToVerifiedEmailPath
+    ) {
+      setShouldRedirectToVerifiedEmailPath(false);
+      Router.push(VERIFIED_EMAIL_PATH.replace("/admin", ""));
+    }
+  }, [user]);
 
   useEffect(() => {
     // ログイン状態の変化を監視
@@ -82,9 +114,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
               auth.signOut();
             },
           );
+
+          if (
+            firebaseUser.emailVerified &&
+            firebaseUser.email !== profile.data.email
+          ) {
+            await saveEmail(apiUrl, {
+              account: {
+                email: firebaseUser.email,
+              },
+            });
+          }
+
           await createUser(
             profile.data.userId,
-            profile.data.email,
+            firebaseUser.email,
             profile.data.username,
             firebaseUser.emailVerified,
             true,
@@ -203,6 +247,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const updateUserEmail = async (email: string) => {
+    if (!user) {
+      return;
+    }
+    setUser((prev) => ({ ...prev, email }));
+  };
+
   const signOut = async () => {
     try {
       if (user) {
@@ -250,6 +301,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           finishFlowAccountRegistration: finishFlowAccountRegistration,
           finishBusinessAccountRegistration: finishBusinessAccountRegistration,
           setReauthStatus,
+          updateUserEmail,
         }}
       >
         {children}

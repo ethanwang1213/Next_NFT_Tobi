@@ -1,4 +1,8 @@
-import { getMailAddressOfPasswordAccount } from "contexts/AdminAuthProvider";
+import {
+  getMailAddressOfPasswordAccount,
+  hasPasswordAccount,
+  VERIFIED_EMAIL_PATH,
+} from "contexts/AdminAuthProvider";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
 import useUpdateEmail from "hooks/useUpdateEmail";
 import Image from "next/image";
@@ -11,6 +15,7 @@ import ColorizedSvg from "ui/atoms/ColorizedSvg";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import GhostButton from "ui/atoms/GhostButton";
 import Loading from "ui/atoms/Loading";
+import SnsReauthModal from "ui/templates/admin/SnsReauthModal";
 
 const AuthStates = {
   Reauth: 0,
@@ -26,18 +31,25 @@ const EmailEditDialog = ({
   const [authState, setAuthState] = useState<AuthStates>(AuthStates.Reauth);
   const router = useRouter();
 
-  const onClickNextFromNewEmail = () => {
-    setAuthState(AuthStates.Reauth);
+  const handleComplete = () => {
     dialogRef.current.close();
-    router.push("/auth/confirmation_email");
+    setAuthState(AuthStates.Reauth);
+    router.push("/auth/confirmation_email_for_account_page");
+  };
+
+  const getModalWidth = () => {
+    switch (authState) {
+      case AuthStates.Reauth:
+        return `w-[329px] max-w-[329px]`;
+      case AuthStates.NewEmail:
+        return `w-[875px] max-w-[875px]`;
+    }
   };
 
   return (
     <dialog ref={dialogRef} className="modal">
       <div
-        className={`modal-box w-[${
-          authState === AuthStates.Reauth ? 329 : 875
-        }px] max-w-[875px] rounded-[16px] pt-4 flex flex-col items-start relative`}
+        className={`modal-box ${getModalWidth()} rounded-[16px] pt-4 flex flex-col items-start relative`}
       >
         <form method="dialog">
           <GhostButton
@@ -59,7 +71,7 @@ const EmailEditDialog = ({
             dialogRef.current.close();
           }}
           onClickNextFromReauth={() => setAuthState(AuthStates.NewEmail)}
-          onClickNextFromNewEmail={onClickNextFromNewEmail}
+          onComplete={handleComplete}
         />
       </div>
       <form method="dialog" className="modal-backdrop">
@@ -73,28 +85,31 @@ const Auth = ({
   authState,
   onClickCancel,
   onClickNextFromReauth,
-  onClickNextFromNewEmail,
+  onComplete,
 }: {
   authState: AuthStates;
   onClickCancel: () => void;
   onClickNextFromReauth: () => void;
-  onClickNextFromNewEmail: () => void;
+  onComplete: () => void;
 }) => {
   switch (authState) {
     case AuthStates.Reauth:
+      if (hasPasswordAccount()) {
+        return (
+          <Reauth
+            onClickCancel={onClickCancel}
+            onClickNext={onClickNextFromReauth}
+          />
+        );
+      }
       return (
-        <Reauth
-          onClickCancel={onClickCancel}
-          onClickNext={onClickNextFromReauth}
+        <SnsReauthModal
+          onCancel={onClickCancel}
+          onComplete={onClickNextFromReauth}
         />
       );
     case AuthStates.NewEmail:
-      return (
-        <NewEmail
-          onClickCancel={onClickCancel}
-          onClickNext={onClickNextFromNewEmail}
-        />
-      );
+      return <NewEmail onClickCancel={onClickCancel} onComplete={onComplete} />;
   }
 };
 
@@ -206,10 +221,10 @@ const Reauth = ({
 
 const NewEmail = ({
   onClickCancel,
-  onClickNext,
+  onComplete,
 }: {
   onClickCancel: () => void;
-  onClickNext: () => void;
+  onComplete: () => void;
 }) => {
   const [email, setEmail] = useState<string | null>(null);
   const [validEmail, setValidEmail] = useState(false);
@@ -220,7 +235,7 @@ const NewEmail = ({
       return;
     }
 
-    onClickNext();
+    onComplete();
   }, [isSuccessful]);
 
   useEffect(() => {
@@ -285,7 +300,7 @@ const NewEmail = ({
             disabled={!validEmail}
             className="btn btn-block w-[125px] h-[33px] min-h-[33px] px-[14px] py-[8px] bg-primary rounded-[64px]
               text-base-white text-[14px] leading-[120%] font-semibold hover:bg-primary hover:border-primary"
-            onClick={() => updateEmail(email, "/admin/auth/verified_email")}
+            onClick={() => updateEmail(email, VERIFIED_EMAIL_PATH)}
           >
             Save changes
           </Button>

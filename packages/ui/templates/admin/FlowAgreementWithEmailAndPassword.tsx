@@ -6,12 +6,19 @@ import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/organisms/admin/BackLink";
 import { LoadingSpinnerButton } from "../AuthTemplate";
 
+export const PageType = {
+  FlowAccountCreation: 0,
+  PasswordReset: 1,
+  PasswordUpdate: 2,
+} as const;
+type PageType = (typeof PageType)[keyof typeof PageType];
+
 type Props = {
   title: string;
   buttonText: string;
   email: string;
   isSubmitting: boolean;
-  isPasswordReset: boolean;
+  pageType: PageType;
   authError?: ErrorMessage;
   onClickBack?: () => void;
   onClickSubmit: (email: string, password: string) => void;
@@ -25,7 +32,7 @@ const FlowAgreementWithEmailAndPassword = ({
   buttonText,
   email,
   isSubmitting,
-  isPasswordReset,
+  pageType,
   authError,
   onClickBack,
   onClickSubmit,
@@ -56,16 +63,22 @@ const FlowAgreementWithEmailAndPassword = ({
   };
 
   const isSubmitButtonDisabled = () => {
-    if (isPasswordReset) {
-      return (
-        !emailStatus.valid ||
-        !passwordStatus.valid ||
-        !passwordConfirmationStatus.valid
-      );
+    switch (pageType) {
+      case PageType.FlowAccountCreation:
+        return (
+          !agreed || !passwordStatus.valid || !passwordConfirmationStatus.valid
+        );
+      case PageType.PasswordReset:
+        return (
+          !emailStatus.valid ||
+          !passwordStatus.valid ||
+          !passwordConfirmationStatus.valid
+        );
+      case PageType.PasswordUpdate:
+        return !passwordStatus.valid || !passwordConfirmationStatus.valid;
+      default:
+        return false;
     }
-    return (
-      !agreed || !passwordStatus.valid || !passwordConfirmationStatus.valid
-    );
   };
 
   const validateEmail = (email: string) => {
@@ -139,9 +152,12 @@ const FlowAgreementWithEmailAndPassword = ({
     <>
       <div className="flex flex-col items-center justify-center p-8">
         <div className="w-full">
-          <BackLinkBlock visible={!isPasswordReset} onClickBack={onClickBack} />
+          <BackLinkBlock
+            visible={pageType !== PageType.PasswordReset}
+            onClickBack={onClickBack}
+          />
         </div>
-        <TitleLogoImage isPasswordReset={isPasswordReset} />
+        <TitleLogoImage pageType={pageType} />
         <div className={"text-[32px] h-[80px] mt-[30px] font-bold"}>
           {title}
         </div>
@@ -151,7 +167,7 @@ const FlowAgreementWithEmailAndPassword = ({
         <div className={"mt-[30px]"}>
           <EmailField
             email={emailStatus.email}
-            visible={isPasswordReset}
+            visible={pageType === PageType.PasswordReset}
             validateEmail={validateEmail}
           />
         </div>
@@ -190,7 +206,7 @@ const FlowAgreementWithEmailAndPassword = ({
         <div className={"mt-[30px]"}>
           <TermsOfService
             agreed={agreed}
-            visible={!isPasswordReset}
+            visible={pageType === PageType.FlowAccountCreation}
             setAgreed={setAgreed}
           />
         </div>
@@ -225,22 +241,23 @@ const BackLinkBlock = ({
   return <BackLink onClickBack={onClickBack} />;
 };
 
-const TitleLogoImage = ({ isPasswordReset }: { isPasswordReset: boolean }) => {
-  if (isPasswordReset) {
+const TitleLogoImage = ({ pageType }: { pageType: PageType }) => {
+  if (pageType === PageType.FlowAccountCreation) {
     return (
       <Image
-        src={"/admin/images/tobiratory-logo.svg"}
-        alt={"Tobiratory logo"}
-        width={110}
+        src={"/admin/images/tobiratory-flow.svg"}
+        alt={"link tobiratory account with flow account"}
+        width={313}
         height={114}
       />
     );
   }
+
   return (
     <Image
-      src={"/admin/images/tobiratory-flow.svg"}
-      alt={"link tobiratory account with flow account"}
-      width={313}
+      src={"/admin/images/tobiratory-logo.svg"}
+      alt={"Tobiratory logo"}
+      width={110}
       height={114}
     />
   );

@@ -2,6 +2,7 @@ import {
   getProviderName,
   hasAppleAccount,
   hasGoogleAccount,
+  hasPasswordAccount,
   useAuth,
 } from "contexts/AdminAuthProvider";
 import useUnlinkProvider from "hooks/useUnlinkProvider";
@@ -220,7 +221,7 @@ const AccountList = () => {
               providerId={ProviderId.APPLE}
               hasAccount={hasAppleAccount()}
             >
-              <AppleIcon size={"3x"} disabled={hasAppleAccount()} />
+              <AppleIcon size={"3x"} disabled={!hasAppleAccount()} />
             </AccountItem>
           </div>
           <div className="grid grid-cols-1 justify-items-end gap-[16px]">
@@ -280,6 +281,9 @@ const LinkButton = ({
     return (
       <Button
         type="button"
+        disabled={
+          !hasPasswordAccount() && (!hasGoogleAccount() || !hasAppleAccount())
+        }
         className="btn btn-block w-[160px] h-[48px] min-h-[48px] bg-base-100 rounded-[64px] border-2 border-primary
               text-primary text-[20px] leading-[24px] font-bold hover:bg-base-100 hover:border-primary"
         onClick={() =>
@@ -302,7 +306,7 @@ const LinkButton = ({
       onClick={() =>
         router.push({
           pathname: `/auth/reauth_password`,
-          query: { provider: providerId },
+          query: { providerId },
         })
       }
     >
