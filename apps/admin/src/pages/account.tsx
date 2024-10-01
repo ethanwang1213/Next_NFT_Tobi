@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Account Setting",
 };
 
-const valueClass = "text-[26px] text-secondary font-normal flex-1";
+const valueClass = "text-[26px] font-normal flex-1";
 const editBtnClass = "text-[26px] text-primary font-normal";
 
 const AccountFieldComponent = ({
@@ -361,7 +361,8 @@ export default function Index() {
             <AccountFieldComponent label={"About me"} alignTop={true}>
               <textarea
                 className={`${valueClass} h-[200px] outline-none resize-none`}
-                value={data?.aboutMe || "Not Set"}
+                value={data?.aboutMe}
+                placeholder="Not Set"
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
               />
             </AccountFieldComponent>
@@ -372,7 +373,11 @@ export default function Index() {
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={"Gender"}>
-              <span className={`${valueClass}`}>
+              <span
+                className={`${valueClass} ${
+                  !data.gender ? "text-placeholder-color" : "text-sencondary"
+                }`}
+              >
                 {data?.gender || "Not Set"}
               </span>
               <button
@@ -387,7 +392,11 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Birthday"}>
-              <span className={`${valueClass}`}>
+              <span
+                className={`${valueClass} ${
+                  !data.birth ? "text-placeholder-color" : "text-sencondary"
+                }`}
+              >
                 {data?.birth || "Not Set"}
               </span>
               <button
@@ -402,7 +411,11 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
-              <span className={`${valueClass}`}>
+              <span
+                className={`${valueClass} ${
+                  !data.email ? "text-placeholder-color" : "text-sencondary"
+                }`}
+              >
                 {data?.email || "Not Set"}
               </span>
               <button className={editBtnClass}>Edit</button>

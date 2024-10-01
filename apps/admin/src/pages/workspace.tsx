@@ -255,7 +255,8 @@ export default function Index() {
       addButtonHandler();
       router.replace(`/workspace?trigger=false`);
     }
-  }, [router.query.trigger, isLoaded, addButtonHandler, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.trigger, isLoaded]);
 
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {

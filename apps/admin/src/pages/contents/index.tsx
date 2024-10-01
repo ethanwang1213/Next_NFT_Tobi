@@ -1,5 +1,6 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ContentsManageTab from "ui/organisms/admin/ContentsManageTab";
@@ -13,17 +14,19 @@ export default function Index() {
   const { postData } = useRestfulAPI(null);
   const apiUrl = "native/admin/showcases";
   const [reload, setReload] = useState(0);
+  const router = useRouter();
 
   const links = {
     showcase: {
       label: "new showcase",
       clickHandler: () => {
-        // This is temporary function. This function will be replaced by routing in next sprint.
         postData(apiUrl, {
           title: "The showcase title",
           description: "",
           templateId: 1,
-        }).then(() => {
+        }).then((response) => {
+          const showcaseId = response.id;
+          router.push(`/contents/showcase?id=${showcaseId}`);
           setReload(reload + 1);
         });
       },
