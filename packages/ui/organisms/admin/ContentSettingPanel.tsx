@@ -205,11 +205,20 @@ const ContentSettingPanel = ({
   const confirmDialogRef = useRef(null);
 
   const fieldChangeHandler = (field, value) => {
-    setData({ ...data, [field]: value });
     if (field == "name") {
       if (confirmDialogRef.current) {
         confirmDialogRef.current.showModal();
       }
+    } else if (["com", "adp", "der", "mer", "dst", "ncr"].includes(field)) {
+      setData({
+        ...data,
+        license: {
+          ...data.license,
+          [field]: value,
+        },
+      });
+    } else {
+      setData({ ...data, [field]: value });
     }
     modifiedRef.current = true;
     changeHandler();
@@ -232,7 +241,14 @@ const ContentSettingPanel = ({
       const submitData = {
         name: data.name,
         description: data.description,
-        license: data.license,
+        license: {
+          com: data.license.com,
+          adp: data.license.adp,
+          der: data.license.der,
+          mer: data.license.mer,
+          dst: data.license.dst,
+          ncr: data.license.ncr,
+        },
         copyrightHolders: data.copyright,
       };
       if (dataRef.current) {
@@ -333,27 +349,37 @@ const ContentSettingPanel = ({
             <div className="mt-8">
               <RadioButtonGroup
                 title="Commercial Use (COM/NCM)"
-                onChange={(value) => fieldChangeHandler("COM", value)}
+                initialValue={data.license.com}
+                onChange={(value) => fieldChangeHandler("com", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
                 title="Adaptation (ADP)"
-                onChange={(value) => fieldChangeHandler("ADP", value)}
+                initialValue={data.license.adp}
+                onChange={(value) => fieldChangeHandler("adp", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
                 title="Derivative Works (DER)"
-                onChange={(value) => fieldChangeHandler("DER", value)}
+                initialValue={data.license.der}
+                onChange={(value) => fieldChangeHandler("der", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
+                title="Merchandising (MER)"
+                initialValue={data.license.mer}
+                onChange={(value) => fieldChangeHandler("mer", value)}
+              />
+              <RadioButtonGroup
                 title="Distribution for Free (DST)"
-                onChange={(value) => fieldChangeHandler("DST", value)}
+                initialValue={data.license.dst}
+                onChange={(value) => fieldChangeHandler("dst", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
                 title="Credit Omission (NCR)"
-                onChange={(value) => fieldChangeHandler("NCR", value)}
+                initialValue={data.license.ncr}
+                onChange={(value) => fieldChangeHandler("ncr", value)}
               />
             </div>
           </div>

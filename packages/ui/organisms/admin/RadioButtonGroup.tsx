@@ -1,19 +1,28 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   title: string;
-  onChange: (value: string) => void;
+  onChange: (value: boolean) => void;
+  initialValue: boolean;
 }
 
-const RadioButtonGroup: React.FC<Props> = ({ title, onChange }) => {
-  const [selectedOption, setSelectedOption] = useState<String>("OK");
+const RadioButtonGroup: React.FC<Props> = ({
+  title,
+  onChange,
+  initialValue,
+}) => {
+  const [selectedOption, setSelectedOption] = useState<boolean>(initialValue);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    const value = event.target.value === "true"; // Convert string to boolean
     setSelectedOption(value);
     onChange(value);
   };
+
+  useEffect(() => {
+    setSelectedOption(initialValue);
+  }, [initialValue]);
 
   return (
     <div>
@@ -30,15 +39,13 @@ const RadioButtonGroup: React.FC<Props> = ({ title, onChange }) => {
         <div className="mb-5 text-[16px] flex items-center">
           <input
             type="radio"
-            value="OK"
-            checked={selectedOption === "OK"}
+            value="true"
+            checked={selectedOption === true}
             onChange={handleChange}
             className="w-5 h-5"
           />
           <span
-            className={`pl-2 ${
-              selectedOption === "OK" ? "text-primary" : ""
-            }`}
+            className={`pl-2 ${selectedOption === true ? "text-primary" : ""}`}
           >
             OK
           </span>
@@ -46,15 +53,13 @@ const RadioButtonGroup: React.FC<Props> = ({ title, onChange }) => {
         <div className="flex items-center">
           <input
             type="radio"
-            value="NG"
-            checked={selectedOption === "NG"}
+            value="false"
+            checked={selectedOption === false}
             onChange={handleChange}
             className="w-5 h-5"
           />
           <span
-            className={`pl-2 ${
-              selectedOption === "NG" ? "text-primary" : ""
-            }`}
+            className={`pl-2 ${selectedOption === false ? "text-primary" : ""}`}
           >
             NG
           </span>

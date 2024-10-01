@@ -1,27 +1,23 @@
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface BrightnessPickerProps {
   initialValue?: number;
   onBrightnessChanged: (newValue: number) => void;
-  afterChangeHandle : () => void;
+  afterChangeHandle: (newValue: number) => void;
 }
 
 const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
   initialValue = 50,
   onBrightnessChanged,
-  afterChangeHandle
+  afterChangeHandle,
 }) => {
   const [brightness, setBrightness] = useState<number>(initialValue);
   const handleBrightnessChange = (newValue: number) => {
     setBrightness(newValue);
     onBrightnessChanged(newValue);
   };
-
-  useEffect(() => {
-    setBrightness(initialValue);
-  }, [initialValue]);
 
   const handleStyle = {
     borderColor: "#FAFAFA",
@@ -60,7 +56,9 @@ const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
           max={100}
           styles={{ handle: handleStyle, track: trackStyle, rail: railStyle }}
           value={brightness}
-          onAfterChange={afterChangeHandle}
+          onAfterChange={(value: number) => {
+            afterChangeHandle(value);
+          }}
           onChange={(value: number) => handleBrightnessChange(value)}
         />
       </div>

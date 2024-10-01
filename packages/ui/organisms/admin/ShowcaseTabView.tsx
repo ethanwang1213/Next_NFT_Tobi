@@ -41,9 +41,6 @@ const ShowcaseTabView = ({
   ) => void;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
-  const [phars, setPhars] = useState<SettingsUpdatePhase>(
-    SettingsUpdatePhase.Updating,
-  );
   const [active, setActive] = useState("");
   const [wt, setWt] = useState(String);
   const [ft, setFt] = useState(String);
@@ -85,10 +82,6 @@ const ShowcaseTabView = ({
     onActionUndone: handleAction,
   });
 
-  const afterChangeHandle = () => {
-    updateUnityViewSettings(wt, ft, st, sb, pt, pb, SettingsUpdatePhase.Ended);
-  };
-
   const handleTabChange = (active) => {
     if (active == tab) {
       return;
@@ -109,8 +102,15 @@ const ShowcaseTabView = ({
   }, [settings]);
 
   const updateUnityTheme = () => {
-    updateUnityViewSettings(wt, ft, st, sb, pt, pb, phars);
-    setPhars(SettingsUpdatePhase.Updating);
+    updateUnityViewSettings(
+      wt,
+      ft,
+      st,
+      sb,
+      pt,
+      pb,
+      SettingsUpdatePhase.Updating,
+    );
   };
 
   return (
@@ -258,10 +258,29 @@ const ShowcaseTabView = ({
                       />
                       <BrightnessPicker
                         initialValue={sb}
-                        afterChangeHandle={afterChangeHandle}
+                        afterChangeHandle={(val) => {
+                          setSb(val);
+                          updateUnityViewSettings(
+                            wt,
+                            ft,
+                            st,
+                            val,
+                            pt,
+                            pb,
+                            SettingsUpdatePhase.Ended,
+                          );
+                        }}
                         onBrightnessChanged={(val) => {
                           setSb(val);
-                          updateUnityTheme();
+                          updateUnityViewSettings(
+                            wt,
+                            ft,
+                            st,
+                            val,
+                            pt,
+                            pb,
+                            SettingsUpdatePhase.Updating,
+                          );
                         }}
                       />
                     </div>
@@ -291,10 +310,28 @@ const ShowcaseTabView = ({
                       />
                       <BrightnessPicker
                         initialValue={pb}
-                        afterChangeHandle={afterChangeHandle}
+                        afterChangeHandle={(val) => {
+                          updateUnityViewSettings(
+                            wt,
+                            ft,
+                            st,
+                            sb,
+                            pt,
+                            val,
+                            SettingsUpdatePhase.Ended,
+                          );
+                        }}
                         onBrightnessChanged={(val) => {
                           setPb(val);
-                          updateUnityTheme();
+                          updateUnityViewSettings(
+                            wt,
+                            ft,
+                            st,
+                            sb,
+                            pt,
+                            val,
+                            SettingsUpdatePhase.Updating,
+                          );
                         }}
                       />
                     </div>

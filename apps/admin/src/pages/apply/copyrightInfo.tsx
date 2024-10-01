@@ -12,6 +12,14 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         ...copyrightInfo,
         [field]: value.replace(/^©/, "").substring(0, 255),
       });
+    } else if (["com", "adp", "der","mer", "dst", "ncr"].includes(field)) {
+      setCopyrightInfo({
+        ...copyrightInfo,
+        license: {
+          ...copyrightInfo.license,
+          [field]: value,
+        },
+      });
     } else {
       setCopyrightInfo({ ...copyrightInfo, [field]: value });
     }
@@ -188,28 +196,39 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         </div>
         <div className="mt-8">
           <RadioButtonGroup
+            initialValue={copyrightInfo.license.com}
             title="Commercial Use (COM/NCM)"
-            onChange={(value) => copyrightInfoChangeHandler("COM", value)}
+            onChange={(value) => copyrightInfoChangeHandler("com", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Adaptation (ADP)"
-            onChange={(value) => copyrightInfoChangeHandler("ADP", value)}
+            initialValue={copyrightInfo.license.adp}
+            onChange={(value) => copyrightInfoChangeHandler("adp", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Derivative Works (DER)"
-            onChange={(value) => copyrightInfoChangeHandler("DER", value)}
+            initialValue={copyrightInfo.license.der}
+            onChange={(value) => copyrightInfoChangeHandler("der", value)}
+          />
+          <hr className="pb-3 border-primary" />
+          <RadioButtonGroup
+            title="Merchandising (MER)"
+            initialValue={copyrightInfo.license.mer}
+            onChange={(value) => copyrightInfoChangeHandler("mer", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Distribution for Free (DST)"
-            onChange={(value) => copyrightInfoChangeHandler("DST", value)}
+            initialValue={copyrightInfo.license.dst}
+            onChange={(value) => copyrightInfoChangeHandler("dst", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
             title="Credit Omission (NCR)"
-            onChange={(value) => copyrightInfoChangeHandler("NCR", value)}
+            initialValue={copyrightInfo.license.ncr}
+            onChange={(value) => copyrightInfoChangeHandler("ncr", value)}
           />
         </div>
       </div>
