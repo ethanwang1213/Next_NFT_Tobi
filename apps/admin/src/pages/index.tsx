@@ -12,10 +12,14 @@ const Index = () => {
       return;
     }
 
-    if (user.hasBusinessAccount) {
-      router.push("/items");
+    if (user.hasFlowAccount) {
+      if (user.hasBusinessAccount) {
+        router.push("/items");
+      } else {
+        router.push("/apply");
+      }
     } else {
-      router.push("/apply");
+      router.push("/auth/sns_auth");
     }
   }, [router, user]);
 
