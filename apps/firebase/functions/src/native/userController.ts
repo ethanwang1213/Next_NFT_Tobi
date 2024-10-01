@@ -465,7 +465,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
       image: "",
       url,
       description,
-      license,
       license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
     };
     try {
@@ -474,7 +473,11 @@ export const businessSubmission = async (req: Request, res: Response) => {
           data: businessData,
         });
         const savedContentData = await tx.contents.create({
-          data: contentData,
+          data: {...contentData,
+            license: {
+              create: license,
+            },
+          },
         });
         const copyrights = copyrightHolder.map((copyright: string)=>{
           return {

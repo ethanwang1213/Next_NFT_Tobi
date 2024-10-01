@@ -59,14 +59,16 @@ router.get("/", async (req: Request, res: Response) => {
             name: copyright.name,
           };
         }),
-        reports: content.reported_contents.filter((report) => report.is_solved != true).map((report) => {
+        reports: content.reported_contents.map((report) => {
           return {
             date: report.created_date_time,
             title: report.title,
             description: report.description,
+            isSolved: report.is_solved,
           };
         }),
         license: content.license,
+        licenseData: content.license_data,
       };
     });
     res.status(200).send({
@@ -291,6 +293,7 @@ router.get("/:id", async (req: Request, res: Response) => {
         };
       }),
       license: content.license,
+      licenseData: content.license_data,
     };
     res.status(200).send({
       status: "success",
@@ -310,7 +313,6 @@ router.put("/:id/ignore-report", async (req: Request, res: Response) => {
     await prisma.reported_contents.updateMany({
       where: {
         content_id: parseInt(id),
-        is_solved: null,
       },
       data: {
         is_solved: true,
@@ -342,7 +344,7 @@ router.put("/:id/freeze-report", async (req: Request, res: Response) => {
       },
     });
     if (!process.count) {
-      await prisma.reported_contents.create({
+      const suspend = await prisma.reported_contents.create({
         data: {
           reporter_uuid: null,
           content_id: parseFloat(id),
@@ -350,11 +352,51 @@ router.put("/:id/freeze-report", async (req: Request, res: Response) => {
           description: "block",
           is_solved: false,
         },
+        include: {
+          reporter: true,
+        },
       });
+      res.status(200).send({
+        status: "success",
+        data: {
+          date: suspend.created_date_time,
+          title: suspend.title,
+          description: suspend.description,
+          isSolved: suspend.is_solved,
+          reporter: suspend.reporter?
+            {
+              uuid: suspend.reporter_uuid,
+              avatar: suspend.reporter.icon_url,
+              username: suspend.reporter.username,
+            }: null,
+        },
+      });
+      return;
     }
+    const totalReports = await prisma.reported_contents.findMany({
+      where: {
+        content_id: parseInt(id),
+      },
+      include: {
+        reporter: true,
+      },
+    });
     res.status(200).send({
       status: "success",
-      data: "freeze",
+      data: totalReports.map((report)=>{
+        return {
+          date: report.created_date_time,
+          title: report.title,
+          description: report.description,
+          isSolved: report.is_solved,
+          reporter: report.reporter?
+            {
+              uuid: report.reporter_uuid,
+              avatar: report.reporter.icon_url,
+              username: report.reporter.username,
+            }: null,
+        };
+      }),
     });
   } catch (error) {
     res.status(401).send({
