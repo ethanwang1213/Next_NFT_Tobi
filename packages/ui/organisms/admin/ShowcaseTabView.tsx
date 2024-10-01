@@ -271,7 +271,6 @@ const ShowcaseTabView = ({
                           );
                         }}
                         onBrightnessChanged={(val) => {
-                          console.log(val, "scene light");
                           setSb(val);
                           updateUnityViewSettings(
                             wt,
