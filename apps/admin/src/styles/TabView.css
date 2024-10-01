@@ -7,7 +7,7 @@
 .tabs .tab:before,
 .tabs .tab:after {
   content: "";
-  background-color: #828282;
+  background-color: #757575;
   --tw-bg-opacity: 0.5;
   position: absolute;
   bottom: 0;
