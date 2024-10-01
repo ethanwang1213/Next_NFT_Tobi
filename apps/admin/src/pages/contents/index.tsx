@@ -25,7 +25,6 @@ export default function Index() {
           description: "",
           templateId: 1,
         }).then((response) => {
-          debugger;
           const showcaseId = response.id;
           router.push(`/contents/showcase?id=${showcaseId}`);
           setReload(reload + 1);
