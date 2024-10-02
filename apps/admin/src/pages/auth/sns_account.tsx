@@ -33,11 +33,9 @@ const SnsAccount = () => {
     useState<ProviderId | null>(null);
 
   useEffect(() => {
-    console.log(reauthStatus);
     const providerId = Object.keys(reauthStatus).find(
       (key) => reauthStatus[key],
     );
-    console.log(reauthedProviderId);
     if (providerId) {
       setReauthedProviderId(providerId as ProviderId);
       setProviderState(PageStates.ConfirmDisconnect);
