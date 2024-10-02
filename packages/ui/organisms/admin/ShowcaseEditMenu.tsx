@@ -74,7 +74,7 @@ const ShowcaseEditMenu = ({
             {getIndexFromStatus(status) === index && (
               <div className="flex justify-end">
                 <Image
-                  src={`/admin/images/icon/select.svg`}
+                  src={`/admin/images/icon/check.svg`}
                   width={16}
                   height={16}
                   alt="icon"
