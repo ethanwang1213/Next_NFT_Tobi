@@ -132,7 +132,7 @@ const ShowcaseTabView = ({
           />
         </div>
       )}
-      <div className="tabs flex h-[56px] w-full overflow-hidden bg-[#B3B3B3] rounded-t-[24px]">
+      <div className="tabs flex h-[56px] w-full overflow-hidden bg-[#3F3F3F] rounded-t-[24px]">
         <ShowcaseTabSelector
           isActive={tab === "Sample Items"}
           onClick={() => handleTabChange("Sample Items")}
@@ -191,7 +191,7 @@ const ShowcaseTabView = ({
           </div>
         </ShowcaseTabSelector>
       </div>
-      <div className="tab-content flex flex-col w-full h-screen-minus-170 bg-[#828282] backdrop-blur-[25px] rounded-b-3xl">
+      <div className="tab-content flex flex-col w-full h-screen-minus-170 bg-[#757575] backdrop-blur-[25px] rounded-b-3xl">
         <div className="flex flex-1 pl-8 pr-8 pt-12 pb-12 w-full flex-col overflow-auto">
           <TabPanel hidden={tab !== "Sample Items"}>
             <ShowcaseSampleTab

@@ -182,10 +182,27 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     }
   };
 
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const getStatusLabel = () => {
+    switch (status) {
+      case ShowcaseStatus.Public:
+        return "Public";
+      case ShowcaseStatus.Private:
+        return "Private";
+      case ShowcaseStatus.ScheduledPublic:
+        return "Scheduled";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div
-        className={`w-60 h-[360px] rounded-2xl relative
+        className={`w-72 h-[430px] rounded-2xl relative
           ${
             status == ShowcaseStatus.Public
               ? "outline outline-4 outline-success-200"
@@ -204,7 +221,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         {isHovered && (
           <Link href={`/contents/showcase?id=${props.id}`}>
             <div
-              className={`absolute left-0 top-0 w-60 h-[360px] z-10 rounded-2xl
+              className={`absolute left-0 top-0 w-72 h-[430px] z-10 rounded-2xl
               bg-black bg-opacity-50 flex flex-col justify-center items-center transition-opacity duration-[450ms] ease-out opacity-0 hover:opacity-100`}
             >
               <span className="text-white text-[10px]">Click to Edit</span>
@@ -219,8 +236,9 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           </Link>
         )}
         <div
-          className="absolute bottom-[12px] right-[13px]
-            flex flex-row-reverse justify-between z-20"
+          className="absolute bottom-[12px] right-[13px] flex flex-row-reverse justify-between z-20"
+          ref={popupRef}
+          onClick={status !== ShowcaseStatus.Public ? handleClick : undefined}
         >
           <div
             className={`rounded-[27px] p-0 flex justify-between items-center
@@ -235,40 +253,28 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
             }
             `}
           >
-            <span
-              className={`inline-block text-[10px] leading-4 font-medium text-center text-secondary-100
+            <button
+              className={`inline-block text-[15px] leading-4 font-medium text-center text-secondary-100 py-1
               ${
                 status == ShowcaseStatus.Public
-                  ? "w-20"
-                  : "w-16 border-r border-white"
+                  ? "w-32"
+                  : "w-24 border-r border-white"
               }`}
             >
-              {status == ShowcaseStatus.Public
-                ? "Public"
-                : status == ShowcaseStatus.Private
-                  ? "Private"
-                  : status == ShowcaseStatus.ScheduledPublic
-                    ? "Scheduled"
-                    : ""}
-            </span>
+              {getStatusLabel()}
+            </button>
             {status != ShowcaseStatus.Public && (
-              <div className="w-6 flex justify-center items-center relative">
+              <button className="w-8 flex justify-center items-center relative py-1">
                 <Image
                   src="/admin/images/icon/down-arrow-icon.svg"
-                  width={8}
-                  height={8}
+                  width={13}
+                  height={13}
                   alt="drop"
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setIsMenuOpen(!isMenuOpen);
-                  }}
+                  className={`transition-transform duration-300 ${
+                    isMenuOpen ? "rotate-180" : ""
+                  }`}
                 />
-                {isMenuOpen && (
-                  <div className="absolute left-0 top-3 z-10" ref={popupRef}>
-                    <ShowcaseEditMenu clickHandler={statusChangeHandler} />
-                  </div>
-                )}
-              </div>
+              </button>
             )}
           </div>
           {status == ShowcaseStatus.ScheduledPublic && (
@@ -314,16 +320,24 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               />
             </div>
           )}
+          {isMenuOpen && (
+            <div className="absolute left-0 top-10 z-10">
+              <ShowcaseEditMenu
+                clickHandler={statusChangeHandler}
+                status={status}
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="flex justify-between items-center gap-2">
-        <span className="flex-1 text-secondary-700 text-[10px] leading-4 font-medium">
+        <span className="flex-1 text-secondary-700 text-[16px] leading-4 font-medium">
           {title}
         </span>
         <Image
           src="/admin/images/icon/pencil.svg"
-          width={16}
-          height={16}
+          width={18}
+          height={18}
           alt="edit icon"
           className="cursor-pointer"
           onClick={(e) => {
@@ -337,7 +351,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           changeHandler={changeShowcaseDetail}
         />
       </div>
-      <div className="text-secondary-700 text-[10px] leading-4 font-light">
+      <div className="text-secondary-700 text-[12px] leading-4 font-light">
         Last Updated Date： {formatDateToLocal(modifiedTime, true)}
       </div>
     </div>
