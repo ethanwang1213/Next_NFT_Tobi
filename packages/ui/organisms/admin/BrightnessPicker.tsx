@@ -48,9 +48,11 @@ const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
         <div className="text-[16px] font-[700] leading-[20px] w-[76px]">
           Brightness
         </div>
-        <div className="w-[64px] h-[32px] rounded-[5px] bg-[#A5A1A1] text-white flex items-center justify-center font-[400] text-[16px] leading-[120%] mx-4">
-          {brightness}
-        </div>
+        <input
+          className="w-[64px] h-[32px] rounded-[5px] bg-[#A5A1A1] text-white text-center font-[400] text-[16px] leading-[120%] mx-4 outline-none"
+          value={brightness}
+          readOnly
+        ></input>
       </div>
 
       {/* Brightness slider */}
