@@ -565,6 +565,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
       const saidanItemList = items.map((saidanItem)=>{
         return {
           itemId: saidanItem.id,
+          name: saidanItem.name??"",
           modelType: saidanItem.type,
           modelUrl: saidanItem.model_url,
           thumbUrl: saidanItem.is_default_thumb?saidanItem.default_thumb_url:saidanItem.custom_thumb_url,
@@ -680,6 +681,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
       const saidanItemList = saidanItems.map((item)=>{
         return {
           itemId: item.id,
+          name: item.nft.digital_item.name??"",
           modelType: item.nft.digital_item.type,
           modelUrl: item.nft.digital_item.model_url,
           thumbUrl: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,

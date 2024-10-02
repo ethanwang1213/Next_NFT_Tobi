@@ -83,6 +83,7 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   } = useSaidanLikeUnityContextBase({
@@ -103,6 +104,7 @@ export const useWorkspaceUnityContext = ({
       return {
         itemId: v.sampleItemId,
         imageUrl: v.materialUrl,
+        itemName: v.name,
         ...v,
         itemType: ItemType.Sample,
         canScale: true,
@@ -113,7 +115,7 @@ export const useWorkspaceUnityContext = ({
     return {
       saidanId: -2,
       saidanType: SaidanType.Workspace,
-      saidanUrl: "todo:set-url-here",
+      saidanUrl: "",
       saidanItemList,
       saidanCameraData: {
         position: {
@@ -281,6 +283,7 @@ export const useWorkspaceUnityContext = ({
     handleRemoveItemDisabled,
     handleRemoveItemRequested: handleRemoveSampleRequested,
     handleItemSelected,
+    handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
   });

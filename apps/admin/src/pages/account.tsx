@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: "Account Setting",
 };
 
-const valueClass = "text-[26px] text-secondary font-normal flex-1";
+const valueClass = "text-[26px] font-normal flex-1";
 const editBtnClass = "text-[26px] text-primary font-normal";
 
 const AccountFieldComponent = ({
@@ -80,6 +80,23 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const platforms = {
+    X: "https://x.com/",
+    Instagram: "https://instagram.com/",
+  };
+
+  const handleRedirect = (platform, userInput) => {
+    let redirectUrl = userInput;
+    if (platform === "X" || platform === "Instagram") {
+      const baseUrl = platforms[platform];
+      const userName = userInput.startsWith("@")
+        ? userInput.slice(1)
+        : userInput;
+      redirectUrl = `${baseUrl}${userName}`;
+    }
+    window.open(redirectUrl, "_blank", "noreferrer");
+  };
+
   const urlChangeHandler = (type, url) => {
     const newUrls = [
       twitterUrl,
@@ -123,12 +140,17 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={30}
           src="/admin/images/icon/twitter-icon.svg"
           alt="twitter icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("X", twitterUrl);
+          }}
         />
         <input
           type="text"
           className={`${valueClass} flex-1 outline-none`}
           value={twitterUrl}
           onChange={(e) => urlChangeHandler(0, e.target.value)}
+          placeholder="@userID"
         />
       </div>
       <div className={`${layoutClass}`}>
@@ -137,12 +159,17 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={34}
           src="/admin/images/icon/instagram-icon.svg"
           alt="instagram icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("Instagram", instagramUrl);
+          }}
         />
         <input
           type="text"
           className={`${valueClass} flex-1 outline-none`}
           value={instagramUrl}
           onChange={(e) => urlChangeHandler(1, e.target.value)}
+          placeholder="@userID"
         />
       </div>
       <div className={`${layoutClass}`}>
@@ -151,12 +178,17 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={34}
           src="/admin/images/icon/facebook-icon.svg"
           alt="facebook icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("facebook", facebookUrl);
+          }}
         />
         <input
           type="text"
           className={`${valueClass} flex-1 outline-none`}
           value={facebookUrl}
           onChange={(e) => urlChangeHandler(2, e.target.value)}
+          placeholder="http://example.com"
         />
       </div>
       <div className={`${layoutClass}`}>
@@ -165,12 +197,17 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           height={28}
           src="/admin/images/icon/youtube-icon.svg"
           alt="youtube icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("youtube", youtubeUrl);
+          }}
         />
         <input
           type="text"
           className={`${valueClass} flex-1 outline-none`}
           value={youtubeUrl}
           onChange={(e) => urlChangeHandler(3, e.target.value)}
+          placeholder="http://example.com"
         />
       </div>
       {urls &&
@@ -181,12 +218,17 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
               height={34}
               src="/admin/images/icon/globe-icon.svg"
               alt="social icon"
+              className="cursor-pointer"
+              onClick={() => {
+                handleRedirect("social", url);
+              }}
             />
             <input
               type="text"
               className={`${valueClass} flex-1 outline-none`}
               value={url}
               onChange={(e) => urlChangeHandler(index + 4, e.target.value)}
+              placeholder="http://example.com"
             />
           </div>
         ))}
@@ -338,6 +380,7 @@ export default function Index() {
               <textarea
                 className={`${valueClass} h-[200px] outline-none resize-none`}
                 value={data?.aboutMe}
+                placeholder="Not Set"
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
               />
             </AccountFieldComponent>
@@ -348,7 +391,13 @@ export default function Index() {
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={"Gender"}>
-              <span className={`${valueClass}`}>{data?.gender}</span>
+              <span
+                className={`${valueClass} ${
+                  !data.gender ? "text-placeholder-color" : "text-sencondary"
+                }`}
+              >
+                {data?.gender || "Not Set"}
+              </span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -361,7 +410,13 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Birthday"}>
-              <span className={`${valueClass}`}>{data?.birth}</span>
+              <span
+                className={`${valueClass} ${
+                  !data.birth ? "text-placeholder-color" : "text-sencondary"
+                }`}
+              >
+                {data?.birth || "Not Set"}
+              </span>
               <button
                 className={editBtnClass}
                 onClick={() => {
@@ -374,7 +429,13 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
-              <span className={`${valueClass}`}>{data?.email}</span>
+              <span
+                className={`${valueClass} ${
+                  !data.email ? "text-placeholder-color" : "text-sencondary"
+                }`}
+              >
+                {data?.email || "Not Set"}
+              </span>
               {!isEmailVerified() && (
                 <div className="flex w-[148px] h-[48px] py-[8px] px-[16px] mr-[10px] justify-center items-center gap-[8px] rounded-[64px] bg-secondary">
                   <span className="text-base-white text-[20px] font-bold leading-[120%]">

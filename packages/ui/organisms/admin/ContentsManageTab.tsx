@@ -1,15 +1,17 @@
+import { useRef, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
 import { ContentBrandPanel } from "./ContentBrandPanel";
 import { ContentSettingPanel } from "./ContentSettingPanel";
-import { ShowcasePanel } from "./ShowcasePanel";
-import { useEffect, useRef, useState } from "react";
 import SaveConfirmDialog from "./SaveConfirmDialog";
+import { ShowcasePanel } from "./ShowcasePanel";
 
 export default function ContentsManageTab({
   onTabChange,
+  reload,
 }: {
   onTabChange: (value: string) => void;
+  reload: number;
 }) {
   const [tab, setTab] = useTabs(["showcase", "brand", "settings"]);
   const [changed, setChanged] = useState(null);
@@ -117,7 +119,7 @@ export default function ContentsManageTab({
       </nav>
       <div className="flow-root px-[50px] pt-[60px] pb-[40px]">
         <TabPanel hidden={tab !== "showcase"}>
-          <ShowcasePanel />
+          <ShowcasePanel reload={reload} />
         </TabPanel>
         <TabPanel hidden={tab !== "brand"}>
           <ContentBrandPanel

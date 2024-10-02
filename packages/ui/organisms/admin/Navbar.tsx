@@ -147,7 +147,7 @@ const UserMenu = () => {
         <ul
           ref={menuRef}
           tabIndex={0}
-          className="dropdown-content z-[1] pt-[30px] pr-[20px] pb-[28px] pl-[22px] shadow-xl bg-base-100 rounded-[12px] w-[235px] mt-[3px] mr-[-13px]"
+          className="dropdown-content z-[9999] pt-[30px] pr-[20px] pb-[28px] pl-[22px] shadow-xl bg-base-100 rounded-[12px] w-[235px] mt-[3px] mr-[-13px]"
         >
           <li>
             <div className="flex flex-row items-center">
@@ -211,10 +211,10 @@ const ConfirmSignOutModal = ({
   const { signOut, user } = useAuth();
   return (
     <AccountConfirmDialog
-      title="サインアウトしますか?"
+      title="ログアウトしますか?"
       account={user}
       firstButtonProp={{
-        caption: "サインアウト",
+        caption: "ログアウト",
         isPrimary: true,
         callback: signOut,
       }}

@@ -12,7 +12,7 @@ model accounts {
     uuid                    String              @unique @db.VarChar(100)
     email                   String              @unique @db.VarChar(255)
     username                String              @db.VarChar(255)
-    user_id                 String?             @db.VarChar(255)
+    user_id                 String              @unique @db.VarChar(255)
     sns                     String?             @db.VarChar(255)
     icon_url                String?             @db.VarChar(255)
     about_me                String?             @db.VarChar(255)
@@ -20,6 +20,7 @@ model accounts {
     gender                  String?             @db.VarChar(255)
     birth                   String?             @db.VarChar(255)
     gift_permission         Boolean             @default(false)
+    note                    String?             @db.Text
     digital_items           digital_items[]
     flow_account            flow_accounts?
     favorite_saidans        saidans_favorite[]
@@ -119,24 +120,24 @@ model contents {
     sticker            String?              @db.VarChar(255)
     url                String               @db.VarChar(255)
     description        String               @db.VarChar(255)
-    license            String               @db.VarChar(255)
-    license_data       String[]             @default([]) @db.VarChar(255)
     copyrights         copyrights[]
     showcases          showcases[]
     favorite_users     contents_favorite[]
     reported_contents  reported_contents[]
+    reported_documents reported_documents[]
+    license            content_license?
+    license_data       String[]             @default([]) @db.VarChar(255)
     is_deleted         Boolean              @default(false)
     updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
     created_date_time  DateTime             @default(now()) @db.Timestamp(6)
-    reported_documents reported_documents[]
 }
 
 model reported_contents {
     id                 Int                  @id @default(autoincrement())
     content_id         Int
     content            contents             @relation(fields: [content_id], references: [id])
-    reporter_uuid      String               @db.VarChar(255)
-    reporter           accounts             @relation(fields: [reporter_uuid], references: [uuid])
+    reporter_uuid      String?              @db.VarChar(255)
+    reporter           accounts?            @relation(fields: [reporter_uuid], references: [uuid])
     title              String               @db.VarChar(255)
     description        String               @db.Text
     is_solved          Boolean?
@@ -171,7 +172,7 @@ model digital_items {
     type              Int
     description       String?                   @db.Text
     limit             Int?
-    license           String?                   @db.VarChar(255)
+    license           digital_item_license?
     copyrights        digital_items_copyright[]
     sample_item       sample_items?
     nfts              digital_item_nfts[]
@@ -233,21 +234,24 @@ model workspace_sample_items {
 }
 
 model digital_item_nfts {
-    id                 Int                  @id @default(autoincrement())
-    flow_nft_id        Int?
-    serial_no          Int?
-    digital_item       digital_items        @relation(fields: [digital_item_id], references: [id])
-    digital_item_id    Int
-    metadata           String?              @db.Text
-    mint_status        Int                  @default(0)
-    gift_status        Int                  @default(0)
-    mint_tx_id         String?              @db.VarChar(255)
-    gift_tx_id         String?              @db.VarChar(255)
-    showcase_nft_items showcase_nft_items[]
-    nft_camera         nft_cameras?
-    nft_owner          nft_owners?
-    updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
-    created_date_time  DateTime             @default(now()) @db.Timestamp(6)
+    id                    Int                  @id @default(autoincrement())
+    flow_nft_id           Int?
+    serial_no             Int?
+    digital_item          digital_items        @relation(fields: [digital_item_id], references: [id])
+    digital_item_id       Int
+    metadata              String?              @db.Text
+    mint_status           Int                  @default(0)
+    gift_status           Int                  @default(0)
+    mint_tx_id            String?              @db.VarChar(255)
+    gift_tx_id            String?              @db.VarChar(255)
+    notification_batch_id Int?
+    notified              Boolean              @default(false)
+    notification_batch    notification_batch?  @relation(fields: [notification_batch_id], references: [id])
+    showcase_nft_items    showcase_nft_items[]
+    nft_camera            nft_cameras?
+    nft_owner             nft_owners?
+    updated_date_time     DateTime             @default(now()) @db.Timestamp(6)
+    created_date_time     DateTime             @default(now()) @db.Timestamp(6)
 }
 
 model nft_cameras {
@@ -419,4 +423,42 @@ model contents_favorite {
     account_uuid      String   @db.VarChar(255)
     updated_date_time DateTime @default(now()) @db.Timestamp(6)
     created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model notification_batch {
+    id                Int                 @id @default(autoincrement())
+    fcm_token         String              @db.VarChar(255)
+    status            Int                 @default(0)
+    complete_time     DateTime?
+    nfts              digital_item_nfts[]
+    updated_date_time DateTime            @default(now()) @db.Timestamp(6)
+    created_date_time DateTime            @default(now()) @db.Timestamp(6)
+}
+
+model content_license {
+    id                Int      @id @default(autoincrement())
+    content_id        Int      @unique
+    com               Boolean
+    adp               Boolean
+    der               Boolean
+    dst               Boolean
+    mer               Boolean
+    ncr               Boolean
+    contents          contents @relation(fields: [content_id], references: [id])
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
+}
+
+model digital_item_license {
+    id                Int           @id @default(autoincrement())
+    digital_items_id  Int           @unique
+    com               Boolean
+    adp               Boolean
+    der               Boolean
+    dst               Boolean
+    mer               Boolean
+    ncr               Boolean
+    digital_items     digital_items @relation(fields: [digital_items_id], references: [id])
+    updated_date_time DateTime      @default(now()) @db.Timestamp(6)
+    created_date_time DateTime      @default(now()) @db.Timestamp(6)
 }

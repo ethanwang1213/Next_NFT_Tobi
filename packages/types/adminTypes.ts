@@ -75,12 +75,19 @@ export type TcpUser = {
 };
 
 export type TcpCopyright = {
-  copyrightHolder: string;
-  license: string;
-  file1?: File;
-  file2?: File;
-  file3?: File;
-  file4?: File;
+  copyrightHolder: string[];
+  file1?: File | string;
+  file2?: File | string;
+  file3?: File | string;
+  file4?: File | string;
+  license: {
+    com: Boolean;
+    adp: Boolean;
+    der: Boolean;
+    mer: Boolean;
+    dst: Boolean;
+    ncr: Boolean;
+  };
 };
 
 export type TcpFormType = {

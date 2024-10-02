@@ -28,12 +28,14 @@ const Pc = () => {
   const [bookWidth, setBookWidth] = useState<number>(0);
   const [bookHeight, setBookHeight] = useState<number>(0);
   const bookData = useBookContext();
+  /* eslint-disable react-hooks/exhaustive-deps */
   const pageRef = [
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
   ];
+  /* eslint-enable react-hooks/exhaustive-deps */
   const { current: pageNo, set: setPageNo } = bookData.pageNo;
   const { current: pages } = bookData.pages;
   const { current: tags } = bookData.tags;

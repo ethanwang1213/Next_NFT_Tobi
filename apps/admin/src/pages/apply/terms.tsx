@@ -18,7 +18,7 @@ const Terms = () => {
       <div className="md:text-[40px] sm:text-[30px] text-[20px] leading-[60px]">
         Tobiratory Creator Program
       </div>
-      <div className="md:text-[40px] text-[20px] md:leading-[60px]">
+      <div className="md:text-[40px] text-[20px] md:leading-[60px] font-medium text-secondary-400">
         利用規約
       </div>
       <textarea
@@ -48,7 +48,7 @@ const Terms = () => {
       </div>
       <Button
         type="button"
-        className={`w-[16rem] h-[3.5rem] rounded-[30px] mt-6 sm:text-xl text-[16px] leading-[3.5rem] text-white
+        className={`w-[16rem] h-[3.5rem] rounded-[30px] mt-16 sm:text-xl text-[16px] leading-[3.5rem] text-white
           ${isChecked ? "bg-[#1779DE] " : "bg-[#B3B3B3]"}`}
         disabled={!isChecked}
         onClick={handleButtonClicked}

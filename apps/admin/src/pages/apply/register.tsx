@@ -57,13 +57,21 @@ const Register = () => {
 
   const [copyrightInfo, setCopyrightInfo] = useState<CopyrightInfo>({
     agreement: false,
-    copyrightHolder: "",
-    license: "",
-    file1: null,
-    file2: null,
-    file3: null,
-    file4: null,
+    copyrightHolder: [],
+    file1: "",
+    file2: "",
+    file3: "",
+    file4: "",
+    license: {
+      com: true,
+      adp: true,
+      der: true,
+      mer: true,
+      dst: true,
+      ncr: true,
+    },
   });
+
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
 
@@ -201,12 +209,23 @@ const Register = () => {
     setSwitchValue(switchValue + 1);
   };
 
+  const trackCreateContent = () => {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "create_content", {
+        event_category: "Content Creation",
+        event_label: "TCP Content",
+        value: 1,
+      });
+    }
+  };
+
   const postTCPData = async () => {
     const data: TcpFormType = {
       content: contentInfo,
       user: userInfo,
       copyright: copyrightInfo,
     };
+    trackCreateContent();
     registerTcp(data);
   };
 
@@ -251,7 +270,7 @@ const Register = () => {
 
   return (
     <div>
-      <div className="md:container px-6 mx-auto my-2 sm:pt-16 pt-8 px-0 md:px-20 font-normal">
+      <div className="md:container px-6 mx-auto my-2 sm:py-16 py-8 md:px-20 font-normal">
         <div className="flex flex-row justify-center mb-2">
           <TripleToggleSwitch
             labels={switchLabels}
@@ -331,11 +350,11 @@ const LoadingButton = ({
     );
   }
   return (
-    <div className="md:w-[568px] h-14 mx-auto flex flex-row justify-center gap-4">
+    <div className="md:w-[568px] md:h-14 h-[35px] mx-auto flex flex-row justify-center gap-4">
       <Button
         type="button"
-        className={`md:w-[268px] sm:w-[188px] w-[127px] h-14 text-[15px] text-xl leading-[56px] text-center text-[#1779DE] 
-              border border-[#1779DE] bg-transparent rounded-[30px] 
+        className={`md:w-[268px] sm:w-[188px] w-[127px] md:h-14 h-[35px] text-[15px] md:text-xl md:leading-[56px] text-center text-primary 
+              border border-primary bg-transparent rounded-[30px] 
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
         onClick={handleBack}
       >
@@ -344,7 +363,7 @@ const LoadingButton = ({
       <Button
         type="button"
         className={clsx(
-          `md:w-[268px] sm:w-[188px] w-[127px] h-14 md:text-xl text-[15px] leading-[56px] text-center text-white rounded-[30px] ${color}`,
+          `md:w-[268px] sm:w-[188px] w-[127px] md:h-14 h-[35px] md:text-xl text-[15px] md:leading-[56px] text-center text-white rounded-[30px] ${color}`,
         )}
         onClick={handleNext}
         disabled={disabled}

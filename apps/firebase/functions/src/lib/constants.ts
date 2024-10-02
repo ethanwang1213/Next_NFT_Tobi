@@ -43,6 +43,8 @@ export const FUNGIBLE_TOKEN_ADDRESS =
         process.env.FLOW_NETWORK === "testnet" ? "9a0766d93b6608b7" :
             "ee82856bf20e2aa6";
 
+export const REDEEM_LINK_CODE_EXPIRATION_TIME = 1000 * 60 * 60 * 24;
+
 /* eslint-disable max-len, no-irregular-whitespace */
 export const MAIL_HEAD = `
 <!DOCTYPE html>
@@ -395,3 +397,8 @@ export const MAIL_FOOT = `
 export const resetLimitTransactionDuration = 1 * 24 * 60 * 60 * 1000;
 export const numberOfLimitTransaction = 1000;
 export const resetLimitTransactionTime = 5;
+export const timeoutTime = 300;
+export const vpcName = "projects/tobiratory-f6ae1/locations/asia-northeast1/connectors/tobiratory-app";
+export const limitModelSize = 15; // this is limit of uploaded model size. 15MB
+export const allCharacter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+export const allTraffic = "ALL_TRAFFIC";

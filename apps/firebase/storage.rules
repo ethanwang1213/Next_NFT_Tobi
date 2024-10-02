@@ -33,6 +33,10 @@ service firebase.storage {
         allow delete: if request.auth != null
           && request.auth.uid == userId;
       }
+
+      match /item/uploaded/models/{modelId}/{fileName} {
+          allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+      }
     }
     // (Common) temporary folder. Old files are automatically deleted.
     match /tmp/users/{userId}/{fileName} {

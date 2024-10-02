@@ -3,7 +3,7 @@ import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
-import {increaseTransactionAmount, isEmptyObject, statusOfLimitTransaction, statusOfShowcase} from "./utils";
+import {convertBaseString, increaseTransactionAmount, isEmptyObject, statusOfLimitTransaction, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
@@ -44,11 +44,16 @@ export const signUp = async (req: Request, res: Response) => {
       });
       return;
     }
-    const username = email.split("@")[0];
+
+    // Get unique string using timestamp.
+    const timestamp = Date.now();
+    const randomString = convertBaseString(timestamp);
+    const username = "user-" + randomString;
     const userData = {
       uuid: uid,
       email: email,
       username: username,
+      user_id: username,
     };
     try {
       const savedUser = await prisma.accounts.upsert({
@@ -280,7 +285,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
     icon_url: account?.icon,
     sns: account?.sns,
     about_me: account?.aboutMe,
-    social_link: account?.socialLinks,
+    social_links: account?.socialLinks,
     gender: account?.gender,
     birth: account?.birth,
     gift_permission: account?.giftPermission,
@@ -460,7 +465,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
       image: "",
       url,
       description,
-      license,
       license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
     };
     try {
@@ -469,7 +473,11 @@ export const businessSubmission = async (req: Request, res: Response) => {
           data: businessData,
         });
         const savedContentData = await tx.contents.create({
-          data: contentData,
+          data: {...contentData,
+            license: {
+              create: license,
+            },
+          },
         });
         const copyrights = copyrightHolder.map((copyright: string)=>{
           return {

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ChangeEvent, MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
+import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
 
 const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
   const copyrightInfoChangeHandler = (field, value) => {
@@ -11,10 +12,13 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         ...copyrightInfo,
         [field]: value.replace(/^©/, "").substring(0, 255),
       });
-    } else if (field === "license") {
+    } else if (["com", "adp", "der","mer", "dst", "ncr"].includes(field)) {
       setCopyrightInfo({
         ...copyrightInfo,
-        [field]: value.substring(0, 255),
+        license: {
+          ...copyrightInfo.license,
+          [field]: value,
+        },
       });
     } else {
       setCopyrightInfo({ ...copyrightInfo, [field]: value });
@@ -63,7 +67,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
   return (
     <div className="text-title-color">
       <div className="md:mb-16 mb-6 text-center">
-        <span className="text-2xl md:mr-10">著作権情報</span>
+        <span className="sm:text-[40px] md:mr-10 font-medium">著作権情報</span>
       </div>
       <div className="flex flex-row items-center sm:justify-start justify-between">
         <span className="text-base sm:mr-[15px]">コピーライト（版権表記）</span>
@@ -77,7 +81,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             height={16}
             alt="information"
           />
-          <span className="text-[12px] ml-4">
+          <span className="text-[12px] ml-2">
             ここでは１つのみ提出してください。あとから追加・変更が可能です。
           </span>
         </div>
@@ -87,7 +91,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         <label
           className={clsx(
             "input flex items-center gap-1",
-            "w-[178px] h-8 pl-5",
+            "w-[370px] h-12 pl-5 ml-7",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color",
             "focus:outline-none focus-within:outline-none sm:focus-within:border-focus-color md:focus-within:border-focus-color",
             "text-sm font-normal text-input-color",
@@ -139,39 +143,94 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
           />
         </div>
       </div>
-      <div className="md:mb-[50px] mb-6 md:flex flex-row justify-between">
-        <div className={"flex flex-col"}>
-          <div className="flex flex-row mb-4 items-center sm:justify-start justify-between">
-            <span className="text-base mr-[15px]">
-              著作物に関するライセンス
-            </span>
+      <div className="md:flex flex-row justify-between">
+        <div className="flex flex-col md:text-nowrap">
+          <div className="mb-4 flex flex-row items-center sm:justify-start justify-between">
+            <p className="md:w-auto w-[80%] text-base sm:mr-8">
+              Default License
+            </p>
             <OptionMark />
           </div>
-          <div className="flex flex-row items-center md:mb-0 mb-4">
+          <div className="flex flex-row items-center gap-1">
             <Image
               src="/admin/images/info-icon-2.svg"
               width={16}
               height={16}
               alt="information"
             />
-            <span className="text-[12px] ml-4">あとから変更可能です。</span>
+            <span className="text-[12px] sm:ml-4">
+              It can be changed later.
+            </span>
           </div>
         </div>
-        <textarea
-          id="copyright_license"
-          className={clsx(
-            "md:w-[508px] w-full h-[137px] pl-5 pt-4 resize-none",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder="CC0"
-          value={copyrightInfo.license}
-          onChange={(e) =>
-            copyrightInfoChangeHandler("license", e.target.value)
-          }
-          ref={refs["license"]}
-        />
+      </div>
+      <div className="px-6 mt-6">
+        <div className="border rounded-lg p-6 border-primary text-primary">
+          <p className="text-[14px] font-bold">
+            Prohibited Actions under All Licenses
+          </p>
+          <div className="text-[12px]">
+            <p>&bull; Use that violates public order and morals.</p>
+            <p>
+              &bull; Use that significantly damages the image of our company,
+              products, or characters.
+            </p>
+            <p>
+              &bull; Use that harms or could potentially harm the social
+              reputation of the author of the work being used.
+            </p>
+            <p>
+              &bull; Use that infringes or could potentially infringe the rights
+              of others.
+            </p>
+            <p>
+              &bull; Use that creates or could create the misconception that we
+              support or endorse specific individuals, political parties,
+              religious organizations, etc.
+            </p>
+            <p>
+              &bull; Copying or reproducing works without adding substantial
+              modifications is considered “replication” and is prohibited.
+            </p>
+          </div>
+        </div>
+        <div className="mt-8">
+          <RadioButtonGroup
+            initialValue={copyrightInfo.license.com}
+            title="Commercial Use (COM/NCM)"
+            onChange={(value) => copyrightInfoChangeHandler("com", value)}
+          />
+          <hr className="pb-3 border-primary" />
+          <RadioButtonGroup
+            title="Adaptation (ADP)"
+            initialValue={copyrightInfo.license.adp}
+            onChange={(value) => copyrightInfoChangeHandler("adp", value)}
+          />
+          <hr className="pb-3 border-primary" />
+          <RadioButtonGroup
+            title="Derivative Works (DER)"
+            initialValue={copyrightInfo.license.der}
+            onChange={(value) => copyrightInfoChangeHandler("der", value)}
+          />
+          <hr className="pb-3 border-primary" />
+          <RadioButtonGroup
+            title="Merchandising (MER)"
+            initialValue={copyrightInfo.license.mer}
+            onChange={(value) => copyrightInfoChangeHandler("mer", value)}
+          />
+          <hr className="pb-3 border-primary" />
+          <RadioButtonGroup
+            title="Distribution for Free (DST)"
+            initialValue={copyrightInfo.license.dst}
+            onChange={(value) => copyrightInfoChangeHandler("dst", value)}
+          />
+          <hr className="pb-3 border-primary" />
+          <RadioButtonGroup
+            title="Credit Omission (NCR)"
+            initialValue={copyrightInfo.license.ncr}
+            onChange={(value) => copyrightInfoChangeHandler("ncr", value)}
+          />
+        </div>
       </div>
       <div className="flex flex-row justify-center items-center mt-6">
         <input
@@ -269,12 +328,15 @@ const FileUploadButton = ({
                 handleChange(index, true, null);
               }}
             >
-              <Image
-                src={`/admin/images/icon/cross.svg`}
-                alt={"clear file"}
-                width={16}
-                height={16}
-              />
+              <div
+                className="w-[16px] h-[16px] bg-base-content"
+                style={{
+                  WebkitMaskImage: "url(/admin/images/icon/cross.svg)",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  WebkitMaskSize: "contain",
+                }}
+              ></div>
             </button>
           </>
         )}

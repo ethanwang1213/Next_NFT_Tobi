@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { User } from "types/adminTypes";
 import Button from "ui/atoms/Button";
-import BackLInk from "ui/organisms/admin/BackLink";
+import BackLInk from "ui/molecules/BackLink";
 import { TermsOfService } from "./FlowAgreementWithEmailAndPassword";
 
 type Props = {
@@ -49,7 +49,7 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
           }
         />
         <div className={"mt-[30px]"}>
-          <AboutFlowAccount visible={true} />
+          <AboutFlowAccount />
         </div>
         <div className={"mt-[100px]"}>
           <TermsOfService
@@ -70,11 +70,7 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
   );
 };
 
-const AboutFlowAccount = ({ visible }: { visible: boolean }) => {
-  if (!visible) {
-    return <></>;
-  }
-
+const AboutFlowAccount = () => {
   return (
     <InfoLink
       url={"https://www.tobiratory.com/about"}

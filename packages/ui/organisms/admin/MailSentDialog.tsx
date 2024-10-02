@@ -14,14 +14,14 @@ const MailSentDialog = ({ dialogRef }: Props) => {
         </h3>
         <div className="text-xs sm:text-sm text-neutral-content">
           <p className="py-4">
-            サインイン認証のメールを記入されたアドレスへ送信しました。
+            ログイン認証のメールを記入されたアドレスへ送信しました。
             <br />
-            メールをご確認いただき、記載されたURLからサインインを完了させてください。
+            メールをご確認いただき、記載されたURLからログインを完了させてください。
           </p>
           <p className="font-bold">メールが届かない場合</p>
           <ul className="list-disc pl-6 mt-2">
             <li>迷惑メールフォルダやフィルターの設定をご確認ください。</li>
-            <li>時間をあけてから、再度サインインをお試しください。</li>
+            <li>時間をあけてから、再度ログインをお試しください。</li>
           </ul>
         </div>
         <div className="modal-action">

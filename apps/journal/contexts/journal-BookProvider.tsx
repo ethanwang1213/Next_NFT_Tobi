@@ -21,6 +21,7 @@ import NftPage from "../components/pages/NftPage/NftPage";
 import ProfilePage0 from "../components/pages/ProfilePage/ProfilePage0";
 import ProfilePage1 from "../components/pages/ProfilePage/ProfilePage1";
 import RedeemPage from "../components/pages/RedeemPage/RedeemPage";
+import SettingPage from "../components/pages/SettingPage/SettingPage";
 import { useHoldNfts } from "./journal-HoldNftsProvider";
 
 type Props = {
@@ -73,6 +74,10 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       start: 0,
       end: 0,
     },
+    settingPage: {
+      start: 0,
+      end: 0,
+    },
   });
 
   const router = useRouter();
@@ -101,6 +106,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const profilePageNum = 2;
+    const redeemPageNum = 2;
 
     const nekoLength =
       process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true"
@@ -125,6 +131,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
     const nekoPageIndex = profilePageIndex + profilePageNum;
     const nftPageIndex = nekoPageIndex + nekoPageNum;
     const redeemPageIndex = nftPageIndex + nftPageNum;
+    const settingPageIndex = redeemPageIndex + redeemPageNum;
 
     // nekoやnftのページ数が増えたとき、それより後ろにいる場合は追加分だけページ番号をずらす
     const nekoIncreases =
@@ -158,6 +165,10 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
         start: redeemPageIndex,
         end: redeemPageIndex + 1,
       },
+      settingPage: {
+        start: settingPageIndex,
+        end: settingPageIndex + 1,
+      },
     });
 
     // 各ページを生成し配列に格納する
@@ -175,6 +186,8 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       )),
       <RedeemPage pageNum={0} key={redeemPageIndex + 0} />,
       <RedeemPage pageNum={1} key={redeemPageIndex + 1} />,
+      <SettingPage pageNum={0} key={settingPageIndex + 0} />,
+      <SettingPage pageNum={1} key={settingPageIndex + 1} />,
     ]);
 
     // 各ページの開始ページ番号にタグを設定
@@ -191,6 +204,10 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       {
         image: "/journal/images/icon/Serial_journal.svg",
         page: redeemPageIndex,
+      },
+      {
+        image: "/journal/images/icon/Setting_journal.svg",
+        page: settingPageIndex,
       },
       {
         image: "/journal/images/icon/logout_journal.svg",
@@ -243,7 +260,7 @@ export const BookProvider: React.FC<Props> = ({ children }) => {
       />
       <div className="modal">
         <div className="modal-box p-8">
-          <h3 className="font-bold text-xl pb-6 text-center text-accent">
+          <h3 className="font-bold text-xl pb-6 text-center text-text-1000">
             ログアウトしますか？
           </h3>
           <div className="flex flex-col gap-3">

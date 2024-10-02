@@ -1,5 +1,5 @@
 import Image from "next/image";
-import BackLink from "ui/organisms/admin/BackLink";
+import BackLink from "ui/molecules/BackLink";
 import { InfoLink } from "ui/templates/admin/FlowAgreementWithSnsAccount";
 
 type Props = {

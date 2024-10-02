@@ -18,8 +18,11 @@ export const useTcpRegistration = (setError: (arg: string | null) => void) => {
         data.copyright.file3,
         data.copyright.file4,
       ];
-      const fileNames = files.map((file) => replaceFileName(file?.name));
-      await uploadFiles(files, fileNames, filePath);
+      const validFiles = files.filter(
+        (file): file is File => file instanceof File,
+      );
+      const fileNames = validFiles.map((file) => replaceFileName(file.name));
+      await uploadFiles(validFiles, fileNames, filePath);
       const res = await postTcpData(data, fileNames);
       if (res.ok) {
         setResponse("登録が完了しました。");

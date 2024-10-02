@@ -1,3 +1,5 @@
+///////////////////////////////////////
+// types for 3D space
 export const ShowcaseType = {
   First: 1,
   Second: 2,
@@ -5,9 +7,12 @@ export const ShowcaseType = {
 } as const;
 export type ShowcaseType = (typeof ShowcaseType)[keyof typeof ShowcaseType];
 
+///////////////////////////////////////
+// partial types for item
 export const ItemType = {
   Sample: 0,
   DigitalItemNft: 1,
+  DefaultItem: 2,
 } as const;
 export type ItemType = (typeof ItemType)[keyof typeof ItemType];
 
@@ -16,6 +21,7 @@ export const ModelType = {
   AcrylicStand: 2,
   CanBadge: 3,
   MessageCard: 4,
+  UserUploadedModel: 5,
 } as const;
 export type ModelType = (typeof ModelType)[keyof typeof ModelType];
 
@@ -66,15 +72,34 @@ export type WorkspaceTextureParamForLoading = {
   materialUrl?: string;
 };
 
+export type ItemName = {
+  itemName: string;
+};
+
+type ItemNameForLoading = {
+  name: string;
+};
+
+type SampleName = {
+  sampleName: string;
+};
+
+type NftName = {
+  nftName: string;
+};
+
 export type DebugFlag = {
   isDebug?: boolean;
 };
 
+///////////////////////////////////////
+// types for item base data
 export type ItemBaseData = ItemTypeParam &
   ItemBaseId &
   ModelParams &
   TextureParam &
   ParentId &
+  ItemName &
   DebugFlag;
 export type SampleBaseData = Omit<ItemBaseData, "itemType">;
 export type NftBaseData = Omit<ItemBaseData, "itemType" | "imageUrl">;
@@ -84,70 +109,92 @@ export type WorkspaceSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   WorkspaceTextureParamForLoading &
   ParentId &
+  ItemNameForLoading &
   DebugFlag;
-type SampleBaseDataForLoading = SampleBaseIdForLoading &
+export type ShowcaseSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
+  ItemNameForLoading &
   DebugFlag;
-export type ShowcaseSampleBaseDataForLoading = SampleBaseDataForLoading;
-export type SampleBaseDataForPlacing = SampleBaseDataForLoading;
+export type SampleBaseDataForPlacing = SampleBaseIdForLoading &
+  ModelParams &
+  TextureParam &
+  ParentId &
+  SampleName &
+  DebugFlag;
 
 // nft base data for loading
 export type NftBaseDataForLoading = NftBaseIdForLoading &
   ModelParams &
   TextureParam &
   ParentId &
+  ItemNameForLoading &
   DebugFlag;
-export type NftBaseDataForPlacing = NftBaseDataForLoading;
+export type NftBaseDataForPlacing = NftBaseIdForLoading &
+  ModelParams &
+  TextureParam &
+  ParentId &
+  NftName &
+  DebugFlag;
 
-// item data for arrangement
+///////////////////////////////////////
+// types for additional item data for arrangement
+
 export type ItemId = {
   id: number;
 };
 
-export type ItemPosture = {
-  stageType: UnityStageType;
+export type ItemTransform = {
   position: Vector3;
   rotation: Vector3;
   scale: number;
 };
 
+export type ItemTransformWithStageType = ItemTransform & {
+  stageType: UnityStageType;
+};
+
 export type SaidanItemData = ItemBaseData &
   ItemId &
-  ItemPosture & {
+  ItemTransformWithStageType & {
     canScale: boolean;
     itemMeterHeight: number;
   };
 
-// sample load data
+///////////////////////////////////////
+// types for load data with arrangement
 export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
   ItemId &
-  ItemPosture;
+  ItemTransformWithStageType;
 export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
   ItemId &
-  ItemPosture;
+  ItemTransformWithStageType;
 
 // nft load data
 export type NftLoadData = NftBaseDataForLoading &
   ItemId &
-  ItemPosture & {
+  ItemTransformWithStageType & {
     itemMeterHeight: number;
   };
 
-export type ItemSaveData = ItemBaseId & ItemId & ItemPosture;
+///////////////////////////////////////
+// types for item save data
+export type ItemSaveData = ItemBaseId & ItemId & ItemTransformWithStageType;
 
-type RoomSurfaceParams = {
+///////////////////////////////////////
+// types for settings data
+export type RoomSurfaceParams = {
   tint: string;
 };
-type WallpaperSettings = RoomSurfaceParams;
-type FloorSettings = RoomSurfaceParams;
+export type WallpaperSettings = RoomSurfaceParams;
+export type FloorSettings = RoomSurfaceParams;
 
-type LightParams = {
+export type LightParams = {
   tint: string;
   brightness: number;
 };
-type LightSettings = {
+export type LightSettings = {
   sceneLight: LightParams;
   pointLight: LightParams;
 };
@@ -158,8 +205,33 @@ export type SaidanSettings = {
   lighting: LightSettings;
 };
 
+///////////////////////////////////////
+// types for update settings
+const SliderUpdatePhase = {
+  Updating: 0,
+  Ended: 1,
+} as const;
+type SliderUpdatePhase =
+  (typeof SliderUpdatePhase)[keyof typeof SliderUpdatePhase];
+
+export const SettingsUpdatePhase = SliderUpdatePhase;
+export type SettingsUpdatePhase =
+  (typeof SettingsUpdatePhase)[keyof typeof SettingsUpdatePhase];
+
+export type UpdatingSaidanSettings = SaidanSettings & {
+  phase: SettingsUpdatePhase;
+};
+
 export type ShowcaseSettings = SaidanSettings;
 
+///////////////////////////////////////
+// types for update item transform
+export const ItemTransformUpdatePhase = SliderUpdatePhase;
+export type ItemTransformUpdatePhase =
+  (typeof ItemTransformUpdatePhase)[keyof typeof ItemTransformUpdatePhase];
+
+///////////////////////////////////////
+// types for undo redo
 export const ActionType = {
   AddItem: 0,
   RemoveItem: 1,

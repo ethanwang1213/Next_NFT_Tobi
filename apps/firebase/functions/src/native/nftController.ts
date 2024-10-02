@@ -6,7 +6,7 @@ import {TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import {giftStatus, increaseTransactionAmount, mintStatus, statusOfLimitTransaction} from "./utils";
+import {giftStatus, increaseTransactionAmount, isEmptyObject, mintStatus, statusOfLimitTransaction, notificationBatchStatus} from "./utils";
 import * as fcl from "@onflow/fcl";
 
 fcl.config({
@@ -54,9 +54,29 @@ export const mintNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
-      for (let i = 0; i < intAmount; i++) {
-        await mint(id, uid, fcmToken, modelUrl);
-      }
+      const notificationBatchId = await generateNotificationBatchId(fcmToken);
+      let mintCount = 0;
+      let intervalId: NodeJS.Timeout | null = null;
+      intervalId = setInterval(async () => {
+        if (mintCount >= intAmount) {
+          clearInterval(intervalId as NodeJS.Timeout);
+          intervalId = null;
+          return;
+        }
+        console.log("mintStart", intervalId, mintCount, intAmount);
+        mint(id, uid, notificationBatchId, modelUrl);
+        console.log("mintEnd", intervalId, mintCount, intAmount);
+        mintCount++;
+      }, 1000);
+      pushToDevice(fcmToken, {
+        title: "NFTの作成を開始しました",
+        body: "作成完了までしばらくお待ちください",
+      }, {
+        body: JSON.stringify({
+          type: "mintBegan",
+          data: {id: id},
+        }),
+      });
       res.status(200).send({
         status: "success",
         data: "NFT is minting",
@@ -91,7 +111,15 @@ class MintError extends Error {
   }
 }
 
-export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: string) => {
+export const mint = async (id: string, uid: string, notificationBatchId: number, modelUrl: string) => {
+  const notificationBatch = await prisma.notification_batch.findUnique({
+    where: {
+      id: notificationBatchId,
+    },
+  });
+  if (!notificationBatch) {
+    throw new MintError(404, "NotificationBatch does not found");
+  }
   const digitalItem = await prisma.digital_items.findUnique({
     where: {
       id: parseInt(id),
@@ -107,6 +135,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
           flow_account: true,
         },
       },
+      license: true,
     },
   });
   if (!digitalItem) {
@@ -182,7 +211,7 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         digitalItemId,
         digitalItemNftId: undefined,
         metadata,
-        fcmToken,
+        notificationBatchId,
       },
     };
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
@@ -199,6 +228,8 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
     const nft = await prisma.digital_item_nfts.create({
       data: {
         digital_item_id: digitalItem.id,
+        notification_batch_id: notificationBatchId,
+        notified: false,
         nft_owner: {
           create: {
             account_uuid: uid,
@@ -218,22 +249,12 @@ export const mint = async (id: string, uid: string, fcmToken: string, modelUrl: 
         digitalItemNftId: nft.id,
         digitalItemId,
         metadata,
-        fcmToken,
+        notificationBatchId,
       },
     };
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
     console.log(`Message ${messageId} published.`);
   }
-
-  pushToDevice(fcmToken, {
-    title: "NFTの作成を開始しました",
-    body: "作成完了までしばらくお待ちください",
-  }, {
-    body: JSON.stringify({
-      type: "mintBegan",
-      data: {id: digitalItemId},
-    }),
-  });
 };
 
 export const giftNFT = async (req: Request, res: Response) => {
@@ -264,7 +285,8 @@ export const giftNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
-      await gift(parseInt(id), uid, receiveFlowId, fcmToken);
+      const notificationBatchId = await generateNotificationBatchId(fcmToken);
+      await gift(parseInt(id), uid, receiveFlowId, notificationBatchId);
       res.status(200).send({
         status: "success",
         data: "NFT is gifting",
@@ -319,7 +341,8 @@ export const deleteMyNFT = async (req: Request, res: Response) => {
       return;
     }
     try {
-      await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", fcmToken);
+      const notificationBatchId = await generateNotificationBatchId(fcmToken);
+      await gift(parseInt(id), uid, process.env.FLOW_TRASH_BOX_ACCOUNT_ADDRESSES || "", notificationBatchId);
       res.status(200).send({
         status: "success",
         data: "NFT is deleting",
@@ -354,7 +377,15 @@ class GiftError extends Error {
   }
 }
 
-export const gift = async (id: number, uid: string, receiveFlowId: string, fcmToken: string) => {
+export const gift = async (id: number, uid: string, receiveFlowId: string, notificationBatchId: number) => {
+  const notificationBatch = await prisma.notification_batch.findUnique({
+    where: {
+      id: notificationBatchId,
+    },
+  });
+  if (!notificationBatch) {
+    throw new GiftError(404, "NotificationBatch does not found");
+  }
   const digitalItemNft = await prisma.digital_item_nfts.findUnique({
     where: {
       id: id,
@@ -386,13 +417,14 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
   if (digitalItemNft.gift_status !== giftStatus.none) {
     throw new GiftError(401, "This NFT is gifting now");
   }
+  const fcmToken = notificationBatch.fcm_token;
   const flowJobId = uuidv4();
   const message = {
     flowJobId, txType: "giftNFT", params: {
       tobiratoryAccountUuid: uid,
       digitalItemNftId: digitalItemNft.id,
       receiveFlowId,
-      fcmToken,
+      notificationBatchId,
     },
   };
   const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
@@ -412,6 +444,16 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, fcmTo
       data: {id: id},
     }),
   });
+};
+
+export const generateNotificationBatchId = async (fcmToken: string) => {
+  const column = await prisma.notification_batch.create({
+    data: {
+      status: notificationBatchStatus.progress,
+      fcm_token: fcmToken,
+    },
+  });
+  return column.id;
 };
 
 export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
@@ -621,6 +663,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
             include: {
               account: {
                 include: {
+                  flow_account: true,
                   business: {
                     include: {
                       content: true,
@@ -648,6 +691,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
                 },
                 take: 1,
               },
+              license: true,
             },
           },
         },
@@ -662,6 +706,39 @@ export const getNftInfo = async (req: Request, res: Response) => {
       const copyrights = nftData.digital_item.copyrights.map((relate) => {
         return relate.copyright.name;
       });
+      const owners:{
+        [key: number]: string;
+      } = await getOwnershipHistory(nftData.nft_owner?.account?.flow_account?.flow_address??"", nftData.flow_nft_id??0);
+      console.log(owners);
+
+      let acquiredDate = new Date();
+      let ownerHistory: {
+        avatarUrl: string | null | undefined;
+        uuid: string | undefined;
+        flowAddress: string;
+        acquiredDate: Date;
+      }[] = [];
+      if (isEmptyObject(owners)) {
+        acquiredDate = new Date(Object.keys(owners)[0]);
+        ownerHistory = await Promise.all(
+            Object.entries(owners).map(async ([key, owner])=>{
+              const ownerData = await prisma.flow_accounts.findFirst({
+                where: {
+                  flow_address: owner,
+                },
+                include: {
+                  account: true,
+                },
+              });
+              return {
+                avatarUrl: ownerData?.account.icon_url,
+                uuid: ownerData?.account_uuid,
+                flowAddress: owner,
+                acquiredDate: new Date(key),
+              };
+            })
+        );
+      }
       const returnData = {
         content: nftData.nft_owner?.account?.business?.content != null ? {
           name: nftData.nft_owner?.account?.business?.content.name,
@@ -674,6 +751,8 @@ export const getNftInfo = async (req: Request, res: Response) => {
         license: nftData.digital_item.license,
         certImageUrl: "",
         sn: nftData.serial_no,
+        acquiredDate: acquiredDate,
+        owners: ownerHistory,
       };
       res.status(200).send({
         status: "success",

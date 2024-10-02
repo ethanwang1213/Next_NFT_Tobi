@@ -128,7 +128,7 @@ const Authentication = () => {
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error("Googleサインインに失敗しました。", error);
+      console.error("Googleログインに失敗しました。", error);
     }
   };
 
@@ -138,7 +138,7 @@ const Authentication = () => {
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error("Appleサインインに失敗しました。", error);
+      console.error("Appleログインに失敗しました。", error);
     }
   };
 
@@ -194,7 +194,7 @@ const Authentication = () => {
           googleLabel={"Googleでサインアップ"}
           appleLabel={"Appleでサインアップ"}
           mailLabel={"サインアップ"}
-          prompt={"既にアカウントを持っていますか？ - サインイン"}
+          prompt={"既にアカウントを持っていますか？ - ログイン"}
           setAuthState={() => setAuthState(AuthStates.SignIn)}
           withMail={startMailSignUp}
           withGoogle={withGoogle}
@@ -205,9 +205,9 @@ const Authentication = () => {
       return (
         <AuthTemplate
           loading={isEmailLoading}
-          googleLabel={"Googleでサインイン"}
-          appleLabel={"Appleでサインイン"}
-          mailLabel={"サインイン"}
+          googleLabel={"Googleでログイン"}
+          appleLabel={"Appleでログイン"}
+          mailLabel={"ログイン"}
           prompt={"アカウントを持っていませんか？ - 新規登録"}
           setAuthState={() => setAuthState(AuthStates.SignUp)}
           withMail={startMailSignIn}

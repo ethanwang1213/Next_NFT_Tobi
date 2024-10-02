@@ -1,10 +1,10 @@
+import { useBookContext } from "@/contexts/journal-BookProvider";
 import { useEditProfile } from "@/contexts/journal-EditProfileProvider";
-import IconCrop from "./sub/IconCrop";
-import { Area } from "react-easy-crop";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useMemo } from "react";
-import { useBookContext } from "@/contexts/journal-BookProvider";
+import { useMemo } from "react";
+import { Area } from "react-easy-crop";
+import IconCrop from "./sub/IconCrop";
 
 type Props = {};
 
@@ -30,7 +30,7 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
     () =>
       pages.current.length > 0 &&
       pageNo.current === bookIndex.profilePage.start,
-    [pages.current, pageNo.current]
+    [pages.current, pageNo.current], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   if (!isProfilePage0) {
@@ -48,7 +48,7 @@ const CropNewIconModal: React.FC<Props> = ({}) => {
         checked={isCropModalOpen.current}
         onChange={() => {}}
       />
-      <div className="modal">
+      <div className="modal backdrop-blur-[16.35px]">
         <div className="modal-box max-w-full max-h-full w-full h-full pt-10 pb-8">
           <button
             className="btn btn-ghost btn-sm btn-circle absolute right-2 top-2 text-accent z-10"

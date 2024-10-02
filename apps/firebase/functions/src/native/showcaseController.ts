@@ -457,6 +457,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       let sampleItemList: {
         id: number;
         itemId: number;
+        name: string;
         modelType: number;
         modelUrl: string;
         thumbUrl: string;
@@ -481,6 +482,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           sampleItemList = [...sampleItemList, {
             id: relationSample.id,
             itemId: sampleData.id,
+            name: sampleData.digital_item.name??"",
             modelType: digitalData.type,
             modelUrl: digitalData.model_url,
             thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
@@ -503,6 +505,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       let nftItemList:{
         id: number;
         itemId: number;
+        name: string;
         modelType: number;
         modelUrl: string;
         thumbUrl: string;
@@ -529,6 +532,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           nftItemList = [...nftItemList, {
             id: relationNft.id,
             itemId: nftData.id,
+            name: nftData.digital_item.name??"",
             modelType: digitalData.type,
             modelUrl: digitalData.model_url,
             thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,

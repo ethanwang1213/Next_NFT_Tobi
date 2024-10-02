@@ -3,7 +3,7 @@ import Image from "next/image";
 import { SetStateAction, useState } from "react";
 import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
-import BackLink from "ui/organisms/admin/BackLink";
+import BackLink from "ui/molecules/BackLink";
 import { LoadingSpinnerButton } from "../AuthTemplate";
 
 export const PageType = {
@@ -211,7 +211,7 @@ const FlowAgreementWithEmailAndPassword = ({
           />
         </div>
         <div className={"mt-[10px]"}>
-          <FirebaseAuthError error={authError} />
+          {authError && <FirebaseAuthError error={authError} />}
         </div>
         <div className={"mt-[20px]"}>
           <LoadingSpinnerButton

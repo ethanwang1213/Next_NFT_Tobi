@@ -4,7 +4,8 @@
  * @returns {boolean} The if obj is empty.
  */
 
-import {numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime} from "../lib/constants";
+import AdmZip from "adm-zip";
+import {allCharacter, numberOfLimitTransaction, resetLimitTransactionDuration, resetLimitTransactionTime} from "../lib/constants";
 import {prisma} from "../prisma";
 
 export function isEmptyObject(obj: object): boolean {
@@ -49,6 +50,12 @@ export const giftStatus = {
   none: 0,
   error: 1,
   gifting: 2,
+};
+
+export const notificationBatchStatus = {
+  error: 0,
+  progress: 1,
+  completed: 2,
 };
 
 export enum statusOfLimitTransaction {
@@ -96,3 +103,36 @@ export async function increaseTransactionAmount(uuid: string): Promise<statusOfL
   });
   return statusOfLimitTransaction.permitted;
 }
+
+export const allowedExtension = [
+  ".gltf", ".bin", ".png", ".jpg", ".jpeg", ".DS_Store",
+];
+
+export const base64Pattern = /^[A-Za-z0-9+/]+={0,2}$/;
+
+export const checkUri = (uri: string, entries: AdmZip.IZipEntry[], modelName: string) => {
+  let flag = false;
+  const modelDir = modelName.replace(modelName.split("/").pop()??"", "");
+  for (const entry of entries) {
+    const entryName = entry.entryName;
+    if (entryName==(modelDir+uri)) {
+      flag = true;
+      return entryName;
+    }
+  }
+  return flag;
+};
+
+export const convertBaseString = (num: number): string => {
+  let result = "";
+
+  if (num === 0) return "0"; // Edge case for zero
+
+  while (num > 0) {
+    const remainder = num % allCharacter.length;
+    result = allCharacter[remainder] + result;
+    num = Math.floor(num / allCharacter.length);
+  }
+
+  return result;
+};

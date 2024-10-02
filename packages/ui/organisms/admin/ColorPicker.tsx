@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
+import { useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 
 interface ColorPickerProps {
@@ -14,6 +15,15 @@ const ColorPicker = ({
 }: ColorPickerProps) => {
   const [color, setColor] = useState<string>(initialColor);
   const [showPicker, setShowPicker] = useState<boolean>(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  const { pauseUnityInputs, resumeUnityInputs } = useShowcaseEditUnity();
+
+  useEffect(() => {
+    if (!showPicker) {
+      setColor(initialColor);
+    }
+  }, [initialColor, showPicker]);
 
   const handleColorChange = (newColor: string) => {
     setColor(newColor);
@@ -24,8 +34,35 @@ const ColorPicker = ({
     setShowPicker(!showPicker);
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = event.target.value;
+    setColor(newColor);
+    onColorChanged(newColor);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        pickerRef.current &&
+        !pickerRef.current.contains(event.target as Node)
+      ) {
+        setShowPicker(false);
+      }
+    };
+
+    if (showPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showPicker]);
+
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-4" ref={pickerRef}>
       {/* Text */}
       {mode && (
         <div className="text-[16px] font-[700] leading-[20px] w-[92px]">
@@ -39,8 +76,15 @@ const ColorPicker = ({
       )}
 
       {/* Color container */}
-      <div className="w-[144px] h-[32px] rounded-[5px] bg-[#A5A1A1] flex items-center justify-between px-4 font-[400]">
-        <span>{color}</span>
+      <div className="w-[144px] h-[32px]">
+        <input
+          type="text"
+          value={color}
+          onChange={handleInputChange}
+          onFocus={pauseUnityInputs}
+          onBlur={resumeUnityInputs}
+          className="w-full h-full border-none outline-none rounded-[5px] bg-[#A5A1A1] flex items-center justify-between px-4 font-[400]"
+        />
       </div>
 
       <div

@@ -3,6 +3,7 @@ name: Deploy Admin Preview on Vercel
 on:
   pull_request:
     types: [opened]
+  workflow_dispatch:
 
 jobs:
   deploy-admin-preview:

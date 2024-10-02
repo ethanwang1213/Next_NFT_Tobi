@@ -59,11 +59,19 @@ access(all) contract HouseBadge: NonFungibleToken {
         }
     }
 
+    access(all) resource Admin {
+        access(all) fun rename(nft: &NFT, newName: String) {
+            nft.rename(newName: newName)
+        }
+    }
+
     access(all) resource interface CollectionPublic {
         access(all) view fun borrow(id: UInt64): &NFT?
     }
 
-    access(all) resource Collection: NonFungibleToken.Collection, CollectionPublic {
+    access(all) resource interface Renameable {}
+
+    access(all) resource Collection: NonFungibleToken.Collection, CollectionPublic, Renameable {
         access(all) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
         init() {
@@ -173,6 +181,12 @@ access(all) contract HouseBadge: NonFungibleToken {
         }
     }
 
+    access(all) fun createAdmin() {
+        if self.account.storage.borrow<&Admin>(from: /storage/HouseBadgeAdmin) == nil {
+            self.account.storage.save(<- create Admin(), to: /storage/HouseBadgeAdmin)
+        }
+    }
+
     // access(all) fun minter(): Capability<&Minter> {
     //     return self.account.getCapability<&Minter>(self.minterPublicPath)
     // }
@@ -187,6 +201,11 @@ access(all) contract HouseBadge: NonFungibleToken {
 
         if self.account.storage.borrow<&Minter>(from: self.minterStoragePath) == nil {
             self.account.storage.save(<- create Minter(), to: self.minterStoragePath)
+        }
+
+        if self.account.storage.borrow<&Admin>(from: /storage/HouseBadgeAdmin) == nil {
+            let admin <- create Admin()
+            self.account.storage.save(<- admin, to: /storage/HouseBadgeAdmin)
         }
 
         if self.account.storage.borrow<&HouseBadge.Collection>(from: HouseBadge.collectionStoragePath) == nil {

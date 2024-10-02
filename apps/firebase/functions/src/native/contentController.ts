@@ -48,6 +48,11 @@ export const getContentById = async (req: Request, res: Response) => {
         include: {
           showcase_template: {},
           showcase_sample_items: {
+            where: {
+              sample_item: {
+                is_deleted: false,
+              },
+            },
             include: {
               sample_item: {
                 include: {
@@ -265,6 +270,11 @@ export const getContentByUuid = async (req: Request, res: Response) => {
         include: {
           showcase_template: true,
           showcase_sample_items: {
+            where: {
+              sample_item: {
+                is_deleted: false,
+              },
+            },
             include: {
               sample_item: {
                 include: {
@@ -431,7 +441,14 @@ export const getContentByUuid = async (req: Request, res: Response) => {
 export const updateMyContentInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {name, description, license, copyrightHolders, image, sticker}:
-    { name?: string, description?: string, license?: string, copyrightHolders?: {id: number|null, name: string}[], image?: string, sticker?: string } = req.body;
+    { name?: string, description?: string, license?: {
+      com: boolean,
+      adp: boolean,
+      der: boolean,
+      dst: boolean,
+      mer: boolean,
+      ncr: boolean,
+    }, copyrightHolders?: {id: number|null, name: string}[], image?: string, sticker?: string } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -482,13 +499,16 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
         data: {
           changed_name: name,
           description: description,
-          license: license,
+          license: {
+            update: license,
+          },
           image: image,
           sticker: sticker,
           changed_name_time: name==undefined?undefined:new Date(),
         },
         include: {
           copyrights: true,
+          license: true,
         },
       });
       if (copyrightHolders) {
@@ -571,6 +591,7 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
             include: {
               reported_contents: true,
               copyrights: true,
+              license: true,
             },
           },
         },
