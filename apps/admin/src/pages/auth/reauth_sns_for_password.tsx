@@ -21,6 +21,7 @@ const ReauthSnsForPassword = () => {
       return;
     }
     setProviderId(param);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClickBack = () => {

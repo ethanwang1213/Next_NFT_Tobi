@@ -86,8 +86,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       shouldRedirectToVerifiedEmailPath
     ) {
       setShouldRedirectToVerifiedEmailPath(false);
-      Router.push(VERIFIED_EMAIL_PATH.replace("/admin", ""));
+      router.push(VERIFIED_EMAIL_PATH.replace("/admin", ""));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   useEffect(() => {
@@ -213,6 +214,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       }
     });
     return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unrestrictedPaths]);
 
   const emailLinkOnly = (signInMethods: string[]) => {

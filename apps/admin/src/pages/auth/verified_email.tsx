@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "ui/atoms/Button";
-import BackLink from "ui/organisms/admin/BackLink";
+import BackLink from "ui/molecules/BackLink";
 
 const VerifiedEmail = () => {
   const router = useRouter();

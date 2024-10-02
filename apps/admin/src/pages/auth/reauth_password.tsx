@@ -34,6 +34,7 @@ const ReauthPassword = () => {
     }
 
     setProvider(targetProvider);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getProvider = (providerId: ProviderId) => {

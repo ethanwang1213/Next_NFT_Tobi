@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ReactNode } from "react";
-import BackLink from "ui/organisms/admin/BackLink";
+import BackLink from "ui/molecules/BackLink";
 
 export const Position = {
   Top: 0,

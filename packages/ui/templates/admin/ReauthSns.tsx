@@ -27,6 +27,7 @@ const ReauthSns = ({
     }
 
     onClickNext();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userCredential]);
 
   return (

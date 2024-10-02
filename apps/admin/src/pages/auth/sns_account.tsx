@@ -9,12 +9,13 @@ import useUnlinkProvider from "hooks/useUnlinkProvider";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { ProviderId } from "types/adminTypes";
 import AppleIcon from "ui/atoms/AppleIcon";
 import Button from "ui/atoms/Button";
 import GoogleIcon from "ui/atoms/GoogleIcon";
 import Loading from "ui/atoms/Loading";
-import BackLink from "ui/organisms/admin/BackLink";
+import BackLink from "ui/molecules/BackLink";
 
 const PageStates = {
   List: 0,
@@ -44,6 +45,7 @@ const SnsAccount = () => {
       [ProviderId.GOOGLE]: false,
       [ProviderId.APPLE]: false,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   switch (providerState) {
@@ -74,7 +76,18 @@ const ConfirmDisconnect = ({
     if (result) {
       onClickBack();
     }
-  }, [result, error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
+
+  useEffect(() => {
+    if (error) {
+      if (error instanceof String) {
+        toast(error);
+      } else {
+        toast(error.toString());
+      }
+    }
+  }, [error]);
 
   return (
     <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">

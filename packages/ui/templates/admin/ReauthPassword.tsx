@@ -69,6 +69,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
     }
 
     onClickNext();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userCredential]);
 
   return (
