@@ -573,10 +573,10 @@ export const useSaidanLikeUnityContextBase = ({
         messageBody.itemId === -1
           ? null
           : {
+              ...messageBody,
               positionOnPlane,
               rotationAngle,
               scale,
-              ...messageBody,
               digitalItemId,
             },
       );
@@ -587,7 +587,7 @@ export const useSaidanLikeUnityContextBase = ({
   return {
     // states
     unityProvider,
-    isLoaded,
+    isLoaded: isSaidanSceneLoaded,
     isDragging,
     selectedItem,
     isUndoable,
