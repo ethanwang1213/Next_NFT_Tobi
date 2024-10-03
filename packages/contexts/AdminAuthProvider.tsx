@@ -6,6 +6,7 @@ import {
   fetchSignInMethodsForEmail,
   onAuthStateChanged,
 } from "firebase/auth";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Router, { useRouter } from "next/router";
 import React, {
   createContext,
@@ -15,22 +16,33 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { User } from "types/adminTypes";
+import { ProviderId, User } from "types/adminTypes";
 import Loading from "ui/atoms/Loading";
 
 type Props = {
   children: ReactNode;
 };
 
+type ReauthStatus = {
+  [ProviderId.GOOGLE]: boolean;
+  [ProviderId.APPLE]: boolean;
+};
+
 // AuthContextのデータ型
 type ContextType = {
   user?: User;
+  reauthStatus: ReauthStatus;
   signOut: () => Promise<void>;
   finishFlowAccountRegistration: () => void;
   finishBusinessAccountRegistration: () => void;
+  setReauthStatus: React.Dispatch<React.SetStateAction<ReauthStatus>>;
+  updateUserEmail: (email: string) => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
+
+export const PASSWORD_RESET_PATH = "/admin/auth/password_reset";
+export const VERIFIED_EMAIL_PATH = "/admin/auth/verified_email";
 
 /**
  * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー
@@ -40,12 +52,44 @@ const AuthContext = createContext<ContextType>({} as ContextType);
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   // ユーザー情報を格納するstate
   const [user, setUser] = useState<User | null>(null);
+  const [
+    shouldRedirectToVerifiedEmailPath,
+    setShouldRedirectToVerifiedEmailPath,
+  ] = useState<boolean>(false);
+  const [reauthStatus, setReauthStatus] = useState<ReauthStatus>({
+    [ProviderId.GOOGLE]: false,
+    [ProviderId.APPLE]: false,
+  });
   const router = useRouter();
   const unrestrictedPaths = useMemo(
-    () => ["/authentication", "/auth/password_reset"],
+    () => [
+      "/authentication",
+      "/auth/password_reset",
+      "/auth/confirmation_email_for_auth_page",
+    ],
     [],
   );
-  const maxNameLength = 12;
+  const apiUrl = "native/my/profile";
+  const { postData: saveEmail } = useRestfulAPI(null);
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    // Enable navigation to VERIFIED_EMAIL_PATH after logging in.
+    if (VERIFIED_EMAIL_PATH.endsWith(router.pathname) && !user) {
+      setShouldRedirectToVerifiedEmailPath(true);
+    } else if (
+      !VERIFIED_EMAIL_PATH.endsWith(router.pathname) &&
+      user &&
+      shouldRedirectToVerifiedEmailPath
+    ) {
+      setShouldRedirectToVerifiedEmailPath(false);
+      router.push(VERIFIED_EMAIL_PATH.replace("/admin", ""));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   useEffect(() => {
     // ログイン状態の変化を監視
@@ -71,9 +115,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
               auth.signOut();
             },
           );
+
+          if (
+            firebaseUser.emailVerified &&
+            firebaseUser.email !== profile.data.email
+          ) {
+            await saveEmail(apiUrl, {
+              account: {
+                email: firebaseUser.email,
+              },
+            });
+          }
+
           await createUser(
             profile.data.userId,
-            profile.data.email,
+            firebaseUser.email,
             profile.data.username,
             firebaseUser.emailVerified,
             true,
@@ -158,6 +214,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       }
     });
     return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unrestrictedPaths]);
 
   const emailLinkOnly = (signInMethods: string[]) => {
@@ -190,6 +247,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setUser(null);
       await auth.signOut();
     }
+  };
+
+  const updateUserEmail = async (email: string) => {
+    if (!user) {
+      return;
+    }
+    setUser((prev) => ({ ...prev, email }));
   };
 
   const signOut = async () => {
@@ -234,9 +298,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       <AuthContext.Provider
         value={{
           user,
+          reauthStatus,
           signOut,
           finishFlowAccountRegistration: finishFlowAccountRegistration,
           finishBusinessAccountRegistration: finishBusinessAccountRegistration,
+          setReauthStatus,
+          updateUserEmail,
         }}
       >
         {children}
@@ -266,6 +333,60 @@ export const isPageForNonBusinessAccount = (path: string) => {
     path === "/account" ||
     path.startsWith("/account/")
   );
+};
+
+export const hasPassword = async (email: string) => {
+  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+  return signInMethods.includes(
+    EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
+  );
+};
+
+export const hasAccountWithProviderId = (providerId: ProviderId) => {
+  return auth.currentUser.providerData.some(
+    (profile) => profile.providerId === providerId,
+  );
+};
+
+export const hasGoogleAccount = () => {
+  return hasAccountWithProviderId(ProviderId.GOOGLE);
+};
+
+export const hasAppleAccount = () => {
+  return hasAccountWithProviderId(ProviderId.APPLE);
+};
+
+export const hasPasswordAccount = () => {
+  return hasAccountWithProviderId(ProviderId.PASSWORD);
+};
+
+export const getMailAddressByProviderId = (providerId: ProviderId) => {
+  return auth.currentUser.providerData.find(
+    (profile) => profile.providerId === providerId,
+  )?.email;
+};
+
+export const getMailAddressOfPasswordAccount = () => {
+  return getMailAddressByProviderId(ProviderId.PASSWORD);
+};
+
+export const getMailAddressOfGoogleAccount = () => {
+  return getMailAddressByProviderId(ProviderId.GOOGLE);
+};
+
+export const getMailAddressOfAppleAccount = () => {
+  return getMailAddressByProviderId(ProviderId.APPLE);
+};
+
+export const getProviderName = (providerId: ProviderId) => {
+  switch (providerId) {
+    case ProviderId.GOOGLE:
+      return "Google";
+    case ProviderId.APPLE:
+      return "Apple";
+    default:
+      return "";
+  }
 };
 
 export const useAuth = () => useContext(AuthContext);

@@ -1,3 +1,4 @@
+import { PASSWORD_RESET_PATH } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import {
   createUserWithEmailAndPassword,
@@ -14,7 +15,9 @@ import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
 import EmailAndPasswordSignIn from "ui/templates/admin/EmailAndPasswordSignIn";
-import FlowAgreementWithEmailAndPassword from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
+import FlowAgreementWithEmailAndPassword, {
+  PageType,
+} from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import AuthTemplate, { LoginFormType } from "ui/templates/AuthTemplate";
 
 const AuthStates = {
@@ -62,7 +65,7 @@ const Authentication = () => {
     const notSetPassword = await usedEmailLinkButNotSetPassword(data.email);
 
     if (notSetPassword) {
-      sendEmailForPasswordReset(data.email, "admin/auth/password_reset");
+      sendEmailForPasswordReset(data.email, PASSWORD_RESET_PATH);
     } else {
       setEmail(data.email);
       setAuthState(AuthStates.SignInWithEmailAndPassword);
@@ -146,7 +149,6 @@ const Authentication = () => {
     };
     try {
       await sendEmailVerification(auth.currentUser, actionCodeSettings);
-      setAuthState(AuthStates.EmailSent);
     } catch (error) {
       setAuthError({ code: error.code, message: error.message });
       setIsEmailLoading(false);
@@ -220,7 +222,7 @@ const Authentication = () => {
           buttonText={"登録"}
           email={email}
           isSubmitting={isRegisteringWithMailAndPassword}
-          isPasswordReset={false}
+          pageType={PageType.FlowAccountCreation}
           authError={authError}
           onClickBack={() => handleClickBack(AuthStates.SignUp)}
           onClickSubmit={withMailSignUp}
@@ -234,7 +236,7 @@ const Authentication = () => {
           error={authError}
           onClickBack={() => handleClickBack(AuthStates.SignIn)}
           onClickPasswordReset={(email) =>
-            sendEmailForPasswordReset(email, "admin/auth/password_reset")
+            sendEmailForPasswordReset(email, PASSWORD_RESET_PATH)
           }
           withMailSignIn={withMailSignIn}
         />

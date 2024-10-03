@@ -97,19 +97,24 @@ const AuthTemplate = ({
   );
 };
 
-const GoogleButton = ({
+export const GoogleButton = ({
   label,
+  autosize,
+  disabled,
   onClick,
 }: {
   label: string;
+  autosize?: boolean;
+  disabled?: boolean;
   onClick: () => Promise<void>;
 }) => {
   return (
     <Button
       type={"button"}
-      className={
-        "btn btn-block w-[408px] rounded-xl bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
-      }
+      disabled={disabled}
+      className={`${
+        autosize ? "" : "w-[408px]"
+      } btn btn-block rounded-[16px] bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content`}
       onClick={onClick}
     >
       <div className={"flex flex-row items-center w-[372px]"}>
@@ -123,25 +128,30 @@ const GoogleButton = ({
           />
         </div>
         <div className={"grow font-normal text-[20px]"}>{label}</div>
-        <div className={"w-[50px]"}></div>
+        {!autosize && <div className={"w-[50px]"}></div>}
       </div>
     </Button>
   );
 };
 
-const AppleButton = ({
+export const AppleButton = ({
   label,
+  autosize,
+  disabled,
   onClick,
 }: {
   label: string;
+  autosize?: boolean;
+  disabled?: boolean;
   onClick: () => Promise<void>;
 }) => {
   return (
     <Button
       type={"button"}
-      className={
-        "btn btn-block w-[408px] rounded-xl bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content"
-      }
+      disabled={disabled}
+      className={`${
+        autosize ? "" : "w-[408px]"
+      } btn btn-block rounded-[16px] bg-base-100 hover:bg-base-100 border-2 border-base-content hover:border-base-content`}
       onClick={onClick}
     >
       <div className={"flex flex-row items-center w-[372px]"}>
@@ -149,7 +159,7 @@ const AppleButton = ({
           <FontAwesomeIcon icon={faApple} size={"2x"} />
         </div>
         <div className={"grow font-normal text-[20px]"}>{label}</div>
-        <div className={"w-[50px]"}></div>
+        {!autosize && <div className={"w-[50px]"}></div>}
       </div>
     </Button>
   );

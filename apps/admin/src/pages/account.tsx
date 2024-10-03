@@ -1,10 +1,20 @@
+import {
+  hasAppleAccount,
+  hasGoogleAccount,
+  hasPasswordAccount,
+} from "contexts/AdminAuthProvider";
+import { auth } from "fetchers/firebase/client";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { Metadata } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import AppleIcon from "ui/atoms/AppleIcon";
+import GoogleIcon from "ui/atoms/GoogleIcon";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
+import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
 
 export const metadata: Metadata = {
@@ -28,7 +38,7 @@ const AccountFieldComponent = ({
       className={`flex border-b-[0.5px] border-secondary py-6 
     ${alignTop ? "items-start" : "items-center"} `}
     >
-      <span className="w-[172px] text-[26px] text-base-200-content font-normal break-words">
+      <span className="w-[172px] shrink-0 text-[26px] text-base-200-content font-normal break-words">
         {label}
       </span>
       {children}
@@ -247,12 +257,14 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 export default function Index() {
   const apiUrl = "native/my/profile";
   const [modified, setModified] = useState(false);
+  const router = useRouter();
   const { data, dataRef, error, loading, setData, setLoading, postData } =
     useRestfulAPI(apiUrl);
 
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
   const imageFileRef = useRef(null);
+  const emailEditDialogRef = useRef(null);
 
   const submitHandler = async () => {
     const submitData = {
@@ -296,6 +308,12 @@ export default function Index() {
     if (file) {
       fieldChangeHandler("icon", URL.createObjectURL(file));
     }
+  };
+
+  const isEmailVerified = () => {
+    return (
+      auth.currentUser.emailVerified && data?.email === auth.currentUser.email
+    );
   };
 
   return (
@@ -418,15 +436,50 @@ export default function Index() {
               >
                 {data?.email || "Not Set"}
               </span>
-              <button className={editBtnClass}>Edit</button>
+              {!isEmailVerified() && (
+                <div className="flex w-[148px] h-[48px] py-[8px] px-[16px] mr-[10px] justify-center items-center gap-[8px] rounded-[64px] bg-secondary">
+                  <span className="text-base-white text-[20px] font-bold leading-[120%]">
+                    unverified
+                  </span>
+                </div>
+              )}
+              <button
+                className={editBtnClass}
+                onClick={() => {
+                  if (emailEditDialogRef.current) {
+                    emailEditDialogRef.current.showModal();
+                  }
+                }}
+              >
+                Edit
+              </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Password"}>
-              <span className={`${valueClass}`}>****</span>
-              <button className={editBtnClass}>Edit</button>
+              <span className={`${valueClass}`}>
+                {hasPasswordAccount() ? "****" : "未設定"}
+              </span>
+              <button
+                className={editBtnClass}
+                onClick={() => router.push("/auth/password_update")}
+              >
+                Edit
+              </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Social Account"}>
-              <span className={`${valueClass}`}></span>
-              <button className={editBtnClass}>Edit</button>
+              <div className="flex w-full gap-[17px]">
+                <GoogleIcon
+                  width={48}
+                  height={48}
+                  disabled={!hasGoogleAccount()}
+                />
+                <AppleIcon size="3x" disabled={!hasAppleAccount()} />
+              </div>
+              <button
+                className={editBtnClass}
+                onClick={() => router.push("/auth/sns_account")}
+              >
+                Edit
+              </button>
             </AccountFieldComponent>
           </div>
           <GenderEditDialog
@@ -439,6 +492,7 @@ export default function Index() {
             dialogRef={birthEditDialogRef}
             changeHandler={(value) => fieldChangeHandler("birth", value)}
           />
+          <EmailEditDialog dialogRef={emailEditDialogRef} />
         </div>
       )}
       <input

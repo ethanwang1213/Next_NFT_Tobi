@@ -1,10 +1,11 @@
 import Image from "next/image";
 
 type Props = {
+  hideText?: boolean;
   onClickBack: () => void;
 };
 
-const BackLink = ({ onClickBack }: Props) => {
+const BackLink = ({ hideText, onClickBack }: Props) => {
   return (
     <button
       className="btn-link no-underline text-base-content"
@@ -17,9 +18,11 @@ const BackLink = ({ onClickBack }: Props) => {
           width={15}
           height={26}
         />
-        <div className={"font-medium text-[20px] ml-[10px] text-nowrap"}>
-          戻る
-        </div>
+        {!hideText && (
+          <div className={"font-medium text-[20px] ml-[10px] text-nowrap"}>
+            戻る
+          </div>
+        )}
       </div>
     </button>
   );

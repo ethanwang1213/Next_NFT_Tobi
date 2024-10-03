@@ -9,13 +9,16 @@ type Props = DetailedHTMLProps<
 };
 const FirebaseAuthError = ({ error }: Props) => {
   const getErrorMessage = () => {
+    if (!error) {
+      return "";
+    }
     switch (error.code) {
       case "auth/invalid-action-code":
         return "リンクの有効期限が切れているため、サインアップを再度行ってください";
       case "auth/invalid-email":
         return "リンクを送ったメールアドレスを入力してください";
       case "auth/email-already-in-use":
-        return "このメールアドレスは既に使用されています";
+        return "The email address you entered is already in use.";
       case "auth/user-not-found":
         return "Tobiratoryアカウントが存在しません";
       case "auth/missing-password":

@@ -1,3 +1,4 @@
+import { ProviderId as FirebaseProviderId } from "firebase/auth";
 import {
   ItemSaveData,
   ItemType,
@@ -141,3 +142,14 @@ export type WasdParams = {
   sKey: boolean;
   dKey: boolean;
 };
+
+export const EMAIL_REGEX = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/;
+export const ProviderId = {
+  GOOGLE: FirebaseProviderId.GOOGLE,
+  APPLE: "apple.com",
+  PASSWORD: FirebaseProviderId.PASSWORD,
+} as const;
+
+export type ProviderId = (typeof ProviderId)[keyof typeof ProviderId];
+export const isProviderId = (arg: string): arg is ProviderId =>
+  Object.values(ProviderId).includes(arg as ProviderId);

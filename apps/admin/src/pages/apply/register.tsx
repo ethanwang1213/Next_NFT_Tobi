@@ -7,6 +7,7 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import {
+  EMAIL_REGEX,
   TcpContent,
   TcpCopyright,
   TcpFormType,
@@ -136,8 +137,7 @@ const Register = () => {
       }
       return (
         (fieldName !== "building" && userInfo[fieldName].trim() === "") ||
-        (fieldName === "email" &&
-          !/^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/.test(userInfo[fieldName]))
+        (fieldName === "email" && !EMAIL_REGEX.test(userInfo[fieldName]))
       );
     });
 
