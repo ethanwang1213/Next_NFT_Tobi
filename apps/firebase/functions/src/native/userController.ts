@@ -465,7 +465,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
       image: "",
       url,
       description,
-      license_data: [file1, file2, file3, file4].filter((file) => file !== ""),
+      license_data: [file1, file2, file3, file4].filter(Boolean),
     };
     try {
       const returnData = await prisma.$transaction(async (tx) => {
@@ -517,6 +517,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
           data: "not-template",
         });
       } else {
+        console.error(error);
         res.status(500).send({
           status: "error",
           data: error,
