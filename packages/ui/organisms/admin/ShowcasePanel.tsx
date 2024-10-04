@@ -218,6 +218,22 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         onMouseEnter={handleHoverEnter}
         onMouseLeave={handleHoverLeave}
       >
+        <div className="absolute right-0 top-0 shadow-lg shadow-[#00000033] z-50">
+          <DatePicker
+            ref={datePickerRef}
+            selected={scheduleTime}
+            onChange={(date) => {
+              setScheduleTime(date);
+              setScheduleTimeChanged(true);
+            }}
+            onCalendarClose={changeScheduleTime}
+            dateFormat="yyyy/MM/dd"
+            showPopperArrow={false}
+            className="hidden"
+            popperClassName="custom-datepicker"
+            locale="en"
+          />
+        </div>
         {isHovered && (
           <Link href={`/contents/showcase?id=${props.id}`}>
             <div
@@ -234,6 +250,33 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               />
             </div>
           </Link>
+        )}
+        {status == ShowcaseStatus.ScheduledPublic && (
+          <div className="flex justify-center items-center cursor-pointer mt-6">
+            <div
+              className="flex gap-2 z-20 text-primary text-[17px] leading-4 font-normal"
+              onClick={() => {
+                if (datePickerRef.current && datePickerRef.current.input) {
+                  datePickerRef.current.input.click();
+                }
+              }}
+            >
+              <span className="bg-base-white rounded-[6px] h-9 flex items-center px-3">
+                {scheduleTime.toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+              <span className="bg-base-white rounded-[6px] h-9 flex items-center px-3">
+                {scheduleTime.toLocaleTimeString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
+              </span>
+            </div>
+          </div>
         )}
         <div
           className="absolute bottom-[12px] right-[13px] flex flex-row-reverse justify-between z-20"
@@ -277,49 +320,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               </button>
             )}
           </div>
-          {status == ShowcaseStatus.ScheduledPublic && (
-            <div
-              className="w-[120px] h-4 bg-base-white rounded-[27px] px-1 flex items-center gap-2"
-              onClick={() => {
-                if (datePickerRef.current && datePickerRef.current.input) {
-                  datePickerRef.current.input.click();
-                }
-              }}
-            >
-              <Image
-                src="/admin/images/icon/clock.svg"
-                width={8}
-                height={8}
-                alt="clock icon"
-              />
-              <span className="text-secondary-700 text-[8px] leading-4 font-normal">
-                {scheduleTime.toLocaleString("ja-JP", {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: false,
-                })}
-              </span>
-              <DatePicker
-                ref={datePickerRef}
-                selected={scheduleTime}
-                onChange={(date) => {
-                  setScheduleTime(date);
-                  setScheduleTimeChanged(true);
-                }}
-                onCalendarClose={changeScheduleTime}
-                dateFormat="yyyy/MM/dd HH:mm"
-                showTimeSelect
-                showPopperArrow={false}
-                className="hidden"
-                popperPlacement="bottom"
-                popperClassName=""
-                locale="ja"
-              />
-            </div>
-          )}
+
           {isMenuOpen && (
             <div className="absolute left-0 top-10 z-10">
               <ShowcaseEditMenu

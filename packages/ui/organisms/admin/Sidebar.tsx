@@ -7,7 +7,7 @@ import { gsap, Power2 } from "gsap";
 import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
 
 type Props = {
@@ -21,6 +21,7 @@ const Sidebar = ({ children }: Props) => {
   const screensMd = parseInt(config.theme.screens.md);
 
   const resizedBefore = useRef<boolean>(false);
+  const prevDisplayWidth = useRef<number>(0);
   const [expand, setExpand] = useState(true);
 
   const { displayWidth } = useWindowSize();
@@ -30,16 +31,23 @@ const Sidebar = ({ children }: Props) => {
 
   const pathname = usePathname();
 
-  // set initial expand state
+  const shouldTriggerResize = useCallback(() => {
+    const hasCrossedThreshold =
+      (prevDisplayWidth.current < screensMd && displayWidth >= screensMd) ||
+      (prevDisplayWidth.current >= screensMd && displayWidth < screensMd);
+
+    prevDisplayWidth.current = displayWidth;
+    return hasCrossedThreshold;
+  }, [displayWidth, screensMd]);
+
+  // Set initial expand state
   useEffect(() => {
-    if (window.innerWidth < screensMd) setExpand(false);
-    else setExpand(true);
+    setExpand(window.innerWidth >= screensMd);
   }, [screensMd]);
 
-  // animate menu width on expand state change
+  // Animate menu width on expand state change
   useEffect(() => {
     if (!resizedBefore.current && !clickedBefore) {
-      // Prevent execution on the initial rendering.
       return;
     }
 
@@ -50,58 +58,37 @@ const Sidebar = ({ children }: Props) => {
     };
 
     if (expand) {
-      if (displayWidth > 768) {
-        gsap.fromTo(
-          drawerSide,
-          { width: menuMinWidth },
-          { width: menuMaxWidth, ...animationConfig },
-        );
-      } else {
-        gsap.fromTo(
-          drawerSide,
-          { width: menuMinWidth },
-          { width: tabletMenuMaxWidth, ...animationConfig },
-        );
-      }
+      gsap.to(drawerSide, {
+        width: displayWidth > 768 ? menuMaxWidth : tabletMenuMaxWidth,
+        ...animationConfig,
+      });
     } else {
-      if (displayWidth > 768) {
-        gsap.fromTo(
-          drawerSide,
-          { width: menuMaxWidth },
-          { width: menuMinWidth, ...animationConfig },
-        );
-      } else {
-        gsap.fromTo(
-          drawerSide,
-          { width: tabletMenuMaxWidth },
-          { width: menuMinWidth, ...animationConfig },
-        );
-      }
+      gsap.to(drawerSide, {
+        width: menuMinWidth,
+        ...animationConfig,
+      });
     }
-  }, [clickedBefore, expand, resizedBefore, displayWidth]);
+  }, [expand, displayWidth, clickedBefore]);
 
-  // toggle expand state on menuStatus change
+  // Toggle expand state on menuStatus change
   useEffect(() => {
-    // prevent execution on the initial rendering.
-    if (!clickedBefore) {
-      return;
-    }
+    if (!clickedBefore) return;
 
     setExpand((e) => !e);
   }, [clickedBefore, menuStatus]);
 
-  // set expand state on window resize
+  // Handle window resize with optimized checks
   useEffect(() => {
-    if (displayWidth === 0) {
-      // prevent execution on the initial rendering.
-      return;
-    } else if (displayWidth < screensMd) {
-      setExpand(false);
-    } else {
+    if (displayWidth === 0 || !shouldTriggerResize()) return;
+
+    if (displayWidth >= screensMd) {
       setExpand(true);
+    } else {
+      setExpand(false);
     }
+
     resizedBefore.current = true;
-  }, [displayWidth, screensMd]);
+  }, [displayWidth, screensMd, shouldTriggerResize]);
 
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
