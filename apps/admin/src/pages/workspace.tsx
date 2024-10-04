@@ -504,7 +504,10 @@ export default function Index() {
     <div className="w-full h-full relative" id="workspace_view">
       <div
         className="absolute left-0 right-0 top-0 bottom-0"
-        style={{ pointerEvents: isDialogOpen() ? "none" : "auto" }}
+        style={{
+          pointerEvents: isDialogOpen() ? "none" : "auto",
+          opacity: isLoaded ? 1 : 0,
+        }}
       >
         <WorkspaceUnity unityProvider={unityProvider} />
       </div>

@@ -1,4 +1,5 @@
 import { useLeavePage } from "contexts/LeavePageProvider";
+import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
@@ -22,7 +23,6 @@ import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
-import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 
 const Showcase = () => {
   const router = useRouter();
@@ -370,7 +370,9 @@ const Showcase = () => {
   return (
     <ShowcaseEditUnityProvider unityContext={unityContext}>
       <div className="w-full h-screen-minus-56 relative no-select">
-        <ShowcaseEditUnity unityProvider={unityProvider} />
+        <div style={{ opacity: isLoaded ? 1 : 0 }}>
+          <ShowcaseEditUnity unityProvider={unityProvider} />
+        </div>
         {!isLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
             <span className="dots-circle-spinner loading2 text-[80px] text-active"></span>
