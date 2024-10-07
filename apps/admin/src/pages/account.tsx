@@ -429,12 +429,8 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Email"}>
-              <span
-                className={`${valueClass} ${
-                  !data.email ? "text-placeholder-color" : "text-sencondary"
-                }`}
-              >
-                {data?.email || "Not Set"}
+              <span className={`${valueClass} text-secondary`}>
+                {auth.currentUser.email}
               </span>
               {!isEmailVerified() && (
                 <div className="flex w-[148px] h-[48px] py-[8px] px-[16px] mr-[10px] justify-center items-center gap-[8px] rounded-[64px] bg-secondary">
