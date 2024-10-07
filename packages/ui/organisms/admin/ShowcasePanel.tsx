@@ -3,10 +3,11 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
+import { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import { formatDateToLocal } from "ui/atoms/Formatters";
+import CustomDatePicker from "./CustomDatePicker";
 import ShowcaseEditMenu from "./ShowcaseEditMenu";
 import ShowcaseNameEditDialog from "./ShowcaseNameEditDialog";
 
@@ -42,6 +43,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const handleHoverEnter = () => {
     setIsHovered(true);
   };
@@ -212,27 +214,26 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         style={{
           backgroundImage: `url(${props.thumbImage})`,
           backgroundPosition: "center",
-          backgroundSize: "cover", // Ensure the image covers the entire div
-          backgroundRepeat: "no-repeat", // Prevent image repetition
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
         }}
         onMouseEnter={handleHoverEnter}
         onMouseLeave={handleHoverLeave}
       >
-        <div className="absolute right-0 top-0 shadow-lg shadow-[#00000033] z-50">
-          <DatePicker
-            ref={datePickerRef}
-            selected={scheduleTime}
-            onChange={(date) => {
-              setScheduleTime(date);
-              setScheduleTimeChanged(true);
-            }}
-            onCalendarClose={changeScheduleTime}
-            dateFormat="yyyy/MM/dd"
-            showPopperArrow={false}
-            className="hidden"
-            popperClassName="custom-datepicker"
-            locale="en"
-          />
+        <div className="absolute right-0 top-0 shadow-lg shadow-[#00000033] z-40 ">
+          {isDatePickerVisible && (
+            <CustomDatePicker
+              onDateTimeChange={(date) => {
+                setScheduleTime(date);
+                setScheduleTimeChanged(true);
+              }}
+              onClose={() => {
+                setDatePickerVisible(false);
+                changeScheduleTime();
+              }}
+              initialDateTime={scheduleTime}
+            />
+          )}
         </div>
         {isHovered && (
           <Link href={`/contents/showcase?id=${props.id}`}>
@@ -255,11 +256,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           <div className="flex justify-center items-center cursor-pointer mt-6">
             <div
               className="flex gap-2 z-20 text-primary text-[17px] leading-4 font-normal"
-              onClick={() => {
-                if (datePickerRef.current && datePickerRef.current.input) {
-                  datePickerRef.current.input.click();
-                }
-              }}
+              onClick={() => setDatePickerVisible(!isDatePickerVisible)}
             >
               <span className="bg-base-white rounded-[6px] h-9 flex items-center px-3">
                 {scheduleTime.toLocaleDateString("en-US", {

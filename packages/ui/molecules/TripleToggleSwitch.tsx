@@ -34,6 +34,7 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
