@@ -62,7 +62,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className="date-picker absolute bg-white border border-gray-300 rounded-lg p-2.5 text-center">
+    <div className="date-picker absolute bg-white border border-gray-300 rounded-lg p-2.5 text-center mt-3">
       <div className="mb-3">
         <div className="flex justify-start items-center mb-1 pl-3">
           <button onClick={() => handleMonthChange(-1)} className="font-bold">
