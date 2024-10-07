@@ -103,7 +103,7 @@ const ConfirmInformation = ({
             alt="information"
             className=""
           />
-          <span className="text-[12px]/[48x] ml-4">
+          <span className="text-[12px]/[48x] ml-[7px]">
             申請されている方の情報をご記入ください
           </span>
         </div>

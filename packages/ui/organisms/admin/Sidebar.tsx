@@ -45,7 +45,7 @@ const Sidebar = ({ children }: Props) => {
     setExpand(window.innerWidth >= screensMd);
   }, [screensMd]);
 
-  // Animate menu width on expand state change
+  // animate menu width on expand state change
   useEffect(() => {
     if (!resizedBefore.current && !clickedBefore) {
       return;
