@@ -312,6 +312,7 @@ const LinkButton = ({
   return (
     <Button
       type="button"
+      disabled={!hasPasswordAccount()}
       className="btn btn-block w-[127px] h-[48px] min-h-[48px] bg-primary rounded-[64px]
               text-base-white text-[20px] leading-[24px] font-bold hover:bg-primary hover:border-primary"
       onClick={() =>
