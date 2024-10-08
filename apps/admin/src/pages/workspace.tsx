@@ -182,7 +182,7 @@ export default function Index() {
     undoAction,
     redoAction,
   } = useWorkspaceUnityContext({
-    sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
+    sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
     onRemoveSampleEnabled,
@@ -396,19 +396,17 @@ export default function Index() {
   ): Promise<boolean> => {
     generateSampleType.current = sampleType;
     trackSampleCreation(sampleType as ModelType);
-    if (sampleType === ModelType.Poster) {
-      generateModelUrl.current =
-        "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+    const modelUrlMap = {
+      [ModelType.Poster]:
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb",
+      [ModelType.CanBadge]:
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/can-badge/can-badge.glb",
+    };
+
+    if (modelUrlMap[sampleType]) {
+      generateModelUrl.current = modelUrlMap[sampleType];
       generateMaterialImage.current = image1;
-      requestItemThumbnail({
-        modelType: sampleType as ModelType,
-        modelUrl: generateModelUrl.current,
-        imageUrl: image1,
-      });
-    } else if (sampleType === ModelType.CanBadge) {
-      generateModelUrl.current =
-        "https://storage.googleapis.com/tobiratory-dev_media/item-models/can-badge/can-badge.glb";
-      generateMaterialImage.current = image1;
+
       requestItemThumbnail({
         modelType: sampleType as ModelType,
         modelUrl: generateModelUrl.current,
@@ -607,7 +605,6 @@ export default function Index() {
                 height={32}
                 alt="undo button"
                 src="/admin/images/icon/redo-icon.svg"
-                // The height property is being ignored, so it’s set here.
                 className="cursor-pointer h-[32px]"
               />
             </button>
