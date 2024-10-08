@@ -506,10 +506,9 @@ export default function Index() {
         className="absolute left-0 right-0 top-0 bottom-0"
         style={{
           pointerEvents: isDialogOpen() ? "none" : "auto",
-          opacity: isLoaded ? 1 : 0,
         }}
       >
-        <WorkspaceUnity unityProvider={unityProvider} />
+        <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
       </div>
       {mainToast && <CustomToast show={showToast} message={message} />}
       {!isLoaded && (

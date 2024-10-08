@@ -370,9 +370,7 @@ const Showcase = () => {
   return (
     <ShowcaseEditUnityProvider unityContext={unityContext}>
       <div className="w-full h-screen-minus-56 relative no-select">
-        <div style={{ opacity: isLoaded ? 1 : 0 }}>
-          <ShowcaseEditUnity unityProvider={unityProvider} />
-        </div>
+        <ShowcaseEditUnity unityProvider={unityProvider} isLoaded={isLoaded} />
         {!isLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
             <span className="dots-circle-spinner loading2 text-[80px] text-active"></span>
