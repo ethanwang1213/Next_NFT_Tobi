@@ -101,11 +101,15 @@ export default function Index() {
     );
 
     const postData = {
-      thumbUrl: sampleThumb,
+      thumbUrl:
+        generateSampleType.current === 1
+          ? generateMaterialImage.current
+          : sampleThumb,
       modelUrl: generateModelUrl.current,
       materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
       type: generateSampleType.current,
     };
+
     if (materialIndex == -1) {
       delete postData.materialId;
     }
@@ -136,7 +140,6 @@ export default function Index() {
     itemId: number,
     sendSampleRemovalResult: SendSampleRemovalResult,
   ) => {
-    // hide the restore menu
     setShowRestoreMenu(false);
     const result = await storeWorkspaceData(`${workspaceAPIUrl}/throw`, {
       id: id,
@@ -154,14 +157,8 @@ export default function Index() {
     const updateContainerWidth = () => {
       setContentWidth(document.querySelector("#workspace_view").clientWidth);
     };
-
-    // Update container width on mount and window resize
     updateContainerWidth();
-
-    // Add event listener when the component mounts
     window.addEventListener("resize", updateContainerWidth);
-
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", updateContainerWidth);
     };
@@ -267,7 +264,8 @@ export default function Index() {
         sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
-        imageUrl: materialIndex > -1 ? materials[materialIndex].image : generateMaterialImage.current,
+        imageUrl:
+          materialIndex > -1 ? materials[materialIndex].image : sample.thumbUrl,
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
       });
