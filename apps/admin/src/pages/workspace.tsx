@@ -267,7 +267,7 @@ export default function Index() {
         sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
-        imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
+        imageUrl: materialIndex > -1 ? materials[materialIndex].image : generateMaterialImage.current,
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
       });
@@ -398,9 +398,18 @@ export default function Index() {
   ): Promise<boolean> => {
     generateSampleType.current = sampleType;
     trackSampleCreation(sampleType as ModelType);
-    if (sampleType === ModelType.Poster || sampleType === ModelType.CanBadge) {
+    if (sampleType === ModelType.Poster) {
       generateModelUrl.current =
         "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+      generateMaterialImage.current = image1;
+      requestItemThumbnail({
+        modelType: sampleType as ModelType,
+        modelUrl: generateModelUrl.current,
+        imageUrl: image1,
+      });
+    } else if (sampleType === ModelType.CanBadge) {
+      generateModelUrl.current =
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/can-badge/can-badge.glb";
       generateMaterialImage.current = image1;
       requestItemThumbnail({
         modelType: sampleType as ModelType,
