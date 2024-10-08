@@ -18,6 +18,7 @@ const FirebaseAuthError = ({ error }: Props) => {
       case "auth/invalid-email":
         return "リンクを送ったメールアドレスを入力してください";
       case "auth/email-already-in-use":
+      case "auth/credential-already-in-use":
         return "The email address you entered is already in use.";
       case "auth/user-not-found":
         return "Tobiratoryアカウントが存在しません";
