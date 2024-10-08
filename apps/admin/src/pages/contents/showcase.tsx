@@ -263,10 +263,18 @@ const Showcase = () => {
 
   useEffect(() => {
     const updateContainerWidth = () => {
+      const height = document.querySelector(
+        ".w-full.h-screen-minus-56",
+      ).clientHeight;
+      const width = Math.ceil((height / 16) * 9);
+      setContainerWidth(width);
+
       setContentWidth(
         document.querySelector(".w-full.h-screen-minus-56").clientWidth,
       );
     };
+
+    // Update container width on mount and window resize
     updateContainerWidth();
     window.addEventListener("resize", updateContainerWidth);
 
@@ -283,7 +291,7 @@ const Showcase = () => {
     (sample: SampleItem, isDrag: boolean) => {
       const imageUrl =
         materialData.find((material) => material.id === sample.materialId)
-          ?.image || "";
+          ?.image || sample.thumbUrl;
       const sampleData = {
         sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
