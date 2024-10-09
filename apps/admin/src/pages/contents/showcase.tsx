@@ -291,7 +291,7 @@ const Showcase = () => {
     (sample: SampleItem, isDrag: boolean) => {
       const imageUrl =
         materialData.find((material) => material.id === sample.materialId)
-          ?.image || "";
+          ?.image || sample.thumbUrl;
       const sampleData = {
         sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,

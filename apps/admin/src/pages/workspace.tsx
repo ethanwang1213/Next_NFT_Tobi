@@ -101,11 +101,15 @@ export default function Index() {
     );
 
     const postData = {
-      thumbUrl: sampleThumb,
+      thumbUrl:
+        generateSampleType.current === 1
+          ? generateMaterialImage.current
+          : sampleThumb,
       modelUrl: generateModelUrl.current,
       materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
       type: generateSampleType.current,
     };
+
     if (materialIndex == -1) {
       delete postData.materialId;
     }
@@ -136,7 +140,6 @@ export default function Index() {
     itemId: number,
     sendSampleRemovalResult: SendSampleRemovalResult,
   ) => {
-    // hide the restore menu
     setShowRestoreMenu(false);
     const result = await storeWorkspaceData(`${workspaceAPIUrl}/throw`, {
       id: id,
@@ -154,14 +157,8 @@ export default function Index() {
     const updateContainerWidth = () => {
       setContentWidth(document.querySelector("#workspace_view").clientWidth);
     };
-
-    // Update container width on mount and window resize
     updateContainerWidth();
-
-    // Add event listener when the component mounts
     window.addEventListener("resize", updateContainerWidth);
-
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", updateContainerWidth);
     };
@@ -185,7 +182,7 @@ export default function Index() {
     undoAction,
     redoAction,
   } = useWorkspaceUnityContext({
-    sampleMenuX: contentWidth - (showListView ? 448 : REMOVE_PANEL_WIDTH * 2),
+    sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
     onRemoveSampleEnabled,
@@ -267,7 +264,8 @@ export default function Index() {
         sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
-        imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
+        imageUrl:
+          materialIndex > -1 ? materials[materialIndex].image : sample.thumbUrl,
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
       });
@@ -327,7 +325,7 @@ export default function Index() {
       });
       if (success) {
         const newSamples = samples.filter(
-          (sample) => ids.findIndex((id) => id === sample.digitalItemId) === -1,
+          (sample) => ids.findIndex((id) => id === sample.sampleItemId) === -1,
         );
         setSamples(newSamples);
         // remove sample items in unity view
@@ -398,10 +396,17 @@ export default function Index() {
   ): Promise<boolean> => {
     generateSampleType.current = sampleType;
     trackSampleCreation(sampleType as ModelType);
-    if (sampleType === ModelType.Poster || sampleType === ModelType.CanBadge) {
-      generateModelUrl.current =
-        "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb";
+    const modelUrlMap = {
+      [ModelType.Poster]:
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/poster/poster.glb",
+      [ModelType.CanBadge]:
+        "https://storage.googleapis.com/tobiratory-dev_media/item-models/can-badge/can-badge.glb",
+    };
+
+    if (modelUrlMap[sampleType]) {
+      generateModelUrl.current = modelUrlMap[sampleType];
       generateMaterialImage.current = image1;
+
       requestItemThumbnail({
         modelType: sampleType as ModelType,
         modelUrl: generateModelUrl.current,
@@ -602,7 +607,6 @@ export default function Index() {
                 height={32}
                 alt="undo button"
                 src="/admin/images/icon/redo-icon.svg"
-                // The height property is being ignored, so it’s set here.
                 className="cursor-pointer h-[32px]"
               />
             </button>
