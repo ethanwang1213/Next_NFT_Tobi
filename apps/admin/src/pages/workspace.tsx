@@ -325,7 +325,7 @@ export default function Index() {
       });
       if (success) {
         const newSamples = samples.filter(
-          (sample) => ids.findIndex((id) => id === sample.digitalItemId) === -1,
+          (sample) => ids.findIndex((id) => id === sample.sampleItemId) === -1,
         );
         setSamples(newSamples);
         // remove sample items in unity view
