@@ -241,17 +241,11 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       scaledMessageHeight,
     );
 
-    // Correct the position of the rotated image on the final canvas
-    const rotatedMessageOffsetX =
-      position.x -
-      (rotatedBoundingBox.w - scaledMessageWidth) / 2 -
-      (400 - cardDisplayedWidth) / 2;
-    const rotatedMessageOffsetY =
-      position.y -
-      (rotatedBoundingBox.h - scaledMessageHeight) / 2 -
-      (385 - cardDisplayedHeight) / 2;
+    const cardRect = imgCardRef.current.getBoundingClientRect();
+    const messageRect = imgMessageRef.current.getBoundingClientRect();
+    const rotatedMessageOffsetX = messageRect.left - cardRect.left;
+    const rotatedMessageOffsetY = messageRect.top - cardRect.top;
 
-    // Draw the rotated message image (at scaled size) onto the final canvas
     finalCtx.drawImage(
       rotateCanvas,
       0,
@@ -273,7 +267,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       URL.revokeObjectURL(blobUrlRef.current);
     }
     blobUrlRef.current = URL.createObjectURL(blob);
-  }, [calcRotatedScaledSize, rotate, scale, position]);
+  }, [calcRotatedScaledSize, rotate, scale]);
 
   const generateHandler = useCallback(async () => {
     setProcessing(true);
