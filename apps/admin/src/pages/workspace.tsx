@@ -310,7 +310,10 @@ export default function Index() {
         sampleItemId: samples[index].sampleItemId,
         digitalItemId: samples[index].digitalItemId,
         modelUrl: samples[index].modelUrl,
-        imageUrl: materialIndex > -1 ? materials[materialIndex].image : null,
+        imageUrl:
+          materialIndex > -1
+            ? materials[materialIndex].image
+            : samples[index].thumbUrl,
         modelType: samples[index].type as ModelType,
         sampleName: samples[index].name !== null ? samples[index].name : "",
       });
@@ -379,10 +382,9 @@ export default function Index() {
 
   const trackSampleCreation = (sampleType: number) => {
     if (typeof window !== "undefined" && window.gtag) {
-      const eventLabel = sampleTypeLabels[sampleType] || "unknown";
-      window.gtag("event", "create_sample", {
+      const eventName = sampleTypeLabels[sampleType] || "unknown";
+      window.gtag("event", eventName, {
         event_category: "Sample",
-        event_label: eventLabel,
         value: 1,
       });
     }
