@@ -1,4 +1,5 @@
 {
+  "name": "tobiratory-web",
   "private": true,
   "workspaces": [
     "apps/*",

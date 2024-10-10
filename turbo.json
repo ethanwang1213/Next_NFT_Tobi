@@ -4,14 +4,59 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": [
+        "NEXT_PUBLIC_FIREBASE_USING_EMULATOR",
+        "NEXT_PUBLIC_FIREBASE_API_KEY",
+        "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+        "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+        "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
+        "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+        "NEXT_PUBLIC_FIREBASE_APP_ID",
+        "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID",
+        "NEXT_PUBLIC_VAPID_KEY",
+        "FIREBASE_API_URL",
+        "CLOUD_FUNCTIONS_API_URL",
+        "NEXT_PUBLIC_DISCORD_OAUTH_URL",
+        "NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL",
+        "NEXT_PUBLIC_IS_DISCORD_BUTTON_HIDDEN",
+        "NEXT_PUBLIC_DEBUG_MODE",
+        "NEXT_PUBLIC_NEKO_NFT_ADDRESS",
+        "NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS",
+        "ENABLE_BASIC_AUTH",
+        "BASIC_AUTH_PASSWORD",
+        "NEXT_PUBLIC_GA_ID"
+      ]
     },
     "lint": {
       "outputs": []
     },
     "dev": {
       "cache": false,
-      "env": ["apps/admin/.env.sample", "apps/admin/.env.local"]
+      "env": [
+        "NEXT_PUBLIC_FIREBASE_USING_EMULATOR",
+        "NEXT_PUBLIC_FIREBASE_API_KEY",
+        "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+        "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+        "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
+        "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+        "NEXT_PUBLIC_FIREBASE_APP_ID",
+        "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID",
+        "NEXT_PUBLIC_VAPID_KEY",
+        "FIREBASE_API_URL",
+        "CLOUD_FUNCTIONS_API_URL",
+        "NEXT_PUBLIC_DISCORD_OAUTH_URL",
+        "NEXT_PUBLIC_DISCORD_COMMUNITY_INVITE_URL",
+        "NEXT_PUBLIC_IS_DISCORD_BUTTON_HIDDEN",
+        "NEXT_PUBLIC_DEBUG_MODE",
+        "NEXT_PUBLIC_NEKO_NFT_ADDRESS",
+        "NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS",
+        "ENABLE_BASIC_AUTH",
+        "BASIC_AUTH_PASSWORD",
+        "NEXT_PUBLIC_GA_ID",
+        "apps/admin/.env.sample",
+        "apps/admin/.env.local"
+      ]
     }
   }
 }
