@@ -381,20 +381,42 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
         flow_address: deposit.to,
       },
     });
-    await prisma.digital_item_nfts.update({
-      where: {
-        id: nftId,
-        nft_owner: {
-          account_uuid: depositerFlowAccount?.account_uuid,
-          owner_flow_address: deposit.to,
-          saidan_id: 0,
-          box_id: 0,
+    if (depositerFlowAccount) {
+      await prisma.digital_item_nfts.update({
+        where: {
+          id: nftId,
         },
-      },
-      data: {
-        gift_status: giftStatus.none,
-      },
-    });
+        data: {
+          gift_status: giftStatus.none,
+          nft_owner: {
+            update: {
+              account_uuid: depositerFlowAccount.account_uuid,
+              owner_flow_address: deposit.to,
+              saidan_id: 0,
+              box_id: 0,
+            }
+          },
+        },
+      });
+    } else {
+      await prisma.digital_item_nfts.update({
+        where: {
+          id: nftId,
+        },
+        data: {
+          gift_status: giftStatus.none,
+          nft_owner: {
+            update: {
+              account_uuid: null,
+              owner_flow_address: deposit.to,
+              saidan_id: 0,
+              box_id: 0,
+            }
+          },
+        },
+      });
+    }
+
     const notificationBatch = await prisma.notification_batch.findUnique({
       where: {
         id: notificationBatchId,
