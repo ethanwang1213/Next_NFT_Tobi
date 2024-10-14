@@ -452,7 +452,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
 };
 
 const fetchGiftNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(JSON.stringify(tx));
   const result: { withdraw: {
@@ -468,9 +468,9 @@ const fetchGiftNFT = async (txId: string) => {
       "deposit": null,
     };
   for (const event of tx.events) {
-    if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Withdraw`) {
+    if (event.type === `A.${nonFungibleTokenAddress}.NonFungibleToken.Withdrawn`) {
       result.withdraw = {id: event.data.id, from: event.data.from, date: new Date().getTime()};
-    } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Deposit`) {
+    } else if (event.type === `A.${nonFungibleTokenAddress}.NonFungibleToken.Deposited`) {
       result.deposit = {id: event.data.id, to: event.data.to, date: new Date().getTime()};
     }
   }
