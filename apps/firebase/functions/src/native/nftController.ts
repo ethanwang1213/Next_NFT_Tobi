@@ -56,18 +56,20 @@ export const mintNFT = async (req: Request, res: Response) => {
     try {
       const notificationBatchId = await generateNotificationBatchId(fcmToken);
       let mintCount = 0;
-      let intervalId: NodeJS.Timeout | null = null;
-      intervalId = setInterval(async () => {
+
+      const mintProcess = async () => {
         if (mintCount >= intAmount) {
-          clearInterval(intervalId as NodeJS.Timeout);
-          intervalId = null;
           return;
         }
-        console.log("mintStart", intervalId, mintCount, intAmount);
-        mint(id, uid, notificationBatchId, modelUrl);
-        console.log("mintEnd", intervalId, mintCount, intAmount);
+        console.log("mintStart", mintCount, intAmount);
+        await mint(id, uid, notificationBatchId, modelUrl);
+        console.log("mintEnd", mintCount, intAmount);
         mintCount++;
-      }, 1000);
+        setTimeout(mintProcess, 1000);
+      };
+
+      await mintProcess();
+
       pushToDevice(fcmToken, {
         title: "NFTの作成を開始しました",
         body: "作成完了までしばらくお待ちください",
