@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import {firestore} from "firebase-admin";
 import {PubSub} from "@google-cloud/pubsub";
 import {
+  NON_FUNGIBLE_TOKEN_ADDRESS,
   REGION,
   TOBIRATORY_DIGITAL_ITEMS_ADDRESS,
   TOPIC_NAMES,
@@ -141,7 +142,7 @@ const fetchAndUpdateCreateItem = async (digitalItemId: number) => {
 const fetchCreateItem = async (txId: string) => {
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
-  console.log(tx);
+  console.log(JSON.stringify(tx));
   for (const event of tx.events) {
     if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.ItemCreated`) {
       return {id: event.data.id, type: event.data.type, creatorAddress: event.data.creatorAddress};
@@ -294,7 +295,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, notificationBatchId:
 const fetchMintNFT = async (txId: string) => {
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
-  console.log(tx);
+  console.log(JSON.stringify(tx));
   const result: {
     id: number,
     itemID: number,
@@ -380,20 +381,42 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
         flow_address: deposit.to,
       },
     });
-    await prisma.digital_item_nfts.update({
-      where: {
-        id: nftId,
-        nft_owner: {
-          account_uuid: depositerFlowAccount?.account_uuid,
-          owner_flow_address: deposit.to,
-          saidan_id: 0,
-          box_id: 0,
+    if (depositerFlowAccount) {
+      await prisma.digital_item_nfts.update({
+        where: {
+          id: nftId,
         },
-      },
-      data: {
-        gift_status: giftStatus.none,
-      },
-    });
+        data: {
+          gift_status: giftStatus.none,
+          nft_owner: {
+            update: {
+              account_uuid: depositerFlowAccount.account_uuid,
+              owner_flow_address: deposit.to,
+              saidan_id: 0,
+              box_id: 0,
+            }
+          },
+        },
+      });
+    } else {
+      await prisma.digital_item_nfts.update({
+        where: {
+          id: nftId,
+        },
+        data: {
+          gift_status: giftStatus.none,
+          nft_owner: {
+            update: {
+              account_uuid: null,
+              owner_flow_address: deposit.to,
+              saidan_id: 0,
+              box_id: 0,
+            }
+          },
+        },
+      });
+    }
+
     const notificationBatch = await prisma.notification_batch.findUnique({
       where: {
         id: notificationBatchId,
@@ -451,9 +474,9 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
 };
 
 const fetchGiftNFT = async (txId: string) => {
-  const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
-  console.log(tx);
+  console.log(JSON.stringify(tx));
   const result: { withdraw: {
       id: number,
       from: string,
@@ -467,9 +490,9 @@ const fetchGiftNFT = async (txId: string) => {
       "deposit": null,
     };
   for (const event of tx.events) {
-    if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Withdraw`) {
+    if (event.type === `A.${nonFungibleTokenAddress}.NonFungibleToken.Withdrawn`) {
       result.withdraw = {id: event.data.id, from: event.data.from, date: new Date().getTime()};
-    } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.TobiratoryDigitalItems.Deposit`) {
+    } else if (event.type === `A.${nonFungibleTokenAddress}.NonFungibleToken.Deposited`) {
       result.deposit = {id: event.data.id, to: event.data.to, date: new Date().getTime()};
     }
   }
@@ -510,7 +533,7 @@ const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentRefer
 
 const fetchFlowAddress = async (txId: string) => {
   const tx = await fcl.tx(txId).onceSealed();
-  console.log(tx);
+  console.log(JSON.stringify(tx));
   for (const event of tx.events) {
     if (event.type === "flow.AccountCreated") {
       return event.data.address;
