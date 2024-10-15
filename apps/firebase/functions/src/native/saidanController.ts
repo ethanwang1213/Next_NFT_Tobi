@@ -349,6 +349,52 @@ export const updateMySaidan = async (req: Request, res: Response) => {
   });
 };
 
+export const deleteMySaidan = async (req: Request, res: Response) => {
+  const {saidanId} = req.params;
+  const {authorization} = req.headers;
+  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
+    const uid = decodedToken.uid;
+    const saidanData = await prisma.saidans.findUnique({
+      where: {
+        id: parseInt(saidanId),
+        is_deleted: false,
+      },
+    });
+    if (!saidanData) {
+      res.status(401).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+    if (saidanData.account_uuid != uid) {
+      res.status(401).send({
+        status: "error",
+        data: "not-yours",
+      });
+      return;
+    }
+    await prisma.saidans.update({
+      where: {
+        id: parseInt(saidanId),
+      },
+      data: {
+        is_deleted: true,
+      },
+    });
+    res.status(200).send({
+      status: "success",
+      data: saidanData.id,
+    });
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
 export const favoriteSaidan = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
