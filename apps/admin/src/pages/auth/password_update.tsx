@@ -1,11 +1,16 @@
-import { hasPasswordAccount } from "contexts/AdminAuthProvider";
+import {
+  hasPasswordAccount,
+  VERIFIED_EMAIL_PATH,
+} from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
-import { updatePassword } from "firebase/auth";
+import useUpdateEmail from "hooks/useUpdateEmail";
+import useUpdatePassword from "hooks/useUpdatePassword";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import Button from "ui/atoms/Button";
+import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
 import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
@@ -22,29 +27,54 @@ type AuthStates = (typeof AuthStates)[keyof typeof AuthStates];
 const PasswordUpdate = () => {
   const router = useRouter();
   const [authState, setAuthState] = useState<AuthStates>(AuthStates.Reauth);
-  const [updatingPassword, setUpdatingPassword] = useState(false);
-  const [updatedPassword, setUpdatedPassword] = useState(false);
+  const [updatingEmailAndPassword, setUpdatingEmailAndPassword] =
+    useState(false);
+  const [updatedEmailAndPassword, setUpdatedEmailAndPassword] = useState(false);
   const [authError, setAuthError] = useState<ErrorMessage>(null);
+  const [updateEmail, , isEmailUpdateSuccessful, emailUpdateError] =
+    useUpdateEmail();
+  const [updatePassword, , , passwordUpdateError] = useUpdatePassword();
+
+  useEffect(() => {
+    if (passwordUpdateError) {
+      setAuthError(passwordUpdateError);
+    }
+  }, [passwordUpdateError]);
+
+  useEffect(() => {
+    if (emailUpdateError) {
+      setAuthError(emailUpdateError);
+    }
+  }, [emailUpdateError]);
 
   const handleClickBack = () => {
     router.push("/account");
   };
 
-  const resetPassword = async (email: string, password: string) => {
-    setUpdatingPassword(true);
+  const resetEmailAndPassword = async (email: string, password: string) => {
+    setUpdatingEmailAndPassword(true);
     setAuthError(null);
     try {
-      await updatePassword(auth.currentUser, password);
-      setUpdatedPassword(true);
+      let result = await updatePassword(password);
+      if (auth.currentUser.email !== email && result) {
+        result = await updateEmail(email, VERIFIED_EMAIL_PATH);
+      }
+      if (result) {
+        setUpdatedEmailAndPassword(true);
+      }
     } catch (error) {
       console.error(error);
       setAuthError({ code: error.code, message: error.message });
-      setUpdatingPassword(false);
+      setUpdatingEmailAndPassword(false);
     }
   };
 
-  if (updatedPassword) {
-    return <PasswordUpdated onClick={handleClickBack} />;
+  if (updatedEmailAndPassword) {
+    return isEmailUpdateSuccessful ? (
+      <EmailUpdated onClick={handleClickBack} />
+    ) : (
+      <PasswordUpdated onClick={handleClickBack} />
+    );
   } else {
     switch (authState) {
       case AuthStates.Reauth:
@@ -64,12 +94,12 @@ const PasswordUpdate = () => {
           <FlowAgreementWithEmailAndPassword
             title={"パスワードリセット"}
             buttonText={"リセット"}
-            email={""}
-            isSubmitting={updatingPassword}
+            email={auth.currentUser.email}
+            isSubmitting={updatingEmailAndPassword}
             pageType={PageType.PasswordUpdate}
             authError={authError}
             onClickBack={handleClickBack}
-            onClickSubmit={resetPassword}
+            onClickSubmit={resetEmailAndPassword}
           />
         );
     }
@@ -98,6 +128,10 @@ const PasswordUpdated = ({ onClick }: { onClick: () => void }) => {
       </div>
     </div>
   );
+};
+
+const EmailUpdated = ({ onClick }: { onClick: () => void }) => {
+  return <ConfirmationSent onClickBack={onClick} />;
 };
 
 export default PasswordUpdate;
