@@ -394,7 +394,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
               owner_flow_address: deposit.to,
               saidan_id: 0,
               box_id: 0,
-            }
+            },
           },
         },
       });
@@ -411,7 +411,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
               owner_flow_address: deposit.to,
               saidan_id: 0,
               box_id: 0,
-            }
+            },
           },
         },
       });
