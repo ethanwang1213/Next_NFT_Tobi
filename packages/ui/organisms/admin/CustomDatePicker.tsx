@@ -1,4 +1,5 @@
 import { addMonths, endOfMonth, format, startOfMonth } from "date-fns";
+import { format as tzFormat, fromZonedTime, toZonedTime } from "date-fns-tz";
 import React, { useEffect, useState } from "react";
 
 interface CustomDatePickerProps {
@@ -12,12 +13,20 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   onClose,
   initialDateTime,
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(initialDateTime);
-  const [time, setTime] = useState<string>(format(initialDateTime, "HH:mm"));
+  const timeZone = "Asia/Tokyo";
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    toZonedTime(initialDateTime, timeZone),
+  );
+  const [time, setTime] = useState<string>(
+    tzFormat(fromZonedTime(initialDateTime, timeZone), "HH:mm", {
+      timeZone,
+    }),
+  );
 
   useEffect(() => {
-    setSelectedDate(initialDateTime);
-    setTime(format(initialDateTime, "HH:mm"));
+    const zonedDate = toZonedTime(initialDateTime, timeZone);
+    setSelectedDate(zonedDate);
+    setTime(tzFormat(zonedDate, "HH:mm", { timeZone }));
   }, [initialDateTime]);
 
   const handleDateChange = (day: number) => {
@@ -45,7 +54,9 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   };
 
   const updateDateTime = (date: Date) => {
-    onDateTimeChange(date);
+    // Convert the date back to JST using fromZonedTime
+    const utcDate = fromZonedTime(date, timeZone);
+    onDateTimeChange(utcDate);
   };
 
   const daysInMonth = () => {
@@ -107,7 +118,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             type="time"
             value={time}
             onChange={handleTimeChange}
-            className="w-22 bg-[#7878801F] text-center py-1 rounded-[6px] border-none outline-none"
+            className="w-22 bg-[#7878801F] text-center py-1 px-[10px] rounded-[6px] border-none outline-none"
           />
           <button
             onClick={() => {

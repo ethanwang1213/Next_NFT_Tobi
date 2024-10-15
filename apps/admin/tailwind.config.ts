@@ -71,6 +71,9 @@ const config = {
           900: "#0D437B",
           1000: "#093159",
         },
+        boxShadow: {
+          'custom-light': '0px 0px 10px 0px rgba(0, 0, 0, 0.25)',
+        },
         secondary: {
           DEFAULT: "#717171",
           100: "#EBEBEB",

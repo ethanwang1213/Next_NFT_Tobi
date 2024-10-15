@@ -320,7 +320,7 @@ const DigitalItemTable = (filters: {
                     >
                       <Image
                         src={item.thumbUrl}
-                        className="rounded inline-block mx-2"
+                        className="rounded inline-block mx-2 h-[80px] object-contain"
                         width={80}
                         height={80}
                         alt={`${item.name}'s profile picture`}
