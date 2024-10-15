@@ -54,7 +54,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   };
 
   const updateDateTime = (date: Date) => {
-    // Convert the date back to UTC using fromZonedTime
+    // Convert the date back to JST using fromZonedTime
     const utcDate = fromZonedTime(date, timeZone);
     onDateTimeChange(utcDate);
   };
