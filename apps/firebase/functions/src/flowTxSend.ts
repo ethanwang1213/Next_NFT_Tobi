@@ -405,14 +405,17 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
   }
 
   let privateKey: string | undefined;
+  let sign: string;
   if (process.env.PUBSUB_EMULATOR_HOST) {
     privateKey = process.env.FLOW_ACCOUNT_USER_PRIVATE_KEY;
+    sign = "ECDSA_P256";
   } else {
     if (!data.encryptedPrivateKeyBase64) {
       throw new Error("The private key of flow signer is not defined.");
     }
     const encryptedPrivateKey = data.encryptedPrivateKeyBase64;
     privateKey = await decryptUserBase64PrivateKey(encryptedPrivateKey);
+    sign = "ECDSA_secp256k1";
   }
 
   if (!privateKey) {
@@ -429,7 +432,7 @@ const createCreatorAuthz = (flowAccountRef: firestore.DocumentReference<firestor
     addr: fcl.sansPrefix(address),
     keyId: 0,
     signingFunction: async (signable: any) => {
-      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message, hash: "sha3", sign: "ECDSA_P256"});
+      const signature = signWithKey({privateKey: privateKey as string, msgHex: signable.message, hash: "sha3", sign: sign});
       return {
         addr: address,
         keyId: 0,
