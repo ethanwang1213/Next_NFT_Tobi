@@ -47,6 +47,7 @@ import {
 import {
   createSaidan,
   decorationSaidan,
+  deleteMySaidan,
   favoriteSaidan,
   getDefaultItems,
   getMySaidans,
@@ -146,6 +147,7 @@ app.delete("/default-items/:id", removeDefaultItems);
 app.get("/my/saidans", getMySaidans);
 app.post("/my/saidans", createSaidan);
 app.post("/my/saidans/:saidanId/update", updateMySaidan);
+app.delete("/my/saidans/:saidanId", deleteMySaidan);
 app.get("/my/saidans/:saidanId/decoration", getSaidanDecorationData);
 app.post("/my/saidans/:saidanId/decoration", decorationSaidan);
 app.get("/my/workspace", getWorkspaceDecorationData);
