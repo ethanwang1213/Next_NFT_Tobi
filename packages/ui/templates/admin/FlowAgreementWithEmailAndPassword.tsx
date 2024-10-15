@@ -1,6 +1,6 @@
 import useMailAuthForm from "hooks/useMailAuthForm";
 import Image from "next/image";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/molecules/BackLink";
@@ -47,6 +47,13 @@ const FlowAgreementWithEmailAndPassword = ({
     setPasswordConfirmationStatus,
   ] = useMailAuthForm(email);
 
+  useEffect(() => {
+    if (email) {
+      validateEmail(email);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getErrors = () => {
     return [
       emailStatus.error,
@@ -69,13 +76,12 @@ const FlowAgreementWithEmailAndPassword = ({
           !agreed || !passwordStatus.valid || !passwordConfirmationStatus.valid
         );
       case PageType.PasswordReset:
+      case PageType.PasswordUpdate:
         return (
           !emailStatus.valid ||
           !passwordStatus.valid ||
           !passwordConfirmationStatus.valid
         );
-      case PageType.PasswordUpdate:
-        return !passwordStatus.valid || !passwordConfirmationStatus.valid;
       default:
         return false;
     }
@@ -167,7 +173,10 @@ const FlowAgreementWithEmailAndPassword = ({
         <div className={"mt-[30px]"}>
           <EmailField
             email={emailStatus.email}
-            visible={pageType === PageType.PasswordReset}
+            visible={
+              pageType === PageType.PasswordReset ||
+              pageType === PageType.PasswordUpdate
+            }
             validateEmail={validateEmail}
           />
         </div>

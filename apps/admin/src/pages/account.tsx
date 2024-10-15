@@ -316,6 +316,14 @@ export default function Index() {
     );
   };
 
+  const handleClickEmailEditButton = async () => {
+    if (hasPasswordAccount()) {
+      emailEditDialogRef.current?.showModal();
+    } else {
+      router.push("/auth/password_update");
+    }
+  };
+
   return (
     <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
       <div className="h-14 flex justify-between items-start">
@@ -441,11 +449,7 @@ export default function Index() {
               )}
               <button
                 className={editBtnClass}
-                onClick={() => {
-                  if (emailEditDialogRef.current) {
-                    emailEditDialogRef.current.showModal();
-                  }
-                }}
+                onClick={handleClickEmailEditButton}
               >
                 Edit
               </button>

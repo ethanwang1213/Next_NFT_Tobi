@@ -69,8 +69,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     ],
     [],
   );
-  const apiUrl = "native/my/profile";
-  const { postData: saveEmail } = useRestfulAPI(null);
+  const profileApiUrl = "native/my/profile";
+  const { postData: saveEmail, error } = useRestfulAPI(null);
+
+  useEffect(() => {
+    if (error) console.error(error);
+  }, [error]);
 
   useEffect(() => {
     if (!router.isReady) {
@@ -120,7 +124,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             firebaseUser.emailVerified &&
             firebaseUser.email !== profile.data.email
           ) {
-            await saveEmail(apiUrl, {
+            await saveEmail(profileApiUrl, {
               account: {
                 email: firebaseUser.email,
               },

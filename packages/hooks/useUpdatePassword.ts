@@ -1,28 +1,19 @@
 import { auth } from "fetchers/firebase/client";
-import {
-  sendEmailVerification,
-  updateEmail,
-} from "firebase/auth";
+import { updatePassword } from "firebase/auth";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 
-const useUpdateEmail = () => {
+const useUpdatePassword = () => {
   const [updating, setUpdating] = useState<boolean>(false);
   const [isSuccessfull, setIsSuccessfull] = useState<boolean>(false);
   const [error, setError] = useState<ErrorMessage | null>(null);
 
-  const execute = async (email: string, path: string) => {
+  const execute = async (password: string) => {
     setError(null);
     setIsSuccessfull(false);
     setUpdating(true);
     try {
-      await updateEmail(auth.currentUser, email);
-
-      const actionCodeSettings = {
-        url: `${window.location.origin}/${path}`,
-        handleCodeInApp: true,
-      };
-      await sendEmailVerification(auth.currentUser, actionCodeSettings);
+      await updatePassword(auth.currentUser, password);
       setIsSuccessfull(true);
       setUpdating(false);
     } catch (error) {
@@ -35,4 +26,4 @@ const useUpdateEmail = () => {
   return [execute, updating, isSuccessfull, error] as const;
 };
 
-export default useUpdateEmail;
+export default useUpdatePassword;
