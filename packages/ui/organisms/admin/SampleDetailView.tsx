@@ -144,7 +144,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         <div className="w-full h-full gap-6 flex flex-col justify-center items-center text-base-white">
           <span className="text-base font-semibold ">{data?.content.name}</span>
           <span className="text-2xl font-bold text-center">
-            {data ? data.name || "Unnamed Sample item" : ""}
+            {data ? data.name || "Item Title" : ""}
           </span>
           <Image
             width={160}
@@ -158,13 +158,16 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             }
             alt="image"
             onClick={() => {
-              dialogRef.current.showModal();
-              pauseUnityInputs();
+              if (section === "showcase") {
+                dialogRef.current.showModal();
+                pauseUnityInputs();
+              }
             }}
-            className="rounded-lg"
+            className="rounded-lg object-contain h-[160px]"
           />
+
           <div
-            className="w-full shrink overflow-y-auto flex flex-col gap-6"
+            className="w-full shrink overflow-y-auto flex flex-col gap-4"
             style={{ scrollbarWidth: "none" }}
           >
             <span className="text-[10px] font-normal text-center">

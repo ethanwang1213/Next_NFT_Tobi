@@ -19,13 +19,13 @@ import {
 } from "types/adminTypes";
 import { ActionType, ModelType } from "types/unityTypes";
 import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import AcrylicStandSettingDialog from "ui/organisms/admin/AcrylicStandSetting";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
 import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetailPanel";
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
 import { SampleItem } from "ui/types/adminTypes";
-
 export const metadata: Metadata = {
   title: "ワークスペース",
 };
@@ -40,9 +40,11 @@ export default function Index() {
   const shortcutDialogRef = useRef<HTMLDialogElement>(null);
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
+  const [showSettingsButton, setShowSettingsButton] = useState(false);
   const timerId = useRef(null);
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const dialogRef = useRef(null);
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -208,8 +210,14 @@ export default function Index() {
     if (selectedSample) {
       setSelectedSampleItem(selectedSample.digitalItemId);
       setSelectedSampleItemId(selectedSample.sampleItemId);
+      const matchingSample = samples.find(
+        (sample) => sample.digitalItemId === selectedSample.digitalItemId,
+      );
+      setShowSettingsButton(matchingSample?.type === 2);
+    } else {
+      setShowSettingsButton(false);
     }
-  }, [selectedSample]);
+  }, [selectedSample, samples]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
@@ -332,7 +340,7 @@ export default function Index() {
         );
         setSamples(newSamples);
         // remove sample items in unity view
-        removeSamplesByItemId(ids);
+        await removeSamplesByItemId(ids);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -508,7 +516,8 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="w-full h-full relative" id="workspace_view">
+    <div className="w-full h-full relative no-select" id="workspace_view">
+      <AcrylicStandSettingDialog dialogRef={dialogRef} />
       <div
         className="absolute left-0 right-0 top-0 bottom-0"
         style={{
@@ -579,12 +588,28 @@ export default function Index() {
           dragHandler={sampleDragHandler}
           showRestoreMenu={showRestoreMenu}
         />
-        <div
-          className="absolute left-[50%] bottom-12 h-12 flex justify-center pointer-events-auto select-none"
-          style={{
-            transform: "translateX(-50%)",
-          }}
-        >
+        <div className="w-full flex justify-center absolute bottom-28 items-center">
+          {showSettingsButton ? (
+            <button
+              className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
+              onClick={() => {
+                dialogRef.current.showModal();
+              }}
+            >
+              <Image
+                width={32}
+                height={32}
+                alt="setting button"
+                src="/admin/images/icon/setting-icon.svg"
+                className="cursor-pointer h-[27px]"
+              />
+              <span className="text-[14px] font-bold text-white">
+                Body/Base Ratio Settings
+              </span>
+            </button>
+          ) : null}
+        </div>
+        <div className="absolute bottom-12 h-12 flex justify-center pointer-events-auto select-none w-full items-center">
           <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
             <button
               disabled={!isUndoable}

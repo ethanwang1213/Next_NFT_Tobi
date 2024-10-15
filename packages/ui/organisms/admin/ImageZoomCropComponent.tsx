@@ -1,10 +1,6 @@
 import "rc-slider/assets/index.css";
 import React, { useCallback, useRef, useState } from "react";
-import ReactCrop, {
-  convertToPixelCrop,
-  Crop,
-  PixelCrop,
-} from "react-image-crop";
+import ReactCrop, { Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import ButtonGroupComponent from "./ButtonGroupComponent";
 import GenerateErrorComponent from "./GenerateErrorComponent";
@@ -21,83 +17,50 @@ type Props = {
 
 const ImageZoomCropComponent: React.FC<Props> = (props) => {
   const imgRef = useRef<HTMLImageElement>(null);
-  const imgWrapperRef = useRef<HTMLDivElement>(null);
   const blobUrlRef = useRef("");
 
   const [processing, setProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const [crop, setCrop] = useState<Crop>({
-    unit: "%", // Can be 'px' or '%'
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-  });
-
   const [rotate, setRotate] = useState(180);
   const [scale, setScale] = useState(1);
 
-  const imageLoadHandler = useCallback(
-    (e: React.SyntheticEvent<HTMLImageElement>) => {
-      setLoading(false);
+  const [crop, setCrop] = useState<Crop>({
+    unit: "%",
+    x: 0,
+    y: 0,
+    width: 50,
+    height: 50,
+  });
 
-      const { width, height } = e.currentTarget;
-
-      const initialCrop = convertToPixelCrop(crop, width, height);
-      initialCrop.x = (imgWrapperRef.current.clientWidth - width) / 2;
-      initialCrop.y = (imgWrapperRef.current.clientHeight - height) / 2;
+  const imageLoadHandler = useCallback(() => {
+    if (imgRef.current) {
+      const initialCrop: Crop = {
+        unit: "%",
+        x: (100 - crop.width) / 2,
+        y: (100 - crop.height) / 2,
+        width: crop.width,
+        height: crop.height,
+      };
       setCrop(initialCrop);
-    },
-    [crop],
-  );
+    }
+    setLoading(false);
+  }, [crop.width, crop.height]);
 
-  const rotateChangeHandler = useCallback(
-    (rotate) => {
-      const { width, height } = imgRef.current;
-
-      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
-      const sin = Math.abs(Math.sin(angleInRadians));
-      const cos = Math.abs(Math.cos(angleInRadians));
-      const rotatedScreenWidth = (width * cos + height * sin) * scale;
-      const rotateScreenHeight = (width * sin + height * cos) * scale;
-
-      crop.x = (imgWrapperRef.current.clientWidth - rotatedScreenWidth) / 2;
-      crop.width = rotatedScreenWidth;
-      crop.y = (imgWrapperRef.current.clientHeight - rotateScreenHeight) / 2;
-      crop.height = rotateScreenHeight;
-      setCrop(crop);
-
-      setRotate(rotate);
-    },
-    [crop, scale],
-  );
+  const rotateChangeHandler = useCallback((rotate) => {
+    setRotate(rotate);
+  }, []);
 
   const cropChangeHandler = (newCrop: Crop) => {
-    if (imgRef.current) {
-      const { width, height } = imgRef.current;
-
-      newCrop.x = (imgWrapperRef.current.clientWidth - newCrop.width) / 2;
-      newCrop.y = (imgWrapperRef.current.clientHeight - newCrop.height) / 2;
-      setCrop(newCrop);
-
-      const angleInRadians = ((180 - rotate) * Math.PI) / 180;
-      const sin = Math.abs(Math.sin(angleInRadians));
-      const cos = Math.abs(Math.cos(angleInRadians));
-      const rotatedWidth = width * cos + height * sin;
-      const rotatedHeight = width * sin + height * cos;
-      const newScale =
-        newCrop.width / rotatedWidth > newCrop.height / rotatedHeight
-          ? newCrop.width / rotatedWidth
-          : newCrop.height / rotatedHeight;
-      setScale(newScale);
-    }
+    setCrop(newCrop);
   };
 
   const cropImage = useCallback(async () => {
     const image = imgRef.current;
 
-    // Create a temporary canvas to draw the rotated image
+    if (!image) {
+      return;
+    }
+
     const tempCanvas = document.createElement("canvas");
     const tempCtx = tempCanvas.getContext("2d");
 
@@ -105,7 +68,6 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
       throw new Error("No 2d context for temporary canvas");
     }
 
-    // Calculate the bounding box of the rotated image
     const angleInRadians = ((180 - rotate) * Math.PI) / 180;
     const sin = Math.abs(Math.sin(angleInRadians));
     const cos = Math.abs(Math.cos(angleInRadians));
@@ -117,15 +79,11 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     tempCanvas.width = rotatedNaturalWidth;
     tempCanvas.height = rotatedNaturalHeight;
 
-    // Translate and rotate the temporary canvas
     tempCtx.translate(rotatedNaturalWidth / 2, rotatedNaturalHeight / 2);
     tempCtx.rotate(angleInRadians);
     tempCtx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
-
-    // Draw the original image onto the temporary canvas
     tempCtx.drawImage(image, 0, 0);
 
-    // Create the final canvas to draw the cropped image
     const finalCanvas = document.createElement("canvas");
     const finalCtx = finalCanvas.getContext("2d");
 
@@ -133,26 +91,22 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
       throw new Error("No 2d context for final canvas");
     }
 
-    finalCanvas.width = crop.width;
-    finalCanvas.height = crop.height;
+    finalCanvas.width = crop.width * scale;
+    finalCanvas.height = crop.height * scale;
 
-    // Calculate the crop coordinates based on the rotated image
-    const scaleX = image.naturalWidth / image.width / scale;
-    const scaleY = image.naturalHeight / image.height / scale;
-    const cropX = (rotatedNaturalWidth - crop.width * scaleX) / 2;
-    const cropY = (rotatedNaturalHeight - crop.height * scaleY) / 2;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
 
-    // Draw the rotated image onto the final canvas
     finalCtx.drawImage(
       tempCanvas,
-      cropX,
-      cropY,
-      rotatedNaturalWidth - cropX * 2,
-      rotatedNaturalHeight - cropY * 2,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
       0,
       0,
-      crop.width,
-      crop.height,
+      finalCanvas.width,
+      finalCanvas.height,
     );
 
     const blob = await new Promise<Blob | null>((resolve) =>
@@ -162,16 +116,18 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     if (blobUrlRef.current) {
       URL.revokeObjectURL(blobUrlRef.current);
     }
-    blobUrlRef.current = URL.createObjectURL(blob);
+    blobUrlRef.current = blob ? URL.createObjectURL(blob) : "";
   }, [crop, rotate, scale]);
 
   const nextHandler = useCallback(async () => {
     setProcessing(true);
-
     await cropImage();
-
     props.nextHandler(blobUrlRef.current);
   }, [props, cropImage]);
+
+  const scaleChangeHandler = (newScale: number) => {
+    setScale(newScale);
+  };
 
   return (
     <div className="h-full relative">
@@ -184,38 +140,32 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
         <div>
           <ReactCrop
             crop={crop}
-            onChange={(c) => {
-              cropChangeHandler(c);
-            }}
+            onChange={(c) => cropChangeHandler(c)}
             keepSelection={true}
+            circularCrop
+            aspect={1}
           >
-            <div
-              ref={imgWrapperRef}
-              className="w-[400px] h-[379px] flex justify-center items-center"
-            >
+            <div className="w-[400px] h-[379px] flex justify-center items-center overflow-hidden">
               {loading && (
                 <div className="absolute left-0 top-0 w-[400px] h-[379px] z-10 flex justify-center items-center">
                   <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
                 </div>
               )}
-              {
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  ref={imgRef}
-                  src={props.imageUrl}
-                  alt="crop image"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    transform: `rotate(${180 - rotate}deg) scale(${scale})`,
-                    objectFit: "contain",
-                  }}
-                  crossOrigin="anonymous"
-                  draggable={false}
-                  onLoad={imageLoadHandler}
-                  onError={() => setLoading(false)}
-                />
-              }
+              <img
+                ref={imgRef}
+                src={props.imageUrl}
+                alt="crop image"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  transform: `rotate(${180 - rotate}deg) scale(${scale})`,
+                  objectFit: "contain",
+                }}
+                crossOrigin="anonymous"
+                draggable={false}
+                onLoad={imageLoadHandler}
+                onError={() => setLoading(false)}
+              />
             </div>
           </ReactCrop>
           <RotateSliderComponent

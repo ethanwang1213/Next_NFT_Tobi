@@ -71,6 +71,7 @@ const SampleItemComponent: React.FC<ItemProps> = (props) => {
       <Image
         width={80}
         height={80}
+        className="h-[80px] object-contain"
         src={props.thumbnail}
         alt="thumbnail image"
         draggable={false}

@@ -56,7 +56,7 @@ const ShowcaseSampleTab = ({
           return (
             <div
               key={sample.sampleItemId}
-              className="w-1/4 p-2"
+              className="w-1/4 p-2 flex item-center justify-center"
               onMouseDown={onMouseDown}
               onMouseMove={(event) => {
                 onMouseMove(event, sample);
