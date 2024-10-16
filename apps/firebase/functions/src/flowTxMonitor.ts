@@ -294,6 +294,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, notificationBatchId:
 
 const fetchMintNFT = async (txId: string) => {
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
+  const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tx = await fcl.tx(txId).onceSealed();
   console.log(JSON.stringify(tx));
   const result: {
@@ -312,7 +313,7 @@ const fetchMintNFT = async (txId: string) => {
       result.id = event.data.id;
       result.itemID = event.data.itemID;
       result.serialNumber = event.data.serialNumber;
-    } else if (event.type === `A.${tobiratoryDigitalItemsAddress}.NonFungibleToken.Deposited`) {
+    } else if (event.type === `A.${nonFungibleTokenAddress}.NonFungibleToken.Deposited`) {
       result.to = event.data.to;
     }
   }
