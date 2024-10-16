@@ -40,7 +40,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 }) => {
   const dialogRef = useRef(null);
   const apiUrl = `native/admin/digital_items/${id}`;
-  const { data, loading, getData, postData } = useRestfulAPI(null);
+  const { data, loading, setData, getData, postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
@@ -50,6 +50,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   useEffect(() => {
     if (id > 0) {
       getData(apiUrl);
+    } else {
+      setData(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
