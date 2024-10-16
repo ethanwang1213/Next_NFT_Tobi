@@ -125,10 +125,6 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     props.nextHandler(blobUrlRef.current);
   }, [props, cropImage]);
 
-  const scaleChangeHandler = (newScale: number) => {
-    setScale(newScale);
-  };
-
   return (
     <div className="h-full relative">
       {processing && !props.error && (

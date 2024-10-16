@@ -73,10 +73,8 @@ const SampleTypeSelectComponent = (props: {
         } else {
           await generateSampleHandler(ModelType.UserUploadedModel, result);
         }
-        setUploading(false);
       } else {
         await generateSampleHandler(ModelType.UserUploadedModel, uploadFile);
-        setUploading(false);
       }
       return true;
     },
@@ -92,6 +90,7 @@ const SampleTypeSelectComponent = (props: {
           setUploading(true);
           const fileUrl = URL.createObjectURL(file);
           await uploadImageHandler(fileUrl, fileName, fileExtension);
+          setTimeout(() => setUploading(false), 15000);
         }
       }
     },

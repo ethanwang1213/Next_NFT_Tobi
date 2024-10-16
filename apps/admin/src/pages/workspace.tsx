@@ -216,6 +216,8 @@ export default function Index() {
       setShowSettingsButton(matchingSample?.type === 2);
     } else {
       setShowSettingsButton(false);
+      setSelectedSampleItem(-1);
+      setSelectedSampleItemId(-1);
     }
   }, [selectedSample, samples]);
 
