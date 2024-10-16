@@ -104,6 +104,8 @@ export const getContentById = async (req: Request, res: Response) => {
         return {
           sampleId: relationSample.sample_item_id,
           itemId: relationSample.id,
+          digitalItemId: relationSample.sample_item.digital_item_id,
+          name: relationSample.sample_item.digital_item.name,
           thumbImage: relationSample.sample_item.digital_item.is_default_thumb ?
             relationSample.sample_item.digital_item.default_thumb_url :
             relationSample.sample_item.digital_item?.custom_thumb_url,
@@ -129,6 +131,8 @@ export const getContentById = async (req: Request, res: Response) => {
         return {
           nftId: relationNFT.nft_id,
           itemId: relationNFT.id,
+          digitalItemId: relationNFT.digital_item_nft.digital_item_id,
+          name: relationNFT.digital_item_nft.digital_item.name,
           thumbImage: relationNFT.digital_item_nft.digital_item.is_default_thumb ?
             relationNFT.digital_item_nft.digital_item.default_thumb_url :
             relationNFT.digital_item_nft.digital_item.custom_thumb_url,
