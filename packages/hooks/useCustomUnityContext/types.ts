@@ -18,6 +18,7 @@ export const UnitySceneType = {
   Workspace: 1,
   ShowcaseEdit: 2,
   ItemPreview: 3,
+  AcrylicBaseSettings: 4,
 } as const;
 export type UnitySceneType =
   (typeof UnitySceneType)[keyof typeof UnitySceneType];
@@ -43,7 +44,9 @@ export type MessageDestination =
   | "PauseInputsMessageReceiver"
   | "ResumeInputsMessageReceiver"
   | "UpdateItemTransformMessageReceiver"
-  | "ViewItemModelMessageReceiver";
+  | "ViewItemModelMessageReceiver"
+  | "LoadAcrylicStandMessageReceiver"
+  | "UpdateAcrylicBaseScaleRatioMessageReceiver";
 
 export const UnityMessageType = {
   SimpleMessage: 0,

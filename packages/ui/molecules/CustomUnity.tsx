@@ -36,6 +36,17 @@ export const ItemPreviewUnity = ({
   />
 );
 
+export const AcrylicBaseSettingsUnity = ({
+  unityProvider,
+  isLoaded,
+}: ProviderParam) => (
+  <UnityBase
+    id="acrylicBaseSettings"
+    unityProvider={unityProvider}
+    isLoaded={isLoaded}
+  />
+);
+
 const UnityBase = ({
   id,
   unityProvider,
