@@ -19,19 +19,15 @@ export const useAcrylicBaseSettingsUnityContext = () => {
     sceneType: UnitySceneType.AcrylicBaseSettings,
   });
 
-  const {
-    isSceneLoaded,
-    defaultAcrylicBaseScaleRatio,
-    setLoadData,
-    handleSceneIsLoaded,
-  } = useLoadAcrylicStand({
-    isLoaded,
-    postMessageToUnity,
-  });
+  const { isSceneLoaded, defaultItemData, setLoadData, handleSceneIsLoaded } =
+    useLoadAcrylicStand({
+      isLoaded,
+      postMessageToUnity,
+    });
 
   const { updateAcrylicBaseScaleRatio, resetAcrylicBaseScaleRatio } =
     useUpdateAcrylicBaseScaleRatio({
-      defaultAcrylicBaseScaleRatio,
+      defaultItemData,
       postMessageToUnity,
     });
 

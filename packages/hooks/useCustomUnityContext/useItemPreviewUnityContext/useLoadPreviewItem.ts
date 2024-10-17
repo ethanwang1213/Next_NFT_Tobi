@@ -35,7 +35,7 @@ export const useLoadPreviewItem = ({
       (loadData.itemType === currentItemIndex?.itemType &&
         loadData.itemId === currentItemIndex?.itemId)
     ) {
-      console.log("loadData is null or same item");
+      // console.log("loadData is null or same item");
       return;
     }
 

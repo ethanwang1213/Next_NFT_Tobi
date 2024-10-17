@@ -1,16 +1,18 @@
 import { useCallback } from "react";
-import { MessageDestination } from "../types";
+import { ItemBaseId } from "types/unityTypes";
+import { AcrylicBaseScaleRatio, MessageDestination } from "../types";
 
 export const useUpdateAcrylicBaseScaleRatio = ({
-  defaultAcrylicBaseScaleRatio,
+  defaultItemData,
   postMessageToUnity,
 }: {
-  defaultAcrylicBaseScaleRatio: number;
+  defaultItemData: ItemBaseId & AcrylicBaseScaleRatio;
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
   const updateAcrylicBaseScaleRatio = useCallback(
     (acrylicBaseScaleRatio: number) => {
       const json = JSON.stringify({
+        itemId: defaultItemData.itemId,
         acrylicBaseScaleRatio,
       });
       postMessageToUnity("UpdateAcrylicBaseScaleRatioMessageReceiver", json);
@@ -21,10 +23,11 @@ export const useUpdateAcrylicBaseScaleRatio = ({
   const resetAcrylicBaseScaleRatio = useCallback(() => {
     console.log("resetAcrylicBaseScaleRatio");
     const json = JSON.stringify({
-      acrylicBaseScaleRatio: defaultAcrylicBaseScaleRatio,
+      itemId: defaultItemData.itemId,
+      acrylicBaseScaleRatio: defaultItemData.acrylicBaseScaleRatio,
     });
     postMessageToUnity("UpdateAcrylicBaseScaleRatioMessageReceiver", json);
-  }, [defaultAcrylicBaseScaleRatio, postMessageToUnity]);
+  }, [defaultItemData, postMessageToUnity]);
 
   return { updateAcrylicBaseScaleRatio, resetAcrylicBaseScaleRatio };
 };

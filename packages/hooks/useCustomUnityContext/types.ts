@@ -160,3 +160,7 @@ export type UndoneOrRedone = (
   text: string,
   result: UndoneRedoneResult,
 ) => void;
+
+export type AcrylicBaseScaleRatio = {
+  acrylicBaseScaleRatio: number;
+};

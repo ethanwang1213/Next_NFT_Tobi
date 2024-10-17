@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { DebugFlag, ItemBaseId, ModelParams } from "types/unityTypes";
-import { MessageDestination } from "../types";
+import { AcrylicBaseScaleRatio, MessageDestination } from "../types";
 
 type AcrylicStandData = ItemBaseId &
+  Omit<ModelParams, "modelType"> &
   DebugFlag &
-  Omit<ModelParams, "modelType"> & {
-    acrylicBaseScaleRatio: number;
-  };
+  AcrylicBaseScaleRatio;
 
 export const useLoadAcrylicStand = ({
   isLoaded,
@@ -18,21 +17,29 @@ export const useLoadAcrylicStand = ({
   const [isSceneLoaded, setIsSceneLoaded] = useState(false);
   const [loadData, setLoadData] = useState<AcrylicStandData | null>();
   const [currentItemIndex, setCurrentItemIndex] = useState<ItemBaseId>();
-  const [defaultAcrylicBaseScaleRatio, setDefaultAcrylicBaseScaleRatio] =
-    useState(0);
+
+  const [defaultItemData, setDefaultItemData] = useState<
+    ItemBaseId & AcrylicBaseScaleRatio
+  >({
+    itemId: -1,
+    acrylicBaseScaleRatio: 0,
+  });
 
   const postMessageToLoadData = useCallback(() => {
     setIsSceneLoaded(true);
 
     if (!loadData || loadData.itemId === currentItemIndex?.itemId) {
-      console.log("loadData is null or same item");
+      // console.log("loadData is null or same item");
       return;
     }
 
     const json = JSON.stringify(loadData);
     postMessageToUnity("LoadAcrylicStandMessageReceiver", json);
 
-    setDefaultAcrylicBaseScaleRatio(loadData.acrylicBaseScaleRatio);
+    setDefaultItemData({
+      itemId: loadData.itemId,
+      acrylicBaseScaleRatio: loadData.acrylicBaseScaleRatio,
+    });
     setCurrentItemIndex({
       itemId: loadData.itemId,
     });
@@ -46,7 +53,7 @@ export const useLoadAcrylicStand = ({
 
   return {
     isSceneLoaded,
-    defaultAcrylicBaseScaleRatio,
+    defaultItemData,
     setLoadData,
     handleSceneIsLoaded: postMessageToLoadData,
   };
