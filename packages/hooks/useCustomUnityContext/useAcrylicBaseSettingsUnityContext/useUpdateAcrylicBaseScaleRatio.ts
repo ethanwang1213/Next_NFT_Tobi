@@ -17,11 +17,10 @@ export const useUpdateAcrylicBaseScaleRatio = ({
       });
       postMessageToUnity("UpdateAcrylicBaseScaleRatioMessageReceiver", json);
     },
-    [postMessageToUnity],
+    [defaultItemData.itemId, postMessageToUnity],
   );
 
   const resetAcrylicBaseScaleRatio = useCallback(() => {
-    console.log("resetAcrylicBaseScaleRatio");
     const json = JSON.stringify({
       itemId: defaultItemData.itemId,
       acrylicBaseScaleRatio: defaultItemData.acrylicBaseScaleRatio,
