@@ -25,19 +25,25 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
   const [scale, setScale] = useState(1);
 
   const [crop, setCrop] = useState<Crop>({
-    unit: "%",
+    unit: "px",
     x: 0,
     y: 0,
-    width: 50,
-    height: 50,
+    width: 200,
+    height: 200,
   });
 
   const imageLoadHandler = useCallback(() => {
     if (imgRef.current) {
+      const { width: displayedWidth, height: displayedHeight } =
+        imgRef.current.getBoundingClientRect();
+
+      const offsetX = (400 - displayedWidth) / 2;
+      const offsetY = (379 - displayedHeight) / 2;
+
       const initialCrop: Crop = {
-        unit: "%",
-        x: (100 - crop.width) / 2,
-        y: (100 - crop.height) / 2,
+        unit: "px",
+        x: offsetX + (displayedWidth - crop.width) / 2,
+        y: offsetY + (displayedHeight - crop.height) / 2,
         width: crop.width,
         height: crop.height,
       };
@@ -60,6 +66,14 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     if (!image) {
       return;
     }
+
+    const { width: displayedWidth, height: displayedHeight } =
+      image.getBoundingClientRect();
+
+    const scaleX = image.naturalWidth / displayedWidth;
+    const scaleY = image.naturalHeight / displayedHeight;
+    const offsetX = (400 - displayedWidth) / 2;
+    const offsetY = (379 - displayedHeight) / 2;
 
     const tempCanvas = document.createElement("canvas");
     const tempCtx = tempCanvas.getContext("2d");
@@ -94,13 +108,13 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     finalCanvas.width = crop.width * scale;
     finalCanvas.height = crop.height * scale;
 
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    const adjustedCropX = (crop.x - offsetX) * scaleX;
+    const adjustedCropY = (crop.y - offsetY) * scaleY;
 
     finalCtx.drawImage(
       tempCanvas,
-      crop.x * scaleX,
-      crop.y * scaleY,
+      adjustedCropX,
+      adjustedCropY,
       crop.width * scaleX,
       crop.height * scaleY,
       0,
