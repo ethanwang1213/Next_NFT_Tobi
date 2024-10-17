@@ -43,6 +43,7 @@ const Showcase = () => {
     data: showcaseData,
     error,
     getData,
+    setData,
     putData,
     postData,
   } = useRestfulAPI(null);
@@ -245,6 +246,8 @@ const Showcase = () => {
       setShowOperate(true);
     } else {
       setShowOperate(false);
+      setSelectedSampleItem(-1);
+      setData(null);
     }
   }, [selectedItem]);
 
