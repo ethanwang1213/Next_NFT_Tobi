@@ -387,7 +387,7 @@ export default function Index() {
     2: "AcrylicStand",
     3: "CanBadge",
     4: "MessageCard",
-    5: "UserUploadedModel",
+    5: "3DModel",
   };
 
   const trackSampleCreation = (sampleType: number) => {
