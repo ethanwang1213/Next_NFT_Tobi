@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {prisma} from "../prisma";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-import {statusOfShowcase} from "./utils";
+import {digitalItemStatus, statusOfShowcase} from "./utils";
 
 export const getContentById = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -58,6 +58,17 @@ export const getContentById = async (req: Request, res: Response) => {
                 include: {
                   digital_item: {
                     include: {
+                      sales: {
+                        where: {
+                          schedule_start_time: {
+                            lt: new Date(),
+                          },
+                        },
+                        orderBy: {
+                          schedule_start_time: "desc",
+                        },
+                        take: 1,
+                      },
                       material_image: true,
                     },
                   },
@@ -71,6 +82,17 @@ export const getContentById = async (req: Request, res: Response) => {
                 include: {
                   digital_item: {
                     include: {
+                      sales: {
+                        where: {
+                          schedule_start_time: {
+                            lt: new Date(),
+                          },
+                        },
+                        orderBy: {
+                          schedule_start_time: "desc",
+                        },
+                        take: 1,
+                      },
                       material_image: true,
                     },
                   },
@@ -114,6 +136,7 @@ export const getContentById = async (req: Request, res: Response) => {
           modelUrl: relationSample.sample_item.digital_item.model_url,
           stageType: relationSample.stage_type,
           scale: relationSample.scale,
+          status: relationSample.sample_item.digital_item.sales.length>0?relationSample.sample_item.digital_item.sales[0].status: relationSample.sample_item.digital_item.metadata_status,
           position: {
             x: relationSample.position[0] ?? 0,
             y: relationSample.position[1] ?? 0,
@@ -125,7 +148,7 @@ export const getContentById = async (req: Request, res: Response) => {
             z: relationSample.rotation[2] ?? 0,
           },
         };
-      });
+      }).filter((sample)=>(sample.status==digitalItemStatus.viewingOnly||sample.status==digitalItemStatus.onSale));
 
       const nftItems = showcase.showcase_nft_items.map((relationNFT) => {
         return {
@@ -142,6 +165,7 @@ export const getContentById = async (req: Request, res: Response) => {
           stageType: relationNFT.stage_type,
           scale: relationNFT.scale,
           itemMeterHeight: relationNFT.meter_height,
+          status: relationNFT.digital_item_nft.digital_item.sales.length>0?relationNFT.digital_item_nft.digital_item.sales[0].status: relationNFT.digital_item_nft.digital_item.metadata_status,
           position: {
             x: relationNFT.position[0] ?? 0,
             y: relationNFT.position[1] ?? 0,
@@ -153,7 +177,7 @@ export const getContentById = async (req: Request, res: Response) => {
             z: relationNFT.rotation[2] ?? 0,
           },
         };
-      });
+      }).filter((nft)=>(nft.status!=digitalItemStatus.draft));
       const favorite = await prisma.contents_favorite.findFirst({
         where: {
           account_uuid: uid,
