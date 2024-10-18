@@ -1,8 +1,9 @@
 import { ProviderId as FirebaseProviderId } from "firebase/auth";
 import {
-  ItemSaveData,
   ItemType,
   NftLoadData,
+  NftSaveData,
+  SampleSaveData,
   ShowcaseSampleLoadData,
   ShowcaseSettings,
   ShowcaseType,
@@ -102,7 +103,7 @@ export type WorkspaceLoadData = {
 };
 
 export type WorkspaceSaveData = {
-  workspaceItemList: ItemSaveData[];
+  workspaceItemList: SampleSaveData[];
 };
 
 export type ShowcaseLoadData = {
@@ -116,8 +117,8 @@ export type ShowcaseLoadData = {
 };
 
 export type ShowcaseSaveData = {
-  sampleItemList: ItemSaveData[];
-  nftItemList: ItemSaveData[];
+  sampleItemList: SampleSaveData[];
+  nftItemList: NftSaveData[];
   thumbnailImageBase64: string;
   settings: ShowcaseSettings;
 };

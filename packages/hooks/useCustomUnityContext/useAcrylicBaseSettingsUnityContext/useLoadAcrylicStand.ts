@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { DebugFlag, ItemBaseId, ModelParams } from "types/unityTypes";
-import { AcrylicBaseScaleRatio, MessageDestination } from "../types";
+import {
+  AcrylicBaseScaleRatio,
+  DebugFlag,
+  ItemBaseId,
+  ModelParams,
+} from "types/unityTypes";
+import { MessageDestination } from "../types";
 
 type AcrylicStandData = ItemBaseId &
   Omit<ModelParams, "modelType"> &

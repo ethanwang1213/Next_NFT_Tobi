@@ -7,9 +7,9 @@ import {
 } from "types/adminTypes";
 import {
   DebugFlag,
-  ItemSaveData,
   ItemType,
   ModelParams,
+  SampleSaveData,
   TextureParam,
 } from "types/unityTypes";
 import { DefaultItemMeterHeight } from "../constants";
@@ -221,7 +221,7 @@ export const useWorkspaceUnityContext = ({
 
       if (!messageBody) return;
 
-      var workspaceItemList: ItemSaveData[] =
+      var workspaceItemList: SampleSaveData[] =
         messageBody.saidanData.saidanItemList.map((v) => ({
           id: v.id,
           itemId: v.itemId,

@@ -6,9 +6,10 @@ import {
   UpdateIdValues,
 } from "types/adminTypes";
 import {
-  ItemSaveData,
   ItemType,
+  NftSaveData,
   SaidanItemData,
+  SampleSaveData,
   UpdatingSaidanSettings,
 } from "types/unityTypes";
 import { DefaultItemMeterHeight } from "../constants";
@@ -201,17 +202,18 @@ export const useShowcaseEditUnityContext = ({
 
       if (!messageBody) return;
 
-      var sampleItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
-        .filter((v) => v.itemType === ItemType.Sample)
-        .map((v) => ({
-          id: v.id,
-          itemId: v.itemId,
-          stageType: v.stageType,
-          position: v.position,
-          rotation: v.rotation,
-          scale: v.scale,
-        }));
-      var nftItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
+      var sampleItemList: SampleSaveData[] =
+        messageBody.saidanData.saidanItemList
+          .filter((v) => v.itemType === ItemType.Sample)
+          .map((v) => ({
+            id: v.id,
+            itemId: v.itemId,
+            stageType: v.stageType,
+            position: v.position,
+            rotation: v.rotation,
+            scale: v.scale,
+          }));
+      var nftItemList: NftSaveData[] = messageBody.saidanData.saidanItemList
         .filter((v) => v.itemType === ItemType.DigitalItemNft)
         .map((v) => ({
           id: v.id,

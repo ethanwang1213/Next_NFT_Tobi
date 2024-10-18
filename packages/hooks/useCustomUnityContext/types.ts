@@ -161,6 +161,3 @@ export type UndoneOrRedone = (
   result: UndoneRedoneResult,
 ) => void;
 
-export type AcrylicBaseScaleRatio = {
-  acrylicBaseScaleRatio: number;
-};
