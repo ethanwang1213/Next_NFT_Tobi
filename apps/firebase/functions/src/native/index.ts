@@ -139,6 +139,7 @@ app.delete("/my/samples/:id", deleteDigitalItem);
 app.post("/zip-model", handleZipModel);
 
 app.post("/model/acrylic-stand", modelApiHandler(ModelRequestType.AcrylicStand));
+app.post("/model/acrylic-key-chain", modelApiHandler(ModelRequestType.AcrylicKeyChain));
 app.post("/model/remove-bg", modelApiHandler(ModelRequestType.RemoveBg));
 app.post("/model/message-card", modelApiHandler(ModelRequestType.MessageCard));
 
