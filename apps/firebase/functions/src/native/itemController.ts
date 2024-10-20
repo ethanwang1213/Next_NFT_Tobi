@@ -15,7 +15,7 @@ interface ModelApiResponse {
 
 export const ModelRequestType = {
   AcrylicStand: "acrylic_stand",
-  AcrylicKeyChain: "acrylic_key_chain",
+  AcrylicKeychain: "acrylic_keychain",
   MessageCard: "message_card",
   RemoveBg: "remove_bg",
   UserUploaded: "uploaded",
@@ -41,7 +41,7 @@ export const modelApiHandler = (type: ModelRequestType) => {
         case ModelRequestType.AcrylicStand:
           createAcrylicStand(req, res, uid, modelApiUrl, token);
           break;
-        case ModelRequestType.AcrylicKeyChain:
+        case ModelRequestType.AcrylicKeychain:
           createAcrylicKeyChain(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.MessageCard:
