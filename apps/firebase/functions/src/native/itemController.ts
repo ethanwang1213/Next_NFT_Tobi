@@ -15,6 +15,7 @@ interface ModelApiResponse {
 
 export const ModelRequestType = {
   AcrylicStand: "acrylic_stand",
+  AcrylicKeyChain: "acrylic_key_chain",
   MessageCard: "message_card",
   RemoveBg: "remove_bg",
   UserUploaded: "uploaded",
@@ -39,6 +40,9 @@ export const modelApiHandler = (type: ModelRequestType) => {
       switch (type) {
         case ModelRequestType.AcrylicStand:
           createAcrylicStand(req, res, uid, modelApiUrl, token);
+          break;
+        case ModelRequestType.AcrylicKeyChain:
+          createAcrylicKeyChain(req, res, uid, modelApiUrl, token);
           break;
         case ModelRequestType.MessageCard:
           createMessageCard(req, res, uid, modelApiUrl, token);
@@ -73,6 +77,47 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string, mode
     process_type: ModelRequestType.AcrylicStand,
     image1: bodyUrl,
     image2: baseUrl,
+    coords1: coords,
+  };
+  const urlParams = new URLSearchParams();
+  Object.keys(params).forEach((key) => {
+    if (params[key]) {
+      urlParams.append(key, params[key] as string);
+    }
+  });
+  const requestUrl = `${modelApiUrl}?${urlParams.toString()}`;
+  try {
+    const apiResponse = await axios.post<ModelApiResponse>(requestUrl);
+    res.status(200).send({
+      status: "success",
+      data: {
+        url: apiResponse.data.url,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      status: "error",
+      data: "api-error",
+    });
+  }
+};
+
+const createAcrylicKeyChain = async (req: Request, res: Response, uid: string, modelApiUrl: string, token: string) => {
+  const {bodyUrl, coords}: { bodyUrl: string, coords: string } = req.body;
+
+  if (!bodyUrl || !coords) {
+    res.status(400).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  }
+  const params: Record<string, string | undefined> = {
+    uid,
+    token,
+    process_type: ModelRequestType.AcrylicStand,
+    image1: bodyUrl,
     coords1: coords,
   };
   const urlParams = new URLSearchParams();
