@@ -65,6 +65,7 @@ const createAcrylicStand = async (req: Request, res: Response, uid: string, mode
   const {bodyUrl, baseUrl, coords}: { bodyUrl: string, baseUrl?: string, coords?: string } = req.body;
 
   if (!bodyUrl) {
+    console.error("invalid-params: bodyUrl is required");
     res.status(400).send({
       status: "error",
       data: "invalid-params",
@@ -107,6 +108,7 @@ const createAcrylicKeyChain = async (req: Request, res: Response, uid: string, m
   const {bodyUrl, coords}: { bodyUrl: string, coords: string } = req.body;
 
   if (!bodyUrl || !coords) {
+    console.error(`invalid-params: coords and bodyUrl are required: coords: ${coords}, bodyUrl: ${bodyUrl}`);
     res.status(400).send({
       status: "error",
       data: "invalid-params",
@@ -148,6 +150,7 @@ const createMessageCard = async (req: Request, res: Response, uid: string, model
   const {url}: { url: string } = req.body;
 
   if (!url) {
+    console.error("invalid-params: url is required");
     res.status(400).send({
       status: "error",
       data: "invalid-params",
@@ -189,6 +192,7 @@ export const removeBackground = async (req: Request, res: Response, uid: string,
   const {url}: { url: string } = req.body;
 
   if (!url) {
+    console.error("invalid-params: url is required");
     res.status(400).send({
       status: "error",
       data: "invalid-params",
