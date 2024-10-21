@@ -394,23 +394,6 @@ const Showcase = () => {
                 <span className="loading loading-spinner"></span>
               )}
             </span>
-            {/* <div className="relative">
-            <button
-              className={`${
-                loading
-                  ? "opacity-0 pointer-events-none"
-                  : "opacity-100 pointer-events-auto"
-              } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
-              onClick={() => dialogRef.current.showModal()}
-            >
-              Submit
-            </button>
-            {loading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-12 w-12"></div>
-              </div>
-            )}
-          </div> */}
             {loading && <span className="loading loading-spinner"></span>}
             {!loading && (
               <Button onClick={() => dialogRef.current.showModal()}>
