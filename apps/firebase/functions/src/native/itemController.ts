@@ -1267,7 +1267,7 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
       }
       const returnData = {
         id: digitalItemData.id,
-        title: digitalItemData.name,
+        name: digitalItemData.name,
         description: digitalItemData.description,
         modelType: digitalItemData.type,
         modelUrl: digitalItemData.model_url,
@@ -1283,6 +1283,9 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
           };
         }),
         license: digitalItemData.license,
+        mintCount: digitalItemData.minted_count,
+        limit: digitalItemData.limit,
+        saleQuantity: digitalItemData.sale_quantity,
         price: digitalItemData.sales.length>0?digitalItemData.sales[0].price: null,
         status: digitalItemData.sales.length>0?digitalItemData.sales[0].status: digitalItemData.metadata_status,
         dateAcquired: digitalItemData.created_date_time,
