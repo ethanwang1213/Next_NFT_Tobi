@@ -7,12 +7,12 @@ const LanguageSwitch = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
-    setIsOpen((prev) => !prev); // Toggle dropdown
+    setIsOpen((prev) => !prev);
   };
 
   const handleLanguageSelect = (language: string) => {
-    setSelectedLanguage(language); // Update selected language
-    setIsOpen(false); // Close dropdown
+    setSelectedLanguage(language);
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -34,17 +34,28 @@ const LanguageSwitch = () => {
   return (
     <div className="flex items-center space-x-4 text-[16px] w-48 border-r">
       <div className="relative" ref={dropdownRef}>
-        <div className="flex items-center space-x-2 px-4" onClick={toggleDropdown}>
+        <div
+          className="flex items-center space-x-2 px-4 cursor-pointer"
+          onClick={toggleDropdown}
+        >
           <Image
             width={20}
             height={20}
             src="/admin/images/language.svg"
             alt="language icon"
-            className="cursor-pointer"
           />
-          <button className="p-2 rounded text-gray-500 font-medium">
+          <button className="p-2 rounded text-gray-500 font-semibold">
             LANGUAGE
           </button>
+          <Image
+            src="/admin/images/icon/expand.svg"
+            width={12}
+            height={12}
+            alt="drop"
+            className={`transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
         </div>
 
         {isOpen && (
@@ -56,7 +67,7 @@ const LanguageSwitch = () => {
                 } hover:bg-gray-100`}
                 onClick={() => handleLanguageSelect("JP")}
               >
-                <span className="font-bold">JP</span>
+                <span className="font-black">JP</span>
                 <span className="font-medium">日本語</span>
               </button>
             </li>
@@ -67,7 +78,7 @@ const LanguageSwitch = () => {
                 } hover:bg-gray-100`}
                 onClick={() => handleLanguageSelect("EN")}
               >
-                <span className="font-bold">EN</span>
+                <span className="font-black">EN</span>
                 <span className="font-medium">ENGLISH</span>
               </button>
             </li>
