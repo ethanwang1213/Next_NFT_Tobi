@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  AcrylicBaseScaleRatio,
   DebugFlag,
   ItemBaseId,
   ItemTypeParam,
@@ -12,6 +13,7 @@ type PreviewItemData = ItemTypeParam &
   ItemBaseId &
   ModelParams &
   TextureParam &
+  AcrylicBaseScaleRatio &
   DebugFlag;
 
 type ItemIndex = ItemTypeParam & ItemBaseId;
