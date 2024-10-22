@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import ColorizedSvg from "ui/atoms/ColorizedSvg";
 
 const LanguageSwitch = () => {
   const router = useRouter();
@@ -59,17 +60,13 @@ const LanguageSwitch = () => {
           <button className="p-2 rounded text-gray-500 font-semibold">
             LANGUAGE
           </button>
-          <Image
-            src="/admin/images/icon/expand.svg"
-            width={12}
-            height={12}
-            alt="drop"
-            className={`transition-transform duration-300 ${
+          <ColorizedSvg
+            url={"/admin/images/icon/down-arrow-icon.svg"}
+            className={`transition-transform duration-300 w-[12px] h-[12px] bg-gray-500 ${
               isOpen ? "rotate-180" : ""
             }`}
           />
         </div>
-
         {isOpen && (
           <ul className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
             <li className="h-[40px] border-b">
