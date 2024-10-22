@@ -6,7 +6,6 @@ import {
   WorkspaceSaveData,
 } from "types/adminTypes";
 import {
-  AcrylicBaseScaleRatio,
   DebugFlag,
   ItemType,
   ModelParams,
@@ -205,9 +204,7 @@ export const useWorkspaceUnityContext = ({
   );
 
   const requestItemThumbnail = useCallback(
-    (
-      params: ModelParams & TextureParam & AcrylicBaseScaleRatio & DebugFlag,
-    ) => {
+    (params: ModelParams & TextureParam & DebugFlag) => {
       postMessageToUnity(
         "ItemThumbnailGenerationMessageReceiver",
         JSON.stringify({

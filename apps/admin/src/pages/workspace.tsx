@@ -452,7 +452,6 @@ export default function Index() {
         modelType: ModelType.AcrylicStand,
         modelUrl: generateModelUrl.current,
         imageUrl: image1,
-        // TODO(Murat): add acrylicBaseScaleRatio
       });
     } else if (sampleType == ModelType.MessageCard) {
       const modelResp = await createSample("native/model/message-card", {
