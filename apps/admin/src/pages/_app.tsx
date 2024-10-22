@@ -19,6 +19,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { appWithTranslation } from "next-i18next";
 import Script from "next/script";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -140,4 +141,4 @@ App.getInitialProps = async (appContext: AppContext) => {
   return { ...appProps };
 };
 
-export default App;
+export default appWithTranslation(App);

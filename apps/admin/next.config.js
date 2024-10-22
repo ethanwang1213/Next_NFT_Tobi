@@ -1,3 +1,5 @@
+const { i18n } = require('./next-i18next.config');
+
 module.exports = {
   basePath: "/admin",
   reactStrictMode: true,
@@ -33,7 +35,7 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: "/:path*",
+        source: '/:locale(en|jp)/:path*',
         destination: `/admin/:path*`,
       },
       {
@@ -55,4 +57,5 @@ module.exports = {
       },
     ];
   },
+  i18n,
 };

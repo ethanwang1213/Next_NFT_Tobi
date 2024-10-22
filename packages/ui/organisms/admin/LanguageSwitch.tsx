@@ -1,9 +1,12 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 const LanguageSwitch = () => {
+  const router = useRouter();
+  const { locale, locales, pathname, query, asPath } = router;
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("JP");
+  const [selectedLanguage, setSelectedLanguage] = useState(locale || "jp"); // Initialize with the current locale
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
@@ -11,11 +14,20 @@ const LanguageSwitch = () => {
   };
 
   const handleLanguageSelect = (language: string) => {
-    setSelectedLanguage(language);
-    setIsOpen(false);
+    if (language !== locale) {
+      setSelectedLanguage(language);
+
+      const basePath = "/admin";
+      const currentPath = asPath.replace(basePath, "");
+      router.push({ pathname: currentPath, query }, undefined, {
+        locale: language,
+      });
+      setIsOpen(false);
+    }
   };
 
   useEffect(() => {
+    // Close the dropdown when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -63,9 +75,9 @@ const LanguageSwitch = () => {
             <li className="h-[40px] border-b">
               <button
                 className={`block px-4 py-2 w-full flex justify-start items-center gap-4 ${
-                  selectedLanguage === "JP" ? "text-blue-500" : "text-gray-700"
+                  selectedLanguage === "jp" ? "text-blue-500" : "text-gray-700"
                 } hover:bg-gray-100`}
-                onClick={() => handleLanguageSelect("JP")}
+                onClick={() => handleLanguageSelect("jp")}
               >
                 <span className="font-black">JP</span>
                 <span className="font-medium">日本語</span>
@@ -74,9 +86,9 @@ const LanguageSwitch = () => {
             <li className="h-[40px]">
               <button
                 className={`block px-4 py-2 w-full flex justify-start items-center gap-4 ${
-                  selectedLanguage === "EN" ? "text-blue-500" : "text-gray-700"
+                  selectedLanguage === "en" ? "text-blue-500" : "text-gray-700"
                 } hover:bg-gray-100`}
-                onClick={() => handleLanguageSelect("EN")}
+                onClick={() => handleLanguageSelect("en")}
               >
                 <span className="font-black">EN</span>
                 <span className="font-medium">ENGLISH</span>
