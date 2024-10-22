@@ -164,7 +164,8 @@ export const getDownloadUrlFromPath = async (
   }
 
   const filePath = decodeURIComponent(matches[1]);
-  const fileRef = ref(storage, filePath);
+  // Remove '?alt=media'
+  const fileRef = ref(storage, filePath.split("?")[0]);
 
   try {
     const url = await getDownloadURL(fileRef);
