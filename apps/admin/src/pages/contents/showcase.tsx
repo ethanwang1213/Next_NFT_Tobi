@@ -249,6 +249,7 @@ const Showcase = () => {
       setSelectedSampleItem(-1);
       setData(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5minutes

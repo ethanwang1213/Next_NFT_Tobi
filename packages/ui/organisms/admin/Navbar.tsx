@@ -6,6 +6,7 @@ import NavbarContainer from "ui/atoms/NavbarContainer";
 import NavbarEnd from "ui/atoms/NavbarEnd";
 import NavbarStart from "ui/atoms/NavbarStart";
 import AccountConfirmDialog from "./AccountConfirmDialog";
+import LanguageSwitch from "./LanguageSwitch";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -26,6 +27,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         />
       </NavbarStart>
       <NavbarEnd>
+        <LanguageSwitch />
         <UserMenu />
       </NavbarEnd>
     </NavbarContainer>
@@ -129,7 +131,7 @@ const UserMenu = () => {
     <>
       <details
         ref={userProfileIconRef}
-        className="dropdown dropdown-end w-[40px] h-[40px] mr-[14px]"
+        className="dropdown dropdown-end w-[40px] h-[40px] mx-[30px]"
       >
         <summary
           className={
