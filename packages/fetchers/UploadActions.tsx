@@ -133,9 +133,9 @@ export const uploadFiles = async (file, extension, type) => {
       case ImageType.ContentDocument:
         path = `documents/${auth.currentUser.uid}/${storageFileName}`;
         break;
-        case ImageType._3DModel:
-          path = `users/${auth.currentUser.uid}/item/uploaded/models/${storageFileName}`;
-          break;
+      case ImageType._3DModel:
+        path = `users/${auth.currentUser.uid}/item/uploaded/models/${storageFileName}`;
+        break;
       default:
         break;
     }
@@ -164,7 +164,8 @@ export const getDownloadUrlFromPath = async (
   }
 
   const filePath = decodeURIComponent(matches[1]);
-  const fileRef = ref(storage, filePath);
+  // Remove '?alt=media'
+  const fileRef = ref(storage, filePath.split("?")[0]);
 
   try {
     const url = await getDownloadURL(fileRef);
