@@ -229,6 +229,7 @@ model workspace_sample_items {
     rotation          Float[]
     scale             Float?
     stage_type        Int?
+    acrylic_scale     Float?
     updated_date_time DateTime     @default(now()) @db.Timestamp(6)
     created_date_time DateTime     @default(now()) @db.Timestamp(6)
 }
@@ -394,6 +395,7 @@ model showcase_sample_items {
     sample_item_id    Int
     stage_type        Int          @default(0)
     scale             Float        @default(1)
+    acrylic_scale     Float?
     position          Float[]
     rotation          Float[]
     updated_date_time DateTime     @default(now()) @db.Timestamp(6)
