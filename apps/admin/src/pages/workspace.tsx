@@ -326,7 +326,7 @@ export default function Index() {
           materialIndex > -1
             ? materials[materialIndex].image
             : samples[index].thumbUrl,
-        // TODO: add acrylicBaseScaleRatio
+        // TODO(Murat): add acrylicBaseScaleRatio
         modelType: samples[index].type as ModelType,
         sampleName: samples[index].name !== null ? samples[index].name : "",
       });
