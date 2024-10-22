@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { ItemBaseId } from "types/unityTypes";
-import { AcrylicBaseScaleRatio, MessageDestination } from "../types";
+import { AcrylicBaseScaleRatio, ItemBaseId } from "types/unityTypes";
+import { MessageDestination } from "../types";
 
 export const useUpdateAcrylicBaseScaleRatio = ({
   defaultItemData,
