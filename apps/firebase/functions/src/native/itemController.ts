@@ -28,6 +28,7 @@ export const modelApiHandler = (type: ModelRequestType) => {
     const modelApiUrl = process.env.MODEL_API_URL;
     const token = process.env.MODEL_API_TOKEN;
     if (!modelApiUrl || !token) {
+      console.error("invalid-system-settings: modelApiUrl and token are required");
       res.status(500).send({
         status: "error",
         data: "invalid-system-settings",
@@ -52,6 +53,7 @@ export const modelApiHandler = (type: ModelRequestType) => {
           break;
       }
     }).catch((error: FirebaseError) => {
+      console.error(error);
       res.status(401).send({
         status: "error",
         data: error.code,
