@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { withTranslations } from "../lib/withTranslations";
+import { withTranslations } from "../../lib/withTranslations";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
