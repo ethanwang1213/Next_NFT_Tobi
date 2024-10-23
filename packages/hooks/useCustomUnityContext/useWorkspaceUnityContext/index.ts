@@ -7,21 +7,25 @@ import {
 } from "types/adminTypes";
 import {
   DebugFlag,
-  ItemSaveData,
   ItemType,
   ModelParams,
+  SampleSaveData,
   TextureParam,
 } from "types/unityTypes";
-import { DefaultItemMeterHeight } from "./constants";
+import {
+  DefaultAcrylicBaseScaleRatio,
+  DefaultItemMeterHeight,
+} from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanType,
   UndoneOrRedone,
   UnityMessageJson,
   UnitySceneType,
-} from "./types";
-import { useSaidanLikeUnityContextBase } from "./useSaidanLikeUnityContextBase";
-import { useUnityMessageHandler } from "./useUnityMessageHandler";
+} from "../types";
+import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
+import { useUnityMessageHandler } from "../useUnityMessageHandler";
+import { useApplyAcrylicBaseScaleRatio } from "./useApplyAcrylicBaseScaleRatio";
 
 type Props = {
   sampleMenuX?: number;
@@ -104,6 +108,8 @@ export const useWorkspaceUnityContext = ({
       return {
         itemId: v.sampleItemId,
         imageUrl: v.materialUrl,
+        acrylicBaseScaleRatio:
+          v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
         itemName: v.name,
         ...v,
         itemType: ItemType.Sample,
@@ -220,7 +226,7 @@ export const useWorkspaceUnityContext = ({
 
       if (!messageBody) return;
 
-      var workspaceItemList: ItemSaveData[] =
+      var workspaceItemList: SampleSaveData[] =
         messageBody.saidanData.saidanItemList.map((v) => ({
           id: v.id,
           itemId: v.itemId,
@@ -228,6 +234,7 @@ export const useWorkspaceUnityContext = ({
           position: v.position,
           rotation: v.rotation,
           scale: v.scale,
+          acrylicBaseScaleRatio: v.acrylicBaseScaleRatio,
         }));
       onSaveDataGenerated({ workspaceItemList }, updateIdValues);
     },
@@ -269,6 +276,10 @@ export const useWorkspaceUnityContext = ({
     },
     [onRemoveSampleRequested, sendRemovalResult],
   );
+
+  const { applyAcrylicBaseScaleRatio } = useApplyAcrylicBaseScaleRatio({
+    postMessageToUnity,
+  });
 
   useUnityMessageHandler({
     addEventListener,
@@ -315,5 +326,6 @@ export const useWorkspaceUnityContext = ({
     deleteAllActionHistory,
     pauseUnityInputs,
     resumeUnityInputs,
+    applyAcrylicBaseScaleRatio,
   };
 };

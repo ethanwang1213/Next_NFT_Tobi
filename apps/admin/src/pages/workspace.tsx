@@ -183,6 +183,7 @@ export default function Index() {
     resumeUnityInputs,
     undoAction,
     redoAction,
+    // TODO(Murat): use applyAcrylicBaseScaleRatio after Ratio Settings is confirmed.
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
@@ -276,6 +277,7 @@ export default function Index() {
         modelUrl: sample.modelUrl,
         imageUrl:
           materialIndex > -1 ? materials[materialIndex].image : sample.thumbUrl,
+        // TODO(Murat): add acrylicBaseScaleRatio
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
       });
@@ -324,6 +326,7 @@ export default function Index() {
           materialIndex > -1
             ? materials[materialIndex].image
             : samples[index].thumbUrl,
+        // TODO(Murat): add acrylicBaseScaleRatio
         modelType: samples[index].type as ModelType,
         sampleName: samples[index].name !== null ? samples[index].name : "",
       });

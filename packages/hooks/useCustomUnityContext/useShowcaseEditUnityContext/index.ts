@@ -6,12 +6,16 @@ import {
   UpdateIdValues,
 } from "types/adminTypes";
 import {
-  ItemSaveData,
   ItemType,
+  NftSaveData,
   SaidanItemData,
+  SampleSaveData,
   UpdatingSaidanSettings,
 } from "types/unityTypes";
-import { DefaultItemMeterHeight } from "../constants";
+import {
+  DefaultAcrylicBaseScaleRatio,
+  DefaultItemMeterHeight,
+} from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   SaidanLikeData,
@@ -21,7 +25,7 @@ import {
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
-import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContextBase";
+import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useUpdateItemTransform } from "./useUpdateTransform";
 
@@ -110,6 +114,8 @@ export const useShowcaseEditUnityContext = ({
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
         return {
           itemId: v.sampleItemId,
+          acrylicBaseScaleRatio:
+            v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
           itemName: v.name,
           ...v,
           itemType: ItemType.Sample,
@@ -124,6 +130,7 @@ export const useShowcaseEditUnityContext = ({
           ...v,
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
+          acrylicBaseScaleRatio: DefaultAcrylicBaseScaleRatio,
           canScale: true,
           itemMeterHeight: DefaultItemMeterHeight,
         };
@@ -201,17 +208,19 @@ export const useShowcaseEditUnityContext = ({
 
       if (!messageBody) return;
 
-      var sampleItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
-        .filter((v) => v.itemType === ItemType.Sample)
-        .map((v) => ({
-          id: v.id,
-          itemId: v.itemId,
-          stageType: v.stageType,
-          position: v.position,
-          rotation: v.rotation,
-          scale: v.scale,
-        }));
-      var nftItemList: ItemSaveData[] = messageBody.saidanData.saidanItemList
+      var sampleItemList: SampleSaveData[] =
+        messageBody.saidanData.saidanItemList
+          .filter((v) => v.itemType === ItemType.Sample)
+          .map((v) => ({
+            id: v.id,
+            itemId: v.itemId,
+            stageType: v.stageType,
+            position: v.position,
+            rotation: v.rotation,
+            scale: v.scale,
+            acrylicBaseScaleRatio: v.acrylicBaseScaleRatio,
+          }));
+      var nftItemList: NftSaveData[] = messageBody.saidanData.saidanItemList
         .filter((v) => v.itemType === ItemType.DigitalItemNft)
         .map((v) => ({
           id: v.id,

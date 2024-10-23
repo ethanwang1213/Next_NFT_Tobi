@@ -3,22 +3,16 @@ import {
   AcrylicBaseScaleRatio,
   DebugFlag,
   ItemBaseId,
-  ItemTypeParam,
   ModelParams,
-  TextureParam,
 } from "types/unityTypes";
 import { MessageDestination } from "../types";
 
-type PreviewItemData = ItemTypeParam &
-  ItemBaseId &
-  ModelParams &
-  TextureParam &
-  AcrylicBaseScaleRatio &
-  DebugFlag;
+type AcrylicStandData = ItemBaseId &
+  Omit<ModelParams, "modelType"> &
+  DebugFlag &
+  AcrylicBaseScaleRatio;
 
-type ItemIndex = ItemTypeParam & ItemBaseId;
-
-export const useLoadPreviewItem = ({
+export const useLoadAcrylicStand = ({
   isLoaded,
   postMessageToUnity,
 }: {
@@ -26,26 +20,32 @@ export const useLoadPreviewItem = ({
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
   const [isSceneLoaded, setIsSceneLoaded] = useState(false);
-  const [loadData, setLoadData] = useState<PreviewItemData | null>();
-  const [currentItemIndex, setCurrentItemIndex] = useState<ItemIndex>();
+  const [loadData, setLoadData] = useState<AcrylicStandData | null>();
+  const [currentItemIndex, setCurrentItemIndex] = useState<ItemBaseId>();
+
+  const [defaultItemData, setDefaultItemData] = useState<
+    ItemBaseId & AcrylicBaseScaleRatio
+  >({
+    itemId: -1,
+    acrylicBaseScaleRatio: 0,
+  });
 
   const postMessageToLoadData = useCallback(() => {
     setIsSceneLoaded(true);
 
-    if (
-      !loadData ||
-      (loadData.itemType === currentItemIndex?.itemType &&
-        loadData.itemId === currentItemIndex?.itemId)
-    ) {
+    if (!loadData || loadData.itemId === currentItemIndex?.itemId) {
       // console.log("loadData is null or same item");
       return;
     }
 
     const json = JSON.stringify(loadData);
-    postMessageToUnity("ViewItemModelMessageReceiver", json);
+    postMessageToUnity("LoadAcrylicStandMessageReceiver", json);
 
+    setDefaultItemData({
+      itemId: loadData.itemId,
+      acrylicBaseScaleRatio: loadData.acrylicBaseScaleRatio,
+    });
     setCurrentItemIndex({
-      itemType: loadData.itemType,
       itemId: loadData.itemId,
     });
     setLoadData(null);
@@ -58,6 +58,7 @@ export const useLoadPreviewItem = ({
 
   return {
     isSceneLoaded,
+    defaultItemData,
     setLoadData,
     handleSceneIsLoaded: postMessageToLoadData,
   };

@@ -72,6 +72,14 @@ export type WorkspaceTextureParamForLoading = {
   materialUrl?: string;
 };
 
+export type AcrylicBaseScaleRatio = {
+  acrylicBaseScaleRatio?: number;
+};
+
+export type AcrylicBaseScaleRatioForLoading = {
+  acrylicBaseScaleRatio?: number;
+};
+
 export type ItemName = {
   itemName: string;
 };
@@ -98,28 +106,35 @@ export type ItemBaseData = ItemTypeParam &
   ItemBaseId &
   ModelParams &
   TextureParam &
+  AcrylicBaseScaleRatio &
   ParentId &
   ItemName &
   DebugFlag;
 export type SampleBaseData = Omit<ItemBaseData, "itemType">;
-export type NftBaseData = Omit<ItemBaseData, "itemType" | "imageUrl">;
+export type NftBaseData = Omit<
+  ItemBaseData,
+  "itemType" | "imageUrl" | "acrylicBaseScaleRatio"
+>;
 
 // sample base data for loading
 export type WorkspaceSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   WorkspaceTextureParamForLoading &
+  AcrylicBaseScaleRatioForLoading &
   ParentId &
   ItemNameForLoading &
   DebugFlag;
 export type ShowcaseSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
   TextureParam &
+  AcrylicBaseScaleRatioForLoading &
   ParentId &
   ItemNameForLoading &
   DebugFlag;
 export type SampleBaseDataForPlacing = SampleBaseIdForLoading &
   ModelParams &
   TextureParam &
+  AcrylicBaseScaleRatio &
   ParentId &
   SampleName &
   DebugFlag;
@@ -151,13 +166,14 @@ export type ItemTransform = {
   scale: number;
 };
 
-export type ItemTransformWithStageType = ItemTransform & {
+type ItemStageType = {
   stageType: UnityStageType;
 };
 
 export type SaidanItemData = ItemBaseData &
   ItemId &
-  ItemTransformWithStageType & {
+  ItemTransform &
+  ItemStageType & {
     canScale: boolean;
     itemMeterHeight: number;
   };
@@ -166,21 +182,29 @@ export type SaidanItemData = ItemBaseData &
 // types for load data with arrangement
 export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
   ItemId &
-  ItemTransformWithStageType;
+  ItemTransform &
+  ItemStageType;
 export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
   ItemId &
-  ItemTransformWithStageType;
+  ItemTransform &
+  ItemStageType;
 
 // nft load data
 export type NftLoadData = NftBaseDataForLoading &
   ItemId &
-  ItemTransformWithStageType & {
+  ItemTransform &
+  ItemStageType & {
     itemMeterHeight: number;
   };
 
 ///////////////////////////////////////
 // types for item save data
-export type ItemSaveData = ItemBaseId & ItemId & ItemTransformWithStageType;
+export type SampleSaveData = ItemBaseId &
+  ItemId &
+  ItemTransform &
+  ItemStageType &
+  AcrylicBaseScaleRatio;
+export type NftSaveData = ItemBaseId & ItemId & ItemTransform & ItemStageType;
 
 ///////////////////////////////////////
 // types for settings data
