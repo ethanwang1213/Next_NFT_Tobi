@@ -20,6 +20,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
       y: number;
       z: number;
     },
+    acrylicBaseScaleRatio?: number;
     scale: number;
   }
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
@@ -46,6 +47,7 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
               update: {
                 stage_type: item.stageType,
                 scale: item.scale,
+                acrylic_scale: item.acrylicBaseScaleRatio,
                 position: [
                   item.position.x,
                   item.position.y,
@@ -134,6 +136,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
           materialUrl: workspaceSample.sample_item.digital_item.material_image?.image,
           thumbImage: workspaceSample.sample_item.digital_item.is_default_thumb?workspaceSample.sample_item.digital_item.default_thumb_url:workspaceSample.sample_item.digital_item.custom_thumb_url,
           stageType: workspaceSample.stage_type,
+          acrylicBaseScaleRatio: workspaceSample.acrylic_scale,
           position: {
             x: workspaceSample.position[0]??0,
             y: workspaceSample.position[1]??0,

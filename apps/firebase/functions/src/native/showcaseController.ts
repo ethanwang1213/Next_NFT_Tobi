@@ -464,6 +464,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         materialUrl: string | undefined;
         stageType: number;
         scale: number;
+        acrylicBaseScaleRatio: number | null;
         position: {
           x: number;
           y: number;
@@ -489,6 +490,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
             materialUrl: digitalData.material_image?.image,
             stageType: relationSample.stage_type,
             scale: relationSample.scale,
+            acrylicBaseScaleRatio: relationSample.acrylic_scale,
             position: {
               x: relationSample.position[0] ?? 0,
               y: relationSample.position[1] ?? 0,
