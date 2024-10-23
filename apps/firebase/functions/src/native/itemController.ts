@@ -118,7 +118,7 @@ const createAcrylicKeyChain = async (req: Request, res: Response, uid: string, m
   const params: Record<string, string | undefined> = {
     uid,
     token,
-    process_type: ModelRequestType.AcrylicStand,
+    process_type: ModelRequestType.AcrylicKeychain,
     image1: bodyUrl,
     coords1: coords,
   };
