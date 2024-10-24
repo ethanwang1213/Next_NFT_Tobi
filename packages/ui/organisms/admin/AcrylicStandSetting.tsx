@@ -5,7 +5,6 @@ import Slider from "rc-slider";
 import { MutableRefObject, useEffect, useState } from "react";
 import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
 import Spinner from "./Spinner";
-
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   selectedSample: any;
@@ -26,6 +25,14 @@ const AcrylicStandSettingDialog = ({
   } = useRestfulAPI(
     digitalItemId && digitalItemId !== -1 ? `${apiUrl}/${digitalItemId}` : null,
   );
+
+  const {
+    setLoadData,
+    isLoaded,
+    unityProvider,
+    updateAcrylicBaseScaleRatio,
+    resetAcrylicBaseScaleRatio,
+  } = useAcrylicBaseSettingsUnityContext();
 
   const handleStyle = {
     borderColor: "#FAFAFA",
@@ -53,26 +60,22 @@ const AcrylicStandSettingDialog = ({
     }
   }, [digitalItemId]);
 
-  const {
-    setLoadData,
-    isLoaded,
-    unityProvider,
-    updateAcrylicBaseScaleRatio,
-    resetAcrylicBaseScaleRatio,
-  } = useAcrylicBaseSettingsUnityContext();
-
   useEffect(() => {
-    if (digitalItem?.type === 2 && digitalItemId > 0) {
+    if (
+      digitalItem?.type === 2 &&
+      digitalItemId > 0 &&
+      dialogRef.current?.open
+    ) {
       setShowUnity(true);
       setLoadData({
         itemId: digitalItem.id,
         modelUrl: digitalItem.modelUrl,
-        acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio
-          ? digitalItem.acrylicBaseScaleRatio
-          : 1,
+        acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio || 1,
       });
+    } else {
+      setShowUnity(false);
     }
-  }, [digitalItem, digitalItemId, setLoadData]);
+  }, [digitalItem, digitalItemId, dialogRef, setLoadData]);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -87,7 +90,7 @@ const AcrylicStandSettingDialog = ({
             </span>
           </button>
         </form>
-        <div className="flex jusitfy-center text-[30px] text-white font-bold items-center gap-2">
+        <div className="flex justify-center text-[30px] text-white font-bold items-center gap-2">
           <Image
             width={32}
             height={32}
@@ -99,7 +102,7 @@ const AcrylicStandSettingDialog = ({
         </div>
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
-            <div className="unityView h-[75%] rounded-t-[16px] overflow-hidden">
+            <div className="unityView h-[75%] rounded-t-[16px] overflow-hidden relative">
               {showUnity && unityProvider && isLoaded ? (
                 <AcrylicBaseSettingsUnity
                   unityProvider={unityProvider}
