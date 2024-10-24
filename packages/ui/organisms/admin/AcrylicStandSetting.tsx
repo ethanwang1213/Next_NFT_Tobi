@@ -1,23 +1,32 @@
 import { useAcrylicBaseSettingsUnityContext } from "hooks/useCustomUnityContext";
 import Image from "next/image";
 import Slider from "rc-slider";
-import { MutableRefObject, useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
+import ResetConfirmDialog from "./ResetConfirmDialog";
 import Spinner from "./Spinner";
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   data: any;
   closeHandler: () => void;
+  scaleRatioSettingHandler: (newRatio: number, itemId: number) => void;
 }
 
 const AcrylicStandSettingDialog = ({
   dialogRef,
   data,
   closeHandler,
+  scaleRatioSettingHandler,
 }: AcrylicStandSettingDialogProps) => {
+  const confirmDialogRef = useRef(null);
   const [scaleRatio, setScaleRatio] = useState(
     data?.acrylicBaseScaleRatio || 1,
   );
+
+  const resetConfirmHandler = () => {
+    resetAcrylicBaseScaleRatio();
+    setScaleRatio(1);
+  };
 
   const {
     setLoadData,
@@ -63,6 +72,10 @@ const AcrylicStandSettingDialog = ({
   return (
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-[#2E2E2EF2]">
+        <ResetConfirmDialog
+          dialogRef={confirmDialogRef}
+          confirmHandler={resetConfirmHandler}
+        />
         <form method="dialog">
           <button
             className="absolute w-4 h-4 top-5 right-5"
@@ -127,14 +140,17 @@ const AcrylicStandSettingDialog = ({
                   <input
                     type="number"
                     value={scaleRatio}
+                    onChange={(e) => onChangeHandler(Number(e.target.value))}
                     step={0.1}
                     placeholder="scale"
-                    className="input input-bordered max-w-xs w-14 h-8 bg-secondary-700 text-white text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px]"
+                    className="input input-bordered max-w-xs w-18 h-8 bg-secondary-700 text-white text-[16px] rounded-[5px] text-center no-spinner"
                   />
                 </div>
                 <Slider
                   min={0}
                   max={5}
+                  step={0.1}
+                  value={scaleRatio}
                   styles={{
                     handle: handleStyle,
                     track: trackStyle,
@@ -146,10 +162,19 @@ const AcrylicStandSettingDialog = ({
               </div>
             </div>
             <div className="flex justify-end gap-8">
-              <button className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-secondary">
+              <button
+                className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-secondary"
+                onClick={() => confirmDialogRef.current?.show()}
+              >
                 RESET
               </button>
-              <button className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary">
+              <button
+                className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary"
+                onClick={() => {
+                  scaleRatioSettingHandler(scaleRatio, data.itemId);
+                  closeHandler();
+                }}
+              >
                 DONE
               </button>
             </div>

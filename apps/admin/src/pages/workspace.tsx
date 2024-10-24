@@ -186,7 +186,7 @@ export default function Index() {
     resumeUnityInputs,
     undoAction,
     redoAction,
-    // applyAcrylicBaseScaleRatio SET AcrylicBaseScaleRatio
+    applyAcrylicBaseScaleRatio,
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
@@ -261,6 +261,13 @@ export default function Index() {
     }
     pauseUnityInputs();
   }, [initSampleCreateDialog, pauseUnityInputs]);
+
+  const applyRatioSetting = useCallback(
+    (newRatio: number, itemId: number) => {
+      applyAcrylicBaseScaleRatio(newRatio, itemId);
+    },
+    [applyAcrylicBaseScaleRatio],
+  );
 
   useEffect(() => {
     if (router.query.trigger === "true" && isLoaded) {
@@ -544,6 +551,7 @@ export default function Index() {
           dialogRef={dialogRef}
           data={matchingSample}
           closeHandler={() => setIsModalOpen(false)}
+          scaleRatioSettingHandler={applyRatioSetting}
         />
       )}
 
