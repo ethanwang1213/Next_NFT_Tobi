@@ -302,7 +302,9 @@ const Showcase = () => {
         modelType: sample.type as ModelType,
         modelUrl: sample.modelUrl,
         imageUrl,
-        // TODO(Murat): add acrylicBaseScaleRatio
+        acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio
+          ? sample.acrylicBaseScaleRatio
+          : 1,
         sampleName: sample.name !== null ? sample.name : "",
       };
 

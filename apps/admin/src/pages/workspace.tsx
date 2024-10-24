@@ -41,6 +41,7 @@ export default function Index() {
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
   const [showSettingsButton, setShowSettingsButton] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const timerId = useRef(null);
   const [message, setMessage] = useState("");
   const router = useRouter();
@@ -183,7 +184,7 @@ export default function Index() {
     resumeUnityInputs,
     undoAction,
     redoAction,
-    // TODO(Murat): use applyAcrylicBaseScaleRatio after Ratio Settings is confirmed.
+    // applyAcrylicBaseScaleRatio SET AcrylicBaseScaleRatio
   } = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
@@ -271,13 +272,16 @@ export default function Index() {
       const materialIndex = materials.findIndex(
         (value) => value.id === sample.materialId,
       );
+      console.log(sample);
       placeNewSample({
         sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
         imageUrl:
           materialIndex > -1 ? materials[materialIndex].image : sample.thumbUrl,
-        // TODO(Murat): add acrylicBaseScaleRatio
+        acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio
+          ? sample.acrylicBaseScaleRatio
+          : 1,
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
       });
@@ -326,7 +330,9 @@ export default function Index() {
           materialIndex > -1
             ? materials[materialIndex].image
             : samples[index].thumbUrl,
-        // TODO(Murat): add acrylicBaseScaleRatio
+        acrylicBaseScaleRatio: samples[index].acrylicBaseScaleRatio
+          ? samples[index].acrylicBaseScaleRatio
+          : 1,
         modelType: samples[index].type as ModelType,
         sampleName: samples[index].name !== null ? samples[index].name : "",
       });
@@ -522,7 +528,6 @@ export default function Index() {
 
   return (
     <div className="w-full h-full relative no-select" id="workspace_view">
-      <AcrylicStandSettingDialog dialogRef={dialogRef} />
       <div
         className="absolute left-0 right-0 top-0 bottom-0"
         style={{
@@ -532,6 +537,10 @@ export default function Index() {
         <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
       </div>
       {mainToast && <CustomToast show={showToast} message={message} />}
+      <AcrylicStandSettingDialog
+        dialogRef={dialogRef}
+        selectedSample={selectedSample}
+      />
       {!isLoaded && (
         <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
@@ -595,23 +604,32 @@ export default function Index() {
         />
         <div className="w-full flex justify-center absolute bottom-28 items-center">
           {showSettingsButton ? (
-            <button
-              className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
-              onClick={() => {
-                dialogRef.current.showModal();
-              }}
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="setting button"
-                src="/admin/images/icon/setting-icon.svg"
-                className="cursor-pointer h-[27px]"
-              />
-              <span className="text-[14px] font-bold text-white">
-                Body/Base Ratio Settings
-              </span>
-            </button>
+            <div className="relative">
+              <button
+                className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={() => {
+                  dialogRef.current.showModal();
+                }}
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="setting button"
+                  src="/admin/images/icon/setting-icon.svg"
+                  className="cursor-pointer h-[27px]"
+                />
+                <span className="text-[14px] font-bold text-white">
+                  Body/Base Ratio Settings
+                </span>
+              </button>
+              {isHovered && (
+                <div className="absolute bottom-full left-52 w-max mb-2 font-medium text-white text-sm px-4 py-1 rounded-md bg-[#717171BF] z-20">
+                  You can adjust the ratio of the selected Acrylic Stand.
+                </div>
+              )}
+            </div>
           ) : null}
         </div>
         <div className="absolute bottom-12 h-12 flex justify-center pointer-events-auto select-none w-full items-center">

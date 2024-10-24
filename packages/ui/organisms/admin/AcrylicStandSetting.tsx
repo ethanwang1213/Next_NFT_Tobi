@@ -1,14 +1,31 @@
+import { useAcrylicBaseSettingsUnityContext } from "hooks/useCustomUnityContext";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Slider from "rc-slider";
-import { MutableRefObject } from "react";
+import { MutableRefObject, useEffect } from "react";
+// import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
 
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
+  selectedSample: any;
 }
 
 const AcrylicStandSettingDialog = ({
   dialogRef,
+  selectedSample,
 }: AcrylicStandSettingDialogProps) => {
+  const apiUrl = "native/admin/digital_items";
+  const digitalItemId = selectedSample?.digitalItemId;
+
+  const {
+    data: digitalItem,
+    loading,
+    getData,
+    setData,
+  } = useRestfulAPI(
+    digitalItemId && digitalItemId !== -1 ? `${apiUrl}/${digitalItemId}` : null,
+  );
+
   const handleStyle = {
     borderColor: "#FAFAFA",
     height: 20,
@@ -26,6 +43,34 @@ const AcrylicStandSettingDialog = ({
     backgroundColor: "#9F9C9C",
     height: 8,
   };
+
+  // Trigger the API request only when digitalItemId is valid
+  useEffect(() => {
+    if (digitalItemId && digitalItemId !== -1) {
+      getData(`${apiUrl}/${digitalItemId}`);
+    }
+  }, [digitalItemId]);
+
+  const {
+    setLoadData,
+    isLoaded,
+    unityProvider,
+    updateAcrylicBaseScaleRatio,
+    resetAcrylicBaseScaleRatio,
+  } = useAcrylicBaseSettingsUnityContext();
+
+  useEffect(() => {
+    if (digitalItem) {
+      console.log(digitalItem);
+      setLoadData({
+        itemId: digitalItem.id,
+        modelUrl: digitalItem.modelUrl,
+        acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio
+          ? digitalItem.acrylicBaseScaleRatio
+          : 1,
+      });
+    }
+  }, [digitalItem, setLoadData]);
 
   return (
     <dialog ref={dialogRef} className="modal relative">
@@ -52,7 +97,12 @@ const AcrylicStandSettingDialog = ({
         </div>
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
-            <div className="unityView h-[75%] bg-white rounded-t-[16px]"></div>
+            <div className="unityView h-[75%] rounded-t-[16px]">
+              {/* <AcrylicBaseSettingsUnity
+                unityProvider={unityProvider}
+                isLoaded={isLoaded}
+              /> */}
+            </div>
             <div className="px-8 text-white text-[16px] py-7">
               <div className="flex justify-between">
                 <span className="font-bold">Adjust Body Scale</span>
