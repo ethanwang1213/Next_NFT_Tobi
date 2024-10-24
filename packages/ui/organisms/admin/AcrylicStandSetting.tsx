@@ -13,7 +13,9 @@ const AcrylicStandSettingDialog = ({
   dialogRef,
   data,
 }: AcrylicStandSettingDialogProps) => {
-  const [showUnity, setShowUnity] = useState(false);
+  const [scaleRatio, setScaleRatio] = useState(
+    data?.acrylicBaseScaleRatio || 1,
+  );
 
   const {
     setLoadData,
@@ -22,6 +24,11 @@ const AcrylicStandSettingDialog = ({
     updateAcrylicBaseScaleRatio,
     resetAcrylicBaseScaleRatio,
   } = useAcrylicBaseSettingsUnityContext();
+
+  const onChangeHandler = (value: number) => {
+    updateAcrylicBaseScaleRatio(value);
+    setScaleRatio(value);
+  };
 
   const handleStyle = {
     borderColor: "#FAFAFA",
@@ -42,19 +49,14 @@ const AcrylicStandSettingDialog = ({
   };
 
   useEffect(() => {
-    console.log(data, "data here display")
     if (data?.type === 2) {
       setLoadData({
         itemId: data.digitalItemId,
         modelUrl: data.modelUrl,
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio || 1,
       });
-      setShowUnity(true);
-    } else {
-      setShowUnity(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, setLoadData]);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -82,16 +84,15 @@ const AcrylicStandSettingDialog = ({
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
             <div className="h-[75%] rounded-t-[16px] overflow-hidden relative">
-              {showUnity && unityProvider && isLoaded ? (
-                <AcrylicBaseSettingsUnity
-                  unityProvider={unityProvider}
-                  isLoaded={isLoaded}
-                />
-              ) : (
+              {!isLoaded && (
                 <div className="absolute inset-0 flex justify-center items-center">
                   <Spinner />
                 </div>
               )}
+              <AcrylicBaseSettingsUnity
+                unityProvider={unityProvider}
+                isLoaded={isLoaded}
+              />
             </div>
             <div className="px-8 text-white text-[16px] py-7">
               <div className="flex justify-between">
@@ -119,7 +120,8 @@ const AcrylicStandSettingDialog = ({
                 </div>
                 <div className="flex">
                   <input
-                    type="text"
+                    type="number"
+                    value={scaleRatio}
                     step={0.1}
                     placeholder="scale"
                     className="input input-bordered max-w-xs w-14 h-8 bg-secondary-700 text-white text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px]"
@@ -134,6 +136,7 @@ const AcrylicStandSettingDialog = ({
                     rail: railStyle,
                   }}
                   className="ml-6"
+                  onChange={(value: number) => onChangeHandler(value)}
                 />
               </div>
             </div>
