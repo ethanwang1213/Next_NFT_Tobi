@@ -1,5 +1,4 @@
 import { useAcrylicBaseSettingsUnityContext } from "hooks/useCustomUnityContext";
-import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Slider from "rc-slider";
 import { MutableRefObject, useEffect, useState } from "react";
@@ -7,24 +6,14 @@ import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
 import Spinner from "./Spinner";
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
-  selectedSample: any;
+  data: any;
 }
 
 const AcrylicStandSettingDialog = ({
   dialogRef,
-  selectedSample,
+  data,
 }: AcrylicStandSettingDialogProps) => {
   const [showUnity, setShowUnity] = useState(false);
-  const apiUrl = "native/admin/digital_items";
-  const digitalItemId = selectedSample?.digitalItemId;
-
-  const {
-    data: digitalItem,
-    getData,
-    setData,
-  } = useRestfulAPI(
-    digitalItemId && digitalItemId !== -1 ? `${apiUrl}/${digitalItemId}` : null,
-  );
 
   const {
     setLoadData,
@@ -53,30 +42,19 @@ const AcrylicStandSettingDialog = ({
   };
 
   useEffect(() => {
-    if (digitalItemId > 0) {
-      getData(`${apiUrl}/${digitalItemId}`);
-    } else {
-      setData(null);
-    }
-  }, [digitalItemId]);
-
-  useEffect(() => {
-    if (
-      digitalItem?.type === 2 &&
-      digitalItemId > 0 &&
-      dialogRef.current?.open
-    ) {
+    console.log(data, "data here display")
+    if (data?.type === 2) {
       setLoadData({
-        itemId: digitalItem.id,
-        modelUrl: digitalItem.modelUrl,
-        acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio || 1,
+        itemId: data.digitalItemId,
+        modelUrl: data.modelUrl,
+        acrylicBaseScaleRatio: data.acrylicBaseScaleRatio || 1,
       });
       setShowUnity(true);
     } else {
       setShowUnity(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [digitalItem, digitalItemId, dialogRef]);
+  }, [data]);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -103,7 +81,7 @@ const AcrylicStandSettingDialog = ({
         </div>
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
-            <div className="unityView h-[75%] rounded-t-[16px] overflow-hidden relative">
+            <div className="h-[75%] rounded-t-[16px] overflow-hidden relative">
               {showUnity && unityProvider && isLoaded ? (
                 <AcrylicBaseSettingsUnity
                   unityProvider={unityProvider}

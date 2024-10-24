@@ -46,6 +46,7 @@ export default function Index() {
   const [message, setMessage] = useState("");
   const router = useRouter();
   const dialogRef = useRef(null);
+  const [matchingSample, secondaryMatchSample] = useState(null);
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -216,6 +217,7 @@ export default function Index() {
         (sample) => sample.digitalItemId === selectedSample.digitalItemId,
       );
       setShowSettingsButton(matchingSample?.type === 2);
+      secondaryMatchSample(matchingSample);
     } else {
       setShowSettingsButton(false);
       setSelectedSampleItem(-1);
@@ -536,10 +538,7 @@ export default function Index() {
         <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
       </div>
       {mainToast && <CustomToast show={showToast} message={message} />}
-      <AcrylicStandSettingDialog
-        dialogRef={dialogRef}
-        selectedSample={selectedSample}
-      />
+      <AcrylicStandSettingDialog dialogRef={dialogRef} data={matchingSample} />
       {!isLoaded && (
         <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
