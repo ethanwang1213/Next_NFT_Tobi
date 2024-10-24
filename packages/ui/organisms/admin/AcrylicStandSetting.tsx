@@ -7,11 +7,13 @@ import Spinner from "./Spinner";
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   data: any;
+  closeHandler: () => void;
 }
 
 const AcrylicStandSettingDialog = ({
   dialogRef,
   data,
+  closeHandler,
 }: AcrylicStandSettingDialogProps) => {
   const [scaleRatio, setScaleRatio] = useState(
     data?.acrylicBaseScaleRatio || 1,
@@ -62,7 +64,10 @@ const AcrylicStandSettingDialog = ({
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-[#2E2E2EF2]">
         <form method="dialog">
-          <button className="absolute w-4 h-4 top-5 right-5">
+          <button
+            className="absolute w-4 h-4 top-5 right-5"
+            onClick={closeHandler}
+          >
             <span
               className="material-symbols-outlined text-base-white cursor-pointer"
               style={{ fontSize: 20 }}

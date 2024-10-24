@@ -46,6 +46,7 @@ export default function Index() {
   const [message, setMessage] = useState("");
   const router = useRouter();
   const dialogRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [matchingSample, secondaryMatchSample] = useState(null);
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
@@ -538,7 +539,14 @@ export default function Index() {
         <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
       </div>
       {mainToast && <CustomToast show={showToast} message={message} />}
-      <AcrylicStandSettingDialog dialogRef={dialogRef} data={matchingSample} />
+      {isModalOpen && (
+        <AcrylicStandSettingDialog
+          dialogRef={dialogRef}
+          data={matchingSample}
+          closeHandler={() => setIsModalOpen(false)}
+        />
+      )}
+
       {!isLoaded && (
         <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
           <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
@@ -608,7 +616,10 @@ export default function Index() {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => {
-                  dialogRef.current.showModal();
+                  setIsModalOpen(true);
+                  setTimeout(() => {
+                    dialogRef.current?.showModal();
+                  }, 500);
                 }}
               >
                 <Image
