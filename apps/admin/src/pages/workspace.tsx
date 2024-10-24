@@ -272,7 +272,6 @@ export default function Index() {
       const materialIndex = materials.findIndex(
         (value) => value.id === sample.materialId,
       );
-      console.log(sample);
       placeNewSample({
         sampleItemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
