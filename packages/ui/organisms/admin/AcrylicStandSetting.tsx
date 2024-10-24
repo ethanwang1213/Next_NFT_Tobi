@@ -46,11 +46,9 @@ const AcrylicStandSettingDialog = ({
   };
 
   useEffect(() => {
-    if (digitalItemId && digitalItemId !== -1) {
+    if (digitalItemId > 0) {
       getData(`${apiUrl}/${digitalItemId}`);
-      setShowUnity(true);
     } else {
-      setShowUnity(false);
       setData(null);
     }
   }, [digitalItemId]);
@@ -64,16 +62,18 @@ const AcrylicStandSettingDialog = ({
   } = useAcrylicBaseSettingsUnityContext();
 
   useEffect(() => {
-    if (digitalItem) {
+    if (digitalItem?.type === 2 && digitalItemId > 0) {
+      setShowUnity(true);
       setLoadData({
         itemId: digitalItem.id,
         modelUrl: digitalItem.modelUrl,
         acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio
           ? digitalItem.acrylicBaseScaleRatio
           : 1,
+        isDebug: true,
       });
     }
-  }, [digitalItem, setLoadData]);
+  }, [digitalItem, digitalItemId, setLoadData]);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -100,14 +100,13 @@ const AcrylicStandSettingDialog = ({
         </div>
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
-            <div className="unityView h-[75%] rounded-t-[16px]">
-              {showUnity && unityProvider && (
+            <div className="unityView h-[75%] rounded-t-[16px] overflow-hidden">
+              {showUnity && unityProvider && isLoaded ? (
                 <AcrylicBaseSettingsUnity
                   unityProvider={unityProvider}
                   isLoaded={isLoaded}
                 />
-              )}
-              {!isLoaded && showUnity && (
+              ) : (
                 <div className="absolute inset-0 flex justify-center items-center">
                   <Spinner />
                 </div>
