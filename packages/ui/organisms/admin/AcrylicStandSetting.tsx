@@ -66,16 +66,17 @@ const AcrylicStandSettingDialog = ({
       digitalItemId > 0 &&
       dialogRef.current?.open
     ) {
-      setShowUnity(true);
       setLoadData({
         itemId: digitalItem.id,
         modelUrl: digitalItem.modelUrl,
         acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio || 1,
       });
+      setShowUnity(true);
     } else {
       setShowUnity(false);
     }
-  }, [digitalItem, digitalItemId, dialogRef, setLoadData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [digitalItem, digitalItemId, dialogRef]);
 
   return (
     <dialog ref={dialogRef} className="modal">
