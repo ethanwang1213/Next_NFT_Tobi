@@ -70,7 +70,6 @@ const AcrylicStandSettingDialog = ({
         acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio
           ? digitalItem.acrylicBaseScaleRatio
           : 1,
-        isDebug: true,
       });
     }
   }, [digitalItem, digitalItemId, setLoadData]);
