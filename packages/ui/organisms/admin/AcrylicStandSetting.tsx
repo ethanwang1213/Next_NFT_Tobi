@@ -2,8 +2,9 @@ import { useAcrylicBaseSettingsUnityContext } from "hooks/useCustomUnityContext"
 import useRestfulAPI from "hooks/useRestfulAPI";
 import Image from "next/image";
 import Slider from "rc-slider";
-import { MutableRefObject, useEffect } from "react";
-// import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
+import { MutableRefObject, useEffect, useState } from "react";
+import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
+import Spinner from "./Spinner";
 
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
@@ -14,12 +15,12 @@ const AcrylicStandSettingDialog = ({
   dialogRef,
   selectedSample,
 }: AcrylicStandSettingDialogProps) => {
+  const [showUnity, setShowUnity] = useState(false);
   const apiUrl = "native/admin/digital_items";
   const digitalItemId = selectedSample?.digitalItemId;
 
   const {
     data: digitalItem,
-    loading,
     getData,
     setData,
   } = useRestfulAPI(
@@ -44,10 +45,13 @@ const AcrylicStandSettingDialog = ({
     height: 8,
   };
 
-  // Trigger the API request only when digitalItemId is valid
   useEffect(() => {
     if (digitalItemId && digitalItemId !== -1) {
       getData(`${apiUrl}/${digitalItemId}`);
+      setShowUnity(true);
+    } else {
+      setShowUnity(false);
+      setData(null);
     }
   }, [digitalItemId]);
 
@@ -61,19 +65,19 @@ const AcrylicStandSettingDialog = ({
 
   useEffect(() => {
     if (digitalItem) {
-      console.log(digitalItem);
       setLoadData({
         itemId: digitalItem.id,
         modelUrl: digitalItem.modelUrl,
         acrylicBaseScaleRatio: digitalItem.acrylicBaseScaleRatio
           ? digitalItem.acrylicBaseScaleRatio
           : 1,
+        isDebug: false,
       });
     }
   }, [digitalItem, setLoadData]);
 
   return (
-    <dialog ref={dialogRef} className="modal relative">
+    <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-[#2E2E2EF2]">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-5 right-5">
@@ -98,10 +102,17 @@ const AcrylicStandSettingDialog = ({
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
             <div className="unityView h-[75%] rounded-t-[16px]">
-              {/* <AcrylicBaseSettingsUnity
-                unityProvider={unityProvider}
-                isLoaded={isLoaded}
-              /> */}
+              {showUnity && unityProvider && (
+                <AcrylicBaseSettingsUnity
+                  unityProvider={unityProvider}
+                  isLoaded={isLoaded}
+                />
+              )}
+              {!isLoaded && showUnity && (
+                <div className="absolute inset-0 flex justify-center items-center">
+                  <Spinner />
+                </div>
+              )}
             </div>
             <div className="px-8 text-white text-[16px] py-7">
               <div className="flex justify-between">
