@@ -9,7 +9,7 @@ interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   data: any;
   closeHandler: () => void;
-  scaleRatioSettingHandler: (newRatio: number, itemId: number) => void;
+  scaleRatioSettingHandler: (itemId: number, newRatio: number) => void;
 }
 
 const AcrylicStandSettingDialog = ({
@@ -101,7 +101,7 @@ const AcrylicStandSettingDialog = ({
         </div>
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
-            <div className="h-[75%] rounded-t-[16px] overflow-hidden relative">
+            <div className="h-[75%] rounded-t-[16px] overflow-hidden relative bg-white">
               {!isLoaded && (
                 <div className="absolute inset-0 flex justify-center items-center">
                   <Spinner />
@@ -171,8 +171,7 @@ const AcrylicStandSettingDialog = ({
               <button
                 className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary"
                 onClick={() => {
-                  scaleRatioSettingHandler(scaleRatio, data.itemId);
-                  closeHandler();
+                  scaleRatioSettingHandler(data.digitalItemId, scaleRatio);
                 }}
               >
                 DONE

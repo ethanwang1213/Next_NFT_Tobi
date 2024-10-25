@@ -263,8 +263,8 @@ export default function Index() {
   }, [initSampleCreateDialog, pauseUnityInputs]);
 
   const applyRatioSetting = useCallback(
-    (newRatio: number, itemId: number) => {
-      applyAcrylicBaseScaleRatio(newRatio, itemId);
+    (itemId: number, newRatio: number) => {
+      applyAcrylicBaseScaleRatio(itemId, newRatio);
     },
     [applyAcrylicBaseScaleRatio],
   );
