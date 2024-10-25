@@ -566,7 +566,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
     <dialog ref={props.dialogRef} className="modal">
       <div className="modal-box max-w-[650px] max-h-[540px] rounded-3xl p-4 pt-8 flex gap-3 overflow-hidden">
         <form method="dialog">
-          <button className="absolute w-4 h-4 top-4 right-4">
+          <button className="absolute w-4 h-4 top-4 right-4 outline-none">
             <NextImage
               src="/admin/images/icon/close2.svg"
               width={16}

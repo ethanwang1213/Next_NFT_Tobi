@@ -11,6 +11,7 @@ export type SampleItem = {
   modelUrl: string;
   materialId: number;
   type: number;
+  acrylicBaseScaleRatio : number;
 };
 
 export type NftItem = {
