@@ -41,7 +41,6 @@ export default function Index() {
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
   const [showSettingsButton, setShowSettingsButton] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const timerId = useRef(null);
   const [message, setMessage] = useState("");
   const router = useRouter();
@@ -614,11 +613,9 @@ export default function Index() {
         />
         <div className="w-full flex justify-center absolute bottom-28 items-center">
           {showSettingsButton ? (
-            <div className="relative">
+            <div className="relative group">
               <button
                 className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
                 onClick={() => {
                   setIsModalOpen(true);
                   setTimeout(() => {
@@ -637,11 +634,9 @@ export default function Index() {
                   Body/Base Ratio Settings
                 </span>
               </button>
-              {isHovered && (
-                <div className="absolute bottom-full left-52 w-max mb-2 font-medium text-white text-sm px-4 py-1 rounded-md bg-[#717171BF] z-20">
-                  You can adjust the ratio of the selected Acrylic Stand.
-                </div>
-              )}
+              <div className="absolute bottom-full left-52 w-max mb-2 font-medium text-white text-sm px-4 py-1 rounded-md bg-[#717171BF] z-20 hidden group-hover:block">
+                You can adjust the ratio of the selected Acrylic Stand.
+              </div>
             </div>
           ) : null}
         </div>
