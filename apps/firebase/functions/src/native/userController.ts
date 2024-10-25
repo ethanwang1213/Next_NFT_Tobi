@@ -328,7 +328,7 @@ export const postMyProfile = async (req: Request, res: Response) => {
                 created_date_time: "asc",
               },
             },
-          }
+          },
         });
       }
       if (flow&&isEmptyObject(flow)) {
