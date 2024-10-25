@@ -302,9 +302,7 @@ const Showcase = () => {
         modelType: sample.type as ModelType,
         modelUrl: sample.modelUrl,
         imageUrl,
-        acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio
-          ? sample.acrylicBaseScaleRatio
-          : 1,
+        acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
         sampleName: sample.name !== null ? sample.name : "",
       };
 

@@ -288,9 +288,7 @@ export default function Index() {
         modelUrl: sample.modelUrl,
         imageUrl:
           materialIndex > -1 ? materials[materialIndex].image : sample.thumbUrl,
-        acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio
-          ? sample.acrylicBaseScaleRatio
-          : 1,
+        acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
       });
@@ -339,9 +337,7 @@ export default function Index() {
           materialIndex > -1
             ? materials[materialIndex].image
             : samples[index].thumbUrl,
-        acrylicBaseScaleRatio: samples[index].acrylicBaseScaleRatio
-          ? samples[index].acrylicBaseScaleRatio
-          : 1,
+        acrylicBaseScaleRatio: samples[index].acrylicBaseScaleRatio ?? 1,
         modelType: samples[index].type as ModelType,
         sampleName: samples[index].name !== null ? samples[index].name : "",
       });
