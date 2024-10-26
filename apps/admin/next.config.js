@@ -35,7 +35,7 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/:path*',
+        source: '/:locale(en|jp)/:path*',
         destination: `/admin/:path*`,
       },
       {
