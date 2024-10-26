@@ -35,11 +35,12 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/:locale(en|jp)/:path*',
+        source: '/:path*',
         destination: `/admin/:path*`,
       },
       {
         basePath: false,
+        locale: false,
         source: "/proxy/:path*",
         destination:
           // "http://127.0.0.1:7777/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
@@ -49,6 +50,7 @@ module.exports = {
       },
       {
         basePath: false,
+        locale: false,
         source: "/backend/api/functions/:path*",
         destination:
           // "http://localhost:5001/tobiratory-f6ae1/asia-northeast1/:path*",
