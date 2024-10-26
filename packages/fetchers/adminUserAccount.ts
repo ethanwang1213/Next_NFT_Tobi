@@ -4,12 +4,13 @@ import { ApiProfileData } from "types/adminTypes";
 
 export const fetchMyProfile = async () => {
   const idToken = await auth.currentUser.getIdToken();
-  const res = await fetch(`/backend/api/functions/native/my/profile`, {
-    method: "GET",
-    headers: {
-      Authorization: idToken,
-      "Content-Type": "application/json",
-    },
+  const res = await fetch(`https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/native/my/profile`, {
+  // const res = await fetch(`/backend/api/functions/native/my/profile`, {
+      method: "GET",
+      headers: {
+        Authorization: idToken,
+        "Content-Type": "application/json",
+      },
   });
   const resData = await res.json();
   if (res.ok) {
@@ -56,7 +57,7 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
         setError("エラーが発生しました。もう一度お試し下さい。");
       }
     } catch (error) {
-      console.log(String(error))
+      console.log(String(error));
       setError("エラーが発生しました。もう一度お試し下さい。");
     }
     setLoading(false);
