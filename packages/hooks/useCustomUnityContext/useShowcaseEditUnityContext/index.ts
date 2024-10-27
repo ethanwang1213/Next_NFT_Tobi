@@ -117,6 +117,7 @@ export const useShowcaseEditUnityContext = ({
           acrylicBaseScaleRatio:
             v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
           itemName: v.name,
+          shelfSectionIndex: v.shelfSectionIndex ?? -1,
           ...v,
           itemType: ItemType.Sample,
           canScale: true,
@@ -127,6 +128,7 @@ export const useShowcaseEditUnityContext = ({
         return {
           itemId: v.nftId,
           itemName: v.name,
+          shelfSectionIndex: v.shelfSectionIndex ?? -1,
           ...v,
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
