@@ -30,6 +30,13 @@ export const UnityStageType = {
   BackWall: 1,
   LeftWall: 2,
   RightWall: 3,
+  FrontFloor: 4,
+  FrontLeftWall: 5,
+  FrontRightWall: 6,
+  ShelfFloor: 7,
+  ShelfBackWall: 8,
+  ShelfLeftWall: 9,
+  ShelfRightWall: 10,
 } as const;
 export type UnityStageType =
   (typeof UnityStageType)[keyof typeof UnityStageType];
@@ -170,10 +177,15 @@ type ItemStageType = {
   stageType: UnityStageType;
 };
 
+type ItemShelfSectionIndex = {
+  shelfSectionIndex: number;
+};
+
 export type SaidanItemData = ItemBaseData &
   ItemId &
   ItemTransform &
-  ItemStageType & {
+  ItemStageType &
+  ItemShelfSectionIndex & {
     canScale: boolean;
     itemMeterHeight: number;
   };
@@ -187,13 +199,15 @@ export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
 export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
   ItemId &
   ItemTransform &
-  ItemStageType;
+  ItemStageType &
+  ItemShelfSectionIndex;
 
 // nft load data
 export type NftLoadData = NftBaseDataForLoading &
   ItemId &
   ItemTransform &
-  ItemStageType & {
+  ItemStageType &
+  ItemShelfSectionIndex & {
     itemMeterHeight: number;
   };
 
@@ -203,8 +217,13 @@ export type SampleSaveData = ItemBaseId &
   ItemId &
   ItemTransform &
   ItemStageType &
+  ItemShelfSectionIndex &
   AcrylicBaseScaleRatio;
-export type NftSaveData = ItemBaseId & ItemId & ItemTransform & ItemStageType;
+export type NftSaveData = ItemBaseId &
+  ItemId &
+  ItemTransform &
+  ItemStageType &
+  ItemShelfSectionIndex;
 
 ///////////////////////////////////////
 // types for settings data
