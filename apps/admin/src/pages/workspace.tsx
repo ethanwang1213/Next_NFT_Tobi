@@ -261,12 +261,6 @@ export default function Index() {
     pauseUnityInputs();
   }, [initSampleCreateDialog, pauseUnityInputs]);
 
-  const applyRatioSetting = useCallback(
-    (itemId: number, newRatio: number) => {
-      applyAcrylicBaseScaleRatio(itemId, newRatio);
-    },
-    [applyAcrylicBaseScaleRatio],
-  );
 
   useEffect(() => {
     if (router.query.trigger === "true" && isLoaded) {
@@ -543,10 +537,11 @@ export default function Index() {
       {mainToast && <CustomToast show={showToast} message={message} />}
       {isModalOpen && (
         <AcrylicStandSettingDialog
+          selectedItem={selectedSampleItemId}
           dialogRef={dialogRef}
           data={matchingSample}
           closeHandler={() => setIsModalOpen(false)}
-          scaleRatioSettingHandler={applyRatioSetting}
+          scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
         />
       )}
 
