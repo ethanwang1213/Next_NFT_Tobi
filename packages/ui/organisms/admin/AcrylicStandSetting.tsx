@@ -10,6 +10,7 @@ interface AcrylicStandSettingDialogProps {
   data: any;
   closeHandler: () => void;
   scaleRatioSettingHandler: (itemId: number, newRatio: number) => void;
+  selectedItem: number;
 }
 
 const AcrylicStandSettingDialog = ({
@@ -17,6 +18,7 @@ const AcrylicStandSettingDialog = ({
   data,
   closeHandler,
   scaleRatioSettingHandler,
+  selectedItem,
 }: AcrylicStandSettingDialogProps) => {
   const confirmDialogRef = useRef(null);
   const [scaleRatio, setScaleRatio] = useState(
@@ -40,7 +42,7 @@ const AcrylicStandSettingDialog = ({
     updateAcrylicBaseScaleRatio(value);
     setScaleRatio(value);
   };
-
+  
   const handleStyle = {
     borderColor: "#FAFAFA",
     height: 20,
@@ -62,7 +64,7 @@ const AcrylicStandSettingDialog = ({
   useEffect(() => {
     if (data?.type === 2) {
       setLoadData({
-        itemId: data.digitalItemId,
+        itemId: selectedItem,
         modelUrl: data.modelUrl,
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio || 1,
       });
@@ -171,7 +173,11 @@ const AcrylicStandSettingDialog = ({
               <button
                 className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary"
                 onClick={() => {
-                  scaleRatioSettingHandler(data.digitalItemId, scaleRatio);
+                  scaleRatioSettingHandler(
+                    selectedItem,
+                    scaleRatio,
+                  );
+                  closeHandler();
                 }}
               >
                 DONE
