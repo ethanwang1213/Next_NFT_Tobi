@@ -268,12 +268,13 @@ export const useSaidanLikeUnityContextBase = ({
 
   const inputWasd = useCallback(
     ({ wKey, aKey, sKey, dKey }: WasdParams) => {
+      if (!isLoaded || !isSaidanSceneLoaded) return;
       postMessageToUnity(
         "InputWasdMessageReceiver",
         JSON.stringify({ wKey, aKey, sKey, dKey }),
       );
     },
-    [postMessageToUnity],
+    [isLoaded, isSaidanSceneLoaded, postMessageToUnity],
   );
 
   // load item data
