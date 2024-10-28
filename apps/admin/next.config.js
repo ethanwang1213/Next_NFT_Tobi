@@ -1,5 +1,7 @@
 const { i18n } = require('./next-i18next.config');
 
+const isProd = process.env.NODE_ENV === "production";
+
 module.exports = {
   basePath: "/admin",
   reactStrictMode: true,
@@ -37,10 +39,11 @@ module.exports = {
       {
         source: '/:locale(en|jp)/:path*',
         destination: `/admin/:path*`,
+        locale: false,
       },
       {
         basePath: false,
-        locale: false,
+        locale: isProd ? false : undefined,
         source: "/proxy/:path*",
         destination:
           // "http://127.0.0.1:7777/v0/b/tobiratory-f6ae1.appspot.com/o/:path*",
@@ -50,7 +53,7 @@ module.exports = {
       },
       {
         basePath: false,
-        locale: false,
+        locale: isProd ? false : undefined,
         source: "/backend/api/functions/:path*",
         destination:
           // "http://localhost:5001/tobiratory-f6ae1/asia-northeast1/:path*",

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import Button from "ui/atoms/Button";
 import EmailTextField from "ui/atoms/EmailTextField";
+import LanguageSwitch from "../organisms/admin/LanguageSwitch";
 
 export type LoginFormType = {
   email: string;
@@ -43,7 +44,7 @@ const AuthTemplate = ({
   });
   return (
     <div>
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center p-8 flex-col">
         <form
           className="mt-[90px] rounded-[40px] flex flex-col gap-5 items-center z-10"
           onSubmit={handleSubmit(withMail)}
@@ -92,6 +93,9 @@ const AuthTemplate = ({
             loading={loading}
           />
         </form>
+        <div className="mt-12 z-10 border-[1px] border-solid border-input-color">
+          <LanguageSwitch />
+        </div>
       </div>
     </div>
   );
