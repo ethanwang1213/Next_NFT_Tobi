@@ -3,7 +3,12 @@ export type MintStatusType = "NOTHING" | "IN_PROGRESS" | "DONE";
 
 export type CompleteStampType = "Complete";
 
-export type FormStatus = "Nothing" | "Checking" | "Minting" | "Incorrect" | "Success";
+export type FormStatus =
+  | "Nothing"
+  | "Checking"
+  | "Minting"
+  | "Incorrect"
+  | "Success";
 
 export type StampRallyEvents =
   | "TOBIRAPOLISFESTIVAL2023"
@@ -46,10 +51,17 @@ export type StampRallyEventType = "tpf2023" | "tmf2024" | "tpfw2024";
 ////////////////////////////////////
 
 // TOBIRAPOLIS祭2023スタンプラリーのスタンプタイプ
-export type Tpf2023StampType = "G0" | "G1alpha" | "G1beta" | "G1gamma" | "G1delta";
+export type Tpf2023StampType =
+  | "G0"
+  | "G1alpha"
+  | "G1beta"
+  | "G1gamma"
+  | "G1delta";
 
 // TOBIRAPOLIS祭2023スタンプラリーのmint状態データ
-export type Tpf2023StampRallyData = StampRallyData<Tpf2023StampType | CompleteStampType>;
+export type Tpf2023StampRallyData = StampRallyData<
+  Tpf2023StampType | CompleteStampType
+>;
 
 //////////////////////////////////////////////////
 /// TOBIRAPOLIS MUSIC FESTIVAL2024スタンプラリー ///
@@ -80,7 +92,9 @@ export const Tmf2024StampMetadata: {
 /////////////////////////////////////////////
 
 // TOBIRAPOLIS花火大会2024のスタンプタイプ
-export type Tpfw2024StampType = "TobirapolisFireworks2024" | "ReflectedInTheRiver";
+export type Tpfw2024StampType =
+  | "TobirapolisFireworks2024"
+  | "ReflectedInTheRiver";
 
 export type Tpfw2024StampRallyData = StampRallyData<Tpfw2024StampType>;
 

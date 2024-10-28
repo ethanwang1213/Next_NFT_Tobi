@@ -1,8 +1,11 @@
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
-import { StampRallyEvents, StampRallyRewardFormType } from "types/stampRallyTypes";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { useStampRallyForm } from "journal-pkg/contexts/journal-StampRallyFormProvider";
+import {
+  StampRallyEvents,
+  StampRallyRewardFormType,
+} from "journal-pkg/types/stampRallyTypes";
 import { useForm } from "react-hook-form";
 
 type Props = {
@@ -75,7 +78,13 @@ export const Tpf2023RewardForm: React.FC<Props> = ({ onSubmit, event }) => {
               text-primary hover:text-white
               grid content-center"
           >
-            <p>{isSubmitting.current ? <FontAwesomeIcon icon={faSpinner} spin /> : "送信"}</p>
+            <p>
+              {isSubmitting.current ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : (
+                "送信"
+              )}
+            </p>
           </div>
         </button>
       </div>

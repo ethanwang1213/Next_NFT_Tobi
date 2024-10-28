@@ -1,15 +1,23 @@
 import {
-  Nothing,
+  StampRallyEvents,
+  StampRallyRewardFormType,
+} from "journal-pkg/types/stampRallyTypes";
+import { BasicStampRallyInput } from "journal-pkg/ui/atoms/journal-BasicStampRallyInput";
+import { BasicStampRallyRedirectButton } from "journal-pkg/ui/atoms/journal-BasicStampRallyRedirectButton";
+import {
   Checking,
-  Minting,
   Incorrect,
+  Minting,
+  Nothing,
   Success,
-} from "../atoms/journal-BasicStampRallyStatus";
-import { BasicStampRallyInput } from "../atoms/journal-BasicStampRallyInput";
-import { BasicStampRallyRedirectButton } from "../atoms/journal-BasicStampRallyRedirectButton";
-import { StampRallyEvents, StampRallyRewardFormType } from "types/stampRallyTypes";
+} from "journal-pkg/ui/atoms/journal-BasicStampRallyStatus";
 
-export type FormStatus = "Nothing" | "Checking" | "Minting" | "Incorrect" | "Success";
+export type FormStatus =
+  | "Nothing"
+  | "Checking"
+  | "Minting"
+  | "Incorrect"
+  | "Success";
 
 type Props = {
   event: StampRallyEvents;
@@ -38,7 +46,9 @@ export const BasicStampRallyForm: React.FC<Props> = ({
           <BasicStampRallyInput event={event} onSubmit={onSubmit} />
         )}
         {(status === "Checking" || status === "Minting") && <div></div>}
-        {status === "Success" && <BasicStampRallyRedirectButton onClick={onRedirectClick} />}
+        {status === "Success" && (
+          <BasicStampRallyRedirectButton onClick={onRedirectClick} />
+        )}
       </div>
     </div>
   );
