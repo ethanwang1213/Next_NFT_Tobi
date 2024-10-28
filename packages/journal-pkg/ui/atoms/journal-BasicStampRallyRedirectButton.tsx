@@ -1,6 +1,6 @@
-import { useBookContext } from "../../../apps/journal/contexts/journal-BookProvider";
+import { useSoundConfig } from "journal-pkg/contexts/journal-SoundConfigProvider";
 import useSound from "use-sound";
-import { useSoundConfig } from "contexts/journal-SoundConfigProvider";
+import { useBookContext } from "../../../../apps/journal/contexts/journal-BookProvider";
 
 type Props = {
   onClick?: () => void;

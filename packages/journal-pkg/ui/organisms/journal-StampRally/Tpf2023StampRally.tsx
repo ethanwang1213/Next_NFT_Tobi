@@ -1,9 +1,12 @@
-import { useAuth } from "contexts/journal-AuthProvider";
-import { MintStatusType, Tpf2023StampType } from "types/stampRallyTypes";
-import { useStampRallyFetcher } from "fetchers/journal-useStampRallyFetcher";
-import { RoundedImage } from "../../atoms/journal-RoundedImage";
-import { Tpf2023Title } from "../../atoms/journal-Tpf2023Title";
-import { Tpf2023RewardForm } from "../../molecules/journal-Tpf2023RewardForm";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { useStampRallyFetcher } from "journal-pkg/fetchers/journal-useStampRallyFetcher";
+import {
+  MintStatusType,
+  Tpf2023StampType,
+} from "journal-pkg/types/stampRallyTypes";
+import { RoundedImage } from "journal-pkg/ui/atoms/journal-RoundedImage";
+import { Tpf2023Title } from "journal-pkg/ui/atoms/journal-Tpf2023Title";
+import { Tpf2023RewardForm } from "journal-pkg/ui/molecules/journal-Tpf2023RewardForm";
 
 type StampDataType = {
   key: Tpf2023StampType;
@@ -20,7 +23,13 @@ export const Tpf2023StampRally: React.FC = () => {
   const { requestStampRallyReward } = useStampRallyFetcher();
 
   // preparing stamps data
-  const keys: Tpf2023StampType[] = ["G0", "G1alpha", "G1beta", "G1gamma", "G1delta"];
+  const keys: Tpf2023StampType[] = [
+    "G0",
+    "G1alpha",
+    "G1beta",
+    "G1gamma",
+    "G1delta",
+  ];
   const STAMP_DIR = "/journal/images/tobirapolisfestival/2023/";
   const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
   const stamps: StampDataType[] = keys.map((key) => ({
@@ -59,7 +68,10 @@ export const Tpf2023StampRally: React.FC = () => {
         </div>
       </div>
       <div className="w-full mt-4 sm:mt-10">
-        <Tpf2023RewardForm onSubmit={requestStampRallyReward} event="TOBIRAPOLISFESTIVAL2023" />
+        <Tpf2023RewardForm
+          onSubmit={requestStampRallyReward}
+          event="TOBIRAPOLISFESTIVAL2023"
+        />
       </div>
       <p className="mt-1 text-[10px] sm:text-sm font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}

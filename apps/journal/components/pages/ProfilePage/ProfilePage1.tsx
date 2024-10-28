@@ -3,9 +3,9 @@ import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 import useDateFormat from "@/hooks/useDateFormat";
 import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
 import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { Tpfw2024StampRally } from "journal-pkg/ui/organisms/journal-StampRally";
 import { useEffect, useMemo, useState } from "react";
 import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
-import { Tpfw2024StampRally } from "ui/organisms/journal-StampRally";
 
 /**
  * プロフィールページの2ページ目
@@ -22,7 +22,10 @@ const ProfilePage1: React.FC = () => {
     [user],
   );
 
-  const houseDataExists = useMemo(() => houseData && houseData.name, [houseData]);
+  const houseDataExists = useMemo(
+    () => houseData && houseData.name,
+    [houseData],
+  );
 
   // Debug用
   const debug = useDebug();
@@ -42,7 +45,11 @@ const ProfilePage1: React.FC = () => {
           {process.env["NEXT_PUBLIC_DEBUG_MODE"] === "true" ? (
             <>
               {mockCharacteristicList.slice(0, mockDataNum).map((v, i) => (
-                <CharacteristicLine key={v.id} lineType={v.text} lineValue={v.value} />
+                <CharacteristicLine
+                  key={v.id}
+                  lineType={v.text}
+                  lineValue={v.value}
+                />
               ))}
             </>
           ) : (
@@ -50,11 +57,16 @@ const ProfilePage1: React.FC = () => {
               {joinAtExists && (
                 <CharacteristicLine
                   lineType={"Participation date of Tobiratory"}
-                  lineValue={formattedFromDate(user.characteristic.join_tobiratory_at.toDate())}
+                  lineValue={formattedFromDate(
+                    user.characteristic.join_tobiratory_at.toDate(),
+                  )}
                 />
               )}
               {houseDataExists && (
-                <CharacteristicLine lineType={"House Arkhē"} lineValue={houseData.name} />
+                <CharacteristicLine
+                  lineType={"House Arkhē"}
+                  lineValue={houseData.name}
+                />
               )}
             </>
           )}

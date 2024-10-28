@@ -1,4 +1,5 @@
 import { useIntervalBySec } from "journal-pkg/hooks/journal-useInterval";
+import { StampRallyEvents } from "journal-pkg/types/stampRallyTypes";
 import React, {
   createContext,
   ReactNode,
@@ -6,7 +7,6 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import { StampRallyEvents } from "types/stampRallyTypes";
 import { useAuth } from "./journal-AuthProvider";
 
 type Props = {

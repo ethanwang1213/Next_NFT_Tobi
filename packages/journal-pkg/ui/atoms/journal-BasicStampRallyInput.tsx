@@ -1,5 +1,8 @@
+import {
+  StampRallyEvents,
+  StampRallyRewardFormType,
+} from "journal-pkg/types/stampRallyTypes";
 import { useForm } from "react-hook-form";
-import { StampRallyEvents, StampRallyRewardFormType } from "types/stampRallyTypes";
 
 type Props = {
   event: StampRallyEvents;
@@ -38,7 +41,9 @@ export const BasicStampRallyInput: React.FC<Props> = ({ event, onSubmit }) => {
         />
       </div>
       <div className="flex items-center">
-        <button className="w-18 sm:w-[105px] max-h-8 min-h-8 btn btn-accent rounded-full">send</button>
+        <button className="w-18 sm:w-[105px] max-h-8 min-h-8 btn btn-accent rounded-full">
+          send
+        </button>
       </div>
     </form>
   );

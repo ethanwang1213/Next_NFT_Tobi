@@ -9,11 +9,11 @@ import { BookProvider } from "@/contexts/journal-BookProvider";
 import { EditProfileProvider } from "@/contexts/journal-EditProfileProvider";
 import { RedeemStatusProvider } from "@/contexts/journal-RedeemStatusProvider";
 import { SettingProvider } from "@/contexts/journal-SettingProvider";
-import { StampRallyFormProvider } from "contexts/journal-StampRallyFormProvider";
 import {
   emailLinkOnly,
   useAuth,
 } from "journal-pkg/contexts/journal-AuthProvider";
+import { StampRallyFormProvider } from "journal-pkg/contexts/journal-StampRallyFormProvider";
 import { WatchMintStatusProvider } from "journal-pkg/contexts/journal-WatchMintStatusProvider";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
 import Image from "next/image";
