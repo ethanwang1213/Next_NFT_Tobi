@@ -113,6 +113,7 @@ export const useWorkspaceUnityContext = ({
         itemName: v.name,
         ...v,
         itemType: ItemType.Sample,
+        shelfSectionIndex: -1,
         canScale: true,
         itemMeterHeight: DefaultItemMeterHeight,
       };
@@ -231,6 +232,7 @@ export const useWorkspaceUnityContext = ({
           id: v.id,
           itemId: v.itemId,
           stageType: v.stageType,
+          shelfSectionIndex: v.shelfSectionIndex,
           position: v.position,
           rotation: v.rotation,
           scale: v.scale,
