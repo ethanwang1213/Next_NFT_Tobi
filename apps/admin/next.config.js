@@ -1,5 +1,3 @@
-const { i18n } = require('./next-i18next.config');
-
 const isProd = process.env.NODE_ENV === "production";
 
 module.exports = {
@@ -37,7 +35,7 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/:locale(en|jp)/:path*',
+        source: "/:path*",
         destination: `/admin/:path*`,
         locale: false,
       },
@@ -62,5 +60,8 @@ module.exports = {
       },
     ];
   },
-  i18n,
+  i18n: {
+    locales: ['jp', 'en'],
+    defaultLocale: 'jp'
+  }
 };

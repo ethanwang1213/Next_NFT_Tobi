@@ -11,6 +11,8 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
@@ -39,6 +41,7 @@ const Authentication = () => {
     isRegisteringWithMailAndPassword,
     setIsRegisteringWithMailAndPassword,
   ] = useState(false);
+  const t = useTranslations("LogInSignUp");
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
@@ -191,10 +194,10 @@ const Authentication = () => {
       return (
         <AuthTemplate
           loading={isEmailLoading}
-          googleLabel={"Googleでサインアップ"}
-          appleLabel={"Appleでサインアップ"}
-          mailLabel={"サインアップ"}
-          prompt={"既にアカウントを持っていますか？ - ログイン"}
+          googleLabel={t('SignUpWithGoogle')}
+          appleLabel={t('SignUpWithApple')}
+          mailLabel={t('SignUp')}
+          prompt={t('AlreadyHaveAccount')}
           setAuthState={() => setAuthState(AuthStates.SignIn)}
           withMail={startMailSignUp}
           withGoogle={withGoogle}
@@ -205,10 +208,10 @@ const Authentication = () => {
       return (
         <AuthTemplate
           loading={isEmailLoading}
-          googleLabel={"Googleでログイン"}
-          appleLabel={"Appleでログイン"}
-          mailLabel={"ログイン"}
-          prompt={"アカウントを持っていませんか？ - 新規登録"}
+          googleLabel={t('LogInWithGoogle')}
+          appleLabel={t('LogInWithApple')}
+          mailLabel={t('LogIn')}
+          prompt={t('NoAccountSignUp')}
           setAuthState={() => setAuthState(AuthStates.SignUp)}
           withMail={startMailSignIn}
           withGoogle={withGoogle}
@@ -249,5 +252,13 @@ const Authentication = () => {
       );
   }
 };
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`../../messages/${locale}.json`)).default,
+    },
+  };
+}
 
 export default Authentication;

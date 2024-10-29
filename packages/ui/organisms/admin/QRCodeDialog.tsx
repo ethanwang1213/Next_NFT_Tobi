@@ -27,7 +27,10 @@ const QRCodeDialog = ({
 
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box rounded-3xl w-[304px] h-[304px]" id={initialValue}>
+      <div
+        className="modal-box rounded-3xl w-[304px] h-[304px]"
+        id={initialValue}
+      >
         <QRCodeSVG
           value={initialValue}
           size={256}
@@ -38,7 +41,13 @@ const QRCodeDialog = ({
           onClick={handleDownload}
         />
       </div>
-      <form method="dialog" className="modal-backdrop">
+      <div className="flex justify-center">
+        <p className="text-base text-white text-center">
+          You can save the QR code by clicking on it. <br />
+          To close this screen, please click outside the QR code.
+        </p>
+      </div>
+      <form method="dialog" className="modal-backdrop w-screen h-screen absolute">
         <button>close</button>
       </form>
     </dialog>

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import Button from "ui/atoms/Button";
 import EmailTextField from "ui/atoms/EmailTextField";
 import LanguageSwitch from "../organisms/admin/LanguageSwitch";
+import { useTranslations } from "next-intl";
 
 export type LoginFormType = {
   email: string;
@@ -42,6 +43,7 @@ const AuthTemplate = ({
       email: "",
     },
   });
+  const t = useTranslations('LogInSignUp');
   return (
     <div>
       <div className="flex items-center justify-center p-8 flex-col">
@@ -70,7 +72,7 @@ const AuthTemplate = ({
           </div>
           <div className="w-[408px]">
             <EmailTextField
-              placeholder={"メールアドレス"}
+              placeholder={t('Email')}
               className="rounded-xl base-content font-normal w-[408px] h-[48px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
               register={register}
             />

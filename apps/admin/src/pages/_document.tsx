@@ -49,8 +49,8 @@ const Document = () => {
         <meta name="theme-color" content="#ffffff" />
       </Head>
       <body>
-        <Main />
-        <NextScript />
+          <Main />
+          <NextScript />
       </body>
     </Html>
   );
