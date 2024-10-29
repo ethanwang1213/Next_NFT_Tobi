@@ -322,6 +322,13 @@ export const postMyProfile = async (req: Request, res: Response) => {
           where: {
             uuid: uid,
           },
+          include: {
+            saidans: {
+              orderBy: {
+                created_date_time: "asc",
+              },
+            },
+          },
         });
       }
       if (flow&&isEmptyObject(flow)) {
@@ -354,6 +361,12 @@ export const postMyProfile = async (req: Request, res: Response) => {
           socialLinks: accountData?.social_links,
           gender: accountData?.gender,
           birth: accountData?.birth,
+          firstSaidan: accountData?.saidans.length==0?
+            null :
+            {
+              id: accountData?.saidans[0].id,
+              removedDefaultItem: accountData?.removed_default_items,
+            },
           giftPermission: accountData?.gift_permission,
           createdAt: accountData?.created_date_time,
         },
