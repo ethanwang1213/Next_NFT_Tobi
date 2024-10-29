@@ -29,6 +29,14 @@ export const useLoadPreviewItem = ({
   const [loadData, setLoadData] = useState<PreviewItemData | null>();
   const [currentItemIndex, setCurrentItemIndex] = useState<ItemIndex>();
 
+  const wrappedSetLoadData = useCallback(
+    (data: PreviewItemData) => {
+      data.acrylicBaseScaleRatio = data.acrylicBaseScaleRatio ?? 1.0;
+      setLoadData(data);
+    },
+    [setLoadData],
+  );
+
   const postMessageToLoadData = useCallback(() => {
     setIsSceneLoaded(true);
 
@@ -58,7 +66,7 @@ export const useLoadPreviewItem = ({
 
   return {
     isSceneLoaded,
-    setLoadData,
+    setLoadData: wrappedSetLoadData,
     handleSceneIsLoaded: postMessageToLoadData,
   };
 };
