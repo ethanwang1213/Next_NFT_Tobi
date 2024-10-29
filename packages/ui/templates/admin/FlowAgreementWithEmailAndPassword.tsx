@@ -1,4 +1,5 @@
 import useMailAuthForm from "hooks/useMailAuthForm";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { SetStateAction, useEffect, useState } from "react";
 import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
@@ -46,6 +47,7 @@ const FlowAgreementWithEmailAndPassword = ({
     passwordConfirmationStatus,
     setPasswordConfirmationStatus,
   ] = useMailAuthForm(email);
+  const t = useTranslations("LogInSignUp");
 
   useEffect(() => {
     if (email) {
@@ -142,7 +144,7 @@ const FlowAgreementWithEmailAndPassword = ({
         setPasswordConfirmationStatus({
           password: passwordConfirmation,
           valid: false,
-          error: "パスワードが一致しません",
+          error: t('PasswordsDoNotMatch'),
         });
       }
     } else {
@@ -183,7 +185,7 @@ const FlowAgreementWithEmailAndPassword = ({
         <div
           className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
         >
-          パスワード
+          {t("Password")}
         </div>
         <input
           type={"password"}
@@ -196,7 +198,7 @@ const FlowAgreementWithEmailAndPassword = ({
         <div
           className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
         >
-          確認（再入力）
+          {t("ConfirmPassword")}
         </div>
         <input
           type={"password"}
@@ -300,7 +302,7 @@ const EmailField = ({
   );
 };
 
-export const TermsOfService = ({
+const TermsOfService = ({
   agreed,
   visible,
   setAgreed,
@@ -312,6 +314,7 @@ export const TermsOfService = ({
   if (!visible) {
     return <></>;
   }
+  const t = useTranslations("LogInSignUp");
 
   return (
     <div className={"flex flex-row items-center"}>
@@ -330,9 +333,9 @@ export const TermsOfService = ({
           target="_blank"
           rel="noreferrer"
         >
-          利用規約
+          {t("Terms")}
         </a>
-        に同意してトビラトリーアカウント、Flowアカウントを作成する。
+        {t("AgreeToTerms")}
       </span>
     </div>
   );
@@ -347,6 +350,7 @@ const PasswordValidation = ({
   validationStepCount: number;
   usedThreeOrMoreCharacterTypes: boolean;
 }) => {
+  const t = useTranslations("LogInSignUp");
   return (
     <div>
       <div className={"flex flex-row justify-center"}>
@@ -354,7 +358,9 @@ const PasswordValidation = ({
           valid={isValidLength}
           alt={"alphanumeric and special characters, minimum 8 characters."}
         />
-        <div className={"ml-[7px] text-[12px]"}>英数記号8文字以上</div>
+        <div className={"ml-[7px] text-[12px]"}>
+          {t("PasswordRequirements")}
+        </div>
       </div>
       <div className={"flex flex-row justify-center mt-[5px]"}>
         <ValidationIcon
@@ -362,24 +368,28 @@ const PasswordValidation = ({
           alt={"alphanumeric and special characters, minimum 8 characters."}
         />
         <div className={"ml-[7px] text-[12px]"}>
-          三種類以上の文字種を含めて下さい
+          {t("PasswordCharacterTypes")}
         </div>
       </div>
       <ul className={"grid grid-cols-2 gap-2 mt-[10px]"}>
         <li>
-          <div className={"font-normal text-[12px]"}>・大文字を含む</div>
-        </li>
-        <li>
-          <div className={"text-right font-normal text-[12px]"}>
-            ・数字を含む
+          <div className={"font-normal text-[12px]"}>
+            ・{t("UppercaseLetters")}
           </div>
         </li>
         <li>
-          <div className={"font-normal text-[12px]"}>・小文字を含む</div>
+          <div className={"text-right font-normal text-[12px]"}>
+            ・{t("Numbers")}
+          </div>
+        </li>
+        <li>
+          <div className={"font-normal text-[12px]"}>
+            ・{t("LowercaseLetters")}
+          </div>
         </li>
         <li>
           <div className={"text-right font-normal text-[12px]"}>
-            ・記号({availableSymbols})
+            ・{t("Symbols")}({availableSymbols})
           </div>
         </li>
       </ul>
