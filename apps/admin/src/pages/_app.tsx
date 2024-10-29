@@ -19,6 +19,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { NextIntlClientProvider } from "next-intl";
 import Script from "next/script";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -99,28 +100,33 @@ const App = ({ Component, pageProps }: AppProps) => {
           `,
         }}
       />
-      <main className={font.className}>
-        <Layout content={error}>
-          <FcmTokenComp />
-          <LeavePageProvider>
-            <Component {...pageProps} />
-          </LeavePageProvider>
-          <ToastContainer
-            position="bottom-center"
-            autoClose={7000}
-            hideProgressBar
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable={false}
-            pauseOnHover
-            transition={Slide}
-            closeButton={true}
-            theme="colored"
-          />
-        </Layout>
-      </main>
+      <NextIntlClientProvider
+        messages={pageProps.messages}
+        locale={router.locale || "jp"}
+      >
+        <main className={font.className}>
+          <Layout content={error}>
+            <FcmTokenComp />
+            <LeavePageProvider>
+              <Component {...pageProps} />
+            </LeavePageProvider>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={7000}
+              hideProgressBar
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable={false}
+              pauseOnHover
+              transition={Slide}
+              closeButton={true}
+              theme="colored"
+            />
+          </Layout>
+        </main>
+      </NextIntlClientProvider>
     </>
   );
 };
@@ -137,7 +143,9 @@ App.getInitialProps = async (appContext: AppContext) => {
     await basicAuthCheck(req, res);
   }
   const appProps = await NextApp.getInitialProps(appContext);
-  return { ...appProps };
+  const locale = appContext.ctx?.locale || "jp";
+  const messages = (await import(`../../messages/${locale}.json`)).default;
+  return { ...appProps, messages };
 };
 
 export default App;

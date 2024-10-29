@@ -35,7 +35,7 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/:locale(en|jp)/:path*',
+        source: "/:path*",
         destination: `/admin/:path*`,
         locale: false,
       },
@@ -60,4 +60,8 @@ module.exports = {
       },
     ];
   },
+  i18n: {
+    locales: ['jp', 'en'],
+    defaultLocale: 'jp'
+  }
 };
