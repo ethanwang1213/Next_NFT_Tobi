@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { withTranslations } from "../../lib/withTranslations";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,11 +9,8 @@ export const metadata: Metadata = {
   title: "ITEMS",
 };
 
-export const getStaticProps = withTranslations(["item", "common"]);
-
 export default function Index() {
   const [selectedTab, setSelectedTab] = useState("item");
-  const { t } = useTranslation("item");
   const router = useRouter();
 
   const links = {
@@ -27,7 +23,7 @@ export default function Index() {
   return (
     <>
       <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center">
-        <h1 className="font-semibold text-secondary text-3xl">{t("title")}</h1>
+        <h1 className="font-semibold text-secondary text-3xl">ITEM</h1>
         <CreateButton {...(links[selectedTab] ?? links.item)} height={56} />
       </div>
       <div>

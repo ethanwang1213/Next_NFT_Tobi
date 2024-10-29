@@ -5,9 +5,9 @@ import ColorizedSvg from "ui/atoms/ColorizedSvg";
 
 const LanguageSwitch = () => {
   const router = useRouter();
-  const { locale, locales, pathname, query, asPath } = router;
+  const { locale } = router;
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(locale || "jp"); // Initialize with the current locale
+  const [selectedLanguage, setSelectedLanguage] = useState(locale || "jp");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
@@ -15,16 +15,8 @@ const LanguageSwitch = () => {
   };
 
   const handleLanguageSelect = (language: string) => {
-    if (language !== locale) {
-      setSelectedLanguage(language);
-
-      const basePath = "/admin";
-      const currentPath = asPath.replace(basePath, "");
-      router.push({ pathname: currentPath, query }, undefined, {
-        locale: language,
-      });
-      setIsOpen(false);
-    }
+    setSelectedLanguage(language);
+    setIsOpen(false);
   };
 
   useEffect(() => {
