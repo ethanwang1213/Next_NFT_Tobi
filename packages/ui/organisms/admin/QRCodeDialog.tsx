@@ -47,7 +47,7 @@ const QRCodeDialog = ({
           To close this screen, please click outside the QR code.
         </p>
       </div>
-      <form method="dialog" className="modal-backdrop">
+      <form method="dialog" className="modal-backdrop w-screen h-screen absolute">
         <button>close</button>
       </form>
     </dialog>
