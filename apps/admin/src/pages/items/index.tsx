@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import CreateButton from "ui/molecules/CreateButton";
 import ItemsManageTab from "ui/organisms/admin/ItemsManageTab";
 

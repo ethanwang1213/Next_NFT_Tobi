@@ -69,6 +69,7 @@ const AcrylicStandSettingDialog = ({
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio || 1,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, setLoadData]);
 
   return (
