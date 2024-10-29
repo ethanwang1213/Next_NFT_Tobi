@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { useSelect } from "downshift";
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import {
   DigitalItemStatus,
@@ -72,6 +73,7 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
     initialSelectedItem: statusValues[initialStatus - 1],
     onSelectedItemChange: handleSelectedItemChange,
   });
+  const t = useTranslations("Item");
 
   return (
     <div>
@@ -84,7 +86,7 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
           <circle cx="8" cy="8" r="5" fill={selectedItem.color} />
         </svg>
         <span className="w-[116px] text-base font-semibold ml-2">
-          {getDigitalItemStatusTitle(selectedItem.value)}
+          {getDigitalItemStatusTitle(selectedItem.value, t)}
         </span>
         {isOpen ? (
           <NextImage
@@ -126,7 +128,7 @@ const StatusDropdownSelect = ({ initialStatus, handleSelectedItemChange }) => {
                 <circle cx="8" cy="8" r="5" fill={item.color} />
               </svg>
               <span className="ml-2 text-xs font-medium">
-                {getDigitalItemStatusTitle(item.value)}
+                {getDigitalItemStatusTitle(item.value, t)}
               </span>
             </li>
           ))}

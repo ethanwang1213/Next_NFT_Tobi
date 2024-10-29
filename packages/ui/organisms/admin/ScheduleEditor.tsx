@@ -7,6 +7,7 @@ import {
   getDigitalItemStatusTitle,
   ScheduleItem,
 } from "ui/types/adminTypes";
+import { useTranslations } from "next-intl";
 
 const ScheduleEditor = (props: {
   date: string;
@@ -27,6 +28,7 @@ const ScheduleEditor = (props: {
   const [timeViewOnly, setTimeViewOnly] = useState(null);
   const [timeOnSale, setTimeOnSale] = useState(null);
   const [timeUnlisted, setTimeUnlisted] = useState(null);
+  const t = useTranslations("Item");
 
   useEffect(() => {
     if (!props.date) return;
@@ -152,7 +154,7 @@ const ScheduleEditor = (props: {
         <div className="flex flex-col gap-4">
           <div className="flex items-center">
             <span className="w-[108px] text-base text-secondary text-right mr-6">
-              Viewing Only
+              {t("ViewingOnly")}
             </span>
             <input
               type="checkbox"
@@ -205,7 +207,7 @@ const ScheduleEditor = (props: {
             )}
           </div>
           <div className="flex items-center">
-            <span className="w-[108px] text-right mr-6">On Sale</span>
+            <span className="w-[108px] text-right mr-6">{t("OnSale")}</span>
             <input
               type="checkbox"
               className={`toggle w-[50px] h-[26px] mr-6
@@ -257,7 +259,7 @@ const ScheduleEditor = (props: {
             )}
           </div>
           <div className="flex items-center">
-            <span className="w-[108px] text-right mr-6">Unlisted</span>
+            <span className="w-[108px] text-right mr-6">{t("Unlisted")}</span>
             <input
               type="checkbox"
               className={`toggle w-[50px] h-[26px] mr-6
@@ -315,7 +317,7 @@ const ScheduleEditor = (props: {
         <span className="w-[72px] text-secondary text-center">LOG</span>
         <div className="flex flex-col gap-2">
           {props.schedules.length == 0
-            ? getDigitalItemStatusTitle(props.prevStatus)
+            ? getDigitalItemStatusTitle(props.prevStatus, t)
             : props.schedules.map((schedule, index) => (
                 <div
                   key={`schedule-${index}`}
@@ -332,12 +334,12 @@ const ScheduleEditor = (props: {
                     {getDigitalItemStatusTitle(
                       index == 0
                         ? props.prevStatus
-                        : props.schedules[index - 1].status,
+                        : props.schedules[index - 1].status, t
                     )}
                   </span>
                   <span className="w-[24px] h-6 text-center">→</span>
                   <span className="w-[108px] h-6 text-center">
-                    {getDigitalItemStatusTitle(schedule.status)}
+                    {getDigitalItemStatusTitle(schedule.status, t)}
                   </span>
                 </div>
               ))}

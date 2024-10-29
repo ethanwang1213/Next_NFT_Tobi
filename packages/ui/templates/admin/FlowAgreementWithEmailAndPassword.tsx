@@ -144,7 +144,7 @@ const FlowAgreementWithEmailAndPassword = ({
         setPasswordConfirmationStatus({
           password: passwordConfirmation,
           valid: false,
-          error: t('PasswordsDoNotMatch'),
+          error: t("PasswordsDoNotMatch"),
         });
       }
     } else {
@@ -311,10 +311,11 @@ const TermsOfService = ({
   visible: boolean;
   setAgreed: (value: SetStateAction<boolean>) => void;
 }) => {
+  const t = useTranslations("LogInSignUp");
+
   if (!visible) {
     return <></>;
   }
-  const t = useTranslations("LogInSignUp");
 
   return (
     <div className={"flex flex-row items-center"}>

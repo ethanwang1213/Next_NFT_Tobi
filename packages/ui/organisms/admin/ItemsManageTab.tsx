@@ -4,6 +4,7 @@ import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
 import { DigitalItemTable } from "./DigitalItemTable";
 import FilterPopupButton from "ui/organisms/admin/FilterPopupButton";
+import { useTranslations } from "next-intl";
 
 const useFilterControl = (initialFilters) => {
   const [filters, setFilters] = useState(initialFilters);
@@ -23,6 +24,8 @@ export default function ItemsManageTab({
   onTabChange: (value: string) => void;
 }) {
   const [tab, setTab] = useTabs(["item"]);
+  const t = useTranslations('Item');
+  const m = useTranslations('Menu');
 
   const [filterArray, toggleFilter] = useFilterControl([false, false, false]);
 
@@ -52,7 +55,7 @@ export default function ItemsManageTab({
           onClick={() => handleTabChange("item")}
           className="ml-12"
         >
-          ITEMS
+          {m('Items')}
         </TabSelector>
       </nav>
       <div className="flex justify-start">
@@ -68,7 +71,7 @@ export default function ItemsManageTab({
         />
         <input
           className="text-base text-secondary/[76] outline-none"
-          placeholder="Filter"
+          placeholder={t('Filter')}
         />
       </div>
       <div>
