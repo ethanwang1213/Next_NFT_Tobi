@@ -22,6 +22,7 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
         modelType: data.type,
         modelUrl: data.modelUrl,
         imageUrl: data.materialUrl || data.customThumbnailUrl,
+        acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
       });
       setShowUnity(true);
     } else {
