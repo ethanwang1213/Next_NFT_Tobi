@@ -204,7 +204,9 @@
     "Cancel": "キャンセル",
     "Delete": "削除",
     "BoxNameTooLong": "ボックス名が長すぎます。",
-    "SaveChanges": "変更を保存"
+    "SaveChanges": "変更を保存",
+    "QrCodeSaveInstruction": "QRコードをクリックして保存することができます。",
+    "QrCodeCloseInstruction": "この画面を閉じるには、QRコードの外側をクリックしてください。"
   },
   "Workspace": {
     "CreateNewItem": "新しいアイテムを作成",

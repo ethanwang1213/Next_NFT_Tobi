@@ -1,6 +1,6 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React from "react";
-import { MutableRefObject, useEffect, useState } from "react";
+import React, { MutableRefObject, useEffect, useState } from "react";
 import Button from "ui/atoms/Button";
 
 const NAME_MAX_LENGTH = 64;
@@ -16,6 +16,7 @@ const BoxNameEditDialog = ({
 }) => {
   const [boxName, setBoxName] = useState("");
   const [lengthError, setLengthError] = useState(false);
+  const t = useTranslations("GiftReceivingSettings");
 
   useEffect(() => {
     setBoxName(initialValue);
@@ -55,7 +56,7 @@ const BoxNameEditDialog = ({
           />
         </div>
         <span className="text-error text-[11px] font-normal text-right -mt-1 mb-1">
-          {lengthError ? "The box name is too long." : ""}
+          {lengthError ? t("BoxNameTooLong") : ""}
         </span>
         <div className="flex justify-end gap-4">
           <Button
@@ -68,7 +69,7 @@ const BoxNameEditDialog = ({
               dialogRef.current.close();
             }}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             className={`px-4 py-2 rounded-[64px] 
@@ -80,7 +81,7 @@ const BoxNameEditDialog = ({
             }}
             disabled={lengthError}
           >
-            Save changes
+            {t("SaveChanges")}
           </Button>
         </div>
       </div>

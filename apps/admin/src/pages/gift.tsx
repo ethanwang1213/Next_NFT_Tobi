@@ -1,5 +1,6 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
-import { Metadata } from "next";
+import { GetStaticPropsContext, Metadata } from "next";
+import { useTranslations } from "next-intl";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import CreateButton from "ui/molecules/CreateButton";
@@ -11,12 +12,21 @@ export const metadata: Metadata = {
   title: "ギフト受け取り設定",
 };
 
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`../../messages/${locale}.json`)).default,
+    },
+  };
+}
+
 export default function Index() {
   const apiUrl = "native/admin/boxes";
   const { data, setData, getData, postData, deleteData } =
     useRestfulAPI(apiUrl);
   const [loadingNewBox, setLoadingNewBox] = useState(false);
   const dialogRef = useRef(null);
+  const t = useTranslations("GiftReceivingSettings");
 
   const deleteBoxHandler = useCallback(
     async (boxId) => {
@@ -52,13 +62,11 @@ export default function Index() {
 
   return (
     <div className="container max-w-[1024px] pt-9 pl-9">
-      <div className="text-3xl font-semibold text-secondary mb-4">
+      <div className="text-3xl font-semibold text-secondary mb-4 uppercase">
         GIFT RECEIVING SETTINGS
       </div>
       <div className="text-xs font-medium text-neutral-400">
-        On this page, you can toggle the giftPermission settings for receiving
-        gifts. Adjust the settings for each inventory or box, and set specific
-        times when gifts can be accepted.
+        {t("TogglePermission")}
       </div>
       <div className="flex justify-end mt-8">
         {loadingNewBox ? (

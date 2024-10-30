@@ -199,12 +199,13 @@
     "TogglePermission": "On this page, you can toggle the permission settings for receiving gifts. Adjust the settings for each inventory or box.",
     "Permitted": "Permitted",
     "Blocked": "Blocked",
-    "Warning": "Warning!",
     "DeleteBoxWarning": "When you delete a BOX, the digital items (NFTs) contained within the BOX are also deleted. Please make sure to check the contents of the BOX carefully before proceeding with this action.",
     "Cancel": "Cancel",
     "Delete": "Delete",
     "BoxNameTooLong": "The box name is too long.",
-    "SaveChanges": "Save changes"
+    "SaveChanges": "Save changes",
+    "QrCodeSaveInstruction": "You can save the QR code by clicking on it.",
+    "QrCodeCloseInstruction": "To close this screen, please click outside the QR code."
   },
   "Workspace": {
     "CreateNewItem": "Create New Item",
