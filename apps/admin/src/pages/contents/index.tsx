@@ -1,9 +1,18 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
-import { Metadata } from "next";
+import { GetStaticPropsContext, Metadata } from "next";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ContentsManageTab from "ui/organisms/admin/ContentsManageTab";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 export const metadata: Metadata = {
   title: "Contents",
@@ -15,10 +24,12 @@ export default function Index() {
   const apiUrl = "native/admin/showcases";
   const [reload, setReload] = useState(0);
   const router = useRouter();
+  const t = useTranslations("Menu");
+  const l = useTranslations("ContentShowcase");
 
   const links = {
     showcase: {
-      label: "new showcase",
+      label: l("NewShowcase"),
       clickHandler: () => {
         postData(apiUrl, {
           title: "The showcase title",
@@ -42,7 +53,9 @@ export default function Index() {
   return (
     <>
       <div className="h-14 ml-9 mr-7 mt-[34px] flex justify-between items-center">
-        <h1 className="font-semibold text-secondary text-3xl">CONTENT</h1>
+        <h1 className="font-semibold text-secondary text-3xl">
+          {t("Content")}
+        </h1>
         <CreateButton {...(links[selectedTab] ?? links.showcase)} height={56} />
       </div>
       <div>

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject } from "react";
 
@@ -6,6 +7,7 @@ const ContentNameConfirmDialog = ({
 }: {
   dialogRef: MutableRefObject<HTMLDialogElement>;
 }) => {
+  const t = useTranslations("ContentSettings");
   return (
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[400px] rounded-3xl pt-4 flex flex-col gap-3 relative">
@@ -20,7 +22,7 @@ const ContentNameConfirmDialog = ({
           </button>
         </form>
         <div className="text-base-black text-lg font-semibold">
-          Content Name Change
+          {t("ContentNameChange")}
         </div>
         <div className="flex justify-center my-4">
           <Image
@@ -31,11 +33,10 @@ const ContentNameConfirmDialog = ({
           />
         </div>
         <div className="text-base-black text-lg leading-[21px] font-semibold">
-          Submitted a request to change the content name!
+          {t("NameChangeRequest")}
         </div>
         <div className="text-neutral-700 text-sm leading-[17px] font-normal mb-2">
-          The name will be changed once the review is completed. Please note
-          that the review process may take up to one week.
+          {t("NameChangeCompletion")}
         </div>
         <div className="modal-action flex justify-end -mt-4">
           <button
@@ -44,7 +45,7 @@ const ContentNameConfirmDialog = ({
               text-base-white text-sm leading-4 font-semibold"
             onClick={() => dialogRef.current.close()}
           >
-            Done
+            {t("Done")}
           </button>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
@@ -10,7 +11,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
   const [px, setpx] = useState<number>(0);
   const [py, setpy] = useState<number>(0);
   const [rx, setrx] = useState<number>(0);
-
+  const t = useTranslations("Showcase");
   const { selectedItem, updateItemTransform } = useShowcaseEditUnity();
 
   useEffect(() => {
@@ -95,7 +96,9 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
               src="/admin/images/icon/position.svg"
               alt="position icon"
             />
-            <span className="text-[16px] font-bold w-[100px]">Position</span>
+            <span className="text-[16px] font-bold w-[100px]">
+              {t("Position")}
+            </span>
           </div>
           <div className="flex items-center justify-between w-full">
             <input
@@ -134,7 +137,9 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
               src="/admin/images/icon/rotation.svg"
               alt="rotation icon"
             />
-            <span className="text-[16px] font-bold w-[100px]">Rotation</span>
+            <span className="text-[16px] font-bold w-[100px]">
+              {t("Rotation")}
+            </span>
           </div>
           <div className="flex items-center w-full">
             <input
@@ -161,7 +166,7 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
               src="/admin/images/icon/scale.svg"
               alt="scale icon"
             />
-            <span className="text-[16px] font-bold w-[80px]">Scale</span>
+            <span className="text-[16px] font-bold w-[80px]">{t("Scale")}</span>
           </div>
           <div className="flex">
             <input

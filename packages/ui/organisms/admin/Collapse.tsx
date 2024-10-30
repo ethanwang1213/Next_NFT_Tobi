@@ -15,7 +15,7 @@ const Collapse: FC<CollapseProps> = ({ title, children }) => {
   return (
     <div className="border-b border-[#CCCBCB]">
       <div
-        className="flex justify-between items-center py-4 cursor-pointer"
+        className="flex justify-between items-center py-4 cursor-pointer uppercase"
         onClick={toggleCollapse}
       >
         <h3 className="text-base font-medium">{title}</h3>

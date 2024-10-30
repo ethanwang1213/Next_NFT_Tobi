@@ -1,4 +1,5 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 
@@ -16,6 +17,7 @@ const ColorPicker = ({
   const [color, setColor] = useState<string>(initialColor);
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("Showcase");
 
   const { pauseUnityInputs, resumeUnityInputs } = useShowcaseEditUnity();
 
@@ -66,12 +68,12 @@ const ColorPicker = ({
       {/* Text */}
       {mode && (
         <div className="text-[16px] font-[700] leading-[20px] w-[92px]">
-          Tint
+          {t("Tint")}
         </div>
       )}
       {!mode && (
         <div className="text-[16px] font-[700] leading-[20px] w-[80px]">
-          Tint
+          {t("Tint")}
         </div>
       )}
 

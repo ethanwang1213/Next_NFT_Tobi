@@ -86,6 +86,7 @@ const Detail = () => {
   const t = useTranslations("Item");
   const b = useTranslations("ItemDetail");
   const l = useTranslations("License");
+  const s = useTranslations("Showcase");
 
   const actions = [
     l("Actions.0"),
@@ -381,8 +382,8 @@ const Detail = () => {
         if (!result) {
           toast(
             <MintNotification
-              title="Mint failed"
-              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+              title={s("MintFailed")}
+              text={s("MintFailedLimitExceeded")}
             />,
             {
               className: "mint-notification",

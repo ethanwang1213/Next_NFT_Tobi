@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject, useEffect, useState } from "react";
 
@@ -14,6 +15,8 @@ const ShowcaseNameEditDialog = ({
 }) => {
   const [title, setTitle] = useState(showcaseTitle);
   const [description, setDescription] = useState(showcaseDescription);
+  const t = useTranslations("ContentShowcase");
+  const l = useTranslations("GiftReceivingSettings");
 
   useEffect(() => {
     setTitle(showcaseTitle);
@@ -38,7 +41,7 @@ const ShowcaseNameEditDialog = ({
         </form>
         <div className="flex justify-between items-center gap-4 mb-[20px]">
           <span className="text-base-black text-sm font-semibold w-[159px] text-right">
-            Showcase Name
+            {t("ShowcaseName")}
           </span>
           <input
             type="text"
@@ -50,7 +53,7 @@ const ShowcaseNameEditDialog = ({
         </div>
         <div className="flex justify-between items-center gap-4">
           <span className="text-base-black text-sm font-semibold w-[159px] text-right">
-            Showcase Description
+            {t("ShowcaseDescription")}
           </span>
           <textarea
             className="flex-1 rounded-[16px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
@@ -67,7 +70,7 @@ const ShowcaseNameEditDialog = ({
               text-primary text-sm leading-4 font-semibold"
             onClick={() => dialogRef.current.close()}
           >
-            Cancel
+            {l("Cancel")}
           </button>
           <button
             type="button"
@@ -79,7 +82,7 @@ const ShowcaseNameEditDialog = ({
               changeHandler(title, description);
             }}
           >
-            Save changes
+            {l("SaveChanges")}
           </button>
         </div>
       </div>

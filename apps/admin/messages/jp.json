@@ -126,10 +126,10 @@
     "InvalidStatusChange": "ステータス変更が無効です：同じステータスには変更できません。"
   },
   "ContentShowcase": {
-    "NewShowcase": "新しいショーケース",
-    "LastUpdatedDate": "最終更新日",
-    "ShowcaseName": "ショーケース名",
-    "ShowcaseDescription": "ショーケース説明",
+    "NewShowcase": "NEW SHOWCASE",
+    "LastUpdatedDate": "最終更新日：",
+    "ShowcaseName": "Showcase 名",
+    "ShowcaseDescription": "Showcase 説明",
     "Publish": "公開",
     "Draft": "下書き",
     "Public": "公開",
@@ -139,8 +139,8 @@
   },
   "ContentBrand": {
     "ContentImage": "コンテンツ画像",
-    "ImageGuidelines": "最良の結果を得るには、少なくとも320x100ピクセル、4MB以下の画像を使用してください。受け入れられるファイル形式はPNG、JPEG、またはGIF（アニメーションなし）です。",
-    "OfficialMerchandiseSticker": "公式商品ステッカー",
+    "ImageGuidelines": "少なくとも320x100ピクセル、4MB以下の画像を使用してください。ファイル形式はPNG、JPEG、またはGIF（アニメーションなし）が可能です。",
+    "OfficialMerchandiseSticker": "証紙画像",
     "MerchandiseImageGuidelines": "最良の結果を得るには、少なくとも500x500ピクセル、4MB以下の画像を使用してください。受け入れられるファイル形式はPNGまたはGIF（アニメーションなし）です。",
     "Change": "変更",
     "Delete": "削除",
@@ -159,7 +159,13 @@
     "SetDefaultLicense": "各デジタルアイテムのレコードに対してデフォルトのライセンスを設定します。",
     "CopyrightHolders": "著作権者",
     "SetDefaultCopyrightHolders": "各デジタルアイテムのレコードに対してデフォルトの著作権保有者を設定します。タグのように入力でき、この変更には再審査は必要ありません。",
-    "CustomizeImage": "画像をカスタム"
+    "CustomizeImage": "画像をカスタム",
+    "ConfirmSave": "保存を確認",
+    "Save": "保存",
+    "Discard": "破棄",
+    "Cancel": "キャンセル",
+    "Done": "完了",
+    "Public": "公開"
   },
   "Showcase": {
     "Exit": "退出",

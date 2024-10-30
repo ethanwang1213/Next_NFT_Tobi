@@ -1,5 +1,6 @@
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -17,6 +18,7 @@ const ContentBrandPanel = ({
   const apiUrl = "native/admin/content";
   const { data, dataRef, error, setData, putData, restoreData } =
     useRestfulAPI(apiUrl);
+  const t = useTranslations("ContentBrand");
 
   const contentImageFileRef = useRef(null);
   const stickerImageFileRef = useRef(null);
@@ -146,11 +148,11 @@ const ContentBrandPanel = ({
     data && (
       <div className="max-w-[800px] min-w-[480px] flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <h2 className="text-secondary text-2xl font-bold">Content Image</h2>
+          <h2 className="text-secondary text-2xl font-bold">
+            {t("ContentImage")}
+          </h2>
           <span className="text-neutral-400 text-xs font-medium py-2">
-            For best results, use an image that is at least 320x100 pixels and
-            no more than 4MB in size. Accepted file formats are PNG, JPEG or GIF
-            (non-animated)
+            {t("ImageGuidelines")}
           </span>
           <div className="flex items-end gap-12">
             {data.image ? (
@@ -178,7 +180,7 @@ const ContentBrandPanel = ({
                 }
               }}
             >
-              {data.image ? "change" : "upload"}
+              {data.image ? t("Change") : t("Upload")}
             </button>
             <button
               className="text-xs font-medium text-primary"
@@ -188,18 +190,16 @@ const ContentBrandPanel = ({
                 changeHandler();
               }}
             >
-              delete
+              {t("Delete")}
             </button>
           </div>
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-secondary text-2xl font-bold">
-            Official Merchandise Sticker
+            {t("OfficialMerchandiseSticker")}
           </h2>
           <span className="text-neutral-400 text-xs font-medium py-2">
-            For best results, use an image that is at least 500x500 pixels and
-            no more than 4MB in size. Accepted file formats are PNG or GIF
-            (non-animated).
+            {t("MerchandiseImageGuidelines")}
           </span>
           <div className="flex items-end gap-12">
             <div style={{ width: 260 }}></div>
@@ -249,7 +249,7 @@ const ContentBrandPanel = ({
                 }
               }}
             >
-              {data.sticker ? "change" : "upload"}
+              {data.sticker ? t("Change") : t("Upload")}
             </button>
             <button
               className="text-xs font-medium text-primary"
@@ -259,7 +259,7 @@ const ContentBrandPanel = ({
                 changeHandler();
               }}
             >
-              delete
+              {t("Delete")}
             </button>
           </div>
         </div>

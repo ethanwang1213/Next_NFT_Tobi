@@ -126,10 +126,10 @@
     "InvalidStatusChange": "Status change invalid: Cannot change to the same status."
   },
   "ContentShowcase": {
-    "NewShowcase": "New Showcase",
-    "LastUpdatedDate": "Last updated date",
-    "ShowcaseName": "Showcase name",
-    "ShowcaseDescription": "Showcase description",
+    "NewShowcase": "NEW SHOWCASE",
+    "LastUpdatedDate": "Last Updated Date：",
+    "ShowcaseName": "Showcase Name",
+    "ShowcaseDescription": "Showcase Description",
     "Publish": "Publish",
     "Draft": "Draft",
     "Public": "Public",
@@ -138,7 +138,7 @@
     "Delete": "Delete"
   },
   "ContentBrand": {
-    "ContentImage": "Content image",
+    "ContentImage": "Content Image",
     "ImageGuidelines": "For best results, use an image that is at least 320x100 pixels and no more than 4MB in size. Accepted file formats are PNG, JPEG, or GIF (non-animated).",
     "OfficialMerchandiseSticker": "Official merchandise sticker",
     "MerchandiseImageGuidelines": "For best results, use an image that is at least 500x500 pixels and no more than 4MB in size. Accepted file formats are PNG or GIF (non-animated).",
@@ -147,19 +147,25 @@
     "Upload": "Upload"
   },
   "ContentSettings": {
-    "ContentNameChange": "Content name change",
+    "ContentNameChange": "Content Name Change",
     "ContentNameChangeGuidelines": "The content name can be changed once every three months. After the change, the content name visible to users will be updated once the review is completed.",
     "NameChangeRequest": "Submitted a request to change the content name!",
     "NameChangeCompletion": "The name will be changed once the review is completed. Please note that the review process may take up to one week.",
-    "ContentName": "Content name",
+    "ContentName": "Content Name",
     "ChangeContentNameGuidelines": "You can change the name of the content. A review is required after the change, and if approved, the name will be updated. Once changed, the name cannot be modified again for 3 months.",
-    "ContentDescription": "Content description",
+    "ContentDescription": "Content Description",
     "EditDescription": "You can freely edit the description of the content.",
-    "DefaultLicenseSetting": "Default license setting",
+    "DefaultLicenseSetting": "Default License Setting",
     "SetDefaultLicense": "Set the default license for each DigitalItem record.",
-    "CopyrightHolders": "Copyright holders",
+    "CopyrightHolders": "Copyright Holders",
     "SetDefaultCopyrightHolders": "Set the default copyright holders for each DigitalItem record. You can enter this like tags, and no re-review is required for this change.",
-    "CustomizeImage": "Customize image"
+    "CustomizeImage": "Customize Image",
+    "ConfirmSave": "Confirm Save",
+    "Save": "Save",
+    "Discard": "Discard",
+    "Cancel": "Cancel",
+    "Done": "Done",
+    "Public": "Public"
   },
   "Showcase": {
     "Exit": "Exit",
