@@ -7,7 +7,7 @@ import {
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
-import { Metadata } from "next";
+import { GetStaticPropsContext, Metadata } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -26,9 +26,18 @@ import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetail
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
 import { SampleItem } from "ui/types/adminTypes";
+
 export const metadata: Metadata = {
   title: "ワークスペース",
 };
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`../../messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const REMOVE_PANEL_WIDTH = 56;
 
@@ -260,7 +269,6 @@ export default function Index() {
     }
     pauseUnityInputs();
   }, [initSampleCreateDialog, pauseUnityInputs]);
-
 
   useEffect(() => {
     if (router.query.trigger === "true" && isLoaded) {

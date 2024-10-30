@@ -1,5 +1,6 @@
 import { ImageType, uploadFiles } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import React, { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -50,6 +51,7 @@ const SampleTypeSelectComponent = (props: {
   const [error, setError] = useState(false);
   const uploadFileRef = useRef<string>("");
   const { generateSampleHandler } = props;
+  const t = useTranslations("Workspace");
 
   const uploadImageHandler = useCallback(
     async (
@@ -125,24 +127,34 @@ const SampleTypeSelectComponent = (props: {
         ) : (
           <>
             <SampleTypeComponent
-              name="Acrylic Stand"
-              clickHandler={props.selectTypeHandler}
+              name={t("AcrylicStand")}
+              clickHandler={() => {
+                props.selectTypeHandler("Acrylic Stand");
+              }}
             />
             <SampleTypeComponent
-              name="Poster"
-              clickHandler={props.selectTypeHandler}
+              name={t("Poster")}
+              clickHandler={() => {
+                props.selectTypeHandler("Poster");
+              }}
             />
             <SampleTypeComponent
-              name="Message Card"
-              clickHandler={props.selectTypeHandler}
+              name={t("MessageCard")}
+              clickHandler={() => {
+                props.selectTypeHandler("Message Card");
+              }}
             />
             <SampleTypeComponent
-              name="Acrylic Keyholder"
-              clickHandler={props.selectTypeHandler}
+              name={t("AcrylicKeychain")}
+              clickHandler={() => {
+                props.selectTypeHandler("Acrylic Keychain");
+              }}
             />
             <SampleTypeComponent
-              name="Can Badge"
-              clickHandler={props.selectTypeHandler}
+              name={t("CanBadge")}
+              clickHandler={() => {
+                props.selectTypeHandler("Can Badge");
+              }}
             />
             <UploadButton onDrop={onDrop} isDragActive={isDragActive} />
           </>

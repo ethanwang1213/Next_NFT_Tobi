@@ -1,4 +1,5 @@
 import { useAcrylicBaseSettingsUnityContext } from "hooks/useCustomUnityContext";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Slider from "rc-slider";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -24,6 +25,7 @@ const AcrylicStandSettingDialog = ({
   const [scaleRatio, setScaleRatio] = useState(
     data?.acrylicBaseScaleRatio || 1,
   );
+  const t = useTranslations("Workspace");
 
   const resetConfirmHandler = () => {
     resetAcrylicBaseScaleRatio();
@@ -42,7 +44,7 @@ const AcrylicStandSettingDialog = ({
     updateAcrylicBaseScaleRatio(value);
     setScaleRatio(value);
   };
-  
+
   const handleStyle = {
     borderColor: "#FAFAFA",
     height: 20,
@@ -100,7 +102,7 @@ const AcrylicStandSettingDialog = ({
             src="/admin/images/icon/setting-icon.svg"
             className="h-[27px]"
           />
-          <span>Ratio Settings</span>
+          <span>{t("RatioSettings")}</span>
         </div>
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
@@ -117,18 +119,20 @@ const AcrylicStandSettingDialog = ({
             </div>
             <div className="px-8 text-white text-[16px] py-7">
               <div className="flex justify-between">
-                <span className="font-bold">Adjust Body Scale</span>
+                <span className="font-bold">{t("BodyScale")}</span>
                 <span>0000</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-bold">Adjust Base Scale</span>
+                <span className="font-bold">{t("BaseScale")}</span>
                 <span>0000</span>
               </div>
             </div>
           </div>
           <div className="text-white w-full flex flex-col justify-between">
             <div>
-              <p className="font-bold text-[20px] pt-9 pb-6">Adjust Base</p>
+              <p className="font-bold text-[20px] pt-9 pb-6">
+                {t("AdjustBase")}
+              </p>
               <div className="flex items-center h-8">
                 <div className="flex items-center gap-2">
                   <Image
@@ -137,7 +141,9 @@ const AcrylicStandSettingDialog = ({
                     src="/admin/images/icon/scale.svg"
                     alt="scale icon"
                   />
-                  <span className="text-[16px] font-bold w-[80px]">Scale</span>
+                  <span className="text-[16px] font-bold w-[80px]">
+                    {t("Scale")}
+                  </span>
                 </div>
                 <div className="flex">
                   <input
@@ -166,22 +172,19 @@ const AcrylicStandSettingDialog = ({
             </div>
             <div className="flex justify-end gap-8">
               <button
-                className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-secondary"
+                className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-secondary uppercase"
                 onClick={() => confirmDialogRef.current?.show()}
               >
-                RESET
+                {t("Reset")}
               </button>
               <button
                 className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary"
                 onClick={() => {
-                  scaleRatioSettingHandler(
-                    selectedItem,
-                    scaleRatio,
-                  );
+                  scaleRatioSettingHandler(selectedItem, scaleRatio);
                   closeHandler();
                 }}
               >
-                DONE
+                {t("Done")}
               </button>
             </div>
           </div>

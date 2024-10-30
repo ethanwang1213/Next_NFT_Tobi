@@ -17,14 +17,14 @@ export default function Index() {
 
   const links = {
     item: {
-      label: b('NewItem'),
+      label: b("NewItem"),
       clickHandler: () => router.push("/workspace?trigger=true"),
     },
   };
 
   return (
     <>
-      <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center">
+      <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center uppercase">
         <h1 className="font-semibold text-secondary text-3xl">{t("Items")}</h1>
         <CreateButton {...(links[selectedTab] ?? links.item)} height={56} />
       </div>

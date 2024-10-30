@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
@@ -17,6 +18,7 @@ type ItemProps = {
 const SampleItemComponent: React.FC<ItemProps> = (props) => {
   const checkboxRef = useRef(null);
   const dragStartPos = useRef<{ x: number; y: number } | null>(null);
+  const t = useTranslations("Workspace");
 
   const clickHandler = useCallback(() => {
     if (props.selectState) {
@@ -97,6 +99,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const panelRef = useRef(null);
   const deleteConfirmDlgRef = useRef<HTMLDialogElement>(null);
+  const t = useTranslations("Workspace");
 
   const selectionChangeHandler = (selId: number, checked: boolean) => {
     const prevIndex = selectedItems.findIndex((value) => value === selId);
@@ -185,7 +188,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
           alt="new icon"
         />
         <span className="text-base-white text-sm font-semibold">
-          Create New Item
+          {t("CreateNewItem")}
         </span>
       </Button>
       <div
@@ -225,13 +228,13 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
               }
             }}
           >
-            DELETE
+            {t("Delete")}
           </Button>
         </div>
       )}
       {selectState && (
         <span className="text-white text-xl font-normal text-center">
-          selected {selectedItems.length} item
+          {t("SelectedItemCount", { count: selectedItems.length })}
         </span>
       )}
       <DeleteConfirmDialog2

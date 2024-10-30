@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import React, { MutableRefObject } from "react";
 import Button from "ui/atoms/Button";
 
@@ -8,13 +9,14 @@ const ResetConfirmDialog = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   confirmHandler: () => void;
 }) => {
+  const t = useTranslations("Workspace");
   return (
     <dialog ref={dialogRef} className="modal">
       <div
         className={`modal-box max-w-[425px] rounded-3xl pt-6 flex flex-col relative`}
       >
         <div className="text-base-black text-base font-bold mb-6">
-          Are you sure you want to reset the settings?
+          {t("ConfirmResetSettings")}
         </div>
         <div className="modal-action flex justify-end gap-1 mt-1">
           <Button
@@ -25,18 +27,18 @@ const ResetConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             type="button"
             className="px-4 py-2 bg-primary rounded-[64px] 
-              text-base-white text-base leading-4 font-semibold"
+              text-base-white text-base leading-4 font-semibold first-letter:uppercase"
             onClick={() => {
               confirmHandler();
               dialogRef.current.close();
             }}
           >
-            Reset
+            {t("Reset")}
           </Button>
         </div>
       </div>

@@ -1,83 +1,87 @@
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import React, { useCallback } from "react";
-
-const sampleCreateRoadmapTitles = {
-  acrylicstand: [
-    {
-      title: "Select a material",
-      description: "Select the material for the acrylic stand body.",
-    },
-    {
-      title: "Adjust Body",
-      description: "Adjust the tilt of the body by rotating it.",
-    },
-    {
-      title: "Select Base Material",
-      description: "Select the material for the acrylic stand base.",
-    },
-    {
-      title: "Adjust and Place",
-      description:
-        'Set the front and back of the base and adjust it by rotating and place the body on the base. Move the rectangle labeled "Acrylic plate" to set the placement.',
-    },
-  ],
-  poster: [
-    {
-      title: "Select a material",
-      description: "Select the material for the poster.",
-    },
-    {
-      title: "Crop",
-      description: "Crop the poster material as needed.",
-    },
-  ],
-  messagecard: [
-    {
-      title: "Select Sheet Material",
-      description: "Select the sheet material for the message card.",
-    },
-    {
-      title: "Crop Sheet",
-      description: "Crop the sheet as needed.",
-    },
-    {
-      title: "Select Text Material",
-      description: "Select the text material for the message card.",
-    },
-    {
-      title: "Adjust Text",
-      description: "Adjust the position and size of the text",
-    },
-    {
-      title: "Combine",
-      description: "Combine the sheet and text to generate a single item.",
-    },
-  ],
-  acrylickeyholder: [
-    {
-      title: "Select a material",
-      description: "ポスターにする素材を選択してください",
-    },
-    { title: "Create the body", description: "" },
-    { title: "Attach the chain", description: "" },
-    { title: "Generate", description: "" },
-  ],
-  canbadge: [
-    {
-      title: "Select a material",
-      description: "Select the material for the Can Badge.",
-    },
-    {
-      title: "Crop the image",
-      description: "Crop the can badge material as needed.",
-    },
-  ],
-};
 
 const RoadMapComponent = (props: {
   sampleType: string | null;
   step: number;
 }) => {
+  const t = useTranslations("Workspace");
+
+  const sampleCreateRoadmapTitles = () => {
+    return {
+      acrylicstand: [
+        {
+          title: t("SelectMaterial"),
+          description: t("SelectAcrylicStandBodyMaterial"),
+        },
+        {
+          title: t("AdjustBody"),
+          description: t("AdjustBodyTilt"),
+        },
+        {
+          title: t("SelectBaseMaterial"),
+          description: t("SelectAcrylicStandBaseMaterial"),
+        },
+        {
+          title: t("AdjustBase"),
+          description: t("SetBaseOrientation"),
+        },
+      ],
+      poster: [
+        {
+          title: t("SelectMaterial"),
+          description: t("SelectPosterMaterial"),
+        },
+        {
+          title: t("Crop"),
+          description: t("CropPosterMaterial"),
+        },
+      ],
+      messagecard: [
+        {
+          title: t("SelectSheetMaterial"),
+          description: t("SelectMessageCardSheetMaterial"),
+        },
+        {
+          title: t("CropSheet"),
+          description: t("CropSheetAsNeeded"),
+        },
+        {
+          title: t("SelectTextMaterial"),
+          description: t("SelectMessageCardTextMaterial"),
+        },
+        {
+          title: t("AdjustText"),
+          description: t("AdjustTextPosition"),
+        },
+        {
+          title: t("Combine"),
+          description: t("CombineSheetAndText"),
+        },
+      ],
+      acrylickeyholder: [
+        {
+          title: t("SelectMaterial"),
+          description: "ポスターにする素材を選択してください",
+        },
+        { title: "Create the body", description: "" },
+        { title: "Attach the chain", description: "" },
+        { title: "Generate", description: "" },
+      ],
+      canbadge: [
+        {
+          title: t("SelectMaterial"),
+          description: t("SelectCanBadgeMaterial"),
+        },
+        {
+          title: t("CropImage"),
+          description: t("CropBadge"),
+        },
+      ],
+    };
+  };
+
   const getOrderNumber = useCallback((value) => {
     switch (value + 1) {
       case 1:
@@ -97,13 +101,30 @@ const RoadMapComponent = (props: {
 
   const getLeftBorderLengthClass = useCallback(
     (idx: number): string => {
-      const key = props.sampleType.toLocaleLowerCase().split(" ").join("");
-      return idx < sampleCreateRoadmapTitles[key].length - 1
+      const key = props.sampleType.toLowerCase().replace(/\s+/g, "");
+      return idx < sampleCreateRoadmapTitles()[key].length - 1
         ? "border-l-2"
         : "border-l-0";
     },
     [props],
   );
+
+  const getSampleTypeKey = (sampleType) => {
+    switch (sampleType) {
+      case "Acrylic Stand":
+        return "AcrylicStand";
+      case "Poster":
+        return "Poster";
+      case "Message Card":
+        return "MessageCard";
+      case "Can Badge":
+        return "CanBadge";
+      case "Acrylic Keychain":
+        return "AcrylicKeychain";
+      default:
+        return sampleType.toLowerCase().replace(/\s+/g, "");
+    }
+  };
 
   return (
     <div className="flex flex-col py-5 px-6">
@@ -114,43 +135,43 @@ const RoadMapComponent = (props: {
         src="/admin/images/tobiratory-logo-white.svg"
       />
       <span className="text-base-white text-lg font-semibold mt-6">
-        {props.step === 0 ? "Sample Item Generator" : "ITEM CREATE"}
+        {props.step === 0 ? t("ItemGenerator") : t("ItemCreate")}
       </span>
       {props.step > 0 && (
         <span className="text-base-white text-sm font-light">
-          {`- ${props.sampleType}`}
+          {`- ${t(getSampleTypeKey(props.sampleType))}`}
         </span>
       )}
       {props.step === 0 ? (
         <span className="text-base-white text-sm font-normal mt-2">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          {t("ItemGeneratorDescription")}
         </span>
       ) : (
         <div className="mt-5 flex flex-col">
-          {sampleCreateRoadmapTitles[
-            props.sampleType.toLocaleLowerCase().split(" ").join("")
-          ].map((roadmap, index) => {
+          {sampleCreateRoadmapTitles()[
+            props.sampleType.toLowerCase().replace(/\s+/g, "")
+          ]?.map((roadmap, index) => {
             return (
               <div key={`roadmap-${index}`} className="flex flex-col">
                 <span
                   className={`text-base-white text-xs font-normal
-                    ${
-                      props.step === index + 1
-                        ? "text-base-white"
-                        : "text-base-white/25"
-                    } `}
+            ${
+              props.step === index + 1
+                ? "text-base-white"
+                : "text-base-white/25"
+            }
+            `}
                 >
                   {`${getOrderNumber(index)} ${roadmap.title}`}
                 </span>
                 <span
                   className={`text-[8px] font-normal h-8 ml-[6px] pl-3 text-base-white
-                    ${
-                      props.step === index + 1
-                        ? "border-base-white"
-                        : "border-base-white/25"
-                    }
-                    ${getLeftBorderLengthClass(index)} `}
+            ${
+              props.step === index + 1
+                ? "border-base-white"
+                : "border-base-white/25"
+            }
+            ${getLeftBorderLengthClass(index)} `}
                 >
                   {props.step === index + 1 ? roadmap.description : ""}
                 </span>

@@ -2,6 +2,7 @@ import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
@@ -46,6 +47,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const { token: fcmToken } = useFcmToken();
   const { deleteAllActionHistory } = useWorkspaceUnityContext({});
   const { pauseUnityInputs } = useShowcaseEditUnity();
+  const t = useTranslations("Workspace");
 
   useEffect(() => {
     if (id > 0) {
@@ -186,7 +188,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  Copyright
+                  {t("Copyright")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.copyrights.length
@@ -196,7 +198,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  License
+                  {t("License")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.license ? getDefaultLicense(data.license) : "-"}
@@ -262,7 +264,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                       alt="open icon"
                     />
                     <span className="text-base-white text-base font-bold">
-                      Edit Item Data
+                      {t("EditItemData")}
                     </span>
                   </Button>
                 </Link>
@@ -285,7 +287,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                     alt="mint icon"
                   />
                   <span className="text-base-white text-base font-bold">
-                    Mint as an NFT
+                    {t("MintAsNFT")}
                   </span>
                 </Button>
               </div>
