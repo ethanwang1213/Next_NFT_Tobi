@@ -5,7 +5,6 @@ import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import { GetStaticPropsContext } from "next";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
