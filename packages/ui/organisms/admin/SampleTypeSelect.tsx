@@ -10,6 +10,7 @@ import UploadButton from "./UploadButton";
 
 const SampleTypeComponent = (props: {
   name: string;
+  description: string;
   clickHandler: (value: string) => void;
 }) => {
   return (
@@ -29,7 +30,7 @@ const SampleTypeComponent = (props: {
           {props.name}
         </span>
         <span className="text-neutral-900 text-sm font-normal leading-4">
-          Re-usable components built using Figr Design System
+          {props.description}
         </span>
       </div>
     </div>
@@ -128,30 +129,35 @@ const SampleTypeSelectComponent = (props: {
           <>
             <SampleTypeComponent
               name={t("AcrylicStand")}
+              description={t("CreateAcrylicStand")}
               clickHandler={() => {
                 props.selectTypeHandler("Acrylic Stand");
               }}
             />
             <SampleTypeComponent
               name={t("Poster")}
+              description={t("CreatePoster")}
               clickHandler={() => {
                 props.selectTypeHandler("Poster");
               }}
             />
             <SampleTypeComponent
               name={t("MessageCard")}
+              description={t("CreateMessageCard")}
               clickHandler={() => {
                 props.selectTypeHandler("Message Card");
               }}
             />
             <SampleTypeComponent
               name={t("AcrylicKeychain")}
+              description={t("CreateMessageCard")}
               clickHandler={() => {
                 props.selectTypeHandler("Acrylic Keychain");
               }}
             />
             <SampleTypeComponent
               name={t("CanBadge")}
+              description={t("CreateCanBadge")}
               clickHandler={() => {
                 props.selectTypeHandler("Can Badge");
               }}
