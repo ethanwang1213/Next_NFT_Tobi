@@ -6,6 +6,7 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
 import ResetConfirmDialog from "./ResetConfirmDialog";
 import Spinner from "./Spinner";
+import Button from "ui/atoms/Button";
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   data: any;
@@ -171,13 +172,13 @@ const AcrylicStandSettingDialog = ({
               </div>
             </div>
             <div className="flex justify-end gap-8">
-              <button
+              <Button
                 className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-secondary uppercase"
                 onClick={() => confirmDialogRef.current?.show()}
               >
                 {t("Reset")}
-              </button>
-              <button
+              </Button>
+              <Button
                 className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary"
                 onClick={() => {
                   scaleRatioSettingHandler(selectedItem, scaleRatio);
@@ -185,7 +186,7 @@ const AcrylicStandSettingDialog = ({
                 }}
               >
                 {t("Done")}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
