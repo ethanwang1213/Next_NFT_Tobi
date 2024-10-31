@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Button from "ui/atoms/Button";
 
 export default function CreateButton({

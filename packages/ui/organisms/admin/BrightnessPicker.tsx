@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import React, { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
     setBrightness(newValue);
     onBrightnessChanged(newValue);
   };
+  const t = useTranslations("Showcase");
 
   useEffect(() => {
     setBrightness(initialValue);
@@ -46,7 +48,7 @@ const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
       {/* Brightness text and value edit */}
       <div className="flex items-center">
         <div className="text-[16px] font-[700] leading-[20px] w-[76px]">
-          Brightness
+          {t("Brightness")}
         </div>
         <input
           className="w-[64px] h-[32px] rounded-[5px] bg-[#A5A1A1] text-white text-center font-[400] text-[16px] leading-[120%] mx-4 outline-none"

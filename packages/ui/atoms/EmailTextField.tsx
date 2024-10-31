@@ -1,3 +1,5 @@
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import { UseFormRegister } from "react-hook-form/dist/types/form";
 import { EMAIL_REGEX } from "types/adminTypes";
 import { LoginFormType } from "ui/templates/AuthTemplate";
@@ -9,6 +11,7 @@ type Props = {
 };
 
 const EmailTextField = ({ placeholder, className, register }: Props) => {
+  const t = useTranslations("LogInSignUp");
   return (
     <input
       type="text"
@@ -16,16 +19,24 @@ const EmailTextField = ({ placeholder, className, register }: Props) => {
       {...register("email", {
         required: {
           value: true,
-          message: "*メールアドレスを入力してください。",
+          message: t("EnterEmailAddress"),
         },
         pattern: {
           value: EMAIL_REGEX,
-          message: "*メールアドレスの形式で入力してください",
+          message: t("EnterValidEmail"),
         },
       })}
       className={`input ${className ?? ""}`}
     />
   );
 };
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 export default EmailTextField;

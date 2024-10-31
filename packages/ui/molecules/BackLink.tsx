@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 type Props = {
   hideText?: boolean;
@@ -6,6 +7,7 @@ type Props = {
 };
 
 const BackLink = ({ hideText, onClickBack }: Props) => {
+  const t = useTranslations("LogInSignUp");
   return (
     <button
       className="btn-link no-underline text-base-content"
@@ -20,7 +22,7 @@ const BackLink = ({ hideText, onClickBack }: Props) => {
         />
         {!hideText && (
           <div className={"font-medium text-[20px] ml-[10px] text-nowrap"}>
-            戻る
+            {t('Back')}
           </div>
         )}
       </div>

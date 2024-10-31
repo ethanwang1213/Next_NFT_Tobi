@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject, useEffect, useState } from "react";
 
@@ -44,6 +45,7 @@ const GenderEditDialog = ({
   changeHandler: (value: string) => void;
 }) => {
   const [gender, setGender] = useState("");
+  const t = useTranslations("Account");
 
   useEffect(() => {
     setGender(initialValue);
@@ -64,30 +66,30 @@ const GenderEditDialog = ({
         </form>
         <div className="text-base-black text-lg font-semibold">Edit Gender</div>
         <div className="text-neutral-700 text-sm font-normal mb-2">
-          Your gender will not be displayed on public profile.
+          {t("HideGenderNote")}
         </div>
         <div className="flex flex-col gap-2">
           <GenderComponent
             name="gender"
-            value="Male"
+            value={t("Male")}
             initValue={gender}
             clickHandler={() => setGender("Male")}
           />
           <GenderComponent
             name="gender"
-            value="Female"
+            value={t("Female")}
             initValue={gender}
             clickHandler={() => setGender("Female")}
           />
           <GenderComponent
             name="gender"
-            value="Custome"
+            value={t("Custom")}
             initValue={gender}
             clickHandler={() => setGender("Custome")}
           />
           <GenderComponent
             name="gender"
-            value="no answer"
+            value={t("NoAnswer")}
             initValue={gender}
             clickHandler={() => setGender("no answer")}
           />
@@ -103,7 +105,7 @@ const GenderEditDialog = ({
               dialogRef.current.close();
             }}
           >
-            Cancel
+            {t("Cancel")}
           </button>
           <button
             type="button"

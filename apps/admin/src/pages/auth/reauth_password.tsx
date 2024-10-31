@@ -5,10 +5,19 @@ import {
   OAuthProvider,
 } from "@firebase/auth";
 import { auth } from "fetchers/firebase/client";
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ErrorMessage, isProviderId, ProviderId } from "types/adminTypes";
 import Reauth from "ui/templates/admin/ReauthPassword";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const ReauthPassword = () => {
   const [provider, setProvider] = useState<AuthProvider | null>(null);

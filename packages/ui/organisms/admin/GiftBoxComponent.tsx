@@ -1,4 +1,5 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -22,6 +23,7 @@ const BoxComponent = (props: {
   const editNameDialogRef = useRef(null);
   const qrcodeDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
+  const t = useTranslations("GiftReceivingSettings");
 
   useEffect(() => {
     setData({
@@ -98,7 +100,7 @@ const BoxComponent = (props: {
           />
         )}
         <span className="w-20 text-sm font-normal text-base-black">
-          {data.giftPermission ? "Permitted" : "Blocked"}
+          {data.giftPermission ? t("Permitted") : t("Blocked")}
         </span>
         {loadingChangeName ? (
           <span className="loading loading-spinner loading-md mx-1 text-secondary-600" />
@@ -153,7 +155,10 @@ const BoxComponent = (props: {
           dialogRef={editNameDialogRef}
           changeHandler={(value) => changeNameHandler(value)}
         />
-        <QRCodeDialog initialValue={props.address} dialogRef={qrcodeDialogRef} />
+        <QRCodeDialog
+          initialValue={props.address}
+          dialogRef={qrcodeDialogRef}
+        />
         <DeleteConfirmDialog
           dialogRef={deleteConfirmDialogRef}
           changeHandler={deleteBoxDialogHandler}

@@ -1,8 +1,10 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject, useState } from "react";
 
 const ShortcutComponent = () => {
   const [showDeleteButton, setShowDeleteButton] = useState(false);
+  const t = useTranslations("Shwocase");
 
   return (
     <div
@@ -11,7 +13,7 @@ const ShortcutComponent = () => {
     >
       <div className="flex flex-col gap-1">
         <span className="text-neutral-900 text-sm font-semibold leading-4">
-          Short Cut
+          {t("ShortCut")}
         </span>
         <span className="text-neutral-900 text-sm font-normal leading-4">
           Re-usable components built using Figr Design System

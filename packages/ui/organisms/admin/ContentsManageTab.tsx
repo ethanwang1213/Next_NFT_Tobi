@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
@@ -17,6 +18,7 @@ export default function ContentsManageTab({
   const [changed, setChanged] = useState(null);
   const [cancelFlag, setCancelFlag] = useState(0);
   const [publishFlag, setPublishFlag] = useState(0);
+  const t = useTranslations("ContentSettings");
 
   let actionTab = null;
 
@@ -99,7 +101,7 @@ export default function ContentsManageTab({
                   setCancelFlag(cancelFlag + 1);
                 }}
               >
-                Cancel
+                {t("Cancel")}
               </button>
               <button
                 className={`text-xl h-14 text-white rounded-[30px] px-10 
@@ -111,7 +113,7 @@ export default function ContentsManageTab({
                   setPublishFlag(publishFlag + 1);
                 }}
               >
-                Public
+                {t("Public")}
               </button>
             </>
           )}

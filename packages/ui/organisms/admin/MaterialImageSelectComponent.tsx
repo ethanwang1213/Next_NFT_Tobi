@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -19,6 +20,7 @@ type Props = {
 
 const MaterialImageSelectComponent: React.FC<Props> = (props) => {
   const [processing, setProcessing] = useState(false);
+  const t = useTranslations("Workspace");
 
   useEffect(() => {
     setProcessing(false);
@@ -79,7 +81,7 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
             className="flex justify-center items-center gap-3 cursor-pointer"
           >
             <span className="text-secondary-500 text-base font-medium">
-              Add New Material
+              {t("AddNewMaterial")}
             </span>
             <NextImage
               width={24}

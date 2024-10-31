@@ -1,5 +1,6 @@
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
@@ -48,6 +49,7 @@ const ShowcaseTabView = ({
   const [sb, setSb] = useState(Number);
   const [pt, setPt] = useState(String);
   const [pb, setPb] = useState(Number);
+  const t = useTranslations("Showcase");
 
   const handleAction = (
     actionType: ActionType,
@@ -121,7 +123,7 @@ const ShowcaseTabView = ({
             flex flex-col gap-6 justify-center items-center z-10 select-none"
         >
           <span className="text-white text-[32px] font-bold">
-            Return to the Inventory
+            {t("ReturnToInventory")}
           </span>
           <Image
             width={48}
@@ -148,7 +150,7 @@ const ShowcaseTabView = ({
               className="mr-2"
             />
             <span className="text-xs font-medium leading-6 text-[#FAFAFA]">
-              Samples Items
+              {t("SampleItems")}
             </span>
           </div>
         </ShowcaseTabSelector>
@@ -167,7 +169,7 @@ const ShowcaseTabView = ({
               className="mr-2"
             />
             <span className="text-xs font-medium leading-6 text-[#FAFAFA]">
-              Inventory
+              {t("Inventory")}
             </span>
           </div>
         </ShowcaseTabSelector>
@@ -186,7 +188,7 @@ const ShowcaseTabView = ({
               className="mr-2"
             />
             <span className="text-xs font-medium leading-6 text-[#FAFAFA]">
-              Settings
+              {t("Settings")}
             </span>
           </div>
         </ShowcaseTabSelector>
@@ -211,7 +213,7 @@ const ShowcaseTabView = ({
           <TabPanel hidden={tab !== "Settings"}>
             <div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
               <div className="mx-auto">
-                <Collapse title="WALLPAPER">
+                <Collapse title={t("Wallpaper")}>
                   <ColorPicker
                     mode={true}
                     initialColor={wt}
@@ -222,7 +224,7 @@ const ShowcaseTabView = ({
                   />
                 </Collapse>
                 <div className="pb-8"></div>
-                <Collapse title="FLOOR">
+                <Collapse title={t("Floor")}>
                   <ColorPicker
                     mode={true}
                     initialColor={ft}
@@ -233,7 +235,7 @@ const ShowcaseTabView = ({
                   />
                 </Collapse>
                 <div className="pb-8"></div>
-                <Collapse title="LIGHTING">
+                <Collapse title={t("Lighting")}>
                   <div className="pl-2 pr-[52px] py-4">
                     <div className="flex items-center">
                       <Image
@@ -244,7 +246,7 @@ const ShowcaseTabView = ({
                         className="mr-[10px]"
                       />
                       <span className="text-[16px] font-[700] leading-[20px]">
-                        Scene Light
+                        {t("SceneLight")}
                       </span>
                     </div>
                     <div className="p-2">
@@ -296,7 +298,7 @@ const ShowcaseTabView = ({
                         className="mr-[10px]"
                       />
                       <span className="text-[16px] font-[700] leading-[20px]">
-                        Point Light
+                        {t("PointLight")}
                       </span>
                     </div>
                     <div className="p-2">

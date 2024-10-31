@@ -222,7 +222,7 @@ const Authentication = () => {
       return (
         <FlowAgreementWithEmailAndPassword
           title={""}
-          buttonText={"登録"}
+          buttonText={t('Register')}
           email={email}
           isSubmitting={isRegisteringWithMailAndPassword}
           pageType={PageType.FlowAccountCreation}

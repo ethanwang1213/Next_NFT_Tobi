@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { useTranslations } from "next-intl";
 import React, { MutableRefObject } from "react";
 import Button from "ui/atoms/Button";
 
@@ -9,19 +9,21 @@ const MintConfirmDialog2 = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   changeHandler: (value: string) => void;
 }) => {
+  const t = useTranslations("Showcase");
   return (
     <dialog ref={dialogRef} className="modal">
       <div
         className={`modal-box max-w-[425px] rounded-3xl p-6 flex flex-col relative`}
       >
         <div className="text-base-black text-base font-bold">
-          Are you sure you want to mint?
+          {t("ConfirmMint")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
-          After minting, the status will change to Private and cannot be reverted to Draft.
+          After minting, the status will change to Private and cannot be
+          reverted to Draft.
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
-          Do you wish to continue?
+          {t("WishToContinue")}
         </div>
         <div className="modal-action mt-4 flex justify-end gap-1">
           <Button

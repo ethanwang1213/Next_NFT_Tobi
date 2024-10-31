@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import React, { MutableRefObject } from "react";
 import Button from "ui/atoms/Button";
 
@@ -8,20 +9,20 @@ const DeleteConfirmDialog2 = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   changeHandler: (value: string) => void;
 }) => {
+  const t = useTranslations("Workspace");
   return (
     <dialog ref={dialogRef} className="modal">
       <div
         className={`modal-box max-w-[425px] rounded-3xl p-6 flex flex-col relative`}
       >
         <div className="text-base-black text-base font-bold">
-          Are you sure you want to delete?
+          {t("ConfirmDelete")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
-          Performing the Delete operation will disable the ability to undo or
-          redo any previous changes. Please confirm that you want to proceed.
+          {t("DeleteOperationWarning")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
-          Do you wish to continue?
+          {t("ConfirmContinue")}
         </div>
         <div className="modal-action mt-4 flex justify-end gap-1">
           <Button

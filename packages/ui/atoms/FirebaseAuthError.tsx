@@ -1,5 +1,6 @@
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 import { ErrorMessage } from "types/adminTypes";
+import { useTranslations } from "next-intl";
 
 type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -8,6 +9,7 @@ type Props = DetailedHTMLProps<
   error: ErrorMessage;
 };
 const FirebaseAuthError = ({ error }: Props) => {
+  const t = useTranslations("LogInSignUp");
   const getErrorMessage = () => {
     if (!error) {
       return "";
@@ -24,7 +26,7 @@ const FirebaseAuthError = ({ error }: Props) => {
         return "Tobiratoryアカウントが存在しません";
       case "auth/missing-password":
       case "auth/wrong-password":
-        return "メールアドレス、又はパスワードが間違っています";
+        return t('PasswordsDoNotMatch');
       default:
         return `エラーが発生しました: エラーコード: ${error.code}: ${error.message}`;
     }

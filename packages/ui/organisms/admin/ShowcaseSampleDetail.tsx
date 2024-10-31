@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -12,6 +13,7 @@ const ShowcaseSampleDetail = ({
   showSampleDetailView: boolean;
   showDetailView: boolean;
 }) => {
+  const t = useTranslations("Showcase");
   return (
     <div className="pointer-events-auto">
       {showSampleDetailView && (
@@ -36,7 +38,7 @@ const ShowcaseSampleDetail = ({
               alt="Link back Icon"
               src="/admin/images/icon/arrow-back-icon.svg"
             />
-            <span>Exit</span>
+            <span>{t("Exit")}</span>
           </Link>
         </div>
       )}

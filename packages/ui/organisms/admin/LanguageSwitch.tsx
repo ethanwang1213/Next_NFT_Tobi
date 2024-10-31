@@ -61,7 +61,7 @@ const LanguageSwitch = () => {
           />
         </div>
         {isOpen && (
-          <ul className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
+          <ul className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-[150]">
             <li className="h-[40px] border-b">
               <Link href={route} locale="jp" passHref>
                 <button

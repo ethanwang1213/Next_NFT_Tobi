@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import React from "react";
 import Button from "ui/atoms/Button";
@@ -7,6 +8,7 @@ type Props = {
 };
 
 const GenerateErrorComponent: React.FC<Props> = (props) => {
+  const t = useTranslations("Workspace");
   return (
     <div className="flex flex-col items-center pt-[152px]">
       <NextImage
@@ -16,13 +18,13 @@ const GenerateErrorComponent: React.FC<Props> = (props) => {
         alt="warning"
       />
       <span className="text-error text-sm font-semibold mt-5">
-        Something wrong happens...
+        {t("SomethingWrong")}
       </span>
       <Button
         className="w-[140px] h-8 mt-[135px] rounded-lg text-base-white bg-primary text-sm font-medium"
         onClick={props.buttonHandler}
       >
-        Try again
+        {t("TryAgain")}
       </Button>
     </div>
   );

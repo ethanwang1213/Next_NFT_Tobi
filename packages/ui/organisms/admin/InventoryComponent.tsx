@@ -1,4 +1,5 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -11,6 +12,7 @@ const InventoryComponent = (props: {
   const { data, setData, putData } = useRestfulAPI(null);
   const [loadingChangePerm, setLoadingChangePerm] = useState(false);
   const qrcodeDialogRef = useRef(null);
+  const t = useTranslations("GiftReceivingSettings");
 
   useEffect(() => {
     setData({ address: props.address, giftPermission: props.giftPermission });
@@ -59,7 +61,7 @@ const InventoryComponent = (props: {
           />
         )}
         <span className="w-20 text-sm font-normal text-base-black">
-          {data.giftPermission ? "Permitted" : "Blocked"}
+          {data.giftPermission ? t("Permitted") : t("Blocked")}
         </span>
         <div className="w-8"></div>
         {data.giftPermission ? (

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -14,6 +15,7 @@ type Props = {
 const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
   const router = useRouter();
   const [agreed, setAgreed] = useState(false);
+  const t = useTranslations("LogInSignUp");
   const buttonColor = () => {
     if (agreed) {
       return "bg-primary text-primary-content";
@@ -35,10 +37,10 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
           height={114}
         />
         <div className={"font-bold text-[32px] mt-[50px]"}>
-          デジタルアイテムを所有するために
+          {t("DigitalItemsInfo")}
         </div>
         <div className={"font-medium text-[16px] mt-[100px]"}>
-          ご登録のメールアドレスで、Flowアカウントを作成します。
+          {t("CreateFlowAccount")}
         </div>
         <input
           type={"text"}
@@ -63,7 +65,7 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
           disabled={!agreed}
           onClick={onClickRegister}
         >
-          <span className={"font-normal text-[20px]"}>登録</span>
+          <span className={"font-normal text-[20px]"}>{t("Register")}</span>
         </Button>
       </div>
     </>
@@ -71,10 +73,11 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
 };
 
 const AboutFlowAccount = () => {
+  const t = useTranslations("LogInSignUp");
   return (
     <InfoLink
       url={"https://www.tobiratory.com/about"}
-      text={"Flowアカウントと連携するとできること"}
+      text={t('LinkFlowAccountInfo')}
     />
   );
 };

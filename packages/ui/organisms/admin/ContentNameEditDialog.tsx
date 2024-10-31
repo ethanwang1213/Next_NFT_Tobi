@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject, useEffect, useState } from "react";
 
@@ -11,6 +12,8 @@ const ContentNameEditDialog = ({
   changeHandler: (value: string) => void;
 }) => {
   const [contentName, setContentName] = useState("");
+  const t = useTranslations("ContentSettings");
+  const l = useTranslations("GiftReceivingSettings");
 
   useEffect(() => {
     setContentName(initialValue);
@@ -30,16 +33,14 @@ const ContentNameEditDialog = ({
           </button>
         </form>
         <div className="text-base-black text-lg font-semibold">
-          Content Name Change
+          {t("ContentNameChange")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mb-2">
-          The content name can be changed once every three months. After the
-          change, the content name visible to users will be updated once the
-          review is completed.
+          {t("ContentNameChangeGuidelines")}
         </div>
         <div className="flex justify-between items-center gap-4">
           <span className="text-base-black text-sm font-semibold">
-            Content Name
+            {t("ContentName")}
           </span>
           <input
             type="text"
@@ -57,7 +58,7 @@ const ContentNameEditDialog = ({
               text-primary text-sm leading-4 font-semibold"
             onClick={() => dialogRef.current.close()}
           >
-            Cancel
+            {l("Cancel")}
           </button>
           <button
             type="button"
@@ -69,7 +70,7 @@ const ContentNameEditDialog = ({
               dialogRef.current.close();
             }}
           >
-            Save changes
+            {l("SaveChanges")}
           </button>
         </div>
       </div>

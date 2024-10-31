@@ -6,6 +6,8 @@ import {
   useAuth,
 } from "contexts/AdminAuthProvider";
 import useUnlinkProvider from "hooks/useUnlinkProvider";
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -16,6 +18,14 @@ import Button from "ui/atoms/Button";
 import GoogleIcon from "ui/atoms/GoogleIcon";
 import Loading from "ui/atoms/Loading";
 import BackLink from "ui/molecules/BackLink";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const PageStates = {
   List: 0,
@@ -71,6 +81,7 @@ const ConfirmDisconnect = ({
   onClickBack: () => void;
 }) => {
   const [unlinkProvider, processing, result, error] = useUnlinkProvider();
+  const t = useTranslations("AccountSocialLogin");
 
   useEffect(() => {
     if (result) {
@@ -107,7 +118,7 @@ const ConfirmDisconnect = ({
           <RightArrow />
           <div className="flex w-[583px] h-[47px] flex-col justify-center">
             <span className="h-[47px] text-secondary-600 text-center text-[32px] font-semibold leading-normal">
-              DISCONNENCT A SOCIAL ACCOUNT
+              {t("DisconnectTitle")}
             </span>
           </div>
         </div>
@@ -120,8 +131,7 @@ const ConfirmDisconnect = ({
           <div className="w-[661px] h-[340px]">
             <div className="w-[644px] h-[80px] shrink-0">
               <span className="text-secondary text-[20px] font-normal">
-                If you disconnect this account, you’ll no longer be able to use
-                it to Login to your Tobiratory apps.
+                {t("DisconnectWarning")}
               </span>
             </div>
             <div className="w-[661px] h-[144px] shrink-0 mt-[116px]">
@@ -147,7 +157,7 @@ const ConfirmDisconnect = ({
                     </div>
                     <div className="flex flex-col justify-center shrink-0 w-[321px] h-[48px]">
                       <span className="text-secondary text-[20px] font-normal text-center">
-                        Connected
+                        {t("Connected")}
                       </span>
                     </div>
                   </div>
@@ -166,7 +176,7 @@ const ConfirmDisconnect = ({
               text-primary text-[20px] leading-[24px] font-bold hover:bg-base-100 hover:border-primary"
                   onClick={() => unlinkProvider(providerId)}
                 >
-                  Disconnect
+                  {t("Disconnect")}
                 </Button>
               )}
             </div>
@@ -261,6 +271,7 @@ const AccountItem = ({
   hasAccount: boolean;
   children: React.ReactNode;
 }) => {
+  const t = useTranslations("AccountSocialLogin");
   return (
     <div className="flex items-end gap-[40px]">
       <div className="flex w-[48px] justify-center items-center">
@@ -273,7 +284,7 @@ const AccountItem = ({
       </div>
       <div className="flex flex-col justify-center w-[321px] h-[48px]">
         <span className="text-secondary text-[20px] font-normal">
-          {hasAccount ? "Connected" : "Not Connected"}
+          {hasAccount ? t("Connected") : t("NotConnected")}
         </span>
       </div>
     </div>
@@ -288,6 +299,7 @@ const LinkButton = ({
   hasAccount: boolean;
 }) => {
   const router = useRouter();
+  const t = useTranslations("AccountSocialLogin");
   if (hasAccount) {
     return (
       <Button
@@ -304,7 +316,7 @@ const LinkButton = ({
           })
         }
       >
-        Disconnect
+        {t("Disconnect")}
       </Button>
     );
   }
@@ -322,7 +334,7 @@ const LinkButton = ({
         })
       }
     >
-      Connect
+      {t("Connect")}
     </Button>
   );
 };

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import BackLink from "ui/molecules/BackLink";
 import { InfoLink } from "ui/templates/admin/FlowAgreementWithSnsAccount";
@@ -7,6 +8,7 @@ type Props = {
 };
 
 const ConfirmationSent = ({ onClickBack }: Props) => {
+  const t = useTranslations("LogInSignUp");
   return (
     <>
       <div className="flex flex-col items-center justify-center h-[100dvh] p-8">
@@ -14,7 +16,7 @@ const ConfirmationSent = ({ onClickBack }: Props) => {
           <BackLink hideText={true} onClickBack={onClickBack} />
         </div>
         <div className={"font-bold text-[40px]"}>
-          Sent a confirmation email!
+          {t("ConfirmationEmailSent")}
         </div>
         <Image
           src={"/admin/images/mail.svg"}
@@ -28,15 +30,14 @@ const ConfirmationSent = ({ onClickBack }: Props) => {
             "w-[463px] mt-[50px] font-medium text-[20px] text-base-content text-center"
           }
         >
-          Please check your mailbox.
+          {t("CheckEmail")}
           <br />
-          Authentication will be completed by clicking the authentication link
-          in the email.
+          {t("CheckText")}
         </div>
         <div className={"mt-[30px]"}>
           <InfoLink
             url={"https://www.tobiratory.com/about"}
-            text={"Haven't received the email?"}
+            text={t("EmailNotReceived")}
           />
         </div>
       </div>

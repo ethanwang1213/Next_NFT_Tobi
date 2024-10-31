@@ -5,6 +5,7 @@ import {
 import { auth } from "fetchers/firebase/client";
 import useUpdateEmail from "hooks/useUpdateEmail";
 import useUpdatePassword from "hooks/useUpdatePassword";
+import { GetStaticPropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -16,6 +17,14 @@ import FlowAgreementWithEmailAndPassword, {
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import ReauthPassword from "ui/templates/admin/ReauthPassword";
 import ReauthSns from "ui/templates/admin/ReauthSns";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const AuthStates = {
   Reauth: 0,

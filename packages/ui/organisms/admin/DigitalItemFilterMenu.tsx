@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -41,6 +42,7 @@ const DigitalItemFilterMenu = (props: {
   createDate: { from: Date; to: Date };
   setCreateDate: (date: { from: Date; to: Date }) => void;
 }) => {
+  const t = useTranslations("Item");
   return (
     <div className="w-80 flex flex-col items-start justify-center gap-2">
       <div className="flex flex-col items-start justify-center gap-1">
@@ -53,7 +55,7 @@ const DigitalItemFilterMenu = (props: {
             onChange={(e) => props.toggleFilter(FilterItem.Price)}
           />
           <label htmlFor="chkPrice" className="ml-2 text-base/8">
-            Price
+            {t("Price")}
           </label>
         </div>
         {props.filterArray[FilterItem.Price] ? (
@@ -96,7 +98,7 @@ const DigitalItemFilterMenu = (props: {
             onChange={(e) => props.toggleFilter(FilterItem.Status)}
           />
           <label htmlFor="chkStatus" className="ml-2 text-base/8">
-            Status
+            {t("Status")}
           </label>
         </div>
         {props.filterArray[FilterItem.Status] ? (
@@ -110,7 +112,7 @@ const DigitalItemFilterMenu = (props: {
                 onChange={(e) => props.toggleStatus(FilterStatus.Draft)}
               />
               <label htmlFor="chkDraft" className="ml-2 text-sm">
-                Draft
+                {t("Draft")}
               </label>
             </div>
             <div>
@@ -122,7 +124,7 @@ const DigitalItemFilterMenu = (props: {
                 onChange={(e) => props.toggleStatus(FilterStatus.Private)}
               />
               <label htmlFor="chkPrivate" className="ml-2 text-sm">
-                Private
+                {t("Private")}
               </label>
             </div>
             <div>
@@ -134,7 +136,7 @@ const DigitalItemFilterMenu = (props: {
                 onChange={(e) => props.toggleStatus(FilterStatus.ViewOnly)}
               />
               <label htmlFor="chkViewingOnly" className="ml-2 text-sm">
-                Viewing Only
+                {t("ViewingOnly")}
               </label>
             </div>
             <div>
@@ -146,7 +148,7 @@ const DigitalItemFilterMenu = (props: {
                 onChange={(e) => props.toggleStatus(FilterStatus.Sale)}
               />
               <label htmlFor="chkOnSale" className="ml-2 text-sm">
-                On Sale
+                {t("OnSale")}
               </label>
             </div>
             <div>
@@ -158,7 +160,7 @@ const DigitalItemFilterMenu = (props: {
                 onChange={(e) => props.toggleStatus(FilterStatus.Unlisted)}
               />
               <label htmlFor="chkUnlisted" className="ml-2 text-sm">
-                Unlisted
+                {t("Unlisted")}
               </label>
             </div>
           </div>
@@ -176,7 +178,7 @@ const DigitalItemFilterMenu = (props: {
             onChange={(e) => props.toggleFilter(FilterItem.CreationDate)}
           />
           <label htmlFor="chkCreationDate" className="ml-2 text-base/8">
-            Creation Date
+            {t("CreationDate")}
           </label>
         </div>
         {props.filterArray[FilterItem.CreationDate] ? (

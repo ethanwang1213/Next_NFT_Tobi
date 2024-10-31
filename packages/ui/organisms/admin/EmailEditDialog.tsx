@@ -5,6 +5,7 @@ import {
 } from "contexts/AdminAuthProvider";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
 import useUpdateEmail from "hooks/useUpdateEmail";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MutableRefObject, useEffect, useState } from "react";
@@ -124,6 +125,8 @@ const Reauth = ({
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
   const [reauthenticate, reauthenticating, userCredential, error] =
     usePasswordReauthentication();
+  const t = useTranslations("AccountPassword");
+  const l = useTranslations("Account");
 
   useEffect(() => {
     if (!userCredential) {
@@ -150,7 +153,7 @@ const Reauth = ({
       <div className="flex mt-[36px] pt-0 pb-0 flex-col items-start gap-[16px] self-stretch">
         <div className="flex flex-col items-start gap-[6px] self-stretch">
           <span className="text-base-black text-[14px] font-medium leading-[20px]">
-            Name
+            {t("Name")}
           </span>
           <div className="flex h-[36px] items-center gap-[8px] self-stretch">
             <div className="flex flex-col items-start gap-[6px] flex-grow shrink-0 basis-0">
@@ -167,7 +170,7 @@ const Reauth = ({
         </div>
         <div className={"flex flex-col items-start gap-[6px] self-stretch"}>
           <span className="text-base-black text-[14px] font-medium leading-[20px]">
-            Password
+            {t("Password")}
           </span>
           <label className="input input-bordered flex justify-between items-center gap-2 rounded-[64px] base-content text-base-black font-medium w-[281px] h-[36px] pl-[12px] placeholder:text-base-content placeholder:text-left">
             <input
@@ -199,7 +202,7 @@ const Reauth = ({
               text-primary text-[14px] leading-[120%] font-medium hover:bg-base-100 hover:border-primary"
           onClick={onClickCancel}
         >
-          Cancel
+          {l("Cancel")}
         </Button>
         {reauthenticating ? (
           <div className="flex justify-center items-center w-[95px] h-[33px] min-h-[33px]">
@@ -212,7 +215,7 @@ const Reauth = ({
               text-base-white text-[14px] leading-[120%] font-bold hover:bg-primary hover:border-primary"
             onClick={() => reauthenticate(password)}
           >
-            Continue
+            {t("Continue")}
           </Button>
         )}
       </div>
@@ -230,6 +233,7 @@ const NewEmail = ({
   const [email, setEmail] = useState<string | null>(null);
   const [validEmail, setValidEmail] = useState(false);
   const [updateEmail, updating, isSuccessful, error] = useUpdateEmail();
+  const t = useTranslations("Account");
 
   useEffect(() => {
     if (!isSuccessful) {
@@ -290,7 +294,7 @@ const NewEmail = ({
               text-primary text-[14px] leading-[120%] font-semibold hover:bg-base-100 hover:border-primary"
           onClick={onClickCancel}
         >
-          Cancel
+          {t("Cancel")}
         </Button>
         {updating ? (
           <div className="flex justify-center items-center w-[95px] h-[33px] min-h-[33px]">
@@ -304,7 +308,7 @@ const NewEmail = ({
               text-base-white text-[14px] leading-[120%] font-semibold hover:bg-primary hover:border-primary"
             onClick={() => updateEmail(email, VERIFIED_EMAIL_PATH)}
           >
-            Save changes
+            {t("SaveChanges")}
           </Button>
         )}
       </div>

@@ -51,6 +51,7 @@ export const TextMenuItems: React.FC<Props> = ({ initHomeStates }) => {
         }
         return null;
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [menuItem],
   );
 

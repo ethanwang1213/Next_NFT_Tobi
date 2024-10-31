@@ -11,7 +11,7 @@ export type SampleItem = {
   modelUrl: string;
   materialId: number;
   type: number;
-  acrylicBaseScaleRatio : number;
+  acrylicBaseScaleRatio: number;
 };
 
 export type NftItem = {
@@ -35,29 +35,24 @@ export enum DigitalItemStatus {
   DigitalItemStatusCount,
 }
 
-export const getDigitalItemStatusTitle = (status) => {
-  let value;
+export const getDigitalItemStatusTitle = (
+  status: DigitalItemStatus,
+  t: (key: string) => string,
+) => {
   switch (status) {
     case DigitalItemStatus.Draft:
-      value = "Draft";
-      break;
+      return t("Draft");
     case DigitalItemStatus.Private:
-      value = "Private";
-      break;
+      return t("Private");
     case DigitalItemStatus.ViewingOnly:
-      value = "Viewing Only";
-      break;
+      return t("ViewingOnly");
     case DigitalItemStatus.OnSale:
-      value = "On Sale";
-      break;
+      return t("OnSale");
     case DigitalItemStatus.Unlisted:
-      value = "Unlisted";
-      break;
+      return t("Unlisted");
     default:
-      value = "";
-      break;
+      return "";
   }
-  return value;
 };
 
 export type ScheduleItem = {

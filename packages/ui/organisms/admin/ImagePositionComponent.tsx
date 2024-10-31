@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import "react-image-crop/dist/ReactCrop.css";
@@ -18,6 +19,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
   const imgWrapperRef = useRef<HTMLDivElement>(null);
   const moverWrapperRef = useRef<HTMLDivElement>(null);
   const blobUrlRef = useRef(props.imageUrl);
+  const t = useTranslations("Workspace");
 
   const [rotate, setRotate] = useState(180);
   const [processing, setProcessing] = useState(false);
@@ -186,7 +188,9 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
                 <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
               </div>
             )}
-            <span className="text-secondary-400 text-sm font-medium">Back</span>
+            <span className="text-secondary-400 text-sm font-medium">
+              {t("Back")}
+            </span>
             {
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -206,7 +210,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
               />
             }
             <span className="text-secondary-400 text-sm font-medium">
-              Front
+              {t("Front")}
             </span>
             <div
               ref={moverWrapperRef}

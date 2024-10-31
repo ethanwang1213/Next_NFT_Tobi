@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { MutableRefObject } from "react";
 import Button from "ui/atoms/Button";
@@ -9,16 +10,18 @@ const MintConfirmDialog = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   changeHandler: (value: string) => void;
 }) => {
+  const t = useTranslations("Showcase");
+  const l = useTranslations("GiftReceivingSettings");
   return (
     <dialog ref={dialogRef} className="modal">
       <div
         className={`modal-box max-w-[425px] rounded-3xl pt-6 flex flex-col relative`}
       >
         <div className="text-base-black text-base font-bold">
-          Are you sure you want to mint?
+          {t("ConfirmMint")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-5">
-          Performing the Mint operation will disable the ability to undo
+          {t("MintOperationWarning")}
           <Image
             width={20}
             height={20}
@@ -26,7 +29,7 @@ const MintConfirmDialog = ({
             src="/admin/images/icon/undo.svg"
             className="cursor-pointer inline"
           />
-          or redo
+          {t("Or")}
           <Image
             width={20}
             height={20}
@@ -34,10 +37,10 @@ const MintConfirmDialog = ({
             src="/admin/images/icon/redo.svg"
             className="cursor-pointer inline"
           />
-          any previous changes. Please confirm that you want to proceed.
+          {t("MintOperationWarningTo")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-2 mb-1">
-          Do you wish to continue?
+          {t("WishToContinue")}
         </div>
         <div className="modal-action flex justify-end gap-1 mt-1">
           <Button
@@ -49,7 +52,7 @@ const MintConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Cancel
+            {l("Cancel")}
           </Button>
           <Button
             type="button"
@@ -60,7 +63,7 @@ const MintConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Mint Now
+            {t("MintNow")}
           </Button>
         </div>
       </div>

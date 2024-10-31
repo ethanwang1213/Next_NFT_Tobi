@@ -1,5 +1,6 @@
 import ja from "date-fns/locale/ja";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -52,6 +53,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   };
   const apiUrl = "native/admin/showcases";
   const { error, putData, deleteData } = useRestfulAPI(null);
+  const t = useTranslations("ContentShowcase");
 
   const popupRef = useRef(null);
   const datePickerRef = useRef(null);
@@ -350,7 +352,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         />
       </div>
       <div className="text-secondary-700 text-[12px] leading-4 font-light">
-        Last Updated Date： {formatDateToLocal(modifiedTime, true)}
+        {t("LastUpdatedDate")} {formatDateToLocal(modifiedTime, true)}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -200,6 +201,8 @@ const ContentSettingPanel = ({
   const apiUrl = "native/admin/content";
   const { data, dataRef, error, setData, putData, restoreData } =
     useRestfulAPI(apiUrl);
+  const t = useTranslations("ContentSettings");
+  const l = useTranslations("License");
 
   const modifiedRef = useRef(false);
   const confirmDialogRef = useRef(null);
@@ -223,6 +226,15 @@ const ContentSettingPanel = ({
     modifiedRef.current = true;
     changeHandler();
   };
+
+  const actions = [
+    l("Actions.0"),
+    l("Actions.1"),
+    l("Actions.2"),
+    l("Actions.3"),
+    l("Actions.4"),
+    l("Actions.5"),
+  ];
 
   useEffect(() => {
     if (cancelFlag > 0 && modifiedRef.current) {
@@ -277,11 +289,11 @@ const ContentSettingPanel = ({
     data && (
       <div className="max-w-[800px] min-w-[480px] flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <h2 className="text-secondary text-2xl font-bold">Content Name</h2>
+          <h2 className="text-secondary text-2xl font-bold">
+            {t("ContentName")}
+          </h2>
           <span className="text-neutral-400 text-xs font-medium py-2">
-            You can change the name of the content. A review is required after
-            the change, and if approved, the name will be updated. Once changed,
-            the name cannot be modified again for 3 months.
+            {t("ChangeContentNameGuidelines")}
           </span>
           <ContentNameEditComponent
             initialValue={data.name}
@@ -291,10 +303,10 @@ const ContentSettingPanel = ({
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-secondary text-2xl font-bold">
-            Content Description
+            {t("ContentDescription")}
           </h2>
           <span className="text-neutral-400 text-xs font-medium py-2">
-            You can freely edit the description of the content.
+            {t("EditDescription")}
           </span>
           <StyledTextArea
             className=""
@@ -309,75 +321,54 @@ const ContentSettingPanel = ({
           <div className="md:flex flex-row justify-between">
             <div className="flex flex-col md:text-nowrap">
               <p className="md:w-auto w-[80%] sm:mr-8 text-[24px] font-bold">
-                Default license setting
+                {t("DefaultLicenseSetting")}
               </p>
               <span className="text-[12px] font-medium text-neutral-400 py-2">
-                Set the default license for each DigitalItem record.
+                {t("SetDefaultLicense")}
               </span>
             </div>
           </div>
           <div className="px-6 mt-2">
             <div className="border rounded-lg p-6 border-primary text-primary">
-              <p className="text-[14px] font-bold">
-                Prohibited Actions under All Licenses
-              </p>
+              <p className="text-[14px] font-bold">{l("ProhibitedActions")}</p>
               <div className="text-[12px]">
-                <p>&bull; Use that violates public order and morals.</p>
-                <p>
-                  &bull; Use that significantly damages the image of our
-                  company, products, or characters.
-                </p>
-                <p>
-                  &bull; Use that harms or could potentially harm the social
-                  reputation of the author of the work being used.
-                </p>
-                <p>
-                  &bull; Use that infringes or could potentially infringe the
-                  rights of others.
-                </p>
-                <p>
-                  &bull; Use that creates or could create the misconception that
-                  we support or endorse specific individuals, political parties,
-                  religious organizations, etc.
-                </p>
-                <p>
-                  &bull; Copying or reproducing works without adding substantial
-                  modifications is considered “replication” and is prohibited.
-                </p>
+                {actions.map((action, index) => (
+                  <p key={index}>&bull; {action}</p>
+                ))}
               </div>
             </div>
             <div className="mt-8">
               <RadioButtonGroup
-                title="Commercial Use (COM/NCM)"
+                title={l("CommercialUse")}
                 initialValue={data.license.com}
                 onChange={(value) => fieldChangeHandler("com", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
-                title="Adaptation (ADP)"
+                title={l("Adaptation")}
                 initialValue={data.license.adp}
                 onChange={(value) => fieldChangeHandler("adp", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
-                title="Derivative Works (DER)"
+                title={l("Derivative")}
                 initialValue={data.license.der}
                 onChange={(value) => fieldChangeHandler("der", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
-                title="Merchandising (MER)"
+                title={l("Merchandising")}
                 initialValue={data.license.mer}
                 onChange={(value) => fieldChangeHandler("mer", value)}
               />
               <RadioButtonGroup
-                title="Distribution for Free (DST)"
+                title={l("Distribution")}
                 initialValue={data.license.dst}
                 onChange={(value) => fieldChangeHandler("dst", value)}
               />
               <hr className="pb-3 border-primary" />
               <RadioButtonGroup
-                title="Credit Omission (NCR)"
+                title={l("CreditOmission")}
                 initialValue={data.license.ncr}
                 onChange={(value) => fieldChangeHandler("ncr", value)}
               />
@@ -386,12 +377,10 @@ const ContentSettingPanel = ({
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-secondary text-2xl font-bold">
-            Copyright Holders
+            {t("CopyrightHolders")}
           </h2>
           <span className="text-neutral-400 text-xs font-medium py-2">
-            Set the default copyright holders for each DigitalItem record. You
-            can enter this like tags, and no re-review is required for this
-            change.
+            {t("SetDefaultCopyrightHolders")}
           </span>
           <CopyrightHolderComponent
             initialItems={data.copyright}

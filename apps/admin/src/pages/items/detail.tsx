@@ -2,6 +2,8 @@ import clsx from "clsx";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -25,6 +27,14 @@ import {
   getDigitalItemStatusTitle,
   ScheduleItem,
 } from "ui/types/adminTypes";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const MintNotification = ({ title, text }) => {
   return (
@@ -72,6 +82,20 @@ const Detail = () => {
       setStatus(digitalItem.status);
     }
   }, [status, digitalItem]);
+
+  const t = useTranslations("Item");
+  const b = useTranslations("ItemDetail");
+  const l = useTranslations("License");
+  const s = useTranslations("Showcase");
+
+  const actions = [
+    l("Actions.0"),
+    l("Actions.1"),
+    l("Actions.2"),
+    l("Actions.3"),
+    l("Actions.4"),
+    l("Actions.5"),
+  ];
 
   const fieldChangeHandler = useCallback(
     (field, value) => {
@@ -122,13 +146,14 @@ const Detail = () => {
   const showStatusConfirmDialog = () => {
     // check submit
     setConfirmDialogDisabled(!checkMandatoryFields());
-
     // set title
     setConfirmDialogTitle(
       `Changing from ${getDigitalItemStatusTitle(
         dataRef.current.status,
+        t,
       ).toLowerCase()} to ${getDigitalItemStatusTitle(
         digitalItem.status,
+        t,
       ).toLowerCase()}`,
     );
 
@@ -357,8 +382,8 @@ const Detail = () => {
         if (!result) {
           toast(
             <MintNotification
-              title="Mint failed"
-              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+              title={s("MintFailed")}
+              text={s("MintFailedLimitExceeded")}
             />,
             {
               className: "mint-notification",
@@ -367,6 +392,7 @@ const Detail = () => {
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [postData, id, fcmToken, digitalItem],
   );
 
@@ -382,10 +408,12 @@ const Detail = () => {
           />
         </Link>
         <span className="flex-1 text-secondary-600 text-[32px] font-semibold">
-          ITEM DETAIL
+          {b("DetailSetting")}
         </span>
         {digitalItem && (
-          <span className="text-xl text-secondary font-bold">Status</span>
+          <span className="text-xl text-secondary font-bold">
+            {t("Status")}
+          </span>
         )}
         {digitalItem && (
           <StatusDropdownSelect
@@ -409,7 +437,7 @@ const Detail = () => {
             disabled={!modified}
             onClick={saveButtonHandler}
           >
-            Save
+            {b("Save")}
           </Button>
         )}
       </div>
@@ -420,13 +448,13 @@ const Detail = () => {
             <div className="flex-grow flex flex-col gap-8">
               <div className="flex flex-col gap-4 pr-11">
                 <h3 className="text-[20px] text-secondary font-bold">
-                  ITEM DETAIL
+                  {b("DetailSetting")}
                 </h3>
                 <div className="flex flex-col gap-6">
                   <StyledTextInput
                     className=""
-                    label="Item Name*"
-                    placeholder="Item Name"
+                    label={b("ItemName")}
+                    placeholder={b("ItemName")}
                     value={digitalItem.name}
                     changeHandler={(value) => fieldChangeHandler("name", value)}
                     maxLen={50}
@@ -434,8 +462,8 @@ const Detail = () => {
                   />
                   <StyledTextArea
                     className=""
-                    label="Description"
-                    placeholder="Description"
+                    label={b("Description")}
+                    placeholder={b("Description")}
                     value={digitalItem.description}
                     changeHandler={(value) =>
                       fieldChangeHandler("description", value)
@@ -447,13 +475,13 @@ const Detail = () => {
               </div>
               <div className="flex flex-col gap-6">
                 <h3 className="text-[20px] text-secondary font-bold">
-                  PRICE & DETAILS SETTINGS
+                  {b("PriceDetailsSettings")}
                 </h3>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-6">
                   <StyledTextInput
                     className=""
-                    label="Price*"
-                    placeholder="Price"
+                    label={b("Price")}
+                    placeholder={b("Price")}
                     value={`${digitalItem.price ? digitalItem.price : 0}`}
                     inputMask={TextKind.Digit}
                     changeHandler={(value) =>
@@ -468,7 +496,7 @@ const Detail = () => {
                       alt="information"
                       id="image_price_info"
                       data-tooltip-id={`tooltip_price_info`}
-                      data-tooltip-content={`only ￥0 can be set`}
+                      data-tooltip-content={b("OnlyZero")}
                     />
                     <Tooltip
                       id={`tooltip_price_info`}
@@ -495,7 +523,7 @@ const Detail = () => {
                   </div>
                   <StyledTextInput
                     className=""
-                    placeholder="Quantity Limit"
+                    placeholder={b("QuantityLimit")}
                     value={`${
                       digitalItem.quantityLimit
                         ? digitalItem.quantityLimit != -1
@@ -503,7 +531,7 @@ const Detail = () => {
                           : ""
                         : ""
                     }`}
-                    label="Quantity Limit"
+                    label={b("QuantityLimit")}
                     inputMask={TextKind.Digit}
                     changeHandler={(value) =>
                       fieldChangeHandler("quantityLimit", value)
@@ -530,7 +558,7 @@ const Detail = () => {
                       className="text-sm text-secondary font-normal"
                       htmlFor="quantityLimit"
                     >
-                      No Quantity Limit
+                      {b("NoLimit")}
                     </label>
                     <NextImage
                       src="/admin/images/info-icon-2.svg"
@@ -539,7 +567,7 @@ const Detail = () => {
                       alt="information"
                       id="image_quantity_info"
                       data-tooltip-id={`tooltip_quantity_info`}
-                      data-tooltip-content={`Please check the box if you do not want to set a maximum sales limit.`}
+                      data-tooltip-content={b("CheckBoxMaxLimit")}
                     />
                     <Tooltip
                       id={`tooltip_quantity_info`}
@@ -568,7 +596,7 @@ const Detail = () => {
               </div>
               <div className="flex flex-col gap-6">
                 <h3 className="text-[20px] text-secondary font-bold">
-                  COPYRIGHTS
+                  {b("Copyrights")}
                 </h3>
                 <div className="flex flex-col gap-6">
                   <div className="flex gap-6">
@@ -586,7 +614,7 @@ const Detail = () => {
                       alt="information"
                       id="image_copyright_info"
                       data-tooltip-id={`tooltip_copyright_info`}
-                      data-tooltip-content={`ex. ©Tobiratory`}
+                      data-tooltip-content={b("ExampleCopyright")}
                     />
                     <Tooltip
                       id={`tooltip_copyright_info`}
@@ -615,47 +643,23 @@ const Detail = () => {
                     <div className="flex flex-col gap-2">
                       <div className="md:flex flex-row justify-between">
                         <p className="md:w-auto w-[80%] sm:mr-8 text-[20px] font-bold">
-                          LICENSE
+                          {b("License")}
                         </p>
                       </div>
                       <div className="px-6 mt-2">
                         <div className="border rounded-lg p-6 border-primary text-primary">
                           <p className="text-[14px] font-bold">
-                            Prohibited Actions under All Licenses
+                            {l("ProhibitedActions")}
                           </p>
                           <div className="text-[12px]">
-                            <p>
-                              &bull; Use that violates public order and morals.
-                            </p>
-                            <p>
-                              &bull; Use that significantly damages the image of
-                              our company, products, or characters.
-                            </p>
-                            <p>
-                              &bull; Use that harms or could potentially harm
-                              the social reputation of the author of the work
-                              being used.
-                            </p>
-                            <p>
-                              &bull; Use that infringes or could potentially
-                              infringe the rights of others.
-                            </p>
-                            <p>
-                              &bull; Use that creates or could create the
-                              misconception that we support or endorse specific
-                              individuals, political parties, religious
-                              organizations, etc.
-                            </p>
-                            <p>
-                              &bull; Copying or reproducing works without adding
-                              substantial modifications is considered
-                              “replication” and is prohibited.
-                            </p>
+                            {actions.map((action, index) => (
+                              <p key={index}>&bull; {action}</p>
+                            ))}
                           </div>
                         </div>
                         <div className="mt-8">
                           <RadioButtonGroup
-                            title="Commercial Use (COM/NCM)"
+                            title={l("CommercialUse")}
                             initialValue={digitalItem.license.com}
                             onChange={(value) =>
                               fieldChangeHandler("com", value)
@@ -663,7 +667,7 @@ const Detail = () => {
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
-                            title="Adaptation (ADP)"
+                            title={l("Adaptation")}
                             initialValue={digitalItem.license.adp}
                             onChange={(value) =>
                               fieldChangeHandler("adp", value)
@@ -671,7 +675,7 @@ const Detail = () => {
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
-                            title="Derivative Works (DER)"
+                            title={l("Derivative")}
                             initialValue={digitalItem.license.der}
                             onChange={(value) =>
                               fieldChangeHandler("der", value)
@@ -679,7 +683,7 @@ const Detail = () => {
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
-                            title="Merchandising (MER)"
+                            title={l("Merchandising")}
                             initialValue={digitalItem.license.mer}
                             onChange={(value) =>
                               fieldChangeHandler("mer", value)
@@ -688,7 +692,7 @@ const Detail = () => {
                           <hr className="pb-3 border-primary" />
 
                           <RadioButtonGroup
-                            title="Distribution for Free (dst)"
+                            title={l("Distribution")}
                             initialValue={digitalItem.license.dst}
                             onChange={(value) =>
                               fieldChangeHandler("dst", value)
@@ -696,7 +700,7 @@ const Detail = () => {
                           />
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
-                            title="Credit Omission (ncr)"
+                            title={l("CreditOmission")}
                             initialValue={digitalItem.license.ncr}
                             onChange={(value) =>
                               fieldChangeHandler("ncr", value)
@@ -710,7 +714,7 @@ const Detail = () => {
               </div>
               <div className="flex flex-col gap-6 pr-11">
                 <h3 className="text-[20px] text-secondary font-bold">
-                  SCHEDULE
+                  {b("Schedule")}
                 </h3>
                 <ScheduleCalendar
                   originStatus={dataRef.current.status}
@@ -834,7 +838,7 @@ const Detail = () => {
                 >
                   <input {...getInputProps()} />
                   <span className="h-14 text-secondary-500 text-base text-center">
-                    Drop your Image here
+                    {b("DropImage")}
                   </span>
                   <NextImage
                     width={24}
@@ -857,7 +861,7 @@ const Detail = () => {
                       alt="preview icon"
                     />
                     <span className="w-[240px] text-primary-500 text-xl font-medium text-center">
-                      Preview in Workspace
+                      {b("PreviewWorkspace")}
                     </span>
                   </Button>
                 </Link>
@@ -886,7 +890,7 @@ const Detail = () => {
                     alt="mint icon"
                   />
                   <span className="w-[240px] text-[#E96800] text-xl font-semibold text-center">
-                    Mint as an NFT
+                    {b("MintNFT")}
                   </span>
                 </Button>
               </div>

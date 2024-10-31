@@ -1,5 +1,6 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useItemPreviewUnityContext } from "hooks/useCustomUnityContext";
+import { useTranslations } from "next-intl";
 import { MutableRefObject, useEffect, useState } from "react";
 import { ItemPreviewUnity } from "ui/molecules/CustomUnity";
 import Spinner from "./Spinner";
@@ -13,6 +14,7 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
   const { setLoadData, isLoaded, unityProvider } = useItemPreviewUnityContext();
   const [showUnity, setShowUnity] = useState(false);
   const { selectedItem, resumeUnityInputs } = useShowcaseEditUnity();
+  const t = useTranslations("Showcase");
 
   useEffect(() => {
     if (data && selectedItem) {
@@ -50,12 +52,12 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
           {data?.content?.name || "Content Name"}
         </span>
         <span className="text-base-black text-2xl font-bold text-gray-100 z-20">
-          {data?.name || "Item Title"}
+          {data?.name || t("ItemTitle")}
         </span>
         <div className="absolute w-full h-full top-0 bottom-0 left-0 right-0 flex justify-center items-center">
           {!showUnity && (
             <p className="text-center text-neutral-400 text-[16px] flex items-center justify-center flex">
-              The 3D preview will be displayed here when an item is selected
+              {t("PreviewDisplayed")}
             </p>
           )}
           {showUnity && unityProvider && (

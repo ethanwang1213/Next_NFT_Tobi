@@ -19,6 +19,7 @@ import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";
 import UserInformation from "./userInfo";
+import { useTranslations } from "next-intl";
 
 const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
 
@@ -342,6 +343,8 @@ const LoadingButton = ({
   handleBack,
   handleNext,
 }) => {
+  const t = useTranslations("LogInSignUp");
+
   if (loading) {
     return (
       <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-center">
@@ -358,7 +361,7 @@ const LoadingButton = ({
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
         onClick={handleBack}
       >
-        戻る
+        {t('Back')}
       </Button>
       <Button
         type="button"

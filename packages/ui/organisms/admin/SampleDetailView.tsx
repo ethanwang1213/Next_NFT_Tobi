@@ -2,6 +2,7 @@ import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
@@ -46,6 +47,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const { token: fcmToken } = useFcmToken();
   const { deleteAllActionHistory } = useWorkspaceUnityContext({});
   const { pauseUnityInputs } = useShowcaseEditUnity();
+  const t = useTranslations("Workspace");
+  const s = useTranslations("Showcase");
 
   useEffect(() => {
     if (id > 0) {
@@ -111,8 +114,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         if (!result) {
           toast(
             <MintNotification
-              title="Mint failed"
-              text="The daily transaction limit has been exceeded, so Mint could not be completed."
+              title={s("MintFailed")}
+              text={s("MintFailedLimitExceeded")}
             />,
             {
               className: "mint-notification",
@@ -124,6 +127,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, fcmToken, id, postData, deleteAllActionHistory, trackSampleMint],
   );
 
@@ -146,7 +150,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         <div className="w-full h-full gap-6 flex flex-col justify-center items-center text-base-white">
           <span className="text-base font-semibold ">{data?.content.name}</span>
           <span className="text-2xl font-bold text-center">
-            {data ? data.name || "Item Title" : ""}
+            {data ? data.name || t("ItemTitle") : ""}
           </span>
           <Image
             width={160}
@@ -178,7 +182,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             <div className="w-full flex flex-col gap-2">
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  Creator
+                  {t("Creator")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.content.name ? data?.content.name : "-"}
@@ -186,7 +190,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  Copyright
+                  {t("Copyright")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.copyrights.length
@@ -196,7 +200,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  License
+                  {t("License")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.license ? getDefaultLicense(data.license) : "-"}
@@ -204,7 +208,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  Date Acquired
+                  {t("DateAcquired")}
                 </span>
                 <div className="text-[10px] font-medium w-[168px]">
                   {data?.startDate ? formatDateToLocal(data.startDate) : "-"}
@@ -214,7 +218,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  History
+                  {t("History")}
                 </span>
                 {data &&
                 Array.isArray(data.ownerHistory) &&
@@ -240,10 +244,9 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               </div>
               <div className="flex gap-4">
                 <span className="text-[10px] font-medium w-[76px] text-right">
-                  Serial Number
+                  {t("SerialNumber")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
-                  {" "}
                   {data?.serialNumber ? data.serialNumber : "-"}
                 </span>
               </div>
@@ -262,7 +265,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                       alt="open icon"
                     />
                     <span className="text-base-white text-base font-bold">
-                      Edit Item Data
+                      {t("EditItemData")}
                     </span>
                   </Button>
                 </Link>
@@ -285,7 +288,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                     alt="mint icon"
                   />
                   <span className="text-base-white text-base font-bold">
-                    Mint as an NFT
+                    {t("MintAsNFT")}
                   </span>
                 </Button>
               </div>

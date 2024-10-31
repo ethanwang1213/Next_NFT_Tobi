@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -157,6 +158,8 @@ const DigitalItemTable = (filters: {
     setSortOrder(order);
   };
 
+  const t = useTranslations("Item");
+
   useEffect(() => {
     if (!dataRef.current) return;
 
@@ -190,7 +193,7 @@ const DigitalItemTable = (filters: {
                     toggleSortingDirection(DigitalItemTableColumn.Name)
                   }
                 >
-                  Item Name
+                  {t("ItemName")}
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
@@ -215,7 +218,7 @@ const DigitalItemTable = (filters: {
                     toggleSortingDirection(DigitalItemTableColumn.Price)
                   }
                 >
-                  Price
+                  {t("Price")}
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
@@ -234,7 +237,7 @@ const DigitalItemTable = (filters: {
                   </span>
                 </th>
                 <th scope="col" className="w-28 py-0 text-center">
-                  Status
+                  {t("Status")}
                 </th>
                 <th
                   scope="col"
@@ -243,7 +246,7 @@ const DigitalItemTable = (filters: {
                     toggleSortingDirection(DigitalItemTableColumn.Minted)
                   }
                 >
-                  Minted
+                  {t("Minted")}
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
@@ -268,7 +271,7 @@ const DigitalItemTable = (filters: {
                     toggleSortingDirection(DigitalItemTableColumn.CreationDate)
                   }
                 >
-                  Creation Date
+                  {t("CreationDate")}
                   <span
                     className={clsx(
                       "absolute right-1 text-xs cursor-pointer group-hover:inline duration-300",
@@ -330,14 +333,14 @@ const DigitalItemTable = (filters: {
                   </td>
                   <td className="px-3">
                     <p className="inline-block w-60 text-left break-words">
-                      {item.name ? item.name : "no name"}
+                      {item.name ? item.name : t("NoName")}
                     </p>
                   </td>
                   <td className="px-3 py-3 text-center justify-center">
                     {formatCurrency(item.price)}
                   </td>
                   <td className="p-3 text-center justify-center">
-                    {getDigitalItemStatusTitle(item.status)}
+                    {getDigitalItemStatusTitle(item.status, t)}
                   </td>
                   <td className="px-3 py-3  text-center justify-center">
                     <span>{item.mintedCount} / </span>
@@ -363,7 +366,7 @@ const DigitalItemTable = (filters: {
                 className="w-[208px] h-14 rounded-[30px] bg-[#009FF5] text-white text-2xl leading-[56px] text-center"
                 onClick={() => setSelDigitalItemIds([])}
               >
-                CANCEL
+                {t("Cancel")}
               </Button>
               <Button
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
@@ -377,7 +380,7 @@ const DigitalItemTable = (filters: {
                   }
                 }}
               >
-                <div className="flex justify-between">
+                <div className="flex justify-around">
                   <Image
                     src="/admin/images/recyclebin-icon.svg"
                     alt="icon"
@@ -385,7 +388,7 @@ const DigitalItemTable = (filters: {
                     height={32}
                   />
                   <span className="text-white text-2xl leading-[56px] text-center">
-                    DELETE
+                    {t("Delete")}
                   </span>
                 </div>
               </Button>

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject } from "react";
 import Button from "ui/atoms/Button";
@@ -9,6 +10,7 @@ const SaveConfirmDialog = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   changeHandler: (value: string) => void;
 }) => {
+  const t = useTranslations("ContentSettings");
   return (
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[875px] rounded-3xl pt-4 flex flex-col gap-3 relative">
@@ -23,12 +25,10 @@ const SaveConfirmDialog = ({
           </button>
         </form>
         <div className="text-base-black text-lg font-semibold">
-          Confirm save
+          {t("ConfirmSave")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mb-2">
-          The content name can be changed once every three months. After the
-          change, the content name visible to users will be updated once the
-          review is completed.
+          {t("ContentNameChangeGuidelines")}
         </div>
         <div className="modal-action flex justify-end gap-4">
           <Button
@@ -40,7 +40,7 @@ const SaveConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Save
+            {t("Save")}
           </Button>
           <Button
             type="button"
@@ -51,7 +51,7 @@ const SaveConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Discard
+            {t("Discard")}
           </Button>
           <Button
             type="button"
@@ -62,7 +62,7 @@ const SaveConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
         </div>
       </div>
