@@ -302,7 +302,7 @@ const EmailField = ({
   );
 };
 
-const TermsOfService = ({
+export const TermsOfService = ({
   agreed,
   visible,
   setAgreed,
