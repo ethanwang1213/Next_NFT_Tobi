@@ -1,5 +1,6 @@
 import { useAuth } from "contexts/AdminAuthProvider";
 import { useNavbar } from "contexts/AdminNavbarProvider";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject, useEffect, useRef } from "react";
 import NavbarContainer from "ui/atoms/NavbarContainer";
@@ -112,8 +113,8 @@ const UserMenu = () => {
   const menuRef = useRef<HTMLUListElement>(null);
   const signOutModalRef = useRef<HTMLDialogElement>(null);
   const { user } = useAuth();
+  const t = useTranslations("TCP");
 
-  // Close when clicking outside the dropdown.
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
@@ -193,7 +194,7 @@ const UserMenu = () => {
                     "text-start text-base-content text-[15px] font-normal"
                   }
                 >
-                  Logout
+                  {t("Logout")}
                 </div>
               </div>
             </button>
@@ -211,16 +212,17 @@ const ConfirmSignOutModal = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
 }) => {
   const { signOut, user } = useAuth();
+  const t = useTranslations("TCP");
   return (
     <AccountConfirmDialog
-      title="ログアウトしますか?"
+      title={t("LogoutPrompt")}
       account={user}
       firstButtonProp={{
-        caption: "ログアウト",
+        caption: t("Logout"),
         isPrimary: true,
         callback: signOut,
       }}
-      secondButtonProp={{ caption: "キャンセル", isPrimary: false }}
+      secondButtonProp={{ caption: t("Cancel"), isPrimary: false }}
       dialogRef={dialogRef}
     />
   );

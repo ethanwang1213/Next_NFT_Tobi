@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
@@ -23,6 +24,7 @@ const Row1 = ({
 };
 
 const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
+  const t = useTranslations("TCP");
   const contentInfoChangeHandler = (field, e) => {
     setContentInfo({
       ...contentInfo,
@@ -33,9 +35,9 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
   return (
     <>
       <div className="sm:mb-6 mb-3 sm:text-[40px] font-medium text-title-color text-center">
-        コンテンツ情報
+        {t("ContentInfo")}
       </div>
-      <Row1 label="コンテンツ名">
+      <Row1 label={t("ContentName")}>
         <input
           id="content_name"
           className={clsx(
@@ -44,13 +46,13 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="コンテンツ名"
+          placeholder={t("ContentName")}
           value={contentInfo.name}
           onChange={(e) => contentInfoChangeHandler("name", e)}
           ref={refs["name"]}
         />
       </Row1>
-      <Row1 label="コンテンツ概要">
+      <Row1 label={t("ContentDescription")}>
         <textarea
           id="content_description"
           className={clsx(
@@ -60,13 +62,13 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="コンテンツ概要"
+          placeholder={t("ContentDescription")}
           value={contentInfo.description}
           onChange={(e) => contentInfoChangeHandler("description", e)}
           ref={refs["description"]}
         />
       </Row1>
-      <Row1 label="サイトURL" optional={true}>
+      <Row1 label={t("HomepageURL")} optional={true}>
         <input
           id="content_url"
           className={clsx(
@@ -75,7 +77,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="ホームページ"
+          placeholder={t("URL")}
           value={contentInfo.url}
           onChange={(e) => contentInfoChangeHandler("url", e)}
         />

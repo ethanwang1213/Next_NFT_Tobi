@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Fragment } from "react";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
@@ -91,10 +92,13 @@ const ConfirmInformation = ({
       .filter(([, value]) => value === true)
       .map(([key]) => <Fragment key={key}>{key}, </Fragment>);
 
+  const t = useTranslations("TCP");
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-col items-center">
-        <span className="sm:text-[40px] font-medium">登録者情報</span>
+        <span className="sm:text-[40px] font-medium">
+          {t("RegistrantInfo")}
+        </span>
         <div className="flex flex-row gap-2 items-center">
           <Image
             src="/admin/images/info-icon-2.svg"
@@ -104,61 +108,58 @@ const ConfirmInformation = ({
             className=""
           />
           <span className="text-[12px]/[48x] ml-[7px]">
-            申請されている方の情報をご記入ください
+            {t("EnterApplicantInfo")}
           </span>
         </div>
       </div>
-      <Row1 label="コンテンツ名" wide={false}>
+      <Row1 label={t("ContentName")} wide={false}>
         <span className="">{contentInfo.name}</span>
       </Row1>
-      <Row1 label="コンテンツの説明" wide={false}>
+      <Row1 label={t("Description")} wide={false}>
         <span className="">
           {replaceNewLinesWithBreaks(contentInfo.description)}
         </span>
       </Row1>
-      <Row3 label="ホームページURL">
+      <Row3 label={t("HomepageURL")}>
         <span className="">{contentInfo.url}</span>
       </Row3>
-      <Row1 label="申請者氏名" wide={false}>
+      <Row1 label={t("ApplicantName")} wide={false}>
         <span className="">
           {userInfo.lastName} {userInfo.firstName}
         </span>
       </Row1>
-      <Row1 label="生年月日" wide={false}>
+      <Row1 label={"DateOfBirth"} wide={false}>
         <span className="">
           {userInfo.birthdayYear}年 {userInfo.birthdayMonth}月{" "}
           {userInfo.birthdayDate}日
         </span>
       </Row1>
-      <Row1 label="メールアドレス" wide={false}>
+      <Row1 label={t("Email")} wide={false}>
         <span className="">{userInfo.email}</span>
       </Row1>
-      <Row1 label="電話番号" wide={false}>
+      <Row1 label={t("PhoneNumber")} wide={false}>
         <span className="">{userInfo.phone}</span>
       </Row1>
-      <Row1 label="住所" wide={false}>
+      <Row1 label={t("Address")} wide={false}>
         <span className="">
           {userInfo.building} {userInfo.street} {userInfo.city}{" "}
           {userInfo.province} {userInfo.postalCode}{" "}
           {countryNames[userInfo.country]}
         </span>
       </Row1>
-      <Row1 label="コピーライト（版権表記）" wide={false}>
+      <Row1 label={t("CopyrightStatement")} wide={false}>
         <span className="">©{copyrightInfo.copyrightHolder}</span>
       </Row1>
       <Row3 label="著作物に関するライセンス">
         <div>{copyrightFiles()}</div>
       </Row3>
-      <Row4 label="所有している著作権やライセンス情報の提供">
+      <Row4 label={t("CopyrightLicenseInfo")}>
         <span className="uppercase">
           {getDefaultLicense(copyrightInfo.license)}
         </span>
       </Row4>
-      <Row1
-        label="提供するコンテンツが著作権に違反していないことに同意します。"
-        wide={true}
-      >
-        <span className="">同意する</span>
+      <Row1 label={t("NoCopyrightInfringe")} wide={true}>
+        <span className="">{t("Agree")}</span>
       </Row1>
       <div className="flex flex-row justify-center items-center mt-6">
         <input
@@ -174,7 +175,7 @@ const ConfirmInformation = ({
           }`}
           htmlFor={"originalContentDeclaration"}
         >
-          オリジナルコンテンツ制作の宣言
+          {t("DeclarationOfOriginal")}
         </label>
       </div>
     </div>
