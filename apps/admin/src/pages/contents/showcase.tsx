@@ -63,7 +63,6 @@ const Showcase = () => {
   const wasdKeys = useWASDKeys();
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
   const t = useTranslations("Showcase");
-  console.log(t("Exit"), "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
   // showcase unity view event handlers
   const onSaveDataGenerated = async (
