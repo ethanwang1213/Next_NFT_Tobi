@@ -6,7 +6,8 @@ import {
 import { auth } from "fetchers/firebase/client";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import { Metadata } from "next";
+import { GetStaticPropsContext, Metadata } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
@@ -20,6 +21,14 @@ import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
 export const metadata: Metadata = {
   title: "Account Setting",
 };
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`../../messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const valueClass = "text-[26px] font-normal flex-1";
 const editBtnClass = "text-[26px] text-primary font-normal";
@@ -52,6 +61,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
   const [facebookUrl, setFacebookUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [urls, setUrls] = useState([]);
+  const t = useTranslations("Account");
 
   const layoutClass = "flex items-center gap-4 mb-4";
 
@@ -247,7 +257,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           alt="add social icon"
         />
         <span className={`${valueClass} flex-1 outline-none`}>
-          外部リンクを追加
+          {t("AddLink")}
         </span>
       </div>
     </div>
@@ -265,6 +275,7 @@ export default function Index() {
   const genderEditDialogRef = useRef(null);
   const imageFileRef = useRef(null);
   const emailEditDialogRef = useRef(null);
+  const t = useTranslations("Account");
 
   const submitHandler = async () => {
     const submitData = {
@@ -340,7 +351,7 @@ export default function Index() {
             disabled={!modified}
             onClick={submitHandler}
           >
-            SAVE
+            {t("Save")}
           </button>
         )}
       </div>
@@ -368,7 +379,7 @@ export default function Index() {
             </button>
           </div>
           <div className="flex-1 flex flex-col mr-24">
-            <AccountFieldComponent label={"User name"}>
+            <AccountFieldComponent label={t("UserName")}>
               <input
                 type="text"
                 className={`${valueClass} outline-none`}
@@ -376,7 +387,7 @@ export default function Index() {
                 onChange={(e) => fieldChangeHandler("username", e.target.value)}
               />
             </AccountFieldComponent>
-            <AccountFieldComponent label={"User ID"}>
+            <AccountFieldComponent label={t("UserID")}>
               <input
                 type="text"
                 className={`${valueClass} outline-none`}
@@ -384,27 +395,27 @@ export default function Index() {
                 onChange={(e) => fieldChangeHandler("userId", e.target.value)}
               />
             </AccountFieldComponent>
-            <AccountFieldComponent label={"About me"} alignTop={true}>
+            <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
                 className={`${valueClass} h-[200px] outline-none resize-none`}
                 value={data?.aboutMe}
-                placeholder="Not Set"
+                placeholder={t("NotSet")}
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
               />
             </AccountFieldComponent>
-            <AccountFieldComponent label={"Social media"} alignTop={true}>
+            <AccountFieldComponent label={t("SocialMedia")} alignTop={true}>
               <SocialLinksComponent
                 socialLinks={data?.socialLinks}
                 changeHandler={(v) => fieldChangeHandler("socialLinks", v)}
               />
             </AccountFieldComponent>
-            <AccountFieldComponent label={"Gender"}>
+            <AccountFieldComponent label={t("Gender")}>
               <span
                 className={`${valueClass} ${
                   !data.gender ? "text-placeholder-color" : "text-sencondary"
                 }`}
               >
-                {data?.gender || "Not Set"}
+                {data?.gender || t("NotSet")}
               </span>
               <button
                 className={editBtnClass}
@@ -414,16 +425,16 @@ export default function Index() {
                   }
                 }}
               >
-                Edit
+                {t("Edit")}
               </button>
             </AccountFieldComponent>
-            <AccountFieldComponent label={"Birthday"}>
+            <AccountFieldComponent label={t("Birthday")}>
               <span
                 className={`${valueClass} ${
                   !data.birth ? "text-placeholder-color" : "text-sencondary"
                 }`}
               >
-                {data?.birth || "Not Set"}
+                {data?.birth || t("NotSet")}
               </span>
               <button
                 className={editBtnClass}
@@ -433,17 +444,17 @@ export default function Index() {
                   }
                 }}
               >
-                Edit
+                {t("Edit")}
               </button>
             </AccountFieldComponent>
-            <AccountFieldComponent label={"Email"}>
+            <AccountFieldComponent label={t("Email")}>
               <span className={`${valueClass} text-secondary`}>
                 {auth.currentUser.email}
               </span>
               {!isEmailVerified() && (
                 <div className="flex w-[148px] h-[48px] py-[8px] px-[16px] mr-[10px] justify-center items-center gap-[8px] rounded-[64px] bg-secondary">
                   <span className="text-base-white text-[20px] font-bold leading-[120%]">
-                    unverified
+                    {t("Unverified")}
                   </span>
                 </div>
               )}
@@ -451,18 +462,18 @@ export default function Index() {
                 className={editBtnClass}
                 onClick={handleClickEmailEditButton}
               >
-                Edit
+                {t("Edit")}
               </button>
             </AccountFieldComponent>
-            <AccountFieldComponent label={"Password"}>
+            <AccountFieldComponent label={t("Password")}>
               <span className={`${valueClass}`}>
-                {hasPasswordAccount() ? "****" : "未設定"}
+                {hasPasswordAccount() ? "****" : t("NotSet")}
               </span>
               <button
                 className={editBtnClass}
                 onClick={() => router.push("/auth/password_update")}
               >
-                Edit
+                {t("Edit")}
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Social Account"}>
@@ -475,10 +486,12 @@ export default function Index() {
                 <AppleIcon size="3x" disabled={!hasAppleAccount()} />
               </div>
               <button
-                className={editBtnClass}
+                className={`${editBtnClass} ${
+                  router.locale === "jp" ? "w-16" : ""
+                }`}
                 onClick={() => router.push("/auth/sns_account")}
               >
-                Edit
+                {t("Edit")}
               </button>
             </AccountFieldComponent>
           </div>

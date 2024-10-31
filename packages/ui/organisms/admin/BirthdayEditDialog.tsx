@@ -1,4 +1,5 @@
 import ja from "date-fns/locale/ja";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -17,6 +18,7 @@ const BirthdayEditDialog = ({
 }) => {
   const [birthday, setBirthday] = useState<Date | null>(new Date());
   const datePickerRef = useRef(null);
+  const t = useTranslations("Account");
 
   useEffect(() => {
     if (initialValue && initialValue.length > 0)
@@ -40,11 +42,11 @@ const BirthdayEditDialog = ({
           Edit Birthday
         </div>
         <div className="text-neutral-700 text-sm font-normal mb-2">
-          Your birthday will not be displayed on public profile.
+          {t("HideBirthdayNote")}
         </div>
         <div className="my-12 flex items-center gap-4">
           <span className="text-base-black text-sm font-semibold">
-            Birthday
+            {t("Birthday")}
           </span>
           <DatePicker
             ref={datePickerRef}
@@ -71,7 +73,7 @@ const BirthdayEditDialog = ({
               text-primary text-sm leading-4 font-semibold"
             onClick={() => dialogRef.current.close()}
           >
-            Cancel
+            {t("Cancel")}
           </button>
           <button
             type="button"

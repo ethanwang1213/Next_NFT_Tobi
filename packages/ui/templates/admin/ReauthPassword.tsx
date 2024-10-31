@@ -5,6 +5,7 @@ import {
 import { auth } from "fetchers/firebase/client";
 import { sendSignInLinkToEmail } from "firebase/auth";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import Button from "ui/atoms/Button";
@@ -62,6 +63,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
   const [password, setPassword] = useState<string | null>("");
   const [reauthenticate, reauthenticating, userCredential, reauthError] =
     usePasswordReauthentication();
+  const t = useTranslations("LogInSignUp");
 
   useEffect(() => {
     if (!userCredential) {
@@ -76,7 +78,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
     <ReauthTemplate position={Position.Top} onClickBack={onClickBack}>
       <div className="flex w-[780px] h-[80px] flex-col justify-center shrink-0 mt-[50px]">
         <span className="text-secondary text-center text-[32px] font-bold leading-[normal]">
-          Password
+          {t("Password")}
         </span>
       </div>
       <div className="w-[408px] h-[52px] shrink-0 mt-[103px]">
@@ -104,7 +106,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
           }
           onClick={onClickPasswordReset}
         >
-          I forgot my password!
+          {t("ForgotPassword")}
         </button>
       </div>
       <div className="h-[52px]">
@@ -119,7 +121,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
               text-base-white text-[20px] leading-4 font-normal hover:bg-primary hover:border-primary"
             onClick={() => reauthenticate(password)}
           >
-            Next
+            {t("Next")}
           </Button>
         )}
       </div>

@@ -392,6 +392,7 @@ const Detail = () => {
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [postData, id, fcmToken, digitalItem],
   );
 

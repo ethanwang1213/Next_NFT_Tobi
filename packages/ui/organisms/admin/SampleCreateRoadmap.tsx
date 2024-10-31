@@ -106,6 +106,7 @@ const RoadMapComponent = (props: {
         ? "border-l-2"
         : "border-l-0";
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [props],
   );
 
