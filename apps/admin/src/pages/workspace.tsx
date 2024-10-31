@@ -8,6 +8,7 @@ import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import { GetStaticPropsContext, Metadata } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -56,6 +57,7 @@ export default function Index() {
   const dialogRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [matchingSample, secondaryMatchSample] = useState(null);
+  const t = useTranslations("Workspace");
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -634,11 +636,11 @@ export default function Index() {
                   className="cursor-pointer h-[27px]"
                 />
                 <span className="text-[14px] font-bold text-white">
-                  Body/Base Ratio Settings
+                  {t("BodyBaseRatioSettings")}
                 </span>
               </button>
               <div className="absolute bottom-full left-52 w-max mb-2 font-medium text-white text-sm px-4 py-1 rounded-md bg-[#717171BF] z-20 hidden group-hover:block">
-                You can adjust the ratio of the selected Acrylic Stand.
+                {t("AdjustAcrylicRatio")}
               </div>
             </div>
           ) : null}

@@ -51,7 +51,7 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
           {data?.content?.name || "Content Name"}
         </span>
         <span className="text-base-black text-2xl font-bold text-gray-100 z-20">
-          {data?.name || "Item Title"}
+          {data?.name || t("ItemTitle")}
         </span>
         <div className="absolute w-full h-full top-0 bottom-0 left-0 right-0 flex justify-center items-center">
           {!showUnity && (

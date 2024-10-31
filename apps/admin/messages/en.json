@@ -168,6 +168,7 @@
     "Public": "Public"
   },
   "Showcase": {
+    "ItemTitle": "Item Title",
     "Exit": "Exit",
     "SampleItems": "Sample Items",
     "Inventory": "Inventory",
@@ -208,6 +209,7 @@
     "QrCodeCloseInstruction": "To close this screen, please click outside the QR code."
   },
   "Workspace": {
+    "ItemTitle": "Item Title",
     "CreateNewItem": "Create New Item",
     "SelectedItemCount": "selected {count} item",
     "Delete": "DELETE",
@@ -278,7 +280,13 @@
     "BaseScale": "Base Scale",
     "RatioSettings": "Ratio Settings",
     "Copyright": "Copyright",
-    "License": "License"
+    "License": "License",
+    "Creator": "Creator",
+    "DateAcquired": "Date Acquired",
+    "History": "History",
+    "SerialNumber": "Serial Number",
+    "AdjustAcrylicRatio": "You can adjust the ratio of the selected Acrylic Stand.",
+    "BodyBaseRatioSettings": "Body/Base Ratio Settings"
   },
   "Account": {
     "UserName": "User name",

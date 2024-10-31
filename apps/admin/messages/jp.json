@@ -160,7 +160,7 @@
     "CopyrightHolders": "著作権者",
     "SetDefaultCopyrightHolders": "各デジタルアイテムのレコードに対してデフォルトの著作権保有者を設定します。タグのように入力でき、この変更には再審査は必要ありません。",
     "CustomizeImage": "画像をカスタム",
-    "ConfirmSave": "保存を確認",
+    "ConfirmSave": "確認して保存",
     "Save": "保存",
     "Discard": "破棄",
     "Cancel": "キャンセル",
@@ -168,6 +168,7 @@
     "Public": "公開"
   },
   "Showcase": {
+    "ItemTitle": "アイテムタイトル",
     "Exit": "退出",
     "SampleItems": "サンプル",
     "Inventory": "インベントリ",
@@ -209,6 +210,7 @@
     "QrCodeCloseInstruction": "この画面を閉じるには、QRコードの外側をクリックしてください。"
   },
   "Workspace": {
+    "ItemTitle": "アイテムタイトル",
     "CreateNewItem": "新しいアイテムを作成",
     "SelectedItemCount": "{count} 個のアイテムを選択中",
     "Delete": "削除",
@@ -279,7 +281,13 @@
     "BaseScale": "台座のサイズ",
     "RatioSettings": "比率設定",
     "Copyright": "コピーライト",
-    "License": "ライセンス"
+    "License": "ライセンス",
+    "Creator": "クリエイター",
+    "DateAcquired": "取得日",
+    "History": "履歴",
+    "SerialNumber": "シリアルナンバー",
+    "AdjustAcrylicRatio": "選択したアクリルスタンドの本体と台座の比率を調整できます。",
+    "BodyBaseRatioSettings": "アクリルスタンド 比率変更"
   },
   "Account": {
     "UserName": "ユーザー名",
