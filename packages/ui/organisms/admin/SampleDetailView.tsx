@@ -127,6 +127,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, fcmToken, id, postData, deleteAllActionHistory, trackSampleMint],
   );
 

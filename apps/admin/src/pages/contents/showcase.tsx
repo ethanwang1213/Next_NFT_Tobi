@@ -62,7 +62,6 @@ const Showcase = () => {
   const { data: materialData } = useRestfulAPI("native/materials");
   const wasdKeys = useWASDKeys();
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
-  const t = useTranslations("Showcase");
 
   // showcase unity view event handlers
   const onSaveDataGenerated = async (
