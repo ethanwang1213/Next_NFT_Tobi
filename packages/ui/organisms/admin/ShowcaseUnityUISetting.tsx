@@ -128,42 +128,36 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             </span>
           </div>
           <div className="flex items-center justify-between w-full">
-            <input
-              type="text"
-              placeholder="x"
-              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center no-spinner"
-              value={py === null || py === undefined ? "" : px}
-              onChange={(e) => {
-                const newX = e.target.value.replace(notNumberReg, "");
-                const floatNewX = parseFloat(newX);
-                setpx(newX);
-                if (!isNaN(floatNewX)) {
-                  updatePosition(floatNewX, floatPy);
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") updateFinish();
-              }}
-              onBlur={updateFinish}
-            />
-            <input
-              type="text"
-              placeholder="y"
-              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center no-spinner"
-              value={py === null || py === undefined ? "" : py}
-              onChange={(e) => {
-                const newY = e.target.value.replace(notNumberReg, "");
-                const floatNewY = parseFloat(newY);
-                setpy(newY);
-                if (!isNaN(floatNewY)) {
-                  updatePosition(floatPx, floatNewY);
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") updateFinish();
-              }}
-              onBlur={updateFinish}
-            />
+            <div className="w-24">
+              <TransformTextField
+                placeholder="x"
+                value={px}
+                onChange={(e) => {
+                  const newX = e.target.value.replace(notNumberReg, "");
+                  const floatNewX = parseFloat(newX);
+                  setpx(newX);
+                  if (!isNaN(floatNewX)) {
+                    updatePosition(floatNewX, floatPy);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
+            <div className="w-24">
+              <TransformTextField
+                placeholder="y"
+                value={py}
+                onChange={(e) => {
+                  const newY = e.target.value.replace(notNumberReg, "");
+                  const floatNewY = parseFloat(newY);
+                  setpy(newY);
+                  if (!isNaN(floatNewY)) {
+                    updatePosition(floatPx, floatNewY);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
           </div>
         </div>
         <div className="flex items-center h-8">
@@ -179,24 +173,21 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             </span>
           </div>
           <div className="flex items-center w-full">
-            <input
-              type="text"
-              placeholder="rotation"
-              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center no-spinner"
-              value={rx === null || rx === undefined ? "" : rx}
-              onChange={(e) => {
-                const newR = e.target.value.replace(notNumberReg, "");
-                const floatNewR = parseFloat(newR);
-                setrx(newR);
-                if (!isNaN(floatNewR)) {
-                  updateRotation(floatNewR);
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") updateFinish();
-              }}
-              onBlur={updateFinish}
-            />
+            <div className="w-24">
+              <TransformTextField
+                placeholder="rotation"
+                value={rx}
+                onChange={(e) => {
+                  const newR = e.target.value.replace(notNumberReg, "");
+                  const floatNewR = parseFloat(newR);
+                  setrx(newR);
+                  if (!isNaN(floatNewR)) {
+                    updateRotation(floatNewR);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
           </div>
         </div>
         <div className="flex items-center h-8">
@@ -210,26 +201,21 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             <span className="text-[16px] font-bold w-[80px]">{t("Scale")}</span>
           </div>
           <div className="flex">
-            <input
-              type="text"
-              placeholder="scale"
-              className="input input-bordered max-w-xs w-14 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px] no-spinner"
-              value={scale === null || scale === undefined ? "" : scale}
-              onChange={(e) => {
-                const newScale = e.target.value.replace(notNumberReg, "");
-                const floatNewScale = parseFloat(newScale);
-                setScale(newScale);
-                if (!isNaN(floatNewScale)) {
-                  updateScale(floatNewScale);
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") updateFinish();
-              }}
-              onBlur={() => {
-                updateFinish();
-              }}
-            />
+            <div className="w-14">
+              <TransformTextField
+                placeholder="scale"
+                value={scale}
+                onChange={(e) => {
+                  const newScale = e.target.value.replace(notNumberReg, "");
+                  const floatNewScale = parseFloat(newScale);
+                  setScale(newScale);
+                  if (!isNaN(floatNewScale)) {
+                    updateScale(floatNewScale);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
           </div>
           <Slider
             min={0}
@@ -254,6 +240,34 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
         </div>
       </div>
     )
+  );
+};
+
+const TransformTextField = ({
+  placeholder,
+  value,
+  onChange,
+  updateFinish,
+}: {
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  updateFinish: () => void;
+}) => {
+  return (
+    <input
+      type="text"
+      placeholder={placeholder}
+      className="input input-bordered max-w-xs w-full h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px] no-spinner"
+      value={value === null || value === undefined ? "" : value}
+      onChange={onChange}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") updateFinish();
+      }}
+      onBlur={() => {
+        updateFinish();
+      }}
+    />
   );
 };
 
