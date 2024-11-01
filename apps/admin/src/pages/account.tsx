@@ -30,8 +30,8 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const valueClass = "text-[26px] font-normal flex-1";
-const editBtnClass = "text-[26px] text-primary font-normal";
+const valueClass = "text-[20px] font-normal flex-1";
+const editBtnClass = "text-[20px] text-primary font-normal";
 
 const AccountFieldComponent = ({
   label,
@@ -44,10 +44,10 @@ const AccountFieldComponent = ({
 }) => {
   return (
     <div
-      className={`flex border-b-[0.5px] border-secondary py-6 
+      className={`flex border-b-[0.5px] border-secondary py-4 
     ${alignTop ? "items-start" : "items-center"} `}
     >
-      <span className="w-[172px] shrink-0 text-[26px] text-base-200-content font-normal break-words">
+      <span className="w-[122px] shrink-0 text-[16px] text-base-200-content font-normal break-words">
         {label}
       </span>
       {children}
@@ -146,8 +146,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
     <div className="flex flex-col gap-2 px-2">
       <div className={`${layoutClass}`}>
         <Image
-          width={34}
-          height={30}
+          width={23}
+          height={20}
           src="/admin/images/icon/twitter-icon.svg"
           alt="twitter icon"
           className="cursor-pointer"
@@ -165,8 +165,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       </div>
       <div className={`${layoutClass}`}>
         <Image
-          width={34}
-          height={34}
+          width={23}
+          height={23}
           src="/admin/images/icon/instagram-icon.svg"
           alt="instagram icon"
           className="cursor-pointer"
@@ -184,8 +184,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       </div>
       <div className={`${layoutClass}`}>
         <Image
-          width={34}
-          height={34}
+          width={23}
+          height={23}
           src="/admin/images/icon/facebook-icon.svg"
           alt="facebook icon"
           className="cursor-pointer"
@@ -203,8 +203,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       </div>
       <div className={`${layoutClass}`}>
         <Image
-          width={34}
-          height={28}
+          width={23}
+          height={20}
           src="/admin/images/icon/youtube-icon.svg"
           alt="youtube icon"
           className="cursor-pointer"
@@ -224,8 +224,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         urls.map((url, index) => (
           <div key={`social-${index}`} className={`${layoutClass}`}>
             <Image
-              width={34}
-              height={34}
+              width={23}
+              height={23}
               src="/admin/images/icon/globe-icon.svg"
               alt="social icon"
               className="cursor-pointer"
@@ -251,8 +251,8 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         }}
       >
         <Image
-          width={34}
-          height={28}
+          width={23}
+          height={20}
           src="/admin/images/icon/add-social-icon.svg"
           alt="add social icon"
         />
@@ -345,7 +345,7 @@ export default function Index() {
           <span className="loading loading-spinner loading-md mr-14 mt-4 text-secondary-600"></span>
         ) : (
           <button
-            className={`text-xl h-14 text-white rounded-[30px] px-10
+            className={`text-[20px] text-white rounded-[30px] px-6 py-2
               ${modified ? "bg-primary" : "bg-inactive"}
             `}
             disabled={!modified}
@@ -359,8 +359,8 @@ export default function Index() {
         <div className="flex gap-10">
           <div className="w-40 flex flex-col items-center gap-6">
             <Image
-              width={144}
-              height={144}
+              width={96}
+              height={96}
               src={
                 data?.icon ? data.icon : "/admin/images/png/account-place.png"
               }
@@ -368,14 +368,14 @@ export default function Index() {
               className="rounded-full"
             />
             <button
-              className="text-[22px] text-primary font-normal"
+              className="text-[14px] bg-primary text-white font-normal rounded-lg	px-3 py-[6px]"
               onClick={() => {
                 if (imageFileRef.current) {
                   imageFileRef.current.click();
                 }
               }}
             >
-              Edit Picture
+              Edit Image
             </button>
           </div>
           <div className="flex-1 flex flex-col mr-24">
@@ -397,7 +397,7 @@ export default function Index() {
             </AccountFieldComponent>
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
-                className={`${valueClass} h-[200px] outline-none resize-none`}
+                className={`${valueClass} h-[118px] outline-none resize-none`}
                 value={data?.aboutMe}
                 placeholder={t("NotSet")}
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
