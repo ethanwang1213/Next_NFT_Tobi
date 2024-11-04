@@ -501,7 +501,11 @@ export const businessSubmission = async (req: Request, res: Response) => {
         await tx.copyrights.createMany({
           data: copyrights,
         });
-        const showcaseTemplate = await tx.showcase_template.findFirst();
+        const showcaseTemplate = await tx.showcase_template.findUnique({
+          where: {
+            id: 1, // default template id
+          },
+        });
         if (!showcaseTemplate) {
           throw new Error("not-template");
         }
