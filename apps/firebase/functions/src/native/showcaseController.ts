@@ -465,6 +465,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         stageType: number;
         scale: number;
         acrylicBaseScaleRatio: number | null;
+        shelfSectionIndex: number;
         position: {
           x: number;
           y: number;
@@ -491,6 +492,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
             stageType: relationSample.stage_type,
             scale: relationSample.scale,
             acrylicBaseScaleRatio: relationSample.acrylic_scale,
+            shelfSectionIndex: relationSample.shelf_section_index,
             position: {
               x: relationSample.position[0] ?? 0,
               y: relationSample.position[1] ?? 0,
@@ -515,6 +517,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         stageType: number;
         scale: number;
         itemMeterHeight: number;
+        shelfSectionIndex: number;
         position: {
             x: number;
             y: number;
@@ -542,6 +545,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
             stageType: relationNft.stage_type,
             scale: relationNft.scale,
             itemMeterHeight: relationNft.meter_height,
+            shelfSectionIndex: relationNft.shelf_section_index,
             position: {
               x: relationNft.position[0] ?? 0,
               y: relationNft.position[1] ?? 0,
@@ -615,6 +619,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
     id: number,
     itemId: number,
     stageType: number,
+    shelfSectionIndex: number,
     position: {
       x: number,
       y: number,
@@ -704,6 +709,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           },
           update: {
             stage_type: sample.stageType,
+            shelf_section_index: sample.shelfSectionIndex,
             position: [sample.position.x, sample.position.y, sample.position.z],
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },
@@ -712,6 +718,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             showcase_id: isShowcase.id,
             sample_item_id: sample.itemId,
             stage_type: sample.stageType,
+            shelf_section_index: sample.shelfSectionIndex,
             position: [sample.position.x, sample.position.y, sample.position.z],
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },
@@ -732,6 +739,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           },
           update: {
             stage_type: nft.stageType,
+            shelf_section_index: nft.shelfSectionIndex,
             position: [nft.position.x, nft.position.y, nft.position.z],
             rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
           },
@@ -739,6 +747,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             showcase_id: isShowcase.id,
             nft_id: nft.itemId,
             stage_type: nft.stageType,
+            shelf_section_index: nft.shelfSectionIndex,
             position: [nft.position.x, nft.position.y, nft.position.z],
             rotation: [nft.rotation.x, nft.rotation.y, nft.rotation.z],
           },

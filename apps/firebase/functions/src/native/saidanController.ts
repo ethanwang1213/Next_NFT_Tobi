@@ -476,6 +476,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
     },
     canScale: boolean;
     itemMeterHeight: number;
+    shelfSectionIndex: number;
     scale: number;
   }
   interface CameraData {
@@ -591,6 +592,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
               },
               data: {
                 stage_type: item.stageType,
+                shelf_section_index: item.shelfSectionIndex,
                 position: [
                   item.position.x,
                   item.position.y,
@@ -732,6 +734,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
           modelUrl: item.nft.digital_item.model_url,
           thumbUrl: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
           stageType: item.nft.nft_camera?.stage_type,
+          shelfSectionIndex: item.nft.nft_camera?.shelf_section_index,
           position: {
             x: item.nft.nft_camera?.position[0],
             y: item.nft.nft_camera?.position[1],
