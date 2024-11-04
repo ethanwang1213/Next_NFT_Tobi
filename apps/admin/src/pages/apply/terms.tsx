@@ -1,10 +1,21 @@
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Button from "ui/atoms/Button";
 
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
+
 const Terms = () => {
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
+  const t = useTranslations("TCP");
 
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
@@ -19,7 +30,7 @@ const Terms = () => {
         Tobiratory Creator Program
       </div>
       <div className="md:text-[40px] text-[20px] md:leading-[60px] font-medium text-secondary-400">
-        利用規約
+        {t("TermsOfService")}
       </div>
       <textarea
         className="w-full h-[24rem] p-2 mt-6 outline-none shadow-[inset_4px_4px_4px_rgba(0,0,0,0.25)]"
@@ -43,7 +54,7 @@ const Terms = () => {
           }`}
           htmlFor="checkbox"
         >
-          利用規約・プライバシーポリシーに同意する。
+          {t("AgreeTermsPrivacy")}
         </label>
       </div>
       <Button
@@ -53,7 +64,7 @@ const Terms = () => {
         disabled={!isChecked}
         onClick={handleButtonClicked}
       >
-        申請フォームへ
+        {t("SubmitApplication")}
       </Button>
     </div>
   );

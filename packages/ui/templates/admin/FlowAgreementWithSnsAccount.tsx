@@ -77,7 +77,7 @@ const AboutFlowAccount = () => {
   return (
     <InfoLink
       url={"https://www.tobiratory.com/about"}
-      text={t('LinkFlowAccountInfo')}
+      text={t("LinkFlowAccountInfo")}
     />
   );
 };

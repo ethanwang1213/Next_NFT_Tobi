@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { RequireMark } from "ui/atoms/Marks";
 
@@ -22,6 +23,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
   const userInfoChangeHandler = (field, e) => {
     setUserInfo({ ...userInfo, [field]: e.target.value.substring(0, 255) });
   };
+
+  const t = useTranslations("TCP");
 
   const handleYearChange = (event) => {
     // Ensure that only numeric characters are allowed for the year
@@ -65,7 +68,9 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-col items-center">
-        <span className="sm:text-[40px] font-medium">登録者情報</span>
+        <span className="sm:text-[40px] font-medium">
+          {t("RegistrantInfo")}
+        </span>
         <div className="flex flex-row items-center">
           <Image
             src="/admin/images/info-icon-2.svg"
@@ -75,11 +80,11 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             className=""
           />
           <span className="text-[12px]/[48x] ml-[7px]">
-            申請されている方の情報をご記入ください
+            {t("EnterApplicantInfo")}
           </span>
         </div>
       </div>
-      <Row1 label="申請者氏名">
+      <Row1 label={t("ApplicantName")}>
         <div className="flex flex-row justify-between">
           <input
             id="user_last_name"
@@ -89,7 +94,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
             )}
-            placeholder="姓"
+            placeholder={t("LastName")}
             value={userInfo.lastName}
             onChange={(e) => userInfoChangeHandler("lastName", e)}
             ref={refs["lastName"]}
@@ -103,14 +108,14 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
             )}
-            placeholder="名"
+            placeholder={t("FirstName")}
             value={userInfo.firstName}
             onChange={(e) => userInfoChangeHandler("firstName", e)}
             ref={refs["firstName"]}
           />
         </div>
       </Row1>
-      <Row1 label="生年月日">
+      <Row1 label={t("DateOfBirth")}>
         <div className="flex flex-row items-end w-full">
           <div className="flex flex-row items-end w-[40%]">
             <input
@@ -159,7 +164,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           </div>
         </div>
       </Row1>
-      <Row1 label="メールアドレス">
+      <Row1 label={t("MailAddress")}>
         <input
           id="user_email"
           className={clsx(
@@ -174,7 +179,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           ref={refs["email"]}
         />
       </Row1>
-      <Row1 label="電話番号">
+      <Row1 label={t("PhoneNumber")}>
         <input
           id="user_phone"
           className={clsx(
@@ -183,13 +188,13 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="ハイフン無し"
+          placeholder={t("NoHyphens")}
           value={userInfo.phone}
           onChange={handlePhoneChange}
           ref={refs["phone"]}
         />
       </Row1>
-      <Row1 label="住所">
+      <Row1 label={t("Address")}>
         <input
           id="user_building"
           className={clsx(
@@ -198,7 +203,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="建物名・部屋番号（任意）"
+          placeholder={t("BuildingRoom")}
           value={userInfo.building}
           onChange={(e) => userInfoChangeHandler("building", e)}
           ref={refs["building"]}
@@ -213,7 +218,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="市区町村"
+          placeholder={t("StatePrefecture")}
           value={userInfo.city}
           onChange={(e) => userInfoChangeHandler("city", e)}
           ref={refs["city"]}
@@ -228,7 +233,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder="番地"
+          placeholder={t("City")}
           value={userInfo.street}
           onChange={(e) => userInfoChangeHandler("street", e)}
           ref={refs["street"]}
@@ -244,7 +249,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
             )}
-            placeholder="都道府県"
+            placeholder={t("PostalCode")}
             value={userInfo.province}
             onChange={(e) => userInfoChangeHandler("province", e)}
             ref={refs["province"]}
@@ -257,7 +262,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
             )}
-            placeholder="郵便番号"
+            placeholder={t("PostalCode")}
             value={userInfo.postalCode}
             onChange={(e) => userInfoChangeHandler("postalCode", e)}
             ref={refs["postalCode"]}
@@ -275,7 +280,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
           ref={refs["country"]}
         >
           <option value={""} disabled selected>
-            国
+            {t("Country")}
           </option>
           <option value={"japan"}>日本</option>
         </select>

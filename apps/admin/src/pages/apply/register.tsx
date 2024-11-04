@@ -4,6 +4,8 @@ import {
   useTcpRegistration,
   validateCopyrightFile,
 } from "fetchers/businessAccount";
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -19,11 +21,18 @@ import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";
 import UserInformation from "./userInfo";
-import { useTranslations } from "next-intl";
 
-const switchLabels = ["コンテンツ情報", "登録者情報", "その他"];
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const Register = () => {
+  const t = useTranslations("TCP");
+  const switchLabels = [t("Content"), t("RegistrantInfo"), t("Other")];
   const [switchValue, setSwitchValue] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
@@ -322,7 +331,11 @@ const Register = () => {
 
         <LoadingButton
           nextLabel={
-            switchValue === 2 ? "確認する" : switchValue === 3 ? "申請" : "次へ"
+            switchValue === 2
+              ? t("Confirm")
+              : switchValue === 3
+                ? t("Apply")
+                : t("Next")
           }
           color={nextButtonColor()}
           disabled={isButtonDisabled()}
@@ -361,7 +374,7 @@ const LoadingButton = ({
               relative enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow`}
         onClick={handleBack}
       >
-        {t('Back')}
+        {t("Back")}
       </Button>
       <Button
         type="button"

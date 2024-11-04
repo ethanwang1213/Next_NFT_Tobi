@@ -322,6 +322,17 @@ const Detail = () => {
     submitHandler();
   };
 
+  const sanitizeLicense = (license) => {
+    return {
+      com: license.com,
+      adp: license.adp,
+      der: license.der,
+      dst: license.dst,
+      mer: license.mer,
+      ncr: license.ncr,
+    };
+  };
+
   const submitHandler = async () => {
     setLoading(true);
 
@@ -335,7 +346,7 @@ const Detail = () => {
       startDate: digitalItem.startDate,
       endDate: digitalItem.endDate,
       quantityLimit: parseInt(digitalItem.quantityLimit),
-      license: digitalItem.license,
+      license: sanitizeLicense(digitalItem.license),
       copyrights: digitalItem.copyrights,
       schedules: digitalItem.schedules,
     };

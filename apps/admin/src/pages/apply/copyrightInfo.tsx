@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ChangeEvent, MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
@@ -6,13 +7,16 @@ import { OptionMark, RequireMark } from "ui/atoms/Marks";
 import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
 
 const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
+  const t = useTranslations("TCP");
+  const l = useTranslations("License");
+
   const copyrightInfoChangeHandler = (field, value) => {
     if (field === "copyrightHolder") {
       setCopyrightInfo({
         ...copyrightInfo,
         [field]: value.replace(/^©/, "").substring(0, 255),
       });
-    } else if (["com", "adp", "der","mer", "dst", "ncr"].includes(field)) {
+    } else if (["com", "adp", "der", "mer", "dst", "ncr"].includes(field)) {
       setCopyrightInfo({
         ...copyrightInfo,
         license: {
@@ -37,6 +41,15 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
     copyrightInfo.file2?.name,
     copyrightInfo.file3?.name,
     copyrightInfo.file4?.name,
+  ];
+
+  const actions = [
+    l("Actions.0"),
+    l("Actions.1"),
+    l("Actions.2"),
+    l("Actions.3"),
+    l("Actions.4"),
+    l("Actions.5"),
   ];
 
   const handleFileChange = (
@@ -67,10 +80,14 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
   return (
     <div className="text-title-color">
       <div className="md:mb-16 mb-6 text-center">
-        <span className="sm:text-[40px] md:mr-10 font-medium">著作権情報</span>
+        <span className="sm:text-[40px] md:mr-10 font-medium">
+          {t("CopyrightsLicenses")}
+        </span>
       </div>
       <div className="flex flex-row items-center sm:justify-start justify-between">
-        <span className="text-base sm:mr-[15px]">コピーライト（版権表記）</span>
+        <span className="text-base sm:mr-[15px]">
+          {t("CopyrightStatement")}
+        </span>
         <RequireMark />
       </div>
       <div className="md:mb-[50px] mb-6 md:flex flex-row justify-between items-center md:space-y-0 space-y-4 md:mt-0 mt-4">
@@ -81,17 +98,12 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             height={16}
             alt="information"
           />
-          <span className="text-[12px] ml-2">
-            ここでは１つのみ提出してください。あとから追加・変更が可能です。
-          </span>
+          <span className="text-[12px] ml-2">{t("SubmitSingleDocument")}</span>
         </div>
-        {/* Be sure to include 'sm:' and 'md:' like
-         'sm:focus-within:border-focus-color md:focus-within:border-focus-color'
-          to prevent 'hover:' from taking precedence. */}
         <label
           className={clsx(
             "input flex items-center gap-1",
-            "w-[370px] h-12 pl-5 ml-7",
+            "sm:w-[370px] h-12 pl-5 ml-7",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color",
             "focus:outline-none focus-within:outline-none sm:focus-within:border-focus-color md:focus-within:border-focus-color",
             "text-sm font-normal text-input-color",
@@ -117,7 +129,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         <div className="flex flex-col md:text-nowrap">
           <div className="mb-4 flex flex-row items-center sm:justify-start justify-between">
             <p className="md:w-auto w-[80%] text-base sm:mr-8">
-              所有している著作権やライセンス情報の提供
+              {t("CopyrightLicenseInfo")}
             </p>
             <OptionMark />
           </div>
@@ -129,9 +141,9 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
               alt="information"
             />
             <span className="text-[12px] sm:ml-4">
-              著作権やライセンスを証明する公式文書を提出できます。
+              {t("SubmitOfficialDocs")}
               <br />
-              20MB以内のJPEG、PNG、PDFファイルのみ対応しています。
+              {t("FileSupportInfo")}
             </span>
           </div>
         </div>
@@ -147,7 +159,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         <div className="flex flex-col md:text-nowrap">
           <div className="mb-4 flex flex-row items-center sm:justify-start justify-between">
             <p className="md:w-auto w-[80%] text-base sm:mr-8">
-              Default License
+              {t("DefaultLicense")}
             </p>
             <OptionMark />
           </div>
@@ -158,75 +170,52 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
               height={16}
               alt="information"
             />
-            <span className="text-[12px] sm:ml-4">
-              It can be changed later.
-            </span>
+            <span className="text-[12px] sm:ml-4">{t("ChangeLater")}</span>
           </div>
         </div>
       </div>
       <div className="px-6 mt-6">
         <div className="border rounded-lg p-6 border-primary text-primary">
-          <p className="text-[14px] font-bold">
-            Prohibited Actions under All Licenses
-          </p>
+          <p className="text-[14px] font-bold">{l("ProhibitedActions")}</p>
           <div className="text-[12px]">
-            <p>&bull; Use that violates public order and morals.</p>
-            <p>
-              &bull; Use that significantly damages the image of our company,
-              products, or characters.
-            </p>
-            <p>
-              &bull; Use that harms or could potentially harm the social
-              reputation of the author of the work being used.
-            </p>
-            <p>
-              &bull; Use that infringes or could potentially infringe the rights
-              of others.
-            </p>
-            <p>
-              &bull; Use that creates or could create the misconception that we
-              support or endorse specific individuals, political parties,
-              religious organizations, etc.
-            </p>
-            <p>
-              &bull; Copying or reproducing works without adding substantial
-              modifications is considered “replication” and is prohibited.
-            </p>
+            {actions.map((action, index) => (
+              <p key={index}>&bull; {action}</p>
+            ))}
           </div>
         </div>
         <div className="mt-8">
           <RadioButtonGroup
             initialValue={copyrightInfo.license.com}
-            title="Commercial Use (COM/NCM)"
+            title={l("CommercialUse")}
             onChange={(value) => copyrightInfoChangeHandler("com", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
-            title="Adaptation (ADP)"
+            title={l("Adaptation")}
             initialValue={copyrightInfo.license.adp}
             onChange={(value) => copyrightInfoChangeHandler("adp", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
-            title="Derivative Works (DER)"
+            title={l("Derivative")}
             initialValue={copyrightInfo.license.der}
             onChange={(value) => copyrightInfoChangeHandler("der", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
-            title="Merchandising (MER)"
+            title={l("Merchandising")}
             initialValue={copyrightInfo.license.mer}
             onChange={(value) => copyrightInfoChangeHandler("mer", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
-            title="Distribution for Free (DST)"
+            title={l("Distribution")}
             initialValue={copyrightInfo.license.dst}
             onChange={(value) => copyrightInfoChangeHandler("dst", value)}
           />
           <hr className="pb-3 border-primary" />
           <RadioButtonGroup
-            title="Credit Omission (NCR)"
+            title={l("CreditOmission")}
             initialValue={copyrightInfo.license.ncr}
             onChange={(value) => copyrightInfoChangeHandler("ncr", value)}
           />
@@ -248,7 +237,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
           }`}
           htmlFor="checkbox"
         >
-          提供するコンテンツが著作権に違反していないことに同意します。
+          {t("NoCopyrightInfringe")}
         </label>
       </div>
     </div>
@@ -296,6 +285,7 @@ const FileUploadButton = ({
   fileRef: MutableRefObject<HTMLInputElement>;
   handleChange: FileHandleChange;
 }) => {
+  const t = useTranslations("TCP");
   const truncateString = (str?: string) => {
     const num = 20;
     if (str?.length > num) {
@@ -345,7 +335,7 @@ const FileUploadButton = ({
         className="flex-0 w-36 h-8 bg-transparent border rounded-lg border-normal-color text-[10px]"
         onClick={() => fileRef.current.click()}
       >
-        ファイルアップロード
+        {t("FileUpload")}
       </Button>
     </div>
   );

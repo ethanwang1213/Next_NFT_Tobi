@@ -1,10 +1,19 @@
 import { useAuth } from "contexts/AdminAuthProvider";
-import { Metadata } from "next";
+import { GetStaticPropsContext, Metadata } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
 import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 export const metadata: Metadata = {
   title: "Tobiratory Creator Programに参加",
@@ -17,18 +26,19 @@ const ConfirmModal = ({
 }) => {
   const router = useRouter();
   const { signOut, user } = useAuth();
+  const t = useTranslations("TCP");
 
   return (
     <AccountConfirmDialog
-      title="このアカウントでTCPに参加する?"
+      title={t("JoinThisAccount")}
       account={user}
       firstButtonProp={{
-        caption: "別のアカウントで申請",
+        caption: t("ApplyDifferentAccount"),
         isPrimary: false,
         callback: signOut,
       }}
       secondButtonProp={{
-        caption: "次へ",
+        caption: t("Next"),
         isPrimary: true,
         callback: () => router.replace("/apply/terms"),
       }}
@@ -42,6 +52,7 @@ const Index = () => {
   const handleButtonClick = () => {
     modalRef.current.showModal();
   };
+  const t = useTranslations("TCP");
 
   return (
     <div className="md:container px-6 h-full mx-auto sm:py-20 py-10 text-center font-normal text-base text-[#5A5A5A] flex-1">
@@ -53,7 +64,7 @@ const Index = () => {
         className="mx-auto sm:w-[191px] sm:h-[194px] w-[78px] h-[79px]"
       />
       <div className="text-[20px] sm:text-[48px] sm:mt-28 mt-10 font-bold">
-        Tobiratory Creator Program
+        {t("Program")}
       </div>
       <div className="mt-10 mb-3 sm:text-[16px] text-[13px] sm:text-center text-left font-semibold">
         Tobiratory Creator Programに参加すると以下のことが可能になります。
@@ -80,7 +91,7 @@ const Index = () => {
           className="mr-2"
         />
         <span className="sm:text-md text-[12px] sm:text-center text-left">
-          １アカウントにつきコンテンツは１つまで申請できます
+          {t("ApplyLimit")}
         </span>
       </div>
       <Button
@@ -88,7 +99,7 @@ const Index = () => {
         className={`text-[16px] md:text-3xl bg-primary text-white rounded-[88px] py-4 px-8 mt-16`}
         onClick={handleButtonClick}
       >
-        Tobiratory Creator Program
+        {t("Program")}
       </Button>
       <ConfirmModal dialogRef={modalRef} />
     </div>
