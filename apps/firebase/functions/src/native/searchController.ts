@@ -3,6 +3,7 @@ import {FirebaseError} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {prisma} from "../prisma";
 import {digitalItemStatus, statusOfShowcase} from "./utils";
+import { defaultPageSize } from "../lib/constants";
 
 export const searchAll = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -152,9 +153,10 @@ export const searchAll = async (req: Request, res: Response) => {
 
 export const searchUsers = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {q} = req.query;
+  const {q, pageNumber} = req.query;
   const searchValue = q?.toString()==""?undefined:q?.toString();
-  console.log(searchValue);
+  const skip = (Number(pageNumber??1)-1)*defaultPageSize;
+  console.log(searchValue, pageNumber);
   if (!searchValue) {
     res.status(200).send({
       status: "success",
@@ -165,6 +167,8 @@ export const searchUsers = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
       const users = await prisma.accounts.findMany({
+        skip: skip,
+        take: defaultPageSize,
         where: {
           OR: [
             {
@@ -185,7 +189,6 @@ export const searchUsers = async (req: Request, res: Response) => {
         orderBy: {
           username: "asc",
         },
-        // take: 5,
       });
       const resultUsers = users.map((user)=>{
         return {
@@ -216,7 +219,6 @@ export const searchUsers = async (req: Request, res: Response) => {
 export const searchDigitalItems = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {q, pageNumber} = req.query;
-  const defaultPageSize = 10;
   const skip = (Number(pageNumber??1)-1)*defaultPageSize;
   const searchValue = q?.toString()==""?undefined:q?.toString();
   console.log(searchValue);
@@ -270,9 +272,10 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
 
 export const searchContents = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {q} = req.query;
+  const {q, pageNumber} = req.query;
   const searchValue = q?.toString()==""?undefined:q?.toString();
-  console.log(searchValue);
+  const skip = (Number(pageNumber??1)-1)*defaultPageSize;
+  console.log(searchValue, pageNumber);
   if (!searchValue) {
     res.status(200).send({
       status: "success",
@@ -284,6 +287,8 @@ export const searchContents = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     try {
       const contents = await prisma.contents.findMany({
+        skip: skip,
+        take: defaultPageSize,
         where: {
           name: {
             contains: searchValue,
@@ -291,7 +296,6 @@ export const searchContents = async (req: Request, res: Response) => {
           },
           is_deleted: false,
         },
-        // take: 2,
         include: {
           showcases: {
             where: {
@@ -335,9 +339,10 @@ export const searchContents = async (req: Request, res: Response) => {
 
 export const searchSaidans = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {q} = req.query;
+  const {q, pageNumber} = req.query;
   const searchValue = q?.toString()==""?undefined:q?.toString();
-  console.log(searchValue);
+  const skip = (Number(pageNumber??1)-1)*defaultPageSize;
+  console.log(searchValue, pageNumber);
   if (!searchValue) {
     res.status(200).send({
       status: "success",
@@ -348,6 +353,8 @@ export const searchSaidans = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
       const saidans = await prisma.saidans.findMany({
+        skip: skip,
+        take: defaultPageSize,
         where: {
           title: {
             contains: searchValue,
@@ -355,7 +362,6 @@ export const searchSaidans = async (req: Request, res: Response) => {
           },
           is_deleted: false,
         },
-        // take: 2,
         include: {
           saidans_template: true,
         },
