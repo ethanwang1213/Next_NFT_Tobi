@@ -3,25 +3,47 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ItemTransformUpdatePhase } from "types/unityTypes";
 
 const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
-  const [scale, setScale] = useState<number>(1.0);
-  const [px, setpx] = useState<number>(0);
-  const [py, setpy] = useState<number>(0);
-  const [rx, setrx] = useState<number>(0);
+  const [px, setpx] = useState<string>(null);
+  const [py, setpy] = useState<string>(null);
+  const [rx, setrx] = useState<string>(null);
+  const [scale, setScale] = useState<string>(null);
+
+  const floatPx = useMemo(() => parseFloat(px), [px]);
+  const floatPy = useMemo(() => parseFloat(py), [py]);
+  const floatScale = useMemo(() => parseFloat(scale), [scale]);
+
   const t = useTranslations("Showcase");
   const { selectedItem, updateItemTransform } = useShowcaseEditUnity();
 
+  const notNumberReg = useMemo(() => /[^-\d.]/g, []);
+
   useEffect(() => {
-    if (selectedItem) {
+    if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setpx(selectedItem.positionOnPlane.x);
+    }
+  }, [selectedItem?.positionOnPlane?.x]);
+
+  useEffect(() => {
+    if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setpy(selectedItem.positionOnPlane.y);
+    }
+  }, [selectedItem?.positionOnPlane?.y]);
+
+  useEffect(() => {
+    if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setrx(selectedItem.rotationAngle);
+    }
+  }, [selectedItem?.rotationAngle]);
+
+  useEffect(() => {
+    if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setScale(selectedItem.scale);
     }
-  }, [selectedItem]);
+  }, [selectedItem?.scale]);
 
   const updatePosition = (x: number, y: number) => {
     if (!selectedItem || !updateItemTransform) return;
@@ -65,6 +87,11 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
       phase: ItemTransformUpdatePhase.Ended,
     };
     updateItemTransform(updatedData);
+
+    setpx(selectedItem.positionOnPlane.x.toFixed(3));
+    setpy(selectedItem.positionOnPlane.y.toFixed(3));
+    setrx(selectedItem.rotationAngle.toFixed(1));
+    setScale(selectedItem.scale.toFixed(3));
   };
 
   const handleStyle = {
@@ -101,32 +128,36 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             </span>
           </div>
           <div className="flex items-center justify-between w-full">
-            <input
-              type="number"
-              placeholder="x"
-              step={0.1}
-              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center no-spinner"
-              value={px === 0 ? "" : px.toFixed(3)}
-              onChange={(e) => {
-                const newX = parseFloat(e.target.value) || 0;
-                setpx(newX);
-                updatePosition(newX, py);
-              }}
-              onBlur={updateFinish}
-            />
-            <input
-              type="number"
-              placeholder="y"
-              step={0.1}
-              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center no-spinner"
-              value={py === 0 ? "" : py.toFixed(3)}
-              onChange={(e) => {
-                const newY = parseFloat(e.target.value) || 0;
-                setpy(newY);
-                updatePosition(px, newY);
-              }}
-              onBlur={updateFinish}
-            />
+            <div className="w-24">
+              <TransformTextField
+                placeholder="x"
+                value={px}
+                onChange={(e) => {
+                  const newX = e.target.value.replace(notNumberReg, "");
+                  const floatNewX = parseFloat(newX);
+                  setpx(newX);
+                  if (!isNaN(floatNewX)) {
+                    updatePosition(floatNewX, floatPy);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
+            <div className="w-24">
+              <TransformTextField
+                placeholder="y"
+                value={py}
+                onChange={(e) => {
+                  const newY = e.target.value.replace(notNumberReg, "");
+                  const floatNewY = parseFloat(newY);
+                  setpy(newY);
+                  if (!isNaN(floatNewY)) {
+                    updatePosition(floatPx, floatNewY);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
           </div>
         </div>
         <div className="flex items-center h-8">
@@ -142,20 +173,21 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             </span>
           </div>
           <div className="flex items-center w-full">
-            <input
-              type="number"
-              min={0}
-              max={359}
-              placeholder="x"
-              step={1}
-              className="input input-bordered max-w-xs w-24 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center no-spinner"
-              value={rx.toFixed(1)}
-              onChange={(e) => {
-                const newRotation = parseFloat(e.target.value) || 0;
-                updateRotation(newRotation);
-              }}
-              onBlur={updateFinish}
-            />
+            <div className="w-24">
+              <TransformTextField
+                placeholder="rotation"
+                value={rx}
+                onChange={(e) => {
+                  const newR = e.target.value.replace(notNumberReg, "");
+                  const floatNewR = parseFloat(newR);
+                  setrx(newR);
+                  if (!isNaN(floatNewR)) {
+                    updateRotation(floatNewR);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
           </div>
         </div>
         <div className="flex items-center h-8">
@@ -169,24 +201,26 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             <span className="text-[16px] font-bold w-[80px]">{t("Scale")}</span>
           </div>
           <div className="flex">
-            <input
-              min={0}
-              max={5}
-              type="number"
-              step={0.1}
-              placeholder="scale"
-              className="input input-bordered max-w-xs w-14 h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px] no-spinner"
-              value={scale.toFixed(1)}
-              onChange={(e) => {
-                const newScale = parseFloat(e.target.value) || 0;
-                updateScale(newScale);
-              }}
-              onBlur={updateFinish}
-            />
+            <div className="w-14">
+              <TransformTextField
+                placeholder="scale"
+                value={scale}
+                onChange={(e) => {
+                  const newScale = e.target.value.replace(notNumberReg, "");
+                  const floatNewScale = parseFloat(newScale);
+                  setScale(newScale);
+                  if (!isNaN(floatNewScale)) {
+                    updateScale(floatNewScale);
+                  }
+                }}
+                updateFinish={updateFinish}
+              />
+            </div>
           </div>
           <Slider
             min={0}
             max={5}
+            step={0.001}
             styles={{
               handle: handleStyle,
               track: trackStyle,
@@ -194,12 +228,46 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
             }}
             style={{ width: "130px" }}
             className="ml-6"
-            value={scale}
-            onChange={updateScale}
+            value={scale === null || scale === undefined ? 1.0 : floatScale}
+            onChange={(newScale: number) => {
+              setScale(newScale.toString());
+              updateScale(newScale);
+            }}
+            onBlur={() => {
+              updateFinish();
+            }}
           />
         </div>
       </div>
     )
+  );
+};
+
+const TransformTextField = ({
+  placeholder,
+  value,
+  onChange,
+  updateFinish,
+}: {
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  updateFinish: () => void;
+}) => {
+  return (
+    <input
+      type="text"
+      placeholder={placeholder}
+      className="input input-bordered max-w-xs w-full h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px] no-spinner"
+      value={value === null || value === undefined ? "" : value}
+      onChange={onChange}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") updateFinish();
+      }}
+      onBlur={() => {
+        updateFinish();
+      }}
+    />
   );
 };
 

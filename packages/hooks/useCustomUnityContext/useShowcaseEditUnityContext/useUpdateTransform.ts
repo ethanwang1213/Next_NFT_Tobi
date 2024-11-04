@@ -69,6 +69,7 @@ export const useUpdateItemTransform = ({
             positionOnPlane,
             rotationAngle,
             scale,
+            isUpdatedFromFrontend: messageBody.isUpdatedFromFrontend,
           },
       );
     },

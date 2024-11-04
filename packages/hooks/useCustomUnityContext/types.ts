@@ -136,6 +136,7 @@ export type SelectedItem = ItemTypeParam &
     positionOnPlane: PositionOnPlane;
     rotationAngle: number;
     scale: number;
+    isUpdatedFromFrontend: boolean;
   };
 
 export type UndoneRedoneResult = {
@@ -160,4 +161,3 @@ export type UndoneOrRedone = (
   text: string,
   result: UndoneRedoneResult,
 ) => void;
-
