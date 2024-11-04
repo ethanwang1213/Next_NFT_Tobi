@@ -256,15 +256,16 @@ model digital_item_nfts {
 }
 
 model nft_cameras {
-    nft_id            Int               @id @unique
-    nft               digital_item_nfts @relation(references: [id], fields: [nft_id])
-    stage_type        Int               @default(0)
-    meter_height      Float             @default(0)
-    scale             Float             @default(0)
-    position          Float[]           @default([0, 0, 0])
-    rotation          Float[]           @default([0, 0, 0])
-    updated_date_time DateTime          @default(now()) @db.Timestamp(6)
-    created_date_time DateTime          @default(now()) @db.Timestamp(6)
+    nft_id              Int               @id @unique
+    nft                 digital_item_nfts @relation(references: [id], fields: [nft_id])
+    stage_type          Int               @default(0)
+    meter_height        Float             @default(0)
+    scale               Float             @default(0)
+    shelf_section_index Int               @default(0)
+    position            Float[]           @default([0, 0, 0])
+    rotation            Float[]           @default([0, 0, 0])
+    updated_date_time   DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time   DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model nft_owners {
@@ -388,33 +389,35 @@ model showcase_template {
 }
 
 model showcase_sample_items {
-    id                Int          @id @default(autoincrement())
-    showcase          showcases    @relation(fields: [showcase_id], references: [id])
-    showcase_id       Int
-    sample_item       sample_items @relation(fields: [sample_item_id], references: [id])
-    sample_item_id    Int
-    stage_type        Int          @default(0)
-    scale             Float        @default(1)
-    acrylic_scale     Float?
-    position          Float[]
-    rotation          Float[]
-    updated_date_time DateTime     @default(now()) @db.Timestamp(6)
-    created_date_time DateTime     @default(now()) @db.Timestamp(6)
+    id                  Int          @id @default(autoincrement())
+    showcase            showcases    @relation(fields: [showcase_id], references: [id])
+    showcase_id         Int
+    sample_item         sample_items @relation(fields: [sample_item_id], references: [id])
+    sample_item_id      Int
+    stage_type          Int          @default(0)
+    shelf_section_index Int          @default(0)
+    scale               Float        @default(1)
+    acrylic_scale       Float?
+    position            Float[]
+    rotation            Float[]
+    updated_date_time   DateTime     @default(now()) @db.Timestamp(6)
+    created_date_time   DateTime     @default(now()) @db.Timestamp(6)
 }
 
 model showcase_nft_items {
-    id                Int               @id @default(autoincrement())
-    showcase          showcases         @relation(fields: [showcase_id], references: [id])
-    showcase_id       Int
-    digital_item_nft  digital_item_nfts @relation(fields: [nft_id], references: [id])
-    nft_id            Int               @unique
-    stage_type        Int               @default(0)
-    scale             Float             @default(1)
-    meter_height      Float             @default(0)
-    position          Float[]
-    rotation          Float[]
-    updated_date_time DateTime          @default(now()) @db.Timestamp(6)
-    created_date_time DateTime          @default(now()) @db.Timestamp(6)
+    id                  Int               @id @default(autoincrement())
+    showcase            showcases         @relation(fields: [showcase_id], references: [id])
+    showcase_id         Int
+    digital_item_nft    digital_item_nfts @relation(fields: [nft_id], references: [id])
+    nft_id              Int               @unique
+    stage_type          Int               @default(0)
+    shelf_section_index Int               @default(0)
+    scale               Float             @default(1)
+    meter_height        Float             @default(0)
+    position            Float[]
+    rotation            Float[]
+    updated_date_time   DateTime          @default(now()) @db.Timestamp(6)
+    created_date_time   DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model contents_favorite {
