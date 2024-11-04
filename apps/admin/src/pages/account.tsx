@@ -487,7 +487,7 @@ export default function Index() {
               </div>
               <button
                 className={`${editBtnClass} ${
-                  router.locale === "jp" ? "w-16" : ""
+                  router.locale === "jp" ? "w-12" : ""
                 }`}
                 onClick={() => router.push("/auth/sns_account")}
               >
