@@ -250,7 +250,7 @@ const Showcase = () => {
 
   useEffect(() => {
     if (selectedItem) {
-      setShowSampleDetailView(true);
+      setShowSampleDetailView(showDetailView || false);
       setSelectedSampleItem(selectedItem.digitalItemId);
       setShowOperate(true);
     } else {
