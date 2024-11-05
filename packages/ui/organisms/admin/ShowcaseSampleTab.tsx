@@ -49,10 +49,9 @@ const ShowcaseSampleTab = ({
           <span className="loading loading-spinner loading-md"></span>
         </span>
       )}
-
       {data &&
         data.length > 0 &&
-        data.map((sample, index) => {
+        [...data].reverse().map((sample, index) => {
           return (
             <div
               key={sample.sampleItemId}
