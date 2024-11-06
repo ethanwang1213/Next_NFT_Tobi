@@ -276,6 +276,7 @@ export default function Index() {
   const imageFileRef = useRef(null);
   const emailEditDialogRef = useRef(null);
   const t = useTranslations("Account");
+  const userIdRegex = /^[A-Za-z0-9_-]{5,20}$/;
 
   const submitHandler = async () => {
     const submitData = {
@@ -288,8 +289,13 @@ export default function Index() {
       birth: data?.birth,
       icon: data?.icon,
     };
+
+    if (!userIdRegex.test(data.userId)) {
+      toast("User ID cannot contain spaces.");
+      return;
+    }
+
     if (data && data.icon != dataRef?.current.icon) {
-      // upload image
       setLoading(true);
       const iconUrl = await uploadImage(data.icon, ImageType.AccountAvatar);
       submitData.icon = iconUrl;
@@ -308,14 +314,13 @@ export default function Index() {
     }
   };
 
-  const fieldChangeHandler = (field, value) => {
+  const fieldChangeHandler = (field: string, value: string) => {
     setData({ ...data, [field]: value });
     setModified(true);
   };
 
   const handleFileInputChange = async (event) => {
     const file = event.target.files[0];
-    // Check if a file is selected
     if (file) {
       fieldChangeHandler("icon", URL.createObjectURL(file));
     }
