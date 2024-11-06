@@ -147,4 +147,4 @@ export const isValidUserId = (userId: string):boolean => {
   const userIdRegex = /^[a-z0-9_-]{5,20}$/;
 
   return userIdRegex.test(normalizedId);
-}
+};
