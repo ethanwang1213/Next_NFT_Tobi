@@ -15,6 +15,10 @@
   margin: 0;
 }
 
+.ReactCrop__crop-selection{
+ z-index: 10;
+}
+
 .no-spinner {
   -moz-appearance: textfield;
 }
