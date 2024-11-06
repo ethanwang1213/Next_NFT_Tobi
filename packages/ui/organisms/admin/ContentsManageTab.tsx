@@ -88,7 +88,7 @@ export default function ContentsManageTab({
           {tab !== "showcase" && (
             <>
               <button
-                className={`text-xl h-14 border-2 rounded-[30px] px-10 
+                className={`text-xl h-12 border-2 rounded-[30px] px-6 
                   enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow 
                   ${
                     changed
@@ -104,7 +104,7 @@ export default function ContentsManageTab({
                 {t("Cancel")}
               </button>
               <button
-                className={`text-xl h-14 text-white rounded-[30px] px-10 
+                className={`text-xl h-12 text-white rounded-[30px] px-6 
                   enabled:hover:shadow-xl enabled:hover:-top-[3px] transition-shadow 
                   ${changed ? "bg-primary" : "bg-inactive"}`}
                 disabled={!changed}
