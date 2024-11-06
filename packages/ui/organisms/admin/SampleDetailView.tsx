@@ -255,7 +255,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
               <SampleDetailDialog data={data} dialogRef={dialogRef} />
             )}
             {data && (
-              <div className="mx-auto mt-12">
+              <div className="mx-auto mt-4">
                 <Link href={`/items/detail?id=${id}`}>
                   <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
                     <Image

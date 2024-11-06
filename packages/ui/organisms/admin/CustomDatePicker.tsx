@@ -1,6 +1,6 @@
-import { addMonths, endOfMonth, format, startOfMonth } from "date-fns";
+import { addMonths, endOfMonth, format, getDay, startOfMonth } from "date-fns";
 import { format as tzFormat, fromZonedTime, toZonedTime } from "date-fns-tz";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface CustomDatePickerProps {
   onDateTimeChange: (date: Date) => void;
@@ -22,6 +22,24 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       timeZone,
     }),
   );
+
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
 
   useEffect(() => {
     const zonedDate = toZonedTime(initialDateTime, timeZone);
@@ -54,7 +72,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   };
 
   const updateDateTime = (date: Date) => {
-    // Convert the date back to JST using fromZonedTime
     const utcDate = fromZonedTime(date, timeZone);
     onDateTimeChange(utcDate);
   };
@@ -63,17 +80,26 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     const start = startOfMonth(selectedDate);
     const end = endOfMonth(selectedDate);
     const daysArray = [];
+    const startDayIndex = getDay(start);
+
+    for (let i = 0; i < startDayIndex; i++) {
+      daysArray.push(null);
+    }
 
     for (let i = start.getDate(); i <= end.getDate(); i++) {
       daysArray.push(i);
     }
+
     return daysArray;
   };
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className="date-picker absolute bg-white border border-gray-300 rounded-lg p-2.5 text-center mt-3">
+    <div
+      ref={datePickerRef}
+      className="date-picker absolute bg-white border border-gray-300 rounded-lg p-2.5 text-center mt-3"
+    >
       <div className="mb-3">
         <div className="flex justify-start items-center mb-1 pl-3">
           <button onClick={() => handleMonthChange(-1)} className="font-bold">
@@ -96,18 +122,24 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           ))}
         </div>
         <div className="days grid gap-1 grid-cols-7">
-          {daysInMonth().map((day) => (
-            <button
-              key={day}
-              onClick={() => handleDateChange(day)}
-              className={`flex items-center border-none p-6 cursor-pointer w-[44px] h-[44px] rounded-full justify-center ${
-                selectedDate.getDate() === day
-                  ? "bg-[#b4d5f8] text-primary text-[24px]"
-                  : "text-black text-[20px]"
-              }`}
+          {daysInMonth().map((day, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-center w-[44px] h-[44px]"
             >
-              {day}
-            </button>
+              {day ? (
+                <button
+                  onClick={() => handleDateChange(day)}
+                  className={`flex items-center border-none p-6 cursor-pointer w-[44px] h-[44px] rounded-full justify-center ${
+                    selectedDate.getDate() === day
+                      ? "bg-[#b4d5f8] text-primary text-[24px]"
+                      : "text-black text-[20px]"
+                  }`}
+                >
+                  {day}
+                </button>
+              ) : null}
+            </div>
           ))}
         </div>
       </div>

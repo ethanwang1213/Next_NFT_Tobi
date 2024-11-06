@@ -42,7 +42,6 @@ const config = {
       },
       height: {
         'screen-minus-56': 'calc(100vh - 56px)',
-        'screen-minus-170' : 'calc(100vh - 170px)'
       },
       colors: {
         active: "#FF811C",

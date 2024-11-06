@@ -56,8 +56,28 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
     setRotate(rotate);
   }, []);
 
+  const calculateSafeZoneStyles = (crop: Crop) => {
+    const safeZoneWidth = crop.width * 0.86;
+    const safeZoneHeight = crop.height * 0.86;
+    const outlineWidth = (crop.width - safeZoneWidth) / 2;
+
+    return {
+      width: `${safeZoneWidth}px`,
+      height: `${safeZoneHeight}px`,
+      left: `${crop.x + (crop.width - safeZoneWidth) / 2}px`,
+      top: `${crop.y + (crop.height - safeZoneHeight) / 2}px`,
+      outline: `${outlineWidth}px solid #ff8484`,
+      borderRadius: "50%",
+    };
+  };
+
+  const [safeZoneStyles, setSafeZoneStyles] = useState(
+    calculateSafeZoneStyles(crop),
+  );
+
   const cropChangeHandler = (newCrop: Crop) => {
     setCrop(newCrop);
+    setSafeZoneStyles(calculateSafeZoneStyles(newCrop));
   };
 
   const cropImage = useCallback(async () => {
@@ -178,6 +198,7 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
               />
             </div>
           </ReactCrop>
+          <div style={calculateSafeZoneStyles(crop)} className="absolute"></div>
           <RotateSliderComponent
             className="mt-6 -mb-[18px]"
             rotate={rotate}

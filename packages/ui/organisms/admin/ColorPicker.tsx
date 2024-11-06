@@ -90,7 +90,7 @@ const ColorPicker = ({
       </div>
 
       <div
-        className="w-[32px] h-[32px] rounded-full cursor-pointer"
+        className="w-[32px] h-[32px] rounded-full cursor-pointer border-[1px] border-white"
         style={{ backgroundColor: color }}
         onClick={handlePickerToggle}
       />
