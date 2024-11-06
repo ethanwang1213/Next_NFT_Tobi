@@ -136,3 +136,15 @@ export const convertBaseString = (num: number): string => {
 
   return result;
 };
+
+export const isValidUserId = (userId: string):boolean => {
+  // Convert the userId to lowercase to handle case-insensitivity
+  const normalizedId = userId.toLowerCase();
+
+  // Regular expression for:
+  // - Only letters (A–Z, a–z), numbers (0–9), underscore (_), and hyphen (-)
+  // - Length between 5 and 20 characters
+  const userIdRegex = /^[a-z0-9_-]{5,20}$/;
+
+  return userIdRegex.test(normalizedId);
+};

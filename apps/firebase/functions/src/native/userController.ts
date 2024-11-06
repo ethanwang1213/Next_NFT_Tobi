@@ -3,7 +3,7 @@ import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
-import {convertBaseString, increaseTransactionAmount, isEmptyObject, statusOfLimitTransaction, statusOfShowcase} from "./utils";
+import {convertBaseString, increaseTransactionAmount, isEmptyObject, isValidUserId, statusOfLimitTransaction, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
@@ -278,6 +278,29 @@ export const postMyProfile = async (req: Request, res: Response) => {
   }
   const {authorization} = req.headers;
   const {account, flow}: { account?: AccountType; flow?: FlowType } = req.body;
+
+  // validate user id to match with our regex
+  const validateUserId = isValidUserId(account?.userId??"");
+  if (!validateUserId) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-userId",
+    });
+  }
+
+  // check double user id
+  const doubleUser = await prisma.accounts.findFirst({
+    where: {
+      user_id: account?.userId,
+    },
+  });
+  if (doubleUser) {
+    res.status(401).send({
+      status: "error",
+      data: "double-userId",
+    });
+  }
+
   const accountUpdated = {
     user_id: account?.userId,
     username: account?.username,

@@ -3,7 +3,7 @@ import {FirebaseError} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {prisma} from "../prisma";
 import {digitalItemStatus, statusOfShowcase} from "./utils";
-import { defaultPageSize } from "../lib/constants";
+import {defaultPageSize} from "../lib/constants";
 
 export const searchAll = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -166,6 +166,28 @@ export const searchUsers = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
+      const totalUsers = await prisma.accounts.findMany({
+        where: {
+          OR: [
+            {
+              username: {
+                contains: searchValue,
+                mode: "insensitive",
+              },
+            },
+            {
+              user_id: {
+                contains: searchValue,
+                mode: "insensitive",
+              },
+            },
+          ],
+          is_deleted: false,
+        },
+        orderBy: {
+          username: "asc",
+        },
+      });
       const users = await prisma.accounts.findMany({
         skip: skip,
         take: defaultPageSize,
@@ -200,7 +222,10 @@ export const searchUsers = async (req: Request, res: Response) => {
       });
       res.status(200).send({
         status: "success",
-        data: resultUsers,
+        data: {
+          users: resultUsers,
+          totalRecords: totalUsers.length,
+        },
       });
     } catch (error) {
       res.status(401).send({
@@ -231,6 +256,19 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
+      const totalDigitalItems = await prisma.digital_items.findMany({
+        where: {
+          name: {
+            contains: searchValue,
+            mode: "insensitive",
+          },
+          metadata_status: digitalItemStatus.hidden,
+          is_deleted: false,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
       const digitalItems = await prisma.digital_items.findMany({
         skip: skip,
         take: defaultPageSize,
@@ -254,7 +292,10 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
       });
       res.status(200).send({
         status: "success",
-        data: resultDigitalItems,
+        data: {
+          digitalItems: resultDigitalItems,
+          totalRecords: totalDigitalItems.length,
+        },
       });
     } catch (error) {
       res.status(401).send({
@@ -286,6 +327,31 @@ export const searchContents = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
+      const totalContents = await prisma.contents.findMany({
+        skip: skip,
+        take: defaultPageSize,
+        where: {
+          name: {
+            contains: searchValue,
+            mode: "insensitive",
+          },
+          is_deleted: false,
+        },
+        include: {
+          showcases: {
+            where: {
+              status: statusOfShowcase.public,
+            },
+            include: {
+              showcase_template: true,
+            },
+          },
+          favorite_users: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
       const contents = await prisma.contents.findMany({
         skip: skip,
         take: defaultPageSize,
@@ -321,7 +387,10 @@ export const searchContents = async (req: Request, res: Response) => {
       });
       res.status(200).send({
         status: "success",
-        data: resultContents,
+        data: {
+          contents: resultContents,
+          totalRecords: totalContents.length,
+        },
       });
     } catch (error) {
       res.status(401).send({
@@ -352,6 +421,23 @@ export const searchSaidans = async (req: Request, res: Response) => {
   }
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (_decodedToken: DecodedIdToken) => {
     try {
+      const totalSaidans = await prisma.saidans.findMany({
+        skip: skip,
+        take: defaultPageSize,
+        where: {
+          title: {
+            contains: searchValue,
+            mode: "insensitive",
+          },
+          is_deleted: false,
+        },
+        include: {
+          saidans_template: true,
+        },
+        orderBy: {
+          title: "asc",
+        },
+      });
       const saidans = await prisma.saidans.findMany({
         skip: skip,
         take: defaultPageSize,
@@ -378,7 +464,10 @@ export const searchSaidans = async (req: Request, res: Response) => {
       });
       res.status(200).send({
         status: "success",
-        data: resultSaidans,
+        data: {
+          saidans: resultSaidans,
+          totalRecords: totalSaidans.length,
+        },
       });
     } catch (error) {
       res.status(401).send({
@@ -437,7 +526,7 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
         data: {
           pageNumber: pageNumber,
           size: defaultPageSize,
-          totalRecord: totalRecord,
+          totalRecord: totalRecord.length,
           digitalItems: resultDigitalItems,
         },
       });
