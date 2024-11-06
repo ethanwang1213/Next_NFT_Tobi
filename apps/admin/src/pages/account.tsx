@@ -289,8 +289,8 @@ export default function Index() {
       birth: data?.birth,
       icon: data?.icon,
     };
-
-    if (!userIdRegex.test(data.userId)) {
+    const normalizedValue = data.userId.toLowerCase();
+    if (!userIdRegex.test(normalizedValue)) {
       toast("User ID cannot contain spaces.");
       return;
     }
