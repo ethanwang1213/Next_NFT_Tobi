@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {prisma} from "../prisma";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
-import {digitalItemStatus, statusOfShowcase} from "./utils";
+import {statusOfShowcase} from "./utils";
 
 export const getShowcaseTemplate = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -457,6 +457,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       let sampleItemList: {
         id: number;
         itemId: number;
+        digitalItemId: number;
         name: string;
         modelType: number;
         modelUrl: string;
@@ -480,35 +481,37 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       for (const relationSample of showcase.showcase_sample_items) {
         const sampleData = relationSample.sample_item;
         const digitalData = relationSample.sample_item.digital_item;
-        if ([digitalItemStatus.onSale, digitalItemStatus.viewingOnly].includes(digitalData.sales.length > 0 ? digitalData.sales[0].status : digitalData.metadata_status)) {
-          sampleItemList = [...sampleItemList, {
-            id: relationSample.id,
-            itemId: sampleData.id,
-            name: sampleData.digital_item.name??"",
-            modelType: digitalData.type,
-            modelUrl: digitalData.model_url,
-            thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
-            materialUrl: digitalData.material_image?.image,
-            stageType: relationSample.stage_type,
-            scale: relationSample.scale,
-            acrylicBaseScaleRatio: relationSample.acrylic_scale,
-            shelfSectionIndex: relationSample.shelf_section_index,
-            position: {
-              x: relationSample.position[0] ?? 0,
-              y: relationSample.position[1] ?? 0,
-              z: relationSample.position[2] ?? 0,
-            },
-            rotation: {
-              x: relationSample.rotation[0] ?? 0,
-              y: relationSample.rotation[1] ?? 0,
-              z: relationSample.rotation[2] ?? 0,
-            },
-          }];
-        }
+        // if ([digitalItemStatus.onSale, digitalItemStatus.viewingOnly].includes(digitalData.sales.length > 0 ? digitalData.sales[0].status : digitalData.metadata_status)) {
+        sampleItemList = [...sampleItemList, {
+          id: relationSample.id,
+          itemId: sampleData.id,
+          digitalItemId: sampleData.digital_item_id,
+          name: sampleData.digital_item.name??"",
+          modelType: digitalData.type,
+          modelUrl: digitalData.model_url,
+          thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
+          materialUrl: digitalData.material_image?.image,
+          stageType: relationSample.stage_type,
+          scale: relationSample.scale,
+          acrylicBaseScaleRatio: relationSample.acrylic_scale,
+          shelfSectionIndex: relationSample.shelf_section_index,
+          position: {
+            x: relationSample.position[0] ?? 0,
+            y: relationSample.position[1] ?? 0,
+            z: relationSample.position[2] ?? 0,
+          },
+          rotation: {
+            x: relationSample.rotation[0] ?? 0,
+            y: relationSample.rotation[1] ?? 0,
+            z: relationSample.rotation[2] ?? 0,
+          },
+        }];
+        // }
       }
       let nftItemList:{
         id: number;
         itemId: number;
+        digitalItemId: number;
         name: string;
         modelType: number;
         modelUrl: string;
@@ -533,31 +536,32 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       for (const relationNft of showcase.showcase_nft_items) {
         const nftData = relationNft.digital_item_nft;
         const digitalData = relationNft.digital_item_nft.digital_item;
-        if ([digitalItemStatus.onSale, digitalItemStatus.viewingOnly].includes(digitalData.sales.length > 0 ? digitalData.sales[0].status : digitalData.metadata_status)) {
-          nftItemList = [...nftItemList, {
-            id: relationNft.id,
-            itemId: nftData.id,
-            name: nftData.digital_item.name??"",
-            modelType: digitalData.type,
-            modelUrl: digitalData.model_url,
-            thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
-            materialUrl: digitalData.material_image?.image,
-            stageType: relationNft.stage_type,
-            scale: relationNft.scale,
-            itemMeterHeight: relationNft.meter_height,
-            shelfSectionIndex: relationNft.shelf_section_index,
-            position: {
-              x: relationNft.position[0] ?? 0,
-              y: relationNft.position[1] ?? 0,
-              z: relationNft.position[2] ?? 0,
-            },
-            rotation: {
-              x: relationNft.rotation[0] ?? 0,
-              y: relationNft.rotation[1] ?? 0,
-              z: relationNft.rotation[2] ?? 0,
-            },
-          }];
-        }
+        // if ([digitalItemStatus.onSale, digitalItemStatus.viewingOnly].includes(digitalData.sales.length > 0 ? digitalData.sales[0].status : digitalData.metadata_status)) {
+        nftItemList = [...nftItemList, {
+          id: relationNft.id,
+          itemId: nftData.id,
+          digitalItemId: nftData.digital_item_id,
+          name: nftData.digital_item.name??"",
+          modelType: digitalData.type,
+          modelUrl: digitalData.model_url,
+          thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
+          materialUrl: digitalData.material_image?.image,
+          stageType: relationNft.stage_type,
+          scale: relationNft.scale,
+          itemMeterHeight: relationNft.meter_height,
+          shelfSectionIndex: relationNft.shelf_section_index,
+          position: {
+            x: relationNft.position[0] ?? 0,
+            y: relationNft.position[1] ?? 0,
+            z: relationNft.position[2] ?? 0,
+          },
+          rotation: {
+            x: relationNft.rotation[0] ?? 0,
+            y: relationNft.rotation[1] ?? 0,
+            z: relationNft.rotation[2] ?? 0,
+          },
+        }];
+        // }
       }
       const settings = {
         wallpaper: {
@@ -620,6 +624,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
     itemId: number,
     stageType: number,
     shelfSectionIndex: number,
+    acrylicBaseScaleRatio: number | undefined;
     position: {
       x: number,
       y: number,
@@ -710,6 +715,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           update: {
             stage_type: sample.stageType,
             shelf_section_index: sample.shelfSectionIndex,
+            acrylic_scale: sample.acrylicBaseScaleRatio,
             position: [sample.position.x, sample.position.y, sample.position.z],
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },
@@ -719,6 +725,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
             sample_item_id: sample.itemId,
             stage_type: sample.stageType,
             shelf_section_index: sample.shelfSectionIndex,
+            acrylic_scale: sample.acrylicBaseScaleRatio,
             position: [sample.position.x, sample.position.y, sample.position.z],
             rotation: [sample.rotation.x, sample.rotation.y, sample.rotation.z],
           },

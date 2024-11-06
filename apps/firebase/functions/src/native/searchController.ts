@@ -3,7 +3,7 @@ import {FirebaseError} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {prisma} from "../prisma";
 import {digitalItemStatus, statusOfShowcase} from "./utils";
-import { defaultPageSize } from "../lib/constants";
+import {defaultPageSize} from "../lib/constants";
 
 export const searchAll = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
@@ -437,7 +437,7 @@ export const hotPicksDigitalItem = async (req: Request, res: Response) => {
         data: {
           pageNumber: pageNumber,
           size: defaultPageSize,
-          totalRecord: totalRecord,
+          totalRecord: totalRecord.length,
           digitalItems: resultDigitalItems,
         },
       });
