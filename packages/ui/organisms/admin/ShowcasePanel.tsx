@@ -1,3 +1,4 @@
+import { formatInTimeZone } from "date-fns-tz";
 import ja from "date-fns/locale/ja";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
@@ -166,10 +167,15 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     if (!scheduleTimeChanged) {
       return;
     }
+    const scheduleTimeJST = formatInTimeZone(
+      scheduleTime,
+      "Asia/Tokyo",
+      "yyyy-MM-dd'T'HH:mm:ssXXX",
+    );
 
     const jsonData = await putData(
       `${apiUrl}/${props.id}`,
-      { scheduleTime },
+      { scheduleTimeJST },
       [],
     );
     if (jsonData) {
