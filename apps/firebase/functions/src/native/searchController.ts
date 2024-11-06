@@ -160,7 +160,9 @@ export const searchUsers = async (req: Request, res: Response) => {
   if (!searchValue) {
     res.status(200).send({
       status: "success",
-      data: [],
+      data: {
+        users: [],
+      },
     });
     return;
   }
@@ -250,7 +252,9 @@ export const searchDigitalItems = async (req: Request, res: Response) => {
   if (!searchValue) {
     res.status(200).send({
       status: "success",
-      data: [],
+      data: {
+        digitalItems: [],
+      },
     });
     return;
   }
@@ -320,7 +324,9 @@ export const searchContents = async (req: Request, res: Response) => {
   if (!searchValue) {
     res.status(200).send({
       status: "success",
-      data: [],
+      data: {
+        contents: [],
+      },
     });
     return;
   }
@@ -415,7 +421,9 @@ export const searchSaidans = async (req: Request, res: Response) => {
   if (!searchValue) {
     res.status(200).send({
       status: "success",
-      data: [],
+      data: {
+        saidans: [],
+      },
     });
     return;
   }
