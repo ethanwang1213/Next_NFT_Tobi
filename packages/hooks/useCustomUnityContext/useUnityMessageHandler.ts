@@ -17,13 +17,14 @@ type Props = {
   handleSimpleMessage: MessageHandler;
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;
-  handleItemThumbnailGenerated?: MessageHandler;
-  handleDragPlacingStarted?: () => void;
-  handleDragPlacingEnded?: () => void;
+  handleItemSelected?: MessageHandler;
   handleRemoveItemEnabled?: () => void;
   handleRemoveItemDisabled?: () => void;
   handleRemoveItemRequested?: MessageHandler;
-  handleItemSelected?: MessageHandler;
+  handleItemThumbnailGenerated?: MessageHandler;
+  handleNftModelGenerated?: MessageHandler;
+  handleDragPlacingStarted?: () => void;
+  handleDragPlacingEnded?: () => void;
   handleActionRegistered?: () => void;
   handleActionUndone?: MessageHandler;
   handleActionRedone?: MessageHandler;
@@ -36,13 +37,14 @@ export const useUnityMessageHandler = ({
   handleSimpleMessage,
   handleSceneIsLoaded,
   handleSaveDataGenerated,
-  handleItemThumbnailGenerated,
-  handleDragPlacingStarted,
-  handleDragPlacingEnded,
+  handleItemSelected,
   handleRemoveItemEnabled,
   handleRemoveItemDisabled,
   handleRemoveItemRequested,
-  handleItemSelected,
+  handleItemThumbnailGenerated,
+  handleNftModelGenerated,
+  handleDragPlacingStarted,
+  handleDragPlacingEnded,
   handleActionRegistered,
   handleActionUndone,
   handleActionRedone,
@@ -80,8 +82,8 @@ export const useUnityMessageHandler = ({
         case UnityMessageType.SaidanSaveDataIsGenerated:
           handleSaveDataGenerated?.(msgObj);
           return;
-        case UnityMessageType.ItemThumbnailIsGenerated:
-          handleItemThumbnailGenerated?.(msgObj);
+        case UnityMessageType.ItemIsSelected:
+          handleItemSelected?.(msgObj);
           return;
         case UnityMessageType.RemoveItemEnabled:
           handleRemoveItemEnabled?.();
@@ -92,14 +94,17 @@ export const useUnityMessageHandler = ({
         case UnityMessageType.RemoveItemRequested:
           handleRemoveItemRequested?.(msgObj);
           return;
+        case UnityMessageType.ItemThumbnailIsGenerated:
+          handleItemThumbnailGenerated?.(msgObj);
+          return;
+        case UnityMessageType.NftModelIsGenerated:
+          handleNftModelGenerated?.(msgObj);
+          return;
         case UnityMessageType.DragStarted:
           handleDragPlacingStarted?.();
           return;
         case UnityMessageType.DragEnded:
           handleDragPlacingEnded?.();
-          return;
-        case UnityMessageType.ItemIsSelected:
-          handleItemSelected?.(msgObj);
           return;
         case UnityMessageType.ActionRegistered:
           handleActionRegistered?.();
@@ -122,13 +127,14 @@ export const useUnityMessageHandler = ({
       handleSimpleMessage,
       handleSceneIsLoaded,
       handleSaveDataGenerated,
-      handleItemThumbnailGenerated,
-      handleDragPlacingStarted,
-      handleDragPlacingEnded,
+      handleItemSelected,
       handleRemoveItemEnabled,
       handleRemoveItemDisabled,
       handleRemoveItemRequested,
-      handleItemSelected,
+      handleItemThumbnailGenerated,
+      handleNftModelGenerated,
+      handleDragPlacingStarted,
+      handleDragPlacingEnded,
       handleActionRegistered,
       handleActionUndone,
       handleActionRedone,

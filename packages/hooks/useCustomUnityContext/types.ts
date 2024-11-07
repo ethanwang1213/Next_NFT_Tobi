@@ -19,6 +19,7 @@ export const UnitySceneType = {
   ShowcaseEdit: 2,
   ItemPreview: 3,
   AcrylicBaseSettings: 4,
+  NftModelGenerator: 5,
 } as const;
 export type UnitySceneType =
   (typeof UnitySceneType)[keyof typeof UnitySceneType];
@@ -46,7 +47,8 @@ export type MessageDestination =
   | "UpdateItemTransformMessageReceiver"
   | "ViewItemModelMessageReceiver"
   | "LoadAcrylicStandMessageReceiver"
-  | "UpdateAcrylicBaseScaleRatioMessageReceiver";
+  | "UpdateAcrylicBaseScaleRatioMessageReceiver"
+  | "NftModelGenerationMessageReceiver";
 
 export const UnityMessageType = {
   SimpleMessage: 0,

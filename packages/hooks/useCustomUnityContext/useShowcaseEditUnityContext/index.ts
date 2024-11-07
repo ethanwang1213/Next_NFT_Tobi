@@ -27,25 +27,25 @@ import {
 } from "../types";
 import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
+import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUpdateItemTransform } from "./useUpdateTransform";
 
-type Props = {
-  itemMenuX?: number;
-  onSaveDataGenerated?: (
-    showcaseSaveData: ShowcaseSaveData,
-    updateIdValues: UpdateIdValues,
-  ) => void;
-  onRemoveItemEnabled?: () => void;
-  onRemoveItemDisabled?: () => void;
-  onRemoveItemRequested?: (
-    itemType: ItemType,
-    id: number,
-    itemId: number,
-    sendItemRemovalResult: SendItemRemovalResult,
-  ) => void;
-  onActionUndone?: UndoneOrRedone;
-  onActionRedone?: UndoneOrRedone;
-};
+type SaveDataGeneratedHandler = (
+  showcaseSaveData: ShowcaseSaveData,
+  updateIdValues: UpdateIdValues,
+) => void;
+
+type RemoveItemRequestedHandler = (
+  itemType: ItemType,
+  id: number,
+  itemId: number,
+  sendItemRemovalResult: SendItemRemovalResult,
+) => void;
+
+type NftModelGeneratedHandler = (
+  itemId: number,
+  nftModelBase64: string,
+) => void;
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
@@ -57,7 +57,17 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemRequested,
   onActionUndone,
   onActionRedone,
-}: Props) => {
+  onNftModelGenerated,
+}: {
+  itemMenuX?: number;
+  onSaveDataGenerated?: SaveDataGeneratedHandler;
+  onRemoveItemEnabled?: () => void;
+  onRemoveItemDisabled?: () => void;
+  onRemoveItemRequested?: RemoveItemRequestedHandler;
+  onActionUndone?: UndoneOrRedone;
+  onActionRedone?: UndoneOrRedone;
+  onNftModelGenerated?: NftModelGeneratedHandler;
+}) => {
   const {
     // state
     unityProvider,
@@ -199,6 +209,12 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  const { requestNftModelGeneration, handleNftModelGenerated } =
+    useRequestNftModelGeneration({
+      postMessageToUnity,
+      onNftModelGenerated,
+    });
+
   // event handlers
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
@@ -276,12 +292,13 @@ export const useShowcaseEditUnityContext = ({
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
-    handleDragPlacingStarted,
-    handleDragPlacingEnded,
+    handleItemSelected,
     handleRemoveItemEnabled,
     handleRemoveItemDisabled,
     handleRemoveItemRequested,
-    handleItemSelected,
+    handleNftModelGenerated,
+    handleDragPlacingStarted,
+    handleDragPlacingEnded,
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
@@ -313,5 +330,6 @@ export const useShowcaseEditUnityContext = ({
     deleteAllActionHistory,
     pauseUnityInputs,
     resumeUnityInputs,
+    requestNftModelGeneration,
   };
 };

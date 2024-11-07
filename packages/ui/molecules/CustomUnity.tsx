@@ -47,6 +47,17 @@ export const AcrylicBaseSettingsUnity = ({
   />
 );
 
+export const NftModelGeneratorUnity = ({
+  unityProvider,
+  isLoaded,
+}: ProviderParam) => (
+  <UnityBase
+    id="nftModelGenerator"
+    unityProvider={unityProvider}
+    isLoaded={isLoaded}
+  />
+);
+
 const UnityBase = ({
   id,
   unityProvider,
