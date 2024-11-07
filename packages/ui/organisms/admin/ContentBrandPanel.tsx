@@ -29,6 +29,9 @@ const ContentBrandPanel = ({
   const [activeImageFlag, setActiveImageFlag] = useState(false);
   const modifiedRef = useRef(false);
 
+  const [tempImageUrlContent, setTempImageUrlContent] = useState(null);
+  const [tempImageUrlSticker, setTempImageUrlSticker] = useState(null);
+
   useEffect(() => {
     if (cancelFlag > 0 && modifiedRef.current) {
       restoreData();
@@ -58,89 +61,70 @@ const ContentBrandPanel = ({
       if (await putData(apiUrl, submitData, [])) {
         modifiedRef.current = false;
       } else {
-        if (error) {
-          if (error instanceof String) {
-            toast(error);
-          } else {
-            toast(error.toString());
-          }
-        }
+        toast(error ? error.toString() : "Error submitting data");
       }
     };
 
     if (publishFlag > 0 && modifiedRef.current) {
       submitHandler();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publishFlag]);
 
   const checkUploadFile = (file) => {
-    // Get the file extension
     const fileExtension = file.name.split(".").pop().toLowerCase();
     if (activeImageFlag) {
-      if (
-        fileExtension !== "png" &&
-        fileExtension !== "gif" &&
-        fileExtension !== "jpg" &&
-        fileExtension !== "jpeg"
-      ) {
+      if (!["png", "gif", "jpg", "jpeg"].includes(fileExtension)) {
         toast("Please select PNG, JPEG or GIF(non-animated) file.");
         return false;
       }
     } else {
-      if (fileExtension !== "png" && fileExtension !== "gif") {
+      if (!["png", "gif"].includes(fileExtension)) {
         toast("Please select PNG or GIF(non-animated) file.");
         return false;
       }
     }
     if (file.size > 4 * 1024 * 1024) {
-      toast("Please select file smaller than 4MB.");
+      toast("Please select a file smaller than 4MB.");
       return false;
     }
-
     return true;
   };
 
   const checkUploadImage = (flag, width, height) => {
-    // Get the file extension
     if (flag) {
       if (width < 320 || height < 100) {
-        toast("Please select image at least 320x100 size.");
+        toast("Please select an image of at least 320x100 size.");
         return false;
       }
     } else {
       if (width < 500 || height < 500) {
-        toast("Please select image at least 500x500 size.");
+        toast("Please select an image of at least 500x500 size.");
         return false;
       }
     }
-
     return true;
   };
 
   const handleFileInputChange = async (event) => {
     const file = event.target.files[0];
-    // Check if a file is selected
     if (file) {
-      // check the file type
       if (!checkUploadFile(file)) return;
-
-      // check the image size
       const imageUrl = URL.createObjectURL(file);
       const img = new Image();
       img.onload = function () {
         if (!checkUploadImage(activeImageFlag, img.width, img.height)) return;
         if (activeImageFlag) {
-          setData({ ...data, ["image"]: imageUrl });
+          setTempImageUrlContent(imageUrl);
+          imageCropDlgRef.current.showModal();
         } else {
-          setData({ ...data, ["sticker"]: imageUrl });
+          stickerCropDlgRef.current.showModal();
+          setTempImageUrlSticker(imageUrl);
         }
         modifiedRef.current = true;
         changeHandler();
       };
       img.src = imageUrl;
     }
-    // reset input tag value
     event.target.value = null;
   };
 
@@ -161,12 +145,12 @@ const ContentBrandPanel = ({
                 width={320}
                 height={100}
                 alt="content image"
-                className={`rounded-xl max-w-[320px] max-h-[100px]`}
+                className="rounded-xl max-w-[320px] max-h-[100px]"
               />
             ) : (
               <div
                 style={{ width: 320, height: 100 }}
-                className={`rounded-xl border-2 border-primary-400 border-dashed`}
+                className="rounded-xl border-2 border-primary-400 border-dashed"
               ></div>
             )}
             <button
@@ -212,12 +196,12 @@ const ContentBrandPanel = ({
                 width={260}
                 height={260}
                 alt="sticker image"
-                className={`rounded-xl max-w-[260px] max-h-[260px]`}
+                className="rounded-xl max-w-[260px] max-h-[260px]"
               />
             ) : (
               <div
                 style={{ width: 260, height: 260 }}
-                className={`rounded-xl border-2 border-primary-400 border-dashed`}
+                className="rounded-xl border-2 border-primary-400 border-dashed"
               ></div>
             )}
             <div
@@ -278,23 +262,25 @@ const ContentBrandPanel = ({
           className="hidden"
         />
         <ImageCropDialog
-          initialValue={data.image}
+          initialValue={data.image || tempImageUrlContent}
           dialogRef={imageCropDlgRef}
           aspectRatio={16 / 5}
           cropHandler={(image) => {
             setData({ ...data, ["image"]: image });
             modifiedRef.current = true;
             changeHandler();
+            setTempImageUrlContent(null);
           }}
         />
         <ImageCropDialog
-          initialValue={data.sticker}
+          initialValue={data.sticker || tempImageUrlSticker}
           dialogRef={stickerCropDlgRef}
-          aspectRatio={null}
+          aspectRatio={1}
           cropHandler={(image) => {
             setData({ ...data, ["sticker"]: image });
             modifiedRef.current = true;
             changeHandler();
+            setTempImageUrlSticker(null);
           }}
         />
       </div>
