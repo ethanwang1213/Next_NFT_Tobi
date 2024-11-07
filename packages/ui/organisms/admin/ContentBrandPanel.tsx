@@ -271,6 +271,8 @@ const ContentBrandPanel = ({
             changeHandler();
             setTempImageUrlContent(null);
           }}
+          cricle={false}
+          classname="w-[800px]"
         />
         <ImageCropDialog
           initialValue={data.sticker || tempImageUrlSticker}
@@ -282,6 +284,8 @@ const ContentBrandPanel = ({
             changeHandler();
             setTempImageUrlSticker(null);
           }}
+          cricle={false}
+          classname="w-[520px]"
         />
       </div>
     )

@@ -17,6 +17,7 @@ import GoogleIcon from "ui/atoms/GoogleIcon";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
 import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
+import ImageCropDialog from "ui/organisms/admin/ImageCropDialog";
 
 export const metadata: Metadata = {
   title: "Account Setting",
@@ -274,9 +275,11 @@ export default function Index() {
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
   const imageFileRef = useRef(null);
+  const profileIconCropDlgRef = useRef(null);
   const emailEditDialogRef = useRef(null);
   const t = useTranslations("Account");
   const userIdRegex = /^[A-Za-z0-9_-]{5,20}$/;
+  const [tempImageUrlProfile, setTempImageUrlProfile] = useState(null);
 
   const submitHandler = async () => {
     const submitData = {
@@ -322,7 +325,8 @@ export default function Index() {
   const handleFileInputChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      fieldChangeHandler("icon", URL.createObjectURL(file));
+      setTempImageUrlProfile(URL.createObjectURL(file));
+      profileIconCropDlgRef.current.showModal();
     }
   };
 
@@ -519,6 +523,17 @@ export default function Index() {
         accept=".png, .jpg, .jpeg, .gif"
         onChange={(e) => handleFileInputChange(e)}
         className="hidden"
+      />
+      <ImageCropDialog
+        initialValue={tempImageUrlProfile}
+        dialogRef={profileIconCropDlgRef}
+        aspectRatio={1}
+        cropHandler={(image) => {
+          fieldChangeHandler("icon", image);
+          setTempImageUrlProfile(null);
+        }}
+        cricle={true}
+        classname="w-[520px]"
       />
     </div>
   );
