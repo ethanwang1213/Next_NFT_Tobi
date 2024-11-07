@@ -106,7 +106,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             {" "}
             &lt;{" "}
           </button>
-          <p className="text-[17px] font-bold py-1 px-3 text-black w-[160px]">
+          <p className="text-[17px] font-bold py-1 px-3 text-black w-[200px]">
             {format(selectedDate, "MMMM yyyy")}
           </p>
           <button onClick={() => handleMonthChange(1)} className="font-bold">
