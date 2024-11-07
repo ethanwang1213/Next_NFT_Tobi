@@ -18,6 +18,7 @@ export const LoadingImage: React.FC = () => {
         pointerEvents: "none",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageRef.current]);
 
   const createLoadingImage = useMemo(
@@ -35,7 +36,7 @@ export const LoadingImage: React.FC = () => {
             }`}
           />
         )),
-    [menuItem, imageUrl],
+    [imageUrl],
   );
 
   return (

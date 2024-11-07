@@ -51,6 +51,7 @@ export const Keyholes: React.FC<Props> = ({
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [downX]);
 
   // メニュー項目の鍵を一周分追加する

@@ -68,6 +68,7 @@ const ContentBrandPanel = ({
     if (publishFlag > 0 && modifiedRef.current) {
       submitHandler();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publishFlag]);
 
   const checkUploadFile = (file) => {

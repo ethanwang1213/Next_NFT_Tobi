@@ -12,6 +12,7 @@ export const CameraController: React.FC = () => {
 
   useEffect(() => {
     camera.position.set(0, isWide ? 0 : 1, isWide ? 17 : 13);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWide]);
 
   return null;
