@@ -18,14 +18,14 @@ const ImageCropDialog = ({
   dialogRef,
   cropHandler,
   aspectRatio,
-  cricle,
+  circle,
   classname,
 }: {
   initialValue: string;
   dialogRef: MutableRefObject<HTMLDialogElement>;
   cropHandler: (value: string) => void;
   aspectRatio: number | null;
-  cricle: boolean | null;
+  circle: boolean | null;
   classname: string;
 }) => {
   const imgRef = useRef<HTMLImageElement>(null);
@@ -155,7 +155,7 @@ const ImageCropDialog = ({
           onChange={(c) => onCropChange(c)}
           aspect={aspectRatio}
           keepSelection={true}
-          circularCrop={cricle}
+          circularCrop={circle}
         >
           <div
             ref={imgWrapperRef}
