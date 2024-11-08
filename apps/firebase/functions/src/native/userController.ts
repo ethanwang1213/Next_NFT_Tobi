@@ -279,28 +279,6 @@ export const postMyProfile = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   const {account, flow}: { account?: AccountType; flow?: FlowType } = req.body;
 
-  // validate user id to match with our regex
-  const validateUserId = isValidUserId(account?.userId??"");
-  if (!validateUserId) {
-    res.status(401).send({
-      status: "error",
-      data: "invalid-userId",
-    });
-  }
-
-  // check double user id
-  const doubleUser = await prisma.accounts.findFirst({
-    where: {
-      user_id: account?.userId,
-    },
-  });
-  if (doubleUser) {
-    res.status(401).send({
-      status: "error",
-      data: "double-userId",
-    });
-  }
-
   const accountUpdated = {
     user_id: account?.userId,
     username: account?.username,
@@ -320,6 +298,28 @@ export const postMyProfile = async (req: Request, res: Response) => {
   };
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
+
+    // validate user id to match with our regex
+    const validateUserId = isValidUserId(account?.userId??"");
+    if (!validateUserId) {
+      res.status(401).send({
+        status: "error",
+        data: "invalid-userId",
+      });
+    }
+
+    // check double user id
+    const doubleUser = await prisma.accounts.findFirst({
+      where: {
+        user_id: account?.userId,
+      },
+    });
+    if (doubleUser&&doubleUser.uuid!=uid) {
+      res.status(401).send({
+        status: "error",
+        data: "double-userId",
+      });
+    }
     let accountData; let flowData;
     const userExist = await prisma.accounts.findUnique({
       where: {
