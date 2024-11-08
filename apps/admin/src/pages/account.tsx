@@ -532,7 +532,7 @@ export default function Index() {
           fieldChangeHandler("icon", image);
           setTempImageUrlProfile(null);
         }}
-        cricle={true}
+        circle={true}
         classname="w-[520px]"
       />
     </div>
