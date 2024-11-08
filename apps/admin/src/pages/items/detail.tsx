@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import { ImageType, uploadImage } from "fetchers/UploadActions";
+import { ImageType, uploadData, uploadImage } from "fetchers/UploadActions";
+import { useNftModelGeneratorUnityContext } from "hooks/useCustomUnityContext/useNftModelGeneratorUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
@@ -12,6 +13,7 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
+import { NftModelGeneratorUnity } from "ui/molecules/CustomUnity";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
@@ -66,6 +68,50 @@ const Detail = () => {
   const mintConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef1 = useRef(null);
 
+  const decodeBase64ToBinary = (base64String: string) => {
+    const binaryString = atob(base64String);
+    const length = binaryString.length;
+    const bytes = new Uint8Array(length);
+
+    for (let i = 0; i < length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    return bytes;
+  };
+
+  const handleNftModelGenerated = async (
+    itemId: number,
+    nftModelBase64: string,
+  ) => {
+    const binaryData = decodeBase64ToBinary(nftModelBase64);
+    const modelUrl = await uploadData(binaryData);
+    const result = await postData(`native/items/${id}/mint`, {
+      fcmToken: fcmToken,
+      amount: 1,
+      modelUrl: modelUrl,
+    });
+
+    if (!result) {
+      toast(
+        <MintNotification
+          title={s("MintFailed")}
+          text={s("MintFailedLimitExceeded")}
+        />,
+        {
+          className: "mint-notification",
+        },
+      );
+    } else {
+      trackSampleMint(digitalItem.type);
+    }
+  };
+
+  const { unityProvider, isLoaded, requestNftModelGeneration } =
+    useNftModelGeneratorUnityContext({
+      onNftModelGenerated: handleNftModelGenerated,
+    });
+
   const apiUrl = "native/admin/digital_items";
   const {
     data: digitalItem,
@@ -105,6 +151,25 @@ const Detail = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [digitalItem],
   );
+
+  const trackSampleMint = useCallback((sampleType: number) => {
+    const sampleTypeLabels: { [key: number]: string } = {
+      1: "Poster",
+      2: "AcrylicStand",
+      3: "CanBadge",
+      4: "MessageCard",
+      5: "UserUploadedModel",
+    };
+
+    const eventLabel = sampleTypeLabels[sampleType] || "unknown";
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "mint_sample", {
+        event_category: "MintedCount",
+        event_label: eventLabel,
+        value: 1,
+      });
+    }
+  }, []);
 
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -385,22 +450,12 @@ const Detail = () => {
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
       if (value == "mint") {
-        const result = await postData(`native/items/${id}/mint`, {
-          fcmToken: fcmToken,
-          amount: 1,
+        requestNftModelGeneration({
+          itemId: digitalItem.id,
+          modelType: digitalItem.type,
           modelUrl: digitalItem.modelUrl,
+          imageUrl: digitalItem.materialUrl || digitalItem.customThumbnailUrl,
         });
-        if (!result) {
-          toast(
-            <MintNotification
-              title={s("MintFailed")}
-              text={s("MintFailedLimitExceeded")}
-            />,
-            {
-              className: "mint-notification",
-            },
-          );
-        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -878,6 +933,12 @@ const Detail = () => {
                 </Link>
               </div>
               <div className="text-center h-12">
+                <div className="hidden">
+                  <NftModelGeneratorUnity
+                    unityProvider={unityProvider}
+                    isLoaded={isLoaded}
+                  />
+                </div>
                 <Button
                   className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
                     flex justify-center items-center gap-2

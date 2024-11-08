@@ -1,5 +1,10 @@
 import { auth, storage } from "fetchers/firebase/client";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 export enum ImageType {
   AccountAvatar = 0,
@@ -150,6 +155,44 @@ export const uploadFiles = async (file, extension, type) => {
     console.error("Error uploading file:", error);
     return "";
   }
+};
+
+const createGlbBlob = (binaryData: Uint8Array) => {
+  return new Blob([binaryData], { type: "model/gltf-binary" });
+};
+
+export const uploadData = async (binaryData: Uint8Array) => {
+  const storageDataName = `${Date.now()}.glb`;
+  const path = `nftModels/${auth.currentUser.uid}/${storageDataName}`;
+  const storageRef = ref(storage, path);
+  const metadata = {
+    contentType: "model/gltf-binary",
+  };
+
+  const uploadTask = uploadBytesResumable(
+    storageRef,
+    createGlbBlob(binaryData),
+    metadata,
+  );
+
+  return new Promise<string>((resolve, reject) => {
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log(`Upload is ${progress.toFixed(2)}% done`);
+      },
+      (error) => {
+        console.error("Upload error:", error);
+        reject(error);
+      },
+      async () => {
+        const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+        resolve(downloadUrl);
+      },
+    );
+  });
 };
 
 export const getDownloadUrlFromPath = async (

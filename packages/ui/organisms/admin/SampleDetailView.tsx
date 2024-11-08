@@ -1,4 +1,5 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
+import { uploadData } from "fetchers/UploadActions";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
@@ -45,10 +46,58 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
-  const { deleteAllActionHistory } = useWorkspaceUnityContext({});
-  const { pauseUnityInputs } = useShowcaseEditUnity();
+  const { pauseUnityInputs, requestNftModelGeneration } =
+    useShowcaseEditUnity();
   const t = useTranslations("Workspace");
   const s = useTranslations("Showcase");
+
+  const decodeBase64ToBinary = (base64String: string) => {
+    const binaryString = atob(base64String);
+    const length = binaryString.length;
+    const bytes = new Uint8Array(length);
+
+    for (let i = 0; i < length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    return bytes;
+  };
+
+  const handleNftModelGenerated = async (
+    itemId: number,
+    nftModelBase64: string,
+  ) => {
+    console.log(itemId, nftModelBase64);
+    const binaryData = decodeBase64ToBinary(nftModelBase64);
+    const modelUrl = await uploadData(binaryData);
+    const result = await postData(`native/items/${id}/mint`, {
+      fcmToken: fcmToken,
+      amount: 1,
+      modelUrl: modelUrl,
+    });
+
+    if (!result) {
+      toast(
+        <MintNotification
+          title={s("MintFailed")}
+          text={s("MintFailedLimitExceeded")}
+        />,
+        {
+          className: "mint-notification",
+        },
+      );
+    } else {
+      deleteAllActionHistory();
+      trackSampleMint(data.modelType);
+    }
+  };
+
+  const {
+    deleteAllActionHistory,
+    requestNftModelGeneration: workspaceResuestNftModel,
+  } = useWorkspaceUnityContext({
+    onNftModelGenerated: handleNftModelGenerated,
+  });
 
   useEffect(() => {
     if (id > 0) {
@@ -104,27 +153,20 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
-      if (value === "mint") {
-        const result = await postData(`native/items/${id}/mint`, {
-          fcmToken: fcmToken,
-          amount: 1,
+      if (value === "mint" && section === "showcase") {
+        requestNftModelGeneration({
+          itemId: data.id,
+          modelType: data.type,
           modelUrl: data.modelUrl,
+          imageUrl: data.materialUrl || data.customThumbnailUrl,
         });
-
-        if (!result) {
-          toast(
-            <MintNotification
-              title={s("MintFailed")}
-              text={s("MintFailedLimitExceeded")}
-            />,
-            {
-              className: "mint-notification",
-            },
-          );
-        } else {
-          deleteAllActionHistory();
-          trackSampleMint(data.modelType);
-        }
+      } else {
+        workspaceResuestNftModel({
+          itemId: data.id,
+          modelType: data.type,
+          modelUrl: data.modelUrl,
+          imageUrl: data.materialUrl || data.customThumbnailUrl,
+        });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

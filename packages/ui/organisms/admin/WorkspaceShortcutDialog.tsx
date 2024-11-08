@@ -4,7 +4,7 @@ import { MutableRefObject, useState } from "react";
 
 const ShortcutComponent = () => {
   const [showDeleteButton, setShowDeleteButton] = useState(false);
-  const t = useTranslations("Shwocase");
+  const t = useTranslations("Showcase");
 
   return (
     <div

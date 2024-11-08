@@ -29,6 +29,7 @@ interface ShowcaseEditUnityContextType {
     scale: number;
     phase: ItemTransformUpdatePhase;
   }) => void;
+  requestNftModelGeneration: (data: any) => Promise<void>;
 }
 
 const ShowcaseEditUnityContext = createContext<ShowcaseEditUnityContextType>(
