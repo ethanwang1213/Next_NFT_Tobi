@@ -1,4 +1,5 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
+import { useWorkspaceEditUnity } from "contexts/WorkspaceEditUnityContext";
 import { uploadData } from "fetchers/UploadActions";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useFcmToken from "hooks/useFCMToken";
@@ -48,6 +49,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const { token: fcmToken } = useFcmToken();
   const { pauseUnityInputs, requestNftModelGeneration } =
     useShowcaseEditUnity();
+  const { requestNftModelGeneration: workspaceRequestNftModelGeneration } =
+    useWorkspaceEditUnity();
   const t = useTranslations("Workspace");
   const s = useTranslations("Showcase");
 
@@ -67,7 +70,6 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     itemId: number,
     nftModelBase64: string,
   ) => {
-    console.log(itemId, nftModelBase64);
     const binaryData = decodeBase64ToBinary(nftModelBase64);
     const modelUrl = await uploadData(binaryData);
     const result = await postData(`native/items/${id}/mint`, {
@@ -92,10 +94,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     }
   };
 
-  const {
-    deleteAllActionHistory,
-    requestNftModelGeneration: workspaceResuestNftModel,
-  } = useWorkspaceUnityContext({
+  const { deleteAllActionHistory } = useWorkspaceUnityContext({
     onNftModelGenerated: handleNftModelGenerated,
   });
 
@@ -161,7 +160,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
           imageUrl: data.materialUrl || data.customThumbnailUrl,
         });
       } else {
-        workspaceResuestNftModel({
+        workspaceRequestNftModelGeneration({
           itemId: data.id,
           modelType: data.type,
           modelUrl: data.modelUrl,

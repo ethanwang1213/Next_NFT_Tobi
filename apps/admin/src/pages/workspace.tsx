@@ -1,4 +1,5 @@
 import { useLeavePage } from "contexts/LeavePageProvider";
+import { WorkspaceEditUnityProvider } from "contexts/WorkspaceEditUnityContext";
 import {
   getDownloadUrlFromPath,
   ImageType,
@@ -179,25 +180,7 @@ export default function Index() {
     };
   }, []);
 
-  const {
-    unityProvider,
-    isLoaded,
-    selectedSample,
-    isUndoable,
-    isRedoable,
-    setLoadData: setWorkspaceData,
-    requestSaveData,
-    placeNewSample,
-    placeNewSampleWithDrag,
-    removeSamplesByItemId,
-    requestItemThumbnail,
-    inputWasd,
-    pauseUnityInputs,
-    resumeUnityInputs,
-    undoAction,
-    redoAction,
-    applyAcrylicBaseScaleRatio,
-  } = useWorkspaceUnityContext({
+  const unityContext = useWorkspaceUnityContext({
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
@@ -208,6 +191,26 @@ export default function Index() {
     onActionUndone: handleAction,
   });
 
+  const {
+    isLoaded,
+    unityProvider,
+    isUndoable,
+    isRedoable,
+    selectedSample,
+    setLoadData,
+    resumeUnityInputs,
+    pauseUnityInputs,
+    requestSaveData,
+    placeNewSample,
+    placeNewSampleWithDrag,
+    inputWasd,
+    removeSamplesByItemId,
+    requestItemThumbnail,
+    undoAction,
+    redoAction,
+    applyAcrylicBaseScaleRatio,
+  } = unityContext;
+
   useEffect(() => {
     if (!isSampleCreateDialogOpen) {
       resumeUnityInputs();
@@ -216,9 +219,9 @@ export default function Index() {
 
   useEffect(() => {
     if (workspaceData) {
-      setWorkspaceData(workspaceData);
+      setLoadData(workspaceData);
     }
-  }, [workspaceData, setWorkspaceData]);
+  }, [workspaceData, setLoadData]);
 
   useEffect(() => {
     if (selectedSample) {
@@ -535,221 +538,223 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="w-full h-full relative no-select" id="workspace_view">
-      <div
-        className="absolute left-0 right-0 top-0 bottom-0"
-        style={{
-          pointerEvents: isDialogOpen() ? "none" : "auto",
-        }}
-      >
-        <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
-      </div>
-      {mainToast && <CustomToast show={showToast} message={message} />}
-      {isModalOpen && (
-        <AcrylicStandSettingDialog
-          selectedItem={selectedSampleItemId}
-          dialogRef={dialogRef}
-          data={matchingSample}
-          closeHandler={() => setIsModalOpen(false)}
-          scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
-        />
-      )}
-
-      {!isLoaded && (
-        <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
-          <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
-        </div>
-      )}
-      <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden pointer-events-none">
+    <WorkspaceEditUnityProvider unityContext={unityContext}>
+      <div className="w-full h-full relative no-select" id="workspace_view">
         <div
+          className="absolute left-0 right-0 top-0 bottom-0"
           style={{
-            pointerEvents:
-              sampleCreateDialogRef.current &&
-              sampleCreateDialogRef.current.open
-                ? "auto"
-                : "none",
+            pointerEvents: isDialogOpen() ? "none" : "auto",
           }}
         >
-          <WorkspaceSampleCreateDialog
-            dialogRef={sampleCreateDialogRef}
-            initDialog={initSampleCreateDialog}
-            materials={materials}
-            generateHandler={generateSampleHandler}
-            generateError={generateSampleError}
-            createMaterialImageHandler={createMaterialImageHandler}
-            removeBackgroundHandler={removeBackgroundHandler}
-            resetErrorHandler={() => {
-              setGenerateSampleError(false);
-            }}
-          />
+          <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
         </div>
-        <div
-          style={{
-            pointerEvents:
-              shortcutDialogRef.current && shortcutDialogRef.current.open
-                ? "auto"
-                : "none",
-          }}
-        >
-          <WorkspaceShortcutDialog
-            dialogRef={shortcutDialogRef}
-            changeHandler={null}
-          />
-        </div>
-        {showDetailView && (
-          <WorkspaceSampleDetailPanel
-            id={selectedSampleItem}
-            sampleitemId={selectedSampleItemId}
-            deleteHandler={deleteSamplesHandler}
+        {mainToast && <CustomToast show={showToast} message={message} />}
+        {isModalOpen && (
+          <AcrylicStandSettingDialog
+            selectedItem={selectedSampleItemId}
+            dialogRef={dialogRef}
+            data={matchingSample}
+            closeHandler={() => setIsModalOpen(false)}
+            scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
           />
         )}
-        <WorkspaceSampleListPanel
-          closeHandler={() => setShowListView(false)}
-          isOpen={showListView}
-          data={samples}
-          createHandler={() => {
-            setShowListView(false);
-            addButtonHandler();
-          }}
-          selectHandler={sampleSelectHandler}
-          deleteHandler={deleteSamplesHandler}
-          dragHandler={sampleDragHandler}
-          showRestoreMenu={showRestoreMenu}
-        />
-        <div className="w-full flex justify-center absolute bottom-28 items-center">
-          {showSettingsButton ? (
-            <div className="relative group">
+
+        {!isLoaded && (
+          <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+            <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+          </div>
+        )}
+        <div className="absolute left-0 right-0 top-0 bottom-0 flex overflow-x-hidden pointer-events-none">
+          <div
+            style={{
+              pointerEvents:
+                sampleCreateDialogRef.current &&
+                sampleCreateDialogRef.current.open
+                  ? "auto"
+                  : "none",
+            }}
+          >
+            <WorkspaceSampleCreateDialog
+              dialogRef={sampleCreateDialogRef}
+              initDialog={initSampleCreateDialog}
+              materials={materials}
+              generateHandler={generateSampleHandler}
+              generateError={generateSampleError}
+              createMaterialImageHandler={createMaterialImageHandler}
+              removeBackgroundHandler={removeBackgroundHandler}
+              resetErrorHandler={() => {
+                setGenerateSampleError(false);
+              }}
+            />
+          </div>
+          <div
+            style={{
+              pointerEvents:
+                shortcutDialogRef.current && shortcutDialogRef.current.open
+                  ? "auto"
+                  : "none",
+            }}
+          >
+            <WorkspaceShortcutDialog
+              dialogRef={shortcutDialogRef}
+              changeHandler={null}
+            />
+          </div>
+          {showDetailView && (
+            <WorkspaceSampleDetailPanel
+              id={selectedSampleItem}
+              sampleitemId={selectedSampleItemId}
+              deleteHandler={deleteSamplesHandler}
+            />
+          )}
+          <WorkspaceSampleListPanel
+            closeHandler={() => setShowListView(false)}
+            isOpen={showListView}
+            data={samples}
+            createHandler={() => {
+              setShowListView(false);
+              addButtonHandler();
+            }}
+            selectHandler={sampleSelectHandler}
+            deleteHandler={deleteSamplesHandler}
+            dragHandler={sampleDragHandler}
+            showRestoreMenu={showRestoreMenu}
+          />
+          <div className="w-full flex justify-center absolute bottom-28 items-center">
+            {showSettingsButton ? (
+              <div className="relative group">
+                <button
+                  className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setTimeout(() => {
+                      dialogRef.current?.showModal();
+                    }, 500);
+                  }}
+                >
+                  <Image
+                    width={32}
+                    height={32}
+                    alt="setting button"
+                    src="/admin/images/icon/setting-icon.svg"
+                    className="cursor-pointer h-[27px]"
+                  />
+                  <span className="text-[14px] font-bold text-white">
+                    {t("BodyBaseRatioSettings")}
+                  </span>
+                </button>
+                <div className="absolute bottom-full left-52 w-max mb-2 font-medium text-white text-sm px-4 py-1 rounded-md bg-[#717171BF] z-20 hidden group-hover:block">
+                  {t("AdjustAcrylicRatio")}
+                </div>
+              </div>
+            ) : null}
+          </div>
+          <div className="absolute bottom-12 h-12 flex justify-center pointer-events-auto select-none w-full items-center">
+            <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
               <button
-                className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
+                disabled={!isUndoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                onClick={undoAction}
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/undo-icon.svg"
+                  className="cursor-pointer h-[32px]"
+                />
+              </button>
+              <button
+                disabled={!isRedoable}
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                onClick={redoAction}
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="undo button"
+                  src="/admin/images/icon/redo-icon.svg"
+                  className="cursor-pointer h-[32px]"
+                />
+              </button>
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
-                  setIsModalOpen(true);
-                  setTimeout(() => {
-                    dialogRef.current?.showModal();
-                  }, 500);
+                  setShowDetailView(!showDetailView);
+                  setShowListView(!showDetailView);
                 }}
               >
                 <Image
                   width={32}
                   height={32}
-                  alt="setting button"
-                  src="/admin/images/icon/setting-icon.svg"
-                  className="cursor-pointer h-[27px]"
+                  alt="visibility button"
+                  src={
+                    showDetailView
+                      ? "/admin/images/icon/visibility-on-icon.svg"
+                      : "/admin/images/icon/visibility-off-icon.svg"
+                  }
                 />
-                <span className="text-[14px] font-bold text-white">
-                  {t("BodyBaseRatioSettings")}
-                </span>
               </button>
-              <div className="absolute bottom-full left-52 w-max mb-2 font-medium text-white text-sm px-4 py-1 rounded-md bg-[#717171BF] z-20 hidden group-hover:block">
-                {t("AdjustAcrylicRatio")}
-              </div>
+              <button
+                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                onClick={() => {
+                  if (shortcutDialogRef.current) {
+                    shortcutDialogRef.current.showModal();
+                    setIsShortcutDialogOpen(true);
+                  }
+                }}
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  alt="shortcut button"
+                  src="/admin/images/icon/help-icon.svg"
+                />
+              </button>
             </div>
-          ) : null}
-        </div>
-        <div className="absolute bottom-12 h-12 flex justify-center pointer-events-auto select-none w-full items-center">
-          <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
-            <button
-              disabled={!isUndoable}
-              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-              onClick={undoAction}
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/undo-icon.svg"
-                className="cursor-pointer h-[32px]"
-              />
-            </button>
-            <button
-              disabled={!isRedoable}
-              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
-              onClick={redoAction}
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="undo button"
-                src="/admin/images/icon/redo-icon.svg"
-                className="cursor-pointer h-[32px]"
-              />
-            </button>
-            <button
-              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
-              onClick={() => {
-                setShowDetailView(!showDetailView);
-                setShowListView(!showDetailView);
-              }}
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="visibility button"
-                src={
-                  showDetailView
-                    ? "/admin/images/icon/visibility-on-icon.svg"
-                    : "/admin/images/icon/visibility-off-icon.svg"
-                }
-              />
-            </button>
-            <button
-              className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
-              onClick={() => {
-                if (shortcutDialogRef.current) {
-                  shortcutDialogRef.current.showModal();
-                  setIsShortcutDialogOpen(true);
-                }
-              }}
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="shortcut button"
-                src="/admin/images/icon/help-icon.svg"
-              />
-            </button>
           </div>
-        </div>
-        <div
-          className="absolute bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
-            flex justify-center items-center cursor-pointer pointer-events-auto select-none"
-          onClick={addButtonHandler}
-        >
-          <Image
-            width={48}
-            height={48}
-            src="/admin/images/icon/add-icon.svg"
-            alt="icon button"
-          />
-        </div>
-        <div
-          className="absolute bottom-[178px] right-16 w-18 h-[72px] rounded-full bg-secondary 
-            flex justify-center items-center cursor-pointer pointer-events-auto select-none"
-          onClick={() => {
-            setShowListView(!showListView);
-          }}
-        >
-          <Image
-            width={48}
-            height={48}
-            src="/admin/images/icon/list-icon.svg"
-            alt="icon button"
-          />
-        </div>
-        {showRestoreMenu && !showListView && (
           <div
-            className={`absolute w-[${REMOVE_PANEL_WIDTH}px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
-              flex flex-col justify-center items-center z-10 pointer-events-auto select-none`}
+            className="absolute bottom-16 right-16 w-18 h-[72px] rounded-full bg-secondary 
+            flex justify-center items-center cursor-pointer pointer-events-auto select-none"
+            onClick={addButtonHandler}
           >
             <Image
               width={48}
               height={48}
-              src="/admin/images/icon/keyboard_return.svg"
-              alt="return icon"
-              draggable={false}
+              src="/admin/images/icon/add-icon.svg"
+              alt="icon button"
             />
           </div>
-        )}
+          <div
+            className="absolute bottom-[178px] right-16 w-18 h-[72px] rounded-full bg-secondary 
+            flex justify-center items-center cursor-pointer pointer-events-auto select-none"
+            onClick={() => {
+              setShowListView(!showListView);
+            }}
+          >
+            <Image
+              width={48}
+              height={48}
+              src="/admin/images/icon/list-icon.svg"
+              alt="icon button"
+            />
+          </div>
+          {showRestoreMenu && !showListView && (
+            <div
+              className={`absolute w-[${REMOVE_PANEL_WIDTH}px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
+              flex flex-col justify-center items-center z-10 pointer-events-auto select-none`}
+            >
+              <Image
+                width={48}
+                height={48}
+                src="/admin/images/icon/keyboard_return.svg"
+                alt="return icon"
+                draggable={false}
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </WorkspaceEditUnityProvider>
   );
 }
