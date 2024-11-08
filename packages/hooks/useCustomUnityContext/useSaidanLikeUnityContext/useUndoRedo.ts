@@ -9,7 +9,7 @@ import {
 import {
   MessageDestination,
   RequiredUndoneRedoneResult,
-  UndoneOrRedone,
+  UndoneOrRedoneHandler,
   UndoneRedoneResult,
   UnityMessageJson,
 } from "../types";
@@ -21,8 +21,8 @@ export const useUndoRedo = ({
   postMessageToUnity,
 }: {
   additionalItemDataMap: Map<ItemType, Map<number, ParentId & ItemName>>;
-  onActionUndone?: UndoneOrRedone;
-  onActionRedone?: UndoneOrRedone;
+  onActionUndone?: UndoneOrRedoneHandler;
+  onActionRedone?: UndoneOrRedoneHandler;
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
   const [isUndoable, setIsUndoable] = useState<boolean>(false);

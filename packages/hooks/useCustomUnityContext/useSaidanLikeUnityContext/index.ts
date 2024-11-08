@@ -13,14 +13,16 @@ import {
 } from "types/unityTypes";
 import { DefaultAcrylicBaseScaleRatio } from "../constants";
 import {
+  NftModelGeneratedHandler,
   PositionOnPlane,
   SaidanLikeData,
   SelectedItem,
-  UndoneOrRedone,
+  UndoneOrRedoneHandler,
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
 import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
 
 export const useSaidanLikeUnityContextBase = ({
@@ -30,13 +32,15 @@ export const useSaidanLikeUnityContextBase = ({
   onRemoveItemDisabled,
   onActionUndone,
   onActionRedone,
+  onNftModelGenerated,
 }: {
   sceneType: UnitySceneType;
   itemMenuX: number;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
-  onActionUndone?: UndoneOrRedone;
-  onActionRedone?: UndoneOrRedone;
+  onActionUndone?: UndoneOrRedoneHandler;
+  onActionRedone?: UndoneOrRedoneHandler;
+  onNftModelGenerated?: NftModelGeneratedHandler;
 }) => {
   const {
     // states
@@ -277,6 +281,12 @@ export const useSaidanLikeUnityContextBase = ({
     [isLoaded, isSaidanSceneLoaded, postMessageToUnity],
   );
 
+  const { requestNftModelGeneration, handleNftModelGenerated } =
+    useRequestNftModelGeneration({
+      postMessageToUnity,
+      onNftModelGenerated,
+    });
+
   // load item data
   useEffect(() => {
     if (!isLoaded || !isSaidanSceneLoaded) return;
@@ -375,6 +385,7 @@ export const useSaidanLikeUnityContextBase = ({
     deleteAllActionHistory,
     pauseUnityInputs,
     resumeUnityInputs,
+    requestNftModelGeneration,
     // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded: postMessageToLoadData,
@@ -386,5 +397,6 @@ export const useSaidanLikeUnityContextBase = ({
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
+    handleNftModelGenerated,
   };
 };
