@@ -18,11 +18,15 @@ const ImageCropDialog = ({
   dialogRef,
   cropHandler,
   aspectRatio,
+  circle,
+  classname,
 }: {
   initialValue: string;
   dialogRef: MutableRefObject<HTMLDialogElement>;
   cropHandler: (value: string) => void;
   aspectRatio: number | null;
+  circle: boolean | null;
+  classname: string;
 }) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -130,7 +134,9 @@ const ImageCropDialog = ({
 
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box max-w-[800px] w-[800px] h-[520px] rounded-3xl pt-4 flex flex-col gap-3 relative">
+      <div
+        className={`modal-box max-w-[800px] h-[520px] rounded-3xl pt-4 flex flex-col gap-3 relative ${classname}`}
+      >
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
             <NextImage
@@ -149,6 +155,7 @@ const ImageCropDialog = ({
           onChange={(c) => onCropChange(c)}
           aspect={aspectRatio}
           keepSelection={true}
+          circularCrop={circle}
         >
           <div
             ref={imgWrapperRef}

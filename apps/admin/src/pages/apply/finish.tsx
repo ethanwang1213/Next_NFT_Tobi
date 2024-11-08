@@ -1,18 +1,28 @@
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import Button from "ui/atoms/Button";
 
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
+
 const Finish = () => {
   const router = useRouter();
+  const t = useTranslations("WelcomeMessage");
   return (
     <div className="w-full h-full flex flex-col justify-center">
       <div className="w-full h-[202px] bg-warning flex flex-col justify-center text-[48px] text-primary-content text-center font-semibold">
-        Welcome to Tobiratory Creator Program!
+        {t("WelcomeToProgram")}
       </div>
       <div className="w-full mt-[38px] flex flex-col justify-center text-[16px] text-base-200-content text-center font-normal">
-        I have completed the application to join the Tobiratory Creator Program.
+        {t("ProgramDescription")}
         <br />
-        If there are any issues with the contents of the application, the TCP
-        features may be temporarily suspended.
+        {t("ContentNotice")}
       </div>
       <div className="flex justify-center">
         <div className="mt-[56px] w-[816px] inline-flex items-start gap-[12px]">
@@ -20,8 +30,7 @@ const Finish = () => {
             <div className="w-[248px] h-[176px] flex-shrink-0">
               <div className="inline-flex flex-col items-start gap-[24px]">
                 <div className="mt-[187px] ml-[42px] text-[18px] text-base-white font-bold leading-[21.6px]">
-                  Let&apos;s create
-                  <br /> your own fantastic content!
+                  {t("CreateOwnContent")}
                 </div>
                 <div className="ml-[42px] text-[14px] text-base-white font-light leading-[16.8px]">
                   SAMPLE TEXTSAMPLE TEXTSAMPLE TEXTSAMPLE TEXTSAMPLE TEXTSAMPLE
@@ -58,7 +67,7 @@ const Finish = () => {
             router.push("/items");
           }}
         >
-          Now, let&apos;s create your world !!
+          {t("CreateYourWorld")}
         </Button>
       </div>
     </div>

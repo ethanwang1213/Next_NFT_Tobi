@@ -25,24 +25,28 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
     if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setpx(selectedItem.positionOnPlane.x);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.positionOnPlane?.x]);
 
   useEffect(() => {
     if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setpy(selectedItem.positionOnPlane.y);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.positionOnPlane?.y]);
 
   useEffect(() => {
     if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setrx(selectedItem.rotationAngle);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.rotationAngle]);
 
   useEffect(() => {
     if (selectedItem && !selectedItem.isUpdatedFromFrontend) {
       setScale(selectedItem.scale);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.scale]);
 
   const updatePosition = (x: number, y: number) => {

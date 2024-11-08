@@ -397,5 +397,12 @@
     "LogoutPrompt": "ログアウトしますか?",
     "Logout": "ログアウト",
     "Cancel": "キャンセル"
+  },
+  "WelcomeMessage": {
+    "WelcomeToProgram": "Tobiratoryクリエイタープログラムへようこそ！",
+    "ProgramDescription": "Tobiratoryクリエイタープログラムへの参加申し込みを完了しました。",
+    "ContentNotice": "申し込み内容に問題があった場合、TCP機能が一時的に停止される可能性があります。",
+    "CreateYourWorld": "さあ、あなたの世界を作りましょう！",
+    "CreateOwnContent": "あなただけの素晴らしいコンテンツを作ってみましょう！"
   }
 }

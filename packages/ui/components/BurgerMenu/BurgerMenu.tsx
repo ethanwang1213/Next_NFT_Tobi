@@ -62,6 +62,7 @@ export const BurgerMenu: React.FC<Props> = ({
           setIsAnimatedOpen(false);
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMenuOpen, displayWidth]);
 
   // メニューが開くときに表示する

@@ -181,6 +181,7 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
                   <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
                 </div>
               )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 ref={imgRef}
                 src={props.imageUrl}
