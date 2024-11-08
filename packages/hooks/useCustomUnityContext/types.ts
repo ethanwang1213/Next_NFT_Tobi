@@ -158,8 +158,13 @@ export type RequiredUndoneRedoneResult = {
   settings: SaidanSettings;
 };
 
-export type UndoneOrRedone = (
+export type UndoneOrRedoneHandler = (
   actionType: ActionType,
   text: string,
   result: UndoneRedoneResult,
+) => void;
+
+export type NftModelGeneratedHandler = (
+  itemId: number,
+  nftModelBase64: string,
 ) => void;

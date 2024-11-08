@@ -18,8 +18,9 @@ import {
 } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
+  NftModelGeneratedHandler,
   SaidanType,
-  UndoneOrRedone,
+  UndoneOrRedoneHandler,
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
@@ -27,23 +28,18 @@ import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useApplyAcrylicBaseScaleRatio } from "./useApplyAcrylicBaseScaleRatio";
 
-type Props = {
-  sampleMenuX?: number;
-  onSaveDataGenerated?: (
-    workspaceSaveData: WorkspaceSaveData,
-    updateIdValues: UpdateIdValues,
-  ) => void;
-  onItemThumbnailGenerated?: (thumbnailBase64: string) => void;
-  onRemoveSampleEnabled?: () => void;
-  onRemoveSampleDisabled?: () => void;
-  onRemoveSampleRequested?: (
-    id: number,
-    itemId: number,
-    sendSampleRemovalResult: SendSampleRemovalResult,
-  ) => void;
-  onActionUndone?: UndoneOrRedone;
-  onActionRedone?: UndoneOrRedone;
-};
+type SaveDataGeneratedHandler = (
+  workspaceSaveData: WorkspaceSaveData,
+  updateIdValues: UpdateIdValues,
+) => void;
+
+type ItemThumbnailGeneratedHandler = (thumbnailBase64: string) => void;
+
+type RemoveSampleRequestedHandler = (
+  id: number,
+  itemId: number,
+  sendSampleRemovalResult: SendSampleRemovalResult,
+) => void;
 
 export const useWorkspaceUnityContext = ({
   sampleMenuX = -1,
@@ -54,7 +50,18 @@ export const useWorkspaceUnityContext = ({
   onRemoveSampleRequested,
   onActionUndone,
   onActionRedone,
-}: Props) => {
+  onNftModelGenerated,
+}: {
+  sampleMenuX?: number;
+  onSaveDataGenerated?: SaveDataGeneratedHandler;
+  onItemThumbnailGenerated?: ItemThumbnailGeneratedHandler;
+  onRemoveSampleEnabled?: () => void;
+  onRemoveSampleDisabled?: () => void;
+  onRemoveSampleRequested?: RemoveSampleRequestedHandler;
+  onActionUndone?: UndoneOrRedoneHandler;
+  onActionRedone?: UndoneOrRedoneHandler;
+  onNftModelGenerated?: NftModelGeneratedHandler;
+}) => {
   const {
     // states
     unityProvider,
@@ -79,6 +86,7 @@ export const useWorkspaceUnityContext = ({
     deleteAllActionHistory,
     pauseUnityInputs,
     resumeUnityInputs,
+    requestNftModelGeneration,
     // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded,
@@ -90,6 +98,7 @@ export const useWorkspaceUnityContext = ({
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
+    handleNftModelGenerated,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
@@ -97,6 +106,7 @@ export const useWorkspaceUnityContext = ({
     onRemoveItemDisabled: onRemoveSampleDisabled,
     onActionUndone,
     onActionRedone,
+    onNftModelGenerated,
   });
 
   // functions
@@ -290,6 +300,7 @@ export const useWorkspaceUnityContext = ({
     handleSceneIsLoaded,
     handleSaveDataGenerated,
     handleItemThumbnailGenerated,
+    handleNftModelGenerated,
     handleDragPlacingStarted,
     handleDragPlacingEnded,
     handleRemoveItemEnabled,
@@ -329,5 +340,6 @@ export const useWorkspaceUnityContext = ({
     pauseUnityInputs,
     resumeUnityInputs,
     applyAcrylicBaseScaleRatio,
+    requestNftModelGeneration,
   };
 };

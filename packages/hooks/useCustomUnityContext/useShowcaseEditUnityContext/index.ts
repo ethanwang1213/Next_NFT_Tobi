@@ -18,16 +18,16 @@ import {
 } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
+  NftModelGeneratedHandler,
   SaidanLikeData,
   SaidanType,
   showcaseOffset,
-  UndoneOrRedone,
+  UndoneOrRedoneHandler,
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
 import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
-import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUpdateItemTransform } from "./useUpdateTransform";
 
 type SaveDataGeneratedHandler = (
@@ -40,11 +40,6 @@ type RemoveItemRequestedHandler = (
   id: number,
   itemId: number,
   sendItemRemovalResult: SendItemRemovalResult,
-) => void;
-
-type NftModelGeneratedHandler = (
-  itemId: number,
-  nftModelBase64: string,
 ) => void;
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
@@ -64,8 +59,8 @@ export const useShowcaseEditUnityContext = ({
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onRemoveItemRequested?: RemoveItemRequestedHandler;
-  onActionUndone?: UndoneOrRedone;
-  onActionRedone?: UndoneOrRedone;
+  onActionUndone?: UndoneOrRedoneHandler;
+  onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
 }) => {
   const {
@@ -95,6 +90,7 @@ export const useShowcaseEditUnityContext = ({
     deleteAllActionHistory,
     pauseUnityInputs,
     resumeUnityInputs,
+    requestNftModelGeneration,
     // event handlers
     handleSimpleMessage,
     handleSceneIsLoaded,
@@ -106,6 +102,7 @@ export const useShowcaseEditUnityContext = ({
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
+    handleNftModelGenerated,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
@@ -113,6 +110,7 @@ export const useShowcaseEditUnityContext = ({
     onRemoveItemDisabled,
     onActionUndone,
     onActionRedone,
+    onNftModelGenerated,
   });
 
   // functions
@@ -208,12 +206,6 @@ export const useShowcaseEditUnityContext = ({
     },
     [postMessageToUnity],
   );
-
-  const { requestNftModelGeneration, handleNftModelGenerated } =
-    useRequestNftModelGeneration({
-      postMessageToUnity,
-      onNftModelGenerated,
-    });
 
   // event handlers
   const handleSaveDataGenerated = useCallback(
