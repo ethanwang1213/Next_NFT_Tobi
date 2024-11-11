@@ -1,5 +1,10 @@
 import clsx from "clsx";
-import { ImageType, uploadData, uploadImage } from "fetchers/UploadActions";
+import {
+  decodeBase64ToBinary,
+  ImageType,
+  uploadData,
+  uploadImage,
+} from "fetchers/UploadActions";
 import { useNftModelGeneratorUnityContext } from "hooks/useCustomUnityContext/useNftModelGeneratorUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
@@ -67,18 +72,6 @@ const Detail = () => {
   const statusConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef1 = useRef(null);
-
-  const decodeBase64ToBinary = (base64String: string) => {
-    const binaryString = atob(base64String);
-    const length = binaryString.length;
-    const bytes = new Uint8Array(length);
-
-    for (let i = 0; i < length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    return bytes;
-  };
 
   const handleNftModelGenerated = async (
     itemId: number,

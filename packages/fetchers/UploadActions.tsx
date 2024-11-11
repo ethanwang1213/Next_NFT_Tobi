@@ -161,6 +161,18 @@ const createGlbBlob = (binaryData: Uint8Array) => {
   return new Blob([binaryData], { type: "model/gltf-binary" });
 };
 
+export const decodeBase64ToBinary = (base64String: string) => {
+  const binaryString = window.atob(base64String);
+  const length = binaryString.length;
+  const bytes = new Uint8Array(length);
+
+  for (let i = 0; i < length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  return bytes;
+};
+
 export const uploadData = async (binaryData: Uint8Array) => {
   const storageDataName = `${Date.now()}.glb`;
   const path = `nftModels/${auth.currentUser.uid}/${storageDataName}`;

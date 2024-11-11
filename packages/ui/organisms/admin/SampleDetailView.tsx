@@ -1,6 +1,6 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useWorkspaceEditUnity } from "contexts/WorkspaceEditUnityContext";
-import { uploadData } from "fetchers/UploadActions";
+import { decodeBase64ToBinary, uploadData } from "fetchers/UploadActions";
 import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
@@ -53,18 +53,6 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     useWorkspaceEditUnity();
   const t = useTranslations("Workspace");
   const s = useTranslations("Showcase");
-
-  const decodeBase64ToBinary = (base64String: string) => {
-    const binaryString = atob(base64String);
-    const length = binaryString.length;
-    const bytes = new Uint8Array(length);
-
-    for (let i = 0; i < length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    return bytes;
-  };
 
   const handleNftModelGenerated = async (
     itemId: number,
