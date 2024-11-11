@@ -197,26 +197,28 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
       >
         <div className="w-full flex flex-col">
           {props.data &&
-            [...props.data]
-              .reverse()
-              .map((sample, index) => (
+            [...props.data].reverse().map((sample, reversedIndex) => {
+              const isChecked =
+                selectedItems
+                  .slice()
+                  .reverse()
+                  .findIndex((value) => value === sample.sampleItemId) > -1;
+              const originalIndex = props.data.length - 1 - reversedIndex;
+              return (
                 <SampleItemComponent
                   key={`sample-${sample.sampleItemId}`}
                   thumbnail={sample.thumbUrl}
                   name={sample.name}
                   selectState={selectState}
-                  checked={
-                    selectedItems.findIndex(
-                      (value) => value === sample.sampleItemId,
-                    ) > -1
-                  }
+                  checked={isChecked}
                   changeHandler={(value) =>
                     selectionChangeHandler(sample.sampleItemId, value)
                   }
-                  selectHandler={() => props.selectHandler(index)}
-                  dragStartHandler={() => props.dragHandler(index)}
+                  selectHandler={() => props.selectHandler(originalIndex)}
+                  dragStartHandler={() => props.dragHandler(originalIndex)}
                 />
-              ))}
+              );
+            })}
         </div>
       </div>
       {selectState && (

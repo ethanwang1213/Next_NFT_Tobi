@@ -1,21 +1,22 @@
 import React, { createContext, ReactNode, useContext } from "react";
-import { ItemTransformUpdatePhase } from "types/unityTypes";
 
-interface ShowcaseEditUnityProviderProps {
+interface WorkspaceEditUnityProviderProps {
   children: ReactNode;
   unityContext: any;
 }
-interface ShowcaseEditUnityContextType {
+interface WorkspaceEditUnityContextType {
   isLoaded: boolean;
   unityProvider: any;
   isUndoable: boolean;
   isRedoable: boolean;
-  selectedItem: any;
+  selectedSample: any;
   pauseUnityInputs: () => void;
   resumeUnityInputs: () => void;
   setLoadData: (data: any) => void;
   requestSaveData: () => void;
+  requestItemThumbnail: (data: any) => void;
   placeNewSample: (sampleData: any) => void;
+  removeSamplesByItemId: (itemList: number[]) => void;
   placeNewNft: (nftData: any) => void;
   placeNewSampleWithDrag: (sampleData: any) => void;
   placeNewNftWithDrag: (nftData: any) => void;
@@ -23,21 +24,17 @@ interface ShowcaseEditUnityContextType {
   inputWasd: (wasdKeys: any) => void;
   undoAction: () => void;
   redoAction: () => void;
-  updateItemTransform: (transformData: {
-    positionOnPlane: { x: number; y: number };
-    rotationAngle: number;
-    scale: number;
-    phase: ItemTransformUpdatePhase;
-  }) => void;
+  applyAcrylicBaseScaleRatio: (data: any) => void;
   requestNftModelGeneration: (data: any) => Promise<void>;
+  deleteAllActionHistory: () => void;
 }
 
-const ShowcaseEditUnityContext = createContext<ShowcaseEditUnityContextType>(
-  {} as ShowcaseEditUnityContextType,
+const WorkspaceEditUnityContext = createContext<WorkspaceEditUnityContextType>(
+  {} as WorkspaceEditUnityContextType,
 );
 
-export const ShowcaseEditUnityProvider: React.FC<
-  ShowcaseEditUnityProviderProps
+export const WorkspaceEditUnityProvider: React.FC<
+  WorkspaceEditUnityProviderProps
 > = ({ children, unityContext }) => {
   if (!unityContext) {
     console.error("Unity context is not initialized.");
@@ -45,10 +42,11 @@ export const ShowcaseEditUnityProvider: React.FC<
   }
 
   return (
-    <ShowcaseEditUnityContext.Provider value={unityContext}>
+    <WorkspaceEditUnityContext.Provider value={unityContext}>
       {children}
-    </ShowcaseEditUnityContext.Provider>
+    </WorkspaceEditUnityContext.Provider>
   );
 };
 
-export const useShowcaseEditUnity = () => useContext(ShowcaseEditUnityContext);
+export const useWorkspaceEditUnity = () =>
+  useContext(WorkspaceEditUnityContext);
