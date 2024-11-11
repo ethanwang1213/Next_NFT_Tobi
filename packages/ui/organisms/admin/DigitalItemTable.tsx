@@ -16,6 +16,7 @@ export enum DigitalItemTableColumn {
   Minted,
   CreationDate,
   DigitalItemTableColumnCount,
+  searchTerm,
 }
 
 const DigitalItemTable = (filters: {
@@ -23,6 +24,7 @@ const DigitalItemTable = (filters: {
   price: { from: number; to: number };
   statusArray: boolean[];
   createDate: { from: Date; to: Date };
+  searchTerm: string;
 }) => {
   const apiUrl = "native/admin/digital_items";
   const {
@@ -38,6 +40,15 @@ const DigitalItemTable = (filters: {
 
   // selected digital item id array
   const [selDigitalItemIds, setSelDigitalItemIds] = useState([]);
+
+  const applySearchFilter = (items) => {
+    return items.filter((item) => {
+      if (!item.name) {
+        return false;
+      }
+      return item.name.toLowerCase().includes(filters.searchTerm.toLowerCase());
+    });
+  };
 
   const applySort = (sortKey, sortData) => {
     // sort digital items
@@ -169,6 +180,11 @@ const DigitalItemTable = (filters: {
         newData = applyFilter(index, newData);
       }
     });
+
+    if (filters.searchTerm) {
+      newData = applySearchFilter(newData);
+    }
+
     newData = applySort(sortOrder, newData);
     setData(newData);
     // eslint-disable-next-line react-hooks/exhaustive-deps

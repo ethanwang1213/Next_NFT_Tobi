@@ -41,6 +41,7 @@ export default function ItemsManageTab({
     from: new Date(),
     to: new Date(),
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleTabChange = (tab) => {
     setTab(tab);
@@ -72,6 +73,7 @@ export default function ItemsManageTab({
         <input
           className="text-base text-secondary/[76] outline-none"
           placeholder={t('Filter')}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <div>
@@ -81,6 +83,7 @@ export default function ItemsManageTab({
             price={price}
             statusArray={statusArray}
             createDate={createDate}
+            searchTerm={searchTerm}
           />
         </TabPanel>
       </div>
