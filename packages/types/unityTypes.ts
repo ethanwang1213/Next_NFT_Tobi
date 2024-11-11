@@ -56,10 +56,10 @@ export type ItemBaseId = {
 };
 
 export type SampleBaseIdForLoading = {
-  sampleItemId: number;
+  itemId: number;
 };
 export type NftBaseIdForLoading = {
-  nftId: number;
+  itemId: number;
 };
 
 export type ParentId = {
@@ -75,7 +75,7 @@ export type TextureParam = {
   imageUrl?: string;
 };
 
-export type WorkspaceTextureParamForLoading = {
+export type TextureParamForLoading = {
   materialUrl?: string;
 };
 
@@ -126,14 +126,14 @@ export type NftBaseData = Omit<
 // sample base data for loading
 export type WorkspaceSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
-  WorkspaceTextureParamForLoading &
+  TextureParamForLoading &
   AcrylicBaseScaleRatioForLoading &
   ParentId &
   ItemNameForLoading &
   DebugFlag;
 export type ShowcaseSampleBaseDataForLoading = SampleBaseIdForLoading &
   ModelParams &
-  TextureParam &
+  TextureParamForLoading &
   AcrylicBaseScaleRatioForLoading &
   ParentId &
   ItemNameForLoading &
@@ -149,7 +149,7 @@ export type SampleBaseDataForPlacing = SampleBaseIdForLoading &
 // nft base data for loading
 export type NftBaseDataForLoading = NftBaseIdForLoading &
   ModelParams &
-  TextureParam &
+  TextureParamForLoading &
   ParentId &
   ItemNameForLoading &
   DebugFlag;
@@ -163,7 +163,7 @@ export type NftBaseDataForPlacing = NftBaseIdForLoading &
 ///////////////////////////////////////
 // types for additional item data for arrangement
 
-export type ItemId = {
+export type DecorationId = {
   id: number;
 };
 
@@ -182,7 +182,7 @@ type ItemShelfSectionIndex = {
 };
 
 export type SaidanItemData = ItemBaseData &
-  ItemId &
+  DecorationId &
   ItemTransform &
   ItemStageType &
   ItemShelfSectionIndex & {
@@ -193,18 +193,18 @@ export type SaidanItemData = ItemBaseData &
 ///////////////////////////////////////
 // types for load data with arrangement
 export type WorkspaceSampleLoadData = WorkspaceSampleBaseDataForLoading &
-  ItemId &
+  DecorationId &
   ItemTransform &
   ItemStageType;
 export type ShowcaseSampleLoadData = ShowcaseSampleBaseDataForLoading &
-  ItemId &
+  DecorationId &
   ItemTransform &
   ItemStageType &
   ItemShelfSectionIndex;
 
 // nft load data
 export type NftLoadData = NftBaseDataForLoading &
-  ItemId &
+  DecorationId &
   ItemTransform &
   ItemStageType &
   ItemShelfSectionIndex & {
@@ -214,13 +214,13 @@ export type NftLoadData = NftBaseDataForLoading &
 ///////////////////////////////////////
 // types for item save data
 export type SampleSaveData = ItemBaseId &
-  ItemId &
+  DecorationId &
   ItemTransform &
   ItemStageType &
   ItemShelfSectionIndex &
   AcrylicBaseScaleRatio;
 export type NftSaveData = ItemBaseId &
-  ItemId &
+  DecorationId &
   ItemTransform &
   ItemStageType &
   ItemShelfSectionIndex;

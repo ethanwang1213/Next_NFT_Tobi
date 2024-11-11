@@ -1,8 +1,8 @@
 import {
   ActionType,
+  DecorationId,
   FloorSettings,
   ItemBaseId,
-  ItemId,
   ItemTransform,
   ItemTypeParam,
   LightParams,
@@ -134,7 +134,7 @@ export type PositionOnPlane = {
 export type SelectedItem = ItemTypeParam &
   ItemBaseId &
   ParentId &
-  ItemId & {
+  DecorationId & {
     positionOnPlane: PositionOnPlane;
     rotationAngle: number;
     scale: number;

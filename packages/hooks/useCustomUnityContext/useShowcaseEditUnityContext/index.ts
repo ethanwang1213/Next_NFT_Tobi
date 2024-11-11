@@ -121,7 +121,7 @@ export const useShowcaseEditUnityContext = ({
 
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
         return {
-          itemId: v.sampleItemId,
+          imageUrl: v.materialUrl,
           acrylicBaseScaleRatio:
             v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
           itemName: v.name,
@@ -134,7 +134,6 @@ export const useShowcaseEditUnityContext = ({
       });
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
         return {
-          itemId: v.nftId,
           itemName: v.name,
           shelfSectionIndex: v.shelfSectionIndex ?? -1,
           ...v,

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { UpdateIdValues, WasdParams } from "types/adminTypes";
 import {
+  DecorationId,
   ItemBaseData,
   ItemBaseId,
-  ItemId,
   ItemName,
   ItemType,
   ItemTypeParam,
@@ -122,7 +122,7 @@ export const useSaidanLikeUnityContextBase = ({
 
   const placeNewSample = useCallback(
     ({
-      sampleItemId,
+      itemId,
       modelType,
       modelUrl,
       imageUrl = "",
@@ -133,7 +133,7 @@ export const useSaidanLikeUnityContextBase = ({
     }: SampleBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.Sample,
-        itemId: sampleItemId,
+        itemId,
         modelType,
         modelUrl,
         imageUrl,
@@ -144,7 +144,7 @@ export const useSaidanLikeUnityContextBase = ({
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
 
-      additionalItemDataMap.get(ItemType.Sample)?.set(sampleItemId, {
+      additionalItemDataMap.get(ItemType.Sample)?.set(itemId, {
         digitalItemId,
         itemName: sampleName,
       });
@@ -154,7 +154,7 @@ export const useSaidanLikeUnityContextBase = ({
 
   const placeNewNft = useCallback(
     ({
-      nftId,
+      itemId,
       modelType,
       modelUrl,
       digitalItemId,
@@ -163,7 +163,7 @@ export const useSaidanLikeUnityContextBase = ({
     }: NftBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.DigitalItemNft,
-        itemId: nftId,
+        itemId: itemId,
         modelType,
         modelUrl,
         imageUrl: "",
@@ -173,7 +173,7 @@ export const useSaidanLikeUnityContextBase = ({
       };
       postMessageToUnity("NewItemMessageReceiver", JSON.stringify(data));
 
-      additionalItemDataMap.get(ItemType.DigitalItemNft)?.set(nftId, {
+      additionalItemDataMap.get(ItemType.DigitalItemNft)?.set(itemId, {
         digitalItemId,
         itemName: nftName,
       });
@@ -183,7 +183,7 @@ export const useSaidanLikeUnityContextBase = ({
 
   const placeNewSampleWithDrag = useCallback(
     ({
-      sampleItemId,
+      itemId,
       modelType,
       modelUrl,
       imageUrl = "",
@@ -194,7 +194,7 @@ export const useSaidanLikeUnityContextBase = ({
     }: SampleBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.Sample,
-        itemId: sampleItemId,
+        itemId,
         modelType,
         modelUrl,
         imageUrl,
@@ -208,7 +208,7 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify(data),
       );
 
-      additionalItemDataMap.get(ItemType.Sample)?.set(sampleItemId, {
+      additionalItemDataMap.get(ItemType.Sample)?.set(itemId, {
         digitalItemId,
         itemName: sampleName,
       });
@@ -218,7 +218,7 @@ export const useSaidanLikeUnityContextBase = ({
 
   const placeNewNftWithDrag = useCallback(
     ({
-      nftId,
+      itemId,
       modelType,
       modelUrl,
       digitalItemId,
@@ -227,7 +227,7 @@ export const useSaidanLikeUnityContextBase = ({
     }: NftBaseDataForPlacing) => {
       const data: ItemBaseData = {
         itemType: ItemType.DigitalItemNft,
-        itemId: nftId,
+        itemId,
         modelType,
         modelUrl,
         imageUrl: "",
@@ -240,7 +240,7 @@ export const useSaidanLikeUnityContextBase = ({
         JSON.stringify(data),
       );
 
-      additionalItemDataMap.get(ItemType.DigitalItemNft)?.set(nftId, {
+      additionalItemDataMap.get(ItemType.DigitalItemNft)?.set(itemId, {
         digitalItemId,
         itemName: nftName,
       });
@@ -249,7 +249,7 @@ export const useSaidanLikeUnityContextBase = ({
   );
 
   const removeItem = useCallback(
-    ({ itemType, itemId, id }: ItemTypeParam & ItemBaseId & ItemId) => {
+    ({ itemType, itemId, id }: ItemTypeParam & ItemBaseId & DecorationId) => {
       postMessageToUnity(
         "RemoveSingleItemMessageReceiver",
         JSON.stringify({ itemType, itemId, id }),
