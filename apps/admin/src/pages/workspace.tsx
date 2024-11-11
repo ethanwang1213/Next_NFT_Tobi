@@ -289,7 +289,7 @@ export default function Index() {
         (value) => value.id === sample.materialId,
       );
       placeNewSample({
-        sampleItemId: sample.sampleItemId,
+        itemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
         imageUrl:
@@ -336,7 +336,7 @@ export default function Index() {
         (value) => value.id === samples[index].materialId,
       );
       placeNewSampleWithDrag({
-        sampleItemId: samples[index].sampleItemId,
+        itemId: samples[index].sampleItemId,
         digitalItemId: samples[index].digitalItemId,
         modelUrl: samples[index].modelUrl,
         imageUrl:
