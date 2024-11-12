@@ -9,7 +9,7 @@ import RotateSliderComponent from "./RotateSliderComponent";
 type Props = {
   imageUrl: string;
   backHandler: () => void;
-  nextHandler: (image: string) => void;
+  nextHandler: (image: string, materialImage: string) => void;
   error: boolean;
   errorHandler: () => void;
   isGenerate: boolean;
@@ -156,7 +156,7 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
   const nextHandler = useCallback(async () => {
     setProcessing(true);
     await cropImage();
-    props.nextHandler(blobUrlRef.current);
+    props.nextHandler(blobUrlRef.current, props.imageUrl);
   }, [props, cropImage]);
 
   return (

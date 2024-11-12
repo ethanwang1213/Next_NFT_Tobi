@@ -72,6 +72,7 @@ export default function Index() {
 
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
   const [selectedSampleItemId, setSelectedSampleItemId] = useState(-1);
+  const [materialImage, setMaterialImage] = useState(null);
 
   const sampleAPIUrl = "native/my/samples";
   const {
@@ -239,6 +240,10 @@ export default function Index() {
     }
   }, [selectedSample, samples]);
 
+  useEffect(() => {
+    generateMaterialImage.current = materialImage;
+  }, [materialImage]);
+
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
     // Initialize timer
@@ -293,7 +298,11 @@ export default function Index() {
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
         imageUrl:
-          materialIndex > -1 ? materials[materialIndex].image : sample.thumbUrl,
+          sample.type === 3
+            ? sample.thumbUrl
+            : materialIndex > -1
+              ? materials[materialIndex].image
+              : sample.thumbUrl,
         acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
@@ -585,6 +594,7 @@ export default function Index() {
               resetErrorHandler={() => {
                 setGenerateSampleError(false);
               }}
+              onsetMaterialImageHandler={setMaterialImage}
             />
           </div>
           <div
