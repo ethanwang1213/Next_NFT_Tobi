@@ -32,7 +32,6 @@ type Props = {
   ) => Promise<boolean>;
   generateError: boolean;
   resetErrorHandler: () => void;
-  onsetMaterialImageHandler: (image: string) => void;
 };
 
 const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
@@ -468,8 +467,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           0,
         )
       )
-        props.onsetMaterialImageHandler(material);
-      generateSample(ModelType.CanBadge, firstImageRef.current, null, null);
+      generateSample(ModelType.CanBadge, firstImageRef.current, material, null);
     },
     [checkAndUploadImage, generateSample],
   );
