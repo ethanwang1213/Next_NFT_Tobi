@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 const menuItems = [
@@ -16,7 +17,7 @@ const menuItems = [
   {
     type: "menu",
     icon: "schedule-icon.svg",
-    text: "Schedule",
+    text: "Scheduled",
     color: "secondary",
   },
   { type: "divider", icon: "", text: "", color: "secondary-200" },
@@ -30,6 +31,7 @@ const ShowcaseEditMenu = ({
   clickHandler: (index: number) => void;
   status: number;
 }) => {
+  const t = useTranslations("ContentShowcase");
   const getIndexFromStatus = (status: number) => {
     switch (status) {
       case 0:
@@ -67,7 +69,7 @@ const ShowcaseEditMenu = ({
               <span
                 className={`text-${item.color} text-[17px] leading-4 font-normal`}
               >
-                {item.text}
+                {t(item.text)}
               </span>
             </div>
 

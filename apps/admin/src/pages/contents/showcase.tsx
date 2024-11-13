@@ -5,6 +5,7 @@ import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -57,6 +58,7 @@ const Showcase = () => {
     postData,
   } = useRestfulAPI(null);
   const timerId = useRef(null);
+  const tooltip = useTranslations("Tooltip");
 
   const { data: materialData } = useRestfulAPI("native/materials");
   const wasdKeys = useWASDKeys();
@@ -436,7 +438,7 @@ const Showcase = () => {
               <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
                 <button
                   disabled={!isUndoable}
-                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                  className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
                   onClick={undoAction}
                 >
                   <Image
@@ -446,22 +448,28 @@ const Showcase = () => {
                     src="/admin/images/icon/undo-icon.svg"
                     className="cursor-pointer h-[32px]"
                   />
+                  <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                    {tooltip("Undo")}
+                  </span>
                 </button>
                 <button
                   disabled={!isRedoable}
-                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                  className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
                   onClick={redoAction}
                 >
                   <Image
                     width={32}
                     height={32}
-                    alt="undo button"
+                    alt="redo button"
                     src="/admin/images/icon/redo-icon.svg"
                     className="cursor-pointer h-[32px]"
                   />
+                  <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                    {tooltip("Redo")}
+                  </span>
                 </button>
                 <button
-                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                  className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                   onClick={() => {
                     setShowSampleDetailView(!showSampleDetailView);
                     setShowSmartFrame(!showSmartFrame);
@@ -475,16 +483,19 @@ const Showcase = () => {
                   <Image
                     width={32}
                     height={32}
-                    alt="undo button"
+                    alt="crop button"
                     src={
                       showSmartFrame
                         ? "/admin/images/icon/crop-on-icon.svg"
                         : "/admin/images/icon/crop-off-icon.svg"
                     }
                   />
+                  <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                    {tooltip("ToggleSafeArea")}
+                  </span>
                 </button>
                 <button
-                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                  className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                   onClick={() => {
                     setShowSampleDetailView(!showDetailView);
                     setShowDetailView(!showDetailView);
@@ -503,17 +514,23 @@ const Showcase = () => {
                         : "/admin/images/icon/visibility-off-icon.svg"
                     }
                   />
+                  <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                    {tooltip("ToggleUIVisibility")}
+                  </span>
                 </button>
                 <button
-                  className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                  className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                   onClick={() => notification("help button is clicked")}
                 >
                   <Image
                     width={32}
                     height={32}
-                    alt="undo button"
+                    alt="help button"
                     src="/admin/images/icon/help-icon.svg"
                   />
+                  <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                    {tooltip("Help")}
+                  </span>
                 </button>
               </div>
             </div>

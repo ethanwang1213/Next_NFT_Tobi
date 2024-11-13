@@ -919,7 +919,7 @@ const Detail = () => {
                       height={32}
                       alt="preview icon"
                     />
-                    <span className="w-[240px] text-primary-500 text-xl font-medium text-center">
+                    <span className="w-[260px] text-primary-500 text-xl font-medium text-center">
                       {b("PreviewWorkspace")}
                     </span>
                   </Button>
@@ -954,7 +954,7 @@ const Detail = () => {
                     height={20}
                     alt="mint icon"
                   />
-                  <span className="w-[240px] text-[#E96800] text-xl font-semibold text-center">
+                  <span className="w-[260px] text-[#E96800] text-xl font-semibold text-center">
                     {b("MintNFT")}
                   </span>
                 </Button>

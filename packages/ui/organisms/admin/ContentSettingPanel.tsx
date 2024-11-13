@@ -56,7 +56,7 @@ const CopyrightHolderComponent = ({ initialItems, changeHandler }) => {
   });
   const [items, setItems] = useState(null);
   const { error, postData, deleteData } = useRestfulAPI(null);
-
+  const t = useTranslations("ContentSettings");
   const rootElementRef = useRef(null);
 
   useEffect(() => setItems(initialItems), [initialItems]);
@@ -112,7 +112,7 @@ const CopyrightHolderComponent = ({ initialItems, changeHandler }) => {
         type="text"
         className="w-full h-12 outline-none rounded-lg border-2 border-secondary
           px-4 text-secondary text-sm font-medium"
-        placeholder="add a Copyright holder tag"
+        placeholder={t("AddCopyrightHolder")}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
             // Handle the Enter key press event here

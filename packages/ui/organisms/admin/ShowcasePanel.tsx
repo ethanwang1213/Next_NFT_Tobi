@@ -199,11 +199,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const getStatusLabel = () => {
     switch (status) {
       case ShowcaseStatus.Public:
-        return "Public";
+        return t("Public");
       case ShowcaseStatus.Private:
-        return "Private";
+        return t("Private");
       case ShowcaseStatus.ScheduledPublic:
-        return "Scheduled";
+        return t("Scheduled");
       default:
         return "";
     }
@@ -306,7 +306,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               ${
                 status == ShowcaseStatus.Public
                   ? "w-32"
-                  : "w-24 border-r border-white"
+                  : "border-r border-white px-7"
               }`}
             >
               {getStatusLabel()}
