@@ -1,7 +1,4 @@
-import {Tpf2023StampType} from "types/journal-types";
-
-export const NEKO_NFT_ID =
-  process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
+export const NEKO_NFT_ID = process.env.NEKO_NFT_ADDRESS || "A.5e9ccdb91ff7ad93.TobiraNeko"; // default for testnet
 export const TOPIC_NAMES = {
   ordersPaid: "shopify-orders-paid",
   ordersCreate: "shopify-orders-create",
@@ -18,14 +15,22 @@ export const SITE_HOST = process.env.SITE_HOST || "https://www.tobiratory.com";
 export const SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE =
   process.env.SLACK_WEBHOOK_URL_FOR_ORDERS_CREATE || "";
 
-export const TPF2023_STAMP_RALLY_KEYWORDS: {
-  [key in Tpf2023StampType]: string;
-} = {
+export const TPF2023_STAMP_RALLY_KEYWORDS = {
   G0: "Ca00",
   G1alpha: "pe03",
   G1beta: "ia04",
   G1gamma: "io02",
   G1delta: "ss01",
+};
+
+export const TMF2024_STAMP_RALLY_KEYWORDS = {
+  TobiraMusicFestival2024: "TMF2024",
+  YouSoTotallyRock: "uduPkemFFyamtIIP",
+};
+
+export const TPFW2024_STAMP_RALLY_KEYWORDS = {
+  TobirapolisFireworks2024: "TPFW2024",
+  ReflectedInTheRiver: "TPFWEPT2024",
 };
 
 export const NON_FUNGIBLE_TOKEN_ADDRESS =

@@ -13,6 +13,8 @@ import {
   emailLinkOnly,
   useAuth,
 } from "journal-pkg/contexts/journal-AuthProvider";
+import { StampRallyFormProvider } from "journal-pkg/contexts/journal-StampRallyFormProvider";
+import { WatchMintStatusProvider } from "journal-pkg/contexts/journal-WatchMintStatusProvider";
 import { auth } from "journal-pkg/fetchers/firebase/journal-client";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -52,34 +54,38 @@ const Index = () => {
       <EditProfileProvider>
         <BookProvider>
           <SettingProvider>
-            <div
-              className={
-                process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" &&
-                (!user || !user.email || !authCheck)
-                  ? "invisible"
-                  : ""
-              }
-            >
-              <Image
-                src="/journal/images/book/bg_journal.png"
-                fill
-                alt="bg_journal"
-                className="pointer-events-none select-none"
-              />
-              <div className="hidden sm:block">
-                <Pc />
-              </div>
-              <div className="block sm:hidden">
-                <Mobile />
-              </div>
-              <EditProfileModal />
-              <CropNewIconModal />
-              <DebugText />
-              <NftViewModal />
-              <ConfirmEmailRemovalModal />
-              <EmailSentModal />
-              <RedeemEmailAddedModal />
-            </div>
+            <StampRallyFormProvider>
+              <WatchMintStatusProvider>
+                <div
+                  className={
+                    process.env.NEXT_PUBLIC_DEBUG_MODE !== "true" &&
+                    (!user || !user.email || !authCheck)
+                      ? "invisible"
+                      : ""
+                  }
+                >
+                  <Image
+                    src="/journal/images/book/bg_journal.png"
+                    fill
+                    alt="bg_journal"
+                    className="pointer-events-none select-none"
+                  />
+                  <div className="hidden sm:block">
+                    <Pc />
+                  </div>
+                  <div className="block sm:hidden">
+                    <Mobile />
+                  </div>
+                  <EditProfileModal />
+                  <CropNewIconModal />
+                  <DebugText />
+                  <NftViewModal />
+                  <ConfirmEmailRemovalModal />
+                  <EmailSentModal />
+                  <RedeemEmailAddedModal />
+                </div>
+              </WatchMintStatusProvider>
+            </StampRallyFormProvider>
           </SettingProvider>
         </BookProvider>
       </EditProfileProvider>

@@ -17,3 +17,7 @@ declare module "*.glb" {
   export default src;
 }
 
+declare module "*.svg" {
+  const content: any;
+  export default content;
+}

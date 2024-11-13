@@ -1,12 +1,12 @@
-import { useAuth } from "contexts/journal-AuthProvider";
-import { useStampRallyFetcher } from "fetchers";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { useStampRallyFetcher } from "journal-pkg/fetchers/journal-useStampRallyFetcher";
 import {
   MintStatusType,
   Tpf2023StampType,
-} from "types/journal-types";
-import { RoundedImage } from "../../atoms/journal-RoundedImage";
-import { StampRallyTitle } from "../../atoms/journal-StampRallyTitle";
-import { StampRallyRewardForm } from "../../molecules/journal-StampRallyRewardForm";
+} from "journal-pkg/types/stampRallyTypes";
+import { RoundedImage } from "journal-pkg/ui/atoms/journal-RoundedImage";
+import { Tpf2023Title } from "journal-pkg/ui/atoms/journal-Tpf2023Title";
+import { Tpf2023RewardForm } from "journal-pkg/ui/molecules/journal-Tpf2023RewardForm";
 
 type StampDataType = {
   key: Tpf2023StampType;
@@ -19,8 +19,8 @@ type StampDataType = {
  * スタンプラリー特設表示のコンポーネント
  * @returns {ReactElement} The `StampRally` component
  */
-export const StampRally: React.FC = () => {
-  const { requestReward } = useStampRallyFetcher();
+export const Tpf2023StampRally: React.FC = () => {
+  const { requestStampRallyReward } = useStampRallyFetcher();
 
   // preparing stamps data
   const keys: Tpf2023StampType[] = [
@@ -46,7 +46,7 @@ export const StampRally: React.FC = () => {
   return (
     <div className="text-center text-primary">
       <div>
-        <StampRallyTitle />
+        <Tpf2023Title />
       </div>
       <div className="mt-6 sm:mt-12">
         <p className="text-xs sm:text-lg font-bold">
@@ -68,7 +68,10 @@ export const StampRally: React.FC = () => {
         </div>
       </div>
       <div className="w-full mt-4 sm:mt-10">
-        <StampRallyRewardForm onSubmit={requestReward} />
+        <Tpf2023RewardForm
+          onSubmit={requestStampRallyReward}
+          event="TOBIRAPOLISFESTIVAL2023"
+        />
       </div>
       <p className="mt-1 text-[10px] sm:text-sm font-bold">
         {"スタンプ押印(NFT mint)には時間がかかります。予めご了承ください。"}

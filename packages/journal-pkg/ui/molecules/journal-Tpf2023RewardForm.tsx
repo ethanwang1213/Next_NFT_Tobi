@@ -1,19 +1,23 @@
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAuth } from "contexts/journal-AuthProvider";
-import { useStampRallyForm } from "contexts/journal-StampRallyFormProvider";
+import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
+import { useStampRallyForm } from "journal-pkg/contexts/journal-StampRallyFormProvider";
+import {
+  StampRallyEvents,
+  StampRallyRewardFormType,
+} from "journal-pkg/types/stampRallyTypes";
 import { useForm } from "react-hook-form";
-import { StampRallyRewardFormType } from "types/journal-types";
 
 type Props = {
   onSubmit: (data: StampRallyRewardFormType) => void;
+  event: StampRallyEvents;
 };
 
 /**
  * TOBIRA POLIS祭の出し物 G0のスタンプラリーの記念品受け取り用フォーム
  * @returns {ReactElement} The `StampRallyRewardForm` component
  */
-export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
+export const Tpf2023RewardForm: React.FC<Props> = ({ onSubmit, event }) => {
   const { register, handleSubmit, reset } = useForm<StampRallyRewardFormType>({
     defaultValues: {
       keyword: "",
@@ -21,11 +25,12 @@ export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const { isSubmitting } = useStampRallyForm();
-  const stampRally = useAuth().user?.mintStatus?.TOBIRAPOLISFESTIVAL2023;
+  const stampRally = useAuth().user?.mintStatus?.[event];
 
   if (
-    stampRally?.Complete === "IN_PROGRESS" ||
-    stampRally?.Complete === "DONE"
+    !!stampRally &&
+    "Complete" in stampRally &&
+    (stampRally?.Complete === "IN_PROGRESS" || stampRally?.Complete === "DONE")
   ) {
     return <p className="h-8 sm:h-12 font-bold sm:text-xl">Completed!!</p>;
   }
@@ -34,6 +39,7 @@ export const StampRallyRewardForm: React.FC<Props> = ({ onSubmit }) => {
     <form
       onSubmit={handleSubmit((data: StampRallyRewardFormType) => {
         reset();
+        data.event = "TOBIRAPOLISFESTIVAL2023";
         onSubmit(data);
       })}
       className="h-8 sm:h-12 w-full flex"

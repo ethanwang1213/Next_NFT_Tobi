@@ -20,6 +20,11 @@
         "source": "/housebadge/metadata/**",
         "function": "housebadge",
         "region": "asia-northeast1"
+      },
+      {
+        "source": "/journalstamprally/metadata/**",
+        "function": "journalStampRallyMetadata",
+        "region": "asia-northeast1"
       }
     ]
   },
