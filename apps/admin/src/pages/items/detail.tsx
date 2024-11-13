@@ -393,14 +393,14 @@ const Detail = () => {
 
   const submitHandler = async () => {
     setLoading(true);
-
+    
     const submitData = {
       name: digitalItem.name,
       description: digitalItem.description,
       customThumbnailUrl: digitalItem.customThumbnailUrl,
       isCustomThumbnailSelected: digitalItem.isCustomThumbnailSelected,
       price: parseInt(digitalItem.price ?? 0),
-      ...(status !== digitalItem.status && { status }),
+      ...(digitalItem.status > 2 && { status: digitalItem.status }),
       startDate: digitalItem.startDate,
       endDate: digitalItem.endDate,
       quantityLimit: parseInt(digitalItem.quantityLimit),
