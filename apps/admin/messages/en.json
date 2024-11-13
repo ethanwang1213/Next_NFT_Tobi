@@ -165,7 +165,8 @@
     "Discard": "Discard",
     "Cancel": "Cancel",
     "Done": "Done",
-    "Public": "Public"
+    "Public": "Public",
+    "AddCopyrightHolder" : "Add a Copyright holder tag"
   },
   "Showcase": {
     "ItemTitle": "Item Title",
@@ -243,7 +244,7 @@
     "PlaceOnBaseStand": "Place on Base stand",
     "PlaceBodyOnBase": "Place the body on the base. Move the rectangle labeled 'Acrylic plate' to set the placement.",
     "Generate": "Generate",
-    "SomethingWrong": "Something wrong happens...",
+    "SomethingWrong": "Something went wrong…",
     "Back": "Back",
     "Next": "Next",
     "Skip": "Skip",
@@ -403,5 +404,12 @@
     "ContentNotice": "If there are any issues with the contents of the application, the TCP features may be temporarily suspended.",
     "CreateYourWorld": "Now, let's create your world!",
     "CreateOwnContent": "Let's create your own fantastic content!"
+  },
+  "Tooltip": {
+    "Undo": "Undo",
+    "Redo": "Redo",
+    "ToggleSafeArea": "Toggle Safe Area",
+    "ToggleUIVisibility": "Toggle UI Visibility",
+    "Help": "Help"
   }
 }

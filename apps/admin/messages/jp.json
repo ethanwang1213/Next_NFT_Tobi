@@ -126,10 +126,10 @@
     "InvalidStatusChange": "ステータス変更が無効です：同じステータスには変更できません。"
   },
   "ContentShowcase": {
-    "NewShowcase": "NEW SHOWCASE",
+    "NewShowcase": "新しいショーケース",
     "LastUpdatedDate": "最終更新日：",
-    "ShowcaseName": "Showcase 名",
-    "ShowcaseDescription": "Showcase 説明",
+    "ShowcaseName": "ショーケース 名",
+    "ShowcaseDescription": "ショーケース 説明",
     "Publish": "公開",
     "Draft": "下書き",
     "Public": "公開",
@@ -165,7 +165,8 @@
     "Discard": "破棄",
     "Cancel": "キャンセル",
     "Done": "完了",
-    "Public": "公開"
+    "Public": "公開",
+    "AddCopyrightHolder" : "コピーライトタグを追加"
   },
   "Showcase": {
     "ItemTitle": "アイテムタイトル",
@@ -404,5 +405,12 @@
     "ContentNotice": "申し込み内容に問題があった場合、TCP機能が一時的に停止される可能性があります。",
     "CreateYourWorld": "さあ、あなたの世界を作りましょう！",
     "CreateOwnContent": "あなただけの素晴らしいコンテンツを作ってみましょう！"
+  },
+  "Tooltip": {
+    "Undo": "元に戻す",
+    "Redo": "やり直し",
+    "ToggleSafeArea": "セーフエリアの表示切替",
+    "ToggleUIVisibility": "UIの表示切替",
+    "Help": "ヘルプ"
   }
 }

@@ -59,6 +59,7 @@ export default function Index() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [matchingSample, secondaryMatchSample] = useState(null);
   const t = useTranslations("Workspace");
+  const tooltip = useTranslations("Tooltip");
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -293,7 +294,11 @@ export default function Index() {
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
         imageUrl:
-          materialIndex > -1 ? materials[materialIndex].image : sample.thumbUrl,
+          sample.type === 3
+            ? sample.thumbUrl
+            : materialIndex > -1
+              ? materials[materialIndex].image
+              : sample.thumbUrl,
         acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
         modelType: sample.type as ModelType,
         sampleName: sample.name !== null ? sample.name : "",
@@ -437,7 +442,7 @@ export default function Index() {
 
     if (modelUrlMap[sampleType]) {
       generateModelUrl.current = modelUrlMap[sampleType];
-      generateMaterialImage.current = image1;
+      generateMaterialImage.current = image2;
 
       requestItemThumbnail({
         modelType: sampleType as ModelType,
@@ -653,7 +658,7 @@ export default function Index() {
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
               <button
                 disabled={!isUndoable}
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                className="group btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0 relative"
                 onClick={undoAction}
               >
                 <Image
@@ -663,22 +668,28 @@ export default function Index() {
                   src="/admin/images/icon/undo-icon.svg"
                   className="cursor-pointer h-[32px]"
                 />
+                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                  {tooltip("Undo")}
+                </span>
               </button>
               <button
                 disabled={!isRedoable}
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
+                className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
                 onClick={redoAction}
               >
                 <Image
                   width={32}
                   height={32}
-                  alt="undo button"
+                  alt="redo button"
                   src="/admin/images/icon/redo-icon.svg"
                   className="cursor-pointer h-[32px]"
                 />
+                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                  {tooltip("Redo")}
+                </span>
               </button>
               <button
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   setShowDetailView(!showDetailView);
                   setShowListView(!showDetailView);
@@ -694,9 +705,12 @@ export default function Index() {
                       : "/admin/images/icon/visibility-off-icon.svg"
                   }
                 />
+                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                  {tooltip("ToggleUIVisibility")}
+                </span>
               </button>
               <button
-                className="btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
+                className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                 onClick={() => {
                   if (shortcutDialogRef.current) {
                     shortcutDialogRef.current.showModal();
@@ -710,6 +724,9 @@ export default function Index() {
                   alt="shortcut button"
                   src="/admin/images/icon/help-icon.svg"
                 />
+                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                  {tooltip("Help")}
+                </span>
               </button>
             </div>
           </div>

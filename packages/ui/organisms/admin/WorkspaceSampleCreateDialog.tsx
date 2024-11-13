@@ -458,7 +458,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
   ]);
 
   const generateCanBadgeSample = useCallback(
-    async (image: string) => {
+    async (image: string, material: string) => {
       if (
         await checkAndUploadImage(
           firstImageRef,
@@ -467,7 +467,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           0,
         )
       )
-        generateSample(ModelType.CanBadge, firstImageRef.current, null, null);
+      generateSample(ModelType.CanBadge, firstImageRef.current, material, null);
     },
     [checkAndUploadImage, generateSample],
   );

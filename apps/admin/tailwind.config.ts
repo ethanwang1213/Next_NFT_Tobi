@@ -41,7 +41,8 @@ const config = {
         "3xl": ["32px", "48px"],
       },
       height: {
-        'screen-minus-56': 'calc(100vh - 56px)',
+        "screen-minus-56": "calc(100vh - 56px)",
+        "screen-minus-170": "calc(100vh - 151px)",
       },
       colors: {
         active: "#FF811C",
@@ -71,7 +72,7 @@ const config = {
           1000: "#093159",
         },
         boxShadow: {
-          'custom-light': '0px 0px 10px 0px rgba(0, 0, 0, 0.25)',
+          "custom-light": "0px 0px 10px 0px rgba(0, 0, 0, 0.25)",
         },
         secondary: {
           DEFAULT: "#717171",

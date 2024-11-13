@@ -193,7 +193,7 @@ const ShowcaseTabView = ({
           </div>
         </ShowcaseTabSelector>
       </div>
-      <div className="tab-content flex flex-col w-full h-full bg-[#757575] backdrop-blur-[25px] rounded-b-3xl">
+      <div className="tab-content flex flex-col w-full h-screen-minus-170 bg-[#757575] backdrop-blur-[25px] rounded-b-3xl">
         <div className="flex flex-1 pl-8 pr-8 pt-12 pb-12 w-full flex-col overflow-auto">
           <TabPanel hidden={tab !== "Sample Items"}>
             <ShowcaseSampleTab
