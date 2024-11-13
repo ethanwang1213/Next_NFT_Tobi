@@ -393,7 +393,7 @@ const Detail = () => {
 
   const submitHandler = async () => {
     setLoading(true);
-    
+
     const submitData = {
       name: digitalItem.name,
       description: digitalItem.description,
