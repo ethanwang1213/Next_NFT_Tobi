@@ -1,5 +1,5 @@
+import TobirapolisIcon from "journal/public/images/icon/tobirapolis_icon.svg";
 import React from "react";
-import TobirapolisIcon from "../../../../apps/journal/public/images/icon/tobirapolis_icon.svg";
 
 export const BasicStampRallyTitle: React.FC = React.memo(() => {
   return (

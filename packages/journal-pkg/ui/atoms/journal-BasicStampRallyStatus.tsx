@@ -1,6 +1,6 @@
-import Caution from "../../../../apps/journal/public/images/icon/caution_journal.svg";
-import FetherCheck from "../../../../apps/journal/public/images/icon/feathercheck_journal.svg";
-import Fether from "../../../../apps/journal/public/images/icon/feather_journal.svg";
+import Caution from "journal/public/images/icon/caution_journal.svg";
+import FeatherCheck from "journal/public/images/icon/feathercheck_journal.svg";
+import Feather from "journal/public/images/icon/feather_journal.svg";
 
 export const Nothing: React.FC = () => {
   return (
@@ -15,7 +15,7 @@ export const Checking: React.FC = () => {
   return (
     <div className="text-dark-brown">
       <IconContainer>
-        <Fether />
+        <Feather />
       </IconContainer>
       <TextContainer>checking keyword...</TextContainer>
     </div>
@@ -26,7 +26,7 @@ export const Minting: React.FC = () => {
   return (
     <div className="text-dark-brown">
       <IconContainer>
-        <Fether />
+        <Feather />
       </IconContainer>
       <TextContainer>minting...</TextContainer>
     </div>
@@ -50,7 +50,7 @@ export const Success: React.FC = () => {
   return (
     <div className="text-dark-brown">
       <IconContainer>
-        <FetherCheck />
+        <FeatherCheck />
       </IconContainer>
       <TextContainer>
         Success! A new stamp has been added to the library!
