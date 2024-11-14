@@ -121,27 +121,27 @@ export const useShowcaseEditUnityContext = ({
 
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {
         return {
-          imageUrl: v.materialUrl,
-          acrylicBaseScaleRatio:
-            v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
-          itemName: v.name,
-          shelfSectionIndex: v.shelfSectionIndex ?? -1,
           ...v,
           itemType: ItemType.Sample,
+          imageUrl: v.materialUrl,
+          shelfSectionIndex: v.shelfSectionIndex ?? -1,
+          acrylicBaseScaleRatio:
+            v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
           canScale: true,
           itemMeterHeight: DefaultItemMeterHeight,
+          itemName: v.name,
         };
       });
       const nftList: SaidanItemData[] = loadData.nftItemList.map((v) => {
         return {
-          itemName: v.name,
-          shelfSectionIndex: v.shelfSectionIndex ?? -1,
           ...v,
           itemType: ItemType.DigitalItemNft,
           imageUrl: "",
+          shelfSectionIndex: v.shelfSectionIndex ?? -1,
           acrylicBaseScaleRatio: DefaultAcrylicBaseScaleRatio,
           canScale: true,
           itemMeterHeight: DefaultItemMeterHeight,
+          itemName: v.name,
         };
       });
       const saidanItemList = sampleList.concat(nftList);
