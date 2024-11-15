@@ -336,6 +336,8 @@ const DigitalItemTable = (filters: {
                     <Link
                       href={`/items/detail?id=${item.id}`}
                       className="flex items-center justify-center"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <Image
                         src={item.thumbUrl}
