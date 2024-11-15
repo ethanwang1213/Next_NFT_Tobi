@@ -68,5 +68,6 @@ const UnityBase = ({
     unityProvider={unityProvider}
     className="w-full h-full"
     style={{ opacity: isLoaded ? 1 : 0 }}
+    tabIndex={-1}
   />
 );

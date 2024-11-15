@@ -116,15 +116,15 @@ export const useWorkspaceUnityContext = ({
 
     var saidanItemList = loadData.workspaceItemList.map((v) => {
       return {
-        imageUrl: v.materialUrl,
-        acrylicBaseScaleRatio:
-          v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
-        itemName: v.name,
         ...v,
         itemType: ItemType.Sample,
+        imageUrl: v.materialUrl,
         shelfSectionIndex: -1,
+        acrylicBaseScaleRatio:
+          v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
         canScale: true,
         itemMeterHeight: DefaultItemMeterHeight,
+        itemName: v.name,
       };
     });
 
