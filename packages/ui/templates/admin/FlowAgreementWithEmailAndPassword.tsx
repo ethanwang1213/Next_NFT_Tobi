@@ -2,6 +2,7 @@ import useMailAuthForm from "hooks/useMailAuthForm";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { SetStateAction, useEffect, useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/molecules/BackLink";
@@ -25,7 +26,7 @@ type Props = {
   onClickSubmit: (email: string, password: string) => void;
 };
 
-const availableSymbols = "!@#$%^&*_-+=:;";
+const availableSymbols = "!?@#$%^&*_-+=:;";
 const symbolPattern = `${availableSymbols.replace("-", "\\-")}`;
 
 const FlowAgreementWithEmailAndPassword = ({
@@ -39,6 +40,17 @@ const FlowAgreementWithEmailAndPassword = ({
   onClickSubmit,
 }: Props) => {
   const [agreed, setAgreed] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   const [
     emailStatus,
     setEmailStatus,
@@ -187,30 +199,48 @@ const FlowAgreementWithEmailAndPassword = ({
         >
           {t("Password")}
         </div>
-        <input
-          type={"password"}
-          value={passwordStatus.password}
-          className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-          onChange={(e) => {
-            validatePassword(e.target.value);
-          }}
-        />
+        <div className="relative mt-[10px]">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={passwordStatus.password}
+            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            onChange={(e) => {
+              validatePassword(e.target.value);
+            }}
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute top-1/2 right-4 transform -translate-y-1/2"
+          >
+            {showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />}
+          </button>
+        </div>
         <div
           className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
         >
           {t("ConfirmPassword")}
         </div>
-        <input
-          type={"password"}
-          value={passwordConfirmationStatus.password}
-          className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-          onChange={(e) => {
-            validatePasswordConfirmation(
-              passwordStatus.password,
-              e.target.value,
-            );
-          }}
-        />
+        <div className="relative mt-[10px]">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            value={passwordConfirmationStatus.password}
+            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            onChange={(e) => {
+              validatePasswordConfirmation(
+                passwordStatus.password,
+                e.target.value,
+              );
+            }}
+          />
+          <button
+            type="button"
+            onClick={toggleConfirmPasswordVisibility}
+            className="absolute top-1/2 right-4 transform -translate-y-1/2"
+          >
+            {showConfirmPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />}
+          </button>
+        </div>
         <div className={"mt-[30px]"}>
           <Error errors={getErrors()} />
         </div>
@@ -283,13 +313,14 @@ const EmailField = ({
   visible: boolean;
   validateEmail: (email: string) => void;
 }) => {
+  const t = useTranslations("LogInSignUp");
   if (!visible) {
     return <></>;
   }
 
   return (
     <>
-      <div>メールアドレス</div>
+      <div>{t("Email")}</div>
       <input
         type={"text"}
         value={email}

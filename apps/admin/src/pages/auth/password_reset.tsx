@@ -4,6 +4,7 @@ import {
   signInWithEmailLink,
   updatePassword,
 } from "firebase/auth";
+import { GetStaticPropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -11,6 +12,14 @@ import { ErrorMessage } from "types/adminTypes";
 import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const PasswordReset = () => {
   const router = useRouter();

@@ -60,6 +60,7 @@ export default function Index() {
   const [matchingSample, secondaryMatchSample] = useState(null);
   const t = useTranslations("Workspace");
   const tooltip = useTranslations("Tooltip");
+  const { id } = router.query;
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -220,9 +221,16 @@ export default function Index() {
 
   useEffect(() => {
     if (workspaceData) {
-      setLoadData(workspaceData);
+      const filteredData = id
+        ? {
+            workspaceItemList: workspaceData.workspaceItemList.filter(
+              (item) => item.digitalItemId === Number(id),
+            ),
+          }
+        : { workspaceItemList: workspaceData.workspaceItemList };
+      setLoadData(filteredData);
     }
-  }, [workspaceData, setLoadData]);
+  }, [id, workspaceData, setLoadData]);
 
   useEffect(() => {
     if (selectedSample) {
