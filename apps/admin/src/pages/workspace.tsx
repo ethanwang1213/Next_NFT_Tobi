@@ -119,7 +119,7 @@ export default function Index() {
 
     const postData = {
       thumbUrl:
-        generateSampleType.current === 1 || 4
+        generateSampleType.current === 1 || generateSampleType.current === 4
           ? sampleThumb
           : generateMaterialImage.current,
       modelUrl: generateModelUrl.current,
