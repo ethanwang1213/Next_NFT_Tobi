@@ -135,16 +135,16 @@ const RoadMapComponent = (props: {
         alt="logo icon"
         src="/admin/images/tobiratory-logo-white.svg"
       />
-      <span className="text-base-white text-lg font-semibold mt-6">
+      <span className="text-base-white text-base font-semibold mt-6">
         {props.step === 0 ? t("ItemGenerator") : t("ItemCreate")}
       </span>
       {props.step > 0 && (
-        <span className="text-base-white text-sm font-light">
+        <span className="text-base-white text-[13px] font-light">
           {`- ${t(getSampleTypeKey(props.sampleType))}`}
         </span>
       )}
       {props.step === 0 ? (
-        <span className="text-base-white text-sm font-normal mt-2">
+        <span className="text-base-white text-[13px] font-normal mt-2">
           {t("ItemGeneratorDescription")}
         </span>
       ) : (
