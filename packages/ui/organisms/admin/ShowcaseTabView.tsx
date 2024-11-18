@@ -103,7 +103,7 @@ const ShowcaseTabView = ({
     }
   }, [settings]);
 
-  useEffect(()=>{
+  useEffect(() => {
     updateUnityViewSettings(
       wt,
       ft,
@@ -113,7 +113,8 @@ const ShowcaseTabView = ({
       pb,
       SettingsUpdatePhase.Updating,
     );
-  }, [wt,ft,st,sb,pt,sb]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wt, ft, st, sb, pt, pb]);
 
   return (
     <div className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4 flex flex-col items-center text-base-white">
