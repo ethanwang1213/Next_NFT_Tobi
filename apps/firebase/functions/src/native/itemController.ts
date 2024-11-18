@@ -787,6 +787,9 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
             is_deleted: false,
           },
         },
+        orderBy: {
+          created_date_time: "desc",
+        },
         include: {
           sample_item: true,
           material_image: true,
@@ -1070,7 +1073,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
     },
     copyrights?: { id: number | null, name: string }[],
     schedules?: {
-      id: number | null,
+      id: number | null | undefined,
       status: number,
       datetime: string,
     }[],
@@ -1078,6 +1081,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
+      // validate if requester is admin
       const admin = await prisma.businesses.findFirst({
         where: {
           uuid: uid,
@@ -1094,6 +1098,7 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
+      // digital item exist checking
       const digitalItem = await prisma.digital_items.findUnique({
         where: {
           id: parseInt(digitalId),
@@ -1131,6 +1136,8 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
+
+      // status validate
       if (status) {
         if (status < digitalItemStatus.hidden || status > digitalItemStatus.onSale) {
           res.status(401).send({
@@ -1200,27 +1207,27 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             id: {
               notIn: scheduleIds,
             },
+            digital_item_id: parseInt(digitalId),
           },
         });
         await Promise.all(
             schedules.map(async (schedule)=>{
-              if (!schedule.id) {
-                await prisma.sales.upsert({
-                  where: {
-                    id: schedule.id??0,
-                  },
-                  create: {
-                    price: currentPrice,
-                    status: schedule.status,
-                    schedule_start_time: schedule.datetime,
-                    digital_item_id: digitalItem.id,
-                  },
-                  update: {
-                    status: schedule.status,
-                    schedule_start_time: schedule.datetime,
-                  },
-                });
-              }
+              await prisma.sales.upsert({
+                where: {
+                  id: schedule.id??0,
+                  digital_item_id: digitalItem.id,
+                },
+                create: {
+                  price: price,
+                  status: schedule.status,
+                  schedule_start_time: new Date(schedule.datetime),
+                  digital_item_id: digitalItem.id,
+                },
+                update: {
+                  status: schedule.status,
+                  schedule_start_time: new Date(schedule.datetime),
+                },
+              });
             })
         );
       }

@@ -791,15 +791,14 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
       const returnData:{
         id: number,
         name: string,
-        thumbImage: string,
+        brand: string,
       }[] = [];
       favorContents.forEach((content) => {
-        const mainShowcase = content.content.showcases.filter((showcase) => showcase.status == statusOfShowcase.public);
         if (!content.content.reported_contents.length) {
           returnData.push({
             id: content.content_id,
             name: content.content.name,
-            thumbImage: mainShowcase[0].thumb_url,
+            brand: content.content.image,
           });
         }
       });
