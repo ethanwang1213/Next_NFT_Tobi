@@ -65,7 +65,6 @@ const ColorPicker = ({
 
   return (
     <div className="flex items-center space-x-4" ref={pickerRef}>
-      {/* Text */}
       {mode && (
         <div className="text-[16px] font-[700] leading-[20px] w-[92px]">
           {t("Tint")}
@@ -77,10 +76,10 @@ const ColorPicker = ({
         </div>
       )}
 
-      {/* Color container */}
       <div className="w-[144px] h-[32px]">
         <input
           type="text"
+          maxLength={7}
           value={color}
           onChange={handleInputChange}
           onFocus={pauseUnityInputs}
@@ -95,7 +94,6 @@ const ColorPicker = ({
         onClick={handlePickerToggle}
       />
 
-      {/* Color picker */}
       {showPicker && (
         <div className="absolute z-10">
           <HexColorPicker color={color} onChange={handleColorChange} />
