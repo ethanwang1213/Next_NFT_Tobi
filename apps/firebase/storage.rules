@@ -32,7 +32,7 @@ service firebase.storage {
           && request.resource.size < 15 * 1024 * 1024; // uploaded type of model is limited 15mb
       }
       // (web) 3D model uploaded by user
-			match /item/uploaded/models/{modelId}/{fileName} {
+	  match /item/uploaded/models/{modelId}/{fileName} {
         allow read: if true;
         allow write, delete: if request.auth != null && request.auth.uid == userId;
       }
