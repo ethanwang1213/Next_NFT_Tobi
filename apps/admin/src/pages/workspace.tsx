@@ -56,7 +56,6 @@ export default function Index() {
   const [message, setMessage] = useState("");
   const router = useRouter();
   const dialogRef = useRef(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [matchingSample, secondaryMatchSample] = useState(null);
   const t = useTranslations("Workspace");
   const tooltip = useTranslations("Tooltip");
@@ -554,16 +553,12 @@ export default function Index() {
           <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
         </div>
         {mainToast && <CustomToast show={showToast} message={message} />}
-        {isModalOpen && (
-          <AcrylicStandSettingDialog
-            selectedItem={selectedSampleItemId}
-            dialogRef={dialogRef}
-            data={matchingSample}
-            closeHandler={() => setIsModalOpen(false)}
-            scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
-          />
-        )}
-
+        <AcrylicStandSettingDialog
+          selectedItem={selectedSampleItemId}
+          dialogRef={dialogRef}
+          data={matchingSample}
+          scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
+        />
         {!isLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
             <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
@@ -631,10 +626,7 @@ export default function Index() {
                 <button
                   className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
                   onClick={() => {
-                    setIsModalOpen(true);
-                    setTimeout(() => {
-                      dialogRef.current?.showModal();
-                    }, 500);
+                    dialogRef.current?.showModal();
                   }}
                 >
                   <Image

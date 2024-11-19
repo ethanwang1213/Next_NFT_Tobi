@@ -33,7 +33,11 @@ export const useLoadAcrylicStand = ({
   const postMessageToLoadData = useCallback(() => {
     setIsSceneLoaded(true);
 
-    if (!loadData || loadData.itemId === currentItemIndex?.itemId) {
+    if (
+      isSceneLoaded ||
+      !loadData ||
+      loadData.itemId === currentItemIndex?.itemId
+    ) {
       // console.log("loadData is null or same item");
       return;
     }
@@ -49,10 +53,21 @@ export const useLoadAcrylicStand = ({
       itemId: loadData.itemId,
     });
     setLoadData(null);
-  }, [loadData, currentItemIndex, postMessageToUnity, setCurrentItemIndex]);
+  }, [
+    isSceneLoaded,
+    loadData,
+    currentItemIndex,
+    postMessageToUnity,
+    setCurrentItemIndex,
+  ]);
 
   useEffect(() => {
-    if (!isLoaded || !isSceneLoaded) return;
+    if (!isSceneLoaded) return;
+    if (!isLoaded) {
+      setIsSceneLoaded(false);
+      setCurrentItemIndex(undefined);
+      return;
+    }
     postMessageToLoadData();
   }, [isLoaded, isSceneLoaded, postMessageToLoadData]);
 

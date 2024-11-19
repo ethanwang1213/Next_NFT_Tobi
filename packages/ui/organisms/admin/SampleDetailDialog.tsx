@@ -26,7 +26,6 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
         imageUrl: data.materialUrl || data.customThumbnailUrl,
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
       });
-    } else {
     }
   }, [data, selectedItem, isOpen, setLoadData]);
 
@@ -37,7 +36,7 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
     const observer = new MutationObserver(() => setIsOpen(dialog.open));
     observer.observe(dialog, { attributes: true, attributeFilter: ["open"] });
     return () => observer.disconnect();
-  }, []);
+  }, [dialogRef]);
 
   return (
     <dialog ref={dialogRef} className="modal">
