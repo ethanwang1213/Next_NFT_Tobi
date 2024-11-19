@@ -60,7 +60,12 @@ export const useLoadPreviewItem = ({
   }, [loadData, currentItemIndex, postMessageToUnity, setCurrentItemIndex]);
 
   useEffect(() => {
-    if (!isLoaded || !isSceneLoaded) return;
+    if (!isSceneLoaded) return;
+    if (!isLoaded) {
+      setIsSceneLoaded(false);
+      setCurrentItemIndex(undefined);
+      return;
+    }
     postMessageToLoadData();
   }, [isLoaded, isSceneLoaded, postMessageToLoadData]);
 
