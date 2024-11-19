@@ -285,7 +285,11 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             )}
             {data && (
               <div className="mx-auto mt-4">
-                <Link href={`/items/detail?id=${id}`}>
+                <Link
+                  href={`/items/detail?id=${id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button className="w-[192px] h-[46px] rounded-[30px] bg-primary flex justify-center items-center gap-2">
                     <Image
                       src="/admin/images/icon/open_in_new.svg"
