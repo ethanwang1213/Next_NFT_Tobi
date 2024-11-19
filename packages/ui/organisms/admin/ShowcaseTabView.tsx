@@ -103,7 +103,7 @@ const ShowcaseTabView = ({
     }
   }, [settings]);
 
-  const updateUnityTheme = () => {
+  useEffect(() => {
     updateUnityViewSettings(
       wt,
       ft,
@@ -113,7 +113,8 @@ const ShowcaseTabView = ({
       pb,
       SettingsUpdatePhase.Updating,
     );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wt, ft, st, sb, pt, pb]);
 
   return (
     <div className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4 flex flex-col items-center text-base-white">
@@ -219,7 +220,6 @@ const ShowcaseTabView = ({
                     initialColor={wt}
                     onColorChanged={(color) => {
                       setWt(color);
-                      updateUnityTheme();
                     }}
                   />
                 </Collapse>
@@ -230,7 +230,6 @@ const ShowcaseTabView = ({
                     initialColor={ft}
                     onColorChanged={(color) => {
                       setFt(color);
-                      updateUnityTheme();
                     }}
                   />
                 </Collapse>
@@ -255,7 +254,6 @@ const ShowcaseTabView = ({
                         initialColor={st}
                         onColorChanged={(color) => {
                           setSt(color);
-                          updateUnityTheme();
                         }}
                       />
                       <BrightnessPicker
@@ -307,7 +305,6 @@ const ShowcaseTabView = ({
                         initialColor={pt}
                         onColorChanged={(color) => {
                           setPt(color);
-                          updateUnityTheme();
                         }}
                       />
                       <BrightnessPicker

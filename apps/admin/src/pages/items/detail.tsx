@@ -419,6 +419,9 @@ const Detail = () => {
     if (await postData(`${apiUrl}/${digitalItem.id}`, submitData)) {
       setModified(false);
       dataRef.current = digitalItem;
+      const channel = new BroadcastChannel('dataUpdateChannel');
+      channel.postMessage('dataUpdated');
+      channel.close(); 
     } else {
       if (error) {
         if (error instanceof String) {
@@ -908,7 +911,11 @@ const Detail = () => {
                 </div>
               </div>
               <div className="text-center h-12">
-                <Link href={`/workspace/${id}`}>
+                <Link
+                  href={`/workspace/?id=${id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button
                     className="w-full h-12 rounded-[30px] border-[3px] border-primary-500 
                       flex justify-center items-center gap-2"

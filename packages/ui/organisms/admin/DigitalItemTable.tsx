@@ -35,6 +35,23 @@ const DigitalItemTable = (filters: {
     deleteData,
   } = useRestfulAPI(apiUrl);
 
+  useEffect(() => {
+    const channel = new BroadcastChannel("dataUpdateChannel");
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === "dataUpdated") {
+        getData(apiUrl);
+      }
+    };
+    channel.addEventListener("message", handleMessage);
+
+    return () => {
+      channel.removeEventListener("message", handleMessage);
+      channel.close();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // active sorting column
   const [sortOrder, setSortOrder] = useState(0);
 
@@ -336,6 +353,8 @@ const DigitalItemTable = (filters: {
                     <Link
                       href={`/items/detail?id=${item.id}`}
                       className="flex items-center justify-center"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <Image
                         src={item.thumbUrl}

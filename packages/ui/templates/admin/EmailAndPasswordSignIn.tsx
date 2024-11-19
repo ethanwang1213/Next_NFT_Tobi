@@ -1,10 +1,11 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/molecules/BackLink";
 import { LoadingSpinnerButton } from "ui/templates/AuthTemplate";
-import { useTranslations } from "next-intl";
 
 type Props = {
   email: string;
@@ -24,6 +25,11 @@ const EmailAndPasswordSignIn = ({
   withMailSignIn,
 }: Props) => {
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const t = useTranslations("LogInSignUp");
   return (
     <>
@@ -38,7 +44,7 @@ const EmailAndPasswordSignIn = ({
           height={96}
         />
         <div className={"text-[32px] h-[80px] mt-[50px] font-bold"}>
-          {t('PasswordEntry')}
+          {t("PasswordEntry")}
         </div>
         <div className="w-[408px] mt-[80px]">
           <input
@@ -47,13 +53,22 @@ const EmailAndPasswordSignIn = ({
             disabled={true}
             className="rounded-lg bg-disabled-field base-200-content font-normal w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
           />
-          <input
-            type={"password"}
-            value={password}
-            placeholder={t('Password')}
-            className="rounded-lg base-content font-normal w-[408px] h-[52px] mt-[40px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative mt-[40px]">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              placeholder="Password"
+              className="rounded-lg base-content font-normal w-[408px] h-[52px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute top-1/2 right-4 transform -translate-y-1/2"
+            >
+              {showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />}
+            </button>
+          </div>
         </div>
         <div className={"w-[408px] mt-[10px] text-right"}>
           <button
@@ -63,7 +78,7 @@ const EmailAndPasswordSignIn = ({
             }
             onClick={() => onClickPasswordReset(email)}
           >
-            {t('ResetPassword')}
+            {t("ResetPassword")}
           </button>
         </div>
         <div className={"mt-[150px]"}>
@@ -71,7 +86,7 @@ const EmailAndPasswordSignIn = ({
         </div>
         <div className={"mt-[10px]"}>
           <LoadingSpinnerButton
-            label={t('LogIn')}
+            label={t("LogIn")}
             disabled={!!!password}
             loading={loading}
             onClick={() => withMailSignIn(email, password)}
