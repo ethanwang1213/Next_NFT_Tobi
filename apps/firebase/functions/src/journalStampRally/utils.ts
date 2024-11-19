@@ -1,7 +1,7 @@
 import {firestore} from "firebase-admin";
 import * as functions from "firebase-functions";
-import {User} from "types/journal-types";
-import {StampRallyData} from "types/stampRallyTypes";
+import {User} from "journal-pkg/types/journal-types";
+import {StampRallyData} from "journal-pkg/types/stampRallyTypes";
 
 // ユーザー認証周りのチェック
 export const verifyAuthorizedUser = async (
