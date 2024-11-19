@@ -12,12 +12,12 @@ interface SampleDetailDialogProps {
 
 const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
   const { setLoadData, isLoaded, unityProvider } = useItemPreviewUnityContext();
-  const [showUnity, setShowUnity] = useState(false);
   const { selectedItem, resumeUnityInputs } = useShowcaseEditUnity();
   const t = useTranslations("Showcase");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (data && selectedItem) {
+    if (isOpen) {
       setLoadData({
         itemId: selectedItem.id,
         itemType: selectedItem.itemType,
@@ -26,11 +26,17 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
         imageUrl: data.materialUrl || data.customThumbnailUrl,
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
       });
-      setShowUnity(true);
-    } else {
-      setShowUnity(false);
     }
-  }, [data, selectedItem, setLoadData]);
+  }, [data, selectedItem, isOpen, setLoadData]);
+
+  // observe dialog open attribute
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const observer = new MutationObserver(() => setIsOpen(dialog.open));
+    observer.observe(dialog, { attributes: true, attributeFilter: ["open"] });
+    return () => observer.disconnect();
+  }, [dialogRef]);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -55,18 +61,18 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
           {data?.name || t("ItemTitle")}
         </span>
         <div className="absolute w-full h-full top-0 bottom-0 left-0 right-0 flex justify-center items-center">
-          {!showUnity && (
+          {!isOpen && (
             <p className="text-center text-neutral-400 text-[16px] flex items-center justify-center flex">
               {t("PreviewDisplayed")}
             </p>
           )}
-          {showUnity && unityProvider && (
+          {isOpen && unityProvider && (
             <ItemPreviewUnity
               unityProvider={unityProvider}
               isLoaded={isLoaded}
             />
           )}
-          {!isLoaded && showUnity && (
+          {!isLoaded && isOpen && (
             <div className="absolute inset-0 flex justify-center items-center">
               <Spinner />
             </div>

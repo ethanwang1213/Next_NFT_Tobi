@@ -41,6 +41,7 @@ export const useLoadPreviewItem = ({
     setIsSceneLoaded(true);
 
     if (
+      isSceneLoaded ||
       !loadData ||
       (loadData.itemType === currentItemIndex?.itemType &&
         loadData.itemId === currentItemIndex?.itemId)
@@ -57,10 +58,21 @@ export const useLoadPreviewItem = ({
       itemId: loadData.itemId,
     });
     setLoadData(null);
-  }, [loadData, currentItemIndex, postMessageToUnity, setCurrentItemIndex]);
+  }, [
+    isSceneLoaded,
+    loadData,
+    currentItemIndex,
+    postMessageToUnity,
+    setCurrentItemIndex,
+  ]);
 
   useEffect(() => {
-    if (!isLoaded || !isSceneLoaded) return;
+    if (!isSceneLoaded) return;
+    if (!isLoaded) {
+      setIsSceneLoaded(false);
+      setCurrentItemIndex(undefined);
+      return;
+    }
     postMessageToLoadData();
   }, [isLoaded, isSceneLoaded, postMessageToLoadData]);
 

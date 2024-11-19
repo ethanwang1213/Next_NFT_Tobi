@@ -77,6 +77,7 @@ export const useShowcaseEditUnityContext = ({
     removeEventListener,
     postMessageToUnity,
     setLoadData,
+    unload,
     requestSaveData,
     setSelectedItem,
     placeNewSample,
@@ -311,6 +312,7 @@ export const useShowcaseEditUnityContext = ({
     isRedoable,
     // functions
     setLoadData: processAndSetLoadData,
+    unload,
     requestSaveData,
     placeNewSample,
     placeNewNft,

@@ -3,14 +3,13 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Slider from "rc-slider";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
+import Button from "ui/atoms/Button";
 import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
 import ResetConfirmDialog from "./ResetConfirmDialog";
 import Spinner from "./Spinner";
-import Button from "ui/atoms/Button";
 interface AcrylicStandSettingDialogProps {
   dialogRef: MutableRefObject<HTMLDialogElement>;
   data: any;
-  closeHandler: () => void;
   scaleRatioSettingHandler: (itemId: number, newRatio: number) => void;
   selectedItem: number;
 }
@@ -18,7 +17,6 @@ interface AcrylicStandSettingDialogProps {
 const AcrylicStandSettingDialog = ({
   dialogRef,
   data,
-  closeHandler,
   scaleRatioSettingHandler,
   selectedItem,
 }: AcrylicStandSettingDialogProps) => {
@@ -26,6 +24,7 @@ const AcrylicStandSettingDialog = ({
   const [scaleRatio, setScaleRatio] = useState(
     data?.acrylicBaseScaleRatio || 1,
   );
+  const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("Workspace");
 
   const resetConfirmHandler = () => {
@@ -65,15 +64,23 @@ const AcrylicStandSettingDialog = ({
   };
 
   useEffect(() => {
-    if (data?.type === 2) {
+    if (isOpen && data?.type === 2) {
       setLoadData({
         itemId: selectedItem,
         modelUrl: data.modelUrl,
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio || 1,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, setLoadData]);
+  }, [data, selectedItem, isOpen, setLoadData]);
+
+  // observe dialog open attribute
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const observer = new MutationObserver(() => setIsOpen(dialog.open));
+    observer.observe(dialog, { attributes: true, attributeFilter: ["open"] });
+    return () => observer.disconnect();
+  }, [dialogRef]);
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -83,10 +90,7 @@ const AcrylicStandSettingDialog = ({
           confirmHandler={resetConfirmHandler}
         />
         <form method="dialog">
-          <button
-            className="absolute w-4 h-4 top-5 right-5"
-            onClick={closeHandler}
-          >
+          <button className="absolute w-4 h-4 top-5 right-5">
             <span
               className="material-symbols-outlined text-base-white cursor-pointer"
               style={{ fontSize: 20 }}
@@ -108,15 +112,17 @@ const AcrylicStandSettingDialog = ({
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
             <div className="h-[75%] rounded-t-[16px] overflow-hidden relative bg-white">
-              {!isLoaded && (
+              {!isLoaded && isOpen && (
                 <div className="absolute inset-0 flex justify-center items-center">
                   <Spinner />
                 </div>
               )}
-              <AcrylicBaseSettingsUnity
-                unityProvider={unityProvider}
-                isLoaded={isLoaded}
-              />
+              {isOpen && unityProvider && (
+                <AcrylicBaseSettingsUnity
+                  unityProvider={unityProvider}
+                  isLoaded={isLoaded}
+                />
+              )}
             </div>
             <div className="px-8 text-white text-[16px] py-7">
               <div className="flex justify-between">
@@ -182,7 +188,7 @@ const AcrylicStandSettingDialog = ({
                 className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary"
                 onClick={() => {
                   scaleRatioSettingHandler(selectedItem, scaleRatio);
-                  closeHandler();
+                  dialogRef.current?.close();
                 }}
               >
                 {t("Done")}

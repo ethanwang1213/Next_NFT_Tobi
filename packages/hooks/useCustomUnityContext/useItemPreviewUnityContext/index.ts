@@ -14,6 +14,7 @@ export const useItemPreviewUnityContext = () => {
     postMessageToUnity,
     pauseUnityInputs,
     resumeUnityInputs,
+    unload,
     // event handler
     handleSimpleMessage,
   } = useCustomUnityContextBase({
@@ -39,5 +40,6 @@ export const useItemPreviewUnityContext = () => {
     setLoadData,
     pauseUnityInputs,
     resumeUnityInputs,
+    unload,
   };
 };

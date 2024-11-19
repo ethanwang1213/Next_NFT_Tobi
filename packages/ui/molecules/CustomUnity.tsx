@@ -62,12 +62,29 @@ const UnityBase = ({
   id,
   unityProvider,
   isLoaded,
-}: ProviderParam & IdParam) => (
-  <Unity
-    id={id}
-    unityProvider={unityProvider}
-    className="w-full h-full"
-    style={{ opacity: isLoaded ? 1 : 0 }}
-    tabIndex={-1}
-  />
-);
+}: ProviderParam & IdParam) => {
+  // NOTE(toruto): After unmount ShowcaseEditUnity, screen will be freezed...
+  // useEffect(() => {
+  //   return () => {
+  //     if (!!unload) {
+  //       unload()
+  //         .then(() => {
+  //           console.log(`Unity ${id} is unloaded.`);
+  //         })
+  //         .catch((e) => {
+  //           console.error(`Failed to unload Unity ${id}.`, e);
+  //         });
+  //     }
+  //   };
+  // }, [unload]);
+
+  return (
+    <Unity
+      id={id}
+      unityProvider={unityProvider}
+      className="w-full h-full"
+      style={{ opacity: isLoaded ? 1 : 0 }}
+      tabIndex={-1}
+    />
+  );
+};

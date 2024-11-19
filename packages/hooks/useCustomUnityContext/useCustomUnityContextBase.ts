@@ -16,6 +16,7 @@ export const useCustomUnityContextBase = ({
     addEventListener,
     removeEventListener,
     sendMessage,
+    unload,
   } = useUnityContext({
     loaderUrl: `${buildFilePath}.loader.js`,
     dataUrl: `${buildFilePath}.data`,
@@ -71,6 +72,7 @@ export const useCustomUnityContextBase = ({
     postMessageToUnity,
     pauseUnityInputs,
     resumeUnityInputs,
+    unload,
     // event handlers
     handleSimpleMessage,
   };
