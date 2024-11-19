@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
 import * as functions from "firebase-functions";
-import { MintStatus, StampRallyResultType, Tpfw2024StampType } from "types/stampRallyTypes";
+import { MintStatus, StampRallyResultType, Tpfw2024StampType } from "journal-pkg/types/stampRallyTypes";
 import { REGION, TPFW2024_STAMP_RALLY_KEYWORDS } from "../lib/constants";
 import {
   checkStampCompleted,

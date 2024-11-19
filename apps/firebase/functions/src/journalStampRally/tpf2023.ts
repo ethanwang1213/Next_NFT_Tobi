@@ -5,7 +5,7 @@ import {
   MintStatus,
   StampRallyResultType,
   Tpf2023StampType,
-} from "types/stampRallyTypes";
+} from "journal-pkg/types/stampRallyTypes";
 import {REGION, TPF2023_STAMP_RALLY_KEYWORDS} from "../lib/constants";
 import {
   checkStampCompleted,

@@ -10,7 +10,7 @@ import {
   Tpf2023StampType,
   Tmf2024StampType,
   Tpfw2024StampType,
-} from "types/stampRallyTypes";
+} from "journal-pkg/types/stampRallyTypes";
 
 const mintNFT = async (
     name: string,
