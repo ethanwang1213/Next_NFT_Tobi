@@ -169,6 +169,8 @@ const Showcase = () => {
     inputWasd,
     undoAction,
     redoAction,
+    showSmartphoneArea,
+    hideSmartphoneArea,
   } = unityContext;
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -472,6 +474,9 @@ const Showcase = () => {
                   className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                   onClick={() => {
                     setShowSampleDetailView(!showSampleDetailView);
+                    showSmartFrame
+                      ? showSmartphoneArea()
+                      : hideSmartphoneArea();
                     setShowSmartFrame(!showSmartFrame);
                     notification(
                       showSmartFrame

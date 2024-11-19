@@ -28,6 +28,7 @@ import {
 } from "../types";
 import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
+import { useShowSmartphoneArea } from "./useShowSmartphoneArea";
 import { useUpdateItemTransform } from "./useUpdateTransform";
 
 type SaveDataGeneratedHandler = (
@@ -206,6 +207,10 @@ export const useShowcaseEditUnityContext = ({
     [postMessageToUnity],
   );
 
+  const { showSmartphoneArea, hideSmartphoneArea } = useShowSmartphoneArea({
+    postMessageToUnity,
+  });
+
   // event handlers
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
@@ -322,5 +327,7 @@ export const useShowcaseEditUnityContext = ({
     pauseUnityInputs,
     resumeUnityInputs,
     requestNftModelGeneration,
+    showSmartphoneArea,
+    hideSmartphoneArea,
   };
 };
