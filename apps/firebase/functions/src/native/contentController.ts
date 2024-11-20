@@ -206,6 +206,8 @@ export const getContentById = async (req: Request, res: Response) => {
         content: {
           id: content.id,
           name: content.name,
+          sticker: content.sticker,
+          brand: content.image,
         },
         showcase: {
           id: showcase.id,
@@ -792,6 +794,7 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
         id: number,
         name: string,
         brand: string,
+        thumbImage: string,
       }[] = [];
       favorContents.forEach((content) => {
         if (!content.content.reported_contents.length) {
@@ -799,6 +802,7 @@ export const getFavoriteContents = async (req: Request, res: Response) => {
             id: content.content_id,
             name: content.content.name,
             brand: content.content.image,
+            thumbImage: content.content.showcases[0].thumb_url,
           });
         }
       });

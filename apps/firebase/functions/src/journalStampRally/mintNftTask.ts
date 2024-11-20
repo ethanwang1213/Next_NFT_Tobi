@@ -50,7 +50,6 @@ const mintNFT = async (
       break;
     }
   }
-
 };
 
 export const mintJournalStampRallyNftTask = functions.region(REGION).runWith({}).tasks.taskQueue({

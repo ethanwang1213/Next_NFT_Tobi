@@ -34,19 +34,19 @@ const requestMint = async (
 ) => {
   const badge = Tmf2024StampMetadata[correctStampEntry];
   const queue = getFunctions().taskQueue(
-    `locations/${REGION}/functions/mintJournalStampRallyNftTask`,
+      `locations/${REGION}/functions/mintJournalStampRallyNftTask`,
   );
   await queue.enqueue(
-    {
-      name: badge.name,
-      description: badge.description,
-      type: correctStampEntry,
-      userId: userId,
-      event: "tmf2024",
-    },
-    {
-      dispatchDeadlineSeconds: 60 * 5,
-    },
+      {
+        name: badge.name,
+        description: badge.description,
+        type: correctStampEntry,
+        userId: userId,
+        event: "tmf2024",
+      },
+      {
+        dispatchDeadlineSeconds: 60 * 5,
+      },
   );
 };
 
