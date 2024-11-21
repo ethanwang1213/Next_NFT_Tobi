@@ -167,7 +167,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
                 generateSample(
                   ModelType.Poster,
                   firstImageRef.current,
-                  null,
+                  materialImage.image,
                   null,
                 );
               }
@@ -467,7 +467,12 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
           0,
         )
       )
-      generateSample(ModelType.CanBadge, firstImageRef.current, material, null);
+        generateSample(
+          ModelType.CanBadge,
+          firstImageRef.current,
+          material,
+          null,
+        );
     },
     [checkAndUploadImage, generateSample],
   );

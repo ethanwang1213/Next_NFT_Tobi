@@ -449,7 +449,7 @@ export default function Index() {
 
     if (modelUrlMap[sampleType]) {
       generateModelUrl.current = modelUrlMap[sampleType];
-      generateMaterialImage.current = sampleType === 1 ? image1 : image2;
+      generateMaterialImage.current = image2;
       requestItemThumbnail({
         modelType: sampleType as ModelType,
         modelUrl: generateModelUrl.current,
