@@ -1,3 +1,4 @@
+import { useWorkspaceEditUnity } from "contexts/WorkspaceEditUnityContext";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -101,6 +102,8 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
   const deleteConfirmDlgRef = useRef<HTMLDialogElement>(null);
   const t = useTranslations("Workspace");
 
+  const { handleMouseUp } = useWorkspaceEditUnity();
+
   const selectionChangeHandler = (selId: number, checked: boolean) => {
     const prevIndex = selectedItems.findIndex((value) => value === selId);
     const newItems = [...selectedItems];
@@ -142,6 +145,8 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
         <div
           className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
             flex flex-col gap-6 justify-center items-center z-10 select-none"
+          onMouseUp={handleMouseUp}
+          onTouchEnd={handleMouseUp}
         >
           <span className="text-white text-[32px] font-bold">
             Return to the Inventory

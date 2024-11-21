@@ -41,5 +41,9 @@ export const useNftModelGeneratorUnityContext = ({
     handleNftModelGenerated,
   });
 
-  return { unityProvider, isLoaded: isSceneLoaded, requestNftModelGeneration };
+  return {
+    unityProvider,
+    isLoaded: isSceneLoaded,
+    requestNftModelGeneration,
+  };
 };

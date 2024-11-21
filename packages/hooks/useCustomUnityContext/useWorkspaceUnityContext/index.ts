@@ -99,6 +99,7 @@ export const useWorkspaceUnityContext = ({
     handleActionUndone,
     handleActionRedone,
     handleNftModelGenerated,
+    handleMouseUp,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
@@ -340,5 +341,6 @@ export const useWorkspaceUnityContext = ({
     resumeUnityInputs,
     applyAcrylicBaseScaleRatio,
     requestNftModelGeneration,
+    handleMouseUp,
   };
 };

@@ -49,7 +49,8 @@ export type MessageDestination =
   | "LoadAcrylicStandMessageReceiver"
   | "UpdateAcrylicBaseScaleRatioMessageReceiver"
   | "NftModelGenerationMessageReceiver"
-  | "ShowSmartphoneAreaMessageReceiver";
+  | "ShowSmartphoneAreaMessageReceiver"
+  | "MouseUpMessageReceiver";
 
 export const UnityMessageType = {
   SimpleMessage: 0,

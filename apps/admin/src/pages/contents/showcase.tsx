@@ -171,6 +171,7 @@ const Showcase = () => {
     redoAction,
     showSmartphoneArea,
     hideSmartphoneArea,
+    handleMouseUp,
   } = unityContext;
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -388,7 +389,11 @@ const Showcase = () => {
   return (
     <ShowcaseEditUnityProvider unityContext={unityContext}>
       <div className="w-full h-screen-minus-56 relative no-select">
-        <ShowcaseEditUnity unityProvider={unityProvider} isLoaded={isLoaded} />
+        <ShowcaseEditUnity
+          unityProvider={unityProvider}
+          isLoaded={isLoaded}
+          handleMouseUp={handleMouseUp}
+        />
         {!isLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
             <span className="dots-circle-spinner loading2 text-[80px] text-active"></span>
@@ -569,7 +574,9 @@ const Showcase = () => {
           {showRestoreMenu && !showDetailView && (
             <div
               className="pointer-events-auto absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
-              flex flex-col justify-center items-center z-10 select-none"
+                flex flex-col justify-center items-center z-10 select-none"
+              onMouseUp={handleMouseUp}
+              onTouchEnd={handleMouseUp}
             >
               <Image
                 width={48}
