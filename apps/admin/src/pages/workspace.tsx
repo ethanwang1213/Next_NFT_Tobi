@@ -210,6 +210,7 @@ export default function Index() {
     undoAction,
     redoAction,
     applyAcrylicBaseScaleRatio,
+    handleMouseUp,
   } = unityContext;
 
   useEffect(() => {
@@ -557,7 +558,11 @@ export default function Index() {
             pointerEvents: isDialogOpen() ? "none" : "auto",
           }}
         >
-          <WorkspaceUnity unityProvider={unityProvider} isLoaded={isLoaded} />
+          <WorkspaceUnity
+            unityProvider={unityProvider}
+            isLoaded={isLoaded}
+            handleMouseUp={handleMouseUp}
+          />
         </div>
         {mainToast && <CustomToast show={showToast} message={message} />}
         <AcrylicStandSettingDialog
@@ -758,7 +763,9 @@ export default function Index() {
           {showRestoreMenu && !showListView && (
             <div
               className={`absolute w-[${REMOVE_PANEL_WIDTH}px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
-              flex flex-col justify-center items-center z-10 pointer-events-auto select-none`}
+                flex flex-col justify-center items-center z-10 pointer-events-auto select-none`}
+              onMouseUp={handleMouseUp}
+              onTouchEnd={handleMouseUp}
             >
               <Image
                 width={48}

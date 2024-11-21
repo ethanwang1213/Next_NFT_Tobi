@@ -27,6 +27,7 @@ interface WorkspaceEditUnityContextType {
   applyAcrylicBaseScaleRatio: (data: any) => void;
   requestNftModelGeneration: (data: any) => Promise<void>;
   deleteAllActionHistory: () => void;
+  handleMouseUp: () => void;
 }
 
 const WorkspaceEditUnityContext = createContext<WorkspaceEditUnityContextType>(
