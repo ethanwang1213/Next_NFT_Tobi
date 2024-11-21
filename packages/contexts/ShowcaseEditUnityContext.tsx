@@ -30,6 +30,7 @@ interface ShowcaseEditUnityContextType {
     phase: ItemTransformUpdatePhase;
   }) => void;
   requestNftModelGeneration: (data: any) => Promise<void>;
+  handleMouseUp: () => void;
 }
 
 const ShowcaseEditUnityContext = createContext<ShowcaseEditUnityContextType>(

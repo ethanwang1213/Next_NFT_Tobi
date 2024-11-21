@@ -1,3 +1,4 @@
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
 import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
 import { useTranslations } from "next-intl";
@@ -84,6 +85,8 @@ const ShowcaseTabView = ({
     onActionUndone: handleAction,
   });
 
+  const { handleMouseUp } = useShowcaseEditUnity();
+
   const handleTabChange = (active) => {
     if (active == tab) {
       return;
@@ -122,6 +125,8 @@ const ShowcaseTabView = ({
         <div
           className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
             flex flex-col gap-6 justify-center items-center z-10 select-none"
+          onMouseUp={handleMouseUp}
+          onTouchEnd={handleMouseUp}
         >
           <span className="text-white text-[32px] font-bold">
             {t("ReturnToInventory")}
