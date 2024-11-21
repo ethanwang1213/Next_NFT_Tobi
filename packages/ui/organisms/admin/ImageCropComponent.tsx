@@ -77,13 +77,34 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     setAspect(value);
     if (value) {
       if (imgRef.current) {
-        const { width, height } = imgRef.current;
-        const newCrop = centerAspectCrop(width, height, value);
+        const imgElement = imgRef.current;
+        const wrapperElement = imgWrapperRef.current;
+
+        const scaleX = imgElement.naturalWidth / imgElement.width;
+        const scaleY = imgElement.naturalHeight / imgElement.height;
+
+        const actualWidth = Math.min(
+          wrapperElement.clientWidth,
+          imgElement.width * scaleX,
+        );
+        const actualHeight = Math.min(
+          wrapperElement.clientHeight,
+          imgElement.height * scaleY,
+        );
+
+        const offsetX = (wrapperElement.clientWidth - actualWidth) / 2;
+        const offsetY = (wrapperElement.clientHeight - actualHeight) / 2;
+
+        const newCrop = centerAspectCrop(actualWidth, actualHeight, value);
+
         const newPixelCrop = convertToPixelCrop(
           newCrop,
-          imgWrapperRef.current.clientWidth,
-          imgWrapperRef.current.clientHeight,
+          actualWidth,
+          actualHeight,
         );
+
+        newPixelCrop.x += offsetX;
+        newPixelCrop.y += offsetY;
         setCrop(newPixelCrop);
       }
     }
