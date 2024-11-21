@@ -22,6 +22,7 @@ import {
   UnitySceneType,
 } from "../types";
 import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useMouseUp } from "./useMouseUp";
 import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
 
@@ -359,6 +360,8 @@ export const useSaidanLikeUnityContextBase = ({
     [additionalItemDataMap, setSelectedItem],
   );
 
+  const { handleMouseUp } = useMouseUp({ postMessageToUnity });
+
   return {
     // states
     unityProvider,
@@ -400,5 +403,6 @@ export const useSaidanLikeUnityContextBase = ({
     handleActionUndone,
     handleActionRedone,
     handleNftModelGenerated,
+    handleMouseUp,
   };
 };

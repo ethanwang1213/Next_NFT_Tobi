@@ -105,6 +105,7 @@ export const useShowcaseEditUnityContext = ({
     handleActionUndone,
     handleActionRedone,
     handleNftModelGenerated,
+    handleMouseUp,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
@@ -331,5 +332,6 @@ export const useShowcaseEditUnityContext = ({
     requestNftModelGeneration,
     showSmartphoneArea,
     hideSmartphoneArea,
+    handleMouseUp,
   };
 };
