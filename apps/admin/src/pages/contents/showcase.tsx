@@ -53,7 +53,6 @@ const Showcase = () => {
     data: showcaseData,
     error,
     getData,
-    setData,
     putData,
     postData,
   } = useRestfulAPI(null);
