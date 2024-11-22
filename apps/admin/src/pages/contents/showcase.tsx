@@ -160,6 +160,7 @@ const Showcase = () => {
     isRedoable,
     selectedItem,
     setLoadData,
+    pauseUnityInputs,
     requestSaveData,
     placeNewSample,
     placeNewNft,
@@ -220,10 +221,9 @@ const Showcase = () => {
     setLoading(false);
   };
 
-  // load showcase data
   useEffect(() => {
     if (id) {
-      getData(`${apiUrl}/${id}`); // update showcaseData state
+      getData(`${apiUrl}/${id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -245,7 +245,7 @@ const Showcase = () => {
       setPb(showcaseData.settings.lighting.pointLight.brightness ?? 1);
     }
   }, [showcaseData]);
-  // set showcase data to unity view when it is loaded
+
   useEffect(() => {
     if (showcaseData) {
       setLoadData(showcaseData);
@@ -260,7 +260,6 @@ const Showcase = () => {
     } else {
       setShowOperate(false);
       setSelectedSampleItem(-1);
-      setData(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem]);
@@ -402,16 +401,24 @@ const Showcase = () => {
               left: `${320 - 424}px`,
             }}
           >
-            <span className="text-xl font-semibold text-seconday-600 text-center mr-1">
-              {showcaseData ? (
-                showcaseData.title
+            <span className="text-xl font-semibold text-secondary-600 text-center mr-1">
+              {loading || !showcaseData?.title ? (
+                <span
+                  className="loading loading-spinner"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               ) : (
-                <span className="loading loading-spinner"></span>
+                showcaseData.title
               )}
             </span>
-            {loading && <span className="loading loading-spinner"></span>}
             {!loading && (
-              <Button onClick={() => dialogRef.current.showModal()}>
+              <Button
+                onClick={() => {
+                  dialogRef.current?.showModal();
+                  pauseUnityInputs();
+                }}
+              >
                 <Image
                   width={24}
                   height={24}

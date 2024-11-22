@@ -1,3 +1,4 @@
+import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject, useEffect, useState } from "react";
@@ -15,6 +16,7 @@ const ShowcaseNameEditDialog = ({
 }) => {
   const [title, setTitle] = useState(showcaseTitle);
   const [description, setDescription] = useState(showcaseDescription);
+  const { resumeUnityInputs } = useShowcaseEditUnity();
   const t = useTranslations("ContentShowcase");
   const l = useTranslations("GiftReceivingSettings");
 
@@ -68,7 +70,10 @@ const ShowcaseNameEditDialog = ({
             className="px-4 py-2 rounded-[64px] border-2 border-primary
               hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
-            onClick={() => dialogRef.current.close()}
+            onClick={() => {
+              dialogRef.current.close();
+              resumeUnityInputs();
+            }}
           >
             {l("Cancel")}
           </button>
@@ -80,6 +85,7 @@ const ShowcaseNameEditDialog = ({
             onClick={() => {
               dialogRef.current.close();
               changeHandler(title, description);
+              resumeUnityInputs();
             }}
           >
             {l("SaveChanges")}
