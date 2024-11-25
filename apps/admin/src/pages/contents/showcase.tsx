@@ -551,7 +551,7 @@ const Showcase = () => {
               </div>
             </div>
           </div>
-          {showDetailView && (
+          <div style={{ display: showDetailView ? "block" : "none" }}>
             <ShowcaseTabView
               clickSampleItem={(item: SampleItem) =>
                 selectSampleHandler(item, false)
@@ -576,7 +576,7 @@ const Showcase = () => {
                 updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
               }}
             />
-          )}
+          </div>
           {showRestoreMenu && !showDetailView && (
             <div
               className="pointer-events-auto absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm

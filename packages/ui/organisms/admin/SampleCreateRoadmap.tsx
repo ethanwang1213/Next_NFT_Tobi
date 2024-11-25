@@ -128,7 +128,7 @@ const RoadMapComponent = (props: {
   };
 
   return (
-    <div className="flex flex-col py-5 px-6">
+    <div className="flex flex-col py-5 px-[22px]">
       <NextImage
         width={24}
         height={24}

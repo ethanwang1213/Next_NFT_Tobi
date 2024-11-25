@@ -9,7 +9,11 @@ import ContentNameConfirmDialog from "./ContentNameConfirmDialog";
 import ContentNameEditDialog from "./ContentNameEditDialog";
 import CopyrightEditMenu from "./CopyrightEditMenu";
 
-const ContentNameEditComponent = ({ initialValue, changeHandler }) => {
+const ContentNameEditComponent = ({
+  initialValue,
+  changedName,
+  changeHandler,
+}) => {
   const [name, setName] = useState("");
   const editDialogRef = useRef(null);
 
@@ -33,7 +37,9 @@ const ContentNameEditComponent = ({ initialValue, changeHandler }) => {
         alt="edit icon"
         className="mx-4 cursor-pointer"
         onClick={(e) => {
-          editDialogRef.current.showModal();
+          if (!changedName) {
+            editDialogRef.current.showModal();
+          }
         }}
       />
       <ContentNameEditDialog
@@ -210,7 +216,7 @@ const ContentSettingPanel = ({
   const fieldChangeHandler = (field, value) => {
     if (field == "name") {
       if (confirmDialogRef.current) {
-        confirmDialogRef.current.showModal();
+        setData({ ...data, ["changedName"]: value });
       }
     } else if (["com", "adp", "der", "mer", "dst", "ncr"].includes(field)) {
       setData({
@@ -250,19 +256,25 @@ const ContentSettingPanel = ({
 
   useEffect(() => {
     const submitHandler = async () => {
+      const { changedName, name, description, license, copyright } = data;
+      const updatedName = changedName || name;
+
+      const {
+        com = false,
+        adp = false,
+        der = false,
+        mer = false,
+        dst = false,
+        ncr = false,
+      } = license;
+
       const submitData = {
-        name: data.name,
-        description: data.description,
-        license: {
-          com: data.license.com,
-          adp: data.license.adp,
-          der: data.license.der,
-          mer: data.license.mer,
-          dst: data.license.dst,
-          ncr: data.license.ncr,
-        },
-        copyrightHolders: data.copyright,
+        name: updatedName,
+        description,
+        license: { com, adp, der, mer, dst, ncr },
+        copyrightHolders: copyright,
       };
+
       if (dataRef.current) {
         if (dataRef.current.name == submitData.name) delete submitData.name;
       }
@@ -297,6 +309,7 @@ const ContentSettingPanel = ({
           </span>
           <ContentNameEditComponent
             initialValue={data.name}
+            changedName={data.changedName}
             changeHandler={(v) => fieldChangeHandler("name", v)}
           />
           <ContentNameConfirmDialog dialogRef={confirmDialogRef} />
