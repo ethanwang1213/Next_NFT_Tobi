@@ -653,6 +653,7 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
       const returnData = {
         id: admin.content?.id,
         name: admin.content?.name,
+        changedName: admin.content.changed_name,
         description: admin.content?.description,
         license: admin.content?.license,
         image: admin.content?.image,

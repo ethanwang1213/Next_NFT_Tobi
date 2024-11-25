@@ -1181,23 +1181,25 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             is_default_thumb: !isCustomThumbnailSelected,
             limit: quantityLimit,
             license: {
-              update: license,
+              upsert: {
+                where: {
+                  digital_items_id: parseInt(digitalId),
+                },
+                update: license??{},
+                create: license??{
+                  com: true,
+                  adp: true,
+                  der: true,
+                  dst: true,
+                  mer: true,
+                  ncr: true,
+                },
+              },
             },
           },
         });
       }
-      const currentPrice = digitalItem.sales.length>0?digitalItem.sales[0].price:null;
-      const currentStatus = digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status;
-      if (price && status &&(currentPrice != price||currentStatus != status)) {
-        await prisma.sales.create({
-          data: {
-            digital_item_id: digitalItem.id,
-            price: price,
-            status: status,
-            schedule_start_time: new Date(),
-          },
-        });
-      }
+
       if (schedules) {
         const scheduleIds = schedules.map((schedule)=>{
           return schedule.id??0;
@@ -1231,6 +1233,22 @@ export const adminUpdateDigitalItem = async (req: Request, res: Response) => {
             })
         );
       }
+
+      const currentStatus = digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status;
+      console.log("currentStatus ======>", currentStatus, status);
+
+      if (currentStatus != status && status) {
+        const sale = await prisma.sales.create({
+          data: {
+            digital_item_id: digitalItem.id,
+            price: price,
+            status: status,
+            schedule_start_time: new Date(),
+          },
+        });
+        console.log("created sale ======>", sale);
+      }
+
       if (copyrights) {
         await prisma.digital_items_copyright.deleteMany({
           where: {
