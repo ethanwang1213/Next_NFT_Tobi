@@ -83,6 +83,7 @@ export const searchAll = async (req: Request, res: Response) => {
           contentId: content.id,
           contentName: content.name,
           thumbImage: content.showcases[0].thumb_url,
+          brand: content.image,
         };
       });
       const saidans = await prisma.saidans.findMany({
@@ -388,6 +389,7 @@ export const searchContents = async (req: Request, res: Response) => {
           contentId: content.id,
           contentName: content.name,
           thumbImage: content.showcases[0].thumb_url,
+          brand: content.image,
           favorite: content.favorite_users.filter((favor)=>favor.account_uuid==uid).length!=0,
         };
       });
