@@ -94,6 +94,7 @@ export default function Index() {
   const generateSampleType = useRef(null);
   const generateMaterialImage = useRef(null);
   const generateModelUrl = useRef(null);
+  const generateCroppedImage = useRef(null);
 
   const onSaveDataGenerated = async (
     workspaceSaveData: WorkspaceSaveData,
@@ -119,9 +120,11 @@ export default function Index() {
 
     const postData = {
       thumbUrl:
-        generateSampleType.current === 4
-          ? sampleThumb
-          : generateMaterialImage.current,
+        generateSampleType.current === 1 || generateSampleType.current === 3
+          ? generateCroppedImage.current
+          : generateSampleType.current === 4
+            ? sampleThumb
+            : generateMaterialImage.current,
       modelUrl: generateModelUrl.current,
       materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
       type: generateSampleType.current,
@@ -302,7 +305,7 @@ export default function Index() {
         digitalItemId: sample.digitalItemId,
         modelUrl: sample.modelUrl,
         imageUrl:
-          sample.type === 3
+          sample.type === 1 || sample.type === 3
             ? sample.thumbUrl
             : materialIndex > -1
               ? materials[materialIndex].image
@@ -450,7 +453,8 @@ export default function Index() {
 
     if (modelUrlMap[sampleType]) {
       generateModelUrl.current = modelUrlMap[sampleType];
-      generateMaterialImage.current = sampleType === 1 ? image1 : image2;
+      generateCroppedImage.current = image1;
+      generateMaterialImage.current = image2;
       requestItemThumbnail({
         modelType: sampleType as ModelType,
         modelUrl: generateModelUrl.current,

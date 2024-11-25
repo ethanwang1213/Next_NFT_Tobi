@@ -29,7 +29,7 @@ const SampleTypeComponent = (props: {
         <span className="text-neutral-900 text-sm font-semibold leading-4">
           {props.name}
         </span>
-        <span className="text-neutral-900 text-sm font-normal leading-4">
+        <span className="text-neutral-900 text-[12px] font-normal leading-4">
           {props.description}
         </span>
       </div>
