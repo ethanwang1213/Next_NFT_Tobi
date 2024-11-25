@@ -179,16 +179,22 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
       sy = 0;
     }
 
+    const swScaled = sw * scaleX;
+    const shScaled = sh * scaleY;
+
+    offscreen.width = swScaled;
+    offscreen.height = shScaled;
+
     ctx.drawImage(
       tempCanvas,
       sx * scaleX,
       sy * scaleY,
-      sw * scaleX,
-      sh * scaleY,
+      swScaled,
+      shScaled,
       dx,
       dy,
-      sw,
-      sh,
+      swScaled,
+      shScaled,
     );
 
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
