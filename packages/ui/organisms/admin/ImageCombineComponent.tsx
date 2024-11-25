@@ -176,6 +176,11 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     const messageDisplayedWidth = messageImage.clientWidth;
     const messageDisplayedHeight = messageImage.clientHeight;
 
+    const cardScaleX = cardImage.naturalWidth / cardDisplayedWidth;
+    const cardScaleY = cardImage.naturalHeight / cardDisplayedHeight;
+    const messageScaleX = messageImage.naturalWidth / messageDisplayedWidth;
+    const messageScaleY = messageImage.naturalHeight / messageDisplayedHeight;
+
     // Create a canvas to combine the images
     const finalCanvas = document.createElement("canvas");
     const finalCtx = finalCanvas.getContext("2d");
@@ -184,18 +189,10 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       throw new Error("No 2D context for final image canvas");
     }
 
-    // Set the canvas size to match the displayed size of the card image
-    finalCanvas.width = cardDisplayedWidth;
-    finalCanvas.height = cardDisplayedHeight;
+    finalCanvas.width = cardImage.naturalWidth;
+    finalCanvas.height = cardImage.naturalHeight;
 
-    // Draw the card image at its displayed size
-    finalCtx.drawImage(
-      cardImage,
-      0,
-      0,
-      cardDisplayedWidth,
-      cardDisplayedHeight,
-    );
+    finalCtx.drawImage(cardImage, 0, 0, finalCanvas.width, finalCanvas.height);
 
     // Prepare to rotate and scale the message image
     const rotateCanvas = document.createElement("canvas");
@@ -220,13 +217,16 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
     );
 
     // Set rotateCanvas size to handle the rotated and scaled message image
-    rotateCanvas.width = rotatedBoundingBox.w;
-    rotateCanvas.height = rotatedBoundingBox.h;
+    rotateCanvas.width = rotatedBoundingBox.w * messageScaleX;
+    rotateCanvas.height = rotatedBoundingBox.h * messageScaleY;
 
     // Translate and rotate the canvas for the second image (message)
-    rotateCtx.translate(rotatedBoundingBox.w / 2, rotatedBoundingBox.h / 2);
+    rotateCtx.translate(rotateCanvas.width / 2, rotateCanvas.height / 2);
     rotateCtx.rotate(angleInRadians);
-    rotateCtx.translate(-scaledMessageWidth / 2, -scaledMessageHeight / 2);
+    rotateCtx.translate(
+      (-scaledMessageWidth * messageScaleX) / 2,
+      (-scaledMessageHeight * messageScaleY) / 2,
+    );
 
     // **Draw the scaled and rotated message image on the rotateCanvas**
     rotateCtx.drawImage(
@@ -237,25 +237,26 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
       messageImage.naturalHeight,
       0,
       0,
-      scaledMessageWidth,
-      scaledMessageHeight,
+      scaledMessageWidth * messageScaleX,
+      scaledMessageHeight * messageScaleY,
     );
 
     const cardRect = imgCardRef.current.getBoundingClientRect();
     const messageRect = imgMessageRef.current.getBoundingClientRect();
-    const rotatedMessageOffsetX = messageRect.left - cardRect.left;
-    const rotatedMessageOffsetY = messageRect.top - cardRect.top;
+    const rotatedMessageOffsetX =
+      (messageRect.left - cardRect.left) * cardScaleX;
+    const rotatedMessageOffsetY = (messageRect.top - cardRect.top) * cardScaleY;
 
     finalCtx.drawImage(
       rotateCanvas,
       0,
       0,
-      rotatedBoundingBox.w,
-      rotatedBoundingBox.h,
+      rotateCanvas.width,
+      rotateCanvas.height,
       rotatedMessageOffsetX,
       rotatedMessageOffsetY,
-      rotatedBoundingBox.w,
-      rotatedBoundingBox.h,
+      rotatedBoundingBox.w * cardScaleX,
+      rotatedBoundingBox.h * cardScaleY,
     );
 
     // Convert the final canvas to a blob and store its URL
