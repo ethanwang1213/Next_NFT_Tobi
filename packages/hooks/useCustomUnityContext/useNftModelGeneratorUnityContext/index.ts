@@ -23,7 +23,7 @@ export const useNftModelGeneratorUnityContext = ({
   });
 
   const {
-    isSceneLoaded,
+    isSceneOpen,
     requestNftModelGeneration,
     handleSceneIsLoaded,
     handleNftModelGenerated,
@@ -43,7 +43,7 @@ export const useNftModelGeneratorUnityContext = ({
 
   return {
     unityProvider,
-    isLoaded: isSceneLoaded,
+    isSceneOpen,
     requestNftModelGeneration,
   };
 };

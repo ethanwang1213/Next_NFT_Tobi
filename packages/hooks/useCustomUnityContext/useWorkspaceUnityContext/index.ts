@@ -65,7 +65,8 @@ export const useWorkspaceUnityContext = ({
   const {
     // states
     unityProvider,
-    isLoaded,
+    isSceneOpen,
+    isItemsLoaded,
     isDragging,
     selectedItem,
     isUndoable,
@@ -100,6 +101,7 @@ export const useWorkspaceUnityContext = ({
     handleActionRedone,
     handleNftModelGenerated,
     handleMouseUp,
+    handleLoadingCompleted,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
@@ -310,12 +312,14 @@ export const useWorkspaceUnityContext = ({
     handleActionRegistered,
     handleActionUndone,
     handleActionRedone,
+    handleLoadingCompleted,
   });
 
   return {
     // states
     unityProvider,
-    isLoaded,
+    isSceneOpen,
+    isItemsLoaded,
     isDragging,
     selectedSample: !selectedItem
       ? null

@@ -19,7 +19,7 @@ export const useAcrylicBaseSettingsUnityContext = () => {
     sceneType: UnitySceneType.AcrylicBaseSettings,
   });
 
-  const { isSceneLoaded, defaultItemData, setLoadData, handleSceneIsLoaded } =
+  const { isSceneOpen, defaultItemData, setLoadData, handleSceneIsLoaded } =
     useLoadAcrylicStand({
       isLoaded,
       postMessageToUnity,
@@ -39,7 +39,7 @@ export const useAcrylicBaseSettingsUnityContext = () => {
   });
 
   return {
-    isLoaded: isSceneLoaded,
+    isSceneOpen,
     unityProvider,
     addEventListener,
     removeEventListener,

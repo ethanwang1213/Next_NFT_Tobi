@@ -21,11 +21,10 @@ export const useItemPreviewUnityContext = () => {
     sceneType: UnitySceneType.ItemPreview,
   });
 
-  const { isSceneLoaded, setLoadData, handleSceneIsLoaded } =
-    useLoadPreviewItem({
-      isLoaded,
-      postMessageToUnity,
-    });
+  const { isSceneOpen, setLoadData, handleSceneIsLoaded } = useLoadPreviewItem({
+    isLoaded,
+    postMessageToUnity,
+  });
 
   useUnityMessageHandler({
     addEventListener,
@@ -35,7 +34,7 @@ export const useItemPreviewUnityContext = () => {
   });
 
   return {
-    isLoaded: isSceneLoaded,
+    isSceneOpen,
     unityProvider,
     setLoadData,
     pauseUnityInputs,

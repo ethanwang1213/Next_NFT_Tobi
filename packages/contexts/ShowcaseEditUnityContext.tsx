@@ -6,7 +6,7 @@ interface ShowcaseEditUnityProviderProps {
   unityContext: any;
 }
 interface ShowcaseEditUnityContextType {
-  isLoaded: boolean;
+  isSceneOpen: boolean;
   unityProvider: any;
   isUndoable: boolean;
   isRedoable: boolean;

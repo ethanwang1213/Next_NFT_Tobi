@@ -67,7 +67,8 @@ export const useShowcaseEditUnityContext = ({
   const {
     // state
     unityProvider,
-    isLoaded,
+    isSceneOpen,
+    isItemsLoaded,
     isDragging,
     selectedItem,
     isUndoable,
@@ -106,6 +107,7 @@ export const useShowcaseEditUnityContext = ({
     handleActionRedone,
     handleNftModelGenerated,
     handleMouseUp,
+    handleLoadingCompleted,
   } = useSaidanLikeUnityContextBase({
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
@@ -301,12 +303,14 @@ export const useShowcaseEditUnityContext = ({
     handleActionUndone,
     handleActionRedone,
     handleItemTransformUpdated,
+    handleLoadingCompleted,
   });
 
   return {
     // states
     unityProvider,
-    isLoaded,
+    isSceneOpen,
+    isItemsLoaded,
     isDragging,
     selectedItem,
     isUndoable,

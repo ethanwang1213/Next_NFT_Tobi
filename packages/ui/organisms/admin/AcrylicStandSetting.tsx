@@ -34,7 +34,7 @@ const AcrylicStandSettingDialog = ({
 
   const {
     setLoadData,
-    isLoaded,
+    isSceneOpen,
     unityProvider,
     updateAcrylicBaseScaleRatio,
     resetAcrylicBaseScaleRatio,
@@ -112,7 +112,7 @@ const AcrylicStandSettingDialog = ({
         <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
             <div className="h-[75%] rounded-t-[16px] overflow-hidden relative bg-white">
-              {!isLoaded && isOpen && (
+              {!isSceneOpen && isOpen && (
                 <div className="absolute inset-0 flex justify-center items-center">
                   <Spinner />
                 </div>
@@ -120,7 +120,7 @@ const AcrylicStandSettingDialog = ({
               {isOpen && unityProvider && (
                 <AcrylicBaseSettingsUnity
                   unityProvider={unityProvider}
-                  isLoaded={isLoaded}
+                  isSceneOpen={isSceneOpen}
                 />
               )}
             </div>
