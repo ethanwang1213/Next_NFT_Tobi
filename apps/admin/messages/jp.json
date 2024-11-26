@@ -149,6 +149,7 @@
   "ContentSettings": {
     "ContentNameChange": "コンテンツ名の変更",
     "ContentNameChangeGuidelines": "コンテンツ名は3ヶ月に1度変更可能です。変更後、ユーザーに表示されるコンテンツ名は審査が完了次第更新されます。",
+    "contentNameChangeRequest": "コンテンツ名の変更リクエストは現在審査中です。\n承認されると、名前が更新されます。さらに、変更後は3ヶ月間再度変更することはできません。",
     "NameChangeRequest": "コンテンツ名の変更申請をしました！",
     "NameChangeCompletion": "名称は審査完了後に変更されます。審査には最大で1週間かかる場合があります。あらかじめご了承ください。",
     "ContentName": "コンテンツ名",
@@ -166,7 +167,8 @@
     "Cancel": "キャンセル",
     "Done": "完了",
     "Public": "公開",
-    "AddCopyrightHolder" : "コピーライトタグを追加"
+    "AddCopyrightHolder": "コピーライトタグを追加",
+    "GotIt": "了解しました"
   },
   "Showcase": {
     "ItemTitle": "アイテムタイトル",

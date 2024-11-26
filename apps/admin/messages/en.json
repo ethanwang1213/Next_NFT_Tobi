@@ -149,6 +149,7 @@
   "ContentSettings": {
     "ContentNameChange": "Content Name Change",
     "ContentNameChangeGuidelines": "The content name can be changed once every three months. After the change, the content name visible to users will be updated once the review is completed.",
+    "contentNameChangeRequest": "The content name change request is currently under review. \nOnce approved, the name will be updated. Additionally, after the change, it cannot be modified again for three months.",
     "NameChangeRequest": "Submitted a request to change the content name!",
     "NameChangeCompletion": "The name will be changed once the review is completed. Please note that the review process may take up to one week.",
     "ContentName": "Content Name",
@@ -166,7 +167,8 @@
     "Cancel": "Cancel",
     "Done": "Done",
     "Public": "Public",
-    "AddCopyrightHolder" : "Add a Copyright holder tag"
+    "AddCopyrightHolder": "Add a Copyright holder tag",
+    "GotIt": "Got it"
   },
   "Showcase": {
     "ItemTitle": "Item Title",
