@@ -15,13 +15,13 @@ import { DefaultAcrylicBaseScaleRatio } from "../constants";
 import {
   NftModelGeneratedHandler,
   PositionOnPlane,
-  SaidanLikeData,
   SelectedItem,
   UndoneOrRedoneHandler,
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
 import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useLoadData } from "./useLoadData";
 import { useMouseUp } from "./useMouseUp";
 import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
@@ -59,10 +59,6 @@ export const useSaidanLikeUnityContextBase = ({
   } = useCustomUnityContextBase({ sceneType });
 
   // states
-  const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
-  const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
-  const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
-    useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
 
@@ -74,6 +70,13 @@ export const useSaidanLikeUnityContextBase = ({
       ]),
     [],
   );
+
+  const { isSaidanSceneLoaded, setLoadData, postMessageToLoadData } =
+    useLoadData({
+      isLoaded,
+      additionalItemDataMap,
+      postMessageToUnity,
+    });
 
   const {
     isUndoable,
@@ -92,32 +95,6 @@ export const useSaidanLikeUnityContextBase = ({
   });
 
   // functions
-  const postMessageToLoadData = useCallback(() => {
-    setIsSaidanSceneLoaded(true);
-
-    if (!loadData || loadData.saidanId === currentSaidanId) {
-      // console.log("loadData is null or same saidanId: " + currentSaidanId);
-      return;
-    }
-
-    const json = JSON.stringify({
-      ...loadData,
-      isFirstSaidan: false,
-      removedDefautItems: [],
-    });
-    postMessageToUnity("LoadSaidanDataMessageReceiver", json);
-
-    loadData.saidanItemList.forEach((item) => {
-      additionalItemDataMap.get(item.itemType)?.set(item.itemId, {
-        digitalItemId: item.digitalItemId,
-        itemName: item.itemName,
-      });
-    });
-
-    setCurrentSaidanId(loadData.saidanId);
-    setLoadData(null);
-  }, [loadData, currentSaidanId, additionalItemDataMap, postMessageToUnity]);
-
   const requestSaveData = () => {
     postMessageToUnity("SaveSaidanDataMessageReceiver", "");
   };
@@ -288,12 +265,6 @@ export const useSaidanLikeUnityContextBase = ({
       postMessageToUnity,
       onNftModelGenerated,
     });
-
-  // load item data
-  useEffect(() => {
-    if (!isLoaded || !isSaidanSceneLoaded) return;
-    postMessageToLoadData();
-  }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
 
   useEffect(() => {
     if (!isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
