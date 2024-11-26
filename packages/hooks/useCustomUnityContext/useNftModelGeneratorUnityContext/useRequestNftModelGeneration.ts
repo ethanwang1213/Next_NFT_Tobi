@@ -24,13 +24,13 @@ export const useRequestNftModelGeneration = ({
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
   onNftModelGenerated?: (itemId: number, nftModelBase64: string) => void;
 }) => {
-  const [isSceneLoaded, setIsSceneLoaded] = useState(false);
+  const [isSceneOpen, setIsSceneLoaded] = useState(false);
   const [sampleItemData, setSampleItemData] = useState<SampleItemData | null>();
 
   const postMessageToRequestNftModelGeneration = useCallback(() => {
     setIsSceneLoaded(true);
 
-    if (!sampleItemData || !isSceneLoaded) {
+    if (!sampleItemData || !isSceneOpen) {
       return;
     }
 
@@ -41,7 +41,7 @@ export const useRequestNftModelGeneration = ({
     postMessageToUnity("NftModelGenerationMessageReceiver", json);
 
     setSampleItemData(null);
-  }, [sampleItemData, isSceneLoaded, postMessageToUnity]);
+  }, [sampleItemData, isSceneOpen, postMessageToUnity]);
 
   const handleNftModelGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
@@ -58,17 +58,17 @@ export const useRequestNftModelGeneration = ({
   );
 
   useEffect(() => {
-    if (!isLoaded || !isSceneLoaded || !sampleItemData) return;
+    if (!isLoaded || !isSceneOpen || !sampleItemData) return;
     postMessageToRequestNftModelGeneration();
   }, [
     sampleItemData,
     isLoaded,
-    isSceneLoaded,
+    isSceneOpen,
     postMessageToRequestNftModelGeneration,
   ]);
 
   return {
-    isSceneLoaded,
+    isSceneOpen,
     requestNftModelGeneration: setSampleItemData,
     handleSceneIsLoaded: postMessageToRequestNftModelGeneration,
     handleNftModelGenerated,

@@ -11,7 +11,8 @@ interface SampleDetailDialogProps {
 }
 
 const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
-  const { setLoadData, isLoaded, unityProvider } = useItemPreviewUnityContext();
+  const { setLoadData, isSceneOpen, unityProvider } =
+    useItemPreviewUnityContext();
   const { selectedItem, resumeUnityInputs } = useShowcaseEditUnity();
   const t = useTranslations("Showcase");
   const [isOpen, setIsOpen] = useState(false);
@@ -69,10 +70,10 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
           {isOpen && unityProvider && (
             <ItemPreviewUnity
               unityProvider={unityProvider}
-              isLoaded={isLoaded}
+              isSceneOpen={isSceneOpen}
             />
           )}
-          {!isLoaded && isOpen && (
+          {!isSceneOpen && isOpen && (
             <div className="absolute inset-0 flex justify-center items-center">
               <Spinner />
             </div>

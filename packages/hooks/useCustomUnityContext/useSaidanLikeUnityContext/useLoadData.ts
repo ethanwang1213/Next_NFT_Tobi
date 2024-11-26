@@ -13,11 +13,11 @@ export const useLoadData = ({
 }) => {
   const [loadData, setLoadData] = useState<SaidanLikeData | null>(null);
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
-  const [isSaidanSceneLoaded, setIsSaidanSceneLoaded] =
-    useState<boolean>(false);
+  const [isSceneOpen, setIsSceneOpen] = useState<boolean>(false);
+  const [isItemsLoaded, setIsItemsLoaded] = useState<boolean>(false);
 
   const postMessageToLoadData = useCallback(() => {
-    setIsSaidanSceneLoaded(true);
+    setIsSceneOpen(true);
 
     if (!loadData || loadData.saidanId === currentSaidanId) {
       // console.log("loadData is null or same saidanId: " + currentSaidanId);
@@ -42,11 +42,21 @@ export const useLoadData = ({
     setLoadData(null);
   }, [loadData, currentSaidanId, additionalItemDataMap, postMessageToUnity]);
 
+  const handleLoadingCompleted = useCallback(() => {
+    setIsItemsLoaded(true);
+  }, [setIsItemsLoaded]);
+
   // load item data
   useEffect(() => {
-    if (!isLoaded || !isSaidanSceneLoaded) return;
+    if (!isLoaded || !isSceneOpen) return;
     postMessageToLoadData();
-  }, [isLoaded, isSaidanSceneLoaded, postMessageToLoadData]);
+  }, [isLoaded, isSceneOpen, postMessageToLoadData]);
 
-  return { isSaidanSceneLoaded, setLoadData, postMessageToLoadData };
+  return {
+    isSceneOpen,
+    isItemsLoaded,
+    setLoadData,
+    postMessageToLoadData,
+    handleLoadingCompleted,
+  };
 };

@@ -71,12 +71,17 @@ export const useSaidanLikeUnityContextBase = ({
     [],
   );
 
-  const { isSaidanSceneLoaded, setLoadData, postMessageToLoadData } =
-    useLoadData({
-      isLoaded,
-      additionalItemDataMap,
-      postMessageToUnity,
-    });
+  const {
+    isSceneOpen,
+    isItemsLoaded,
+    setLoadData,
+    postMessageToLoadData,
+    handleLoadingCompleted,
+  } = useLoadData({
+    isLoaded,
+    additionalItemDataMap,
+    postMessageToUnity,
+  });
 
   const {
     isUndoable,
@@ -251,13 +256,13 @@ export const useSaidanLikeUnityContextBase = ({
 
   const inputWasd = useCallback(
     ({ wKey, aKey, sKey, dKey }: WasdParams) => {
-      if (!isLoaded || !isSaidanSceneLoaded) return;
+      if (!isLoaded || !isSceneOpen) return;
       postMessageToUnity(
         "InputWasdMessageReceiver",
         JSON.stringify({ wKey, aKey, sKey, dKey }),
       );
     },
-    [isLoaded, isSaidanSceneLoaded, postMessageToUnity],
+    [isLoaded, isSceneOpen, postMessageToUnity],
   );
 
   const { requestNftModelGeneration, handleNftModelGenerated } =
@@ -267,13 +272,12 @@ export const useSaidanLikeUnityContextBase = ({
     });
 
   useEffect(() => {
-    if (!isLoaded || !isSaidanSceneLoaded || !itemMenuX || itemMenuX < 0)
-      return;
+    if (!isLoaded || !isSceneOpen || !itemMenuX || itemMenuX < 0) return;
     postMessageToUnity(
       "ItemMenuXMessageReceiver",
       JSON.stringify({ itemMenuX }),
     );
-  }, [isLoaded, isSaidanSceneLoaded, itemMenuX, postMessageToUnity]);
+  }, [isLoaded, isSceneOpen, itemMenuX, postMessageToUnity]);
 
   // event handler
   const handleDragPlacingStarted = useCallback(() => {
@@ -336,7 +340,8 @@ export const useSaidanLikeUnityContextBase = ({
   return {
     // states
     unityProvider,
-    isLoaded: isSaidanSceneLoaded,
+    isSceneOpen,
+    isItemsLoaded,
     isDragging,
     selectedItem,
     isUndoable,
@@ -375,5 +380,6 @@ export const useSaidanLikeUnityContextBase = ({
     handleActionRedone,
     handleNftModelGenerated,
     handleMouseUp,
+    handleLoadingCompleted,
   };
 };

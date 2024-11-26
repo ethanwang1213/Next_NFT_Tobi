@@ -154,7 +154,7 @@ const Showcase = () => {
   });
 
   const {
-    isLoaded,
+    isSceneOpen,
     unityProvider,
     isUndoable,
     isRedoable,
@@ -391,10 +391,10 @@ const Showcase = () => {
       <div className="w-full h-screen-minus-56 relative no-select">
         <ShowcaseEditUnity
           unityProvider={unityProvider}
-          isLoaded={isLoaded}
+          isSceneOpen={isSceneOpen}
           handleMouseUp={handleMouseUp}
         />
-        {!isLoaded && (
+        {!isSceneOpen && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
             <span className="dots-circle-spinner loading2 text-[80px] text-active"></span>
           </div>

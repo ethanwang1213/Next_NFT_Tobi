@@ -100,7 +100,7 @@ const Detail = () => {
     }
   };
 
-  const { unityProvider, isLoaded, requestNftModelGeneration } =
+  const { unityProvider, isSceneOpen, requestNftModelGeneration } =
     useNftModelGeneratorUnityContext({
       onNftModelGenerated: handleNftModelGenerated,
     });
@@ -936,7 +936,7 @@ const Detail = () => {
                 <div className="hidden">
                   <NftModelGeneratorUnity
                     unityProvider={unityProvider}
-                    isLoaded={isLoaded}
+                    isSceneOpen={isSceneOpen}
                   />
                 </div>
                 <Button

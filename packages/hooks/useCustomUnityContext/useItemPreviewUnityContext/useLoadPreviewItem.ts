@@ -25,7 +25,7 @@ export const useLoadPreviewItem = ({
   isLoaded: boolean;
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
-  const [isSceneLoaded, setIsSceneLoaded] = useState(false);
+  const [isSceneOpen, setIsSceneLoaded] = useState(false);
   const [loadData, setLoadData] = useState<PreviewItemData | null>();
   const [currentItemIndex, setCurrentItemIndex] = useState<ItemIndex>();
 
@@ -41,7 +41,7 @@ export const useLoadPreviewItem = ({
     setIsSceneLoaded(true);
 
     if (
-      isSceneLoaded ||
+      isSceneOpen ||
       !loadData ||
       (loadData.itemType === currentItemIndex?.itemType &&
         loadData.itemId === currentItemIndex?.itemId)
@@ -59,7 +59,7 @@ export const useLoadPreviewItem = ({
     });
     setLoadData(null);
   }, [
-    isSceneLoaded,
+    isSceneOpen,
     loadData,
     currentItemIndex,
     postMessageToUnity,
@@ -67,17 +67,17 @@ export const useLoadPreviewItem = ({
   ]);
 
   useEffect(() => {
-    if (!isSceneLoaded) return;
+    if (!isSceneOpen) return;
     if (!isLoaded) {
       setIsSceneLoaded(false);
       setCurrentItemIndex(undefined);
       return;
     }
     postMessageToLoadData();
-  }, [isLoaded, isSceneLoaded, postMessageToLoadData]);
+  }, [isLoaded, isSceneOpen, postMessageToLoadData]);
 
   return {
-    isSceneLoaded,
+    isSceneOpen,
     setLoadData: wrappedSetLoadData,
     handleSceneIsLoaded: postMessageToLoadData,
   };

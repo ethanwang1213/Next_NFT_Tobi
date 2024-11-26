@@ -193,7 +193,7 @@ export default function Index() {
   });
 
   const {
-    isLoaded,
+    isSceneOpen,
     unityProvider,
     isUndoable,
     isRedoable,
@@ -285,12 +285,12 @@ export default function Index() {
   }, [initSampleCreateDialog, pauseUnityInputs]);
 
   useEffect(() => {
-    if (router.query.trigger === "true" && isLoaded) {
+    if (router.query.trigger === "true" && isSceneOpen) {
       addButtonHandler();
       router.replace(`/workspace?trigger=false`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.trigger, isLoaded]);
+  }, [router.query.trigger, isSceneOpen]);
 
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
@@ -560,7 +560,7 @@ export default function Index() {
         >
           <WorkspaceUnity
             unityProvider={unityProvider}
-            isLoaded={isLoaded}
+            isSceneOpen={isSceneOpen}
             handleMouseUp={handleMouseUp}
           />
         </div>
@@ -571,7 +571,7 @@ export default function Index() {
           data={matchingSample}
           scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
         />
-        {!isLoaded && (
+        {!isSceneOpen && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
             <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
           </div>

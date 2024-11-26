@@ -3,7 +3,7 @@ import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provid
 
 type ProviderParam = {
   unityProvider: UnityProvider;
-  isLoaded: boolean;
+  isSceneOpen: boolean;
   handleMouseUp?: () => void;
 };
 
@@ -13,65 +13,65 @@ type IdParam = {
 
 export const WorkspaceUnity = ({
   unityProvider,
-  isLoaded,
+  isSceneOpen,
   handleMouseUp,
 }: ProviderParam) => (
   <UnityBase
     id="workspace"
     unityProvider={unityProvider}
-    isLoaded={isLoaded}
+    isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
   />
 );
 
 export const ShowcaseEditUnity = ({
   unityProvider,
-  isLoaded,
+  isSceneOpen,
   handleMouseUp,
 }: ProviderParam) => (
   <UnityBase
     id="showcaseEdit"
     unityProvider={unityProvider}
-    isLoaded={isLoaded}
+    isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
   />
 );
 
 export const ItemPreviewUnity = ({
   unityProvider,
-  isLoaded,
+  isSceneOpen,
   handleMouseUp,
 }: ProviderParam) => (
   <UnityBase
     id="itemPreview"
     unityProvider={unityProvider}
-    isLoaded={isLoaded}
+    isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
   />
 );
 
 export const AcrylicBaseSettingsUnity = ({
   unityProvider,
-  isLoaded,
+  isSceneOpen,
   handleMouseUp,
 }: ProviderParam) => (
   <UnityBase
     id="acrylicBaseSettings"
     unityProvider={unityProvider}
-    isLoaded={isLoaded}
+    isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
   />
 );
 
 export const NftModelGeneratorUnity = ({
   unityProvider,
-  isLoaded,
+  isSceneOpen,
   handleMouseUp,
 }: ProviderParam) => (
   <UnityBase
     id="nftModelGenerator"
     unityProvider={unityProvider}
-    isLoaded={isLoaded}
+    isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
   />
 );
@@ -79,7 +79,7 @@ export const NftModelGeneratorUnity = ({
 const UnityBase = ({
   id,
   unityProvider,
-  isLoaded,
+  isSceneOpen,
   handleMouseUp,
 }: ProviderParam & IdParam) => {
   // NOTE(toruto): After unmount ShowcaseEditUnity, screen will be freezed...
@@ -107,7 +107,7 @@ const UnityBase = ({
         id={id}
         unityProvider={unityProvider}
         className="w-full h-full"
-        style={{ opacity: isLoaded ? 1 : 0 }}
+        style={{ opacity: isSceneOpen ? 1 : 0 }}
         tabIndex={-1}
       />
     </div>

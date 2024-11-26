@@ -5,7 +5,7 @@ interface WorkspaceEditUnityProviderProps {
   unityContext: any;
 }
 interface WorkspaceEditUnityContextType {
-  isLoaded: boolean;
+  isSceneOpen: boolean;
   unityProvider: any;
   isUndoable: boolean;
   isRedoable: boolean;

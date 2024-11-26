@@ -71,6 +71,10 @@ export const UnityMessageType = {
   ActionUndone: 15,
   ActionRedone: 16,
   ItemTransformUpdated: 17,
+  SaidanDetailViewIsInitialized: 18,
+  SaidanDetailViewIsEnded: 19,
+  SwitchDisplayFromThumbnail: 20,
+  LoadingCompleted: 21,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];
