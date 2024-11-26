@@ -39,7 +39,7 @@ const ContentNameEditComponent = ({
         alt="edit icon"
         className="mx-4 cursor-pointer"
         onClick={(e) => {
-          if (!changedName) {
+          if (changedName) {
             editDialogRef.current.showModal();
           } else {
             changeNoticeDialogRef.current.showModal();
@@ -318,7 +318,7 @@ const ContentSettingPanel = ({
           </span>
           <ContentNameEditComponent
             initialValue={data.name}
-            changedName={data.changedName}
+            changedName={data.canChangeName}
             changeHandler={(v) => fieldChangeHandler("name", v)}
           />
           <ContentNameConfirmDialog dialogRef={confirmDialogRef} />
