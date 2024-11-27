@@ -197,6 +197,7 @@ export default function Index() {
 
   const {
     isSceneOpen,
+    isItemsLoaded,
     unityProvider,
     isUndoable,
     isRedoable,
@@ -225,7 +226,7 @@ export default function Index() {
   useEffect(() => {
     if (workspaceData && samples) {
       setLoadData(workspaceData);
-      if (id && isLoaded) {
+      if (id && isItemsLoaded) {
         const sampleIndex = samples.findIndex(
           (sample) => sample.digitalItemId === Number(id),
         );
@@ -235,7 +236,7 @@ export default function Index() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, workspaceData, isLoaded]);
+  }, [id, workspaceData, isItemsLoaded]);
 
   useEffect(() => {
     if (selectedSample) {
@@ -290,12 +291,12 @@ export default function Index() {
   }, [initSampleCreateDialog, pauseUnityInputs]);
 
   useEffect(() => {
-    if (router.query.trigger === "true" && isSceneOpen) {
+    if (router.query.trigger === "true" && isItemsLoaded) {
       addButtonHandler();
       router.replace(`/workspace?trigger=false`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.trigger, isSceneOpen]);
+  }, [router.query.trigger, isItemsLoaded]);
 
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
@@ -577,8 +578,8 @@ export default function Index() {
           data={matchingSample}
           scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
         />
-        {!isSceneOpen && (
-          <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+        {!isItemsLoaded && (
+          <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-30">
             <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
           </div>
         )}

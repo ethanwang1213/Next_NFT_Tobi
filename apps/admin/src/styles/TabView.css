@@ -1,5 +1,5 @@
 .tab.active {
-  z-index: 111;
+  z-index: 40;
   color: var(--color-secondary);
   pointer-events: none;
 }
@@ -50,7 +50,7 @@
 }
 
 .tabs .tab.active {
-  z-index: 111;
+  z-index: 40;
   color: var(--color-secondary);
   pointer-events: none;
 }
