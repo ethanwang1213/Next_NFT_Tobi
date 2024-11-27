@@ -223,17 +223,19 @@ export default function Index() {
   }, [isSampleCreateDialogOpen, resumeUnityInputs]);
 
   useEffect(() => {
-    if (workspaceData) {
-      const filteredData = id
-        ? {
-            workspaceItemList: workspaceData.workspaceItemList.filter(
-              (item) => item.digitalItemId === Number(id),
-            ),
-          }
-        : { workspaceItemList: workspaceData.workspaceItemList };
-      setLoadData(filteredData);
+    if (workspaceData && samples) {
+      setLoadData(workspaceData);
+      if (id && isLoaded) {
+        const sampleIndex = samples.findIndex(
+          (sample) => sample.digitalItemId === Number(id),
+        );
+        if (sampleIndex > -1) {
+          sampleSelectHandler(sampleIndex);
+        }
+      }
     }
-  }, [id, workspaceData, setLoadData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, workspaceData, isLoaded]);
 
   useEffect(() => {
     if (selectedSample) {

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
+import ContentNameChangeNotice from "./ContentNameChangeNotice";
 import ContentNameConfirmDialog from "./ContentNameConfirmDialog";
 import ContentNameEditDialog from "./ContentNameEditDialog";
 import CopyrightEditMenu from "./CopyrightEditMenu";
@@ -16,6 +17,7 @@ const ContentNameEditComponent = ({
 }) => {
   const [name, setName] = useState("");
   const editDialogRef = useRef(null);
+  const changeNoticeDialogRef = useRef(null);
 
   useEffect(() => setName(initialValue), [initialValue]);
 
@@ -37,8 +39,10 @@ const ContentNameEditComponent = ({
         alt="edit icon"
         className="mx-4 cursor-pointer"
         onClick={(e) => {
-          if (!changedName) {
+          if (changedName) {
             editDialogRef.current.showModal();
+          } else {
+            changeNoticeDialogRef.current.showModal();
           }
         }}
       />
@@ -46,6 +50,10 @@ const ContentNameEditComponent = ({
         initialValue={name}
         dialogRef={editDialogRef}
         changeHandler={changeHandler}
+      />
+      <ContentNameChangeNotice
+        initialValue={name}
+        dialogRef={changeNoticeDialogRef}
       />
     </div>
   );
@@ -216,6 +224,7 @@ const ContentSettingPanel = ({
   const fieldChangeHandler = (field, value) => {
     if (field == "name") {
       if (confirmDialogRef.current) {
+        confirmDialogRef.current.showModal();
         setData({ ...data, ["changedName"]: value });
       }
     } else if (["com", "adp", "der", "mer", "dst", "ncr"].includes(field)) {
@@ -309,7 +318,7 @@ const ContentSettingPanel = ({
           </span>
           <ContentNameEditComponent
             initialValue={data.name}
-            changedName={data.changedName}
+            changedName={data.canChangeName}
             changeHandler={(v) => fieldChangeHandler("name", v)}
           />
           <ContentNameConfirmDialog dialogRef={confirmDialogRef} />
