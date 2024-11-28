@@ -306,9 +306,14 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      const imageUrl =
-        materialData.find((material) => material.id === sample.materialId)
-          ?.image || sample.thumbUrl;
+      let imageUrl;
+      if (sample.type === 1 || sample.type === 3) {
+        imageUrl = sample.thumbUrl;
+      } else {
+        imageUrl =
+          materialData.find((material) => material.id === sample.materialId)
+            ?.image || sample.thumbUrl;
+      }
       const sampleData = {
         itemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
@@ -316,7 +321,7 @@ const Showcase = () => {
         modelUrl: sample.modelUrl,
         imageUrl,
         acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
-        sampleName: sample.name !== null ? sample.name : "",
+        sampleName: sample.name || "",
       };
 
       isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);

@@ -6,15 +6,6 @@ import { User } from "types/adminTypes";
 import Button from "ui/atoms/Button";
 import BackLInk from "ui/molecules/BackLink";
 import { TermsOfService } from "./FlowAgreementWithEmailAndPassword";
-import { GetStaticPropsContext } from "next";
-
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
-  return {
-    props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
-    },
-  };
-}
 
 type Props = {
   user: User;
