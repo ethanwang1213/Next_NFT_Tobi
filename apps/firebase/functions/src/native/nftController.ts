@@ -123,19 +123,9 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
     throw new MintError(404, "NotificationBatch does not found");
   }
 
-  const sampleItem = await prisma.sample_items.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
-
-  if (!sampleItem) {
-    throw new MintError(404, "SampleItem does not found");
-  }
-
   const digitalItem = await prisma.digital_items.findUnique({
     where: {
-      id: sampleItem.id,
+      id: Number(id),
     },
     include: {
       account: {
