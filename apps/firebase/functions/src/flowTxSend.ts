@@ -848,7 +848,37 @@ const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
   const existingFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", tobiratoryAccountUuid).get();
   if (existingFlowAccounts.size > 0) {
     const existingFlowAccountSnapshot = existingFlowAccounts.docs[0];
-    if (existingFlowAccountSnapshot.data().txId) {
+    const data = existingFlowAccountSnapshot.data();
+    if (data.txId) {
+      const flowAccount = await prisma.flow_accounts.findUnique({
+        where: {
+          account_uuid: tobiratoryAccountUuid,
+        }
+      });
+      if (!flowAccount || !flowAccount.flow_address) {
+        const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
+        if (flowJobs.size <= 0) {
+          throw new functions.https.HttpsError("not-found", "The transaction history is not found.");
+        }
+        const flowJob = flowJobs.docs[0].data();
+        await prisma.flow_accounts.upsert({
+          where: {
+            account_uuid: tobiratoryAccountUuid,
+          },
+          update: {
+            flow_address: data.address,
+            public_key: data.pubKey,
+            tx_id: data.txId,
+          },
+          create: {
+            account_uuid: tobiratoryAccountUuid,
+            flow_address: data.address,
+            public_key: data.pubKey,
+            tx_id: data.txId,
+            flow_job_id: flowJob.flowJobId,
+          },
+        });
+      }
       throw new functions.https.HttpsError("already-exists", "The transaction has already been sent.");
     }
     return existingFlowAccountSnapshot.ref;
