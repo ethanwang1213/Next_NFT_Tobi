@@ -120,49 +120,46 @@ const SampleTypeSelectComponent = (props: {
 
   return (
     <div className="flex flex-col">
-      <div className="h-[490px] flex flex-col overflow-y-auto relative">
+      <div className="h-[490px] flex flex-col overflow-y-auto relative justify-between">
         {error ? (
           <GenerateErrorComponent buttonHandler={handleButtonClick} />
         ) : uploading ? (
           <Loading />
         ) : (
           <>
-            <SampleTypeComponent
-              name={t("AcrylicStand")}
-              description={t("CreateAcrylicStand")}
-              clickHandler={() => {
-                props.selectTypeHandler("Acrylic Stand");
-              }}
-            />
-            <SampleTypeComponent
-              name={t("Poster")}
-              description={t("CreatePoster")}
-              clickHandler={() => {
-                props.selectTypeHandler("Poster");
-              }}
-            />
-            <SampleTypeComponent
-              name={t("MessageCard")}
-              description={t("CreateMessageCard")}
-              clickHandler={() => {
-                props.selectTypeHandler("Message Card");
-              }}
-            />
-            <SampleTypeComponent
-              name={t("AcrylicKeychain")}
-              description={t("CreateMessageCard")}
-              clickHandler={() => {
-                props.selectTypeHandler("Acrylic Keychain");
-              }}
-            />
-            <SampleTypeComponent
-              name={t("CanBadge")}
-              description={t("CreateCanBadge")}
-              clickHandler={() => {
-                props.selectTypeHandler("Can Badge");
-              }}
-            />
-            <UploadButton onDrop={onDrop} isDragActive={isDragActive} />
+            <div>
+              <SampleTypeComponent
+                name={t("AcrylicStand")}
+                description={t("CreateAcrylicStand")}
+                clickHandler={() => {
+                  props.selectTypeHandler("Acrylic Stand");
+                }}
+              />
+              <SampleTypeComponent
+                name={t("Poster")}
+                description={t("CreatePoster")}
+                clickHandler={() => {
+                  props.selectTypeHandler("Poster");
+                }}
+              />
+              <SampleTypeComponent
+                name={t("MessageCard")}
+                description={t("CreateMessageCard")}
+                clickHandler={() => {
+                  props.selectTypeHandler("Message Card");
+                }}
+              />
+              <SampleTypeComponent
+                name={t("CanBadge")}
+                description={t("CreateCanBadge")}
+                clickHandler={() => {
+                  props.selectTypeHandler("Can Badge");
+                }}
+              />
+            </div>
+            <div>
+              <UploadButton onDrop={onDrop} isDragActive={isDragActive} />
+            </div>
           </>
         )}
       </div>

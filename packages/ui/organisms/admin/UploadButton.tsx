@@ -1,6 +1,6 @@
-import React from "react";
-import { useDropzone } from "react-dropzone";
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
+import { useDropzone } from "react-dropzone";
 
 const UploadButton = ({ onDrop, isDragActive }) => {
   const { getRootProps, getInputProps } = useDropzone({
@@ -11,6 +11,7 @@ const UploadButton = ({ onDrop, isDragActive }) => {
     },
     onDrop,
   });
+  const t = useTranslations("Workspace");
 
   return (
     <div
@@ -28,9 +29,15 @@ const UploadButton = ({ onDrop, isDragActive }) => {
       className="flex justify-center items-center gap-3 cursor-pointer"
     >
       <input {...getInputProps()} />
-      <span className="text-secondary-500 text-base font-medium">
-        Upload 3D Digital Item model
-      </span>
+      <div>
+        <p className="text-secondary-500 text-base font-medium">
+          {t("Upload3DItemModel")}
+        </p>
+        <p className="text-secondary-500 text-[14px] text-center">
+          .zip(.gltf files) or .glb
+        </p>
+      </div>
+
       <NextImage
         width={24}
         height={24}

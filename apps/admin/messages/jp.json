@@ -228,7 +228,7 @@
     "CreateMessageCard": "特別なメッセージを添えて、オリジナルのメッセージカードを作成しましょう。",
     "CreateCanBadge": "オリジナルの缶バッジを作成しましょう。プロモーション用やコレクションアイテムに最適です。",
     "Upload3DModel": "3Dモデルをアップロードして、デジタルアイテムを作成しましょう。",
-    "Upload3DItemModel": "3Dデジタルアイテムモデルをアップロード .zip（.gltfファイル）または .glb",
+    "Upload3DItemModel": "3Dデジタルアイテムモデルをアップロード",
     "AddNewMaterial": "新しい素材を追加",
     "ItemGenerator": "サンプルアイテムジェネレーター",
     "ItemCreate": "アイテム作成",

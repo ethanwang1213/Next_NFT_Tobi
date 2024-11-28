@@ -227,7 +227,7 @@
     "CreateMessageCard": "Create a personalized message card with a special touch.",
     "CreateCanBadge": "Create an original can badge. Ideal for promotions or as collectible items.",
     "Upload3DModel": "Upload your 3D model and create a digital item.",
-    "Upload3DItemModel": "Upload 3D Digital Item model .zip(.gltf files) or .glb",
+    "Upload3DItemModel": "Upload 3D Digital Item model",
     "AddNewMaterial": "Add New Material",
     "ItemGenerator": "Sample Item Generator",
     "ItemCreate": "ITEM CREATE",
