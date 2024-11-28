@@ -224,7 +224,7 @@ export default function Index() {
   }, [isSampleCreateDialogOpen, resumeUnityInputs]);
 
   useEffect(() => {
-    if (workspaceData && samples) {
+    if (workspaceData) {
       setLoadData(workspaceData);
       if (id && isItemsLoaded) {
         const sampleIndex = samples.findIndex(
