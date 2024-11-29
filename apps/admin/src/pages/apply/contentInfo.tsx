@@ -1,22 +1,41 @@
 import clsx from "clsx";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import { ReactNode } from "react";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
 const Row1 = ({
   label,
+  description,
   optional,
   children,
 }: {
   label: string;
+  description?: string;
   optional?: boolean;
   children: ReactNode;
 }) => {
+  const lang = useLocale();
   return (
     <div className="sm:flex flex-row sm:py-4 sm:pl-6 py-3">
-      <div className="w-60 h-12 flex-none flex flex-row items-center">
-        <span className="text-base mr-4">{label ? label : ""}</span>
-        {optional ? <OptionMark /> : <RequireMark />}
+      <div
+        className={`h-12 ${lang === "jp" ? "min-w-[400px]" : "min-w-[480px]"}`}
+      >
+        <div className="flex-none flex flex-row items-center">
+          <span className="text-base mr-4">{label ? label : ""}</span>
+          {optional ? <OptionMark /> : <RequireMark />}
+        </div>
+        {description ? (
+          <div className="flex gap-1">
+            <Image
+              src="/admin/images/info-icon-2.svg"
+              width={16}
+              height={16}
+              alt="information"
+            />
+            <span className="text-[12px]">{description}</span>
+          </div>
+        ) : null}
       </div>
       <div className="flex-1">{children}</div>
     </div>
@@ -37,7 +56,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
       <div className="sm:mb-6 mb-3 sm:text-[40px] font-medium text-title-color text-center">
         {t("ContentInfo")}
       </div>
-      <Row1 label={t("ContentName")}>
+      <Row1 label={t("ContentName")} description={t("ContentNameUsage")}>
         <input
           id="content_name"
           className={clsx(

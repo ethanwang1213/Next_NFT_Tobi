@@ -360,6 +360,7 @@
     "ContentName": "コンテンツ名",
     "Other": "その他",
     "ContentDescription": "コンテンツの説明",
+    "ContentNameUsage": "コンテンツ名に表記した内容はクリエイター名としても使われます。",
     "EnterApplicantInfo": "申請されている方の情報をご記入ください",
     "HomepageURL": "ホームページURL",
     "Required": "必須",
