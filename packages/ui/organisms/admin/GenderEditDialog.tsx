@@ -13,20 +13,21 @@ const GenderComponent = ({
   initValue: string;
   clickHandler: () => void;
 }) => {
+  const t = useTranslations("Account");
   return (
     <div className="ml-12 py-2 flex items-center">
       <label
         className="w-48 text-sm text-base-black font-normal"
         htmlFor={`id-${name}-${value}`}
       >
-        {value}
+        {t(value)}
       </label>
       <input
         type="radio"
         id={`id-${name}-${value}`}
         className="tobiratory-radio-2"
         name={name}
-        checked={initValue == value}
+        checked={initValue === value}
         onChange={(e) => {
           if (e.target.checked) clickHandler();
         }}
@@ -44,11 +45,22 @@ const GenderEditDialog = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   changeHandler: (value: string) => void;
 }) => {
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState<string>("");
+  const [customGender, setCustomGender] = useState<string>("");
   const t = useTranslations("Account");
 
   useEffect(() => {
-    setGender(initialValue);
+    if (
+      initialValue === "Male" ||
+      initialValue === "Female" ||
+      initialValue === "NoAnswer"
+    ) {
+      setGender(initialValue);
+      setCustomGender("");
+    } else {
+      setGender("Custom");
+      setCustomGender(initialValue);
+    }
   }, [initialValue]);
 
   return (
@@ -71,27 +83,39 @@ const GenderEditDialog = ({
         <div className="flex flex-col gap-2">
           <GenderComponent
             name="gender"
-            value={t("Male")}
+            value="Male"
             initValue={gender}
             clickHandler={() => setGender("Male")}
           />
           <GenderComponent
             name="gender"
-            value={t("Female")}
+            value="Female"
             initValue={gender}
             clickHandler={() => setGender("Female")}
           />
           <GenderComponent
             name="gender"
-            value={t("Custom")}
+            value="Custom"
             initValue={gender}
-            clickHandler={() => setGender("Custome")}
+            clickHandler={() => setGender("Custom")}
           />
+          {gender === "Custom" && (
+            <div className="ml-12 py-2 flex items-center">
+              <input
+                type="text"
+                name="gender"
+                className="outline-none text-sm text-base-black w-48"
+                onChange={(e) => setCustomGender(e.target.value)}
+                value={customGender}
+                placeholder={t("Custom")}
+              />
+            </div>
+          )}
           <GenderComponent
             name="gender"
-            value={t("NoAnswer")}
+            value="NoAnswer"
             initValue={gender}
-            clickHandler={() => setGender("no answer")}
+            clickHandler={() => setGender("NoAnswer")}
           />
         </div>
         <div className="modal-action flex justify-end gap-4">
@@ -102,6 +126,7 @@ const GenderEditDialog = ({
               text-primary text-sm leading-4 font-semibold"
             onClick={() => {
               setGender(initialValue);
+              setCustomGender("");
               dialogRef.current.close();
             }}
           >
@@ -113,7 +138,9 @@ const GenderEditDialog = ({
               hover:shadow-xl hover:-top-[3px] transition-shadow
               text-base-white text-sm leading-4 font-semibold"
             onClick={() => {
-              changeHandler(gender);
+              const finalGender =
+                gender === "Custom" && customGender ? customGender : gender;
+              changeHandler(finalGender);
               dialogRef.current.close();
             }}
           >
