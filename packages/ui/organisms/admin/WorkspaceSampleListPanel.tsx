@@ -142,12 +142,12 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
     >
       {props.showRestoreMenu && (
         <div
-          className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
+          className="absolute w-full h-full top-0 bg-secondary bg-opacity-75 backdrop-blur-sm 
             flex flex-col gap-6 justify-center items-center z-10 select-none"
           onMouseUp={handleMouseUp}
           onTouchEnd={handleMouseUp}
         >
-          <span className="text-white text-[32px] font-bold">
+          <span className="text-white lg:text-[32px] text-[24px] font-bold">
             Return to the Inventory
           </span>
           <Image
