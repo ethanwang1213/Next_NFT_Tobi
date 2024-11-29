@@ -377,6 +377,7 @@
     "FirstName": "First Name",
     "NoHyphens": "No hyphens",
     "BuildingRoom": "Building Name/Room Number",
+    "Street" : "Street",
     "City": "City",
     "StatePrefecture": "State/Prefecture",
     "PostalCode": "Postal Code",

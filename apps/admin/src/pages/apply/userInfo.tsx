@@ -211,21 +211,6 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       </Row1>
       <Row1 label="">
         <input
-          id="user_city"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("StatePrefecture")}
-          value={userInfo.city}
-          onChange={(e) => userInfoChangeHandler("city", e)}
-          ref={refs["city"]}
-        />
-      </Row1>
-      <Row1 label="">
-        <input
           id="user_street"
           className={clsx(
             "flex-1 w-full h-12 pl-5",
@@ -233,10 +218,25 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
           )}
-          placeholder={t("City")}
+          placeholder={t("Street")}
           value={userInfo.street}
           onChange={(e) => userInfoChangeHandler("street", e)}
           ref={refs["street"]}
+        />
+      </Row1>
+      <Row1 label="">
+        <input
+          id="user_city"
+          className={clsx(
+            "flex-1 w-full h-12 pl-5",
+            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+            "text-sm font-normal text-input-color",
+            "placeholder:text-placeholder-color placeholder:font-normal",
+          )}
+          placeholder={t("City")}
+          value={userInfo.city}
+          onChange={(e) => userInfoChangeHandler("city", e)}
+          ref={refs["city"]}
         />
       </Row1>
       <Row1 label="">
@@ -249,7 +249,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
             )}
-            placeholder={t("PostalCode")}
+            placeholder={t("StatePrefecture")}
             value={userInfo.province}
             onChange={(e) => userInfoChangeHandler("province", e)}
             ref={refs["province"]}
