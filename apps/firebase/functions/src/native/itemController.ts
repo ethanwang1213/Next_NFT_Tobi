@@ -239,7 +239,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
     croppedUrl,
     materialId,
     type,
-  }: { thumbUrl: string, modelUrl: string, croppedUrl: string, materialId?: number, type: number } = req.body;
+  }: { thumbUrl: string, modelUrl: string, croppedUrl?: string, materialId?: number, type: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
