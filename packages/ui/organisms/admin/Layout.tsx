@@ -90,7 +90,11 @@ const Contents = ({ children, content }: Props) => {
   }
 
   return (
-    <div className={"flex flow-row sm:justify-center min-h-screen h-min"}>
+    <div
+      className={
+        "flex flow-row sm:justify-center min-h-screen h-min min-w-[760px]"
+      }
+    >
       <div className={"grow flex flex-col self-stretch"}>
         {children}
         <div className={"flex grow justify-center"}>

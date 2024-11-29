@@ -136,19 +136,18 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
 
   return (
     <div
-      className="absolute top-0 w-[448px] bg-[#001327] h-full pt-8 
-        flex flex-col gap-6 z-20 pointer-events-auto"
+      className="absolute top-0 lg:w-[448px] w-[330px] bg-[#001327] h-full pt-8 z-20 flex flex-col gap-6 pointer-events-auto"
       style={{ transition: "right 0.3s ease", right: props.isOpen ? 0 : -448 }}
       ref={panelRef}
     >
       {props.showRestoreMenu && (
         <div
-          className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
+          className="absolute w-full h-full top-0 bg-secondary bg-opacity-75 backdrop-blur-sm 
             flex flex-col gap-6 justify-center items-center z-10 select-none"
           onMouseUp={handleMouseUp}
           onTouchEnd={handleMouseUp}
         >
-          <span className="text-white text-[32px] font-bold">
+          <span className="text-white lg:text-[32px] text-[24px] font-bold">
             Return to the Inventory
           </span>
           <Image
@@ -180,7 +179,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
         </span>
       </div>
       <Button
-        className={`w-[384px] rounded-[64px] ml-10 mr-6 px-4 py-2 
+        className={`rounded-[64px] ml-10 mr-6 px-4 py-2 
         flex justify-center items-center gap-2
         ${selectState ? "bg-[#BAB8B8]" : "bg-primary"}`}
         disabled={selectState}

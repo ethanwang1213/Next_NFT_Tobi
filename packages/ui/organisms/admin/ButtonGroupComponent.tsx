@@ -27,7 +27,7 @@ const ButtonGroupComponent = (props: {
       </Button>
       {props.skipButtonHandler && (
         <Button
-          className="w-[80px] h-8 rounded-lg border border-primary flex items-center justify-between pl-4 pr-2"
+          className="h-8 rounded-lg border border-primary flex items-center justify-between pl-4 pr-2"
           onClick={props.skipButtonHandler}
         >
           <span className="text-primary text-sm font-medium">{t("Skip")}</span>

@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import BackLink from "ui/molecules/BackLink";
-import { InfoLink } from "ui/templates/admin/FlowAgreementWithSnsAccount";
 
 type Props = {
   onClickBack: () => void;
@@ -33,12 +32,6 @@ const ConfirmationSent = ({ onClickBack }: Props) => {
           {t("CheckEmail")}
           <br />
           {t("CheckText")}
-        </div>
-        <div className={"mt-[30px]"}>
-          <InfoLink
-            url={"https://www.tobiratory.com/about"}
-            text={t("EmailNotReceived")}
-          />
         </div>
       </div>
     </>

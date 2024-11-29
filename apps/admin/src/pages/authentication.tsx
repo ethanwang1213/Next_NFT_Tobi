@@ -152,6 +152,7 @@ const Authentication = () => {
     };
     try {
       await sendEmailVerification(auth.currentUser, actionCodeSettings);
+      setAuthState(AuthStates.EmailSent);
     } catch (error) {
       setAuthError({ code: error.code, message: error.message });
       setIsEmailLoading(false);

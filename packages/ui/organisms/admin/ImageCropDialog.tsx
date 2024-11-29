@@ -26,7 +26,7 @@ const ImageCropDialog = ({
   cropHandler: (value: string) => void;
   aspectRatio: number | null;
   circle: boolean | null;
-  classname: string;
+  classname?: string;
 }) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);

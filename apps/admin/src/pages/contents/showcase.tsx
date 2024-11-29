@@ -306,9 +306,14 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      const imageUrl =
-        materialData.find((material) => material.id === sample.materialId)
-          ?.image || sample.thumbUrl;
+      let imageUrl;
+      if (sample.type === 1 || sample.type === 3) {
+        imageUrl = sample.thumbUrl;
+      } else {
+        imageUrl =
+          materialData.find((material) => material.id === sample.materialId)
+            ?.image || sample.thumbUrl;
+      }
       const sampleData = {
         itemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
@@ -316,7 +321,7 @@ const Showcase = () => {
         modelUrl: sample.modelUrl,
         imageUrl,
         acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
-        sampleName: sample.name !== null ? sample.name : "",
+        sampleName: sample.name || "",
       };
 
       isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);
@@ -449,7 +454,7 @@ const Showcase = () => {
             style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
           >
             <div className="absolute bottom-12 w-full flex justify-center">
-              <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
+              <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-30">
                 <button
                   disabled={!isUndoable}
                   className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
