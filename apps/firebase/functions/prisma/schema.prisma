@@ -25,7 +25,6 @@ model accounts {
     flow_account            flow_accounts?
     favorite_saidans        saidans_favorite[]
     boxes                   boxes[]
-    material_images         material_images[]
     saidans                 saidans[]
     business                businesses?
     favorite_contents       contents_favorite[]
@@ -164,6 +163,8 @@ model digital_items {
     account_uuid      String                    @db.VarChar(100)
     name              String?                   @db.VarChar(255)
     model_url         String                    @db.Text
+    meta_model_url    String?                   @db.Text
+    cropped_url       String?                   @db.Text
     default_thumb_url String                    @db.Text
     custom_thumb_url  String                    @db.Text
     is_default_thumb  Boolean                   @default(true)
@@ -319,7 +320,6 @@ model businesses {
 
 model material_images {
     id                Int             @id @default(autoincrement())
-    account           accounts        @relation(fields: [account_uuid], references: [uuid])
     account_uuid      String          @db.VarChar(255)
     image             String          @db.VarChar(255)
     digital_items     digital_items[]

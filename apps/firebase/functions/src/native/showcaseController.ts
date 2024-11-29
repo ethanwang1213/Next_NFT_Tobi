@@ -462,6 +462,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         modelType: number;
         modelUrl: string;
         thumbUrl: string;
+        croppedUrl: string | null;
         materialUrl: string | undefined;
         stageType: number;
         scale: number;
@@ -489,6 +490,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           name: sampleData.digital_item.name??"",
           modelType: digitalData.type,
           modelUrl: digitalData.model_url,
+          croppedUrl: digitalData.cropped_url,
           thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
           materialUrl: digitalData.material_image?.image,
           stageType: relationSample.stage_type,
@@ -515,6 +517,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
         name: string;
         modelType: number;
         modelUrl: string;
+        croppedUrl: string | null;
         thumbUrl: string;
         materialUrl: string | undefined;
         stageType: number;
@@ -544,6 +547,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           name: nftData.digital_item.name??"",
           modelType: digitalData.type,
           modelUrl: digitalData.model_url,
+          croppedUrl: digitalData.cropped_url,
           thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
           materialUrl: digitalData.material_image?.image,
           stageType: relationNft.stage_type,

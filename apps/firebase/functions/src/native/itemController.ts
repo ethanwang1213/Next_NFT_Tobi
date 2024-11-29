@@ -236,9 +236,10 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   const {
     thumbUrl,
     modelUrl,
+    croppedUrl,
     materialId,
     type,
-  }: { thumbUrl: string, modelUrl: string, materialId?: number, type: number } = req.body;
+  }: { thumbUrl: string, modelUrl: string, croppedUrl: string, materialId?: number, type: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
@@ -257,6 +258,7 @@ export const createDigitalItem = async (req: Request, res: Response) => {
           default_thumb_url: thumbUrl,
           custom_thumb_url: thumbUrl,
           model_url: modelUrl,
+          cropped_url: croppedUrl,
           material_id: materialId,
           metadata_status: digitalItemStatus.draft,
           type: type,
@@ -352,6 +354,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
           materialUrl: digitalItem.material_image?.image,
           modelUrl: digitalItem.model_url,
+          croppedUrl: digitalItem.cropped_url,
           materialId: digitalItem.material_id,
           saleQuantity: digitalItem.sale_quantity,
           quantityLimit: digitalItem.limit,
