@@ -579,7 +579,7 @@ export default function Index() {
           scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
         />
         {!isItemsLoaded && (
-          <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-30">
+          <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-40">
             <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
           </div>
         )}
@@ -666,7 +666,7 @@ export default function Index() {
             ) : null}
           </div>
           <div className="absolute bottom-12 h-12 flex justify-center pointer-events-auto select-none w-full items-center">
-            <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
+            <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-30">
               <button
                 disabled={!isUndoable}
                 className="group btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0 relative"

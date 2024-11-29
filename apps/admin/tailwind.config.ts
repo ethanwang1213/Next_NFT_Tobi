@@ -12,6 +12,7 @@ const config = {
     screens: {
       sm: "576px", // landscape phones
       md: "992px", // desktops
+      lg: "1440px", //MacBook Pro
     },
     extend: {
       animation: {
