@@ -113,6 +113,9 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
       const workspaceSamples = await prisma.workspace_sample_items.findMany({
         where: {
           account_uuid: uid,
+          sample_item: {
+            is_deleted: false,
+          },
         },
         include: {
           sample_item: {
@@ -135,6 +138,7 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
           modelType: workspaceSample.sample_item.digital_item.type,
           modelUrl: workspaceSample.sample_item.digital_item.model_url,
           materialUrl: workspaceSample.sample_item.digital_item.material_image?.image,
+          croppedUrl: workspaceSample.sample_item.digital_item.cropped_url,
           thumbImage: workspaceSample.sample_item.digital_item.is_default_thumb?workspaceSample.sample_item.digital_item.default_thumb_url:workspaceSample.sample_item.digital_item.custom_thumb_url,
           stageType: workspaceSample.stage_type,
           acrylicBaseScaleRatio: workspaceSample.acrylic_scale,

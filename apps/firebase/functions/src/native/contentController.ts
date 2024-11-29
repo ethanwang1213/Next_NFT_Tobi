@@ -649,11 +649,11 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         });
         return;
       }
-
+      const timeDifference = new Date().getTime() - new Date(admin.content?.changed_name_time??"").getTime();
       const returnData = {
         id: admin.content?.id,
         name: admin.content?.name,
-        changedName: admin.content.changed_name,
+        canChangeName: timeDifference>3*30*24*60*60*1000, // 3 months,
         description: admin.content?.description,
         license: admin.content?.license,
         image: admin.content?.image,
