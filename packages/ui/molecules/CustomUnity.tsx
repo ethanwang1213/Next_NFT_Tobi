@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Unity } from "react-unity-webgl";
 import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
 
@@ -97,6 +98,20 @@ const UnityBase = ({
   //   };
   // }, [unload]);
 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const handleMouseDown = (e: MouseEvent) => {
+      e.preventDefault();
+      canvasRef.current.blur();
+    };
+    canvasRef.current.addEventListener("mousedown", handleMouseDown);
+    return () => {
+      canvasRef.current?.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, [canvasRef]);
+
   return (
     <div
       className="w-full h-full"
@@ -104,6 +119,7 @@ const UnityBase = ({
       onTouchEnd={handleMouseUp}
     >
       <Unity
+        ref={canvasRef}
         id={id}
         unityProvider={unityProvider}
         className="w-full h-full"
