@@ -1,149 +1,204 @@
-import { useEffect, useRef } from "react";
+// Reference: https://inside.pixiv.blog/2023/09/20/180000
+
+import React, {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 import { Unity } from "react-unity-webgl";
 import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
 
-type ProviderParam = {
-  unityProvider: UnityProvider;
+type Props = {
   isSceneOpen: boolean;
   handleMouseUp?: () => void;
-  unload: () => Promise<void>;
 };
 
-type IdParam = {
-  id: string;
+const CustomUnity: React.FC<Props> = ({ isSceneOpen, handleMouseUp }) => {
+  return <UnityOut isSceneOpen={isSceneOpen} handleMouseUp={handleMouseUp} />;
 };
 
-export const WorkspaceUnity = ({
-  unityProvider,
-  isSceneOpen,
-  handleMouseUp,
-  unload,
-}: ProviderParam) => (
-  <UnityBase
-    id="workspace"
-    unityProvider={unityProvider}
-    isSceneOpen={isSceneOpen}
-    handleMouseUp={handleMouseUp}
-    unload={unload}
-  />
-);
+////////////////
+/// Magic Portal
+type UnityProps = {
+  unityProvider: UnityProvider;
+};
 
-export const ShowcaseEditUnity = ({
-  unityProvider,
-  isSceneOpen,
-  handleMouseUp,
-  unload,
-}: ProviderParam) => (
-  <UnityBase
-    id="showcaseEdit"
-    unityProvider={unityProvider}
-    isSceneOpen={isSceneOpen}
-    handleMouseUp={handleMouseUp}
-    unload={unload}
-  />
-);
+type CustomUnityProps = {
+  isSceneOpen: boolean;
+  handleMouseUp?: () => void;
+};
 
-export const ItemPreviewUnity = ({
-  unityProvider,
-  isSceneOpen,
-  handleMouseUp,
-  unload,
-}: ProviderParam) => (
-  <UnityBase
-    id="itemPreview"
-    unityProvider={unityProvider}
-    isSceneOpen={isSceneOpen}
-    handleMouseUp={handleMouseUp}
-    unload={unload}
-  />
-);
+const magicPortal = {
+  parent: null as Node | null,
+  element: null as HTMLDivElement | null,
+  placeholder: null as Node | null,
+  setProps: null as Dispatch<SetStateAction<CustomUnityProps>> | null,
+  // avoid hydration error
+  ensureElement() {
+    if (!this.element && typeof document !== "undefined") {
+      this.element = document.createElement("div");
+    }
+  },
+  // mount new portal point
+  mount(newParent: Node, newPlaceholder: HTMLDivElement) {
+    this.ensureElement();
+    if (!magicPortal.element) return;
+    if (magicPortal.parent === newParent) return;
+    magicPortal.unmount();
+    newPlaceholder.replaceWith(magicPortal.element);
+    magicPortal.parent = newParent;
+    magicPortal.placeholder = newPlaceholder;
+  },
+  // unmount old portal point
+  unmount(expectedPlaceholder?: Node) {
+    if (expectedPlaceholder && expectedPlaceholder !== magicPortal.placeholder)
+      return;
+    if (!parent || !magicPortal.placeholder) return;
+    magicPortal.element?.replaceWith(magicPortal.placeholder);
+    magicPortal.parent = null;
+    magicPortal.placeholder = null;
+  },
+};
 
-export const AcrylicBaseSettingsUnity = ({
-  unityProvider,
-  isSceneOpen,
-  handleMouseUp,
-  unload,
-}: ProviderParam) => (
-  <UnityBase
-    id="acrylicBaseSettings"
-    unityProvider={unityProvider}
-    isSceneOpen={isSceneOpen}
-    handleMouseUp={handleMouseUp}
-    unload={unload}
-  />
-);
-
-export const NftModelGeneratorUnity = ({
-  unityProvider,
-  isSceneOpen,
-  handleMouseUp,
-  unload,
-}: ProviderParam) => (
-  <UnityBase
-    id="nftModelGenerator"
-    unityProvider={unityProvider}
-    isSceneOpen={isSceneOpen}
-    handleMouseUp={handleMouseUp}
-    unload={unload}
-  />
-);
-
-const UnityBase = ({
-  id,
-  unityProvider,
-  isSceneOpen,
-  handleMouseUp,
-  unload,
-}: ProviderParam & IdParam) => {
-  const initialMount = useRef(true);
+// portal element
+const UnityIn: React.FC<UnityProps> = ({ unityProvider }) => {
+  const [props, setProps] = useState<CustomUnityProps>({
+    isSceneOpen: false,
+    handleMouseUp: () => {},
+  });
 
   useEffect(() => {
-    return () => {
-      console.log("unload hoge: " + isSceneOpen);
-      if (!!unload) {
-        unload()
-          .then(() => {
-            console.log(`Unity ${id} is unloaded.`);
-          })
-          .catch((e) => {
-            console.error(`Failed to unload Unity ${id}.`, e);
-          });
-      }
-    };
-    // This effect should only run once when the component is unmounted.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Object.assign(magicPortal, { setProps });
+    magicPortal.ensureElement();
   }, []);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  if (!magicPortal.element) return null;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-
-    if (!canvas) return;
-    const handleMouseDown = (e: MouseEvent) => {
-      e.preventDefault();
-      canvas.blur();
-    };
-    canvas.addEventListener("mousedown", handleMouseDown);
-    return () => {
-      canvas.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, []);
-
-  return (
-    <div
-      className="w-full h-full"
-      onMouseUp={handleMouseUp}
-      onTouchEnd={handleMouseUp}
-    >
-      <Unity
-        ref={canvasRef}
-        id={id}
-        unityProvider={unityProvider}
-        className="w-full h-full"
-        style={{ opacity: isSceneOpen ? 1 : 0 }}
-        tabIndex={-1}
-      />
-    </div>
+  return createPortal(
+    <CustomUnityBase unityProvider={unityProvider} {...props} />,
+    magicPortal.element,
   );
 };
+
+// portal point
+const UnityOut: React.FC<CustomUnityProps> = (props) => {
+  const placeholderRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const placeholder = placeholderRef.current;
+    if (!placeholder?.parentNode) return;
+    magicPortal.mount(placeholder.parentNode, placeholder);
+    magicPortal.setProps(props);
+    return () => {
+      magicPortal.unmount(placeholder);
+    };
+  }, []);
+
+  return <div ref={placeholderRef} />;
+};
+
+const CustomUnityBase = memo(
+  ({
+    unityProvider,
+    isSceneOpen,
+    handleMouseUp,
+  }: UnityProps & CustomUnityProps) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+      const canvas = canvasRef.current;
+
+      if (!canvas) return;
+      const handleMouseDown = (e: MouseEvent) => {
+        e.preventDefault();
+        canvas.blur();
+      };
+      canvas.addEventListener("mousedown", handleMouseDown);
+      return () => {
+        canvas.removeEventListener("mousedown", handleMouseDown);
+      };
+    }, []);
+
+    return (
+      <div
+        className="w-full h-full"
+        onMouseUp={handleMouseUp}
+        onTouchEnd={handleMouseUp}
+      >
+        <Unity
+          ref={canvasRef}
+          id="custom-unity"
+          unityProvider={unityProvider}
+          className="w-full h-full"
+          style={{ opacity: isSceneOpen ? 1 : 0 }}
+          tabIndex={-1}
+        />
+      </div>
+    );
+  },
+);
+
+export { CustomUnity, UnityIn };
+
+// const UnityBase = ({
+//   id,
+//   unityProvider,
+//   isSceneOpen,
+//   handleMouseUp,
+//   unload,
+// }: ProviderParam & IdParam) => {
+//   const initialMount = useRef(true);
+
+//   useEffect(() => {
+//     return () => {
+//       console.log("unload hoge: " + isSceneOpen);
+//       if (!!unload) {
+//         unload()
+//           .then(() => {
+//             console.log(`Unity ${id} is unloaded.`);
+//           })
+//           .catch((e) => {
+//             console.error(`Failed to unload Unity ${id}.`, e);
+//           });
+//       }
+//     };
+//     // This effect should only run once when the component is unmounted.
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
+
+//   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+//   useEffect(() => {
+//     const canvas = canvasRef.current;
+
+//     if (!canvas) return;
+//     const handleMouseDown = (e: MouseEvent) => {
+//       e.preventDefault();
+//       canvas.blur();
+//     };
+//     canvas.addEventListener("mousedown", handleMouseDown);
+//     return () => {
+//       canvas.removeEventListener("mousedown", handleMouseDown);
+//     };
+//   }, []);
+
+//   return (
+//     <div
+//       className="w-full h-full"
+//       onMouseUp={handleMouseUp}
+//       onTouchEnd={handleMouseUp}
+//     >
+//       <Unity
+//         ref={canvasRef}
+//         id={id}
+//         unityProvider={unityProvider}
+//         className="w-full h-full"
+//         style={{ opacity: isSceneOpen ? 1 : 0 }}
+//         tabIndex={-1}
+//       />
+//     </div>
+//   );
+// };
