@@ -17,6 +17,7 @@ import {
   DefaultItemMeterHeight,
 } from "../constants";
 import {
+  CustomUnityProvider,
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
   SaidanType,
@@ -42,6 +43,7 @@ type RemoveSampleRequestedHandler = (
 ) => void;
 
 export const useWorkspaceUnityContext = ({
+  unityProvider,
   sampleMenuX = -1,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
@@ -52,6 +54,7 @@ export const useWorkspaceUnityContext = ({
   onActionRedone,
   onNftModelGenerated,
 }: {
+  unityProvider: CustomUnityProvider;
   sampleMenuX?: number;
   onSaveDataGenerated?: SaveDataGeneratedHandler;
   onItemThumbnailGenerated?: ItemThumbnailGeneratedHandler;
@@ -64,7 +67,6 @@ export const useWorkspaceUnityContext = ({
 }) => {
   const {
     // states
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,
@@ -72,10 +74,7 @@ export const useWorkspaceUnityContext = ({
     isUndoable,
     isRedoable,
     // functions
-    addEventListener,
-    removeEventListener,
     postMessageToUnity,
-    unload,
     setLoadData: privateSetLoadData,
     requestSaveData,
     placeNewSample,
@@ -104,6 +103,7 @@ export const useWorkspaceUnityContext = ({
     handleMouseUp,
     handleLoadingCompleted,
   } = useSaidanLikeUnityContextBase({
+    unityProvider,
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
     onRemoveItemEnabled: onRemoveSampleEnabled,
@@ -298,8 +298,8 @@ export const useWorkspaceUnityContext = ({
 
   useUnityMessageHandler({
     sceneType: UnitySceneType.Workspace,
-    addEventListener,
-    removeEventListener,
+    addEventListener: unityProvider.addEventListener,
+    removeEventListener: unityProvider.removeEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
@@ -319,7 +319,6 @@ export const useWorkspaceUnityContext = ({
 
   return {
     // states
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,
@@ -348,6 +347,5 @@ export const useWorkspaceUnityContext = ({
     applyAcrylicBaseScaleRatio,
     requestNftModelGeneration,
     handleMouseUp,
-    unload,
   };
 };

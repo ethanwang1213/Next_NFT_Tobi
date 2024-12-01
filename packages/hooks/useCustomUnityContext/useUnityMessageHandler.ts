@@ -1,20 +1,18 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { UnityMessageJson, UnityMessageType, UnitySceneType } from "./types";
-
-type EventListener = (
-  eventName: string,
-  callback: (
-    ...parameters: ReactUnityEventParameter[]
-  ) => ReactUnityEventParameter,
-) => void;
+import {
+  UnityEventListener,
+  UnityMessageJson,
+  UnityMessageType,
+  UnitySceneType,
+} from "./types";
 
 type MessageHandler = (msgObj: UnityMessageJson) => void;
 
 type Props = {
   sceneType: UnitySceneType;
-  addEventListener: EventListener;
-  removeEventListener: EventListener;
+  addEventListener: UnityEventListener;
+  removeEventListener: UnityEventListener;
   handleSimpleMessage: MessageHandler;
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;

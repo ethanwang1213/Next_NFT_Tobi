@@ -21,8 +21,9 @@ const CustomUnity: React.FC<Props> = ({ isSceneOpen, handleMouseUp }) => {
   return <UnityOut isSceneOpen={isSceneOpen} handleMouseUp={handleMouseUp} />;
 };
 
-////////////////
+////////////////////////////////////////
 /// Magic Portal
+/// share one Unity component between multiple mount points with completely the same state.
 type UnityProps = {
   unityProvider: UnityProvider;
 };
