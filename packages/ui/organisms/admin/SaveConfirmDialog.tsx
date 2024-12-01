@@ -13,7 +13,7 @@ const SaveConfirmDialog = ({
   const t = useTranslations("ContentSettings");
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box max-w-[875px] rounded-3xl pt-4 flex flex-col gap-3 relative">
+      <div className="modal-box max-w-[450px] rounded-3xl pt-4 flex flex-col gap-3 relative">
         <form method="dialog">
           <button className="absolute w-4 h-4 top-4 right-4">
             <Image
@@ -24,11 +24,8 @@ const SaveConfirmDialog = ({
             />
           </button>
         </form>
-        <div className="text-base-black text-lg font-semibold">
-          {t("ConfirmSave")}
-        </div>
-        <div className="text-neutral-700 text-sm font-normal mb-2">
-          {t("ContentNameChangeGuidelines")}
+        <div className="text-neutral-700 text-[16px] font-bold mb-2">
+          {t("DiscardChanges")}
         </div>
         <div className="modal-action flex justify-end gap-4">
           <Button
@@ -36,11 +33,11 @@ const SaveConfirmDialog = ({
             className="px-4 py-2 bg-primary rounded-[64px] 
               text-base-white text-sm leading-4 font-semibold"
             onClick={() => {
-              changeHandler("save");
+              changeHandler("cancel");
               dialogRef.current.close();
             }}
           >
-            {t("Save")}
+            {t("Cancel")}
           </Button>
           <Button
             type="button"
@@ -52,17 +49,6 @@ const SaveConfirmDialog = ({
             }}
           >
             {t("Discard")}
-          </Button>
-          <Button
-            type="button"
-            className="px-4 py-2 rounded-[64px] border-2 border-primary
-              text-primary text-sm leading-4 font-semibold"
-            onClick={() => {
-              changeHandler("cancel");
-              dialogRef.current.close();
-            }}
-          >
-            {t("Cancel")}
           </Button>
         </div>
       </div>

@@ -78,8 +78,8 @@
     "ItemPublishedAndSold": "Item will be published and sold.",
     "ItemVisibleAgain": "This item will be visible again.",
     "RequiredFieldsMissing": "Some required fields are missing.",
-    "Cancel": "CANCEL",
-    "Delete": "DELETE",
+    "Cancel": "Cancel",
+    "Delete": "Delete",
     "NoName": "no name"
   },
   "ItemDetail": {
@@ -104,7 +104,22 @@
     "OnlyZero": "Only ￥0 can be set.",
     "ExampleCopyright": "ex. ©Tobiratory",
     "CheckBoxMaxLimit": "Please check the box if you do not want to set a maximum limit.",
-    "LicenseNotation": "Please enter the license notation in this field. ex) 'CC0' or detailed license information."
+    "LicenseNotation": "Please enter the license notation in this field. ex) 'CC0' or detailed license information.",
+    "ChangingFrom": "Changing from",
+    "ChangingTo": "to",
+    "PublishedVisible": "Once published, this item will be visible to all users.",
+    "SettingsImmutable": "Settings cannot be changed afterward (except for price).",
+    "SalesStatus": "In sales status, the item can be sold and distributed.",
+    "SelectSalesStatus": "If intended for sale/distribution, please select the sales status (On Sale).",
+    "CannotRevertPrivate": "You cannot revert to private status.",
+    "PublishedForSale": "The item will be published and available for sale and distribution.",
+    "HiddenContentPage": "This item will be hidden from the content page.",
+    "AvailableForSale": "The item will be available for sale and distribution.",
+    "DisplayedButSold": "The item will continue to be displayed to all users, but it will be sold or distributed.",
+    "VisibleToAll": "This item will once again be visible to all users.",
+    "PublishedAndForSale": "The item will be published and will also be available for sale and distribution.",
+    "RequiredFieldsMissing": "There are required fields that have not been filled. Please check.",
+    "ConfirmContinue": "Do you wish to continue?"
   },
   "License": {
     "ProhibitedActions": "Prohibited Actions under All Licenses",
@@ -133,6 +148,8 @@
     "Publish": "Publish",
     "Draft": "Draft",
     "Public": "Public",
+    "Published": "Public",
+    "Schedule": "Schedule",
     "Scheduled": "Scheduled",
     "Private": "Private",
     "Delete": "Delete"
@@ -147,6 +164,9 @@
     "Upload": "Upload"
   },
   "ContentSettings": {
+    "Showcase": "Showcase",
+    "Brand": "Brand",
+    "Settings": "Settings",
     "ContentNameChange": "Content Name Change",
     "ContentNameChangeGuidelines": "The content name can be changed once every three months. After the change, the content name visible to users will be updated once the review is completed.",
     "contentNameChangeRequest": "The content name change request is currently under review. \nOnce approved, the name will be updated. Additionally, after the change, it cannot be modified again for three months.",
@@ -168,7 +188,8 @@
     "Done": "Done",
     "Public": "Public",
     "AddCopyrightHolder": "Add a Copyright holder tag",
-    "GotIt": "Got it"
+    "GotIt": "Got it",
+    "DiscardChanges": "Do you want to discard the changes?"
   },
   "Showcase": {
     "ItemTitle": "Item Title",
@@ -201,8 +222,8 @@
   },
   "GiftReceivingSettings": {
     "TogglePermission": "On this page, you can toggle the permission settings for receiving gifts. Adjust the settings for each inventory or box.",
-    "Permitted": "Permitted",
-    "Blocked": "Blocked",
+    "Permitted": "Disable",
+    "Blocked": "Enable",
     "DeleteBoxWarning": "When you delete a BOX, the digital items (NFTs) contained within the BOX are also deleted. Please make sure to check the contents of the BOX carefully before proceeding with this action.",
     "Cancel": "Cancel",
     "Delete": "Delete",

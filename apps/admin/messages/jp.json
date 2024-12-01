@@ -104,7 +104,22 @@
     "OnlyZero": "￥0のみ設定できます。",
     "ExampleCopyright": "例：©Tobiratory",
     "CheckBoxMaxLimit": "販売数の上限を設定しない場合は、チェックボックスにチェックを入れてください。",
-    "LicenseNotation": "ライセンスの表記をこの欄に入力してください。例）'CC0' または詳細なライセンス情報。"
+    "LicenseNotation": "ライセンスの表記をこの欄に入力してください。例）'CC0' または詳細なライセンス情報。",
+    "ChangingFrom": "変更前",
+    "ChangingTo": "変更後",
+    "PublishedVisible": "公開すると、このアイテムはすべてのユーザーに表示されます。",
+    "SettingsImmutable": "設定は変更できません（価格を除く）。",
+    "SalesStatus": "販売ステータスでは、アイテムを販売および配布できます。",
+    "SelectSalesStatus": "販売/配布を目的とする場合は、販売ステータス（販売中）を選択してください。",
+    "CannotRevertPrivate": "プライベートステータスには戻せません。",
+    "PublishedForSale": "アイテムは公開され、販売および配布が可能になります。",
+    "HiddenContentPage": "このアイテムはコンテンツページから非表示になります。",
+    "AvailableForSale": "アイテムは販売および配布可能になります。",
+    "DisplayedButSold": "アイテムはすべてのユーザーに引き続き表示されますが、販売または配布されます。",
+    "VisibleToAll": "このアイテムは再びすべてのユーザーに表示されます。",
+    "PublishedAndForSale": "アイテムは公開され、販売および配布も可能になります。",
+    "RequiredFieldsMissing": "未入力の必須項目があります。ご確認ください。",
+    "ConfirmContinue": "続行しますか？"
   },
   "License": {
     "ProhibitedActions": "全ライセンスにおける禁止事項",
@@ -133,7 +148,9 @@
     "Publish": "公開",
     "Draft": "下書き",
     "Public": "公開",
-    "Scheduled": "スケジュール済み",
+    "Published": "公開中",
+    "Schedule": "公開予約",
+    "Scheduled": "公開予約",
     "Private": "非公開",
     "Delete": "削除"
   },
@@ -147,6 +164,9 @@
     "Upload": "アップロード"
   },
   "ContentSettings": {
+    "Showcase": "ショーケース",
+    "Brand": "ブランド",
+    "Settings": "設定",
     "ContentNameChange": "コンテンツ名の変更",
     "ContentNameChangeGuidelines": "コンテンツ名は3ヶ月に1度変更可能です。変更後、ユーザーに表示されるコンテンツ名は審査が完了次第更新されます。",
     "contentNameChangeRequest": "コンテンツ名の変更リクエストは現在審査中です。\n承認されると、名前が更新されます。さらに、変更後は3ヶ月間再度変更することはできません。",
@@ -168,7 +188,8 @@
     "Done": "完了",
     "Public": "公開",
     "AddCopyrightHolder": "コピーライトタグを追加",
-    "GotIt": "了解しました"
+    "GotIt": "了解しました",
+    "DiscardChanges": "変更を破棄しますか？"
   },
   "Showcase": {
     "ItemTitle": "アイテムタイトル",
@@ -201,8 +222,8 @@
   },
   "GiftReceivingSettings": {
     "TogglePermission": "このページでは、ギフト受取の許可設定を切り替えることができます。各インベントリやボックスごとに設定を調整してください。",
-    "Permitted": "許可済み",
-    "Blocked": "ブロック済み",
+    "Permitted": "受取可",
+    "Blocked": "受取不可",
     "Warning": "警告！",
     "DeleteBoxWarning": "ボックスを削除すると、そのボックス内に含まれるデジタルアイテム（NFT）も削除されます。この操作を行う前に、必ずボックスの内容をよく確認してください。",
     "Cancel": "キャンセル",

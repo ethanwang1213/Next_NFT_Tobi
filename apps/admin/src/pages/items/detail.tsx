@@ -206,10 +206,10 @@ const Detail = () => {
     setConfirmDialogDisabled(!checkMandatoryFields());
     // set title
     setConfirmDialogTitle(
-      `Changing from ${getDigitalItemStatusTitle(
+      `${b("ChangingFrom")} ${getDigitalItemStatusTitle(
         dataRef.current.status,
         t,
-      ).toLowerCase()} to ${getDigitalItemStatusTitle(
+      ).toLowerCase()} ${b("ChangingTo")} ${getDigitalItemStatusTitle(
         digitalItem.status,
         t,
       ).toLowerCase()}`,
@@ -220,21 +220,13 @@ const Detail = () => {
       case DigitalItemStatus.Draft:
         switch (digitalItem.status) {
           case DigitalItemStatus.ViewingOnly:
-            setConfirmDialogDescriptions([
-              "Once published, this item will be visible to all users.",
-            ]);
-            setConfirmDialogNotes([
-              "Settings cannot be changed afterward (except for price).",
-            ]);
+            setConfirmDialogDescriptions([b("PublishedVisible")]);
+            setConfirmDialogNotes([b("SettingsImmutable")]);
             break;
 
           case DigitalItemStatus.OnSale:
-            setConfirmDialogDescriptions([
-              "In sales status, the item can be sold and distributed.",
-            ]);
-            setConfirmDialogNotes([
-              "Settings cannot be changed afterward (except for price).",
-            ]);
+            setConfirmDialogDescriptions([b("SalesStatus")]);
+            setConfirmDialogNotes([b("SettingsImmutable")]);
             break;
 
           default:
@@ -246,22 +238,20 @@ const Detail = () => {
         switch (digitalItem.status) {
           case DigitalItemStatus.ViewingOnly:
             setConfirmDialogDescriptions([
-              "Once published, this item will be visible to all users.",
-              "If intended for sale/distribution, please select the sales status (On Sale).",
+              b("PublishedVisible"),
+              b("SelectSalesStatus"),
             ]);
             setConfirmDialogNotes([
-              "Settings cannot be changed afterward (except for price).",
-              "You cannot revert to private status.",
+              b("SettingsImmutable"),
+              b("CannotRevertPrivate"),
             ]);
             break;
 
           case DigitalItemStatus.OnSale:
-            setConfirmDialogDescriptions([
-              "The item will be published and available for sale and distribution.",
-            ]);
+            setConfirmDialogDescriptions([b("PublishedForSale")]);
             setConfirmDialogNotes([
-              "Settings cannot be changed afterward (except for price).",
-              "You cannot revert to private status.",
+              b("SettingsImmutable"),
+              b("CannotRevertPrivate"),
             ]);
             break;
 
@@ -273,16 +263,12 @@ const Detail = () => {
       case DigitalItemStatus.ViewingOnly:
         switch (digitalItem.status) {
           case DigitalItemStatus.Unlisted:
-            setConfirmDialogDescriptions([
-              "This item will be hidden from the content page.",
-            ]);
+            setConfirmDialogDescriptions([b("HiddenContentPage")]);
             setConfirmDialogNotes([]);
             break;
 
           case DigitalItemStatus.OnSale:
-            setConfirmDialogDescriptions([
-              "The item will be available for sale and distribution.",
-            ]);
+            setConfirmDialogDescriptions([b("SalesStatus")]);
             setConfirmDialogNotes([]);
             break;
 
@@ -294,16 +280,12 @@ const Detail = () => {
       case DigitalItemStatus.OnSale:
         switch (digitalItem.status) {
           case DigitalItemStatus.ViewingOnly:
-            setConfirmDialogDescriptions([
-              "The item will continue to be displayed to all users, but it will be sold or distributed.",
-            ]);
+            setConfirmDialogDescriptions([b("DisplayedButSold")]);
             setConfirmDialogNotes([]);
             break;
 
           case DigitalItemStatus.Unlisted:
-            setConfirmDialogDescriptions([
-              "This item will be hidden from the content page.",
-            ]);
+            setConfirmDialogDescriptions([b("HiddenContentPage")]);
             setConfirmDialogNotes([]);
             break;
 
@@ -315,16 +297,12 @@ const Detail = () => {
       case DigitalItemStatus.Unlisted:
         switch (digitalItem.status) {
           case DigitalItemStatus.ViewingOnly:
-            setConfirmDialogDescriptions([
-              "This item will once again be visible to all users.",
-            ]);
+            setConfirmDialogDescriptions([b("VisibleToAll")]);
             setConfirmDialogNotes([]);
             break;
 
           case DigitalItemStatus.OnSale:
-            setConfirmDialogDescriptions([
-              "The item will be published and will also be available for sale and distribution.",
-            ]);
+            setConfirmDialogDescriptions([b("DisplayedButSold")]);
             setConfirmDialogNotes([]);
             break;
 
@@ -419,9 +397,9 @@ const Detail = () => {
     if (await postData(`${apiUrl}/${digitalItem.id}`, submitData)) {
       setModified(false);
       dataRef.current = digitalItem;
-      const channel = new BroadcastChannel('dataUpdateChannel');
-      channel.postMessage('dataUpdated');
-      channel.close(); 
+      const channel = new BroadcastChannel("dataUpdateChannel");
+      channel.postMessage("dataUpdated");
+      channel.close();
     } else {
       if (error) {
         if (error instanceof String) {

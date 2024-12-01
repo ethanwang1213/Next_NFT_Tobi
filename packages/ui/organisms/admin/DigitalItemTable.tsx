@@ -159,11 +159,17 @@ const DigitalItemTable = (filters: {
       case FilterItem.CreationDate: // Creation Date
         newData = filterData.filter((value) => {
           if (value.createDate === null) return false;
+
           const dateValue = new Date(value.createDate);
-          return (
-            dateValue >= filters.createDate.from &&
-            dateValue <= filters.createDate.to
-          );
+
+          const fromDate = new Date(filters.createDate.from);
+          const toDate = new Date(filters.createDate.to);
+
+          fromDate.setHours(0, 0, 0, 0);
+          toDate.setHours(23, 59, 59, 999);
+          dateValue.setHours(0, 0, 0, 0);
+
+          return dateValue >= fromDate && dateValue <= toDate;
         });
         break;
 
@@ -211,14 +217,11 @@ const DigitalItemTable = (filters: {
     <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="bg-gray-50 pt-0">
-          <table className="min-w-full text-secondary">
+          <table className="min-w-[980px] w-full text-secondary">
             <thead className="">
               <tr className="text-base/[56px] bg-primary text-white">
                 <th className="min-w-8"></th>
-                <th
-                  scope="col"
-                  className="min-w-40 w-40 py-0 hover:bg-[#1363B6]"
-                ></th>
+                <th scope="col" className="min-w-40 w-40 py-0"></th>
                 <th
                   scope="col"
                   className="min-w-60 w-60 py-0 hover:bg-[#1363B6] text-center group relative"
@@ -329,7 +332,10 @@ const DigitalItemTable = (filters: {
             </thead>
             <tbody className="bg-white">
               {digitalItems?.map((item) => (
-                <tr key={item.id} className="w-full border-b py-3 text-sm">
+                <tr
+                  key={item.id}
+                  className="w-full border-b py-3 text-sm hover:bg-primary-100"
+                >
                   <td className="py-3 text-center">
                     <input
                       type="checkbox"
@@ -367,9 +373,16 @@ const DigitalItemTable = (filters: {
                     </Link>
                   </td>
                   <td className="px-3">
-                    <p className="inline-block w-60 text-left break-words">
-                      {item.name ? item.name : t("NoName")}
-                    </p>
+                    <Link
+                      href={`/items/detail?id=${item.id}`}
+                      className="flex items-center justify-center"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <p className="inline-block w-60 text-left break-words hover:underline">
+                        {item.name ? item.name : t("NoName")}
+                      </p>
+                    </Link>
                   </td>
                   <td className="px-3 py-3 text-center justify-center">
                     {formatCurrency(item.price)}
@@ -415,7 +428,7 @@ const DigitalItemTable = (filters: {
                   }
                 }}
               >
-                <div className="flex justify-around">
+                <div className="flex gap-3 items-center justify-center">
                   <Image
                     src="/admin/images/recyclebin-icon.svg"
                     alt="icon"

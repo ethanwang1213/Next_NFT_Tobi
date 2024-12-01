@@ -32,7 +32,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 }
 
 const valueClass = "text-[20px] font-normal flex-1";
-const editBtnClass = "text-[20px] text-primary font-normal";
+const editBtnClass = "text-[20px] text-primary font-normal ";
 
 const AccountFieldComponent = ({
   label,
@@ -486,22 +486,22 @@ export default function Index() {
               </button>
             </AccountFieldComponent>
             <AccountFieldComponent label={"Social Account"}>
-              <div className="flex w-full gap-[17px]">
-                <GoogleIcon
-                  width={48}
-                  height={48}
-                  disabled={!hasGoogleAccount()}
-                />
-                <AppleIcon size="3x" disabled={!hasAppleAccount()} />
+              <div className="flex justify-between w-full">
+                <div className="flex gap-[17px]">
+                  <GoogleIcon
+                    width={48}
+                    height={48}
+                    disabled={!hasGoogleAccount()}
+                  />
+                  <AppleIcon size="3x" disabled={!hasAppleAccount()} />
+                </div>
+                <button
+                  className={editBtnClass}
+                  onClick={() => router.push("/auth/sns_account")}
+                >
+                  {t("Edit")}
+                </button>
               </div>
-              <button
-                className={`${editBtnClass} ${
-                  router.locale === "jp" ? "w-12" : ""
-                }`}
-                onClick={() => router.push("/auth/sns_account")}
-              >
-                {t("Edit")}
-              </button>
             </AccountFieldComponent>
           </div>
           <GenderEditDialog
