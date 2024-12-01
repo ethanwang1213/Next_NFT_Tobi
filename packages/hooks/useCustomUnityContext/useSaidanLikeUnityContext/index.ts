@@ -75,7 +75,7 @@ export const useSaidanLikeUnityContextBase = ({
     isSceneOpen,
     isItemsLoaded,
     setLoadData,
-    postMessageToLoadData,
+    handleSceneIsLoaded,
     handleLoadingCompleted,
   } = useLoadData({
     isLoaded,
@@ -350,8 +350,8 @@ export const useSaidanLikeUnityContextBase = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    setLoadData,
     unload,
+    setLoadData,
     requestSaveData,
     setSelectedItem,
     placeNewSample,
@@ -369,7 +369,7 @@ export const useSaidanLikeUnityContextBase = ({
     requestNftModelGeneration,
     // event handlers
     handleSimpleMessage,
-    handleSceneIsLoaded: postMessageToLoadData,
+    handleSceneIsLoaded,
     handleDragPlacingStarted,
     handleDragPlacingEnded,
     handleRemoveItemEnabled,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useUnityContext } from "react-unity-webgl";
 import { MessageDestination, UnityMessageJson, UnitySceneType } from "./types";
 
@@ -24,6 +24,10 @@ export const useCustomUnityContextBase = ({
     codeUrl: `${buildFilePath}.wasm`,
   });
 
+  const isLoadedRef = useRef<boolean>(false);
+  isLoadedRef.current = isLoaded;
+  const isUnloadedRef = useRef<boolean>(false);
+
   const handleSimpleMessage = (msgObj: UnityMessageJson) => {
     // console.log(
     //   `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
@@ -32,10 +36,10 @@ export const useCustomUnityContextBase = ({
 
   const postMessageToUnity = useCallback(
     (gameObject: MessageDestination, message: string) => {
-      if (!isLoaded) return;
+      if (!isLoadedRef.current || isUnloadedRef.current) return;
       sendMessage(gameObject, "OnMessageReceived", message);
     },
-    [isLoaded, sendMessage],
+    [isLoadedRef.current, isUnloadedRef.current, sendMessage],
   );
 
   const postMessageToSwitchScene = useCallback(
@@ -72,7 +76,13 @@ export const useCustomUnityContextBase = ({
     postMessageToUnity,
     pauseUnityInputs,
     resumeUnityInputs,
-    unload,
+    unload: async () => {
+      console.log("wrapped unload: ", isLoadedRef.current);
+      if (!isLoadedRef.current) return;
+      console.log("wrapped unload run");
+      isUnloadedRef.current = true;
+      await unload();
+    },
     // event handlers
     handleSimpleMessage,
   };

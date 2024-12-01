@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { UnityMessageJson, UnityMessageType } from "./types";
+import { UnityMessageJson, UnityMessageType, UnitySceneType } from "./types";
 
 type EventListener = (
   eventName: string,
@@ -12,6 +12,7 @@ type EventListener = (
 type MessageHandler = (msgObj: UnityMessageJson) => void;
 
 type Props = {
+  sceneType: UnitySceneType;
   addEventListener: EventListener;
   removeEventListener: EventListener;
   handleSimpleMessage: MessageHandler;
@@ -33,6 +34,7 @@ type Props = {
 };
 
 export const useUnityMessageHandler = ({
+  sceneType,
   addEventListener,
   removeEventListener,
   handleSimpleMessage,
@@ -71,7 +73,7 @@ export const useUnityMessageHandler = ({
     (message: ReactUnityEventParameter) => {
       if (typeof message !== "string") return;
       const msgObj = resolveUnityMessage(message);
-      if (!msgObj) return;
+      if (!msgObj || msgObj.sceneType !== sceneType) return;
 
       // execute event handlers along with message type
       switch (msgObj.messageType) {
@@ -128,6 +130,7 @@ export const useUnityMessageHandler = ({
       }
     },
     [
+      sceneType,
       resolveUnityMessage,
       handleSimpleMessage,
       handleSceneIsLoaded,

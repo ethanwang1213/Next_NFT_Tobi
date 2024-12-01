@@ -6,6 +6,7 @@ type ProviderParam = {
   unityProvider: UnityProvider;
   isSceneOpen: boolean;
   handleMouseUp?: () => void;
+  unload: () => Promise<void>;
 };
 
 type IdParam = {
@@ -16,12 +17,14 @@ export const WorkspaceUnity = ({
   unityProvider,
   isSceneOpen,
   handleMouseUp,
+  unload,
 }: ProviderParam) => (
   <UnityBase
     id="workspace"
     unityProvider={unityProvider}
     isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
+    unload={unload}
   />
 );
 
@@ -29,12 +32,14 @@ export const ShowcaseEditUnity = ({
   unityProvider,
   isSceneOpen,
   handleMouseUp,
+  unload,
 }: ProviderParam) => (
   <UnityBase
     id="showcaseEdit"
     unityProvider={unityProvider}
     isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
+    unload={unload}
   />
 );
 
@@ -42,12 +47,14 @@ export const ItemPreviewUnity = ({
   unityProvider,
   isSceneOpen,
   handleMouseUp,
+  unload,
 }: ProviderParam) => (
   <UnityBase
     id="itemPreview"
     unityProvider={unityProvider}
     isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
+    unload={unload}
   />
 );
 
@@ -55,12 +62,14 @@ export const AcrylicBaseSettingsUnity = ({
   unityProvider,
   isSceneOpen,
   handleMouseUp,
+  unload,
 }: ProviderParam) => (
   <UnityBase
     id="acrylicBaseSettings"
     unityProvider={unityProvider}
     isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
+    unload={unload}
   />
 );
 
@@ -68,12 +77,14 @@ export const NftModelGeneratorUnity = ({
   unityProvider,
   isSceneOpen,
   handleMouseUp,
+  unload,
 }: ProviderParam) => (
   <UnityBase
     id="nftModelGenerator"
     unityProvider={unityProvider}
     isSceneOpen={isSceneOpen}
     handleMouseUp={handleMouseUp}
+    unload={unload}
   />
 );
 
@@ -82,35 +93,42 @@ const UnityBase = ({
   unityProvider,
   isSceneOpen,
   handleMouseUp,
+  unload,
 }: ProviderParam & IdParam) => {
-  // NOTE(toruto): After unmount ShowcaseEditUnity, screen will be freezed...
-  // useEffect(() => {
-  //   return () => {
-  //     if (!!unload) {
-  //       unload()
-  //         .then(() => {
-  //           console.log(`Unity ${id} is unloaded.`);
-  //         })
-  //         .catch((e) => {
-  //           console.error(`Failed to unload Unity ${id}.`, e);
-  //         });
-  //     }
-  //   };
-  // }, [unload]);
+  const initialMount = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      console.log("unload hoge: " + isSceneOpen);
+      if (!!unload) {
+        unload()
+          .then(() => {
+            console.log(`Unity ${id} is unloaded.`);
+          })
+          .catch((e) => {
+            console.error(`Failed to unload Unity ${id}.`, e);
+          });
+      }
+    };
+    // This effect should only run once when the component is unmounted.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+
+    if (!canvas) return;
     const handleMouseDown = (e: MouseEvent) => {
       e.preventDefault();
-      canvasRef.current.blur();
+      canvas.blur();
     };
-    canvasRef.current.addEventListener("mousedown", handleMouseDown);
+    canvas.addEventListener("mousedown", handleMouseDown);
     return () => {
-      canvasRef.current?.removeEventListener("mousedown", handleMouseDown);
+      canvas.removeEventListener("mousedown", handleMouseDown);
     };
-  }, [canvasRef]);
+  }, []);
 
   return (
     <div

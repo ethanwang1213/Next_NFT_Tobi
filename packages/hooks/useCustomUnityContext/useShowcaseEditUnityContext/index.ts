@@ -77,8 +77,8 @@ export const useShowcaseEditUnityContext = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
-    setLoadData,
     unload,
+    setLoadData,
     requestSaveData,
     setSelectedItem,
     placeNewSample,
@@ -287,6 +287,7 @@ export const useShowcaseEditUnityContext = ({
   );
 
   useUnityMessageHandler({
+    sceneType: UnitySceneType.ShowcaseEdit,
     addEventListener,
     removeEventListener,
     handleSimpleMessage,

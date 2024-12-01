@@ -161,6 +161,7 @@ const Showcase = () => {
     selectedItem,
     setLoadData,
     pauseUnityInputs,
+    unload,
     requestSaveData,
     placeNewSample,
     placeNewNft,
@@ -397,6 +398,7 @@ const Showcase = () => {
           unityProvider={unityProvider}
           isSceneOpen={isSceneOpen}
           handleMouseUp={handleMouseUp}
+          unload={unload}
         />
         {!isItemsLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-50">

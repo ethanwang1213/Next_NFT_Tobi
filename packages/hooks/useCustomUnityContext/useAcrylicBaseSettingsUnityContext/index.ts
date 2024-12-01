@@ -32,6 +32,7 @@ export const useAcrylicBaseSettingsUnityContext = () => {
     });
 
   useUnityMessageHandler({
+    sceneType: UnitySceneType.AcrylicBaseSettings,
     addEventListener,
     removeEventListener,
     handleSimpleMessage,

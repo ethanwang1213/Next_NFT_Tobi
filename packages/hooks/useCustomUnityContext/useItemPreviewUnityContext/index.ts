@@ -27,6 +27,7 @@ export const useItemPreviewUnityContext = () => {
   });
 
   useUnityMessageHandler({
+    sceneType: UnitySceneType.ItemPreview,
     addEventListener,
     removeEventListener,
     handleSimpleMessage,

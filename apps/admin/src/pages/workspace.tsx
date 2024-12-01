@@ -215,6 +215,7 @@ export default function Index() {
     redoAction,
     applyAcrylicBaseScaleRatio,
     handleMouseUp,
+    unload,
   } = unityContext;
 
   useEffect(() => {
@@ -569,6 +570,7 @@ export default function Index() {
             unityProvider={unityProvider}
             isSceneOpen={isSceneOpen}
             handleMouseUp={handleMouseUp}
+            unload={unload}
           />
         </div>
         {mainToast && <CustomToast show={showToast} message={message} />}

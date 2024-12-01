@@ -34,6 +34,7 @@ export const useNftModelGeneratorUnityContext = ({
   });
 
   useUnityMessageHandler({
+    sceneType: UnitySceneType.NftModelGenerator,
     addEventListener,
     removeEventListener,
     handleSimpleMessage,

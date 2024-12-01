@@ -75,6 +75,7 @@ export const useWorkspaceUnityContext = ({
     addEventListener,
     removeEventListener,
     postMessageToUnity,
+    unload,
     setLoadData: privateSetLoadData,
     requestSaveData,
     placeNewSample,
@@ -296,6 +297,7 @@ export const useWorkspaceUnityContext = ({
   });
 
   useUnityMessageHandler({
+    sceneType: UnitySceneType.Workspace,
     addEventListener,
     removeEventListener,
     handleSimpleMessage,
@@ -346,5 +348,6 @@ export const useWorkspaceUnityContext = ({
     applyAcrylicBaseScaleRatio,
     requestNftModelGeneration,
     handleMouseUp,
+    unload,
   };
 };
