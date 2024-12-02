@@ -1,13 +1,12 @@
-import { CustomUnityContextType, UnitySceneType } from "../types";
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
+import { UnitySceneType } from "../types";
 import { useCustomUnityHookBase } from "../useCustomUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 
 export const useNftModelGeneratorUnityHook = ({
-  unityContext,
   onNftModelGenerated,
 }: {
-  unityContext: CustomUnityContextType;
   onNftModelGenerated?: (itemId: number, nftModelBase64: string) => void;
 }) => {
   const {
@@ -16,9 +15,10 @@ export const useNftModelGeneratorUnityHook = ({
     // event handler
     handleSimpleMessage,
   } = useCustomUnityHookBase({
-    unityContext,
     sceneType: UnitySceneType.NftModelGenerator,
   });
+
+  const { isLoaded } = useCustomUnityContext();
 
   const {
     isSceneOpen,
@@ -26,7 +26,7 @@ export const useNftModelGeneratorUnityHook = ({
     handleSceneIsLoaded,
     handleNftModelGenerated,
   } = useRequestNftModelGeneration({
-    isLoaded: unityContext.isLoaded,
+    isLoaded,
     postMessageToUnity,
     onNftModelGenerated,
   });

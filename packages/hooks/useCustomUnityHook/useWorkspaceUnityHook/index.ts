@@ -1,3 +1,4 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback } from "react";
 import {
   SendSampleRemovalResult,
@@ -17,7 +18,6 @@ import {
   DefaultItemMeterHeight,
 } from "../constants";
 import {
-  CustomUnityContextType,
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
   SaidanType,
@@ -43,7 +43,6 @@ type RemoveSampleRequestedHandler = (
 ) => void;
 
 export const useWorkspaceUnityHook = ({
-  unityContext,
   sampleMenuX = -1,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
@@ -54,7 +53,6 @@ export const useWorkspaceUnityHook = ({
   onActionRedone,
   onNftModelGenerated,
 }: {
-  unityContext: CustomUnityContextType;
   sampleMenuX?: number;
   onSaveDataGenerated?: SaveDataGeneratedHandler;
   onItemThumbnailGenerated?: ItemThumbnailGeneratedHandler;
@@ -65,6 +63,7 @@ export const useWorkspaceUnityHook = ({
   onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
 }) => {
+  const sceneType = UnitySceneType.Workspace;
   const {
     // states
     isSceneOpen,
@@ -103,8 +102,7 @@ export const useWorkspaceUnityHook = ({
     handleMouseUp,
     handleLoadingCompleted,
   } = useSaidanLikeUnityHookBase({
-    unityContext,
-    sceneType: UnitySceneType.Workspace,
+    sceneType,
     itemMenuX: sampleMenuX,
     onRemoveItemEnabled: onRemoveSampleEnabled,
     onRemoveItemDisabled: onRemoveSampleDisabled,
@@ -112,6 +110,8 @@ export const useWorkspaceUnityHook = ({
     onActionRedone,
     onNftModelGenerated,
   });
+
+  const { addEventListener, removeEventListener } = useCustomUnityContext();
 
   // functions
   const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
@@ -297,9 +297,9 @@ export const useWorkspaceUnityHook = ({
   });
 
   useUnityMessageHandler({
-    sceneType: UnitySceneType.Workspace,
-    addEventListener: unityContext.addEventListener,
-    removeEventListener: unityContext.removeEventListener,
+    sceneType,
+    addEventListener,
+    removeEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,

@@ -17,7 +17,6 @@ import {
   DefaultItemMeterHeight,
 } from "../constants";
 import {
-  CustomUnityContextType,
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
   SaidanLikeData,
@@ -47,7 +46,6 @@ type RemoveItemRequestedHandler = (
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
 export const useShowcaseEditUnityHook = ({
-  unityContext,
   itemMenuX = -1,
   onSaveDataGenerated,
   onRemoveItemEnabled,
@@ -57,7 +55,6 @@ export const useShowcaseEditUnityHook = ({
   onActionRedone,
   onNftModelGenerated,
 }: {
-  unityContext: CustomUnityContextType;
   itemMenuX?: number;
   onSaveDataGenerated?: SaveDataGeneratedHandler;
   onRemoveItemEnabled?: () => void;
@@ -67,6 +64,7 @@ export const useShowcaseEditUnityHook = ({
   onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
 }) => {
+  const sceneType = UnitySceneType.ShowcaseEdit;
   const {
     // state
     isSceneOpen,
@@ -108,8 +106,7 @@ export const useShowcaseEditUnityHook = ({
     handleMouseUp,
     handleLoadingCompleted,
   } = useSaidanLikeUnityHookBase({
-    unityContext,
-    sceneType: UnitySceneType.ShowcaseEdit,
+    sceneType,
     itemMenuX,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
@@ -287,7 +284,7 @@ export const useShowcaseEditUnityHook = ({
   );
 
   useUnityMessageHandler({
-    sceneType: UnitySceneType.ShowcaseEdit,
+    sceneType,
     addEventListener,
     removeEventListener,
     handleSimpleMessage,

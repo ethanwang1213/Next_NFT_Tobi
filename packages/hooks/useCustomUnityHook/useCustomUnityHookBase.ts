@@ -1,3 +1,4 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback, useEffect, useRef } from "react";
 import { useUnityContext } from "react-unity-webgl";
 import {
@@ -8,12 +9,12 @@ import {
 } from "./types";
 
 export const useCustomUnityHookBase = ({
-  unityContext,
   sceneType,
 }: {
-  unityContext: CustomUnityContextType;
   sceneType: UnitySceneType;
 }) => {
+  const unityContext = useCustomUnityContext();
+
   const {
     // functions
     postMessageToUnity,
@@ -22,6 +23,18 @@ export const useCustomUnityHookBase = ({
     // event handler
     handleSimpleMessage,
   } = usePrivateHook({ unityContext, sceneType });
+
+  useEffect(() => {
+    unityContext.setMountedSceneList((prev) => {
+      // console.log(`prev: ${prev}, ${sceneType}`);
+      return prev.includes(sceneType) ? prev : [...prev, sceneType];
+    });
+    return () => {
+      unityContext.setMountedSceneList((prev) =>
+        prev.filter((v) => v !== sceneType),
+      );
+    };
+  }, []);
 
   return {
     // functions
@@ -49,8 +62,6 @@ export const useSecondaryCustomUnityHookBase = ({
     codeUrl: `${buildFilePath}.wasm`,
   });
 
-  const { unityProvider, isLoaded, unload } = unityContext;
-
   const {
     // states
     isLoadedRef,
@@ -62,6 +73,8 @@ export const useSecondaryCustomUnityHookBase = ({
     // event handler
     handleSimpleMessage,
   } = usePrivateHook({ unityContext, sceneType });
+
+  const { unityProvider, isLoaded, unload } = unityContext;
 
   return {
     // states
@@ -89,7 +102,7 @@ const usePrivateHook = ({
   unityContext,
   sceneType,
 }: {
-  unityContext: CustomUnityContextType;
+  unityContext: Omit<CustomUnityContextType, "setMountedSceneList">;
   sceneType: UnitySceneType;
 }) => {
   const isLoadedRef = useRef<boolean>(false);

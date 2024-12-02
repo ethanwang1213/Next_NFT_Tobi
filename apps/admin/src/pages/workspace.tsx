@@ -1,4 +1,3 @@
-import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { WorkspaceEditUnityProvider } from "contexts/WorkspaceEditUnityContext";
 import {
@@ -185,9 +184,9 @@ export default function Index() {
     };
   }, []);
 
-  const unityContext = useCustomUnityContext();
+  const handleNftModelGeneratedRef = useRef(null);
+
   const unityHookOutput = useWorkspaceUnityHook({
-    unityContext,
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
@@ -196,6 +195,7 @@ export default function Index() {
     onRemoveSampleRequested,
     onActionRedone: handleAction,
     onActionUndone: handleAction,
+    onNftModelGenerated: handleNftModelGeneratedRef.current,
   });
 
   const {
@@ -217,6 +217,7 @@ export default function Index() {
     redoAction,
     applyAcrylicBaseScaleRatio,
     handleMouseUp,
+    deleteAllActionHistory,
   } = unityHookOutput;
 
   useEffect(() => {
@@ -625,6 +626,8 @@ export default function Index() {
               id={selectedSampleItem}
               sampleitemId={selectedSampleItemId}
               deleteHandler={deleteSamplesHandler}
+              handleNftModelGeneratedRef={handleNftModelGeneratedRef}
+              deleteAllActionHistory={deleteAllActionHistory}
             />
           )}
           <WorkspaceSampleListPanel

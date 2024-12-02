@@ -1,4 +1,3 @@
-import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
@@ -143,9 +142,9 @@ const Showcase = () => {
 
   const [contentWidth, setContentWidth] = useState(0);
 
-  const unityContext = useCustomUnityContext();
+  const handleNftModelGeneratedRef = useRef(null);
+
   const unityHookOutput = useShowcaseEditUnityHook({
-    unityContext,
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
     onRemoveItemEnabled,
@@ -153,6 +152,7 @@ const Showcase = () => {
     onRemoveItemRequested,
     onActionRedone: handleAction,
     onActionUndone: handleAction,
+    onNftModelGenerated: handleNftModelGeneratedRef.current,
   });
 
   const {
@@ -175,6 +175,7 @@ const Showcase = () => {
     showSmartphoneArea,
     hideSmartphoneArea,
     handleMouseUp,
+    deleteAllActionHistory,
   } = unityHookOutput;
 
   const { leavingPage, setLeavingPage } = useLeavePage();
@@ -440,6 +441,8 @@ const Showcase = () => {
             showSampleDetailView={showSampleDetailView}
             showDetailView={showDetailView}
             id={selectedSampleItem}
+            handleNftModelGeneratedRef={handleNftModelGeneratedRef}
+            deleteAllActionHistory={deleteAllActionHistory}
           />
           <div
             className="w-[336px] mt-[72px] absolute"

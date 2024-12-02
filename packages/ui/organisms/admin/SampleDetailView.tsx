@@ -1,8 +1,6 @@
-import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useWorkspaceEditUnity } from "contexts/WorkspaceEditUnityContext";
 import { decodeBase64ToBinary, uploadData } from "fetchers/UploadActions";
-import { useWorkspaceUnityHook } from "hooks/useCustomUnityHook";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
@@ -20,7 +18,11 @@ interface SampleDetailViewProps {
   id: number;
   sampleitemId: number;
   section: string;
+  handleNftModelGeneratedRef: React.MutableRefObject<
+    (itemId: number, nftModelBase64: string) => void
+  >;
   deleteHandler: (ids: number[]) => void;
+  deleteAllActionHistory: () => void;
 }
 
 const MintNotification = ({ title, text }) => {
@@ -40,7 +42,9 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   id,
   section,
   sampleitemId,
+  handleNftModelGeneratedRef,
   deleteHandler,
+  deleteAllActionHistory,
 }) => {
   const dialogRef = useRef(null);
   const apiUrl = `native/admin/digital_items/${id}`;
@@ -83,11 +87,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     }
   };
 
-  const unityContext = useCustomUnityContext();
-  const { deleteAllActionHistory } = useWorkspaceUnityHook({
-    unityContext,
-    onNftModelGenerated: handleNftModelGenerated,
-  });
+  handleNftModelGeneratedRef.current = handleNftModelGenerated;
 
   useEffect(() => {
     if (id > 0) {

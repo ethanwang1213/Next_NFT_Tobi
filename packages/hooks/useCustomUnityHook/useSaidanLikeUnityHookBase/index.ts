@@ -1,3 +1,4 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { UpdateIdValues, WasdParams } from "types/adminTypes";
 import {
@@ -13,7 +14,6 @@ import {
 } from "types/unityTypes";
 import { DefaultAcrylicBaseScaleRatio } from "../constants";
 import {
-  CustomUnityContextType,
   NftModelGeneratedHandler,
   PositionOnPlane,
   SelectedItem,
@@ -28,7 +28,6 @@ import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
 
 export const useSaidanLikeUnityHookBase = ({
-  unityContext,
   sceneType,
   itemMenuX,
   onRemoveItemEnabled,
@@ -37,7 +36,6 @@ export const useSaidanLikeUnityHookBase = ({
   onActionRedone,
   onNftModelGenerated,
 }: {
-  unityContext: CustomUnityContextType;
   sceneType: UnitySceneType;
   itemMenuX: number;
   onRemoveItemEnabled?: () => void;
@@ -53,7 +51,9 @@ export const useSaidanLikeUnityHookBase = ({
     resumeUnityInputs,
     // event handler
     handleSimpleMessage,
-  } = useCustomUnityHookBase({ unityContext, sceneType });
+  } = useCustomUnityHookBase({ sceneType });
+
+  const { isLoaded } = useCustomUnityContext();
 
   // states
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -75,7 +75,7 @@ export const useSaidanLikeUnityHookBase = ({
     handleSceneIsLoaded,
     handleLoadingCompleted,
   } = useLoadData({
-    isLoaded: unityContext.isLoaded,
+    isLoaded,
     additionalItemDataMap,
     postMessageToUnity,
   });
@@ -253,13 +253,13 @@ export const useSaidanLikeUnityHookBase = ({
 
   const inputWasd = useCallback(
     ({ wKey, aKey, sKey, dKey }: WasdParams) => {
-      if (!unityContext.isLoaded || !isSceneOpen) return;
+      if (!isLoaded || !isSceneOpen) return;
       postMessageToUnity(
         "InputWasdMessageReceiver",
         JSON.stringify({ wKey, aKey, sKey, dKey }),
       );
     },
-    [unityContext.isLoaded, isSceneOpen, postMessageToUnity],
+    [isLoaded, isSceneOpen, postMessageToUnity],
   );
 
   const { requestNftModelGeneration, handleNftModelGenerated } =
@@ -269,13 +269,12 @@ export const useSaidanLikeUnityHookBase = ({
     });
 
   useEffect(() => {
-    if (!unityContext.isLoaded || !isSceneOpen || !itemMenuX || itemMenuX < 0)
-      return;
+    if (!isLoaded || !isSceneOpen || !itemMenuX || itemMenuX < 0) return;
     postMessageToUnity(
       "ItemMenuXMessageReceiver",
       JSON.stringify({ itemMenuX }),
     );
-  }, [unityContext.isLoaded, isSceneOpen, itemMenuX, postMessageToUnity]);
+  }, [isLoaded, isSceneOpen, itemMenuX, postMessageToUnity]);
 
   // event handler
   const handleDragPlacingStarted = useCallback(() => {
