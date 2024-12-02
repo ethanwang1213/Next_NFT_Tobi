@@ -18,7 +18,11 @@ export const useNftModelGeneratorUnityHook = ({
     sceneType: UnitySceneType.NftModelGenerator,
   });
 
-  const { isLoaded } = useCustomUnityContext();
+  const {
+    isLoaded,
+    addEventListener: unityAddEventListener,
+    removeEventListener: unityRemoveEventListener,
+  } = useCustomUnityContext();
 
   const {
     isSceneOpen,
@@ -33,8 +37,8 @@ export const useNftModelGeneratorUnityHook = ({
 
   useUnityMessageHandler({
     sceneType: UnitySceneType.NftModelGenerator,
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleNftModelGenerated,

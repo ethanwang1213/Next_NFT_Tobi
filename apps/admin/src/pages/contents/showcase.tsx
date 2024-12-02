@@ -143,6 +143,7 @@ const Showcase = () => {
   const [contentWidth, setContentWidth] = useState(0);
 
   const handleNftModelGeneratedRef = useRef(null);
+  const handleActionRef = useRef(null);
 
   const unityHookOutput = useShowcaseEditUnityHook({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
@@ -150,7 +151,10 @@ const Showcase = () => {
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onRemoveItemRequested,
-    onActionRedone: handleAction,
+    onActionRedone: (actionType: ActionType, text: string) => {
+      handleAction(actionType, text);
+      handleActionRef.current?.(actionType, text);
+    },
     onActionUndone: handleAction,
     onNftModelGenerated: handleNftModelGeneratedRef.current,
   });
@@ -582,6 +586,7 @@ const Showcase = () => {
               ) => {
                 updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
               }}
+              handleActionRef={handleActionRef}
             />
           </div>
           {showRestoreMenu && !showDetailView && (

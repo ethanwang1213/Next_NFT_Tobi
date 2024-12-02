@@ -74,15 +74,21 @@ export const useSecondaryCustomUnityHookBase = ({
     handleSimpleMessage,
   } = usePrivateHook({ unityContext, sceneType });
 
-  const { unityProvider, isLoaded, unload } = unityContext;
+  const {
+    unityProvider,
+    isLoaded,
+    addEventListener: unityAddEventListener,
+    removeEventListener: unityRemoveEventListener,
+    unload,
+  } = unityContext;
 
   return {
     // states
     unityProvider,
     isLoaded,
     // functions
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     postMessageToUnity,
     pauseUnityInputs,
     resumeUnityInputs,
@@ -143,9 +149,9 @@ const usePrivateHook = ({
   }, [postMessageToUnity]);
 
   useEffect(() => {
-    if (!isLoadedRef.current) return;
+    if (!unityContext.isLoaded) return;
     postMessageToSwitchScene(sceneType);
-  }, [isLoadedRef.current, sceneType, postMessageToSwitchScene]);
+  }, [unityContext.isLoaded, sceneType, postMessageToSwitchScene]);
 
   return {
     // states

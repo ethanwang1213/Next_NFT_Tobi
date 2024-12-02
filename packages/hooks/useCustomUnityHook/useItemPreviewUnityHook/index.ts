@@ -9,8 +9,8 @@ export const useItemPreviewUnityHook = () => {
     unityProvider,
     isLoaded,
     // functions
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     postMessageToUnity,
     pauseUnityInputs,
     resumeUnityInputs,
@@ -28,8 +28,8 @@ export const useItemPreviewUnityHook = () => {
 
   useUnityMessageHandler({
     sceneType: UnitySceneType.ItemPreview,
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
   });

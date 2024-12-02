@@ -1,6 +1,4 @@
-import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
-import { useShowcaseEditUnityHook } from "hooks/useCustomUnityHook";
 import { UndoneRedoneResult } from "hooks/useCustomUnityHook/types";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -25,6 +23,7 @@ const ShowcaseTabView = ({
   settings,
   updateUnityViewSettings,
   operateMenu,
+  handleActionRef,
 }: {
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
@@ -42,6 +41,9 @@ const ShowcaseTabView = ({
     pb: number,
     phase: SettingsUpdatePhase,
   ) => void;
+  handleActionRef: React.MutableRefObject<
+    (actionType: ActionType, text: string, result: UndoneRedoneResult) => void
+  >;
 }) => {
   const [tab, setTab] = useTabs(["Sample Items", "Inventory", "Settings"]);
   const [active, setActive] = useState("");
@@ -81,12 +83,7 @@ const ShowcaseTabView = ({
     }
   };
 
-  const unityContext = useCustomUnityContext();
-  const {} = useShowcaseEditUnityHook({
-    unityContext,
-    onActionRedone: handleAction,
-    onActionUndone: handleAction,
-  });
+  handleActionRef.current = handleAction;
 
   const { handleMouseUp } = useShowcaseEditUnity();
 

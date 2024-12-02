@@ -11,8 +11,8 @@ type MessageHandler = (msgObj: UnityMessageJson) => void;
 
 type Props = {
   sceneType: UnitySceneType;
-  addEventListener: UnityEventListener;
-  removeEventListener: UnityEventListener;
+  unityAddEventListener: UnityEventListener;
+  unityRemoveEventListener: UnityEventListener;
   handleSimpleMessage: MessageHandler;
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;
@@ -33,8 +33,8 @@ type Props = {
 
 export const useUnityMessageHandler = ({
   sceneType,
-  addEventListener,
-  removeEventListener,
+  unityAddEventListener,
+  unityRemoveEventListener,
   handleSimpleMessage,
   handleSceneIsLoaded,
   handleSaveDataGenerated,
@@ -151,11 +151,11 @@ export const useUnityMessageHandler = ({
 
   // We use only `onUnityMessage` event to receive messages from Unity side.
   useEffect(() => {
-    addEventListener("onUnityMessage", handleUnityMessage);
+    unityAddEventListener("onUnityMessage", handleUnityMessage);
     return () => {
-      removeEventListener("onUnityMessage", handleUnityMessage);
+      unityRemoveEventListener("onUnityMessage", handleUnityMessage);
     };
-  }, [addEventListener, removeEventListener, handleUnityMessage]);
+  }, [unityAddEventListener, unityRemoveEventListener, handleUnityMessage]);
 
   return;
 };

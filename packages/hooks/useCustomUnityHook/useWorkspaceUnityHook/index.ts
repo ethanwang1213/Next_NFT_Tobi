@@ -111,7 +111,10 @@ export const useWorkspaceUnityHook = ({
     onNftModelGenerated,
   });
 
-  const { addEventListener, removeEventListener } = useCustomUnityContext();
+  const {
+    addEventListener: unityAddEventListener,
+    removeEventListener: unityRemoveEventListener,
+  } = useCustomUnityContext();
 
   // functions
   const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
@@ -298,8 +301,8 @@ export const useWorkspaceUnityHook = ({
 
   useUnityMessageHandler({
     sceneType,
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,

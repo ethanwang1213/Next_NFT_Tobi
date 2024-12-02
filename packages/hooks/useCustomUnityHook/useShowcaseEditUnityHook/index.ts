@@ -1,3 +1,4 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback } from "react";
 import {
   SendItemRemovalResult,
@@ -114,6 +115,11 @@ export const useShowcaseEditUnityHook = ({
     onActionRedone,
     onNftModelGenerated,
   });
+
+  const {
+    addEventListener: unityAddEventListener,
+    removeEventListener: unityRemoveEventListener,
+  } = useCustomUnityContext();
 
   // functions
   const processLoadData: ProcessLoadData = useCallback(
@@ -285,8 +291,8 @@ export const useShowcaseEditUnityHook = ({
 
   useUnityMessageHandler({
     sceneType,
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
