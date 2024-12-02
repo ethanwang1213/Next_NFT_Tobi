@@ -27,8 +27,8 @@ const pubsub = new PubSub();
 export const mintNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
-  const {fcmToken, amount, modelUrl} = req.body;
-  if (!fcmToken || !modelUrl) {
+  const {fcmToken, amount} = req.body;
+  if (!fcmToken) {
     res.status(401).send({
       status: "error",
       data: "invalid-params",
@@ -70,7 +70,7 @@ export const mintNFT = async (req: Request, res: Response) => {
           return;
         }
         console.log("mintStart", mintCount, intAmount);
-        await mint(id, uid, notificationBatchId, modelUrl);
+        await mint(id, uid, notificationBatchId);
         console.log("mintEnd", mintCount, intAmount);
         mintCount++;
         setTimeout(mintProcess, 1000);
@@ -121,7 +121,7 @@ class MintError extends Error {
   }
 }
 
-export const mint = async (id: string, uid: string, notificationBatchId: number, modelUrl: string) => {
+export const mint = async (id: string, uid: string, notificationBatchId: number) => {
   const notificationBatch = await prisma.notification_batch.findUnique({
     where: {
       id: notificationBatchId,
@@ -152,7 +152,8 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
   if (!digitalItem) {
     throw new MintError(404, "DigitalItem does not found");
   }
-  if (!digitalItem.meta_model_url) {
+  const modelUrl = digitalItem.meta_model_url;
+  if (!modelUrl) {
     throw new MintError(400, "model_url-not-set");
   }
 
