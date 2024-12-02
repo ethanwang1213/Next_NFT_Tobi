@@ -6,7 +6,15 @@ import {TOBIRATORY_DIGITAL_ITEMS_ADDRESS, TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
 import {pushToDevice} from "../appSendPushMessage";
 import {prisma} from "../prisma";
-import {giftStatus, increaseTransactionAmount, isEmptyObject, mintStatus, statusOfLimitTransaction, notificationBatchStatus} from "./utils";
+import {
+  giftStatus,
+  increaseTransactionAmount,
+  isEmptyObject,
+  mintStatus,
+  statusOfLimitTransaction,
+  notificationBatchStatus,
+  digitalItemStatus
+} from "./utils";
 import * as fcl from "@onflow/fcl";
 
 fcl.config({
@@ -144,14 +152,21 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
   if (!digitalItem) {
     throw new MintError(404, "DigitalItem does not found");
   }
+  if (!digitalItem.meta_model_url) {
+    throw new MintError(400, "model_url-not-set");
+  }
 
   if (digitalItem.account.business) {
-    if (!digitalItem.account.business.content) {
-      throw new MintError(404, "Content does not found");
+    const content = digitalItem.account.business.content;
+    if (!content) {
+      throw new MintError(404, "content-not-found");
+    }
+    if (content.businesses_uuid !== uid && digitalItem.metadata_status != digitalItemStatus.onSale) {
+      throw new MintError(401, "not-creator");
     }
   } else {
     if (digitalItem.account_uuid !== uid) {
-      throw new MintError(401, "You are not creator of this digital item");
+      throw new MintError(401, "not-creator");
     }
   }
 
@@ -458,6 +473,106 @@ export const generateNotificationBatchId = async (fcmToken: string) => {
   });
   return column.id;
 };
+
+export const finalizeModelUrl = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {authorization} = req.headers;
+  const {modelUrl}: { modelUrl: string } = req.body;
+
+  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/";
+  if (!modelUrl.includes(prefixUrl)) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-model",
+    });
+    return;
+  }
+
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    const uid = decodedToken.uid;
+    const digitalItem = await prisma.digital_items.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        account: {
+          include: {
+            business: {
+              include: {
+                content: true,
+              },
+            },
+            flow_account: true,
+          },
+        },
+      }
+    });
+
+    if (!digitalItem) {
+      res.status(404).send({
+        status: "error",
+        data: "digital-item-not-found",
+      });
+      return;
+    }
+
+    if (digitalItem.account.business) {
+      const content = digitalItem.account.business.content;
+      if (!content) {
+        res.status(404).send({
+          status: "error",
+          data: "content-not-found",
+        });
+        return;
+      }
+      if (content.businesses_uuid !== uid) {
+        res.status(401).send({
+          status: "error",
+          data: "not-creator",
+        });
+        return;
+      }
+    } else {
+      if (digitalItem.account_uuid !== uid) {
+        res.status(401).send({
+          status: "error",
+          data: "not-creator",
+        });
+        return;
+      }
+    }
+
+    if (digitalItem.meta_model_url) {
+      res.status(400).send({
+        status: "error",
+        data: "already-exists",
+      });
+    }
+
+    await prisma.digital_items.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        meta_model_url: modelUrl,
+      }
+    });
+
+    res.status(200).send({
+      status: "success",
+      data: {
+        id: id,
+        modelUrl: modelUrl,
+      },
+    });
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+}
 
 export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
   const cadence = `
