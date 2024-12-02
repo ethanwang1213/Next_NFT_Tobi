@@ -32,7 +32,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 }
 
 const valueClass = "text-[20px] font-normal flex-1";
-const editBtnClass = "text-[20px] text-primary font-normal ";
+const editBtnClass = "text-[20px] text-primary font-normal";
 
 const AccountFieldComponent = ({
   label,

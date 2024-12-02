@@ -212,7 +212,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
 
   const nextHandler = useCallback(async () => {
     setProcessing(true);
-    
+
     if (rotate != 180 || blobUrlRef.current === null) {
       await cropImage();
     }
