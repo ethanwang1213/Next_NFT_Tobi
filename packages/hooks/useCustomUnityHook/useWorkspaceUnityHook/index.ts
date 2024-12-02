@@ -17,7 +17,7 @@ import {
   DefaultItemMeterHeight,
 } from "../constants";
 import {
-  CustomUnityProvider,
+  CustomUnityContextType,
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
   SaidanType,
@@ -25,7 +25,7 @@ import {
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
-import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
+import { useSaidanLikeUnityHookBase } from "../useSaidanLikeUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useApplyAcrylicBaseScaleRatio } from "./useApplyAcrylicBaseScaleRatio";
 
@@ -42,8 +42,8 @@ type RemoveSampleRequestedHandler = (
   sendSampleRemovalResult: SendSampleRemovalResult,
 ) => void;
 
-export const useWorkspaceUnityContext = ({
-  unityProvider,
+export const useWorkspaceUnityHook = ({
+  unityContext,
   sampleMenuX = -1,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
@@ -54,7 +54,7 @@ export const useWorkspaceUnityContext = ({
   onActionRedone,
   onNftModelGenerated,
 }: {
-  unityProvider: CustomUnityProvider;
+  unityContext: CustomUnityContextType;
   sampleMenuX?: number;
   onSaveDataGenerated?: SaveDataGeneratedHandler;
   onItemThumbnailGenerated?: ItemThumbnailGeneratedHandler;
@@ -102,8 +102,8 @@ export const useWorkspaceUnityContext = ({
     handleNftModelGenerated,
     handleMouseUp,
     handleLoadingCompleted,
-  } = useSaidanLikeUnityContextBase({
-    unityProvider,
+  } = useSaidanLikeUnityHookBase({
+    unityContext,
     sceneType: UnitySceneType.Workspace,
     itemMenuX: sampleMenuX,
     onRemoveItemEnabled: onRemoveSampleEnabled,
@@ -298,8 +298,8 @@ export const useWorkspaceUnityContext = ({
 
   useUnityMessageHandler({
     sceneType: UnitySceneType.Workspace,
-    addEventListener: unityProvider.addEventListener,
-    removeEventListener: unityProvider.removeEventListener,
+    addEventListener: unityContext.addEventListener,
+    removeEventListener: unityContext.removeEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,

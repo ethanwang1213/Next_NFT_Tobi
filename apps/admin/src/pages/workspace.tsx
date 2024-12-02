@@ -1,3 +1,4 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { WorkspaceEditUnityProvider } from "contexts/WorkspaceEditUnityContext";
 import {
@@ -5,7 +6,7 @@ import {
   ImageType,
   uploadImage,
 } from "fetchers/UploadActions";
-import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+import { useWorkspaceUnityHook } from "hooks/useCustomUnityHook/useWorkspaceUnityHook";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import { GetStaticPropsContext, Metadata } from "next";
@@ -20,7 +21,7 @@ import {
   WorkspaceSaveData,
 } from "types/adminTypes";
 import { ActionType, ModelType } from "types/unityTypes";
-import { WorkspaceUnity } from "ui/molecules/CustomUnity";
+import { CustomUnity } from "ui/molecules/CustomUnity";
 import AcrylicStandSettingDialog from "ui/organisms/admin/AcrylicStandSetting";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
@@ -184,7 +185,9 @@ export default function Index() {
     };
   }, []);
 
-  const unityContext = useWorkspaceUnityContext({
+  const unityContext = useCustomUnityContext();
+  const unityHookOutput = useWorkspaceUnityHook({
+    unityContext,
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
     onSaveDataGenerated,
     onItemThumbnailGenerated,
@@ -198,7 +201,6 @@ export default function Index() {
   const {
     isSceneOpen,
     isItemsLoaded,
-    unityProvider,
     isUndoable,
     isRedoable,
     selectedSample,
@@ -215,8 +217,7 @@ export default function Index() {
     redoAction,
     applyAcrylicBaseScaleRatio,
     handleMouseUp,
-    unload,
-  } = unityContext;
+  } = unityHookOutput;
 
   useEffect(() => {
     if (!isSampleCreateDialogOpen) {
@@ -558,7 +559,7 @@ export default function Index() {
   }, []);
 
   return (
-    <WorkspaceEditUnityProvider unityContext={unityContext}>
+    <WorkspaceEditUnityProvider unityContext={unityHookOutput}>
       <div className="w-full h-full relative no-select" id="workspace_view">
         <div
           className="absolute left-0 right-0 top-0 bottom-0"
@@ -566,11 +567,9 @@ export default function Index() {
             pointerEvents: isDialogOpen() ? "none" : "auto",
           }}
         >
-          <WorkspaceUnity
-            unityProvider={unityProvider}
+          <CustomUnity
             isSceneOpen={isSceneOpen}
             handleMouseUp={handleMouseUp}
-            unload={unload}
           />
         </div>
         {mainToast && <CustomToast show={showToast} message={message} />}

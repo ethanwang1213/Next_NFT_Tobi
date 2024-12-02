@@ -1,6 +1,7 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
-import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
-import { UndoneRedoneResult } from "hooks/useCustomUnityContext/types";
+import { useShowcaseEditUnityHook } from "hooks/useCustomUnityHook";
+import { UndoneRedoneResult } from "hooks/useCustomUnityHook/types";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -80,7 +81,9 @@ const ShowcaseTabView = ({
     }
   };
 
-  const {} = useShowcaseEditUnityContext({
+  const unityContext = useCustomUnityContext();
+  const {} = useShowcaseEditUnityHook({
+    unityContext,
     onActionRedone: handleAction,
     onActionUndone: handleAction,
   });

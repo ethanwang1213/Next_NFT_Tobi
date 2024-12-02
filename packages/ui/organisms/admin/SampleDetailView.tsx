@@ -1,7 +1,8 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useWorkspaceEditUnity } from "contexts/WorkspaceEditUnityContext";
 import { decodeBase64ToBinary, uploadData } from "fetchers/UploadActions";
-import { useWorkspaceUnityContext } from "hooks/useCustomUnityContext";
+import { useWorkspaceUnityHook } from "hooks/useCustomUnityHook";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
@@ -82,7 +83,9 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     }
   };
 
-  const { deleteAllActionHistory } = useWorkspaceUnityContext({
+  const unityContext = useCustomUnityContext();
+  const { deleteAllActionHistory } = useWorkspaceUnityHook({
+    unityContext,
     onNftModelGenerated: handleNftModelGenerated,
   });
 

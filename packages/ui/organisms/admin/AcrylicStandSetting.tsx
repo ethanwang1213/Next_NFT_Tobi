@@ -1,10 +1,10 @@
-import { useAcrylicBaseSettingsUnityContext } from "hooks/useCustomUnityContext";
+import { useAcrylicBaseSettingsUnityHook } from "hooks/useCustomUnityHook";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Slider from "rc-slider";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import Button from "ui/atoms/Button";
-import { AcrylicBaseSettingsUnity } from "ui/molecules/CustomUnity";
+import { SecondaryUnity } from "ui/molecules/CustomUnity";
 import ResetConfirmDialog from "./ResetConfirmDialog";
 import Spinner from "./Spinner";
 interface AcrylicStandSettingDialogProps {
@@ -38,7 +38,7 @@ const AcrylicStandSettingDialog = ({
     unityProvider,
     updateAcrylicBaseScaleRatio,
     resetAcrylicBaseScaleRatio,
-  } = useAcrylicBaseSettingsUnityContext();
+  } = useAcrylicBaseSettingsUnityHook();
 
   const onChangeHandler = (value: number) => {
     updateAcrylicBaseScaleRatio(value);
@@ -118,7 +118,7 @@ const AcrylicStandSettingDialog = ({
                 </div>
               )}
               {isOpen && unityProvider && (
-                <AcrylicBaseSettingsUnity
+                <SecondaryUnity
                   unityProvider={unityProvider}
                   isSceneOpen={isSceneOpen}
                 />

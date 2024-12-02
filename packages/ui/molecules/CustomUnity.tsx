@@ -1,5 +1,3 @@
-// Reference: https://inside.pixiv.blog/2023/09/20/180000
-
 import React, {
   Dispatch,
   memo,
@@ -21,9 +19,28 @@ const CustomUnity: React.FC<Props> = ({ isSceneOpen, handleMouseUp }) => {
   return <UnityOut isSceneOpen={isSceneOpen} handleMouseUp={handleMouseUp} />;
 };
 
+type SecondaryProps = Props & {
+  unityProvider: UnityProvider;
+};
+
+const SecondaryUnity: React.FC<SecondaryProps> = ({
+  unityProvider,
+  isSceneOpen,
+  handleMouseUp,
+}) => {
+  return (
+    <CustomUnityBase
+      unityProvider={unityProvider}
+      isSceneOpen={isSceneOpen}
+      handleMouseUp={handleMouseUp}
+    />
+  );
+};
+
 ////////////////////////////////////////
 /// Magic Portal
-/// share one Unity component between multiple mount points with completely the same state.
+/// share one Unity component between multiple primary mount points with completely the same state.
+/// reference: https://inside.pixiv.blog/2023/09/20/180000
 type UnityProps = {
   unityProvider: UnityProvider;
 };
@@ -31,6 +48,7 @@ type UnityProps = {
 type CustomUnityProps = {
   isSceneOpen: boolean;
   handleMouseUp?: () => void;
+  isSecondaryUnity?: boolean;
 };
 
 const magicPortal = {
@@ -42,6 +60,7 @@ const magicPortal = {
   ensureElement() {
     if (!this.element && typeof document !== "undefined") {
       this.element = document.createElement("div");
+      this.element.className = "w-full h-full";
     }
   },
   // mount new portal point
@@ -92,11 +111,14 @@ const UnityOut: React.FC<CustomUnityProps> = (props) => {
     const placeholder = placeholderRef.current;
     if (!placeholder?.parentNode) return;
     magicPortal.mount(placeholder.parentNode, placeholder);
-    magicPortal.setProps(props);
     return () => {
       magicPortal.unmount(placeholder);
     };
   }, []);
+
+  useEffect(() => {
+    magicPortal.setProps(props);
+  }, [props]);
 
   return <div ref={placeholderRef} />;
 };
@@ -106,6 +128,7 @@ const CustomUnityBase = memo(
     unityProvider,
     isSceneOpen,
     handleMouseUp,
+    isSecondaryUnity = false,
   }: UnityProps & CustomUnityProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -123,6 +146,8 @@ const CustomUnityBase = memo(
       };
     }, []);
 
+    console.log(`isSceneOpen: ${isSceneOpen}`);
+
     return (
       <div
         className="w-full h-full"
@@ -131,7 +156,7 @@ const CustomUnityBase = memo(
       >
         <Unity
           ref={canvasRef}
-          id="custom-unity"
+          id={isSecondaryUnity ? "secondary-unity" : "custom-unity"}
           unityProvider={unityProvider}
           className="w-full h-full"
           style={{ opacity: isSceneOpen ? 1 : 0 }}
@@ -142,7 +167,7 @@ const CustomUnityBase = memo(
   },
 );
 
-export { CustomUnity, UnityIn };
+export { CustomUnity, SecondaryUnity, UnityIn };
 
 // const UnityBase = ({
 //   id,

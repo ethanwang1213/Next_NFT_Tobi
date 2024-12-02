@@ -1,9 +1,9 @@
 import { UnitySceneType } from "../types";
-import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useSecondaryCustomUnityHookBase } from "../useCustomUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useLoadPreviewItem } from "./useLoadPreviewItem";
 
-export const useItemPreviewUnityContext = () => {
+export const useItemPreviewUnityHook = () => {
   const {
     // states
     unityProvider,
@@ -17,7 +17,7 @@ export const useItemPreviewUnityContext = () => {
     unload,
     // event handler
     handleSimpleMessage,
-  } = useCustomUnityContextBase({
+  } = useSecondaryCustomUnityHookBase({
     sceneType: UnitySceneType.ItemPreview,
   });
 

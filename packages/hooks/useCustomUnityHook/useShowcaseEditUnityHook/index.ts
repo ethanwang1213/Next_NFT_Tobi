@@ -17,6 +17,7 @@ import {
   DefaultItemMeterHeight,
 } from "../constants";
 import {
+  CustomUnityContextType,
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
   SaidanLikeData,
@@ -26,7 +27,7 @@ import {
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
-import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
+import { useSaidanLikeUnityHookBase } from "../useSaidanLikeUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useShowSmartphoneArea } from "./useShowSmartphoneArea";
 import { useUpdateItemTransform } from "./useUpdateTransform";
@@ -45,7 +46,8 @@ type RemoveItemRequestedHandler = (
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
-export const useShowcaseEditUnityContext = ({
+export const useShowcaseEditUnityHook = ({
+  unityContext,
   itemMenuX = -1,
   onSaveDataGenerated,
   onRemoveItemEnabled,
@@ -55,6 +57,7 @@ export const useShowcaseEditUnityContext = ({
   onActionRedone,
   onNftModelGenerated,
 }: {
+  unityContext: CustomUnityContextType;
   itemMenuX?: number;
   onSaveDataGenerated?: SaveDataGeneratedHandler;
   onRemoveItemEnabled?: () => void;
@@ -66,7 +69,6 @@ export const useShowcaseEditUnityContext = ({
 }) => {
   const {
     // state
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,
@@ -74,10 +76,7 @@ export const useShowcaseEditUnityContext = ({
     isUndoable,
     isRedoable,
     // functions
-    addEventListener,
-    removeEventListener,
     postMessageToUnity,
-    unload,
     setLoadData,
     requestSaveData,
     setSelectedItem,
@@ -108,7 +107,8 @@ export const useShowcaseEditUnityContext = ({
     handleNftModelGenerated,
     handleMouseUp,
     handleLoadingCompleted,
-  } = useSaidanLikeUnityContextBase({
+  } = useSaidanLikeUnityHookBase({
+    unityContext,
     sceneType: UnitySceneType.ShowcaseEdit,
     itemMenuX,
     onRemoveItemEnabled,
@@ -309,7 +309,6 @@ export const useShowcaseEditUnityContext = ({
 
   return {
     // states
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,
@@ -318,7 +317,6 @@ export const useShowcaseEditUnityContext = ({
     isRedoable,
     // functions
     setLoadData: processAndSetLoadData,
-    unload,
     requestSaveData,
     placeNewSample,
     placeNewNft,

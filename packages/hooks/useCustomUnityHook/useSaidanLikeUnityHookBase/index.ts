@@ -13,7 +13,7 @@ import {
 } from "types/unityTypes";
 import { DefaultAcrylicBaseScaleRatio } from "../constants";
 import {
-  CustomUnityProvider,
+  CustomUnityContextType,
   NftModelGeneratedHandler,
   PositionOnPlane,
   SelectedItem,
@@ -21,14 +21,14 @@ import {
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
-import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useCustomUnityHookBase } from "../useCustomUnityHookBase";
 import { useLoadData } from "./useLoadData";
 import { useMouseUp } from "./useMouseUp";
 import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
 
-export const useSaidanLikeUnityContextBase = ({
-  unityProvider,
+export const useSaidanLikeUnityHookBase = ({
+  unityContext,
   sceneType,
   itemMenuX,
   onRemoveItemEnabled,
@@ -37,7 +37,7 @@ export const useSaidanLikeUnityContextBase = ({
   onActionRedone,
   onNftModelGenerated,
 }: {
-  unityProvider: CustomUnityProvider;
+  unityContext: CustomUnityContextType;
   sceneType: UnitySceneType;
   itemMenuX: number;
   onRemoveItemEnabled?: () => void;
@@ -53,7 +53,7 @@ export const useSaidanLikeUnityContextBase = ({
     resumeUnityInputs,
     // event handler
     handleSimpleMessage,
-  } = useCustomUnityContextBase({ unityProvider, sceneType });
+  } = useCustomUnityHookBase({ unityContext, sceneType });
 
   // states
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -75,7 +75,7 @@ export const useSaidanLikeUnityContextBase = ({
     handleSceneIsLoaded,
     handleLoadingCompleted,
   } = useLoadData({
-    isLoaded: unityProvider.isLoaded,
+    isLoaded: unityContext.isLoaded,
     additionalItemDataMap,
     postMessageToUnity,
   });
@@ -253,13 +253,13 @@ export const useSaidanLikeUnityContextBase = ({
 
   const inputWasd = useCallback(
     ({ wKey, aKey, sKey, dKey }: WasdParams) => {
-      if (!unityProvider.isLoaded || !isSceneOpen) return;
+      if (!unityContext.isLoaded || !isSceneOpen) return;
       postMessageToUnity(
         "InputWasdMessageReceiver",
         JSON.stringify({ wKey, aKey, sKey, dKey }),
       );
     },
-    [unityProvider.isLoaded, isSceneOpen, postMessageToUnity],
+    [unityContext.isLoaded, isSceneOpen, postMessageToUnity],
   );
 
   const { requestNftModelGeneration, handleNftModelGenerated } =
@@ -269,13 +269,13 @@ export const useSaidanLikeUnityContextBase = ({
     });
 
   useEffect(() => {
-    if (!unityProvider.isLoaded || !isSceneOpen || !itemMenuX || itemMenuX < 0)
+    if (!unityContext.isLoaded || !isSceneOpen || !itemMenuX || itemMenuX < 0)
       return;
     postMessageToUnity(
       "ItemMenuXMessageReceiver",
       JSON.stringify({ itemMenuX }),
     );
-  }, [unityProvider.isLoaded, isSceneOpen, itemMenuX, postMessageToUnity]);
+  }, [unityContext.isLoaded, isSceneOpen, itemMenuX, postMessageToUnity]);
 
   // event handler
   const handleDragPlacingStarted = useCallback(() => {

@@ -22,7 +22,7 @@ export type UnityEventListener = (
   ) => ReactUnityEventParameter,
 ) => void;
 
-export type CustomUnityProvider = {
+export type CustomUnityContextType = {
   unityProvider: UnityProvider;
   isLoaded: boolean;
   addEventListener: UnityEventListener;

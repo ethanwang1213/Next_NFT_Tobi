@@ -1,10 +1,10 @@
 import { UnitySceneType } from "../types";
-import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useCustomUnityHookBase, useSecondaryCustomUnityHookBase } from "../useCustomUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useLoadAcrylicStand } from "./useLoadAcrylicStand";
 import { useUpdateAcrylicBaseScaleRatio } from "./useUpdateAcrylicBaseScaleRatio";
 
-export const useAcrylicBaseSettingsUnityContext = () => {
+export const useAcrylicBaseSettingsUnityHook = () => {
   const {
     // states
     unityProvider,
@@ -15,7 +15,7 @@ export const useAcrylicBaseSettingsUnityContext = () => {
     postMessageToUnity,
     // event handler
     handleSimpleMessage,
-  } = useCustomUnityContextBase({
+  } = useSecondaryCustomUnityHookBase({
     sceneType: UnitySceneType.AcrylicBaseSettings,
   });
 
