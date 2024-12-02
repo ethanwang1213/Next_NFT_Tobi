@@ -66,25 +66,25 @@ export default function ContentsManageTab({
         <TabSelector
           isActive={tab === "showcase"}
           onClick={() => handleTabChange("showcase")}
-          className="ml-12 mt-3"
+          className="ml-12 mt-3 uppercase"
         >
-          SHOWCASE
+          {t("Showcase")}
         </TabSelector>
         <TabSelector
           isActive={tab === "brand"}
           onClick={() => handleTabChange("brand")}
-          className="mt-3"
+          className="mt-3 uppercase"
         >
-          BRAND
+          {t("Brand")}
         </TabSelector>
         <TabSelector
           isActive={tab === "settings"}
           onClick={() => handleTabChange("settings")}
-          className="mt-3"
+          className="mt-3 uppercase"
         >
-          SETTINGS
+          {t("Settings")}
         </TabSelector>
-        <div className="w-full flex justify-end gap-10 mb-3 mr-6 h-14">
+        <div className="w-full flex justify-end gap-10 mb-3 mr-6 h-14 min-w-[290px]">
           {tab !== "showcase" && (
             <>
               <button
@@ -119,7 +119,7 @@ export default function ContentsManageTab({
           )}
         </div>
       </nav>
-      <div className="flow-root px-[50px] pt-[60px] pb-[40px]">
+      <div className="flow-root px-[50px] pt-[60px] pb-[40px] min-w-[880px]">
         <TabPanel hidden={tab !== "showcase"}>
           <ShowcasePanel reload={reload} />
         </TabPanel>

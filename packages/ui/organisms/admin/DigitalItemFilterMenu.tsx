@@ -45,7 +45,7 @@ const DigitalItemFilterMenu = (props: {
   const t = useTranslations("Item");
   return (
     <div className="w-80 flex flex-col items-start justify-center gap-2">
-      <div className="flex flex-col items-start justify-center gap-1">
+      {/* <div className="flex flex-col items-start justify-center gap-1">
         <div className="flex items-center h-8">
           <input
             type="checkbox"
@@ -87,7 +87,7 @@ const DigitalItemFilterMenu = (props: {
         ) : (
           <></>
         )}
-      </div>
+      </div> */}
       <div className="flex flex-col items-start justify-center gap-1">
         <div className="flex items-center h-8">
           <input

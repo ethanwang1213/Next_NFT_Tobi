@@ -116,12 +116,12 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         </div>
       </Row1>
       <Row1 label={t("DateOfBirth")}>
-        <div className="flex flex-row items-end w-full">
+        <div className="flex flex-row items-end w-[49%]">
           <div className="flex flex-row items-end w-[40%]">
             <input
               id="user_birthday_year"
               className={clsx(
-                "w-full h-12 pl-5",
+                "w-full h-12 pr-5 text-right",
                 "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
                 "text-sm font-normal text-input-color",
                 "placeholder:text-placeholder-color placeholder:font-normal",
@@ -129,6 +129,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               value={userInfo.birthdayYear || ""}
               onChange={handleYearChange}
               ref={refs["birthdayYear"]}
+              placeholder="2022"
             />
             <span className="mx-4">/</span>
           </div>
@@ -136,7 +137,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             <input
               id="user_birthday_month"
               className={clsx(
-                "w-full h-12 pl-5",
+                "w-full h-12 pr-5 text-right",
                 "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
                 "text-sm font-normal text-input-color",
                 "placeholder:text-placeholder-color placeholder:font-normal",
@@ -144,6 +145,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               value={userInfo.birthdayMonth || ""}
               onChange={handleMonthChange}
               ref={refs["birthdayMonth"]}
+              placeholder="05"
             />
             <span className="mx-4">/</span>
           </div>
@@ -151,7 +153,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             <input
               id="user_birthday_date"
               className={clsx(
-                "w-full h-12 pl-5",
+                "w-full h-12 pr-5 text-right",
                 "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
                 "text-sm font-normal text-input-color",
                 "placeholder:text-placeholder-color placeholder:font-normal",
@@ -159,8 +161,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               value={userInfo.birthdayDate || ""}
               onChange={handleDateChange}
               ref={refs["birthdayDate"]}
+              placeholder="21"
             />
-            <span className="mx-4">/</span>
           </div>
         </div>
       </Row1>
@@ -168,7 +170,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         <input
           id="user_email"
           className={clsx(
-            "flex-1 w-full h-12 pl-5",
+            "flex-1 w-[49%] h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
@@ -183,7 +185,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         <input
           id="user_phone"
           className={clsx(
-            "w-64 h-12 pl-5",
+            "w-[49%] h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",

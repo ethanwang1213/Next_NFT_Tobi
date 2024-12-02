@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { MutableRefObject } from "react";
 
@@ -16,6 +17,8 @@ const StatusConfirmDialog = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   saveHandler: () => void;
 }) => {
+  const t = useTranslations("ItemDetail");
+  const b = useTranslations("GiftReceivingSettings");
   return (
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[425px] rounded-3xl pt-0 flex flex-col gap-6 relative">
@@ -58,12 +61,11 @@ const StatusConfirmDialog = ({
           <div>
             {disabled ? (
               <span className="text-sm font-normal text-error">
-                There are required fields that have not been filled. Please
-                check.
+                {t("RequiredFieldsMissing")}
               </span>
             ) : (
               <span className="text-sm font-normal text-neutral-700">
-                Do you wish to continue?
+                {t("ConfirmContinue")}
               </span>
             )}
           </div>
@@ -76,7 +78,7 @@ const StatusConfirmDialog = ({
               text-primary text-sm leading-4 font-semibold"
             onClick={() => dialogRef.current.close()}
           >
-            Cancel
+            {b("Cancel")}
           </button>
           <button
             type="button"
@@ -93,7 +95,7 @@ const StatusConfirmDialog = ({
             }}
             disabled={disabled}
           >
-            Save changes
+            {b("SaveChanges")}
           </button>
         </div>
       </div>

@@ -30,6 +30,7 @@ type ShowcaseComponentProps = {
   scheduleTime?: string;
   updateTime: string;
   refreshHandler: () => void;
+  onStatusChange: (id: number, newStatus: string) => void;
 };
 
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
@@ -138,8 +139,8 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   };
 
   const changeStatus = async (status) => {
+    props.onStatusChange(props.id, status);
     setStatus(status);
-
     const jsonData = await putData(
       `${apiUrl}/${props.id}`,
       status == ShowcaseStatus.ScheduledPublic
@@ -199,7 +200,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const getStatusLabel = () => {
     switch (status) {
       case ShowcaseStatus.Public:
-        return t("Public");
+        return t("Published");
       case ShowcaseStatus.Private:
         return t("Private");
       case ShowcaseStatus.ScheduledPublic:
@@ -305,8 +306,8 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               className={`inline-block text-[15px] leading-4 font-medium text-center text-secondary-100 py-1
               ${
                 status == ShowcaseStatus.Public
-                  ? "w-32"
-                  : "border-r border-white px-7"
+                  ? "w-34"
+                  : "border-r border-white w-26"
               }`}
             >
               {getStatusLabel()}
@@ -366,8 +367,24 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
 const ShowcasePanel = ({ reload }) => {
   const apiUrl = "native/admin/showcases";
-  const { data, getData } = useRestfulAPI(apiUrl);
+  const { data, getData, setData, putData } = useRestfulAPI(apiUrl);
   const [localReload, setLocalReload] = useState(0);
+
+  const handleStatusChange = (id, newStatus) => {
+    const updatedShowcases = data.map((showcase) => {
+      if (showcase.id === id) {
+        return { ...showcase, status: newStatus };
+      }
+      if (
+        newStatus === ShowcaseStatus.Public &&
+        showcase.status === ShowcaseStatus.Public
+      ) {
+        return { ...showcase, status: ShowcaseStatus.Private };
+      }
+      return showcase;
+    });
+    setData(updatedShowcases);
+  };
 
   useEffect(() => {
     if (localReload > 0 || reload > 0) {
@@ -393,6 +410,7 @@ const ShowcasePanel = ({ reload }) => {
                 scheduleTime={showcase.scheduleTime}
                 updateTime={showcase.updateTime}
                 refreshHandler={() => setLocalReload(localReload + 1)}
+                onStatusChange={handleStatusChange}
               />
             );
           })}

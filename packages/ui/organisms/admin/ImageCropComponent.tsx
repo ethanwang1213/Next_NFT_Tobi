@@ -77,6 +77,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     setAspect(value);
     if (value) {
       if (imgRef.current) {
+        blobUrlRef.current = null;
         const imgElement = imgRef.current;
         const wrapperElement = imgWrapperRef.current;
 
@@ -244,7 +245,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
               ref={imgWrapperRef}
             >
               {loading && (
-                <div className="absolute left-0 right-0 top-0 bottom-0 z-10 flex justify-center items-center">
+                <div className="absolute left-0 right-0 top-0 bottom-0 z-50 flex justify-center items-center">
                   <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
                 </div>
               )}

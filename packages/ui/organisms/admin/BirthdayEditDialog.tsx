@@ -59,7 +59,7 @@ const BirthdayEditDialog = ({
             dropdownMode="select"
             locale="ja"
             className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none text-base-black text-sm leading-4 font-normal"
-            placeholderText="yyyy/MM/dd"
+            placeholderText="2022/05/21"
             popperPlacement="top-start"
             popperClassName="custom-datepicker-popper"
             isClearable

@@ -265,7 +265,18 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       if (user) {
         await auth.signOut();
       }
-      router.push("/authentication");
+
+      localStorage.clear();
+      sessionStorage.clear();
+
+      router.replace("/authentication");
+
+      if (typeof window !== "undefined") {
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+          router.replace("/authentication");
+        };
+      }
     } catch (error) {
       console.error("ログアウトに失敗しました。", error);
     }

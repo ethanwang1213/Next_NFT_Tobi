@@ -17,7 +17,7 @@ const menuItems = [
   {
     type: "menu",
     icon: "schedule-icon.svg",
-    text: "Scheduled",
+    text: "Schedule",
     color: "secondary",
   },
   { type: "divider", icon: "", text: "", color: "secondary-200" },
