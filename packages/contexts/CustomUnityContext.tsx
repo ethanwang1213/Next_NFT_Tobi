@@ -1,8 +1,15 @@
 import {
   CustomUnityContextType,
+  MessageDestination,
   UnitySceneType,
 } from "hooks/useCustomUnityHook/types";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useUnityContext } from "react-unity-webgl";
 import { CustomUnity, UnityIn } from "ui/molecules/CustomUnity";
 
@@ -30,8 +37,21 @@ export const CustomUnityProvider = ({
     [],
   );
 
+  const postMessageToUnity = useCallback(
+    (gameObject: MessageDestination, message: string) => {
+      if (!unityContext.isLoaded) return;
+      unityContext.sendMessage(gameObject, "OnMessageReceived", message);
+    },
+    [unityContext.isLoaded, unityContext.sendMessage],
+  );
+
   useEffect(() => {
-    console.log(mountedSceneList);
+    if (mountedSceneList.length === 0 && unityContext.isLoaded) {
+      const json = JSON.stringify({
+        sceneType: UnitySceneType.Standby,
+      });
+      postMessageToUnity("SwitchSceneMessageReceiver", json);
+    }
   }, [mountedSceneList]);
 
   const contextValue: CustomUnityContextType = {
