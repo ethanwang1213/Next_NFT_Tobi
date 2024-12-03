@@ -1,3 +1,4 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback } from "react";
 import {
   SendSampleRemovalResult,
@@ -24,7 +25,7 @@ import {
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
-import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
+import { useSaidanLikeUnityHookBase } from "../useSaidanLikeUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useApplyAcrylicBaseScaleRatio } from "./useApplyAcrylicBaseScaleRatio";
 
@@ -41,7 +42,7 @@ type RemoveSampleRequestedHandler = (
   sendSampleRemovalResult: SendSampleRemovalResult,
 ) => void;
 
-export const useWorkspaceUnityContext = ({
+export const useWorkspaceUnityHook = ({
   sampleMenuX = -1,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
@@ -62,9 +63,9 @@ export const useWorkspaceUnityContext = ({
   onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
 }) => {
+  const sceneType = UnitySceneType.Workspace;
   const {
     // states
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,
@@ -72,8 +73,6 @@ export const useWorkspaceUnityContext = ({
     isUndoable,
     isRedoable,
     // functions
-    addEventListener,
-    removeEventListener,
     postMessageToUnity,
     setLoadData: privateSetLoadData,
     requestSaveData,
@@ -102,8 +101,8 @@ export const useWorkspaceUnityContext = ({
     handleNftModelGenerated,
     handleMouseUp,
     handleLoadingCompleted,
-  } = useSaidanLikeUnityContextBase({
-    sceneType: UnitySceneType.Workspace,
+  } = useSaidanLikeUnityHookBase({
+    sceneType,
     itemMenuX: sampleMenuX,
     onRemoveItemEnabled: onRemoveSampleEnabled,
     onRemoveItemDisabled: onRemoveSampleDisabled,
@@ -111,6 +110,11 @@ export const useWorkspaceUnityContext = ({
     onActionRedone,
     onNftModelGenerated,
   });
+
+  const {
+    addEventListener: unityAddEventListener,
+    removeEventListener: unityRemoveEventListener,
+  } = useCustomUnityContext();
 
   // functions
   const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
@@ -296,8 +300,9 @@ export const useWorkspaceUnityContext = ({
   });
 
   useUnityMessageHandler({
-    addEventListener,
-    removeEventListener,
+    sceneType,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
@@ -317,7 +322,6 @@ export const useWorkspaceUnityContext = ({
 
   return {
     // states
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,

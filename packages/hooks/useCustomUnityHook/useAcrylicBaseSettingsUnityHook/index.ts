@@ -1,21 +1,21 @@
 import { UnitySceneType } from "../types";
-import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useSecondaryCustomUnityHookBase } from "../useCustomUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useLoadAcrylicStand } from "./useLoadAcrylicStand";
 import { useUpdateAcrylicBaseScaleRatio } from "./useUpdateAcrylicBaseScaleRatio";
 
-export const useAcrylicBaseSettingsUnityContext = () => {
+export const useAcrylicBaseSettingsUnityHook = () => {
   const {
     // states
     unityProvider,
     isLoaded,
     // functions
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     postMessageToUnity,
     // event handler
     handleSimpleMessage,
-  } = useCustomUnityContextBase({
+  } = useSecondaryCustomUnityHookBase({
     sceneType: UnitySceneType.AcrylicBaseSettings,
   });
 
@@ -32,8 +32,9 @@ export const useAcrylicBaseSettingsUnityContext = () => {
     });
 
   useUnityMessageHandler({
-    addEventListener,
-    removeEventListener,
+    sceneType: UnitySceneType.AcrylicBaseSettings,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
   });
@@ -41,9 +42,6 @@ export const useAcrylicBaseSettingsUnityContext = () => {
   return {
     isSceneOpen,
     unityProvider,
-    addEventListener,
-    removeEventListener,
-    postMessageToUnity,
     setLoadData,
     updateAcrylicBaseScaleRatio,
     resetAcrylicBaseScaleRatio,

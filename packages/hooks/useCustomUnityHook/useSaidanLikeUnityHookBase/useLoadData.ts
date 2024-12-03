@@ -17,8 +17,6 @@ export const useLoadData = ({
   const [isItemsLoaded, setIsItemsLoaded] = useState<boolean>(false);
 
   const postMessageToLoadData = useCallback(() => {
-    setIsSceneOpen(true);
-
     if (!loadData || loadData.saidanId === currentSaidanId) {
       // console.log("loadData is null or same saidanId: " + currentSaidanId);
       return;
@@ -42,6 +40,11 @@ export const useLoadData = ({
     setLoadData(null);
   }, [loadData, currentSaidanId, additionalItemDataMap, postMessageToUnity]);
 
+  const handleSceneIsLoaded = useCallback(() => {
+    setIsSceneOpen(true);
+    postMessageToLoadData();
+  }, [setIsSceneOpen, postMessageToLoadData]);
+
   const handleLoadingCompleted = useCallback(() => {
     setIsItemsLoaded(true);
   }, [setIsItemsLoaded]);
@@ -56,7 +59,7 @@ export const useLoadData = ({
     isSceneOpen,
     isItemsLoaded,
     setLoadData,
-    postMessageToLoadData,
+    handleSceneIsLoaded,
     handleLoadingCompleted,
   };
 };

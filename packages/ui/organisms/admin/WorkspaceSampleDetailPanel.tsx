@@ -4,12 +4,18 @@ interface WorkspaceSampleDetailPanelProps {
   id: number;
   sampleitemId: number;
   deleteHandler: (ids: number[]) => void;
+  handleNftModelGeneratedRef: React.MutableRefObject<
+    (itemId: number, nftModelBase64: string) => void
+  >;
+  deleteAllActionHistory: () => void;
 }
 
 const WorkspaceSampleDetailPanel: React.FC<WorkspaceSampleDetailPanelProps> = ({
   id,
   sampleitemId,
+  handleNftModelGeneratedRef,
   deleteHandler,
+  deleteAllActionHistory,
 }) => {
   return (
     <div className="absolute top-0 left-0 lg:w-[316px] w-[280px] h-full bg-[#001327] lg:px-[28px] px-[15px] pt-6 pb-4 pointer-events-auto">
@@ -19,6 +25,8 @@ const WorkspaceSampleDetailPanel: React.FC<WorkspaceSampleDetailPanelProps> = ({
           sampleitemId={sampleitemId}
           section={"workspace"}
           deleteHandler={deleteHandler}
+          handleNftModelGeneratedRef={handleNftModelGeneratedRef}
+          deleteAllActionHistory={deleteAllActionHistory}
         />
       </div>
     </div>

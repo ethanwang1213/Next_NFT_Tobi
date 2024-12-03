@@ -8,10 +8,16 @@ const ShowcaseSampleDetail = ({
   id,
   showSampleDetailView,
   showDetailView,
+  handleNftModelGeneratedRef,
+  deleteAllActionHistory,
 }: {
   id: number;
   showSampleDetailView: boolean;
   showDetailView: boolean;
+  handleNftModelGeneratedRef: React.MutableRefObject<
+    (itemId: number, nftModelBase64: string) => void
+  >;
+  deleteAllActionHistory: () => void;
 }) => {
   const t = useTranslations("Showcase");
   return (
@@ -23,6 +29,8 @@ const ShowcaseSampleDetail = ({
             section={"showcase"}
             sampleitemId={null}
             deleteHandler={undefined}
+            handleNftModelGeneratedRef={handleNftModelGeneratedRef}
+            deleteAllActionHistory={deleteAllActionHistory}
           />
         </div>
       )}

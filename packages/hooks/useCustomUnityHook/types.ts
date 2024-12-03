@@ -1,3 +1,5 @@
+import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
+import { UnityProvider } from "react-unity-webgl/distribution/types/unity-provider";
 import {
   ActionType,
   DecorationId,
@@ -12,6 +14,26 @@ import {
   Vector3,
   WallpaperSettings,
 } from "types/unityTypes";
+
+export type UnityEventListener = (
+  eventName: string,
+  callback: (
+    ...parameters: ReactUnityEventParameter[]
+  ) => ReactUnityEventParameter,
+) => void;
+
+export type CustomUnityContextType = {
+  unityProvider: UnityProvider;
+  isLoaded: boolean;
+  addEventListener: UnityEventListener;
+  removeEventListener: UnityEventListener;
+  sendMessage: (
+    gameObjectName: string,
+    methodName: string,
+    parameter?: ReactUnityEventParameter,
+  ) => void;
+  setMountedSceneList: React.Dispatch<React.SetStateAction<UnitySceneType[]>>;
+};
 
 export const UnitySceneType = {
   Standby: 0,

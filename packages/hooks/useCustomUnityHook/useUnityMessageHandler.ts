@@ -1,19 +1,18 @@
 import { useCallback, useEffect } from "react";
 import { ReactUnityEventParameter } from "react-unity-webgl/distribution/types/react-unity-event-parameters";
-import { UnityMessageJson, UnityMessageType } from "./types";
-
-type EventListener = (
-  eventName: string,
-  callback: (
-    ...parameters: ReactUnityEventParameter[]
-  ) => ReactUnityEventParameter,
-) => void;
+import {
+  UnityEventListener,
+  UnityMessageJson,
+  UnityMessageType,
+  UnitySceneType,
+} from "./types";
 
 type MessageHandler = (msgObj: UnityMessageJson) => void;
 
 type Props = {
-  addEventListener: EventListener;
-  removeEventListener: EventListener;
+  sceneType: UnitySceneType;
+  unityAddEventListener: UnityEventListener;
+  unityRemoveEventListener: UnityEventListener;
   handleSimpleMessage: MessageHandler;
   handleSceneIsLoaded: () => void;
   handleSaveDataGenerated?: MessageHandler;
@@ -33,8 +32,9 @@ type Props = {
 };
 
 export const useUnityMessageHandler = ({
-  addEventListener,
-  removeEventListener,
+  sceneType,
+  unityAddEventListener,
+  unityRemoveEventListener,
   handleSimpleMessage,
   handleSceneIsLoaded,
   handleSaveDataGenerated,
@@ -71,7 +71,7 @@ export const useUnityMessageHandler = ({
     (message: ReactUnityEventParameter) => {
       if (typeof message !== "string") return;
       const msgObj = resolveUnityMessage(message);
-      if (!msgObj) return;
+      if (!msgObj || msgObj.sceneType !== sceneType) return;
 
       // execute event handlers along with message type
       switch (msgObj.messageType) {
@@ -128,6 +128,7 @@ export const useUnityMessageHandler = ({
       }
     },
     [
+      sceneType,
       resolveUnityMessage,
       handleSimpleMessage,
       handleSceneIsLoaded,
@@ -150,11 +151,11 @@ export const useUnityMessageHandler = ({
 
   // We use only `onUnityMessage` event to receive messages from Unity side.
   useEffect(() => {
-    addEventListener("onUnityMessage", handleUnityMessage);
+    unityAddEventListener("onUnityMessage", handleUnityMessage);
     return () => {
-      removeEventListener("onUnityMessage", handleUnityMessage);
+      unityRemoveEventListener("onUnityMessage", handleUnityMessage);
     };
-  }, [addEventListener, removeEventListener, handleUnityMessage]);
+  }, [unityAddEventListener, unityRemoveEventListener, handleUnityMessage]);
 
   return;
 };

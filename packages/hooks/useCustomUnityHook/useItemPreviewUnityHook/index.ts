@@ -1,23 +1,23 @@
 import { UnitySceneType } from "../types";
-import { useCustomUnityContextBase } from "../useCustomUnityContextBase";
+import { useSecondaryCustomUnityHookBase } from "../useCustomUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useLoadPreviewItem } from "./useLoadPreviewItem";
 
-export const useItemPreviewUnityContext = () => {
+export const useItemPreviewUnityHook = () => {
   const {
     // states
     unityProvider,
     isLoaded,
     // functions
-    addEventListener,
-    removeEventListener,
+    unityAddEventListener,
+    unityRemoveEventListener,
     postMessageToUnity,
     pauseUnityInputs,
     resumeUnityInputs,
     unload,
     // event handler
     handleSimpleMessage,
-  } = useCustomUnityContextBase({
+  } = useSecondaryCustomUnityHookBase({
     sceneType: UnitySceneType.ItemPreview,
   });
 
@@ -27,8 +27,9 @@ export const useItemPreviewUnityContext = () => {
   });
 
   useUnityMessageHandler({
-    addEventListener,
-    removeEventListener,
+    sceneType: UnitySceneType.ItemPreview,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
   });

@@ -1,7 +1,7 @@
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
-import { useShowcaseEditUnityContext } from "hooks/useCustomUnityContext";
+import { useShowcaseEditUnityHook } from "hooks/useCustomUnityHook";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import useWASDKeys from "hooks/useWASDKeys";
 import { GetStaticPropsContext } from "next";
@@ -19,7 +19,7 @@ import {
   SettingsUpdatePhase,
 } from "types/unityTypes";
 import Button from "ui/atoms/Button";
-import { ShowcaseEditUnity } from "ui/molecules/CustomUnity";
+import { CustomUnity } from "ui/molecules/CustomUnity";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
@@ -142,20 +142,26 @@ const Showcase = () => {
 
   const [contentWidth, setContentWidth] = useState(0);
 
-  const unityContext = useShowcaseEditUnityContext({
+  const handleNftModelGeneratedRef = useRef(null);
+  const handleActionRef = useRef(null);
+
+  const unityHookOutput = useShowcaseEditUnityHook({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
     onSaveDataGenerated,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onRemoveItemRequested,
-    onActionRedone: handleAction,
+    onActionRedone: (actionType: ActionType, text: string) => {
+      handleAction(actionType, text);
+      handleActionRef.current?.(actionType, text);
+    },
     onActionUndone: handleAction,
+    onNftModelGenerated: handleNftModelGeneratedRef.current,
   });
 
   const {
     isSceneOpen,
     isItemsLoaded,
-    unityProvider,
     isUndoable,
     isRedoable,
     selectedItem,
@@ -173,7 +179,8 @@ const Showcase = () => {
     showSmartphoneArea,
     hideSmartphoneArea,
     handleMouseUp,
-  } = unityContext;
+    deleteAllActionHistory,
+  } = unityHookOutput;
 
   const { leavingPage, setLeavingPage } = useLeavePage();
 
@@ -391,13 +398,9 @@ const Showcase = () => {
   };
 
   return (
-    <ShowcaseEditUnityProvider unityContext={unityContext}>
+    <ShowcaseEditUnityProvider unityContext={unityHookOutput}>
       <div className="w-full h-screen-minus-56 relative no-select">
-        <ShowcaseEditUnity
-          unityProvider={unityProvider}
-          isSceneOpen={isSceneOpen}
-          handleMouseUp={handleMouseUp}
-        />
+        <CustomUnity isSceneOpen={isSceneOpen} handleMouseUp={handleMouseUp} />
         {!isItemsLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-50">
             <span className="dots-circle-spinner loading2 text-[80px] text-active"></span>
@@ -442,6 +445,8 @@ const Showcase = () => {
             showSampleDetailView={showSampleDetailView}
             showDetailView={showDetailView}
             id={selectedSampleItem}
+            handleNftModelGeneratedRef={handleNftModelGeneratedRef}
+            deleteAllActionHistory={deleteAllActionHistory}
           />
           <div
             className="w-[336px] mt-[72px] absolute"
@@ -581,6 +586,7 @@ const Showcase = () => {
               ) => {
                 updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
               }}
+              handleActionRef={handleActionRef}
             />
           </div>
           {showRestoreMenu && !showDetailView && (

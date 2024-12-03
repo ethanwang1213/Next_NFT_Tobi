@@ -5,6 +5,7 @@ import {
   useAuth,
 } from "contexts/AdminAuthProvider";
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
+import { CustomUnityProvider } from "contexts/CustomUnityContext";
 import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -26,7 +27,9 @@ const Layout = ({ children, content }: Props) => {
         <title>Tobiratory Admin</title>
       </Head>
       <AuthProvider>
-        <Contents content={content}>{children}</Contents>
+        <CustomUnityProvider>
+          <Contents content={content}>{children}</Contents>
+        </CustomUnityProvider>
       </AuthProvider>
     </>
   );

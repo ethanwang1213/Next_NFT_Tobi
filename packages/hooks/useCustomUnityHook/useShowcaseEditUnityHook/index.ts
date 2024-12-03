@@ -1,3 +1,4 @@
+import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback } from "react";
 import {
   SendItemRemovalResult,
@@ -26,7 +27,7 @@ import {
   UnityMessageJson,
   UnitySceneType,
 } from "../types";
-import { useSaidanLikeUnityContextBase } from "../useSaidanLikeUnityContext";
+import { useSaidanLikeUnityHookBase } from "../useSaidanLikeUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useShowSmartphoneArea } from "./useShowSmartphoneArea";
 import { useUpdateItemTransform } from "./useUpdateTransform";
@@ -45,7 +46,7 @@ type RemoveItemRequestedHandler = (
 
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
-export const useShowcaseEditUnityContext = ({
+export const useShowcaseEditUnityHook = ({
   itemMenuX = -1,
   onSaveDataGenerated,
   onRemoveItemEnabled,
@@ -64,9 +65,9 @@ export const useShowcaseEditUnityContext = ({
   onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
 }) => {
+  const sceneType = UnitySceneType.ShowcaseEdit;
   const {
     // state
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,
@@ -74,11 +75,8 @@ export const useShowcaseEditUnityContext = ({
     isUndoable,
     isRedoable,
     // functions
-    addEventListener,
-    removeEventListener,
     postMessageToUnity,
     setLoadData,
-    unload,
     requestSaveData,
     setSelectedItem,
     placeNewSample,
@@ -108,8 +106,8 @@ export const useShowcaseEditUnityContext = ({
     handleNftModelGenerated,
     handleMouseUp,
     handleLoadingCompleted,
-  } = useSaidanLikeUnityContextBase({
-    sceneType: UnitySceneType.ShowcaseEdit,
+  } = useSaidanLikeUnityHookBase({
+    sceneType,
     itemMenuX,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
@@ -117,6 +115,11 @@ export const useShowcaseEditUnityContext = ({
     onActionRedone,
     onNftModelGenerated,
   });
+
+  const {
+    addEventListener: unityAddEventListener,
+    removeEventListener: unityRemoveEventListener,
+  } = useCustomUnityContext();
 
   // functions
   const processLoadData: ProcessLoadData = useCallback(
@@ -287,8 +290,9 @@ export const useShowcaseEditUnityContext = ({
   );
 
   useUnityMessageHandler({
-    addEventListener,
-    removeEventListener,
+    sceneType,
+    unityAddEventListener,
+    unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleSaveDataGenerated,
@@ -308,7 +312,6 @@ export const useShowcaseEditUnityContext = ({
 
   return {
     // states
-    unityProvider,
     isSceneOpen,
     isItemsLoaded,
     isDragging,
@@ -317,7 +320,6 @@ export const useShowcaseEditUnityContext = ({
     isRedoable,
     // functions
     setLoadData: processAndSetLoadData,
-    unload,
     requestSaveData,
     placeNewSample,
     placeNewNft,

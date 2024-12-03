@@ -5,7 +5,7 @@ import {
   uploadData,
   uploadImage,
 } from "fetchers/UploadActions";
-import { useNftModelGeneratorUnityContext } from "hooks/useCustomUnityContext/useNftModelGeneratorUnityContext";
+import { useNftModelGeneratorUnityHook } from "hooks/useCustomUnityHook/useNftModelGeneratorUnityHook";
 import useFcmToken from "hooks/useFCMToken";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
@@ -18,7 +18,7 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
-import { NftModelGeneratorUnity } from "ui/molecules/CustomUnity";
+import { CustomUnity } from "ui/molecules/CustomUnity";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
@@ -100,8 +100,8 @@ const Detail = () => {
     }
   };
 
-  const { unityProvider, isSceneOpen, requestNftModelGeneration } =
-    useNftModelGeneratorUnityContext({
+  const { isSceneOpen, requestNftModelGeneration } =
+    useNftModelGeneratorUnityHook({
       onNftModelGenerated: handleNftModelGenerated,
     });
 
@@ -912,10 +912,7 @@ const Detail = () => {
               </div>
               <div className="text-center h-12">
                 <div className="hidden">
-                  <NftModelGeneratorUnity
-                    unityProvider={unityProvider}
-                    isSceneOpen={isSceneOpen}
-                  />
+                  <CustomUnity isSceneOpen={isSceneOpen} />
                 </div>
                 <Button
                   className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]

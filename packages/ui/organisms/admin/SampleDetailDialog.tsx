@@ -1,8 +1,8 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
-import { useItemPreviewUnityContext } from "hooks/useCustomUnityContext";
+import { useItemPreviewUnityHook } from "hooks/useCustomUnityHook";
 import { useTranslations } from "next-intl";
 import { MutableRefObject, useEffect, useState } from "react";
-import { ItemPreviewUnity } from "ui/molecules/CustomUnity";
+import { SecondaryUnity } from "ui/molecules/CustomUnity";
 import Spinner from "./Spinner";
 
 interface SampleDetailDialogProps {
@@ -11,8 +11,7 @@ interface SampleDetailDialogProps {
 }
 
 const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
-  const { setLoadData, isSceneOpen, unityProvider } =
-    useItemPreviewUnityContext();
+  const { setLoadData, isSceneOpen, unityProvider } = useItemPreviewUnityHook();
   const { selectedItem, resumeUnityInputs } = useShowcaseEditUnity();
   const t = useTranslations("Showcase");
   const [isOpen, setIsOpen] = useState(false);
@@ -68,7 +67,7 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
             </p>
           )}
           {isOpen && unityProvider && (
-            <ItemPreviewUnity
+            <SecondaryUnity
               unityProvider={unityProvider}
               isSceneOpen={isSceneOpen}
             />
