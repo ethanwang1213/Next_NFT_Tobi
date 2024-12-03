@@ -42,7 +42,7 @@ export const CustomUnityProvider = ({
       if (!unityContext.isLoaded) return;
       unityContext.sendMessage(gameObject, "OnMessageReceived", message);
     },
-    [unityContext.isLoaded, unityContext.sendMessage],
+    [unityContext],
   );
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export const CustomUnityProvider = ({
       });
       postMessageToUnity("SwitchSceneMessageReceiver", json);
     }
-  }, [mountedSceneList]);
+  }, [unityContext, mountedSceneList, postMessageToUnity]);
 
   const contextValue: CustomUnityContextType = {
     ...unityContext,

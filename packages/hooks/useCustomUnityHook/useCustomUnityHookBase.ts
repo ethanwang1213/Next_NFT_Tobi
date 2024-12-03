@@ -34,6 +34,8 @@ export const useCustomUnityHookBase = ({
         prev.filter((v) => v !== sceneType),
       );
     };
+    // this effect should run only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
@@ -115,18 +117,18 @@ const usePrivateHook = ({
   isLoadedRef.current = unityContext.isLoaded;
   const isUnloadedRef = useRef<boolean>(false);
 
-  const handleSimpleMessage = (msgObj: UnityMessageJson) => {
+  const handleSimpleMessage = useCallback((msgObj: UnityMessageJson) => {
     // console.log(
     //   `Unity: SimpleMessage, ${msgObj.sceneType}, ${msgObj.messageBody}`,
     // );
-  };
+  }, []);
 
   const postMessageToUnity = useCallback(
     (gameObject: MessageDestination, message: string) => {
       if (!isLoadedRef.current || isUnloadedRef.current) return;
       unityContext.sendMessage(gameObject, "OnMessageReceived", message);
     },
-    [isLoadedRef.current, isUnloadedRef.current, unityContext.sendMessage],
+    [unityContext],
   );
 
   const postMessageToSwitchScene = useCallback(

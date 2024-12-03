@@ -43,7 +43,7 @@ export const useLoadData = ({
   const handleSceneIsLoaded = useCallback(() => {
     setIsSceneOpen(true);
     postMessageToLoadData();
-  }, [setIsSceneOpen]);
+  }, [setIsSceneOpen, postMessageToLoadData]);
 
   const handleLoadingCompleted = useCallback(() => {
     setIsItemsLoaded(true);
