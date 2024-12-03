@@ -59,7 +59,6 @@ const Showcase = () => {
   const timerId = useRef(null);
   const tooltip = useTranslations("Tooltip");
 
-  const { data: materialData } = useRestfulAPI("native/materials");
   const wasdKeys = useWASDKeys();
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
 
