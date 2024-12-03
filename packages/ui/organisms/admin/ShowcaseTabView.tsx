@@ -97,12 +97,12 @@ const ShowcaseTabView = ({
 
   useEffect(() => {
     if (settings) {
-      setWt(settings.wallpaper.tint ?? "#717171");
-      setFt(settings.floor.tint ?? "#717171");
-      setSt(settings.lighting.sceneLight.tint ?? "#717171");
-      setSb(settings.lighting.sceneLight.brightness ?? 1);
-      setPt(settings.lighting.pointLight.tint ?? "#717171");
-      setPb(settings.lighting.pointLight.brightness ?? 1);
+      setWt(settings.wallpaper.tint ?? "#ffffff");
+      setFt(settings.floor.tint ?? "#ffffff");
+      setSt(settings.lighting.sceneLight.tint ?? "#ffffff");
+      setSb(settings.lighting.sceneLight.brightness ?? 0);
+      setPt(settings.lighting.pointLight.tint ?? "#ffffff");
+      setPb(settings.lighting.pointLight.brightness ?? 0);
     }
   }, [settings]);
 
