@@ -25,7 +25,8 @@
         "NEXT_PUBLIC_HOUSE_BADGE_NFT_ADDRESS",
         "ENABLE_BASIC_AUTH",
         "BASIC_AUTH_PASSWORD",
-        "NEXT_PUBLIC_GA_ID"
+        "NEXT_PUBLIC_GA_ID",
+        "NEXT_PUBLIC_CLOUD_STORAGE_BUCKET_URL"
       ]
     },
     "lint": {
@@ -54,6 +55,7 @@
         "ENABLE_BASIC_AUTH",
         "BASIC_AUTH_PASSWORD",
         "NEXT_PUBLIC_GA_ID",
+        "NEXT_PUBLIC_CLOUD_STORAGE_BUCKET_URL",
         "apps/admin/.env.sample",
         "apps/admin/.env.local"
       ]
