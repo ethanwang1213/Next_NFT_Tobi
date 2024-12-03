@@ -3,6 +3,7 @@ import {
   MessageDestination,
   UnitySceneType,
 } from "hooks/useCustomUnityHook/types";
+import { useMyUnityContext } from "hooks/useCustomUnityHook/useMyUnityContext";
 import React, {
   createContext,
   useCallback,
@@ -10,7 +11,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useUnityContext } from "react-unity-webgl";
 import { CustomUnity, UnityIn } from "ui/molecules/CustomUnity";
 
 const CustomUnityContext = createContext<CustomUnityContextType>(
@@ -22,15 +22,7 @@ export const CustomUnityProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  // const buildFilePath = "/admin/unity/build/webgl";
-  const buildFilePath = `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_BUCKET_URL}/unity-builds/admin/webgl`;
-
-  const unityContext = useUnityContext({
-    loaderUrl: `${buildFilePath}.loader.js`,
-    dataUrl: `${buildFilePath}.data`,
-    frameworkUrl: `${buildFilePath}.framework.js`,
-    codeUrl: `${buildFilePath}.wasm`,
-  });
+  const unityContext = useMyUnityContext();
 
   const [mountedSceneList, setMountedSceneList] = useState<UnitySceneType[]>(
     [],

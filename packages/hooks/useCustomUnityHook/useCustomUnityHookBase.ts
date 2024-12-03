@@ -1,12 +1,12 @@
 import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback, useEffect, useRef } from "react";
-import { useUnityContext } from "react-unity-webgl";
 import {
   CustomUnityContextType,
   MessageDestination,
   UnityMessageJson,
   UnitySceneType,
 } from "./types";
+import { useMyUnityContext } from "./useMyUnityContext";
 
 export const useCustomUnityHookBase = ({
   sceneType,
@@ -53,16 +53,7 @@ export const useSecondaryCustomUnityHookBase = ({
 }: {
   sceneType: UnitySceneType;
 }) => {
-  // const buildFilePath = "/admin/unity/build/webgl";
-  const buildFilePath =
-    "https://storage.googleapis.com/tobiratory-dev_media/unity-builds/admin/webgl";
-
-  const unityContext = useUnityContext({
-    loaderUrl: `${buildFilePath}.loader.js`,
-    dataUrl: `${buildFilePath}.data`,
-    frameworkUrl: `${buildFilePath}.framework.js`,
-    codeUrl: `${buildFilePath}.wasm`,
-  });
+  const unityContext = useMyUnityContext();
 
   const {
     // states
