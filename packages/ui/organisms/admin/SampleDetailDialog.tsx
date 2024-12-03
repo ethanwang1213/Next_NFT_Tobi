@@ -19,12 +19,15 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
 
   useEffect(() => {
     if (isOpen) {
+      const imageUrl =
+        data.type === 1 || data.type === 3 ? data.croppedUrl : data.thumbUrl;
+
       setLoadData({
         itemId: selectedItem.id,
         itemType: selectedItem.itemType,
         modelType: data.type,
         modelUrl: data.modelUrl,
-        imageUrl: data.materialUrl || data.customThumbnailUrl,
+        imageUrl,
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
       });
     }

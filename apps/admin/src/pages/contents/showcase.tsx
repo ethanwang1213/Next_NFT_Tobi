@@ -306,14 +306,11 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      let imageUrl;
-      if (sample.type === 1 || sample.type === 3) {
-        imageUrl = sample.thumbUrl;
-      } else {
-        imageUrl =
-          materialData.find((material) => material.id === sample.materialId)
-            ?.image || sample.thumbUrl;
-      }
+      const imageUrl =
+        sample.type === 1 || sample.type === 3
+          ? sample.croppedUrl
+          : sample.thumbUrl;
+
       const sampleData = {
         itemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,

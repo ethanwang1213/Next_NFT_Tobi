@@ -119,12 +119,10 @@ export default function Index() {
     );
 
     const postData = {
-      thumbUrl:
-        generateSampleType.current === 1
-          ? generateCroppedImage.current
-          : generateSampleType.current === 3 || generateSampleType.current === 4
-            ? sampleThumb
-            : generateMaterialImage.current,
+      thumbUrl: sampleThumb,
+      ...(generateSampleType.current === 1 || generateSampleType.current === 3
+        ? { croppedUrl: generateCroppedImage.current }
+        : {}),
       modelUrl: generateModelUrl.current,
       materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
       type: generateSampleType.current,
@@ -239,7 +237,7 @@ export default function Index() {
   }, [id, workspaceData, isItemsLoaded]);
 
   useEffect(() => {
-    if (selectedSample) {
+    if (selectedSample && samples) {
       setSelectedSampleItem(selectedSample.digitalItemId);
       setSelectedSampleItemId(selectedSample.sampleItemId);
       const matchingSample = samples.find(
@@ -300,23 +298,20 @@ export default function Index() {
 
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
-      const materialIndex = materials.findIndex(
-        (value) => value.id === sample.materialId,
-      );
-      placeNewSample({
-        itemId: sample.sampleItemId,
-        digitalItemId: sample.digitalItemId,
-        modelUrl: sample.modelUrl,
-        imageUrl:
-          sample.type === 1 || sample.type === 3
-            ? sample.thumbUrl
-            : materialIndex > -1
-              ? materials[materialIndex].image
-              : sample.thumbUrl,
-        acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
-        modelType: sample.type as ModelType,
-        sampleName: sample.name !== null ? sample.name : "",
-      });
+      if (sample) {
+        const materialIndex = materials.findIndex(
+          (value) => value.id === sample.materialId,
+        );
+        placeNewSample({
+          itemId: sample.sampleItemId,
+          digitalItemId: sample.digitalItemId,
+          modelUrl: sample.modelUrl,
+          imageUrl: materialIndex > -1 ? sample.croppedUrl : sample.thumbUrl,
+          acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
+          modelType: sample.type as ModelType,
+          sampleName: sample.name !== null ? sample.name : "",
+        });
+      }
     },
     [materials, placeNewSample],
   );
@@ -360,7 +355,7 @@ export default function Index() {
         modelUrl: samples[index].modelUrl,
         imageUrl:
           materialIndex > -1
-            ? materials[materialIndex].image
+            ? samples[index].croppedUrl
             : samples[index].thumbUrl,
         acrylicBaseScaleRatio: samples[index].acrylicBaseScaleRatio ?? 1,
         modelType: samples[index].type as ModelType,

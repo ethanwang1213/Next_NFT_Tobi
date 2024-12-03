@@ -101,7 +101,7 @@
     "MintNFT": "Mint as an NFT",
     "Schedule": "SCHEDULE",
     "DropImage": "Drop your image here",
-    "OnlyZero": "Only ￥0 can be set.",
+    "OnlyZero": "Only “0” can be set for now",
     "ExampleCopyright": "ex. ©Tobiratory",
     "CheckBoxMaxLimit": "Please check the box if you do not want to set a maximum limit.",
     "LicenseNotation": "Please enter the license notation in this field. ex) 'CC0' or detailed license information.",
