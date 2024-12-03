@@ -323,7 +323,7 @@ const Showcase = () => {
 
       isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);
     },
-    [materialData, placeNewSample, placeNewSampleWithDrag],
+    [placeNewSample, placeNewSampleWithDrag],
   );
 
   const selectNftHandler = useCallback(

@@ -203,7 +203,7 @@ const Detail = () => {
     return true;
   };
 
-  const handleLinkClick = (e: React.MouseEvent) => {
+  const handleLinkClick = () => {
     if (modified) {
       dialogRef.current.showModal();
     } else {
