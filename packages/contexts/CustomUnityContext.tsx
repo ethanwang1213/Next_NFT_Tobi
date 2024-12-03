@@ -63,7 +63,7 @@ export const CustomUnityProvider = ({
     <CustomUnityContext.Provider value={contextValue}>
       <UnityIn unityProvider={unityContext.unityProvider} />
       {mountedSceneList.length === 0 && (
-        <div className="w-0 h-0 absolute opacity-0">
+        <div className="w-0 h-0 absolute hidden">
           <CustomUnity isSceneOpen={false} />
         </div>
       )}

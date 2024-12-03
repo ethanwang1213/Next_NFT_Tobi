@@ -100,7 +100,7 @@ const Detail = () => {
     }
   };
 
-  const { unityProvider, isSceneOpen, requestNftModelGeneration } =
+  const { isSceneOpen, requestNftModelGeneration } =
     useNftModelGeneratorUnityHook({
       onNftModelGenerated: handleNftModelGenerated,
     });

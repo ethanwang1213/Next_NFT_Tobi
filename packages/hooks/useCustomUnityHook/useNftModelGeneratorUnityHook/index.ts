@@ -9,13 +9,14 @@ export const useNftModelGeneratorUnityHook = ({
 }: {
   onNftModelGenerated?: (itemId: number, nftModelBase64: string) => void;
 }) => {
+  const sceneType = UnitySceneType.NftModelGenerator;
   const {
     // functions
     postMessageToUnity,
     // event handler
     handleSimpleMessage,
   } = useCustomUnityHookBase({
-    sceneType: UnitySceneType.NftModelGenerator,
+    sceneType,
   });
 
   const {
@@ -36,7 +37,7 @@ export const useNftModelGeneratorUnityHook = ({
   });
 
   useUnityMessageHandler({
-    sceneType: UnitySceneType.NftModelGenerator,
+    sceneType,
     unityAddEventListener,
     unityRemoveEventListener,
     handleSimpleMessage,
