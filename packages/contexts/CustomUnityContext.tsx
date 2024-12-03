@@ -23,8 +23,7 @@ export const CustomUnityProvider = ({
   children: React.ReactNode;
 }) => {
   // const buildFilePath = "/admin/unity/build/webgl";
-  const buildFilePath =
-    "https://storage.googleapis.com/tobiratory-dev_media/unity-builds/admin/webgl";
+  const buildFilePath = `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_BUCKET_URL}/unity-builds/admin/webgl`;
 
   const unityContext = useUnityContext({
     loaderUrl: `${buildFilePath}.loader.js`,
