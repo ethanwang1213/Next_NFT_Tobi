@@ -837,7 +837,7 @@ const Detail = () => {
                   }}
                 >
                   {!digitalItem.customThumbnailUrl ||
-                  digitalItem.customThumbnailUrl.length === 0 ? (
+                  digitalItem.customThumbnailUrl.length === 0 && (
                     <NextImage
                       width={24}
                       height={24}
@@ -845,7 +845,7 @@ const Detail = () => {
                       src="/admin/images/icon/empty-image-icon.svg"
                       className="absolute top-12 left-12"
                     />
-                  ) : null}
+                  )}
                 </div>
                 <div
                   {...getRootProps()}

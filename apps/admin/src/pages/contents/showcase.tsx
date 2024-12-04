@@ -305,17 +305,12 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      const imageUrl =
-        sample.type === 1 || sample.type === 3
-          ? sample.croppedUrl
-          : sample.thumbUrl;
-
       const sampleData = {
         itemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelType: sample.type as ModelType,
         modelUrl: sample.modelUrl,
-        imageUrl,
+        imageUrl: sample.croppedUrl ?? "",
         acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
         sampleName: sample.name || "",
       };

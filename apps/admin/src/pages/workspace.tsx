@@ -299,21 +299,18 @@ export default function Index() {
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
       if (sample) {
-        const materialIndex = materials.findIndex(
-          (value) => value.id === sample.materialId,
-        );
         placeNewSample({
           itemId: sample.sampleItemId,
           digitalItemId: sample.digitalItemId,
           modelUrl: sample.modelUrl,
-          imageUrl: materialIndex > -1 ? sample.croppedUrl : sample.thumbUrl,
+          imageUrl: sample.croppedUrl ?? "",
           acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
           modelType: sample.type as ModelType,
           sampleName: sample.name !== null ? sample.name : "",
         });
       }
     },
-    [materials, placeNewSample],
+    [placeNewSample],
   );
 
   const notification = (msg) => {
@@ -346,23 +343,17 @@ export default function Index() {
     (index: number) => {
       setSelectedSampleItem(samples[index].digitalItemId);
       setSelectedSampleItemId(samples[index].sampleItemId);
-      const materialIndex = materials.findIndex(
-        (value) => value.id === samples[index].materialId,
-      );
       placeNewSampleWithDrag({
         itemId: samples[index].sampleItemId,
         digitalItemId: samples[index].digitalItemId,
         modelUrl: samples[index].modelUrl,
-        imageUrl:
-          materialIndex > -1
-            ? samples[index].croppedUrl
-            : samples[index].thumbUrl,
+        imageUrl: samples[index].croppedUrl ?? "",
         acrylicBaseScaleRatio: samples[index].acrylicBaseScaleRatio ?? 1,
         modelType: samples[index].type as ModelType,
         sampleName: samples[index].name !== null ? samples[index].name : "",
       });
     },
-    [samples, materials, placeNewSampleWithDrag],
+    [samples, placeNewSampleWithDrag],
   );
 
   const deleteSamplesHandler = useCallback(
