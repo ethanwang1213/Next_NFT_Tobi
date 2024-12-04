@@ -125,7 +125,7 @@ export const useWorkspaceUnityHook = ({
       return {
         ...v,
         itemType: ItemType.Sample,
-        imageUrl: v.materialUrl,
+        imageUrl: v.croppedUrl ?? v.materialUrl ?? "",
         shelfSectionIndex: -1,
         acrylicBaseScaleRatio:
           v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,

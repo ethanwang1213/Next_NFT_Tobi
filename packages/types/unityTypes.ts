@@ -77,6 +77,7 @@ export type TextureParam = {
 
 export type TextureParamForLoading = {
   materialUrl?: string;
+  croppedUrl?: string;
 };
 
 export type AcrylicBaseScaleRatio = {
