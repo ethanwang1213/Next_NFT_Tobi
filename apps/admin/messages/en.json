@@ -335,7 +335,9 @@
     "NoAnswer": "No answer",
     "NotSet": "Not Set",
     "IDInUse": "This UserID is already in use.",
-    "Unverified": "unverified"
+    "Unverified": "unverified",
+    "EnterName": "Please enter a name.",
+    "UserIdNoSpaces": "User ID cannot contain spaces."
   },
   "AccountPassword": {
     "Name": "Name",

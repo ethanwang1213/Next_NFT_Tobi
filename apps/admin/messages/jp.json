@@ -336,7 +336,9 @@
     "NoAnswer": "回答しない",
     "NotSet": "設定されていません",
     "IDInUse": "このIDはすでに使用されています",
-    "Unverified": "未認証"
+    "Unverified": "未認証",
+    "EnterName": "名前を入力してください。",
+    "UserIdNoSpaces": "ユーザーIDにスペースを含めることはできません。"
   },
   "AccountPassword": {
     "Name": "名前",
