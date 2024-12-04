@@ -131,7 +131,7 @@ export const useShowcaseEditUnityHook = ({
         return {
           ...v,
           itemType: ItemType.Sample,
-          imageUrl: v.materialUrl,
+          imageUrl: v.croppedUrl ?? v.materialUrl ?? "",
           shelfSectionIndex: v.shelfSectionIndex ?? -1,
           acrylicBaseScaleRatio:
             v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
