@@ -837,15 +837,15 @@ const Detail = () => {
                   }}
                 >
                   {!digitalItem.customThumbnailUrl ||
-                  digitalItem.customThumbnailUrl.length === 0 && (
-                    <NextImage
-                      width={24}
-                      height={24}
-                      alt="cancel"
-                      src="/admin/images/icon/empty-image-icon.svg"
-                      className="absolute top-12 left-12"
-                    />
-                  )}
+                    (digitalItem.customThumbnailUrl.length === 0 && (
+                      <NextImage
+                        width={24}
+                        height={24}
+                        alt="cancel"
+                        src="/admin/images/icon/empty-image-icon.svg"
+                        className="absolute top-12 left-12"
+                      />
+                    ))}
                 </div>
                 <div
                   {...getRootProps()}
