@@ -292,9 +292,13 @@ export default function Index() {
       birth: data?.birth,
       icon: data?.icon,
     };
+    if (!data?.username || data.username.trim() === "") {
+      toast(t("EnterName"));
+      return;
+    }
     const normalizedValue = data.userId.toLowerCase();
     if (!userIdRegex.test(normalizedValue)) {
-      toast("User ID cannot contain spaces.");
+      toast(t("UserIdNoSpaces"));
       return;
     }
 

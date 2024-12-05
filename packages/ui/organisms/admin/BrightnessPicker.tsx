@@ -10,7 +10,7 @@ interface BrightnessPickerProps {
 }
 
 const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
-  initialValue = 50,
+  initialValue,
   onBrightnessChanged,
   afterChangeHandle,
 }) => {
@@ -60,10 +60,11 @@ const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
       {/* Brightness slider */}
       <div className="flex items-center mt-[18px] mb-[16px]">
         <Slider
-          min={0}
-          max={100}
+          min={-50}
+          max={50}
           styles={{ handle: handleStyle, track: trackStyle, rail: railStyle }}
           value={brightness}
+          defaultValue={0}
           onAfterChange={(value: number) => {
             afterChangeHandle(value);
           }}

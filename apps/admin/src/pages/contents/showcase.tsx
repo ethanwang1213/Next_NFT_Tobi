@@ -59,7 +59,6 @@ const Showcase = () => {
   const timerId = useRef(null);
   const tooltip = useTranslations("Tooltip");
 
-  const { data: materialData } = useRestfulAPI("native/materials");
   const wasdKeys = useWASDKeys();
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
 
@@ -313,27 +312,19 @@ const Showcase = () => {
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
-      let imageUrl;
-      if (sample.type === 1 || sample.type === 3) {
-        imageUrl = sample.thumbUrl;
-      } else {
-        imageUrl =
-          materialData.find((material) => material.id === sample.materialId)
-            ?.image || sample.thumbUrl;
-      }
       const sampleData = {
         itemId: sample.sampleItemId,
         digitalItemId: sample.digitalItemId,
         modelType: sample.type as ModelType,
         modelUrl: sample.modelUrl,
-        imageUrl,
+        imageUrl: sample.croppedUrl ?? "",
         acrylicBaseScaleRatio: sample.acrylicBaseScaleRatio ?? 1,
         sampleName: sample.name || "",
       };
 
       isDrag ? placeNewSampleWithDrag(sampleData) : placeNewSample(sampleData);
     },
-    [materialData, placeNewSample, placeNewSampleWithDrag],
+    [placeNewSample, placeNewSampleWithDrag],
   );
 
   const selectNftHandler = useCallback(

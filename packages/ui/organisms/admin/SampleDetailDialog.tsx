@@ -23,7 +23,7 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
         itemType: selectedItem.itemType,
         modelType: data.type,
         modelUrl: data.modelUrl,
-        imageUrl: data.materialUrl || data.customThumbnailUrl,
+        imageUrl: data.croppedUrl ?? "",
         acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
       });
     }

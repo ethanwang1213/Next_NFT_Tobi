@@ -9,7 +9,7 @@ export type SampleItem = {
   name: string;
   thumbUrl: string;
   modelUrl: string;
-  croppedUrl: string;
+  croppedUrl?: string;
   materialId: number;
   type: number;
   acrylicBaseScaleRatio: number;

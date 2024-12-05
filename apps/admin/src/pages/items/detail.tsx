@@ -25,6 +25,7 @@ import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
 import MintConfirmDialog1 from "ui/organisms/admin/MintConfirmDialog1";
 import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
+import SaveConfirmDialog from "ui/organisms/admin/SaveConfirmDialog";
 import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
@@ -72,6 +73,7 @@ const Detail = () => {
   const statusConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef1 = useRef(null);
+  const dialogRef = useRef(null);
 
   const handleNftModelGenerated = async (
     itemId: number,
@@ -199,6 +201,20 @@ const Detail = () => {
     }
 
     return true;
+  };
+
+  const handleLinkClick = () => {
+    if (modified) {
+      dialogRef.current.showModal();
+    } else {
+      router.push("/items");
+    }
+  };
+
+  const handleDialogAction = (value: string) => {
+    if (value == "discard") {
+      router.push("/items");
+    }
   };
 
   const showStatusConfirmDialog = () => {
@@ -439,14 +455,14 @@ const Detail = () => {
   return (
     <div className="mt-16 mb-12">
       <div className={`ml-8 mr-[104px] h-12 flex items-center gap-4`}>
-        <Link href="/items">
+        <button onClick={handleLinkClick}>
           <NextImage
             src="/admin/images/icon/arrow_back.svg"
             width={32}
             height={32}
             alt="back icon"
           />
-        </Link>
+        </button>
         <span className="flex-1 text-secondary-600 text-[32px] font-semibold">
           {b("DetailSetting")}
         </span>
@@ -524,6 +540,7 @@ const Detail = () => {
                     placeholder={b("Price")}
                     value={`${digitalItem.price ? digitalItem.price : 0}`}
                     inputMask={TextKind.Digit}
+                    readOnly
                     changeHandler={(value) =>
                       fieldChangeHandler("price", value)
                     }
@@ -543,21 +560,15 @@ const Detail = () => {
                       data-tooltip-id={`image_price_info`}
                       place="right"
                       noArrow={false}
+                      className="px-4 py-2 text-center z-1"
                       border="1px solid #717171"
                       style={{
                         whiteSpace: "pre-line",
                         backgroundColor: "#FFFFFF",
                         color: "#1779DE",
-                        width: "140px",
                         fontSize: "12px",
                         lineHeight: "18px",
-                        paddingLeft: "8px",
-                        paddingRight: "6px",
-                        paddingTop: "6px",
-                        paddingBottom: "6px",
                         borderRadius: "4px",
-                        textAlign: "center",
-                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -615,20 +626,15 @@ const Detail = () => {
                       place="right"
                       noArrow={false}
                       border="1px solid #717171"
+                      className="px-4 py-2 text-center z-1"
                       style={{
                         whiteSpace: "pre-line",
                         backgroundColor: "#FFFFFF",
                         color: "#1779DE",
-                        width: "424px",
                         fontSize: "12px",
                         lineHeight: "18px",
-                        paddingLeft: "8px",
-                        paddingRight: "6px",
-                        paddingTop: "6px",
-                        paddingBottom: "6px",
+
                         borderRadius: "4px",
-                        textAlign: "center",
-                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -662,20 +668,14 @@ const Detail = () => {
                       place="right"
                       noArrow={false}
                       border="1px solid #717171"
+                      className="px-4 py-2 text-center z-1"
                       style={{
                         whiteSpace: "pre-line",
                         backgroundColor: "#FFFFFF",
                         color: "#1779DE",
-                        width: "140px",
                         fontSize: "12px",
                         lineHeight: "18px",
-                        paddingLeft: "8px",
-                        paddingRight: "6px",
-                        paddingTop: "6px",
-                        paddingBottom: "6px",
                         borderRadius: "4px",
-                        textAlign: "center",
-                        zIndex: 1,
                       }}
                     />
                   </div>
@@ -769,7 +769,7 @@ const Detail = () => {
                 <NextImage
                   width={384}
                   height={384}
-                  className="bg-[#2D94FF6B] rounded-[13px]"
+                  className="bg-transparent rounded-[13px] border-2 border-[#B3B3B3]"
                   src={
                     digitalItem.isCustomThumbnailSelected
                       ? digitalItem.customThumbnailUrl
@@ -836,32 +836,16 @@ const Detail = () => {
                     }
                   }}
                 >
-                  {digitalItem.customThumbnailUrl &&
-                  digitalItem.customThumbnailUrl.length > 0 ? (
-                    <NextImage
-                      width={24}
-                      height={24}
-                      alt="cancel"
-                      src="/admin/images/icon/cancel-icon.svg"
-                      className="absolute right-3 bottom-3 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Stop event propagation
-                        setData({
-                          ...digitalItem,
-                          ["isCustomThumbnailSelected"]: false,
-                          ["customThumbnailUrl"]: "",
-                        });
-                      }}
-                    />
-                  ) : (
-                    <NextImage
-                      width={24}
-                      height={24}
-                      alt="cancel"
-                      src="/admin/images/icon/empty-image-icon.svg"
-                      className="absolute top-12 left-12"
-                    />
-                  )}
+                  {!digitalItem.customThumbnailUrl ||
+                    (digitalItem.customThumbnailUrl.length === 0 && (
+                      <NextImage
+                        width={24}
+                        height={24}
+                        alt="cancel"
+                        src="/admin/images/icon/empty-image-icon.svg"
+                        className="absolute top-12 left-12"
+                      />
+                    ))}
                 </div>
                 <div
                   {...getRootProps()}
@@ -877,7 +861,7 @@ const Detail = () => {
                   className="flex flex-col justify-center items-center gap-1 pt-2 cursor-pointer"
                 >
                   <input {...getInputProps()} />
-                  <span className="h-14 text-secondary-500 text-base text-center">
+                  <span className="h-14 text-secondary-500 text-base text-center px-1">
                     {b("DropImage")}
                   </span>
                   <NextImage
@@ -952,6 +936,10 @@ const Detail = () => {
         notes={confirmDialogNotes}
         disabled={confirmDialogDisabled}
         saveHandler={submitHandler}
+      />
+      <SaveConfirmDialog
+        dialogRef={dialogRef}
+        changeHandler={handleDialogAction}
       />
       <MintConfirmDialog
         dialogRef={mintConfirmDialogRef}
