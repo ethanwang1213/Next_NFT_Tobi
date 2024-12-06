@@ -132,6 +132,7 @@ export const getContentById = async (req: Request, res: Response) => {
             relationSample.sample_item.digital_item.default_thumb_url :
             relationSample.sample_item.digital_item?.custom_thumb_url,
           materialUrl: relationSample.sample_item.digital_item.material_image?.image,
+          croppedUrl: relationSample.sample_item.digital_item.cropped_url,
           modelType: relationSample.sample_item.digital_item.type,
           modelUrl: relationSample.sample_item.digital_item.model_url,
           stageType: relationSample.stage_type,
@@ -160,6 +161,7 @@ export const getContentById = async (req: Request, res: Response) => {
             relationNFT.digital_item_nft.digital_item.default_thumb_url :
             relationNFT.digital_item_nft.digital_item.custom_thumb_url,
           materialUrl: relationNFT.digital_item_nft.digital_item.material_image?.image,
+          croppedUrl: relationNFT.digital_item_nft.digital_item.cropped_url,
           modelType: relationNFT.digital_item_nft.digital_item.type,
           modelUrl: relationNFT.digital_item_nft.digital_item.model_url,
           stageType: relationNFT.stage_type,

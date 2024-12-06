@@ -850,6 +850,7 @@ export const getDefaultItems = async (req: Request, res: Response) => {
           id: item.id,
           name: item.name,
           modelUrl: item.model_url,
+          description: item.description,
         };
       });
       res.status(200).send({

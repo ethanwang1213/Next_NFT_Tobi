@@ -129,32 +129,35 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
           },
         },
       });
-      const itemList = workspaceSamples.map((workspaceSample)=>{
-        return {
-          id: workspaceSample.id,
-          itemId: workspaceSample.sample_item.id,
-          digitalItemId: workspaceSample.sample_item.digital_item_id,
-          name: workspaceSample.sample_item.digital_item.name??"",
-          modelType: workspaceSample.sample_item.digital_item.type,
-          modelUrl: workspaceSample.sample_item.digital_item.model_url,
-          materialUrl: workspaceSample.sample_item.digital_item.material_image?.image,
-          croppedUrl: workspaceSample.sample_item.digital_item.cropped_url,
-          thumbImage: workspaceSample.sample_item.digital_item.is_default_thumb?workspaceSample.sample_item.digital_item.default_thumb_url:workspaceSample.sample_item.digital_item.custom_thumb_url,
-          stageType: workspaceSample.stage_type,
-          acrylicBaseScaleRatio: workspaceSample.acrylic_scale,
-          position: {
-            x: workspaceSample.position[0]??0,
-            y: workspaceSample.position[1]??0,
-            z: workspaceSample.position[2]??0,
-          },
-          rotation: {
-            x: workspaceSample.rotation[0]??0,
-            y: workspaceSample.rotation[1]??0,
-            z: workspaceSample.rotation[2]??0,
-          },
-          scale: workspaceSample.scale,
-        };
-      });
+      const itemList = workspaceSamples.filter((sample)=>(!sample.sample_item.is_deleted&&!sample.sample_item.digital_item.is_deleted))
+          .map((workspaceSample)=>{
+            return {
+              id: workspaceSample.id,
+              itemId: workspaceSample.sample_item.id,
+              digitalItemId: workspaceSample.sample_item.digital_item_id,
+              name: workspaceSample.sample_item.digital_item.name??"",
+              modelType: workspaceSample.sample_item.digital_item.type,
+              modelUrl: workspaceSample.sample_item.digital_item.model_url,
+              materialUrl: workspaceSample.sample_item.digital_item.material_image?.image,
+              croppedUrl: workspaceSample.sample_item.digital_item.cropped_url,
+              thumbImage: workspaceSample.sample_item.digital_item.is_default_thumb ?
+                  workspaceSample.sample_item.digital_item.default_thumb_url :
+                  workspaceSample.sample_item.digital_item.custom_thumb_url,
+              stageType: workspaceSample.stage_type,
+              acrylicBaseScaleRatio: workspaceSample.acrylic_scale,
+              position: {
+                x: workspaceSample.position[0]??0,
+                y: workspaceSample.position[1]??0,
+                z: workspaceSample.position[2]??0,
+              },
+              rotation: {
+                x: workspaceSample.rotation[0]??0,
+                y: workspaceSample.rotation[1]??0,
+                z: workspaceSample.rotation[2]??0,
+              },
+              scale: workspaceSample.scale,
+            };
+          });
       res.status(200).send({
         status: "success",
         data: {

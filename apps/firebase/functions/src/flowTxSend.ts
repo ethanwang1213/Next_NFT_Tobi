@@ -853,7 +853,7 @@ const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
       const flowAccount = await prisma.flow_accounts.findUnique({
         where: {
           account_uuid: tobiratoryAccountUuid,
-        }
+        },
       });
       if (!flowAccount || !flowAccount.flow_address) {
         const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
