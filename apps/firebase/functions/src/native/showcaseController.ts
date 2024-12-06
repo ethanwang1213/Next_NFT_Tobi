@@ -482,33 +482,33 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       for (const relationSample of showcase.showcase_sample_items) {
         const sampleData = relationSample.sample_item;
         const digitalData = relationSample.sample_item.digital_item;
-        // if ([digitalItemStatus.onSale, digitalItemStatus.viewingOnly].includes(digitalData.sales.length > 0 ? digitalData.sales[0].status : digitalData.metadata_status)) {
-        sampleItemList = [...sampleItemList, {
-          id: relationSample.id,
-          itemId: sampleData.id,
-          digitalItemId: sampleData.digital_item_id,
-          name: sampleData.digital_item.name??"",
-          modelType: digitalData.type,
-          modelUrl: digitalData.model_url,
-          croppedUrl: digitalData.cropped_url,
-          thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
-          materialUrl: digitalData.material_image?.image,
-          stageType: relationSample.stage_type,
-          scale: relationSample.scale,
-          acrylicBaseScaleRatio: relationSample.acrylic_scale,
-          shelfSectionIndex: relationSample.shelf_section_index,
-          position: {
-            x: relationSample.position[0] ?? 0,
-            y: relationSample.position[1] ?? 0,
-            z: relationSample.position[2] ?? 0,
-          },
-          rotation: {
-            x: relationSample.rotation[0] ?? 0,
-            y: relationSample.rotation[1] ?? 0,
-            z: relationSample.rotation[2] ?? 0,
-          },
-        }];
-        // }
+        if (sampleData.is_deleted == false&&digitalData.is_deleted==false) {
+          sampleItemList = [...sampleItemList, {
+            id: relationSample.id,
+            itemId: sampleData.id,
+            digitalItemId: sampleData.digital_item_id,
+            name: sampleData.digital_item.name??"",
+            modelType: digitalData.type,
+            modelUrl: digitalData.model_url,
+            croppedUrl: digitalData.cropped_url,
+            thumbUrl: digitalData.is_default_thumb ? digitalData.default_thumb_url : digitalData.custom_thumb_url,
+            materialUrl: digitalData.material_image?.image,
+            stageType: relationSample.stage_type,
+            scale: relationSample.scale,
+            acrylicBaseScaleRatio: relationSample.acrylic_scale,
+            shelfSectionIndex: relationSample.shelf_section_index,
+            position: {
+              x: relationSample.position[0] ?? 0,
+              y: relationSample.position[1] ?? 0,
+              z: relationSample.position[2] ?? 0,
+            },
+            rotation: {
+              x: relationSample.rotation[0] ?? 0,
+              y: relationSample.rotation[1] ?? 0,
+              z: relationSample.rotation[2] ?? 0,
+            },
+          }];
+        }
       }
       let nftItemList:{
         id: number;
