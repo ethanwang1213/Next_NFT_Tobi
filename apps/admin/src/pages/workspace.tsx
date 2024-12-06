@@ -57,7 +57,6 @@ export default function Index() {
   const router = useRouter();
   const dialogRef = useRef(null);
   const [matchingSample, secondaryMatchSample] = useState(null);
-  const t = useTranslations("Workspace");
   const tooltip = useTranslations("Tooltip");
   const { id } = router.query;
 

@@ -262,7 +262,7 @@
     "AdjustBodyTilt": "Adjust the tilt of the body by rotating it.",
     "SelectBaseMaterial": "Select Base Material",
     "SelectAcrylicStandBaseMaterial": "Select the material for the acrylic stand base.",
-    "AdjustBase": "Adjust Base",
+    "AdjustBase": "Base",
     "SetBaseOrientation": "Set the front and back of the base and adjust it by rotating.",
     "PlaceOnBaseStand": "Place on Base stand",
     "PlaceBodyOnBase": "Place the body on the base. Move the rectangle labeled 'Acrylic plate' to set the placement.",
