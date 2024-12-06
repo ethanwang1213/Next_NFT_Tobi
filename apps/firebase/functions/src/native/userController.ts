@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {FirebaseError, auth} from "firebase-admin";
+import {FirebaseError, auth, firestore} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
@@ -70,7 +70,40 @@ export const signUp = async (req: Request, res: Response) => {
         },
       });
       if (decodedToken.email_verified && !flowAcc) {
-        await createFlowAccount(uid);
+        const firestoreFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", uid).get();
+        if (firestoreFlowAccounts.size <= 0) {
+          await createFlowAccount(uid);
+        } else {
+          const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
+          const data = existingFlowAccountSnapshot.data();
+
+          if (data.txId) {
+            const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
+
+            if (flowJobs.size <= 0) {
+              await createFlowAccount(uid);
+            } else {
+              const flowJob = flowJobs.docs[0].data();
+              await prisma.flow_accounts.upsert({
+                where: {
+                  account_uuid: uid,
+                },
+                update: {
+                  flow_address: data.address,
+                  public_key: data.pubKey,
+                  tx_id: data.txId,
+                },
+                create: {
+                  account_uuid: uid,
+                  flow_address: data.address,
+                  public_key: data.pubKey,
+                  tx_id: data.txId,
+                  flow_job_id: flowJob.flowJobId,
+                },
+              });
+            }
+          }
+        }
       }
       res.status(200).send({
         status: "success",
