@@ -309,8 +309,7 @@
     "DateAcquired": "Date Acquired",
     "History": "History",
     "SerialNumber": "Serial Number",
-    "AdjustAcrylicRatio": "You can adjust the ratio of the selected Acrylic Stand.",
-    "BodyBaseRatioSettings": "Body/Base Ratio Settings"
+    "AdjustAcrylicRatio": "You can adjust the ratio of the selected Acrylic Stand."
   },
   "Account": {
     "UserName": "User name",
@@ -437,6 +436,7 @@
     "Redo": "Redo",
     "ToggleSafeArea": "Toggle Safe Area",
     "ToggleUIVisibility": "Toggle UI Visibility",
-    "Help": "Help"
+    "Help": "Help",
+    "VisualSetting": "Visual Setting"
   }
 }
