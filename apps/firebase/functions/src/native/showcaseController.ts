@@ -482,7 +482,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
       for (const relationSample of showcase.showcase_sample_items) {
         const sampleData = relationSample.sample_item;
         const digitalData = relationSample.sample_item.digital_item;
-        if (sampleData.is_deleted == false&&digitalData.is_deleted==false) {
+        if (!sampleData.is_deleted&&!digitalData.is_deleted) {
           sampleItemList = [...sampleItemList, {
             id: relationSample.id,
             itemId: sampleData.id,
