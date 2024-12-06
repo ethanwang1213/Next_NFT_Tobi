@@ -7,7 +7,6 @@ import {
 } from "fetchers/UploadActions";
 import { useWorkspaceUnityHook } from "hooks/useCustomUnityHook/useWorkspaceUnityHook";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import useWASDKeys from "hooks/useWASDKeys";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -88,8 +87,6 @@ export default function Index() {
     useRestfulAPI(materialAPIUrl);
 
   const [generateSampleError, setGenerateSampleError] = useState(false);
-
-  const wasdKeys = useWASDKeys();
 
   const generateSampleType = useRef(null);
   const generateMaterialImage = useRef(null);
@@ -208,7 +205,6 @@ export default function Index() {
     requestSaveData,
     placeNewSample,
     placeNewSampleWithDrag,
-    inputWasd,
     removeSamplesByItemId,
     requestItemThumbnail,
     undoAction,
@@ -276,10 +272,6 @@ export default function Index() {
       setLeavingPage(false); // Reset the state
     }
   }, [leavingPage, setLeavingPage, requestSaveData]);
-
-  useEffect(() => {
-    inputWasd(wasdKeys);
-  }, [inputWasd, wasdKeys]);
 
   const addButtonHandler = useCallback(() => {
     if (sampleCreateDialogRef.current) {
