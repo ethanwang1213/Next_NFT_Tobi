@@ -25,6 +25,15 @@ const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
     setBrightness(initialValue);
   }, [initialValue]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(e.target.value, 10);
+
+    if (!isNaN(newValue) && newValue >= -50 && newValue <= 50) {
+      setBrightness(newValue);
+      onBrightnessChanged(newValue);
+    }
+  };
+
   const handleStyle = {
     borderColor: "#FAFAFA",
     height: 20,
@@ -45,19 +54,18 @@ const BrightnessPicker: React.FC<BrightnessPickerProps> = ({
 
   return (
     <div className="flex flex-col mt-6">
-      {/* Brightness text and value edit */}
       <div className="flex items-center">
         <div className="text-[16px] font-[700] leading-[20px] w-[76px]">
           {t("Brightness")}
         </div>
         <input
-          className="w-[64px] h-[32px] rounded-[5px] bg-[#A5A1A1] text-white text-center font-[400] text-[16px] leading-[120%] mx-4 outline-none"
+          className="w-[64px] h-[32px] rounded-[5px] bg-[#A5A1A1] text-white text-center font-[400] text-[16px] leading-[120%] mx-4 outline-none no-spinner"
           value={brightness}
-          readOnly
+          onChange={handleInputChange}
+          type="number"
         ></input>
       </div>
 
-      {/* Brightness slider */}
       <div className="flex items-center mt-[18px] mb-[16px]">
         <Slider
           min={-50}
