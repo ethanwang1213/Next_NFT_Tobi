@@ -1,6 +1,6 @@
 import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { UpdateIdValues, WasdParams } from "types/adminTypes";
+import { UpdateIdValues } from "types/adminTypes";
 import {
   DecorationId,
   ItemBaseData,
@@ -26,6 +26,7 @@ import { useLoadData } from "./useLoadData";
 import { useMouseUp } from "./useMouseUp";
 import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
+import { useWasd } from "./useWasd";
 
 export const useSaidanLikeUnityHookBase = ({
   sceneType,
@@ -251,16 +252,7 @@ export const useSaidanLikeUnityHookBase = ({
     [postMessageToUnity],
   );
 
-  const inputWasd = useCallback(
-    ({ wKey, aKey, sKey, dKey }: WasdParams) => {
-      if (!isLoaded || !isSceneOpen) return;
-      postMessageToUnity(
-        "InputWasdMessageReceiver",
-        JSON.stringify({ wKey, aKey, sKey, dKey }),
-      );
-    },
-    [isLoaded, isSceneOpen, postMessageToUnity],
-  );
+  useWasd({ isLoaded, isSceneOpen, postMessageToUnity });
 
   const { requestNftModelGeneration, handleNftModelGenerated } =
     useRequestNftModelGeneration({
@@ -353,7 +345,6 @@ export const useSaidanLikeUnityHookBase = ({
     placeNewNftWithDrag,
     removeItem,
     updateIdValues,
-    inputWasd,
     undoAction,
     redoAction,
     deleteAllActionHistory,

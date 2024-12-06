@@ -3,7 +3,6 @@ import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { useShowcaseEditUnityHook } from "hooks/useCustomUnityHook";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import useWASDKeys from "hooks/useWASDKeys";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -59,7 +58,6 @@ const Showcase = () => {
   const timerId = useRef(null);
   const tooltip = useTranslations("Tooltip");
 
-  const wasdKeys = useWASDKeys();
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
 
   // showcase unity view event handlers
@@ -172,7 +170,6 @@ const Showcase = () => {
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
     updateSettings,
-    inputWasd,
     undoAction,
     redoAction,
     showSmartphoneArea,
@@ -305,10 +302,6 @@ const Showcase = () => {
       window.removeEventListener("resize", updateContainerWidth);
     };
   }, []);
-
-  useEffect(() => {
-    inputWasd(wasdKeys);
-  }, [inputWasd, wasdKeys]);
 
   const selectSampleHandler = useCallback(
     (sample: SampleItem, isDrag: boolean) => {
