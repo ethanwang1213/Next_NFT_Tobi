@@ -24,6 +24,8 @@ export const getCopyrights = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
+          is_deleted: false,
         },
         include: {
           copyrights: true,
@@ -83,6 +85,8 @@ export const updateCopyrights = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
+          is_deleted: false,
         },
       });
       if (!content) {
@@ -157,6 +161,8 @@ export const deleteCopyrights = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
+          is_deleted: false,
         },
       });
       if (!content) {

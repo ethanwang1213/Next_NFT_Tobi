@@ -13,7 +13,7 @@ import {
   mintStatus,
   statusOfLimitTransaction,
   notificationBatchStatus,
-  digitalItemStatus
+  digitalItemStatus,
 } from "./utils";
 import * as fcl from "@onflow/fcl";
 
@@ -506,7 +506,7 @@ export const finalizeModelUrl = async (req: Request, res: Response) => {
             flow_account: true,
           },
         },
-      }
+      },
     });
 
     if (!digitalItem) {
@@ -556,7 +556,7 @@ export const finalizeModelUrl = async (req: Request, res: Response) => {
       },
       data: {
         meta_model_url: modelUrl,
-      }
+      },
     });
 
     res.status(200).send({
@@ -573,7 +573,7 @@ export const finalizeModelUrl = async (req: Request, res: Response) => {
     });
     return;
   });
-}
+};
 
 export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
   const cadence = `

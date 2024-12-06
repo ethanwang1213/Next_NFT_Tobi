@@ -13,6 +13,7 @@ export const getContentById = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           id: parseInt(id),
+          is_approved: true,
           is_deleted: false,
         },
       });
@@ -267,6 +268,8 @@ export const getContentByUuid = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
+          is_deleted: false,
         },
       });
       if (!content) {
@@ -694,6 +697,7 @@ export const setFavoriteContent = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           id: parseInt(id),
+          is_approved: true,
           is_deleted: false,
         },
         include: {
@@ -836,6 +840,8 @@ export const reportContent = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           id: parseInt(id),
+          is_approved: true,
+          is_deleted: false,
         },
       });
       if (!content) {
@@ -959,6 +965,8 @@ export const getDocumentsReportContent = async (req: Request, res: Response) => 
       const content = await prisma.contents.findUnique({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
+          is_deleted: false,
         },
       });
       if (!content) {
