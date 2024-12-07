@@ -246,6 +246,8 @@ export const createDigitalItem = async (req: Request, res: Response) => {
       const content = await prisma.contents.findUnique({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
+          is_deleted: false,
         },
         include: {
           copyrights: true,

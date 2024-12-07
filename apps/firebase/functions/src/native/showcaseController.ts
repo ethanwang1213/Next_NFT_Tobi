@@ -678,6 +678,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
       const content = await prisma.contents.findFirst({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
           is_deleted: false,
         },
       });
@@ -830,6 +831,7 @@ export const throwItemShowcase = async (req: Request, res: Response) => {
       const content = await prisma.contents.findFirst({
         where: {
           businesses_uuid: uid,
+          is_approved: true,
           is_deleted: false,
         },
       });

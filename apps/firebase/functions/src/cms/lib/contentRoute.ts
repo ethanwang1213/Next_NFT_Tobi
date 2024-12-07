@@ -181,6 +181,101 @@ router.put("/requests", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/participation", async (req: Request, res: Response) => {
+  const {pageNumber, pageSize} = req.query;
+  const skip = (Number(pageNumber) - 1) * Number(pageSize);
+  console.log(skip);
+
+  try {
+    const contents = await prisma.contents.findMany({
+      // skip: skip,
+      // take: Number(pageSize),
+      where: {
+        is_approved: false,
+      },
+      orderBy: {
+        created_date_time: "asc",
+      },
+    });
+    const returnData = contents.map((content) => {
+      return {
+        id: content.id,
+        name: content.name,
+        sticker: content.sticker,
+        requestDate: content.created_date_time,
+        hpURL: content.url,
+      };
+    });
+    res.status(200).send({
+      status: "success",
+      data: returnData,
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.put("/participation", async (req: Request, res: Response) => {
+  const {processType, contentIds}: { processType: boolean, contentIds: number[] } = req.body;
+  try {
+    if (processType) {
+      const allRequests = await prisma.contents.findMany({
+        where: {
+          id: {
+            in: contentIds,
+          },
+        },
+      });
+      await Promise.all(
+          allRequests.map(async (content) => {
+            await prisma.contents.update({
+              where: {
+                id: content.id,
+              },
+              data: {
+                is_approved: true,
+              },
+            });
+          })
+      );
+    } else {
+      const allRequests = await prisma.contents.findMany({
+        where: {
+          id: {
+            in: contentIds,
+          },
+        },
+      });
+      await Promise.all(
+          allRequests.map(async (content) => {
+            await prisma.contents.update({
+              where: {
+                id: content.id,
+              },
+              data: {
+                is_approved: false,
+                is_deleted: true,
+              },
+            });
+          })
+      );
+    }
+
+    res.status(200).send({
+      status: "success",
+      data: "approved",
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
 router.get("/notifications", async (req: Request, res: Response) => {
   try {
     const reportedContents = await prisma.reported_contents.findMany({

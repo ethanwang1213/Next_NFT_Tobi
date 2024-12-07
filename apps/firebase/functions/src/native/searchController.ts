@@ -61,6 +61,7 @@ export const searchAll = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
+          is_approved: true,
           is_deleted: false,
         },
         take: 2,
@@ -342,6 +343,7 @@ export const searchContents = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
+          is_approved: true,
           is_deleted: false,
         },
         include: {
@@ -367,6 +369,7 @@ export const searchContents = async (req: Request, res: Response) => {
             contains: searchValue,
             mode: "insensitive",
           },
+          is_approved: true,
           is_deleted: false,
         },
         include: {
