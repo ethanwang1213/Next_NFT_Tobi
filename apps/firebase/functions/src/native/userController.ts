@@ -102,6 +102,8 @@ export const signUp = async (req: Request, res: Response) => {
                 },
               });
             }
+          } else {
+            await createFlowAccount(uid);
           }
         }
       }
