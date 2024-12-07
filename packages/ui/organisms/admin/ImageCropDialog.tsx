@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import {
   MutableRefObject,
@@ -33,6 +34,8 @@ const ImageCropDialog = ({
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>(null);
   const [imageURL, setImageURL] = useState("");
+  const t = useTranslations("ContentSettings");
+  const b = useTranslations("GiftReceivingSettings");
 
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -148,7 +151,7 @@ const ImageCropDialog = ({
           </button>
         </form>
         <div className="text-base-black text-lg font-semibold">
-          Customize Image
+          {t("CustomizeImage")}
         </div>
         <ReactCrop
           crop={crop}
@@ -185,7 +188,7 @@ const ImageCropDialog = ({
               text-primary text-sm leading-4 font-semibold"
             onClick={() => dialogRef.current.close()}
           >
-            Cancel
+            {t("Cancel")}
           </button>
           <button
             type="button"
@@ -197,7 +200,7 @@ const ImageCropDialog = ({
               dialogRef.current.close();
             }}
           >
-            Save changes
+            {b("SaveChanges")}
           </button>
         </div>
       </div>
