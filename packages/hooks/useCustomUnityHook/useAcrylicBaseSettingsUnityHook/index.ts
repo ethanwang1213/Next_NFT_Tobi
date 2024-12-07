@@ -19,11 +19,16 @@ export const useAcrylicBaseSettingsUnityHook = () => {
     sceneType: UnitySceneType.AcrylicBaseSettings,
   });
 
-  const { isSceneOpen, defaultItemData, setLoadData, handleSceneIsLoaded } =
-    useLoadAcrylicStand({
-      isLoaded,
-      postMessageToUnity,
-    });
+  const {
+    isSceneOpen,
+    defaultItemData,
+    setLoadData,
+    handleSceneIsLoaded,
+    handleItemIsInitialized,
+  } = useLoadAcrylicStand({
+    isLoaded,
+    postMessageToUnity,
+  });
 
   const { updateAcrylicBaseScaleRatio, resetAcrylicBaseScaleRatio } =
     useUpdateAcrylicBaseScaleRatio({
@@ -37,6 +42,7 @@ export const useAcrylicBaseSettingsUnityHook = () => {
     unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
+    handleSaidanDetailViewIsInitialized: handleItemIsInitialized,
   });
 
   return {

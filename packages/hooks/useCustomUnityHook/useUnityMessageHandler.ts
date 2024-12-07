@@ -28,6 +28,7 @@ type Props = {
   handleActionUndone?: MessageHandler;
   handleActionRedone?: MessageHandler;
   handleItemTransformUpdated?: MessageHandler;
+  handleSaidanDetailViewIsInitialized?: () => void;
   handleLoadingCompleted?: () => void;
 };
 
@@ -50,6 +51,7 @@ export const useUnityMessageHandler = ({
   handleActionUndone,
   handleActionRedone,
   handleItemTransformUpdated,
+  handleSaidanDetailViewIsInitialized,
   handleLoadingCompleted,
 }: Props) => {
   const resolveUnityMessage = useCallback((json: string) => {
@@ -120,6 +122,9 @@ export const useUnityMessageHandler = ({
         case UnityMessageType.ItemTransformUpdated:
           handleItemTransformUpdated?.(msgObj);
           return;
+        case UnityMessageType.SaidanDetailViewIsInitialized:
+          handleSaidanDetailViewIsInitialized?.();
+          return;
         case UnityMessageType.LoadingCompleted:
           handleLoadingCompleted?.();
           return;
@@ -145,6 +150,7 @@ export const useUnityMessageHandler = ({
       handleActionUndone,
       handleActionRedone,
       handleItemTransformUpdated,
+      handleSaidanDetailViewIsInitialized,
       handleLoadingCompleted,
     ],
   );
