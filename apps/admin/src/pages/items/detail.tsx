@@ -700,7 +700,7 @@ const Detail = () => {
                         <div className="mt-8">
                           <RadioButtonGroup
                             title={l("CommercialUse")}
-                            initialValue={digitalItem.license.com}
+                            initialValue={!!digitalItem.license?.com}
                             onChange={(value) =>
                               fieldChangeHandler("com", value)
                             }
@@ -708,7 +708,7 @@ const Detail = () => {
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title={l("Adaptation")}
-                            initialValue={digitalItem.license.adp}
+                            initialValue={!!digitalItem.license?.adp}
                             onChange={(value) =>
                               fieldChangeHandler("adp", value)
                             }
@@ -716,7 +716,7 @@ const Detail = () => {
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title={l("Derivative")}
-                            initialValue={digitalItem.license.der}
+                            initialValue={!!digitalItem.license?.der}
                             onChange={(value) =>
                               fieldChangeHandler("der", value)
                             }
@@ -724,7 +724,7 @@ const Detail = () => {
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title={l("Merchandising")}
-                            initialValue={digitalItem.license.mer}
+                            initialValue={!!digitalItem.license?.mer}
                             onChange={(value) =>
                               fieldChangeHandler("mer", value)
                             }
@@ -733,7 +733,7 @@ const Detail = () => {
 
                           <RadioButtonGroup
                             title={l("Distribution")}
-                            initialValue={digitalItem.license.dst}
+                            initialValue={!!digitalItem.license?.dst}
                             onChange={(value) =>
                               fieldChangeHandler("dst", value)
                             }
@@ -741,7 +741,7 @@ const Detail = () => {
                           <hr className="pb-3 border-primary" />
                           <RadioButtonGroup
                             title={l("CreditOmission")}
-                            initialValue={digitalItem.license.ncr}
+                            initialValue={!!digitalItem.license?.ncr}
                             onChange={(value) =>
                               fieldChangeHandler("ncr", value)
                             }
