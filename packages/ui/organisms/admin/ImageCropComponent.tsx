@@ -75,7 +75,7 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
 
   const toggleAspectHandler = useCallback((value: number | undefined) => {
     setAspect(value);
-    if (value) {
+    if (value && value !== -1) {
       if (imgRef.current) {
         blobUrlRef.current = null;
         const imgElement = imgRef.current;
@@ -108,6 +108,14 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
         newPixelCrop.y += offsetY;
         setCrop(newPixelCrop);
       }
+    } else {
+      blobUrlRef.current = null;
+      const { width, height } = imgRef.current;
+      const fullCrop = convertToPixelCrop(crop, width, height);
+      fullCrop.x = (imgWrapperRef.current.clientWidth - width) / 2;
+      fullCrop.y = (imgWrapperRef.current.clientHeight - height) / 2;
+
+      setCrop(fullCrop);
     }
   }, []);
 
@@ -277,8 +285,11 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                   height={24}
                   src="/admin/images/icon/crop.svg"
                   alt="crop"
-                  className={`cursor-pointer rounded hover:bg-neutral-200`}
-                  onClick={cropImage}
+                  className={`cursor-pointer rounded hover:bg-neutral-200
+              ${aspect === undefined ? "bg-neutral-200" : ""}`}
+                  onClick={() => {
+                    toggleAspectHandler(undefined);
+                  }}
                 />
                 <NextImage
                   width={24}
@@ -323,9 +334,9 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                   src="/admin/images/icon/crop_free.svg"
                   alt="crop free"
                   className={`cursor-pointer rounded hover:bg-neutral-200
-              ${aspect === undefined ? "bg-neutral-200" : ""}`}
+                    ${aspect === -1 ? "bg-neutral-200" : ""}`}
                   onClick={() => {
-                    toggleAspectHandler(undefined);
+                    toggleAspectHandler(-1);
                   }}
                 />
               </div>
