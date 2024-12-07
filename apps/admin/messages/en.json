@@ -336,7 +336,7 @@
     "IDInUse": "This UserID is already in use.",
     "Unverified": "unverified",
     "EnterName": "Please enter a name.",
-    "UserIdNoSpaces": "User ID cannot contain spaces."
+    "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_), or Japanese."
   },
   "AccountPassword": {
     "Name": "Name",

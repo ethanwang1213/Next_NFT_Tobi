@@ -278,7 +278,6 @@ export default function Index() {
   const profileIconCropDlgRef = useRef(null);
   const emailEditDialogRef = useRef(null);
   const t = useTranslations("Account");
-  const userIdRegex = /^[A-Za-z0-9_-]{5,20}$/;
   const [tempImageUrlProfile, setTempImageUrlProfile] = useState(null);
 
   const submitHandler = async () => {
@@ -296,12 +295,6 @@ export default function Index() {
       toast(t("EnterName"));
       return;
     }
-    const normalizedValue = data.userId.toLowerCase();
-    if (!userIdRegex.test(normalizedValue)) {
-      toast(t("UserIdNoSpaces"));
-      return;
-    }
-
     if (data && data.icon != dataRef?.current.icon) {
       setLoading(true);
       const iconUrl = await uploadImage(data.icon, ImageType.AccountAvatar);
@@ -322,7 +315,15 @@ export default function Index() {
   };
 
   const fieldChangeHandler = (field: string, value: string) => {
-    setData({ ...data, [field]: value });
+    if (field === "userId") {
+      const sanitizedValue = value.replace(
+        /[^A-Za-z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF66-\uFF9F\u3005_-]/g,
+        "",
+      );
+      setData({ ...data, [field]: sanitizedValue });
+    } else {
+      setData({ ...data, [field]: value });
+    }
     setModified(true);
   };
 
@@ -405,6 +406,7 @@ export default function Index() {
                 type="text"
                 className={`${valueClass} outline-none`}
                 value={data?.userId ?? ""}
+                placeholder={t("UserIdNoSpaces")}
                 onChange={(e) => fieldChangeHandler("userId", e.target.value)}
               />
             </AccountFieldComponent>
