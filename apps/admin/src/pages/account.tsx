@@ -322,10 +322,7 @@ export default function Index() {
 
   const fieldChangeHandler = (field: string, value: string) => {
     if (field === "userId") {
-      const sanitizedValue = value.replace(
-        /[^A-Za-z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF66-\uFF9F\u3005_-]/g,
-        "",
-      );
+      const sanitizedValue = value.replace(/^[A-Za-z0-9_-]{5,20}$/, "");
       setData({ ...data, [field]: sanitizedValue });
     } else {
       setData({ ...data, [field]: value });
