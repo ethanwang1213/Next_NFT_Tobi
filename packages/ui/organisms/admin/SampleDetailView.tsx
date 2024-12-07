@@ -2,6 +2,7 @@ import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
 import { useWorkspaceEditUnity } from "contexts/WorkspaceEditUnityContext";
 import { decodeBase64ToBinary, uploadData } from "fetchers/UploadActions";
 import useFcmToken from "hooks/useFCMToken";
+import useFinalizeModel from "hooks/useFinalizeModel";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -52,6 +53,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
+  const [finalizeModelError, finalizeModel] = useFinalizeModel();
   const { pauseUnityInputs, requestNftModelGeneration } =
     useShowcaseEditUnity();
   const { requestNftModelGeneration: workspaceRequestNftModelGeneration } =
@@ -59,16 +61,30 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const t = useTranslations("Workspace");
   const s = useTranslations("Showcase");
 
+  useEffect(() => {
+    if (finalizeModelError) {
+      toast(finalizeModelError.toString());
+    }
+  }, [finalizeModelError]);
+
   const handleNftModelGenerated = async (
     itemId: number,
     nftModelBase64: string,
   ) => {
-    const binaryData = decodeBase64ToBinary(nftModelBase64);
-    const modelUrl = await uploadData(binaryData);
+    if (nftModelBase64) {
+      const binaryData = decodeBase64ToBinary(nftModelBase64);
+      const modelUrl = await uploadData(binaryData);
+      const finalizeModelResult = await finalizeModel(itemId, {
+        fcmToken,
+        modelUrl,
+      });
+      if (!finalizeModelResult) {
+        return;
+      }
+    }
     const result = await postData(`native/items/${id}/mint`, {
       fcmToken: fcmToken,
       amount: 1,
-      modelUrl: modelUrl,
     });
 
     if (!result) {
@@ -144,12 +160,16 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
       if (value === "mint" && section === "showcase") {
-        requestNftModelGeneration({
-          itemId: data.id,
-          modelType: data.type,
-          modelUrl: data.modelUrl,
-          imageUrl: data.materialUrl || data.customThumbnailUrl,
-        });
+        if (data.mera_model_url) {
+          await handleNftModelGenerated(data.id, "");
+        } else {
+          requestNftModelGeneration({
+            itemId: data.id,
+            modelType: data.type,
+            modelUrl: data.modelUrl,
+            imageUrl: data.materialUrl || data.customThumbnailUrl,
+          });
+        }
       } else {
         workspaceRequestNftModelGeneration({
           itemId: data.id,
