@@ -1011,6 +1011,7 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         croppedUrl: digitalItem.cropped_url,
         isCustomThumbnailSelected: !digitalItem.is_default_thumb,
         modelUrl: digitalItem.model_url,
+        meta_model_url: digitalItem.meta_model_url,
         type: digitalItem.type,
         materialUrl: digitalItem.material_image?.image,
         price: digitalItem.sales.length>0?digitalItem.sales[0].price:null,
