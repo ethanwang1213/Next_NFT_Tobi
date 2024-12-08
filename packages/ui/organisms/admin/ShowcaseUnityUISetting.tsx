@@ -92,10 +92,10 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
     };
     updateItemTransform(updatedData);
 
-    setpx(selectedItem.positionOnPlane.x.toFixed(3));
-    setpy(selectedItem.positionOnPlane.y.toFixed(3));
+    setpx(selectedItem.positionOnPlane.x.toFixed(1));
+    setpy(selectedItem.positionOnPlane.y.toFixed(1));
     setrx(selectedItem.rotationAngle.toFixed(1));
-    setScale(selectedItem.scale.toFixed(3));
+    setScale(selectedItem.scale.toFixed(1));
   };
 
   const handleStyle = {
@@ -138,9 +138,10 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
                 value={px}
                 onChange={(e) => {
                   const newX = e.target.value.replace(notNumberReg, "");
-                  const floatNewX = parseFloat(newX);
-                  setpx(newX);
+                  let floatNewX = parseFloat(newX);
                   if (!isNaN(floatNewX)) {
+                    floatNewX = parseFloat(floatNewX.toFixed(1));
+                    setpx(floatNewX.toString());
                     updatePosition(floatNewX, floatPy);
                   }
                 }}
@@ -153,9 +154,10 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
                 value={py}
                 onChange={(e) => {
                   const newY = e.target.value.replace(notNumberReg, "");
-                  const floatNewY = parseFloat(newY);
-                  setpy(newY);
+                  let floatNewY = parseFloat(newY);
                   if (!isNaN(floatNewY)) {
+                    floatNewY = parseFloat(floatNewY.toFixed(1));
+                    setpy(floatNewY.toString());
                     updatePosition(floatPx, floatNewY);
                   }
                 }}
@@ -183,9 +185,10 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
                 value={rx}
                 onChange={(e) => {
                   const newR = e.target.value.replace(notNumberReg, "");
-                  const floatNewR = parseFloat(newR);
-                  setrx(newR);
+                  let floatNewR = parseFloat(newR);
                   if (!isNaN(floatNewR)) {
+                    floatNewR = parseFloat(floatNewR.toFixed(1));
+                    setrx(floatNewR.toString());
                     updateRotation(floatNewR);
                   }
                 }}
@@ -211,9 +214,10 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
                 value={scale}
                 onChange={(e) => {
                   const newScale = e.target.value.replace(notNumberReg, "");
-                  const floatNewScale = parseFloat(newScale);
-                  setScale(newScale);
+                  let floatNewScale = parseFloat(newScale);
                   if (!isNaN(floatNewScale)) {
+                    floatNewScale = parseFloat(floatNewScale.toFixed(1));
+                    setScale(floatNewScale.toString());
                     updateScale(floatNewScale);
                   }
                 }}
@@ -223,8 +227,8 @@ const ShowcaseUnityUISetting = ({ menuShow }: { menuShow: boolean }) => {
           </div>
           <Slider
             min={0}
-            max={5}
-            step={0.001}
+            max={2}
+            step={0.1}
             styles={{
               handle: handleStyle,
               track: trackStyle,
@@ -258,16 +262,36 @@ const TransformTextField = ({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   updateFinish: () => void;
 }) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const currentValue = parseFloat(value) || 0;
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const newValue = (currentValue + 0.1).toFixed(1);
+      onChange({
+        target: { value: newValue },
+      } as React.ChangeEvent<HTMLInputElement>);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const newValue = (currentValue - 0.1).toFixed(1);
+      onChange({
+        target: { value: newValue },
+      } as React.ChangeEvent<HTMLInputElement>);
+    }
+  };
+
   return (
     <input
       type="text"
       placeholder={placeholder}
-      className="input input-bordered max-w-xs w-full h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px] no-spinner"
-      value={value === null || value === undefined ? "" : value}
+      className="input input-bordered max-w-xs w-full h-8 bg-secondary-300 text-[#FCFCFC] text-[10px] rounded-[5px] text-center pl-[7px] pr-[10px]"
+      value={
+        value === null || value === undefined
+          ? ""
+          : parseFloat(value).toFixed(1)
+      }
       onChange={onChange}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") updateFinish();
-      }}
+      onKeyDown={handleKeyDown}
       onBlur={() => {
         updateFinish();
       }}

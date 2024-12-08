@@ -398,7 +398,16 @@ const Showcase = () => {
               left: `${320 - 424}px`,
             }}
           >
-            <span className="text-xl font-semibold text-secondary-600 text-center mr-1">
+            <span
+              className="text-xl font-semibold text-secondary-600 text-center mr-1 truncate cursor-pointer"
+              style={{ maxWidth: "calc(100% - 40px)" }}
+              onClick={() => {
+                if (!loading && showcaseData?.title) {
+                  dialogRef.current?.showModal();
+                  pauseUnityInputs();
+                }
+              }}
+            >
               {loading || !showcaseData?.title ? (
                 <span
                   className="loading loading-spinner"
@@ -479,7 +488,6 @@ const Showcase = () => {
                 <button
                   className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0"
                   onClick={() => {
-                    setShowSampleDetailView(!showSampleDetailView);
                     showSmartFrame
                       ? showSmartphoneArea()
                       : hideSmartphoneArea();

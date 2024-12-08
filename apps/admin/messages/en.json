@@ -262,7 +262,7 @@
     "AdjustBodyTilt": "Adjust the tilt of the body by rotating it.",
     "SelectBaseMaterial": "Select Base Material",
     "SelectAcrylicStandBaseMaterial": "Select the material for the acrylic stand base.",
-    "AdjustBase": "Adjust Base",
+    "AdjustBase": "Base",
     "SetBaseOrientation": "Set the front and back of the base and adjust it by rotating.",
     "PlaceOnBaseStand": "Place on Base stand",
     "PlaceBodyOnBase": "Place the body on the base. Move the rectangle labeled 'Acrylic plate' to set the placement.",
@@ -309,8 +309,7 @@
     "DateAcquired": "Date Acquired",
     "History": "History",
     "SerialNumber": "Serial Number",
-    "AdjustAcrylicRatio": "You can adjust the ratio of the selected Acrylic Stand.",
-    "BodyBaseRatioSettings": "Body/Base Ratio Settings"
+    "AdjustAcrylicRatio": "You can adjust the ratio of the selected Acrylic Stand."
   },
   "Account": {
     "UserName": "User name",
@@ -337,7 +336,8 @@
     "IDInUse": "This UserID is already in use.",
     "Unverified": "unverified",
     "EnterName": "Please enter a name.",
-    "UserIdNoSpaces": "User ID cannot contain spaces."
+    "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_).",
+    "UserIdTooShort": "User ID must be at least 5 characters."
   },
   "AccountPassword": {
     "Name": "Name",
@@ -437,6 +437,7 @@
     "Redo": "Redo",
     "ToggleSafeArea": "Toggle Safe Area",
     "ToggleUIVisibility": "Toggle UI Visibility",
-    "Help": "Help"
+    "Help": "Help",
+    "VisualSetting": "Visual Setting"
   }
 }

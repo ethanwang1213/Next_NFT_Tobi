@@ -26,6 +26,7 @@ const AcrylicStandSettingDialog = ({
   );
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("Workspace");
+  const tooltip = useTranslations("Tooltip");
 
   const resetConfirmHandler = () => {
     resetAcrylicBaseScaleRatio();
@@ -73,7 +74,6 @@ const AcrylicStandSettingDialog = ({
     }
   }, [data, selectedItem, isOpen, setLoadData]);
 
-  // observe dialog open attribute
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -84,7 +84,7 @@ const AcrylicStandSettingDialog = ({
 
   return (
     <dialog ref={dialogRef} className="modal">
-      <div className="modal-box max-w-[878px] rounded-3xl p-6 flex flex-col gap-3 justify-between items-center bg-[#2E2E2EF2]">
+      <div className="modal-box max-w-[878px] rounded-3xl px-10 py-8 flex flex-col gap-3 justify-between items-center bg-[#2E2E2EF2]">
         <ResetConfirmDialog
           dialogRef={confirmDialogRef}
           confirmHandler={resetConfirmHandler}
@@ -99,19 +99,13 @@ const AcrylicStandSettingDialog = ({
             </span>
           </button>
         </form>
-        <div className="flex justify-center text-[30px] text-white font-bold items-center gap-2">
-          <Image
-            width={32}
-            height={32}
-            alt="setting button"
-            src="/admin/images/icon/setting-icon.svg"
-            className="h-[27px]"
-          />
-          <span>{t("RatioSettings")}</span>
+        <div className="flex flex-col text-white items-center text-[30px] space-y-5">
+          <span className="font-bold"> {tooltip("VisualSetting")}</span>
+          <span className="text-base"> {t("AdjustAcrylicRatio")}</span>
         </div>
-        <div className="h-[500px] mt-8 flex justify-between gap-16 w-full p-8">
+        <div className="h-[500px] flex justify-between gap-16 w-full mt-6">
           <div className="w-full shadow shadow-custom-light rounded-[16px]">
-            <div className="h-[75%] rounded-t-[16px] overflow-hidden relative bg-white">
+            <div className="h-[100%] rounded-[16px] overflow-hidden relative bg-white">
               {!isSceneOpen && isOpen && (
                 <div className="absolute inset-0 flex justify-center items-center">
                   <Spinner />
@@ -123,16 +117,6 @@ const AcrylicStandSettingDialog = ({
                   isSceneOpen={isSceneOpen}
                 />
               )}
-            </div>
-            <div className="px-8 text-white text-[16px] py-7">
-              <div className="flex justify-between">
-                <span className="font-bold">{t("BodyScale")}</span>
-                <span>0000</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-bold">{t("BaseScale")}</span>
-                <span>0000</span>
-              </div>
             </div>
           </div>
           <div className="text-white w-full flex flex-col justify-between">
@@ -148,7 +132,7 @@ const AcrylicStandSettingDialog = ({
                     src="/admin/images/icon/scale.svg"
                     alt="scale icon"
                   />
-                  <span className="text-[16px] font-bold w-[80px]">
+                  <span className="text-[16px] font-bold w-[100px]">
                     {t("Scale")}
                   </span>
                 </div>

@@ -73,43 +73,53 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     [crop],
   );
 
-  const toggleAspectHandler = useCallback((value: number | undefined) => {
-    setAspect(value);
-    if (value) {
-      if (imgRef.current) {
+  const toggleAspectHandler = useCallback(
+    (value: number | undefined) => {
+      setAspect(value);
+      if (value && value !== -1) {
+        if (imgRef.current) {
+          blobUrlRef.current = null;
+          const imgElement = imgRef.current;
+          const wrapperElement = imgWrapperRef.current;
+
+          const scaleX = imgElement.naturalWidth / imgElement.width;
+          const scaleY = imgElement.naturalHeight / imgElement.height;
+
+          const actualWidth = Math.min(
+            wrapperElement.clientWidth,
+            imgElement.width * scaleX,
+          );
+          const actualHeight = Math.min(
+            wrapperElement.clientHeight,
+            imgElement.height * scaleY,
+          );
+
+          const offsetX = (wrapperElement.clientWidth - actualWidth) / 2;
+          const offsetY = (wrapperElement.clientHeight - actualHeight) / 2;
+
+          const newCrop = centerAspectCrop(actualWidth, actualHeight, value);
+
+          const newPixelCrop = convertToPixelCrop(
+            newCrop,
+            actualWidth,
+            actualHeight,
+          );
+
+          newPixelCrop.x += offsetX;
+          newPixelCrop.y += offsetY;
+          setCrop(newPixelCrop);
+        }
+      } else {
         blobUrlRef.current = null;
-        const imgElement = imgRef.current;
-        const wrapperElement = imgWrapperRef.current;
-
-        const scaleX = imgElement.naturalWidth / imgElement.width;
-        const scaleY = imgElement.naturalHeight / imgElement.height;
-
-        const actualWidth = Math.min(
-          wrapperElement.clientWidth,
-          imgElement.width * scaleX,
-        );
-        const actualHeight = Math.min(
-          wrapperElement.clientHeight,
-          imgElement.height * scaleY,
-        );
-
-        const offsetX = (wrapperElement.clientWidth - actualWidth) / 2;
-        const offsetY = (wrapperElement.clientHeight - actualHeight) / 2;
-
-        const newCrop = centerAspectCrop(actualWidth, actualHeight, value);
-
-        const newPixelCrop = convertToPixelCrop(
-          newCrop,
-          actualWidth,
-          actualHeight,
-        );
-
-        newPixelCrop.x += offsetX;
-        newPixelCrop.y += offsetY;
-        setCrop(newPixelCrop);
+        const { width, height } = imgRef.current;
+        const fullCrop = convertToPixelCrop(crop, width, height);
+        fullCrop.x = (imgWrapperRef.current.clientWidth - width) / 2;
+        fullCrop.y = (imgWrapperRef.current.clientHeight - height) / 2;
+        setCrop(fullCrop);
       }
-    }
-  }, []);
+    },
+    [crop],
+  );
 
   const cropImage = useCallback(async () => {
     const image = imgRef.current;
@@ -277,8 +287,11 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                   height={24}
                   src="/admin/images/icon/crop.svg"
                   alt="crop"
-                  className={`cursor-pointer rounded hover:bg-neutral-200`}
-                  onClick={cropImage}
+                  className={`cursor-pointer rounded hover:bg-neutral-200
+              ${aspect === undefined ? "bg-neutral-200" : ""}`}
+                  onClick={() => {
+                    toggleAspectHandler(undefined);
+                  }}
                 />
                 <NextImage
                   width={24}
@@ -323,9 +336,9 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
                   src="/admin/images/icon/crop_free.svg"
                   alt="crop free"
                   className={`cursor-pointer rounded hover:bg-neutral-200
-              ${aspect === undefined ? "bg-neutral-200" : ""}`}
+                    ${aspect === -1 ? "bg-neutral-200" : ""}`}
                   onClick={() => {
-                    toggleAspectHandler(undefined);
+                    toggleAspectHandler(-1);
                   }}
                 />
               </div>

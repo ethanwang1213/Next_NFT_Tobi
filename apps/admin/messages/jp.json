@@ -310,8 +310,7 @@
     "DateAcquired": "取得日",
     "History": "履歴",
     "SerialNumber": "シリアルナンバー",
-    "AdjustAcrylicRatio": "選択したアクリルスタンドの本体と台座の比率を調整できます。",
-    "BodyBaseRatioSettings": "アクリルスタンド 比率変更"
+    "AdjustAcrylicRatio": "選択したアクリルスタンドの本体と台座の比率を調整できます。"
   },
   "Account": {
     "UserName": "ユーザー名",
@@ -338,7 +337,8 @@
     "IDInUse": "このIDはすでに使用されています",
     "Unverified": "未認証",
     "EnterName": "名前を入力してください。",
-    "UserIdNoSpaces": "ユーザーIDにスペースを含めることはできません。"
+    "UserIdNoSpaces": "ユーザーIDは5〜20文字、英数字、ハイフン（-）、アンダースコア（_）のみを使用できます。",
+    "UserIdTooShort": "ユーザーIDは5文字以上である必要があります。"
   },
   "AccountPassword": {
     "Name": "名前",
@@ -438,6 +438,7 @@
     "Redo": "やり直し",
     "ToggleSafeArea": "セーフエリアの表示切替",
     "ToggleUIVisibility": "UIの表示切替",
-    "Help": "ヘルプ"
+    "Help": "ヘルプ",
+    "VisualSetting": "ビジュアル設定"
   }
 }

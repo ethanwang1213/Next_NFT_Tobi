@@ -83,7 +83,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       } else if (youtubeRegex.test(link)) {
         setYoutubeUrl(link);
       } else {
-        if (link != "") newUrls.push(link);
+        if (link !== "") newUrls.push(link);
       }
     });
     setUrls(newUrls);
@@ -141,6 +141,12 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         break;
     }
     changeHandler(newUrls.filter((value) => value !== null && value !== ""));
+  };
+
+  const addNewUrl = () => {
+    if (urls.length < 1) {
+      setUrls([...urls, ""]);
+    }
   };
 
   return (
@@ -223,44 +229,44 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       </div>
       {urls &&
         urls.map((url, index) => (
-          <div key={`social-${index}`} className={`${layoutClass}`}>
-            <Image
-              width={23}
-              height={23}
-              src="/admin/images/icon/globe-icon.svg"
-              alt="social icon"
-              className="cursor-pointer"
-              onClick={() => {
-                handleRedirect("social", url);
-              }}
-            />
+          <div key={`social-${index}`}>
+            <div className="flex gap-4">
+              <Image
+                width={23}
+                height={23}
+                src="/admin/images/icon/globe-icon.svg"
+                alt="social icon"
+                className="cursor-pointer"
+                onClick={() => {
+                  handleRedirect("social", url);
+                }}
+              />
+              <span className="text-[22px] font-semibold text-placeholder-color">
+                Site Link
+              </span>
+            </div>
             <input
               type="text"
-              className={`${valueClass} flex-1 outline-none`}
+              className={`${valueClass} flex-1 outline-none ml-10`}
               value={url}
               onChange={(e) => urlChangeHandler(index + 4, e.target.value)}
               placeholder="http://example.com"
             />
           </div>
         ))}
-      <div
-        className={`${layoutClass} cursor-pointer`}
-        onClick={() => {
-          const newUrl = [...urls];
-          newUrl.push("");
-          setUrls(newUrl);
-        }}
-      >
-        <Image
-          width={23}
-          height={20}
-          src="/admin/images/icon/add-social-icon.svg"
-          alt="add social icon"
-        />
-        <span className={`${valueClass} flex-1 outline-none`}>
-          {t("AddLink")}
-        </span>
-      </div>
+      {urls.length < 1 && (
+        <div className={`${layoutClass} cursor-pointer`} onClick={addNewUrl}>
+          <Image
+            width={23}
+            height={20}
+            src="/admin/images/icon/add-social-icon.svg"
+            alt="add social icon"
+          />
+          <span className={`${valueClass} flex-1 outline-none`}>
+            {t("AddLink")}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
@@ -278,7 +284,6 @@ export default function Index() {
   const profileIconCropDlgRef = useRef(null);
   const emailEditDialogRef = useRef(null);
   const t = useTranslations("Account");
-  const userIdRegex = /^[A-Za-z0-9_-]{5,20}$/;
   const [tempImageUrlProfile, setTempImageUrlProfile] = useState(null);
 
   const submitHandler = async () => {
@@ -296,9 +301,9 @@ export default function Index() {
       toast(t("EnterName"));
       return;
     }
-    const normalizedValue = data.userId.toLowerCase();
-    if (!userIdRegex.test(normalizedValue)) {
-      toast(t("UserIdNoSpaces"));
+
+    if (data.userId.length < 5) {
+      toast(t("UserIdTooShort"));
       return;
     }
 
@@ -322,7 +327,12 @@ export default function Index() {
   };
 
   const fieldChangeHandler = (field: string, value: string) => {
-    setData({ ...data, [field]: value });
+    if (field === "userId") {
+      const sanitizedValue = value.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 20);
+      setData({ ...data, [field]: sanitizedValue });
+    } else {
+      setData({ ...data, [field]: value });
+    }
     setModified(true);
   };
 
@@ -405,6 +415,7 @@ export default function Index() {
                 type="text"
                 className={`${valueClass} outline-none`}
                 value={data?.userId ?? ""}
+                placeholder={t("UserIdNoSpaces")}
                 onChange={(e) => fieldChangeHandler("userId", e.target.value)}
               />
             </AccountFieldComponent>

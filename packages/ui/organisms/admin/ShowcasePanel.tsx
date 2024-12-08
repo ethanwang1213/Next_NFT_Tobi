@@ -337,8 +337,8 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           )}
         </div>
       </div>
-      <div className="flex justify-between items-center gap-2">
-        <span className="flex-1 text-secondary-700 text-[16px] leading-4 font-medium">
+      <div className="flex justify-between items-center gap-2 w-72">
+        <span className="flex-1 text-secondary-700 text-[16px] leading-4 font-medium truncate">
           {title}
         </span>
         <Image

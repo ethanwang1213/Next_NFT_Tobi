@@ -56,7 +56,6 @@ export default function Index() {
   const router = useRouter();
   const dialogRef = useRef(null);
   const [matchingSample, secondaryMatchSample] = useState(null);
-  const t = useTranslations("Workspace");
   const tooltip = useTranslations("Tooltip");
   const { id } = router.query;
 
@@ -621,32 +620,6 @@ export default function Index() {
             dragHandler={sampleDragHandler}
             showRestoreMenu={showRestoreMenu}
           />
-          <div className="w-full flex justify-center absolute bottom-28 items-center">
-            {showSettingsButton ? (
-              <div className="relative group">
-                <button
-                  className="h-12 bg-primary flex justify-between items-center px-6 gap-2 rounded-3xl z-10 pointer-events-auto"
-                  onClick={() => {
-                    dialogRef.current?.showModal();
-                  }}
-                >
-                  <Image
-                    width={32}
-                    height={32}
-                    alt="setting button"
-                    src="/admin/images/icon/setting-icon.svg"
-                    className="cursor-pointer h-[27px]"
-                  />
-                  <span className="text-[14px] font-bold text-white">
-                    {t("BodyBaseRatioSettings")}
-                  </span>
-                </button>
-                <div className="absolute bottom-full left-52 w-max mb-2 font-medium text-white text-sm px-4 py-1 rounded-md bg-[#717171BF] z-20 hidden group-hover:block">
-                  {t("AdjustAcrylicRatio")}
-                </div>
-              </div>
-            ) : null}
-          </div>
           <div className="absolute bottom-12 h-12 flex justify-center pointer-events-auto select-none w-full items-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-30">
               <button
@@ -700,6 +673,26 @@ export default function Index() {
                 />
                 <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
                   {tooltip("ToggleUIVisibility")}
+                </span>
+              </button>
+              <button
+                className="group btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0 relative"
+                disabled={!showSettingsButton}
+                onClick={() => {
+                  if (showSettingsButton) {
+                    dialogRef.current?.showModal();
+                  }
+                }}
+              >
+                <Image
+                  width={24}
+                  height={24}
+                  alt="acrylic button"
+                  src="/admin/images/icon/acrylic-settings-icon.svg"
+                  className="cursor-pointer h-[24px]"
+                />
+                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-3 text-sm text-white bg-gray-800 px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-w-xs">
+                  {tooltip("VisualSetting")}
                 </span>
               </button>
               <button
