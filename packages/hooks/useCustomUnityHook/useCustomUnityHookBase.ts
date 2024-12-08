@@ -119,7 +119,7 @@ const usePrivateHook = ({
       if (!isLoadedRef.current || isUnloadedRef.current) return;
       unityContext.sendMessage(gameObject, "OnMessageReceived", message);
     },
-    [unityContext.sendMessage],
+    [unityContext],
   );
 
   const postMessageToSwitchScene = useCallback(
