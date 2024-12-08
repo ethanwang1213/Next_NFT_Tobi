@@ -7,6 +7,7 @@ import {
 } from "fetchers/UploadActions";
 import { useNftModelGeneratorUnityHook } from "hooks/useCustomUnityHook/useNftModelGeneratorUnityHook";
 import useFcmToken from "hooks/useFCMToken";
+import useFinalizeModel from "hooks/useFinalizeModel";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
@@ -62,6 +63,7 @@ const Detail = () => {
   const { id } = router.query;
   const [modified, setModified] = useState(false);
   const { token: fcmToken } = useFcmToken();
+  const [finalizeModelError, finalizeModel] = useFinalizeModel();
 
   const [confirmDialogTitle, setConfirmDialogTitle] = useState("");
   const [confirmDialogDescriptions, setConfirmDialogDescriptions] = useState(
@@ -75,16 +77,30 @@ const Detail = () => {
   const mintConfirmDialogRef1 = useRef(null);
   const dialogRef = useRef(null);
 
+  useEffect(() => {
+    if (finalizeModelError) {
+      toast(finalizeModelError.toString());
+    }
+  }, [finalizeModelError]);
+
   const handleNftModelGenerated = async (
     itemId: number,
     nftModelBase64: string,
   ) => {
-    const binaryData = decodeBase64ToBinary(nftModelBase64);
-    const modelUrl = await uploadData(binaryData);
+    if (nftModelBase64) {
+      const binaryData = decodeBase64ToBinary(nftModelBase64);
+      const modelUrl = await uploadData(binaryData);
+      const finalizeModelResult = await finalizeModel(itemId, {
+        fcmToken,
+        modelUrl,
+      });
+      if (!finalizeModelResult) {
+        return;
+      }
+    }
     const result = await postData(`native/items/${id}/mint`, {
       fcmToken: fcmToken,
       amount: 1,
-      modelUrl: modelUrl,
     });
 
     if (!result) {
@@ -440,12 +456,16 @@ const Detail = () => {
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
       if (value == "mint") {
-        requestNftModelGeneration({
-          itemId: digitalItem.id,
-          modelType: digitalItem.type,
-          modelUrl: digitalItem.modelUrl,
-          imageUrl: digitalItem.materialUrl || digitalItem.customThumbnailUrl,
-        });
+        if (digitalItem.meta_model_url) {
+          await handleNftModelGenerated(digitalItem.id, "");
+        } else {
+          requestNftModelGeneration({
+            itemId: digitalItem.id,
+            modelType: digitalItem.type,
+            modelUrl: digitalItem.modelUrl,
+            imageUrl: digitalItem.materialUrl || digitalItem.customThumbnailUrl,
+          });
+        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
