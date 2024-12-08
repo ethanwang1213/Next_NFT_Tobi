@@ -73,6 +73,7 @@ model default_items {
     id                Int      @id @default(autoincrement())
     name              String   @db.VarChar(255)
     model_url         String   @db.Text
+    description       String   @db.Text
     updated_date_time DateTime @default(now()) @db.Timestamp(6)
     created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
