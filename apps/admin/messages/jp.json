@@ -337,7 +337,8 @@
     "IDInUse": "このIDはすでに使用されています",
     "Unverified": "未認証",
     "EnterName": "名前を入力してください。",
-    "UserIdNoSpaces": "ユーザーIDは5〜20文字、英数字、ハイフン（-）、アンダースコア（_）のみを使用できます。"
+    "UserIdNoSpaces": "ユーザーIDは5〜20文字、英数字、ハイフン（-）、アンダースコア（_）のみを使用できます。",
+    "UserIdTooShort": "ユーザーIDは5文字以上である必要があります。"
   },
   "AccountPassword": {
     "Name": "名前",

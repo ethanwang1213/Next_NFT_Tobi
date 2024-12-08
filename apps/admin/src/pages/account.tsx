@@ -301,6 +301,12 @@ export default function Index() {
       toast(t("EnterName"));
       return;
     }
+
+    if (data.userId.length < 5) {
+      toast(t("UserIdTooShort"));
+      return;
+    }
+
     if (data && data.icon != dataRef?.current.icon) {
       setLoading(true);
       const iconUrl = await uploadImage(data.icon, ImageType.AccountAvatar);
@@ -322,7 +328,7 @@ export default function Index() {
 
   const fieldChangeHandler = (field: string, value: string) => {
     if (field === "userId") {
-      const sanitizedValue = value.replace(/^[A-Za-z0-9_-]{5,20}$/, "");
+      const sanitizedValue = value.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 20);
       setData({ ...data, [field]: sanitizedValue });
     } else {
       setData({ ...data, [field]: value });
