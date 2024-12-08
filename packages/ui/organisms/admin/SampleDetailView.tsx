@@ -160,7 +160,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
       if (value === "mint" && section === "showcase") {
-        if (data.mera_model_url) {
+        if (data.meta_model_url) {
           await handleNftModelGenerated(data.id, "");
         } else {
           requestNftModelGeneration({
