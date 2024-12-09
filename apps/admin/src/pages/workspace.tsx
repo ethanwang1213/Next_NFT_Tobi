@@ -82,8 +82,12 @@ export default function Index() {
   } = useRestfulAPI(sampleAPIUrl);
 
   const materialAPIUrl = "native/materials";
-  const { data: materials, postData: createMaterialImage } =
-    useRestfulAPI(materialAPIUrl);
+  const {
+    data: materials,
+    getData: materialData,
+    postData: createMaterialImage,
+    deleteData,
+  } = useRestfulAPI(materialAPIUrl);
 
   const [generateSampleError, setGenerateSampleError] = useState(false);
 
@@ -101,6 +105,13 @@ export default function Index() {
     });
     if (updateIds.length > 0) {
       updateIdValues({ idPairs: updateIds });
+    }
+  };
+
+  const materialDeleteHandler = async (id: number) => {
+    const update = await deleteData(`${materialAPIUrl}/${id}`);
+    if (update) {
+      materialData(materialAPIUrl);
     }
   };
 
@@ -583,6 +594,7 @@ export default function Index() {
               resetErrorHandler={() => {
                 setGenerateSampleError(false);
               }}
+              deleteHandler={materialDeleteHandler}
             />
           </div>
           <div

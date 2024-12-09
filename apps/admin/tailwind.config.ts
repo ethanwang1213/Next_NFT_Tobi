@@ -73,7 +73,7 @@ const config = {
           1000: "#093159",
         },
         boxShadow: {
-          "custom-light": "0px 0px 10px 0px rgba(0, 0, 0, 0.25)",
+          "custom-light": "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
         },
         secondary: {
           DEFAULT: "#717171",
