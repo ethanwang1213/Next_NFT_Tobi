@@ -991,6 +991,15 @@ export const adminDetailOfDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
+
+      if (digitalItem.account_uuid != uid) {
+        res.status(404).send({
+          status: "error",
+          data: "not-owner",
+        });
+        return;
+      }
+
       const copyrights = digitalItem.copyrights.map((relate) => {
         return {
           id: relate.copyright.id,
