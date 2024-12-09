@@ -22,11 +22,11 @@ import {
   UnitySceneType,
 } from "../types";
 import { useCustomUnityHookBase } from "../useCustomUnityHookBase";
+import { useKeyShortcut } from "./useKeyShortcut";
 import { useLoadData } from "./useLoadData";
 import { useMouseUp } from "./useMouseUp";
 import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
-import { useWasd } from "./useWasd";
 
 export const useSaidanLikeUnityHookBase = ({
   sceneType,
@@ -252,7 +252,7 @@ export const useSaidanLikeUnityHookBase = ({
     [postMessageToUnity],
   );
 
-  useWasd({ isLoaded, isSceneOpen, postMessageToUnity });
+  useKeyShortcut({ isLoaded, isSceneOpen, postMessageToUnity });
 
   const { requestNftModelGeneration, handleNftModelGenerated } =
     useRequestNftModelGeneration({
