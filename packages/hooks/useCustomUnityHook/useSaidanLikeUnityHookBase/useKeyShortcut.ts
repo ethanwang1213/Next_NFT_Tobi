@@ -20,7 +20,9 @@ export const useKeyShortcut = ({
   handleCtrlD?: () => void;
   handleDelete?: () => void;
 }) => {
-  const [ctrlPressed] = useKeyPress("Control");
+  const [ctrlPressed] = useKeyPress(
+    (event) => event.key === "Control" || event.key === "Meta",
+  );
 
   const { setWasdState } = useWasd({
     isLoaded,
