@@ -3,6 +3,7 @@
     "LogIn": "Log In",
     "SignUp": "Sign Up",
     "Password": "Password",
+    "PasswordReset": "Password Reset",
     "LogInWithGoogle": "Log In with Google",
     "LogInWithApple": "Log In with Apple",
     "SignUpWithGoogle": "Sign Up with Google",
@@ -339,7 +340,8 @@
     "Unverified": "unverified",
     "EnterName": "Please enter a name.",
     "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_).",
-    "UserIdTooShort": "User ID must be at least 5 characters."
+    "UserIdTooShort": "User ID must be at least 5 characters.",
+    "NewEmailAddress": "New Email Address"
   },
   "AccountPassword": {
     "Name": "Name",
@@ -350,7 +352,8 @@
     "CheckMailbox": "Please check your mailbox.\nAuthentication will be completed by clicking the authentication link in the email.",
     "NoEmail": "Haven't received the email?",
     "VerifyNewEmail": "Verified new email address",
-    "Done": "Done"
+    "Done": "Done",
+    "PasswordConfirmation": "Password Confirmation"
   },
   "AccountSocialLogin": {
     "Connected": "Connected",

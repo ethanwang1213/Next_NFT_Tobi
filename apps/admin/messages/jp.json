@@ -3,6 +3,7 @@
     "LogIn": "ログイン",
     "SignUp": "新規登録",
     "Password": "パスワード",
+    "PasswordReset": "パスワードリセット",
     "LogInWithGoogle": "Googleでログイン",
     "LogInWithApple": "Apple IDでログイン",
     "SignUpWithGoogle": "Googleで新規登録",
@@ -339,7 +340,8 @@
     "Unverified": "未認証",
     "EnterName": "名前を入力してください。",
     "UserIdNoSpaces": "ユーザーIDは5〜20文字、英数字、ハイフン（-）、アンダースコア（_）のみを使用できます。",
-    "UserIdTooShort": "ユーザーIDは5文字以上である必要があります。"
+    "UserIdTooShort": "ユーザーIDは5文字以上である必要があります。",
+    "NewEmailAddress": "新しいメールアドレス"
   },
   "AccountPassword": {
     "Name": "名前",
@@ -350,7 +352,8 @@
     "CheckMailbox": "メールボックスをご確認ください。\nメール内の認証リンクをクリックすることで認証が完了します。",
     "NoEmail": "メールが届きませんか？",
     "VerifyNewEmail": "新しいメールアドレスを認証する",
-    "Done": "完了"
+    "Done": "完了",
+    "PasswordConfirmation": "パスワード確認"
   },
   "AccountSocialLogin": {
     "Connected": "に連携済み",
