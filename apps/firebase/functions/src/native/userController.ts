@@ -70,19 +70,24 @@ export const signUp = async (req: Request, res: Response) => {
         },
       });
       if (decodedToken.email_verified && !flowAcc) {
+        console.log(`Flow account was not found: ${uid}`);
         const firestoreFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", uid).get();
         if (firestoreFlowAccounts.size <= 0) {
+          console.log(`Creating...`);
           await createFlowAccount(uid);
         } else {
           const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
           const data = existingFlowAccountSnapshot.data();
 
           if (data.txId) {
+            console.log(`Found on Firestore`);
             const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
 
             if (flowJobs.size <= 0) {
+              console.log(`flowJobs has failed. Create again...`);
               await createFlowAccount(uid);
             } else {
+              console.log(`Attempting to store in database`);
               const flowJob = flowJobs.docs[0].data();
               await prisma.flow_accounts.upsert({
                 where: {
@@ -103,6 +108,7 @@ export const signUp = async (req: Request, res: Response) => {
               });
             }
           } else {
+            console.log(`txId is not found`);
             await createFlowAccount(uid);
           }
         }
