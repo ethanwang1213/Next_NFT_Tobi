@@ -32,6 +32,7 @@ model accounts {
     nfts                    nft_owners[]
     reported_contents       reported_contents[]
     removed_default_items   Int[]
+    first_saidan_id         Int                 @default(0)
     transaction_amount      Int                 @default(0)
     last_limit_updated_time DateTime            @default(now()) @db.Timestamp(6)
     is_deleted              Boolean             @default(false)
