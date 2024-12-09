@@ -100,6 +100,9 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     } else {
       deleteAllActionHistory();
       trackSampleMint(data.modelType);
+
+      // refresh item data
+      await getData(apiUrl);
     }
   };
 
@@ -159,17 +162,15 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
-      if (value === "mint" && section === "showcase") {
-        if (data.meta_model_url) {
-          await handleNftModelGenerated(data.id, "");
-        } else {
-          requestNftModelGeneration({
-            itemId: data.id,
-            modelType: data.type,
-            modelUrl: data.modelUrl,
-            imageUrl: data.materialUrl || data.customThumbnailUrl,
-          });
-        }
+      if (data.meta_model_url) {
+        await handleNftModelGenerated(data.id, "");
+      } else if (value === "mint" && section === "showcase") {
+        requestNftModelGeneration({
+          itemId: data.id,
+          modelType: data.type,
+          modelUrl: data.modelUrl,
+          imageUrl: data.materialUrl || data.customThumbnailUrl,
+        });
       } else {
         workspaceRequestNftModelGeneration({
           itemId: data.id,
