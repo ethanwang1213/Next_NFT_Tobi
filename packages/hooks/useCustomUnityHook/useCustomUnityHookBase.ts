@@ -119,7 +119,8 @@ const usePrivateHook = ({
       if (!isLoadedRef.current || isUnloadedRef.current) return;
       unityContext.sendMessage(gameObject, "OnMessageReceived", message);
     },
-    [unityContext],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [unityContext.sendMessage],
   );
 
   const postMessageToSwitchScene = useCallback(
