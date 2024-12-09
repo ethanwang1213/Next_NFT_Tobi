@@ -56,8 +56,10 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const [finalizeModelError, finalizeModel] = useFinalizeModel();
   const { pauseUnityInputs, requestNftModelGeneration } =
     useShowcaseEditUnity();
-  const { requestNftModelGeneration: workspaceRequestNftModelGeneration } =
-    useWorkspaceEditUnity();
+  const {
+    requestNftModelGeneration: workspaceRequestNftModelGeneration,
+    pauseUnityInputs: workspacePauseUnityInputs,
+  } = useWorkspaceEditUnity();
   const t = useTranslations("Workspace");
   const s = useTranslations("Showcase");
 
@@ -216,14 +218,15 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             }
             alt="image"
             onClick={() => {
-              if (section === "showcase") {
-                dialogRef.current.showModal();
+              dialogRef.current.showModal();
+              if (section === "workspace") {
+                workspacePauseUnityInputs;
+              } else {
                 pauseUnityInputs();
               }
             }}
-            className="rounded-lg object-contain h-[160px]"
+            className="rounded-lg h-[160px] w-[160px] cursor-pointer transition-transform hover:scale-105"
           />
-
           <div
             className="w-full shrink overflow-y-auto flex flex-col gap-4"
             style={{ scrollbarWidth: "none" }}
@@ -303,9 +306,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
               </div>
             </div>
-            {section === "showcase" && (
-              <SampleDetailDialog data={data} dialogRef={dialogRef} />
-            )}
+            <SampleDetailDialog data={data} dialogRef={dialogRef} />
             {data && (
               <div className="mx-auto mt-4">
                 <Link

@@ -1,4 +1,5 @@
 import { useShowcaseEditUnity } from "contexts/ShowcaseEditUnityContext";
+import { useWorkspaceEditUnity } from "contexts/WorkspaceEditUnityContext";
 import { useItemPreviewUnityHook } from "hooks/useCustomUnityHook";
 import { useTranslations } from "next-intl";
 import { MutableRefObject, useEffect, useState } from "react";
@@ -13,21 +14,34 @@ interface SampleDetailDialogProps {
 const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
   const { setLoadData, isSceneOpen, unityProvider } = useItemPreviewUnityHook();
   const { selectedItem, resumeUnityInputs } = useShowcaseEditUnity();
+  const { selectedSample, resumeUnityInputs: workspaceResumeUnityInputs } =
+    useWorkspaceEditUnity();
   const t = useTranslations("Showcase");
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setLoadData({
-        itemId: selectedItem.id,
-        itemType: selectedItem.itemType,
-        modelType: data.type,
-        modelUrl: data.modelUrl,
-        imageUrl: data.croppedUrl ?? "",
-        acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
-      });
+      if (selectedItem) {
+        setLoadData({
+          itemId: selectedItem.itemId,
+          itemType: selectedItem.itemType,
+          modelType: data.type,
+          modelUrl: data.modelUrl,
+          imageUrl: data.croppedUrl ?? "",
+          acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
+        });
+      } else if (selectedSample) {
+        setLoadData({
+          itemId: selectedSample.sampleItemId,
+          itemType: 0,
+          modelType: data.type,
+          modelUrl: data.modelUrl,
+          imageUrl: data.croppedUrl ?? "",
+          acrylicBaseScaleRatio: data.acrylicBaseScaleRatio,
+        });
+      }
     }
-  }, [data, selectedItem, isOpen, setLoadData]);
+  }, [data, selectedItem, selectedSample, isOpen, setLoadData]);
 
   // observe dialog open attribute
   useEffect(() => {
@@ -44,7 +58,13 @@ const SampleDetailDialog = ({ data, dialogRef }: SampleDetailDialogProps) => {
         <form method="dialog">
           <button
             className="absolute w-4 h-4 top-3 right-5 z-20"
-            onClick={resumeUnityInputs}
+            onClick={() => {
+              if (selectedItem) {
+                resumeUnityInputs();
+              } else {
+                workspaceResumeUnityInputs();
+              }
+            }}
           >
             <span
               className="material-symbols-outlined text-base-white cursor-pointer"

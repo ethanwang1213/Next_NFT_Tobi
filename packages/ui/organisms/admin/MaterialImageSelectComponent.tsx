@@ -56,7 +56,15 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
     [props],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "image/png": [".png"],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/webp": [".webp"],
+      "image/bmp": [".bmp"],
+    },
+    onDrop,
+  });
 
   return (
     <div className="h-full relative">

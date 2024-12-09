@@ -16,7 +16,7 @@ const ShortcutComponent = () => {
           {t("ShortCut")}
         </span>
         <span className="text-neutral-900 text-sm font-normal leading-4">
-          Re-usable components built using Figr Design System
+          {t("ReusableComponents")}
         </span>
       </div>
       <Image

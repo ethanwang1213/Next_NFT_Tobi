@@ -218,7 +218,8 @@
     "MintOperationWarningTo": " ことができなくなります。 本当に実行するか確認してください。",
     "WishToContinue": "続行しますか？",
     "ShortCut": "ショートカット",
-    "MintNow": "今すぐミント"
+    "MintNow": "今すぐミント",
+    "ReusableComponents": "Figrデザインシステムを使用して構築された再利用可能なコンポーネント"
   },
   "GiftReceivingSettings": {
     "TogglePermission": "このページでは、ギフト受取の許可設定を切り替えることができます。各インベントリやボックスごとに設定を調整してください。",

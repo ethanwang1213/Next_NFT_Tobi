@@ -218,7 +218,8 @@
     "MintOperationWarningTo": "any previous changes. Please confirm that you want to proceed.",
     "WishToContinue": "Do you wish to continue?",
     "ShortCut": "Short Cut",
-    "MintNow": "Mint Now"
+    "MintNow": "Mint Now",
+    "ReusableComponents": "Re-usable components built using Figr Design System"
   },
   "GiftReceivingSettings": {
     "TogglePermission": "On this page, you can toggle the permission settings for receiving gifts. Adjust the settings for each inventory or box.",
