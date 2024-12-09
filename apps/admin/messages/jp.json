@@ -207,7 +207,7 @@
     "SceneLight": "シーンライト",
     "Brightness": "明るさ",
     "PointLight": "ポイントライト",
-    "ReturnToInventory": "インベントリに戻す",
+    "ReturnItem": "アイテムを戻す",
     "DeleteSelectingItem": "選択中のアイテムをショーケース上から削除",
     "MintFailed": "ミントに失敗しました。",
     "MintFailedLimitExceeded": "ミントに失敗しました。1日の取引制限を超えています。",
