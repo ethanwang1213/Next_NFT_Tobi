@@ -7,10 +7,18 @@ export const useKeyShortcut = ({
   isLoaded,
   isSceneOpen,
   postMessageToUnity,
+  handleCtrlZ,
+  handleCtrlShiftZ,
+  handleCtrlD,
+  handleDelete,
 }: {
   isLoaded: boolean;
   isSceneOpen: boolean;
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
+  handleCtrlZ?: () => void;
+  handleCtrlShiftZ?: () => void;
+  handleCtrlD?: () => void;
+  handleDelete?: () => void;
 }) => {
   const [ctrlPressed] = useKeyPress("Control");
 
@@ -32,17 +40,13 @@ export const useKeyShortcut = ({
           case "z":
           case "Z":
             if (event.shiftKey) {
-              console.log("ctrl + shift + z: redo");
+              handleCtrlShiftZ?.();
             } else {
-              console.log("ctrl + z: undo");
+              handleCtrlZ?.();
             }
             break;
           case "d":
-            console.log("ctrl + d: duplicate");
-            break;
-          case "Delete":
-          case "Backspace":
-            console.log("delete: delete");
+            handleCtrlD?.();
             break;
         }
       } else {
@@ -56,7 +60,7 @@ export const useKeyShortcut = ({
             break;
           case "Delete":
           case "Backspace":
-            console.log("delete: delete");
+            handleDelete?.();
             break;
         }
       }
@@ -114,7 +118,7 @@ const useWasd = ({
           break;
       }
     },
-    [],
+    [setWKey, setAKey, setSKey, setDKey],
   );
 
   const inputWasd = useCallback(
