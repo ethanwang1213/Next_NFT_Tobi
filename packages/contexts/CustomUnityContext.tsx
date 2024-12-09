@@ -24,8 +24,8 @@ export const CustomUnityProvider = ({
 }) => {
   const unityContext = useMyUnityContext();
 
-  const [mountedSceneList, setMountedSceneList] = useState<UnitySceneType[]>(
-    [],
+  const [mountedScene, setMountedScene] = useState<UnitySceneType>(
+    UnitySceneType.Standby,
   );
 
   const postMessageToUnity = useCallback(
@@ -33,29 +33,30 @@ export const CustomUnityProvider = ({
       if (!unityContext.isLoaded) return;
       unityContext.sendMessage(gameObject, "OnMessageReceived", message);
     },
-    [unityContext],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [unityContext.isLoaded, unityContext.sendMessage],
   );
 
   useEffect(() => {
-    if (mountedSceneList.length === 0 && unityContext.isLoaded) {
+    if (mountedScene === UnitySceneType.Standby) {
       const json = JSON.stringify({
         sceneType: UnitySceneType.Standby,
       });
       postMessageToUnity("SwitchSceneMessageReceiver", json);
     }
-  }, [unityContext, mountedSceneList, postMessageToUnity]);
+  }, [mountedScene, postMessageToUnity]);
 
   const contextValue: CustomUnityContextType = {
     ...unityContext,
-    setMountedSceneList,
+    setMountedScene,
   };
 
   return (
     <CustomUnityContext.Provider value={contextValue}>
       <UnityIn unityProvider={unityContext.unityProvider} />
-      {mountedSceneList.length === 0 && (
+      {mountedScene === UnitySceneType.Standby && (
         <div className="w-0 h-0 absolute hidden">
-          <CustomUnity isSceneOpen={false} />
+          <CustomUnity isSceneOpen={true} />
         </div>
       )}
       {children}

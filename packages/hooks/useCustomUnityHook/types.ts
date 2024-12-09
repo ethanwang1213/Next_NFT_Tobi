@@ -32,7 +32,7 @@ export type CustomUnityContextType = {
     methodName: string,
     parameter?: ReactUnityEventParameter,
   ) => void;
-  setMountedSceneList: React.Dispatch<React.SetStateAction<UnitySceneType[]>>;
+  setMountedScene: React.Dispatch<React.SetStateAction<UnitySceneType>>;
 };
 
 export const UnitySceneType = {
