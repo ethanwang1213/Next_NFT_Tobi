@@ -25,14 +25,9 @@ export const useCustomUnityHookBase = ({
   } = usePrivateHook({ unityContext, sceneType });
 
   useEffect(() => {
-    unityContext.setMountedSceneList((prev) => {
-      // console.log(`prev: ${prev}, ${sceneType}`);
-      return prev.includes(sceneType) ? prev : [...prev, sceneType];
-    });
+    unityContext.setMountedScene(sceneType);
     return () => {
-      unityContext.setMountedSceneList((prev) =>
-        prev.filter((v) => v !== sceneType),
-      );
+      unityContext.setMountedScene(UnitySceneType.Standby);
     };
     // this effect should run only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,7 +96,7 @@ const usePrivateHook = ({
   unityContext,
   sceneType,
 }: {
-  unityContext: Omit<CustomUnityContextType, "setMountedSceneList">;
+  unityContext: Omit<CustomUnityContextType, "setMountedScene">;
   sceneType: UnitySceneType;
 }) => {
   const isLoadedRef = useRef<boolean>(false);
