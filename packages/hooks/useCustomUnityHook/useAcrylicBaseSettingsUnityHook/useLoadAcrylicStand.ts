@@ -19,7 +19,7 @@ export const useLoadAcrylicStand = ({
   isLoaded: boolean;
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
-  const [isSceneOpen, setIsSceneLoaded] = useState(false);
+  const [isSceneOpen, setIsSceneOpen] = useState(false);
   const [loadData, setLoadData] = useState<AcrylicStandData | null>();
   const [currentItemIndex, setCurrentItemIndex] = useState<ItemBaseId>();
 
@@ -31,7 +31,7 @@ export const useLoadAcrylicStand = ({
   });
 
   const postMessageToLoadData = useCallback(() => {
-    setIsSceneLoaded(true);
+    setIsSceneOpen(true);
 
     if (
       isSceneOpen ||
@@ -61,10 +61,14 @@ export const useLoadAcrylicStand = ({
     setCurrentItemIndex,
   ]);
 
+  const handleItemIsInitialized = useCallback(() => {
+    setIsSceneOpen(true);
+  }, [setIsSceneOpen]);
+
   useEffect(() => {
     if (!isSceneOpen) return;
     if (!isLoaded) {
-      setIsSceneLoaded(false);
+      setIsSceneOpen(false);
       setCurrentItemIndex(undefined);
       return;
     }
@@ -76,5 +80,6 @@ export const useLoadAcrylicStand = ({
     defaultItemData,
     setLoadData,
     handleSceneIsLoaded: postMessageToLoadData,
+    handleItemIsInitialized,
   };
 };

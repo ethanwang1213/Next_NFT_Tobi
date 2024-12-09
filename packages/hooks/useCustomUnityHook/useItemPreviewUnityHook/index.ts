@@ -21,7 +21,12 @@ export const useItemPreviewUnityHook = () => {
     sceneType: UnitySceneType.ItemPreview,
   });
 
-  const { isSceneOpen, setLoadData, handleSceneIsLoaded } = useLoadPreviewItem({
+  const {
+    isSceneOpen,
+    setLoadData,
+    handleSceneIsLoaded,
+    handleSaidanDetailViewIsInitialized,
+  } = useLoadPreviewItem({
     isLoaded,
     postMessageToUnity,
   });
@@ -32,6 +37,7 @@ export const useItemPreviewUnityHook = () => {
     unityRemoveEventListener,
     handleSimpleMessage,
     handleSceneIsLoaded,
+    handleSaidanDetailViewIsInitialized,
   });
 
   return {

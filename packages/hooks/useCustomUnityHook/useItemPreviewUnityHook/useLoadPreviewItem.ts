@@ -25,7 +25,7 @@ export const useLoadPreviewItem = ({
   isLoaded: boolean;
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
 }) => {
-  const [isSceneOpen, setIsSceneLoaded] = useState(false);
+  const [isSceneOpen, setIsSceneOpen] = useState(false);
   const [loadData, setLoadData] = useState<PreviewItemData | null>();
   const [currentItemIndex, setCurrentItemIndex] = useState<ItemIndex>();
 
@@ -38,8 +38,6 @@ export const useLoadPreviewItem = ({
   );
 
   const postMessageToLoadData = useCallback(() => {
-    setIsSceneLoaded(true);
-
     if (
       isSceneOpen ||
       !loadData ||
@@ -66,10 +64,14 @@ export const useLoadPreviewItem = ({
     setCurrentItemIndex,
   ]);
 
+  const handleSaidanDetailViewIsInitialized = useCallback(() => {
+    setIsSceneOpen(true);
+  }, [setIsSceneOpen]);
+
   useEffect(() => {
     if (!isSceneOpen) return;
     if (!isLoaded) {
-      setIsSceneLoaded(false);
+      setIsSceneOpen(false);
       setCurrentItemIndex(undefined);
       return;
     }
@@ -80,5 +82,6 @@ export const useLoadPreviewItem = ({
     isSceneOpen,
     setLoadData: wrappedSetLoadData,
     handleSceneIsLoaded: postMessageToLoadData,
+    handleSaidanDetailViewIsInitialized,
   };
 };
