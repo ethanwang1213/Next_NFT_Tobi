@@ -28,6 +28,7 @@ import {
 import { useSaidanLikeUnityHookBase } from "../useSaidanLikeUnityHookBase";
 import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useApplyAcrylicBaseScaleRatio } from "./useApplyAcrylicBaseScaleRatio";
+import { useHighlightSamples } from "./useHighlightSamples";
 
 type SaveDataGeneratedHandler = (
   workspaceSaveData: WorkspaceSaveData,
@@ -231,6 +232,10 @@ export const useWorkspaceUnityHook = ({
     [postMessageToUnity],
   );
 
+  const { highlightSamplesByItemId } = useHighlightSamples({
+    postMessageToUnity,
+  });
+
   // event handlers
   const handleSaveDataGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
@@ -339,6 +344,7 @@ export const useWorkspaceUnityHook = ({
     placeNewSampleWithDrag,
     removeSample,
     removeSamplesByItemId,
+    highlightSamplesByItemId,
     requestItemThumbnail,
     undoAction,
     redoAction,
