@@ -20,7 +20,6 @@ interface ShowcaseEditUnityContextType {
   placeNewSampleWithDrag: (sampleData: any) => void;
   placeNewNftWithDrag: (nftData: any) => void;
   updateSettings: (settings: any) => void;
-  inputWasd: (wasdKeys: any) => void;
   undoAction: () => void;
   redoAction: () => void;
   updateItemTransform: (transformData: {

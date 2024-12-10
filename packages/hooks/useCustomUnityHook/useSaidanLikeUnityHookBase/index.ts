@@ -22,11 +22,11 @@ import {
   UnitySceneType,
 } from "../types";
 import { useCustomUnityHookBase } from "../useCustomUnityHookBase";
+import { useKeyShortcut } from "./useKeyShortcut";
 import { useLoadData } from "./useLoadData";
 import { useMouseUp } from "./useMouseUp";
 import { useRequestNftModelGeneration } from "./useRequestNftModelGeneration";
 import { useUndoRedo } from "./useUndoRedo";
-import { useWasd } from "./useWasd";
 
 export const useSaidanLikeUnityHookBase = ({
   sceneType,
@@ -230,6 +230,10 @@ export const useSaidanLikeUnityHookBase = ({
     [additionalItemDataMap, postMessageToUnity],
   );
 
+  const duplicateSelectedItem = useCallback(() => {
+    postMessageToUnity("DuplicateSelectedItemMessageReceiver", "");
+  }, [postMessageToUnity]);
+
   const removeItem = useCallback(
     ({ itemType, itemId, id }: ItemTypeParam & ItemBaseId & DecorationId) => {
       postMessageToUnity(
@@ -239,6 +243,10 @@ export const useSaidanLikeUnityHookBase = ({
     },
     [postMessageToUnity],
   );
+
+  const removeSelectedItem = useCallback(() => {
+    postMessageToUnity("RemoveSelectedItemMessageReceiver", "");
+  }, [postMessageToUnity]);
 
   const updateIdValues: UpdateIdValues = useCallback(
     ({ idPairs }) => {
@@ -252,7 +260,15 @@ export const useSaidanLikeUnityHookBase = ({
     [postMessageToUnity],
   );
 
-  useWasd({ isLoaded, isSceneOpen, postMessageToUnity });
+  useKeyShortcut({
+    isLoaded,
+    isSceneOpen,
+    postMessageToUnity,
+    handleCtrlZ: undoAction,
+    handleCtrlShiftZ: redoAction,
+    handleCtrlD: duplicateSelectedItem,
+    handleDelete: removeSelectedItem,
+  });
 
   const { requestNftModelGeneration, handleNftModelGenerated } =
     useRequestNftModelGeneration({
