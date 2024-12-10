@@ -115,6 +115,9 @@ const Detail = () => {
       );
     } else {
       trackSampleMint(digitalItem.type);
+
+      // refresh item data
+      await getData(apiUrl);
     }
   };
 
@@ -123,16 +126,17 @@ const Detail = () => {
       onNftModelGenerated: handleNftModelGenerated,
     });
 
-  const apiUrl = "native/admin/digital_items";
+  const apiUrl = `native/admin/digital_items/${id}`;
   const {
     data: digitalItem,
     dataRef,
     loading,
     error,
+    getData,
     setData,
     setLoading,
     postData,
-  } = useRestfulAPI(`${apiUrl}/${id}`);
+  } = useRestfulAPI(apiUrl);
 
   useEffect(() => {
     if (status === -1 && digitalItem) {
@@ -426,7 +430,7 @@ const Detail = () => {
       );
     }
 
-    if (await postData(`${apiUrl}/${digitalItem.id}`, submitData)) {
+    if (await postData(apiUrl, submitData)) {
       setModified(false);
       dataRef.current = digitalItem;
       const channel = new BroadcastChannel("dataUpdateChannel");
