@@ -105,9 +105,6 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     } else {
       deleteAllActionHistory();
       trackSampleMint(data.modelType);
-
-      // refresh item data
-      await getData(apiUrl);
     }
   };
 
