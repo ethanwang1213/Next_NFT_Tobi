@@ -66,7 +66,7 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
 };
 
 const registerToTobiratoryAndFlowAccount = async () => {
-  const idToken = await auth.currentUser.getIdToken();
+  const idToken = await auth.currentUser.getIdToken(true);
   return await fetch(`/backend/api/functions/native/signup`, {
     method: "POST",
     headers: {
