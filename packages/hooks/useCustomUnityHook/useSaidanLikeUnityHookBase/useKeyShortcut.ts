@@ -58,6 +58,10 @@ export const useKeyShortcut = ({
           case "a":
           case "s":
           case "d":
+          case "ArrowUp":
+          case "ArrowLeft":
+          case "ArrowDown":
+          case "ArrowRight":
             setWasdState(event.key, true);
             break;
           case "Delete":
@@ -79,6 +83,10 @@ export const useKeyShortcut = ({
         case "a":
         case "s":
         case "d":
+        case "ArrowUp":
+        case "ArrowLeft":
+        case "ArrowDown":
+        case "ArrowRight":
           setWasdState(event.key, false);
           break;
       }
@@ -104,18 +112,33 @@ const useWasd = ({
   const [dKey, setDKey] = useState<boolean>(false);
 
   const setWasdState = useCallback(
-    (key: "w" | "a" | "s" | "d", state: boolean) => {
+    (
+      key:
+        | "w"
+        | "a"
+        | "s"
+        | "d"
+        | "ArrowUp"
+        | "ArrowLeft"
+        | "ArrowDown"
+        | "ArrowRight",
+      state: boolean,
+    ) => {
       switch (key) {
         case "w":
+        case "ArrowUp":
           setWKey(state);
           break;
         case "a":
+        case "ArrowLeft":
           setAKey(state);
           break;
         case "s":
+        case "ArrowDown":
           setSKey(state);
           break;
         case "d":
+        case "ArrowRight":
           setDKey(state);
           break;
       }
