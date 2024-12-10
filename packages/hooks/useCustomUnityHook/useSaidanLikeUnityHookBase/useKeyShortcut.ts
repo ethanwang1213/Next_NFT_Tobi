@@ -32,7 +32,19 @@ export const useKeyShortcut = ({
   });
 
   useKey(
-    () => true,
+    (event) =>
+      event.key === "z" ||
+      event.key === "Z" ||
+      event.key === "w" ||
+      event.key === "a" ||
+      event.key === "s" ||
+      event.key === "d" ||
+      event.key === "ArrowUp" ||
+      event.key === "ArrowLeft" ||
+      event.key === "ArrowDown" ||
+      event.key === "ArrowRight" ||
+      event.key === "Delete" ||
+      event.key === "Backspace",
     (event) => {
       event.preventDefault();
       if (event.repeat) return;
@@ -75,7 +87,15 @@ export const useKeyShortcut = ({
   );
 
   useKey(
-    () => true,
+    (event) =>
+      event.key === "w" ||
+      event.key === "a" ||
+      event.key === "s" ||
+      event.key === "d" ||
+      event.key === "ArrowUp" ||
+      event.key === "ArrowLeft" ||
+      event.key === "ArrowDown" ||
+      event.key === "ArrowRight",
     (event) => {
       event.preventDefault();
       switch (event.key) {
