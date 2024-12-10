@@ -864,7 +864,7 @@ export const getNftInfo = async (req: Request, res: Response) => {
           sticker: nftData.nft_owner?.account?.business?.content.sticker,
         } : null,
         name: nftData.digital_item.name,
-        modelUrl: nftData.digital_item.model_url,
+        modelUrl: nftData.digital_item.meta_model_url,
         description: nftData.digital_item.description,
         copyrights: copyrights,
         license: nftData.digital_item.license,

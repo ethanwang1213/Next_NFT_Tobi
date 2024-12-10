@@ -546,7 +546,7 @@ export const loadMyShowcase = async (req: Request, res: Response) => {
           digitalItemId: nftData.digital_item_id,
           name: nftData.digital_item.name??"",
           modelType: digitalData.type,
-          modelUrl: digitalData.model_url,
+          modelUrl: digitalData.meta_model_url??digitalData.model_url,
           croppedUrl: digitalData.cropped_url,
           thumbUrl: digitalData.is_default_thumb?digitalData.default_thumb_url:digitalData.custom_thumb_url,
           materialUrl: digitalData.material_image?.image,

@@ -214,7 +214,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
                 digitalItemId: nft.digital_item.id,
                 name: nft.digital_item.name,
                 thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                modelUrl: nft.digital_item.model_url,
+                modelUrl: nft.digital_item.meta_model_url,
                 modelType: nft.digital_item.type,
                 materialUrl: nft.digital_item.material_image?.image,
                 content: nft.digital_item.account.business?{
@@ -322,7 +322,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
               digitalItemId: nft.digital_item.id,
               name: nft.digital_item.name,
               thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-              modelUrl: nft.digital_item.model_url,
+              modelUrl: nft.digital_item.meta_model_url,
               modelType: nft.digital_item.type,
               materialUrl: nft.digital_item.material_image?.image,
               content: nft.digital_item.account.business?{
@@ -472,7 +472,7 @@ export const getBoxData = async (req: Request, res: Response) => {
             digitalItemId: nft.digital_item.id,
             name: nft.digital_item.name,
             thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-            modelUrl: nft.digital_item.model_url,
+            modelUrl: nft.digital_item.meta_model_url,
             modelType: nft.digital_item.type,
             materialUrl: nft.digital_item.material_image?.image,
             content: nft.digital_item.account.business?{
@@ -625,7 +625,7 @@ export const openNFT = async (req: Request, res: Response) => {
           digitalItemId: updatedNFT.digital_item.id,
           name: updatedNFT.digital_item.name,
           thumbUrl: updatedNFT.digital_item?.is_default_thumb ? updatedNFT.digital_item?.default_thumb_url : updatedNFT.digital_item?.custom_thumb_url,
-          modelUrl: updatedNFT.digital_item.model_url,
+          modelUrl: updatedNFT.digital_item.meta_model_url,
           modelType: updatedNFT.digital_item.type,
           materialUrl: updatedNFT.digital_item.material_image?.image,
           content: updatedNFT.digital_item.account.business?{
@@ -853,7 +853,7 @@ export const moveNFT = async (req: Request, res: Response) => {
                 digitalItemId: nft.digital_item.id,
                 name: nft.digital_item.name,
                 thumbUrl: nft.digital_item?.is_default_thumb ? nft.digital_item?.default_thumb_url : nft.digital_item?.custom_thumb_url,
-                modelUrl: nft.digital_item.model_url,
+                modelUrl: nft.digital_item.meta_model_url,
                 modelType: nft.digital_item.type,
                 materialUrl: nft.digital_item.material_image?.image,
                 content: nft.digital_item.account.business?{
