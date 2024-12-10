@@ -149,7 +149,7 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
             <div className="flex flex-wrap gap-4">
               {images &&
                 [...images].reverse().map((image, index) => (
-                  <div className="relative flex items-center">
+                  <div className="relative flex items-center" key={index}>
                     <NextImage
                       key={`material-image-${image.id}`}
                       width={88}

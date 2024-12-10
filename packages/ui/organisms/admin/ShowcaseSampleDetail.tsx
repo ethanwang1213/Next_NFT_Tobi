@@ -6,12 +6,14 @@ import SampleDetailView from "./SampleDetailView";
 
 const ShowcaseSampleDetail = ({
   id,
+  digitalItems,
   showSampleDetailView,
   showDetailView,
   handleNftModelGeneratedRef,
   deleteAllActionHistory,
 }: {
   id: number;
+  digitalItems: any;
   showSampleDetailView: boolean;
   showDetailView: boolean;
   handleNftModelGeneratedRef: React.MutableRefObject<
@@ -25,6 +27,7 @@ const ShowcaseSampleDetail = ({
       {showSampleDetailView && (
         <div className="absolute top-[21px] left-4 w-[320px] bottom-[18px] rounded-3xl bg-gray-600 bg-opacity-50 backdrop-blur-[25px] px-[40px] pt-[70px] pb-[20px]">
           <SampleDetailView
+            digitalItems={digitalItems}
             id={id}
             section={"showcase"}
             sampleitemId={null}

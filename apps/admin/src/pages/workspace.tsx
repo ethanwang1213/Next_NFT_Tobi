@@ -81,6 +81,10 @@ export default function Index() {
     deleteData: deleteSamples,
   } = useRestfulAPI(sampleAPIUrl);
 
+  const digitalItemAPIUrl = "native/admin/digital_items";
+  const { data: digitalItems, getData: digitalItemData } =
+    useRestfulAPI(digitalItemAPIUrl);
+
   const materialAPIUrl = "native/materials";
   const {
     data: materials,
@@ -146,6 +150,7 @@ export default function Index() {
     }
     placeSampleHandler(newSample);
     loadSamples(sampleAPIUrl);
+    digitalItemData(digitalItemAPIUrl);
 
     if (sampleCreateDialogRef.current) {
       sampleCreateDialogRef.current.close();
@@ -613,6 +618,7 @@ export default function Index() {
           {showDetailView && (
             <WorkspaceSampleDetailPanel
               id={selectedSampleItem}
+              digitalItems={digitalItems}
               sampleitemId={selectedSampleItemId}
               deleteHandler={deleteSamplesHandler}
               handleNftModelGeneratedRef={handleNftModelGeneratedRef}

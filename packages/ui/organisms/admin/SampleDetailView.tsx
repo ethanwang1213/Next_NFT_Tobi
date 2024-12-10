@@ -7,7 +7,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Button from "ui/atoms/Button";
 import { formatDateToLocal } from "ui/atoms/Formatters";
@@ -18,6 +18,7 @@ import SampleDetailDialog from "./SampleDetailDialog";
 interface SampleDetailViewProps {
   id: number;
   sampleitemId: number;
+  digitalItems: any;
   section: string;
   handleNftModelGeneratedRef: React.MutableRefObject<
     (itemId: number, nftModelBase64: string) => void
@@ -42,14 +43,16 @@ const MintNotification = ({ title, text }) => {
 const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   id,
   section,
+  digitalItems,
   sampleitemId,
   handleNftModelGeneratedRef,
   deleteHandler,
   deleteAllActionHistory,
 }) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const dialogRef = useRef(null);
-  const apiUrl = `native/admin/digital_items/${id}`;
-  const { data, loading, setData, getData, postData } = useRestfulAPI(null);
+  const { postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
@@ -109,9 +112,12 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
   useEffect(() => {
     if (id > 0) {
-      getData(apiUrl);
+      const matchedItem = digitalItems.find((item) => item.id === id);
+      setData(matchedItem);
+      setLoading(false);
     } else {
       setData(null);
+      setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -198,7 +204,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
   return (
     <div className="w-full h-full">
-      {loading ? (
+      {loading && data ? (
         <span className="h-full w-full loading loading-spinner"></span>
       ) : (
         <div className="w-full h-full gap-6 flex flex-col justify-center items-center text-base-white">
