@@ -241,6 +241,7 @@
     "SelectedItemCount": "selected {count} item",
     "Delete": "Delete",
     "ItemGeneratorDescription": "This generator allows you to easily create original items. Use your favorite designs to create acrylic stands, posters, message cards, and more. With intuitive controls, you can craft unique items that are truly your own.",
+    "ModelUploadWarning": "The large size of an uploaded 3D model may negatively impact the user experience.",
     "AcrylicStand": "Acrylic Stand",
     "Poster": "Poster",
     "MessageCard": "Message Card",
