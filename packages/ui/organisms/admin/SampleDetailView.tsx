@@ -7,7 +7,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Button from "ui/atoms/Button";
 import { formatDateToLocal } from "ui/atoms/Formatters";
@@ -18,6 +18,7 @@ import SampleDetailDialog from "./SampleDetailDialog";
 interface SampleDetailViewProps {
   id: number;
   sampleitemId: number;
+  digitalItems: any;
   section: string;
   handleNftModelGeneratedRef: React.MutableRefObject<
     (itemId: number, nftModelBase64: string) => void
@@ -42,22 +43,26 @@ const MintNotification = ({ title, text }) => {
 const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   id,
   section,
+  digitalItems,
   sampleitemId,
   handleNftModelGeneratedRef,
   deleteHandler,
   deleteAllActionHistory,
 }) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const dialogRef = useRef(null);
-  const apiUrl = `native/admin/digital_items/${id}`;
-  const { data, loading, setData, getData, postData } = useRestfulAPI(null);
+  const { postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
   const [finalizeModelError, finalizeModel] = useFinalizeModel();
   const { pauseUnityInputs, requestNftModelGeneration } =
     useShowcaseEditUnity();
-  const { requestNftModelGeneration: workspaceRequestNftModelGeneration } =
-    useWorkspaceEditUnity();
+  const {
+    requestNftModelGeneration: workspaceRequestNftModelGeneration,
+    pauseUnityInputs: workspacePauseUnityInputs,
+  } = useWorkspaceEditUnity();
   const t = useTranslations("Workspace");
   const s = useTranslations("Showcase");
 
@@ -110,9 +115,12 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
   useEffect(() => {
     if (id > 0) {
-      getData(apiUrl);
+      const matchedItem = digitalItems.find((item) => item.id === id);
+      setData(matchedItem);
+      setLoading(false);
     } else {
       setData(null);
+      setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -201,7 +209,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
   return (
     <div className="w-full h-full">
-      {loading ? (
+      {loading && data ? (
         <span className="h-full w-full loading loading-spinner"></span>
       ) : (
         <div className="w-full h-full gap-6 flex flex-col justify-center items-center text-base-white">
@@ -221,14 +229,15 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             }
             alt="image"
             onClick={() => {
-              if (section === "showcase") {
-                dialogRef.current.showModal();
+              dialogRef.current.showModal();
+              if (section === "workspace") {
+                workspacePauseUnityInputs;
+              } else {
                 pauseUnityInputs();
               }
             }}
-            className="rounded-lg object-contain h-[160px]"
+            className="rounded-lg h-[160px] w-[160px] cursor-pointer transition-transform hover:scale-105"
           />
-
           <div
             className="w-full shrink overflow-y-auto flex flex-col gap-4"
             style={{ scrollbarWidth: "none" }}
@@ -308,9 +317,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
               </div>
             </div>
-            {section === "showcase" && (
-              <SampleDetailDialog data={data} dialogRef={dialogRef} />
-            )}
+            <SampleDetailDialog data={data} dialogRef={dialogRef} />
             {data && (
               <div className="mx-auto mt-4">
                 <Link

@@ -129,7 +129,7 @@ const ShowcaseTabView = ({
           onTouchEnd={handleMouseUp}
         >
           <span className="text-white text-[32px] font-bold">
-            {t("ReturnToInventory")}
+            {t("ReturnItem")}
           </span>
           <Image
             width={48}

@@ -154,7 +154,7 @@ const CopyrightHolderComponent = ({ initialItems, changeHandler }) => {
                 ©{copyright.name}
               </span>
               <Image
-                src="/admin/images/icon/more-vert-icon.png"
+                src="/admin/images/icon/more-vert-icon.svg"
                 width={16}
                 height={16}
                 alt="more icon"

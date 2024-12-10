@@ -5,7 +5,7 @@ import {
 } from "contexts/AdminAuthProvider";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
 import useUpdateEmail from "hooks/useUpdateEmail";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MutableRefObject, useEffect, useState } from "react";
@@ -127,6 +127,7 @@ const Reauth = ({
     usePasswordReauthentication();
   const t = useTranslations("AccountPassword");
   const l = useTranslations("Account");
+  const lang = useLocale();
 
   useEffect(() => {
     if (!userCredential) {
@@ -146,7 +147,7 @@ const Reauth = ({
       <div className="flex flex-col items-start gap-[6px] self-stretch">
         <div className="flex justify-center items-center">
           <span className="text-base-black text-[24px] pt-[10px] pb-[14px] font-bold leading-[120%]">
-            PASSWORD
+            {t("PasswordConfirmation")}
           </span>
         </div>
       </div>
@@ -198,8 +199,10 @@ const Reauth = ({
       <div className="modal-action flex h-[64px] mt-[5px] pt-0 pr-0 pl-[24px] pb-0 justify-end items-end gap-[16px] self-stretch">
         <Button
           type="button"
-          className="btn btn-block w-[78px] h-[33px] min-h-[33px] px-[16px] py-[8px] bg-base-100 rounded-[64px] border-[1px] border-primary
-              text-primary text-[14px] leading-[120%] font-medium hover:bg-base-100 hover:border-primary"
+          className={`btn btn-block h-[33px] min-h-[33px] px-[16px] py-[8px] bg-base-100 rounded-[64px] border-[1px] border-primary
+              text-primary text-[14px] leading-[120%] font-medium hover:bg-base-100 hover:border-primary ${
+                lang === "en" ? "w-[78px]" : "w-[120px]"
+              }`}
           onClick={onClickCancel}
         >
           {l("Cancel")}
@@ -234,6 +237,7 @@ const NewEmail = ({
   const [validEmail, setValidEmail] = useState(false);
   const [updateEmail, updating, isSuccessful, error] = useUpdateEmail();
   const t = useTranslations("Account");
+  const lang = useLocale();
 
   useEffect(() => {
     if (!isSuccessful) {
@@ -257,9 +261,9 @@ const NewEmail = ({
           <div className="flex items-center gap-[16px] self-stretch">
             <div className="flex flex-col items-start gap-[6px] flex-grow shrink-0 basis-0">
               <div className="flex items-center gap-[6px] self-stretch mt-[10px]">
-                <div className="w-[114px] text-right">
+                <div className="w-[150px] text-right">
                   <span className="text-base-black text-right text-[14px] font-semibold leading-none">
-                    E-mail address
+                    {t("NewEmailAddress")}
                   </span>
                 </div>
                 <div className="flex items-center py-[8px] pl-0 pr-[48px] flex-grow shrink-0 basis-0">
@@ -267,7 +271,7 @@ const NewEmail = ({
                     type="text"
                     value={email}
                     placeholder={"Email"}
-                    className="w-[707px] h-[33px] input input-bordered border-neutral-200 rounded-[64px] base-content font-normal mt-[0px] placeholder:text-base-content placeholder:text-left"
+                    className="w-[670px] h-[33px] input input-bordered border-neutral-200 rounded-[64px] base-content font-normal mt-[0px] placeholder:text-base-content placeholder:text-left"
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
@@ -290,8 +294,10 @@ const NewEmail = ({
       <div className="modal-action flex justify-end items-center gap-[16px] self-stretch mt-0">
         <Button
           type="button"
-          className="btn btn-block w-[78px] h-[33px] min-h-[33px] px-[16px] py-[8px] bg-base-100 rounded-[64px] border-[2px] border-primary
-              text-primary text-[14px] leading-[120%] font-semibold hover:bg-base-100 hover:border-primary"
+          className={`btn btn-block h-[33px] min-h-[33px] px-[16px] py-[8px] bg-base-100 rounded-[64px] border-[2px] border-primary
+              text-primary text-[14px] leading-[120%] font-semibold hover:bg-base-100 hover:border-primary ${
+                lang === "en" ? "w-[78px]" : "w-[120px]"
+              }`}
           onClick={onClickCancel}
         >
           {t("Cancel")}

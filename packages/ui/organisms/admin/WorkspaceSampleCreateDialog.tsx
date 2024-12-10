@@ -32,6 +32,7 @@ type Props = {
   ) => Promise<boolean>;
   generateError: boolean;
   resetErrorHandler: () => void;
+  deleteHandler: (id: number) => Promise<void>;
 };
 
 const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
@@ -147,6 +148,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             errorHandler={() => {
               setError(false);
             }}
+            deleteHandler={props.deleteHandler}
           />
         );
 
@@ -234,6 +236,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             errorHandler={() => {
               setError(false);
             }}
+            deleteHandler={props.deleteHandler}
           />
         );
 
@@ -281,6 +284,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
               setError(false);
               props.resetErrorHandler();
             }}
+            deleteHandler={props.deleteHandler}
           />
         );
 
@@ -368,6 +372,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             errorHandler={() => {
               setError(false);
             }}
+            deleteHandler={props.deleteHandler}
           />
         );
 
@@ -409,6 +414,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             errorHandler={() => {
               setError(false);
             }}
+            deleteHandler={props.deleteHandler}
           />
         );
 
@@ -495,6 +501,7 @@ const WorkspaceSampleCreateDialog: React.FC<Props> = (props) => {
             errorHandler={() => {
               setError(false);
             }}
+            deleteHandler={props.deleteHandler}
           />
         );
 

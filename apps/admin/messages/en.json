@@ -3,6 +3,7 @@
     "LogIn": "Log In",
     "SignUp": "Sign Up",
     "Password": "Password",
+    "PasswordReset": "Password Reset",
     "LogInWithGoogle": "Log In with Google",
     "LogInWithApple": "Log In with Apple",
     "SignUpWithGoogle": "Sign Up with Google",
@@ -207,7 +208,7 @@
     "SceneLight": "Scene Light",
     "Brightness": "Brightness",
     "PointLight": "Point Light",
-    "ReturnToInventory": "Return to the Inventory",
+    "ReturnItem": "Return Item",
     "DeleteSelectingItem": "Delete a selecting Item from Showcase",
     "MintFailed": "Mint failed.",
     "MintFailedLimitExceeded": "Mint failed because the daily transaction limit was exceeded.",
@@ -218,12 +219,14 @@
     "MintOperationWarningTo": "any previous changes. Please confirm that you want to proceed.",
     "WishToContinue": "Do you wish to continue?",
     "ShortCut": "Short Cut",
-    "MintNow": "Mint Now"
+    "MintNow": "Mint Now",
+    "ReusableComponents": "Re-usable components built using Figr Design System"
   },
   "GiftReceivingSettings": {
     "TogglePermission": "On this page, you can toggle the permission settings for receiving gifts. Adjust the settings for each inventory or box.",
     "Permitted": "Disable",
     "Blocked": "Enable",
+    "Warning": "Warning!",
     "DeleteBoxWarning": "When you delete a BOX, the digital items (NFTs) contained within the BOX are also deleted. Please make sure to check the contents of the BOX carefully before proceeding with this action.",
     "Cancel": "Cancel",
     "Delete": "Delete",
@@ -236,8 +239,9 @@
     "ItemTitle": "Item Title",
     "CreateNewItem": "Create New Item",
     "SelectedItemCount": "selected {count} item",
-    "Delete": "DELETE",
+    "Delete": "Delete",
     "ItemGeneratorDescription": "This generator allows you to easily create original items. Use your favorite designs to create acrylic stands, posters, message cards, and more. With intuitive controls, you can craft unique items that are truly your own.",
+    "ModelUploadWarning": "The large size of an uploaded 3D model may negatively impact the user experience.",
     "AcrylicStand": "Acrylic Stand",
     "Poster": "Poster",
     "MessageCard": "Message Card",
@@ -289,7 +293,7 @@
     "Combine": "Combine",
     "CombineSheetAndText": "Combine the sheet and text to generate a single item.",
     "ReturnToSampleList": "Return to the sample list",
-    "EditItemData": "Edit Item data",
+    "EditItemData": "Edit Item Data",
     "MintAsNFT": "Mint as an NFT",
     "ConfirmDelete": "Are you sure you want to delete?",
     "DeleteOperationWarning": "Performing the Delete operation will disable the ability to undo or redo any previous changes. Please confirm that you want to proceed.",
@@ -337,7 +341,8 @@
     "Unverified": "unverified",
     "EnterName": "Please enter a name.",
     "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_).",
-    "UserIdTooShort": "User ID must be at least 5 characters."
+    "UserIdTooShort": "User ID must be at least 5 characters.",
+    "NewEmailAddress": "New Email Address"
   },
   "AccountPassword": {
     "Name": "Name",
@@ -348,7 +353,8 @@
     "CheckMailbox": "Please check your mailbox.\nAuthentication will be completed by clicking the authentication link in the email.",
     "NoEmail": "Haven't received the email?",
     "VerifyNewEmail": "Verified new email address",
-    "Done": "Done"
+    "Done": "Done",
+    "PasswordConfirmation": "Password Confirmation"
   },
   "AccountSocialLogin": {
     "Connected": "Connected",

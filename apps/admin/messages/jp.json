@@ -3,6 +3,7 @@
     "LogIn": "ログイン",
     "SignUp": "新規登録",
     "Password": "パスワード",
+    "PasswordReset": "パスワードリセット",
     "LogInWithGoogle": "Googleでログイン",
     "LogInWithApple": "Apple IDでログイン",
     "SignUpWithGoogle": "Googleで新規登録",
@@ -207,7 +208,7 @@
     "SceneLight": "シーンライト",
     "Brightness": "明るさ",
     "PointLight": "ポイントライト",
-    "ReturnToInventory": "インベントリに戻す",
+    "ReturnItem": "アイテムを戻す",
     "DeleteSelectingItem": "選択中のアイテムをショーケース上から削除",
     "MintFailed": "ミントに失敗しました。",
     "MintFailedLimitExceeded": "ミントに失敗しました。1日の取引制限を超えています。",
@@ -218,7 +219,8 @@
     "MintOperationWarningTo": " ことができなくなります。 本当に実行するか確認してください。",
     "WishToContinue": "続行しますか？",
     "ShortCut": "ショートカット",
-    "MintNow": "今すぐミント"
+    "MintNow": "今すぐミント",
+    "ReusableComponents": "Figrデザインシステムを使用して構築された再利用可能なコンポーネント"
   },
   "GiftReceivingSettings": {
     "TogglePermission": "このページでは、ギフト受取の許可設定を切り替えることができます。各インベントリやボックスごとに設定を調整してください。",
@@ -238,7 +240,8 @@
     "CreateNewItem": "新しいアイテムを作成",
     "SelectedItemCount": "{count} 個のアイテムを選択中",
     "Delete": "削除",
-    "ItemGeneratorDescription": "オリジナルのアイテムを簡単に作成できるジェネレーターです。お気に入りのデザインを使って、アクリルスタンドやポスター、メッセージカードなどを作成しましょう。直感的な操作で、あなただけのユニークなアイテムを作り上げましょう。",
+    "ItemGeneratorDescription": "オリジナルアイテムを簡単に作成できるジェネレーターです。お気に入りのデザインで、アクリルスタンドやポスター、メッセージカードなどが作成できます。直感的な操作で、あなただけのユニークなアイテムを作り上げましょう。",
+    "ModelUploadWarning": "アップロードされた3Dモデルのサイズが大きいと、ユーザーエクスペリエンスに悪影響を与える可能性があります。",
     "AcrylicStand": "アクリルスタンド",
     "Poster": "ポスター",
     "MessageCard": "メッセージカード",
@@ -338,7 +341,8 @@
     "Unverified": "未認証",
     "EnterName": "名前を入力してください。",
     "UserIdNoSpaces": "ユーザーIDは5〜20文字、英数字、ハイフン（-）、アンダースコア（_）のみを使用できます。",
-    "UserIdTooShort": "ユーザーIDは5文字以上である必要があります。"
+    "UserIdTooShort": "ユーザーIDは5文字以上である必要があります。",
+    "NewEmailAddress": "新しいメールアドレス"
   },
   "AccountPassword": {
     "Name": "名前",
@@ -349,7 +353,8 @@
     "CheckMailbox": "メールボックスをご確認ください。\nメール内の認証リンクをクリックすることで認証が完了します。",
     "NoEmail": "メールが届きませんか？",
     "VerifyNewEmail": "新しいメールアドレスを認証する",
-    "Done": "完了"
+    "Done": "完了",
+    "PasswordConfirmation": "パスワード確認"
   },
   "AccountSocialLogin": {
     "Connected": "に連携済み",

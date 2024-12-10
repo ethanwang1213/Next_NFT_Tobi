@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { MutableRefObject } from "react";
 import Button from "ui/atoms/Button";
@@ -9,6 +10,7 @@ const DeleteConfirmDialog = ({
   dialogRef: MutableRefObject<HTMLDialogElement>;
   changeHandler: (value: string) => void;
 }) => {
+  const t = useTranslations("GiftReceivingSettings");
   return (
     <dialog ref={dialogRef} className="modal">
       <div
@@ -24,11 +26,9 @@ const DeleteConfirmDialog = ({
             />
           </button>
         </form>
-        <div className="text-error text-lg font-semibold">Warning!</div>
+        <div className="text-error text-lg font-semibold">{t("Warning")}</div>
         <div className="text-neutral-700 text-sm font-normal mb-2">
-          When you delete a BOX, the digital items (NFTs) contained within the
-          BOX are also deleted. Please make sure to check the contents of the
-          BOX carefully before proceeding with this action.
+          {t("DeleteBoxWarning")}
         </div>
         <div className="modal-action flex justify-end gap-4">
           <Button
@@ -40,7 +40,7 @@ const DeleteConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             type="button"
@@ -51,7 +51,7 @@ const DeleteConfirmDialog = ({
               dialogRef.current.close();
             }}
           >
-            Delete
+            {t("Delete")}
           </Button>
         </div>
       </div>

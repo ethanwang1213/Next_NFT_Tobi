@@ -78,7 +78,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
     <ReauthTemplate position={Position.Top} onClickBack={onClickBack}>
       <div className="flex w-[780px] h-[80px] flex-col justify-center shrink-0 mt-[50px]">
         <span className="text-secondary text-center text-[32px] font-bold leading-[normal]">
-          {t("Password")}
+          {t("PasswordReset")}
         </span>
       </div>
       <div className="w-[408px] h-[52px] shrink-0 mt-[103px]">

@@ -55,6 +55,10 @@ const Showcase = () => {
     putData,
     postData,
   } = useRestfulAPI(null);
+
+  const digitalItemAPIUrl = "native/admin/digital_items";
+  const { data: digitalItems } = useRestfulAPI(digitalItemAPIUrl);
+
   const timerId = useRef(null);
   const tooltip = useTranslations("Tooltip");
 
@@ -436,6 +440,7 @@ const Showcase = () => {
           </div>
           <ShowcaseSampleDetail
             showSampleDetailView={showSampleDetailView}
+            digitalItems={digitalItems}
             showDetailView={showDetailView}
             id={selectedSampleItem}
             handleNftModelGeneratedRef={handleNftModelGeneratedRef}

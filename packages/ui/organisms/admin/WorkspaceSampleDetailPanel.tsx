@@ -3,6 +3,7 @@ import SampleDetailView from "./SampleDetailView";
 interface WorkspaceSampleDetailPanelProps {
   id: number;
   sampleitemId: number;
+  digitalItems: any;
   deleteHandler: (ids: number[]) => void;
   handleNftModelGeneratedRef: React.MutableRefObject<
     (itemId: number, nftModelBase64: string) => void
@@ -13,6 +14,7 @@ interface WorkspaceSampleDetailPanelProps {
 const WorkspaceSampleDetailPanel: React.FC<WorkspaceSampleDetailPanelProps> = ({
   id,
   sampleitemId,
+  digitalItems,
   handleNftModelGeneratedRef,
   deleteHandler,
   deleteAllActionHistory,
@@ -22,6 +24,7 @@ const WorkspaceSampleDetailPanel: React.FC<WorkspaceSampleDetailPanelProps> = ({
       <div className="h-full flex flex-col justify-center">
         <SampleDetailView
           id={id}
+          digitalItems={digitalItems}
           sampleitemId={sampleitemId}
           section={"workspace"}
           deleteHandler={deleteHandler}
