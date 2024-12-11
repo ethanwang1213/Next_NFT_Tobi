@@ -52,6 +52,8 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
       day,
+      selectedDate.getHours(),
+      selectedDate.getMinutes(),
     );
     setSelectedDate(newDate);
     updateDateTime(newDate);
