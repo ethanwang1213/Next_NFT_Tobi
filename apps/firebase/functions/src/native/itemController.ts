@@ -777,6 +777,9 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
           uuid: uid,
           is_deleted: false,
         },
+        include: {
+          content: true,
+        },
       });
       if (!admin) {
         res.status(401).send({
@@ -810,21 +813,53 @@ export const adminGetAllDigitalItems = async (req: Request, res: Response) => {
             },
             take: 1,
           },
+          copyrights: {
+            include: {
+              copyright: true,
+            },
+          },
+          license: true,
         },
       });
       const returnData = allDigitalItems.map((digitalItem) => {
+        const copyrights = digitalItem.copyrights.map((relate) => {
+          return {
+            id: relate.copyright.id,
+            name: relate.copyright.name,
+          };
+        });
         return {
           id: digitalItem.id,
           name: digitalItem.name,
+          content: {
+            id: admin.content?.id,
+            name: admin.content?.name,
+            description: admin.content?.description,
+          },
+          description: digitalItem.description,
+          defaultThumbnailUrl: digitalItem.default_thumb_url,
+          customThumbnailUrl: digitalItem.custom_thumb_url,
           thumbUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-          modelUrl: digitalItem.model_url,
           croppedUrl: digitalItem.cropped_url,
-          modelType: digitalItem.type,
+          isCustomThumbnailSelected: !digitalItem.is_default_thumb,
+          modelUrl: digitalItem.model_url,
+          meta_model_url: digitalItem.meta_model_url,
+          type: digitalItem.type,
           materialUrl: digitalItem.material_image?.image,
-          price: digitalItem.sales.length > 0 ? digitalItem.sales[0].price : null,
-          status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
-          saleQuantity: digitalItem.sale_quantity,
+          price: digitalItem.sales.length>0?digitalItem.sales[0].price:null,
+          status: digitalItem.sales.length>0?digitalItem.sales[0].status:digitalItem.metadata_status,
+          schedules: digitalItem.sales.map((schedule) => {
+            return {
+              id: schedule.id,
+              status: schedule.status,
+              datetime: schedule.schedule_start_time,
+            };
+          }),
           quantityLimit: digitalItem.limit,
+          license: digitalItem.license,
+          copyrights: copyrights,
+          modelType: digitalItem.type,
+          saleQuantity: digitalItem.sale_quantity,
           mintedCount: digitalItem.minted_count,
           createDate: digitalItem.created_date_time,
         };
