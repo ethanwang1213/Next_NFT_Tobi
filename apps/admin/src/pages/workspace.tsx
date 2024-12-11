@@ -615,16 +615,15 @@ export default function Index() {
               changeHandler={null}
             />
           </div>
-          {showDetailView && (
-            <WorkspaceSampleDetailPanel
-              id={selectedSampleItem}
-              digitalItems={digitalItems}
-              sampleitemId={selectedSampleItemId}
-              deleteHandler={deleteSamplesHandler}
-              handleNftModelGeneratedRef={handleNftModelGeneratedRef}
-              deleteAllActionHistory={deleteAllActionHistory}
-            />
-          )}
+          <WorkspaceSampleDetailPanel
+            id={selectedSampleItem}
+            isVisible={showDetailView}
+            digitalItems={digitalItems}
+            sampleitemId={selectedSampleItemId}
+            deleteHandler={deleteSamplesHandler}
+            handleNftModelGeneratedRef={handleNftModelGeneratedRef}
+            deleteAllActionHistory={deleteAllActionHistory}
+          />
           <WorkspaceSampleListPanel
             closeHandler={() => setShowListView(false)}
             isOpen={showListView}
