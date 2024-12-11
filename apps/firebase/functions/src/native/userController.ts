@@ -56,26 +56,35 @@ export const signUp = async (req: Request, res: Response) => {
       user_id: username,
     };
     try {
-      const saidanTemplates = await prisma.saidans_template.findFirst({
-        where: {
-          id: 1,
-        }
-      });
-      const firstSaidan =  await prisma.saidans.create({
-        data: {
-          account_uuid: uid,
-          title: username,
-          template_id: saidanTemplates?.id??1,
-          thumbnail_image: saidanTemplates?.cover_image??"",
-        }
-      });
-      const savedUser = await prisma.accounts.upsert({
+      await prisma.accounts.upsert({
         where: {
           uuid: uid,
           is_deleted: false,
         },
         update: {},
-        create: {...userData, first_saidan_id: firstSaidan.id},
+        create: {...userData, first_saidan_id: 0},
+      });
+      const saidanTemplates = await prisma.saidans_template.findFirst({
+        where: {
+          id: 1,
+        },
+      });
+      const firstSaidan = await prisma.saidans.create({
+        data: {
+          account_uuid: uid,
+          title: username,
+          template_id: saidanTemplates?.id??1,
+          thumbnail_image: saidanTemplates?.cover_image??"",
+        },
+      });
+      const savedUser = await prisma.accounts.update({
+        where: {
+          uuid: uid,
+          is_deleted: false,
+        },
+        data: {
+          first_saidan_id: firstSaidan.id,
+        },
       });
       const flowAcc = await prisma.flow_accounts.findUnique({
         where: {
@@ -238,13 +247,6 @@ export const getMyProfile = async (req: Request, res: Response) => {
           uuid: uid,
           is_deleted: false,
         },
-        include: {
-          saidans: {
-            orderBy: {
-              created_date_time: "asc",
-            },
-          },
-        },
       });
 
       if (!accountData) {
@@ -397,13 +399,6 @@ export const postMyProfile = async (req: Request, res: Response) => {
           where: {
             uuid: uid,
           },
-          include: {
-            saidans: {
-              orderBy: {
-                created_date_time: "asc",
-              },
-            },
-          },
         });
       }
       if (flow&&isEmptyObject(flow)) {
@@ -436,12 +431,10 @@ export const postMyProfile = async (req: Request, res: Response) => {
           socialLinks: accountData?.social_links,
           gender: accountData?.gender,
           birth: accountData?.birth,
-          firstSaidan: accountData?.saidans.length==0?
-            null :
-            {
-              id: accountData?.saidans[0].id,
-              removedDefaultItem: accountData?.removed_default_items,
-            },
+          firstSaidan: {
+            id: accountData?.first_saidan_id,
+            removedDefaultItem: accountData?.removed_default_items,
+          },
           giftPermission: accountData?.gift_permission,
           createdAt: accountData?.created_date_time,
         },
