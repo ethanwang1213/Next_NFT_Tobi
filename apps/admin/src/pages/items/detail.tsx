@@ -71,6 +71,7 @@ const Detail = () => {
   );
   const [confirmDialogNotes, setConfirmDialogNotes] = useState([]);
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
+  const [lastError, setLastError] = useState(null);
   const [status, setStatus] = useState(-1);
   const statusConfirmDialogRef = useRef(null);
   const mintConfirmDialogRef = useRef(null);
@@ -382,9 +383,16 @@ const Detail = () => {
 
   const saveButtonHandler = async () => {
     if (!checkSchedules(digitalItem.schedules)) {
-      toast("Status change invalid: Cannot change to the same status.");
+      const errorMessage = t("InvalidStatusChange");
+
+      if (lastError !== errorMessage) {
+        toast(errorMessage);
+        setLastError(errorMessage);
+      }
+
       return;
     }
+    setLastError(null);
 
     if (dataRef.current.status != digitalItem.status) {
       showStatusConfirmDialog();
