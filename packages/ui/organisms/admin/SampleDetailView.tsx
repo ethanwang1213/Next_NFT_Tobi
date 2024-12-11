@@ -52,7 +52,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const dialogRef = useRef(null);
-  const { postData } = useRestfulAPI(null);
+  const apiUrl = `native/admin/digital_items/${id}`;
+  const { data: digitalItem, getData, postData } = useRestfulAPI(null);
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
@@ -105,9 +106,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     } else {
       deleteAllActionHistory();
       trackSampleMint(data.modelType);
-
-      // refresh item data
       await getData(apiUrl);
+      setData(digitalItem);
     }
   };
 
