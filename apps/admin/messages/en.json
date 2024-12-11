@@ -432,7 +432,16 @@
     "DeclarationOfOriginal": "Declaration of Original Content Creation",
     "LogoutPrompt": "Would you like to logout?",
     "Logout": "Logout",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "TobiratoryProgramTitle": "By joining the Tobiratory Creator Program, you can access the following features and benefits as a creator:",
+    "YourContentPage": "Your Content Page",
+    "YourContentPageDescription": "Your Content page is provided for showcasing and publishing your digital creations.",
+    "FreeDistribution": "Free Distribution of Digital Items",
+    "FreeDistributionDescription": "You can freely distribute exclusive items to users.",
+    "FreeDistributionNote": "※Sales functionality will be implemented in the future.",
+    "FisplaySampleItems": "Display of Sample Digital Items",
+    "DisplaySampleItemsDescription": "You can freely display and showcase digital items you wish to sell on SAIDAN.",
+    "SingleContentLimit": "Please note that only one piece of content can be applied for per account."
   },
   "WelcomeMessage": {
     "WelcomeToProgram": "Welcome to the Tobiratory Creator Program!",

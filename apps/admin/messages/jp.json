@@ -432,7 +432,16 @@
     "DeclarationOfOriginal": "オリジナルコンテンツ制作の宣言",
     "LogoutPrompt": "ログアウトしますか?",
     "Logout": "ログアウト",
-    "Cancel": "キャンセル"
+    "Cancel": "キャンセル",
+    "TobiratoryProgramTitle": "Tobiratory クリエイタープログラムに参加すると、クリエイターとして以下の機能や特典を利用できるようになります:",
+    "YourContentPage": "独自のコンテンツページ",
+    "YourContentPageDescription": "あなたのデジタル作品を紹介・公開するための専用ページが提供されます。",
+    "FreeDistribution": "デジタルアイテムの無料配布",
+    "FreeDistributionDescription": "ユーザーに向けて限定アイテムを無料で配布可能です。",
+    "FreeDistributionNote": "※販売は今後実装予定です。",
+    "FisplaySampleItems": "サンプルデジタルアイテムの公開",
+    "DisplaySampleItemsDescription": "SAIDANで販売したいデジタルアイテムを飾り、自由に公開することが可能です。",
+    "SingleContentLimit": "1アカウントにつき申請可能なコンテンツは1つまでとなります。"
   },
   "WelcomeMessage": {
     "WelcomeToProgram": "Tobiratoryクリエイタープログラムへようこそ！",
