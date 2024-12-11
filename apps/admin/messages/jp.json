@@ -81,7 +81,9 @@
     "RequiredFieldsMissing": "未入力の必須項目があります。",
     "Cancel": "キャンセル",
     "Delete": "削除",
-    "NoName": "名前なし"
+    "NoName": "名前なし",
+    "NoItemMessage": "アイテムがありません...",
+    "CreateNewItem": "新しいアイテムを作成"
   },
   "ItemDetail": {
     "DetailSetting": "アイテム詳細",

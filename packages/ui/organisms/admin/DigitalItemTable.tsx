@@ -3,6 +3,7 @@ import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Button from "ui/atoms/Button";
 import { formatCurrency, formatDateToLocal } from "ui/atoms/Formatters";
@@ -27,6 +28,7 @@ const DigitalItemTable = (filters: {
   searchTerm: string;
 }) => {
   const apiUrl = "native/admin/digital_items";
+  const router = useRouter();
   const {
     data: digitalItems,
     dataRef,
@@ -331,81 +333,105 @@ const DigitalItemTable = (filters: {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {digitalItems?.map((item) => (
-                <tr
-                  key={item.id}
-                  className="w-full border-b py-3 text-sm hover:bg-primary-100"
-                >
-                  <td className="py-3 text-center">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4"
-                      checked={selDigitalItemIds.includes(item.id)}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        const itemId = item.id;
-
-                        setSelDigitalItemIds((prevIds) => {
-                          if (checked) {
-                            return [...prevIds, itemId];
-                          } else {
-                            return prevIds.filter((id) => id !== itemId);
-                          }
-                        });
-                      }}
-                    />
-                  </td>
-                  <td className="py-3">
-                    <Link
-                      href={`/items/detail?id=${item.id}`}
-                      className="flex items-center justify-center"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+              {digitalItems?.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="text-center pt-28">
+                    <div className="flex flex-col items-center justify-center">
                       <Image
-                        src={item.thumbUrl}
-                        className="rounded inline-block mx-2 h-[80px] object-contain"
-                        width={80}
-                        height={80}
-                        alt={`${item.name}'s profile picture`}
-                        unoptimized
+                        src="/admin/images/png/no-item.png"
+                        alt="No items"
+                        width={600}
+                        height={300}
                       />
-                    </Link>
-                  </td>
-                  <td className="px-3">
-                    <Link
-                      href={`/items/detail?id=${item.id}`}
-                      className="flex items-center justify-center"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <p className="inline-block w-60 text-left break-words hover:underline">
-                        {item.name ? item.name : t("NoName")}
+                      <p className="mt-20 text-xl text-black font-semibold">
+                        {t("NoItemMessage")}
                       </p>
-                    </Link>
+                      <Button
+                        onClick={() => router.push("/workspace?trigger=true")}
+                        className="mt-16 bg-primary-800 text-[24px] text-white py-2 px-4 rounded-full"
+                      >
+                        {t("CreateNewItem")}
+                      </Button>
+                    </div>
                   </td>
-                  <td className="px-3 py-3 text-center justify-center">
-                    {formatCurrency(item.price)}
-                  </td>
-                  <td className="p-3 text-center justify-center">
-                    {getDigitalItemStatusTitle(item.status, t)}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    <span>{item.mintedCount} / </span>
-                    {item.quantityLimit != -1 ? (
-                      <span>{item.quantityLimit}</span>
-                    ) : (
-                      <span className="text-[20px]">∞</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-3  text-center justify-center">
-                    {!!item.createDate && item.createDate.length
-                      ? formatDateToLocal(item.createDate)
-                      : "-"}
-                  </td>
-                  <td></td>
                 </tr>
-              ))}
+              ) : (
+                digitalItems?.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="w-full border-b py-3 text-sm hover:bg-primary-100"
+                  >
+                    <td className="py-3 text-center">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4"
+                        checked={selDigitalItemIds.includes(item.id)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          const itemId = item.id;
+
+                          setSelDigitalItemIds((prevIds) => {
+                            if (checked) {
+                              return [...prevIds, itemId];
+                            } else {
+                              return prevIds.filter((id) => id !== itemId);
+                            }
+                          });
+                        }}
+                      />
+                    </td>
+                    <td className="py-3">
+                      <Link
+                        href={`/items/detail?id=${item.id}`}
+                        className="flex items-center justify-center"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          src={item.thumbUrl}
+                          className="rounded inline-block mx-2 h-[80px] object-contain"
+                          width={80}
+                          height={80}
+                          alt={`${item.name}'s profile picture`}
+                          unoptimized
+                        />
+                      </Link>
+                    </td>
+                    <td className="px-3">
+                      <Link
+                        href={`/items/detail?id=${item.id}`}
+                        className="flex items-center justify-center"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <p className="inline-block w-60 text-left break-words hover:underline">
+                          {item.name ? item.name : t("NoName")}
+                        </p>
+                      </Link>
+                    </td>
+                    <td className="px-3 py-3 text-center justify-center">
+                      {formatCurrency(item.price)}
+                    </td>
+                    <td className="p-3 text-center justify-center">
+                      {getDigitalItemStatusTitle(item.status, t)}
+                    </td>
+                    <td className="px-3 py-3 text-center justify-center">
+                      <span>{item.mintedCount} / </span>
+                      {item.quantityLimit != -1 ? (
+                        <span>{item.quantityLimit}</span>
+                      ) : (
+                        <span className="text-[20px]">∞</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-3 text-center justify-center">
+                      {!!item.createDate && item.createDate.length
+                        ? formatDateToLocal(item.createDate)
+                        : "-"}
+                    </td>
+                    <td></td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
           {selDigitalItemIds.length > 0 ? (

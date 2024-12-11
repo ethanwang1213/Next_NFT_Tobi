@@ -81,7 +81,9 @@
     "RequiredFieldsMissing": "Some required fields are missing.",
     "Cancel": "Cancel",
     "Delete": "Delete",
-    "NoName": "no name"
+    "NoName": "no name",
+    "NoItemMessage": "No Item is here...",
+    "CreateNewItem": "Create New Item"
   },
   "ItemDetail": {
     "DetailSetting": "ITEM DETAIL",
