@@ -247,7 +247,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             </span>
             <div className="w-full flex flex-col gap-2">
               <div className="flex gap-4">
-                <span className="text-[10px] font-medium w-[76px] text-right">
+                <span className="text-[10px] font-medium w-[90px] text-right">
                   {t("Creator")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
@@ -255,7 +255,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
               </div>
               <div className="flex gap-4">
-                <span className="text-[10px] font-medium w-[76px] text-right">
+                <span className="text-[10px] font-medium w-[90px] text-right">
                   {t("Copyright")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
@@ -265,7 +265,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
               </div>
               <div className="flex gap-4">
-                <span className="text-[10px] font-medium w-[76px] text-right">
+                <span className="text-[10px] font-medium w-[90px] text-right">
                   {t("License")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
@@ -273,7 +273,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
               </div>
               <div className="flex gap-4">
-                <span className="text-[10px] font-medium w-[76px] text-right">
+                <span className="text-[10px] font-medium w-[90px] text-right">
                   {t("DateAcquired")}
                 </span>
                 <div className="text-[10px] font-medium w-[168px]">
@@ -283,7 +283,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </div>
               </div>
               <div className="flex gap-4">
-                <span className="text-[10px] font-medium w-[76px] text-right">
+                <span className="text-[10px] font-medium w-[90px] text-right">
                   {t("History")}
                 </span>
                 {data &&
@@ -309,7 +309,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 )}
               </div>
               <div className="flex gap-4">
-                <span className="text-[10px] font-medium w-[76px] text-right">
+                <span className="text-[10px] font-medium w-[90px] text-right">
                   {t("SerialNumber")}
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">

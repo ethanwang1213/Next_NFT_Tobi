@@ -54,20 +54,24 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
     if (isDragging && dragStartPos.current) {
       const targetElement = imgWrapperRef.current;
       const targetRect = targetElement.getBoundingClientRect();
-      const isWithinTargetArea =
-        event.clientX >= targetRect.left + 50 &&
-        event.clientX <= targetRect.right - 50 &&
-        event.clientY >= targetRect.top + 50 &&
-        event.clientY <= targetRect.bottom - 50;
-      if (isWithinTargetArea) {
-        const dx = event.clientX - dragStartPos.current.x;
-        const dy = event.clientY - dragStartPos.current.y;
-        setPosition((prevPosition) => ({
-          x: prevPosition.x + dx,
-          y: prevPosition.y + dy,
-        }));
-        dragStartPos.current = { x: event.clientX, y: event.clientY };
-      }
+
+      const dx = event.clientX - dragStartPos.current.x;
+      const dy = event.clientY - dragStartPos.current.y;
+
+      let newX = position.x + dx;
+      let newY = position.y + dy;
+
+      const minX = 0;
+      const minY = 0;
+      const maxX = targetRect.width - moverWrapperRef.current.offsetWidth;
+      const maxY = targetRect.height - moverWrapperRef.current.offsetHeight;
+
+      newX = Math.max(minX, Math.min(newX, maxX));
+      newY = Math.max(minY, Math.min(newY, maxY));
+
+      setPosition({ x: newX, y: newY });
+
+      dragStartPos.current = { x: event.clientX, y: event.clientY };
     }
   };
 
@@ -189,7 +193,7 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
               </div>
             )}
             <span className="text-secondary-400 text-sm font-medium">
-              {t("Back")}
+              {t("BackSide")}
             </span>
             {
               // eslint-disable-next-line @next/next/no-img-element
@@ -216,8 +220,15 @@ const ImagePositionComponent: React.FC<Props> = (props) => {
               ref={moverWrapperRef}
               className="absolute w-[124px] h-8 z-10
                   bg-white rounded-lg border border-primary flex justify-center items-center gap-1 cursor-move"
-              style={{ left: position.x, top: position.y }}
+              style={{
+                left: position.x,
+                top: position.y,
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                MozUserSelect: "none",
+              }}
               onMouseDown={onMouseDown}
+              onDragStart={(e) => e.preventDefault()}
             >
               <span className="text-primary text-sm font-medium">
                 Acrylic Plate

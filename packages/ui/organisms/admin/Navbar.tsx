@@ -18,7 +18,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <NavbarContainer
       className={
-        "shadow-[0px_1px_10px_0px_rgba(0,0,0,0.20)] min-h-[56px] h-[56px] p-0"
+        "shadow-[0px_1px_10px_0px_rgba(0,0,0,0.20)] min-h-[56px] h-[56px] p-0 z-20"
       }
     >
       <NavbarStart className={"min-h-[56px] h-[56px]"}>
