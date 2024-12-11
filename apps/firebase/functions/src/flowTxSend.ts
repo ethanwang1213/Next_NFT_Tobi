@@ -522,7 +522,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         name: digitalItem.name,
         description: digitalItem.description,
         thumbnailUrl: digitalItem.is_default_thumb ? digitalItem.default_thumb_url : digitalItem.custom_thumb_url,
-        modelUrl: digitalItem?.model_url,
+        modelUrl: digitalItem?.meta_model_url,
         creatorName: dbCreatorName,
         limit: digitalItem.limit,
         license: digitalItem.license,
