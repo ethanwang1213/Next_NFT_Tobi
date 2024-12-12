@@ -24,35 +24,43 @@ const ShowcaseSampleDetail = ({
   const t = useTranslations("Showcase");
   return (
     <div className="pointer-events-auto">
-      {showSampleDetailView && (
-        <div className="absolute top-[21px] left-4 w-[320px] bottom-[18px] rounded-3xl bg-gray-600 bg-opacity-50 backdrop-blur-[25px] px-[40px] pt-[70px] pb-[20px]">
-          <SampleDetailView
-            digitalItems={digitalItems}
-            id={id}
-            section={"showcase"}
-            sampleitemId={null}
-            deleteHandler={undefined}
-            handleNftModelGeneratedRef={handleNftModelGeneratedRef}
-            deleteAllActionHistory={deleteAllActionHistory}
+      <div
+        className={`absolute top-[21px] w-[320px] bottom-[18px] rounded-3xl bg-gray-600 bg-opacity-50 backdrop-blur-[25px] px-[40px] pt-[70px] pb-[20px] transition-transform duration-300 ease-in-out ${
+          showSampleDetailView
+            ? "translate-x-0 left-4"
+            : "-translate-x-full z-0"
+        }`}
+      >
+        <SampleDetailView
+          digitalItems={digitalItems}
+          id={id}
+          section={"showcase"}
+          sampleitemId={null}
+          deleteHandler={undefined}
+          handleNftModelGeneratedRef={handleNftModelGeneratedRef}
+          deleteAllActionHistory={deleteAllActionHistory}
+        />
+      </div>
+      <div
+        className={`absolute top-[38px] transition-transform duration-300 ease-in-out ${
+          showDetailView
+            ? "translate-x-4 left-[38px]"
+            : "-translate-x-full"
+        }`}
+      >
+        <Link
+          href="/contents"
+          className="rounded-[5px] bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-[8px] p-2"
+        >
+          <Image
+            width={32}
+            height={32}
+            alt="Link back Icon"
+            src="/admin/images/icon/arrow-back-icon.svg"
           />
-        </div>
-      )}
-      {showDetailView && (
-        <div className="absolute left-[38px] top-[39px]">
-          <Link
-            href="/contents"
-            className="rounded-[5px] bg-gray-400 bg-opacity-50 flex items-center gap-2 text-white backdrop-blur-[8px] p-2"
-          >
-            <Image
-              width={32}
-              height={32}
-              alt="Link back Icon"
-              src="/admin/images/icon/arrow-back-icon.svg"
-            />
-            <span>{t("Exit")}</span>
-          </Link>
-        </div>
-      )}
+          <span>{t("Exit")}</span>
+        </Link>
+      </div>
     </div>
   );
 };

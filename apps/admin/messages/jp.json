@@ -81,7 +81,9 @@
     "RequiredFieldsMissing": "未入力の必須項目があります。",
     "Cancel": "キャンセル",
     "Delete": "削除",
-    "NoName": "名前なし"
+    "NoName": "名前なし",
+    "NoItemMessage": "アイテムがありません...",
+    "CreateNewItem": "新しいアイテムを作成"
   },
   "ItemDetail": {
     "DetailSetting": "アイテム詳細",
@@ -275,6 +277,7 @@
     "Back": "戻る",
     "Next": "次へ",
     "Skip": "スキップ",
+    "BackSide": "後ろ",
     "Front": "前",
     "TryAgain": "再試行",
     "SelectKeychainDesign": "アクリルキーホルダーのデザインを選択します。",
@@ -429,7 +432,16 @@
     "DeclarationOfOriginal": "オリジナルコンテンツ制作の宣言",
     "LogoutPrompt": "ログアウトしますか?",
     "Logout": "ログアウト",
-    "Cancel": "キャンセル"
+    "Cancel": "キャンセル",
+    "TobiratoryProgramTitle": "Tobiratory クリエイタープログラムに参加すると、クリエイターとして以下の機能や特典を利用できるようになります:",
+    "YourContentPage": "独自のコンテンツページ",
+    "YourContentPageDescription": "あなたのデジタル作品を紹介・公開するための専用ページが提供されます。",
+    "FreeDistribution": "デジタルアイテムの無料配布",
+    "FreeDistributionDescription": "ユーザーに向けて限定アイテムを無料で配布可能です。",
+    "FreeDistributionNote": "※販売は今後実装予定です。",
+    "DisplaySampleItems": "サンプルデジタルアイテムの公開",
+    "DisplaySampleItemsDescription": "SAIDANで販売したいデジタルアイテムを飾り、自由に公開することが可能です。",
+    "SingleContentLimit": "1アカウントにつき申請可能なコンテンツは1つまでとなります。"
   },
   "WelcomeMessage": {
     "WelcomeToProgram": "Tobiratoryクリエイタープログラムへようこそ！",

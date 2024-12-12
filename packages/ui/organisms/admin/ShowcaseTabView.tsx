@@ -15,6 +15,7 @@ import BrightnessPicker from "./BrightnessPicker";
 import ColorPicker from "./ColorPicker";
 
 const ShowcaseTabView = ({
+  isVisible,
   clickSampleItem,
   dragSampleItem,
   clickNftItem,
@@ -25,6 +26,7 @@ const ShowcaseTabView = ({
   operateMenu,
   handleActionRef,
 }: {
+  isVisible: boolean;
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
   clickNftItem: (item: NftItem) => void;
@@ -120,7 +122,11 @@ const ShowcaseTabView = ({
   }, [wt, ft, st, sb, pt, pb]);
 
   return (
-    <div className="pointer-events-auto w-[424px] absolute right-4 top-[21px] bottom-4 flex flex-col items-center text-base-white">
+    <div
+      className={`pointer-events-auto w-[424px] absolute top-[21px] bottom-4 flex flex-col items-center text-base-white  transition-transform duration-400 ease-in-out ${
+        isVisible ? "translate-x-0 right-4" : "translate-x-full right-0"
+      }`}
+    >
       {showRestoreMenu && (
         <div
           className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 

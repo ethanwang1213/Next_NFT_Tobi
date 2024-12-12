@@ -1,10 +1,11 @@
+import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { formatDateToLocal } from "ui/atoms/Formatters";
 import { DigitalItemStatus, ScheduleItem } from "ui/types/adminTypes";
 import ScheduleEditor from "./ScheduleEditor";
-import { formatDateToLocal } from "ui/atoms/Formatters";
 
 type ValuePiece = Date | null;
 
@@ -93,6 +94,8 @@ const ScheduleCalendar = (props: {
     (locale, date) => ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][date.getDay()],
     [],
   );
+
+  const t = useTranslations("License");
 
   const getStatusPriority = useCallback((status: DigitalItemStatus) => {
     switch (status) {
@@ -428,7 +431,7 @@ const ScheduleCalendar = (props: {
             />
           </div>
           <span className="text-[#3A3D44] text-base font-medium">
-            Status change invalid: Cannot change to the same status.
+            {t("InvalidStatusChange")}
           </span>
         </div>
       )}

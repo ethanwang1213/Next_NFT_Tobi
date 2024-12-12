@@ -285,6 +285,7 @@ const ContentBrandPanel = ({
             setTempImageUrlSticker(null);
           }}
           circle={false}
+          classname="w-[520px]"
         />
       </div>
     )

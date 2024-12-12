@@ -63,23 +63,32 @@ const Index = () => {
         alt="Tobiratory"
         className="mx-auto sm:w-[191px] sm:h-[194px] w-[78px] h-[79px]"
       />
-      <div className="text-[20px] sm:text-[48px] sm:mt-28 mt-10 font-bold">
+      <p className="text-[20px] sm:text-[48px] sm:mt-28 mt-10 font-bold">
         {t("Program")}
-      </div>
-      <div className="mt-10 mb-3 sm:text-[16px] text-[13px] sm:text-center text-left font-semibold">
-        Tobiratory Creator Programに参加すると以下のことが可能になります。
-      </div>
-      <p className="sm:block hidden">
-        内容は過去のもの
-        <br />
       </p>
-      <div className="sm:text-[16px] text-[15px] sm:text-center text-left font-medium">
-        <p>Creator Basic/Pro</p>
-        <p>・独自のコンテンツページ</p>
-        <p>・デジタルアイテムの無料配布</p>
-        <p>・SHOWCASE機能追加</p>
-        <p>（SAIDANに販売したいサンプルデジタルアイテムを飾って公開）</p>
-        <p>・デジタルアイテムの販売</p>
+      <p className="mt-6 mb-10 sm:text-[16px] text-[13px] sm:text-center text-left font-semibold">
+        {t("TobiratoryProgramTitle")}
+      </p>
+      <div className="flex flex-col space-y-10 sm:text-[16px] text-[13px] text-center">
+        <div>
+          <p className="sm:text-xl text-[16px] font-semibold">
+            {t("YourContentPage")}
+          </p>
+          <p>{t("YourContentPageDescription")}</p>
+        </div>
+        <div>
+          <p className="sm:text-xl text-[16px] font-semibold">
+            {t("FreeDistribution")}
+          </p>
+          <p>{t("FreeDistributionDescription")}</p>
+          <p>{t("FreeDistributionNote")}</p>
+        </div>
+        <div>
+          <p className="sm:text-xl text-[16px] font-semibold">
+            {t("DisplaySampleItems")}
+          </p>
+          <p>{t("DisplaySampleItemsDescription")}</p>
+        </div>
       </div>
 
       <div className="mt-10 text-[#717171] flex flex-row justify-center items-center">
@@ -91,12 +100,12 @@ const Index = () => {
           className="mr-2"
         />
         <span className="sm:text-md text-[12px] sm:text-center text-left">
-          {t("ApplyLimit")}
+          {t("SingleContentLimit")}
         </span>
       </div>
       <Button
         type="button"
-        className={`text-[16px] md:text-3xl bg-primary text-white rounded-[88px] py-4 px-8 mt-16`}
+        className={`text-[16px] bg-primary text-white rounded-[88px] py-4 px-8 mt-16`}
         onClick={handleButtonClick}
       >
         {t("Program")}

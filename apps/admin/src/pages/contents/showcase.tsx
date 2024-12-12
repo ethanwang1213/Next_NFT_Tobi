@@ -559,33 +559,32 @@ const Showcase = () => {
               </div>
             </div>
           </div>
-          <div style={{ display: showDetailView ? "block" : "none" }}>
-            <ShowcaseTabView
-              clickSampleItem={(item: SampleItem) =>
-                selectSampleHandler(item, false)
-              }
-              dragSampleItem={(item: SampleItem) =>
-                selectSampleHandler(item, true)
-              }
-              clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
-              dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
-              showRestoreMenu={showRestoreMenu}
-              settings={showcaseData?.settings}
-              operateMenu={showoperate}
-              updateUnityViewSettings={(
-                wt: string,
-                ft: string,
-                st: string,
-                sb: number,
-                pt: string,
-                pb: number,
-                phase: SettingsUpdatePhase,
-              ) => {
-                updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
-              }}
-              handleActionRef={handleActionRef}
-            />
-          </div>
+          <ShowcaseTabView
+            isVisible={showDetailView}
+            clickSampleItem={(item: SampleItem) =>
+              selectSampleHandler(item, false)
+            }
+            dragSampleItem={(item: SampleItem) =>
+              selectSampleHandler(item, true)
+            }
+            clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
+            dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
+            showRestoreMenu={showRestoreMenu}
+            settings={showcaseData?.settings}
+            operateMenu={showoperate}
+            updateUnityViewSettings={(
+              wt: string,
+              ft: string,
+              st: string,
+              sb: number,
+              pt: string,
+              pb: number,
+              phase: SettingsUpdatePhase,
+            ) => {
+              updateUnityViewSettings(wt, ft, st, sb, pt, pb, phase);
+            }}
+            handleActionRef={handleActionRef}
+          />
           {showRestoreMenu && !showDetailView && (
             <div
               className="pointer-events-auto absolute w-[112px] h-full right-0 bg-secondary bg-opacity-75 backdrop-blur-sm
