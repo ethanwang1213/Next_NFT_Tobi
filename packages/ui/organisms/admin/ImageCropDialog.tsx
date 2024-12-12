@@ -39,6 +39,7 @@ const ImageCropDialog = ({
 
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
+      if (!imgRef.current || !imgWrapperRef.current) return;
       const { width, height } = e.currentTarget;
       let newCrop;
       if (aspectRatio) {
