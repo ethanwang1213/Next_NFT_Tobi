@@ -61,7 +61,6 @@ export const decorationWorkspace = async (req: Request, res: Response) => {
               },
               create: {
                 id: item.id>0?item.id:undefined,
-                account_uuid: uid,
                 workspaces_id: workspace.id,
                 sample_id: item.itemId,
                 stage_type: item.stageType,
@@ -110,9 +109,20 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-      const workspaceSamples = await prisma.workspace_sample_items.findMany({
+      const workspace = await prisma.workspaces.upsert({
         where: {
           account_uuid: uid,
+        },
+        create: {
+          account_uuid: uid,
+        },
+        update: {
+
+        },
+      });
+      const workspaceSamples = await prisma.workspace_sample_items.findMany({
+        where: {
+          workspaces_id: workspace.id,
           sample_item: {
             is_deleted: false,
           },
@@ -127,6 +137,9 @@ export const getWorkspaceDecorationData = async (req: Request, res: Response) =>
               },
             },
           },
+        },
+        orderBy: {
+          id: "asc",
         },
       });
       const itemList = workspaceSamples.filter((sample)=>(!sample.sample_item.is_deleted&&!sample.sample_item.digital_item.is_deleted))
@@ -185,6 +198,17 @@ export const throwSample = async (req: Request, res: Response) => {
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
+      const workspace = await prisma.workspaces.upsert({
+        where: {
+          account_uuid: uid,
+        },
+        create: {
+          account_uuid: uid,
+        },
+        update: {
+
+        },
+      });
       const workspaceItem = await prisma.workspace_sample_items.findUnique({
         where: {
           id: id,
@@ -197,7 +221,7 @@ export const throwSample = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (workspaceItem.account_uuid != uid) {
+      if (workspaceItem.workspaces_id != workspace.id) {
         res.status(401).send({
           status: "error",
           data: "not-yours",
