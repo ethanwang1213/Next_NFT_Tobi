@@ -439,7 +439,7 @@
     "FreeDistribution": "デジタルアイテムの無料配布",
     "FreeDistributionDescription": "ユーザーに向けて限定アイテムを無料で配布可能です。",
     "FreeDistributionNote": "※販売は今後実装予定です。",
-    "FisplaySampleItems": "サンプルデジタルアイテムの公開",
+    "DisplaySampleItems": "サンプルデジタルアイテムの公開",
     "DisplaySampleItemsDescription": "SAIDANで販売したいデジタルアイテムを飾り、自由に公開することが可能です。",
     "SingleContentLimit": "1アカウントにつき申請可能なコンテンツは1つまでとなります。"
   },

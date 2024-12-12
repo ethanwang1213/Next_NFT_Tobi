@@ -424,7 +424,7 @@ const DigitalItemTable = (filters: {
                       )}
                     </td>
                     <td className="px-3 py-3 text-center justify-center">
-                      {!!item.createDate && item.createDate.length
+                      {!!item.createDate
                         ? formatDateToLocal(item.createDate)
                         : "-"}
                     </td>

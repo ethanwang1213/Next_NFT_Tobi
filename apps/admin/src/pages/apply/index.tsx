@@ -85,7 +85,7 @@ const Index = () => {
         </div>
         <div>
           <p className="sm:text-xl text-[16px] font-semibold">
-            {t("FisplaySampleItems")}
+            {t("DisplaySampleItems")}
           </p>
           <p>{t("DisplaySampleItemsDescription")}</p>
         </div>
