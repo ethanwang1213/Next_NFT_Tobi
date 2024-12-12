@@ -82,7 +82,7 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "mintNFT") {
-        const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.tobiratoryAccountUuid, params.metadata, params.notificationBatchId);
+        const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.digitalItemNftId, params.tobiratoryAccountUuid, params.metadata, params.notificationBatchId);
         try {
           const {txId} = await sendMintNFTTx(params.tobiratoryAccountUuid, params.itemCreatorAddress, params.itemId, params.digitalItemId);
           await flowJobDocRef.update({
@@ -202,8 +202,7 @@ const updateMintNFTRecord = async (digitalItemNftId: number, status: number) => 
   });
 };
 
-const createOrUpdateNFTRecord = async (digitalItemId: number, ownerUuid: string, metadata: any, notificationBatchId: number) => {
-  const digitalItemNftId = metadata.digitalItemNftId;
+const createOrUpdateNFTRecord = async (digitalItemId: number, digitalItemNftId: number, ownerUuid: string, metadata: any, notificationBatchId: number) => {
   if (digitalItemNftId) {
     await prisma.digital_item_nfts.update({
       where: {
