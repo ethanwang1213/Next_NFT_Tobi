@@ -436,10 +436,16 @@ export default function Index() {
             <AccountFieldComponent label={t("Gender")}>
               <span
                 className={`${valueClass} ${
-                  !data.gender ? "text-placeholder-color" : "text-sencondary"
+                  !data?.gender ? "text-placeholder-color" : "text-secondary"
                 }`}
               >
-                {data?.gender || t("NotSet")}
+                {data?.gender === "Male" ||
+                data?.gender === "Female" ||
+                data?.gender === "NoAnswer"
+                  ? t(data.gender)
+                  : data?.gender
+                    ? data.gender
+                    : t("NotSet")}
               </span>
               <button
                 className={editBtnClass}
