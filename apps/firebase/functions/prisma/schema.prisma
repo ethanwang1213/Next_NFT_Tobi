@@ -224,7 +224,6 @@ model workspaces {
 
 model workspace_sample_items {
     id                Int          @id @default(autoincrement())
-    account_uuid      String       @db.VarChar(255)
     workspace         workspaces   @relation(fields: [workspaces_id], references: [id])
     workspaces_id     Int
     sample_id         Int
