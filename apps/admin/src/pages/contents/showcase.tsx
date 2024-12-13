@@ -33,6 +33,13 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
+interface Nft {
+  digitalItemId: number;
+  modelType: ModelType;
+  modelUrl: string;
+  name: string | null;
+}
+
 const Showcase = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -325,7 +332,7 @@ const Showcase = () => {
   );
 
   const selectNftHandler = useCallback(
-    (item: NftItem, nft: any, isDrag: boolean) => {
+    (item: NftItem, nft: Nft, isDrag: boolean) => {
       // place a new item
       if (!isDrag)
         placeNewNft({
@@ -338,7 +345,7 @@ const Showcase = () => {
         });
       else
         placeNewNftWithDrag({
-          itemId: nft.id,
+          itemId: item.id,
           digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
@@ -567,10 +574,10 @@ const Showcase = () => {
             dragSampleItem={(item: SampleItem) =>
               selectSampleHandler(item, true)
             }
-            clickNftItem={(item: NftItem, nft: any) =>
+            clickNftItem={(item: NftItem, nft: Nft) =>
               selectNftHandler(item, nft, false)
             }
-            dragNftItem={(item: NftItem, nft: any) =>
+            dragNftItem={(item: NftItem, nft: Nft) =>
               selectNftHandler(item, nft, true)
             }
             showRestoreMenu={showRestoreMenu}
