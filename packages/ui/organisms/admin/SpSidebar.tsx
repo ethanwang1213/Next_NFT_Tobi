@@ -7,14 +7,15 @@ import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/Sideb
 
 interface SidebarProps {
   sidebarOpen: boolean;
+  content?: string;
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+const SpSidebar = ({ sidebarOpen, content, setSidebarOpen }: SidebarProps) => {
   const { user } = useAuth();
   const pathname = usePathname();
 
-  const items = useUpdatedSidebarItems();
+  const items = useUpdatedSidebarItems(content);
 
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";

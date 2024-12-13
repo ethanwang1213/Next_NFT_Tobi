@@ -18,6 +18,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
+import { auth } from "fetchers/firebase/client";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { NextIntlClientProvider } from "next-intl";
 import Script from "next/script";
@@ -32,11 +33,21 @@ const font = M_PLUS_2({ subsets: ["latin"] });
 
 const App = ({ Component, pageProps }: AppProps) => {
   const apiUrl = "native/admin/content";
-  const { loading, error, getData } = useRestfulAPI(apiUrl);
+  const { loading, error, getData } = useRestfulAPI(null);
   const router = useRouter();
 
   useEffect(() => {
-    getData(apiUrl);
+    const unsubscribe = auth.onAuthStateChanged(async (usertoken) => {
+      if (usertoken) {
+        try {
+          await getData(apiUrl);
+        } catch (error) {
+          console.error("Error fetching token:", error);
+        }
+      }
+    });
+
+    return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

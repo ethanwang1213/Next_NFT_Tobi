@@ -457,5 +457,11 @@
     "ToggleUIVisibility": "Toggle UI Visibility",
     "Help": "Help",
     "VisualSetting": "Visual Setting"
+  },
+  "ContentReiview": {
+    "UnderReview": "Under review",
+    "ReviewMessage": "This page will become accessible after the review is completed.",
+    "AdditionalDocuments": "In some cases, you may be required to submit additional documents.",
+    "ForInquiries": "For inquiries: TCP-support@tobiratory.com"
   }
 }

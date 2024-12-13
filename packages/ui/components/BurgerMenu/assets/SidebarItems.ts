@@ -1,5 +1,14 @@
 import { useAuth } from "contexts/AdminAuthProvider";
+import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 export interface SidebarItem {
   name: string;
@@ -8,7 +17,7 @@ export interface SidebarItem {
   visible: boolean;
 }
 
-export const useUpdatedSidebarItems = () => {
+export const useUpdatedSidebarItems = (content: string) => {
   const { user } = useAuth();
   const t = useTranslations("Menu");
 
@@ -54,8 +63,10 @@ export const useUpdatedSidebarItems = () => {
   return sidebarItems.map((item) => ({
     ...item,
     visible:
-      item.name === "Tobiratory Creator Program"
-        ? !user.hasBusinessAccount
-        : item.visible || user.hasBusinessAccount,
+      content === "not-approved" || content === "approve-rejected"
+        ? item.visible
+        : item.name === "Tobiratory Creator Program"
+          ? !user.hasBusinessAccount
+          : item.visible || user.hasBusinessAccount,
   }));
 };

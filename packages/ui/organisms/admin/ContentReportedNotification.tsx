@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import Button from "../../atoms/Button";
+import Button from "ui/atoms/Button";
 
 interface ContentReportedNotificationProps {
   onButtonClick: () => void;
