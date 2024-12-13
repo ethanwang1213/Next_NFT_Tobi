@@ -325,24 +325,24 @@ const Showcase = () => {
   );
 
   const selectNftHandler = useCallback(
-    (nft: NftItem, isDrag: boolean) => {
+    (item: NftItem, nft: any, isDrag: boolean) => {
       // place a new item
       if (!isDrag)
         placeNewNft({
-          itemId: nft.sampleItemId,
+          itemId: item.id,
           digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
-          isDebug: true,
+          isDebug: false,
           nftName: nft.name !== null ? nft.name : "",
         });
       else
         placeNewNftWithDrag({
-          itemId: nft.sampleItemId,
+          itemId: nft.id,
           digitalItemId: nft.digitalItemId,
           modelType: nft.modelType as ModelType,
           modelUrl: nft.modelUrl,
-          isDebug: true,
+          isDebug: false,
           nftName: nft.name !== null ? nft.name : "",
         });
     },
@@ -567,8 +567,12 @@ const Showcase = () => {
             dragSampleItem={(item: SampleItem) =>
               selectSampleHandler(item, true)
             }
-            clickNftItem={(item: NftItem) => selectNftHandler(item, false)}
-            dragNftItem={(item: NftItem) => selectNftHandler(item, true)}
+            clickNftItem={(item: NftItem, nft: any) =>
+              selectNftHandler(item, nft, false)
+            }
+            dragNftItem={(item: NftItem, nft: any) =>
+              selectNftHandler(item, nft, true)
+            }
             showRestoreMenu={showRestoreMenu}
             settings={showcaseData?.settings}
             operateMenu={showoperate}

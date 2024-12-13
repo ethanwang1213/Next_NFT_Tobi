@@ -8,8 +8,8 @@ type BoxInventoryTabProps = {
   backRoot: () => void;
   id: number;
   title: string;
-  clickNftItem: (nftItem: NftItem) => void;
-  dragNftItem: (nftItem: NftItem) => void;
+  clickNftItem: (item: NftItem, nft: any) => void;
+  dragNftItem: (item: NftItem, nft: any) => void;
 };
 
 const BoxInventoryTab = ({
@@ -53,16 +53,16 @@ const BoxInventoryTab = ({
             <span className="loading loading-spinner loading-md"></span>
           </span>
         )}
-        {data?.items?.map((item, index) => {
-          return (
+        {data?.nfts?.map((nft) => {
+          return nft.items?.map((item) => (
             <div key={item.id} className="w-1/4 p-2">
               <InventoryItemComponent
-                selectHandler={() => clickNftItem(item)}
-                dragStartHandler={() => dragNftItem(item)}
-                imageUrl={item.image}
-              ></InventoryItemComponent>
+                imageUrl={nft.thumbUrl}
+                selectHandler={() => clickNftItem(item, nft)}
+                dragStartHandler={() => dragNftItem(item, nft)}
+              />
             </div>
-          );
+          ));
         })}
       </div>
     </>
