@@ -1,10 +1,16 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const ContentReviewRequest = () => {
   const router = useRouter();
-  router.push("/account");
+
+  useEffect(() => {
+    router.push("/account");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const t = useTranslations("ContentReiview");
 
   return (
