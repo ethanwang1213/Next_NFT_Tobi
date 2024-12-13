@@ -29,8 +29,8 @@ const ShowcaseTabView = ({
   isVisible: boolean;
   clickSampleItem: (item: SampleItem) => void;
   dragSampleItem: (item: SampleItem) => void;
-  clickNftItem: (item: NftItem) => void;
-  dragNftItem: (item: NftItem) => void;
+  clickNftItem: (item: NftItem, nft: any) => void;
+  dragNftItem: (item: NftItem, nft: any) => void;
   showRestoreMenu: boolean;
   settings: any;
   operateMenu: boolean;

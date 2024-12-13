@@ -9,8 +9,8 @@ const ShowcaseInventoryTab = ({
   clickNftItem,
   dragNftItem,
 }: {
-  clickNftItem: (id: NftItem) => void;
-  dragNftItem: (item: NftItem) => void;
+  clickNftItem: (item: NftItem, nft: any) => void;
+  dragNftItem: (item: NftItem, nft: any) => void;
 }) => {
   const apiUrl = "native/my/inventory";
   const { data, loading, getData } = useRestfulAPI(apiUrl);
@@ -48,16 +48,16 @@ const ShowcaseInventoryTab = ({
               </div>
             );
           })}
-          {data?.items?.map((item, index) => {
-            return (
+          {data?.nfts?.map((nft) => {
+            return nft.items?.map((item) => (
               <div key={item.id} className="w-1/4 p-2">
                 <InventoryItemComponent
-                  imageUrl={item.image}
-                  selectHandler={() => clickNftItem(item)}
-                  dragStartHandler={() => dragNftItem(item)}
-                ></InventoryItemComponent>
+                  imageUrl={nft.thumbUrl}
+                  selectHandler={() => clickNftItem(item, nft)}
+                  dragStartHandler={() => dragNftItem(item, nft)}
+                />
               </div>
-            );
+            ));
           })}
         </div>
       )}

@@ -16,7 +16,7 @@ export type SampleItem = {
 };
 
 export type NftItem = {
-  sampleItemId: number;
+  id: number;
   digitalItemId: number;
   name: string;
   image: string;

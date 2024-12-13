@@ -177,7 +177,6 @@ const UserMenu = () => {
               }
               onClick={() => {
                 signOutModalRef.current.showModal();
-                console.log(signOutModalRef.current.getAttributeNames());
               }}
             >
               <div className={"w-[48px] flex justify-center"}>

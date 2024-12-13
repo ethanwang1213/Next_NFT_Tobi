@@ -12,12 +12,13 @@ import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
+import ContentReviewRequest from "./ContentReviewRquest";
 import ContentSuspendedComponent from "./ContentSuspendedComponent";
 import SpSidebar from "./SpSidebar";
 
 type Props = {
   children: ReactNode;
-  content?: String;
+  content?: string;
 };
 
 const Layout = ({ children, content }: Props) => {
@@ -79,10 +80,13 @@ const Contents = ({ children, content }: Props) => {
           <SpSidebar
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
+            content={content}
           />
-          <Sidebar>
+          <Sidebar content={content}>
             {content === "reported" ? (
               <ContentSuspendedComponent />
+            ) : content === "not-approved" || content === "approve-rejected" ? (
+              <ContentReviewRequest />
             ) : (
               <MainContents>{children}</MainContents>
             )}

@@ -457,5 +457,11 @@
     "ToggleUIVisibility": "UIの表示切替",
     "Help": "ヘルプ",
     "VisualSetting": "ビジュアル設定"
+  },
+  "ContentReiview": {
+    "UnderReview": "審査中",
+    "ReviewMessage": "このページは審査が完了次第、アクセス可能になります。",
+    "AdditionalDocuments": "一部の場合、追加書類の提出を求められることがあります。",
+    "ForInquiries": "お問い合わせ先: TCP-support@tobiratory.com"
   }
 }
