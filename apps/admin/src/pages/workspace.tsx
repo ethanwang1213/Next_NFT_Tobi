@@ -218,6 +218,7 @@ export default function Index() {
     resumeUnityInputs,
     pauseUnityInputs,
     requestSaveData,
+    highlightSamplesByItemId,
     placeNewSample,
     placeNewSampleWithDrag,
     removeSamplesByItemId,
@@ -338,6 +339,13 @@ export default function Index() {
     timerId.current = setTimeout(() => {
       setShowToast(false);
     }, 3000);
+  };
+
+  const selectedSampleHandler = (index: number) => {
+    if (index !== -1) {
+      setSelectedSampleItem(samples[index].digitalItemId);
+      highlightSamplesByItemId(samples[index].sampleItemId);
+    }
   };
 
   const sampleSelectHandler = useCallback(
@@ -636,6 +644,7 @@ export default function Index() {
             deleteHandler={deleteSamplesHandler}
             dragHandler={sampleDragHandler}
             showRestoreMenu={showRestoreMenu}
+            selectedSampleHandler={(index) => selectedSampleHandler(index)}
           />
           <div className="absolute bottom-12 h-12 flex justify-center pointer-events-auto select-none w-full items-center">
             <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-30">

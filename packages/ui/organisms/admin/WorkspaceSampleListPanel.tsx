@@ -14,12 +14,12 @@ type ItemProps = {
   changeHandler: (value: boolean) => void;
   selectHandler: () => void;
   dragStartHandler: () => void;
+  selectedSampleHandler: () => void;
 };
 
 const SampleItemComponent: React.FC<ItemProps> = (props) => {
   const checkboxRef = useRef(null);
   const dragStartPos = useRef<{ x: number; y: number } | null>(null);
-  const t = useTranslations("Workspace");
 
   const clickHandler = useCallback(() => {
     if (props.selectState) {
@@ -55,11 +55,20 @@ const SampleItemComponent: React.FC<ItemProps> = (props) => {
   return (
     <div
       className="flex items-center gap-8 py-3 pl-10 pr-6 hover:bg-[#787878]"
-      onClick={clickHandler}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
+      onClick={props.selectedSampleHandler}
     >
+      <Image
+        width={25}
+        height={20}
+        className="h-[20px] object-contain cursor-pointer"
+        src="/admin/images/icon/workspace-icon.svg"
+        alt="workspace icon"
+        draggable={false}
+        onClick={clickHandler}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+      />
       {props.selectState && (
         <input
           ref={checkboxRef}
@@ -93,6 +102,7 @@ type ListProps = {
   deleteHandler: (ids: number[]) => void;
   dragHandler: (index: number) => void;
   showRestoreMenu: boolean;
+  selectedSampleHandler: (index: number) => void;
 };
 
 const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
@@ -220,6 +230,9 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
                   }
                   selectHandler={() => props.selectHandler(originalIndex)}
                   dragStartHandler={() => props.dragHandler(originalIndex)}
+                  selectedSampleHandler={() =>
+                    props.selectedSampleHandler(originalIndex)
+                  }
                 />
               );
             })}
