@@ -114,7 +114,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   handleNftModelGeneratedRef.current = handleNftModelGenerated;
 
   useEffect(() => {
-    if (id > 0) {
+    if (id > 0 && digitalItems) {
       const matchedItem = digitalItems.find((item) => item.id === id);
       setData(matchedItem);
       setLoading(false);

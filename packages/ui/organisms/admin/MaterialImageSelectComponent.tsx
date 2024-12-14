@@ -34,6 +34,7 @@ const MaterialImageSelectComponent: React.FC<Props> = (props) => {
 
   useEffect(() => {
     setProcessing(false);
+    setImages(props.data);
   }, [props.data]);
 
   const handleDelete = (imageId: number) => {
