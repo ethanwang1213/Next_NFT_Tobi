@@ -15,9 +15,15 @@ export const useLoadData = ({
   const [currentSaidanId, setCurrentSaidanId] = useState<number>(-1);
   const [isSceneOpen, setIsSceneOpen] = useState<boolean>(false);
   const [isItemsLoaded, setIsItemsLoaded] = useState<boolean>(false);
+  const [isEventListenersAdded, setIsEventListenersAdded] =
+    useState<boolean>(false);
 
   const postMessageToLoadData = useCallback(() => {
-    if (!loadData || loadData.saidanId === currentSaidanId) {
+    if (
+      !loadData ||
+      loadData.saidanId === currentSaidanId ||
+      !isEventListenersAdded
+    ) {
       // console.log("loadData is null or same saidanId: " + currentSaidanId);
       return;
     }
@@ -38,7 +44,13 @@ export const useLoadData = ({
 
     setCurrentSaidanId(loadData.saidanId);
     setLoadData(null);
-  }, [loadData, currentSaidanId, additionalItemDataMap, postMessageToUnity]);
+  }, [
+    loadData,
+    currentSaidanId,
+    additionalItemDataMap,
+    isEventListenersAdded,
+    postMessageToUnity,
+  ]);
 
   const handleSceneIsLoaded = useCallback(() => {
     setIsSceneOpen(true);
@@ -49,11 +61,16 @@ export const useLoadData = ({
     setIsItemsLoaded(true);
   }, [setIsItemsLoaded]);
 
+  const handleCheckConnection = useCallback(() => {
+    setIsEventListenersAdded(true);
+    postMessageToUnity("ConnectionCheckedMessageReceiver", "");
+  }, [setIsEventListenersAdded, postMessageToUnity]);
+
   // load item data
   useEffect(() => {
     if (!isLoaded || !isSceneOpen) return;
     postMessageToLoadData();
-  }, [isLoaded, isSceneOpen, postMessageToLoadData]);
+  }, [isLoaded, isSceneOpen, isEventListenersAdded, postMessageToLoadData]);
 
   return {
     isSceneOpen,
@@ -61,5 +78,6 @@ export const useLoadData = ({
     setLoadData,
     handleSceneIsLoaded,
     handleLoadingCompleted,
+    handleCheckConnection,
   };
 };

@@ -101,6 +101,7 @@ export const useWorkspaceUnityHook = ({
     handleNftModelGenerated,
     handleMouseUp,
     handleLoadingCompleted,
+    handleCheckConnection,
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX: sampleMenuX,
@@ -322,6 +323,7 @@ export const useWorkspaceUnityHook = ({
     handleActionUndone,
     handleActionRedone,
     handleLoadingCompleted,
+    handleCheckConnection,
   });
 
   return {

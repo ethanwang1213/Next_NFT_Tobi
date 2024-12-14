@@ -31,8 +31,6 @@ export const useLoadAcrylicStand = ({
   });
 
   const postMessageToLoadData = useCallback(() => {
-    setIsSceneOpen(true);
-
     if (
       isSceneOpen ||
       !loadData ||
@@ -41,6 +39,7 @@ export const useLoadAcrylicStand = ({
       // console.log("loadData is null or same item");
       return;
     }
+    postMessageToUnity("ConnectionCheckedMessageReceiver", "");
 
     const json = JSON.stringify(loadData);
     postMessageToUnity("LoadAcrylicStandMessageReceiver", json);

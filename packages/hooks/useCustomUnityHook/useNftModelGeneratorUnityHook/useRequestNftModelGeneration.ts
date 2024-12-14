@@ -24,13 +24,13 @@ export const useRequestNftModelGeneration = ({
   postMessageToUnity: (gameObject: MessageDestination, message: string) => void;
   onNftModelGenerated?: (itemId: number, nftModelBase64: string) => void;
 }) => {
-  const [isSceneOpen, setIsSceneLoaded] = useState(false);
+  const [isSceneOpen, setIsSceneOpen] = useState(false);
   const [sampleItemData, setSampleItemData] = useState<SampleItemData | null>();
+  const [isEventListenersAdded, setIsEventListenersAdded] =
+    useState<boolean>(false);
 
   const postMessageToRequestNftModelGeneration = useCallback(() => {
-    setIsSceneLoaded(true);
-
-    if (!sampleItemData || !isSceneOpen) {
+    if (!sampleItemData || !isSceneOpen || !isEventListenersAdded) {
       return;
     }
 
@@ -41,7 +41,23 @@ export const useRequestNftModelGeneration = ({
     postMessageToUnity("NftModelGenerationMessageReceiver", json);
 
     setSampleItemData(null);
-  }, [sampleItemData, isSceneOpen, postMessageToUnity]);
+  }, [
+    sampleItemData,
+    isSceneOpen,
+    isEventListenersAdded,
+    postMessageToUnity,
+    setSampleItemData,
+  ]);
+
+  const handleSceneIsLoaded = useCallback(() => {
+    setIsSceneOpen(true);
+    postMessageToRequestNftModelGeneration();
+  }, [setIsSceneOpen, postMessageToRequestNftModelGeneration]);
+
+  const handleCheckConnection = useCallback(() => {
+    setIsEventListenersAdded(true);
+    postMessageToUnity("ConnectionCheckedMessageReceiver", "");
+  }, [setIsEventListenersAdded, postMessageToUnity]);
 
   const handleNftModelGenerated = useCallback(
     (msgObj: UnityMessageJson) => {
@@ -64,13 +80,15 @@ export const useRequestNftModelGeneration = ({
     sampleItemData,
     isLoaded,
     isSceneOpen,
+    isEventListenersAdded,
     postMessageToRequestNftModelGeneration,
   ]);
 
   return {
     isSceneOpen,
     requestNftModelGeneration: setSampleItemData,
-    handleSceneIsLoaded: postMessageToRequestNftModelGeneration,
+    handleSceneIsLoaded,
     handleNftModelGenerated,
+    handleCheckConnection,
   };
 };
