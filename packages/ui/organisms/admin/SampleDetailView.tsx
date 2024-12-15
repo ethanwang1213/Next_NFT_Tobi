@@ -177,6 +177,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
       if (value === "mint") {
         if (data.meta_model_url) {
+          handleNftModelGenerated(data.id, "");
+        } else {
           const requestPayload = {
             itemId: data.id,
             modelType: data.type,
@@ -189,8 +191,6 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
           } else {
             workspaceRequestNftModelGeneration(requestPayload);
           }
-        } else {
-          handleNftModelGenerated(data.id, "");
         }
       }
     },
