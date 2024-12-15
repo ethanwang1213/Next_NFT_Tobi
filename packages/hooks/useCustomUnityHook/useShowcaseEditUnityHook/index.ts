@@ -105,6 +105,7 @@ export const useShowcaseEditUnityHook = ({
     handleNftModelGenerated,
     handleMouseUp,
     handleLoadingCompleted,
+    handleCheckConnection,
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX,
@@ -307,6 +308,7 @@ export const useShowcaseEditUnityHook = ({
     handleActionRedone,
     handleItemTransformUpdated,
     handleLoadingCompleted,
+    handleCheckConnection,
   });
 
   return {

@@ -30,6 +30,7 @@ export const useNftModelGeneratorUnityHook = ({
     requestNftModelGeneration,
     handleSceneIsLoaded,
     handleNftModelGenerated,
+    handleCheckConnection,
   } = useRequestNftModelGeneration({
     isLoaded,
     postMessageToUnity,
@@ -43,6 +44,7 @@ export const useNftModelGeneratorUnityHook = ({
     handleSimpleMessage,
     handleSceneIsLoaded,
     handleNftModelGenerated,
+    handleCheckConnection,
   });
 
   return {

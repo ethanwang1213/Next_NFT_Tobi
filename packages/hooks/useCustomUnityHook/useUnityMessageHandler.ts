@@ -30,6 +30,7 @@ type Props = {
   handleItemTransformUpdated?: MessageHandler;
   handleSaidanDetailViewIsInitialized?: () => void;
   handleLoadingCompleted?: () => void;
+  handleCheckConnection?: () => void;
 };
 
 export const useUnityMessageHandler = ({
@@ -53,6 +54,7 @@ export const useUnityMessageHandler = ({
   handleItemTransformUpdated,
   handleSaidanDetailViewIsInitialized,
   handleLoadingCompleted,
+  handleCheckConnection,
 }: Props) => {
   const resolveUnityMessage = useCallback((json: string) => {
     try {
@@ -128,6 +130,9 @@ export const useUnityMessageHandler = ({
         case UnityMessageType.LoadingCompleted:
           handleLoadingCompleted?.();
           return;
+        case UnityMessageType.CheckConnection:
+          handleCheckConnection?.();
+          return;
         default:
           return;
       }
@@ -152,6 +157,7 @@ export const useUnityMessageHandler = ({
       handleItemTransformUpdated,
       handleSaidanDetailViewIsInitialized,
       handleLoadingCompleted,
+      handleCheckConnection,
     ],
   );
 

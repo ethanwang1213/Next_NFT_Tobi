@@ -75,6 +75,7 @@ export const useSaidanLikeUnityHookBase = ({
     setLoadData,
     handleSceneIsLoaded,
     handleLoadingCompleted,
+    handleCheckConnection,
   } = useLoadData({
     isLoaded,
     additionalItemDataMap,
@@ -381,5 +382,6 @@ export const useSaidanLikeUnityHookBase = ({
     handleNftModelGenerated,
     handleMouseUp,
     handleLoadingCompleted,
+    handleCheckConnection,
   };
 };

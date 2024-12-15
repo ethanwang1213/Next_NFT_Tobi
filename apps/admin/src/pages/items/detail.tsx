@@ -486,6 +486,9 @@ const Detail = () => {
 
   return (
     <div className="mt-16 mb-12">
+      <div className="hidden">
+        <CustomUnity isSceneOpen={isSceneOpen} />
+      </div>
       <div className={`ml-8 mr-[104px] h-12 flex items-center gap-4`}>
         <button onClick={handleLinkClick}>
           <NextImage
@@ -927,9 +930,6 @@ const Detail = () => {
                 </Link>
               </div>
               <div className="text-center h-12">
-                <div className="hidden">
-                  <CustomUnity isSceneOpen={isSceneOpen} />
-                </div>
                 <Button
                   className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
                     flex justify-center items-center gap-2

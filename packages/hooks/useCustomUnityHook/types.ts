@@ -75,7 +75,8 @@ export type MessageDestination =
   | "NftModelGenerationMessageReceiver"
   | "ShowSmartphoneAreaMessageReceiver"
   | "MouseUpMessageReceiver"
-  | "HighlightItemsMessageReceiver";
+  | "HighlightItemsMessageReceiver"
+  | "ConnectionCheckedMessageReceiver";
 
 export const UnityMessageType = {
   SimpleMessage: 0,
@@ -100,6 +101,7 @@ export const UnityMessageType = {
   SaidanDetailViewIsEnded: 19,
   SwitchDisplayFromThumbnail: 20,
   LoadingCompleted: 21,
+  CheckConnection: 22,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];
