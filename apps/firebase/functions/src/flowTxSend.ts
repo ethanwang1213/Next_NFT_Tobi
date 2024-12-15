@@ -340,15 +340,15 @@ transaction(
     }
 }`;
   const args = (arg: any, t: any) => [
-    arg(metadata.type, t.String),
-    arg(metadata.name, t.Optional(t.String)),
-    arg(metadata.description, t.Optional(t.String)),
-    arg(metadata.thumbnailUrl, t.String),
-    arg(metadata.modelUrl, t.Optional(t.String)),
-    arg(metadata.creatorName, t.String),
-    arg(metadata.limit, t.Optional(t.UInt32)),
-    arg(metadata.license, t.Optional(t.String)),
-    arg(metadata.copyrightHolders, t.Array(t.String)),
+    arg(String(metadata.type || ""), t.String),
+    arg(metadata.name ? String(metadata.name) : null, t.Optional(t.String)),
+    arg(metadata.description ? String(metadata.description) : null, t.Optional(t.String)),
+    arg(String(metadata.thumbnailUrl || ""), t.String),
+    arg(metadata.modelUrl ? String(metadata.modelUrl) : null, t.Optional(t.String)),
+    arg(String(metadata.creatorName || ""), t.String),
+    arg(metadata.limit || null, t.Optional(t.UInt32)),
+    arg(metadata.license ? String(metadata.license) : null, t.Optional(t.String)),
+    arg(metadata.copyrightHolders || [], t.Array(t.String)),
   ];
 
   const txId = await fcl.mutate({
