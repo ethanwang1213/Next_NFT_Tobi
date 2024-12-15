@@ -654,6 +654,22 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         });
         return;
       }
+
+      if (admin.content?.is_approved == false) {
+        res.status(200).send({
+          status: "error",
+          data: "not-approved",
+        });
+        return;
+      }
+
+      if (admin.content?.is_approved==null) {
+        res.status(200).send({
+          status: "error",
+          data: "approve-rejected",
+        });
+        return;
+      }
       const timeDifference = new Date().getTime() - new Date(admin.content?.changed_name_time??"").getTime();
       const returnData = {
         id: admin.content?.id,

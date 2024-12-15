@@ -128,7 +128,7 @@ model contents {
     reported_documents reported_documents[]
     license            content_license?
     license_data       String[]             @default([]) @db.VarChar(255)
-    is_approved        Boolean              @default(false)
+    is_approved        Boolean?             @default(false)
     is_deleted         Boolean              @default(false)
     updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
     created_date_time  DateTime             @default(now()) @db.Timestamp(6)

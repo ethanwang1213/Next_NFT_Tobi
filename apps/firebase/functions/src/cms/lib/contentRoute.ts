@@ -256,8 +256,7 @@ router.put("/participation", async (req: Request, res: Response) => {
                 id: content.id,
               },
               data: {
-                is_approved: false,
-                is_deleted: true,
+                is_approved: null,
               },
             });
           })

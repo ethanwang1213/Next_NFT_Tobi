@@ -34,9 +34,9 @@ export const statusOfShowcase = {
 export const digitalItemStatus = {
   draft: 1,
   private: 2,
-  hidden: 3,
+  onSale: 3,
   viewingOnly: 4,
-  onSale: 5,
+  hidden: 5,
 };
 
 export const mintStatus = {

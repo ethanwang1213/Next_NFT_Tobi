@@ -167,6 +167,7 @@ export const getInventoryData = async (req: Request, res: Response) => {
               include: {
                 digital_item: {
                   include: {
+                    license: true,
                     account: {
                       include: {
                         business: {
@@ -220,6 +221,14 @@ export const getInventoryData = async (req: Request, res: Response) => {
                 content: nft.digital_item.account.business?{
                   name: nft.digital_item.account.business.content?.name,
                 }:null,
+                creator: {
+                  uuid: nft.digital_item.account.uuid,
+                  username: nft.digital_item.account.username,
+                  avatar: nft.digital_item.account.icon_url,
+                },
+                license: nft.digital_item.license,
+                mintedCount: nft.digital_item.minted_count,
+                limit: nft.digital_item.limit,
                 items: [
                   {
                     id: nft.id,
