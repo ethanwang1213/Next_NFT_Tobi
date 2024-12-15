@@ -655,7 +655,7 @@ export const getMyContentInfo = async (req: Request, res: Response) => {
         return;
       }
 
-      if (!admin.content?.is_approved) {
+      if (admin.content?.is_approved == false) {
         res.status(200).send({
           status: "error",
           data: "not-approved",
