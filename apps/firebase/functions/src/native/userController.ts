@@ -56,7 +56,7 @@ export const signUp = async (req: Request, res: Response) => {
       user_id: username,
     };
     try {
-      await prisma.accounts.upsert({
+      let savedUser = await prisma.accounts.upsert({
         where: {
           uuid: uid,
           is_deleted: false,
@@ -69,23 +69,27 @@ export const signUp = async (req: Request, res: Response) => {
           id: 1,
         },
       });
-      const firstSaidan = await prisma.saidans.create({
-        data: {
-          account_uuid: uid,
-          title: username,
-          template_id: saidanTemplates?.id??1,
-          thumbnail_image: saidanTemplates?.cover_image??"",
-        },
-      });
-      const savedUser = await prisma.accounts.update({
-        where: {
-          uuid: uid,
-          is_deleted: false,
-        },
-        data: {
-          first_saidan_id: firstSaidan.id,
-        },
-      });
+      if (!savedUser.first_saidan_id) {
+        const firstSaidan = await prisma.saidans.create({
+          data: {
+            account_uuid: uid,
+            title: username,
+            template_id: saidanTemplates?.id??1,
+            thumbnail_image: saidanTemplates?.cover_image??"",
+          },
+        });
+        await prisma.accounts.update({
+          where: {
+            uuid: uid,
+            is_deleted: false,
+          },
+          data: {
+            first_saidan_id: firstSaidan.id,
+          },
+        });
+        savedUser = {...savedUser, first_saidan_id: firstSaidan.id};
+      }
+
       const flowAcc = await prisma.flow_accounts.findUnique({
         where: {
           account_uuid: uid,
