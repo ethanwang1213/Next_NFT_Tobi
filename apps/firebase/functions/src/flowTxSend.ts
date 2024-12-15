@@ -346,7 +346,7 @@ transaction(
     arg(String(metadata.thumbnailUrl || ""), t.String),
     arg(metadata.modelUrl ? String(metadata.modelUrl) : null, t.Optional(t.String)),
     arg(String(metadata.creatorName || ""), t.String),
-    arg(metadata.limit || undefined, t.Optional(t.UInt32)),
+    arg(metadata.limit || null, t.Optional(t.UInt32)),
     arg(metadata.license ? String(metadata.license) : null, t.Optional(t.String)),
     arg(metadata.copyrightHolders || [], t.Array(t.String)),
   ];
