@@ -464,7 +464,7 @@ const Showcase = () => {
             style={{ left: "calc(318px + (100% - 318px - 432px - 336px) / 2)" }}
           >
             <div className="absolute bottom-12 w-full flex justify-center">
-              <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-30">
+              <div className="rounded-3xl bg-secondary px-6 py-2 flex gap-8 z-10">
                 <button
                   disabled={!isUndoable}
                   className="group relative btn btn-ghost w-[32px] h-[32px] min-h-[32px] hover:bg-none hover:bg-opacity-0 border-0 p-0 disabled:brightness-75 disabled:bg-none disabled:bg-opacity-0"
