@@ -57,7 +57,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
-  const [finalizeModelError, finalizeModel] = useFinalizeModel();
+  const [finalizeModelError] = useFinalizeModel();
   const { pauseUnityInputs, requestNftModelGeneration } =
     useShowcaseEditUnity();
   const {
@@ -83,7 +83,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     const result = await postData(`native/items/${id}/mint`, {
       fcmToken: fcmToken,
       amount: 1,
-      modelUrl
+      modelUrl,
     });
 
     if (!result) {
