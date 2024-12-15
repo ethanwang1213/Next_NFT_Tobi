@@ -590,10 +590,21 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
     return nft?.getOwnerHistory();
 }`;
 
-  return await fcl.query({
-    cadence,
-    args: (arg: any, t: any) => [arg(ownerFlowAddress, t.Address), arg(String(nftId), t.String)],
-  });
+  try {
+    console.log(`Fetch ownership history: ${ownerFlowAddress}, ${nftId}`);
+    console.log(` flow.network: ${process.env.FLOW_NETWORK}, accessNode.api: ${process.env.FLOW_ACCESS_NODE_API}`);
+    const result = await fcl.query({
+      cadence,
+      args: (arg: any, t: any) => [arg(ownerFlowAddress, t.Address), arg(String(nftId), t.String)],
+    });
+    console.log(`Result: ${JSON.parse(result)}`);
+    return result;
+  } catch (e) {
+    console.log("The error occurs while fetching ownership history: ");
+    console.error(e);
+  }
+
+  return ;
 };
 
 export const fetchNftThumb = async (req: Request, res: Response) => {
