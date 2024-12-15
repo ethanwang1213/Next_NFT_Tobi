@@ -83,6 +83,7 @@ const Contents = ({ children }: Props) => {
     if (user) {
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   if (
