@@ -604,7 +604,7 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
     console.error(e);
   }
 
-  return ;
+  return;
 };
 
 export const fetchNftThumb = async (req: Request, res: Response) => {
