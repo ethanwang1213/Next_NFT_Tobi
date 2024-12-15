@@ -122,7 +122,9 @@
     "VisibleToAll": "このアイテムは再びすべてのユーザーに表示されます。",
     "PublishedAndForSale": "アイテムは公開され、販売および配布も可能になります。",
     "RequiredFieldsMissing": "未入力の必須項目があります。ご確認ください。",
-    "ConfirmContinue": "続行しますか？"
+    "ConfirmContinue": "続行しますか？",
+    "SelectCopyrights": "コピーライトを選択するか、作成します。",
+    "Create": "作成"
   },
   "License": {
     "ProhibitedActions": "全ライセンスにおける禁止事項",

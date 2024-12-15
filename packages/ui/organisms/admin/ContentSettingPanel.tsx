@@ -155,7 +155,7 @@ const CopyrightHolderComponent = ({ initialItems, changeHandler }) => {
               </span>
               <Image
                 src="/admin/images/icon/more-vert-icon.svg"
-                width={16}
+                width={4}
                 height={16}
                 alt="more icon"
                 className="cursor-pointer"

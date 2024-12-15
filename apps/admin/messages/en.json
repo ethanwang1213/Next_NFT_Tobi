@@ -122,7 +122,9 @@
     "VisibleToAll": "This item will once again be visible to all users.",
     "PublishedAndForSale": "The item will be published and will also be available for sale and distribution.",
     "RequiredFieldsMissing": "There are required fields that have not been filled. Please check.",
-    "ConfirmContinue": "Do you wish to continue?"
+    "ConfirmContinue": "Do you wish to continue?",
+    "SelectCopyrights": "Select or create new copyrights",
+    "Create": "Create"
   },
   "License": {
     "ProhibitedActions": "Prohibited Actions under All Licenses",
