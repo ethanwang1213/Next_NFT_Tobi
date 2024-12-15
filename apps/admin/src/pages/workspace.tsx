@@ -237,16 +237,21 @@ export default function Index() {
   }, [isSampleCreateDialogOpen, resumeUnityInputs]);
 
   useEffect(() => {
-    if (workspaceData) {
-      setLoadData(workspaceData);
-      if (id && isItemsLoaded) {
+    if (id) {
+      const resetWorkspaceData = { ...workspaceData, workspaceItemList: [] };
+      setLoadData(resetWorkspaceData);
+
+      if (isItemsLoaded) {
         const sampleIndex = samples.findIndex(
           (sample) => sample.digitalItemId === Number(id),
         );
-        if (sampleIndex > -1) {
+
+        if (sampleIndex !== -1) {
           sampleSelectHandler(sampleIndex);
         }
       }
+    } else if (workspaceData) {
+      setLoadData(workspaceData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, workspaceData, isItemsLoaded]);

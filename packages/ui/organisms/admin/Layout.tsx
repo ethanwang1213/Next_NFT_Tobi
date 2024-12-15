@@ -72,9 +72,11 @@ const Contents = ({ children }: Props) => {
   const apiUrl = "native/admin/content";
   const { loading, error, getData } = useRestfulAPI(null);
 
-  useEffect(()=>{
-    console.log(loading, "loading")
-  }, [loading])
+  const spinner = (
+    <div className={"h-[100dvh] flex justify-center"}>
+      <span className={"loading loading-spinner text-info loading-md"} />
+    </div>
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,33 +121,33 @@ const Contents = ({ children }: Props) => {
         </div>
       </NavbarProvider>
     );
+  } else if (loading) {
+    return spinner;
   }
-  if (!loading) {
-    return (
-      <div
-        className={
-          "flex flow-row sm:justify-center min-h-screen h-min min-w-[760px]"
-        }
-      >
-        <div className={"grow flex flex-col self-stretch"}>
-          {children}
-          <div className={"flex grow justify-center"}>
-            <div className="self-end font-normal text-[12px] text-base-content">
-              Tobiratory Inc. all rights reserved.
-            </div>
+  return (
+    <div
+      className={
+        "flex flow-row sm:justify-center min-h-screen h-min min-w-[760px]"
+      }
+    >
+      <div className={"grow flex flex-col self-stretch"}>
+        {children}
+        <div className={"flex grow justify-center"}>
+          <div className="self-end font-normal text-[12px] text-base-content">
+            Tobiratory Inc. all rights reserved.
           </div>
         </div>
-        <div className={"flex flex-row max-sm:hidden grow overflow-hidden"}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={"/admin/images/admin-logo.svg"}
-            alt={"Tobiratory Logo"}
-            className={"object-cover"}
-          />
-        </div>
       </div>
-    );
-  }
+      <div className={"flex flex-row max-sm:hidden grow overflow-hidden"}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={"/admin/images/admin-logo.svg"}
+          alt={"Tobiratory Logo"}
+          className={"object-cover"}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default Layout;

@@ -79,35 +79,36 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   ) => {
     const binaryData = decodeBase64ToBinary(nftModelBase64);
     const modelUrl = await uploadData(binaryData);
+
     if (nftModelBase64) {
-      const result = await postData(`native/items/${id}/mint`, {
-        fcmToken: fcmToken,
-        amount: 1,
+      const finalizeModelResult = await finalizeModel(itemId, {
+        fcmToken,
+        modelUrl,
       });
 
-      if (!result) {
-        toast(
-          <MintNotification
-            title={s("MintFailed")}
-            text={s("MintFailedLimitExceeded")}
-          />,
-          {
-            className: "mint-notification",
-          },
-        );
-      } else {
-        const finalizeModelResult = await finalizeModel(itemId, {
-          fcmToken,
-          modelUrl,
-        });
-        if (!finalizeModelResult) {
-          return;
-        }
-        deleteAllActionHistory();
-        trackSampleMint(data.modelType);
-        await getData(apiUrl);
-        setData(digitalItem);
-      }
+      if (!finalizeModelResult) return;
+    }
+
+    const result = await postData(`native/items/${id}/mint`, {
+      fcmToken: fcmToken,
+      amount: 1,
+    });
+
+    if (!result) {
+      toast(
+        <MintNotification
+          title={s("MintFailed")}
+          text={s("MintFailedLimitExceeded")}
+        />,
+        {
+          className: "mint-notification",
+        },
+      );
+    } else {
+      deleteAllActionHistory();
+      trackSampleMint(data.modelType);
+      await getData(apiUrl);
+      setData(digitalItem);
     }
   };
 
@@ -174,18 +175,22 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         return;
       }
 
-      if (value === "mint" && data.meta_model_url) {
-        const requestPayload = {
-          itemId: data.id,
-          modelType: data.type,
-          modelUrl: data.modelUrl,
-          imageUrl: data.materialUrl || data.customThumbnailUrl,
-        };
+      if (value === "mint") {
+        if (data.meta_model_url) {
+          const requestPayload = {
+            itemId: data.id,
+            modelType: data.type,
+            modelUrl: data.modelUrl,
+            imageUrl: data.materialUrl || data.customThumbnailUrl,
+          };
 
-        if (section === "showcase") {
-          requestNftModelGeneration(requestPayload);
+          if (section === "showcase") {
+            requestNftModelGeneration(requestPayload);
+          } else {
+            workspaceRequestNftModelGeneration(requestPayload);
+          }
         } else {
-          workspaceRequestNftModelGeneration(requestPayload);
+          handleNftModelGenerated(data.id, "");
         }
       }
     },
