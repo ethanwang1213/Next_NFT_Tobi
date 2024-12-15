@@ -80,18 +80,10 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     const binaryData = decodeBase64ToBinary(nftModelBase64);
     const modelUrl = await uploadData(binaryData);
 
-    if (nftModelBase64) {
-      const finalizeModelResult = await finalizeModel(itemId, {
-        fcmToken,
-        modelUrl,
-      });
-
-      if (!finalizeModelResult) return;
-    }
-
     const result = await postData(`native/items/${id}/mint`, {
       fcmToken: fcmToken,
       amount: 1,
+      modelUrl
     });
 
     if (!result) {
