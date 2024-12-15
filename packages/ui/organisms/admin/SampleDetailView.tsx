@@ -261,7 +261,11 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.copyrights.length
-                    ? `@${data.copyrights[0].name}`
+                    ? data.copyrights.map((copyright, index) => (
+                        <span key={index}>
+                          {index > 0 && ", "}©{copyright.name}
+                        </span>
+                      ))
                     : "-"}
                 </span>
               </div>

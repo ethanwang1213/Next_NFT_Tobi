@@ -72,6 +72,10 @@ const Contents = ({ children }: Props) => {
   const apiUrl = "native/admin/content";
   const { loading, error, getData } = useRestfulAPI(null);
 
+  useEffect(()=>{
+    console.log(loading, "loading")
+  }, [loading])
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -116,31 +120,32 @@ const Contents = ({ children }: Props) => {
       </NavbarProvider>
     );
   }
-
-  return (
-    <div
-      className={
-        "flex flow-row sm:justify-center min-h-screen h-min min-w-[760px]"
-      }
-    >
-      <div className={"grow flex flex-col self-stretch"}>
-        {children}
-        <div className={"flex grow justify-center"}>
-          <div className="self-end font-normal text-[12px] text-base-content">
-            Tobiratory Inc. all rights reserved.
+  if (!loading) {
+    return (
+      <div
+        className={
+          "flex flow-row sm:justify-center min-h-screen h-min min-w-[760px]"
+        }
+      >
+        <div className={"grow flex flex-col self-stretch"}>
+          {children}
+          <div className={"flex grow justify-center"}>
+            <div className="self-end font-normal text-[12px] text-base-content">
+              Tobiratory Inc. all rights reserved.
+            </div>
           </div>
         </div>
+        <div className={"flex flex-row max-sm:hidden grow overflow-hidden"}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={"/admin/images/admin-logo.svg"}
+            alt={"Tobiratory Logo"}
+            className={"object-cover"}
+          />
+        </div>
       </div>
-      <div className={"flex flex-row max-sm:hidden grow overflow-hidden"}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={"/admin/images/admin-logo.svg"}
-          alt={"Tobiratory Logo"}
-          className={"object-cover"}
-        />
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default Layout;
