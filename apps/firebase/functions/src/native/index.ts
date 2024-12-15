@@ -68,7 +68,6 @@ import {
   giftNFT,
   mintNFT,
   deleteMyNFT,
-  finalizeModelUrl,
 } from "./nftController";
 import {decorationWorkspace, getWorkspaceDecorationData, throwSample} from "./workspaceController";
 import {deleteCopyrights, getCopyrights, updateCopyrights} from "./copyrightsController";
@@ -182,7 +181,6 @@ app.post("/my/items/:id/sale", dummyResponse);
 app.post("/my/nfts/:id/listing", dummyResponse);
 app.get("/items/:id", getDigitalItemInfo);
 app.post("/items/:id/mint", mintNFT);
-app.post("/items/:id/finalize-model", finalizeModelUrl);
 app.post("/nfts/:id/purchase", dummyResponse);
 app.post("/my/nfts/:id/gift", giftNFT);
 app.post("/my/nfts/move", moveNFT);
