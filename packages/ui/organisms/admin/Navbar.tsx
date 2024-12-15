@@ -140,11 +140,11 @@ const UserMenu = () => {
           }
         >
           <Image
-            src={"/admin/images/icon/profile.svg"}
+            src={user.icon || "/admin/images/icon/profile.svg"}
             alt={"user menu icon"}
             width={40}
             height={40}
-            className={""}
+            className="rounded-full"
           />
         </summary>
         <ul
@@ -156,16 +156,17 @@ const UserMenu = () => {
             <div className="flex flex-row items-center">
               <div className={"w-[48px]"}>
                 <Image
-                  src="/admin/images/icon/profile.svg"
+                  src={user.icon || "/admin/images/icon/profile.svg"}
                   alt={"profile image"}
                   width={48}
                   height={48}
+                  className="rounded-full"
                 />
               </div>
               <div className="flex flex-col ml-[12px] text-base-200-content w-[132px]">
                 <div className={"text-[15px] font-normal"}>{user.name}</div>
                 <div className={"text-[10px] font-normal"}>
-                  UID：{user.uuid}
+                  @user-{user.uuid}
                 </div>
               </div>
             </div>

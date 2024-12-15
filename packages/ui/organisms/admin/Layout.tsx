@@ -58,6 +58,7 @@ const MainContents = ({ children }: Props) => {
 const Contents = ({ children }: Props) => {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [load, setLoad] = useState(true);
   const router = useRouter();
   const pagesWithoutSidebar = [
     "/authentication",
@@ -80,8 +81,9 @@ const Contents = ({ children }: Props) => {
       }
     };
 
-    if (user) {
+    if (user && load) {
       fetchData();
+      setLoad(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
