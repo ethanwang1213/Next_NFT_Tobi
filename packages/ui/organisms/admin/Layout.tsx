@@ -7,9 +7,10 @@ import {
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { CustomUnityProvider } from "contexts/CustomUnityContext";
 import { auth } from "fetchers/firebase/client";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
 import ContentReviewRequest from "./ContentReviewRquest";
@@ -18,10 +19,9 @@ import SpSidebar from "./SpSidebar";
 
 type Props = {
   children: ReactNode;
-  content?: string;
 };
 
-const Layout = ({ children, content }: Props) => {
+const Layout = ({ children }: Props) => {
   return (
     <>
       <Head>
@@ -29,7 +29,7 @@ const Layout = ({ children, content }: Props) => {
       </Head>
       <AuthProvider>
         <CustomUnityProvider>
-          <Contents content={content}>{children}</Contents>
+          <Contents>{children}</Contents>
         </CustomUnityProvider>
       </AuthProvider>
     </>
@@ -55,7 +55,7 @@ const MainContents = ({ children }: Props) => {
   return <>{children}</>;
 };
 
-const Contents = ({ children, content }: Props) => {
+const Contents = ({ children }: Props) => {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
@@ -68,9 +68,28 @@ const Contents = ({ children, content }: Props) => {
     "/auth/confirmation_email_for_auth_page",
   ];
 
+  const apiUrl = "native/admin/content";
+  const { loading, error, getData } = useRestfulAPI(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await getData(apiUrl);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+
+    if (user) {
+      fetchData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&
     auth.currentUser &&
+    !loading &&
     user?.hasFlowAccount
   ) {
     return (
@@ -80,12 +99,12 @@ const Contents = ({ children, content }: Props) => {
           <SpSidebar
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
-            content={content}
+            content={error}
           />
-          <Sidebar content={content}>
-            {content === "reported" ? (
+          <Sidebar content={error}>
+            {error === "reported" ? (
               <ContentSuspendedComponent />
-            ) : content === "not-approved" || content === "approve-rejected" ? (
+            ) : error === "not-approved" || error === "approve-rejected" ? (
               <ContentReviewRequest />
             ) : (
               <MainContents>{children}</MainContents>

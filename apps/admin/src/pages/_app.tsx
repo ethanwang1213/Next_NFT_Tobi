@@ -18,38 +18,18 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
-import { auth } from "fetchers/firebase/client";
-import useRestfulAPI from "hooks/useRestfulAPI";
 import { NextIntlClientProvider } from "next-intl";
 import Script from "next/script";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
 import Layout from "ui/organisms/admin/Layout";
-
 config.autoAddCss = false;
 
 const font = M_PLUS_2({ subsets: ["latin"] });
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const apiUrl = "native/admin/content";
-  const { loading, error, getData } = useRestfulAPI(null);
   const router = useRouter();
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (usertoken) => {
-      if (usertoken) {
-        try {
-          await getData(apiUrl);
-        } catch (error) {
-          console.error("Error fetching token:", error);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     const gaId = process.env.NEXT_PUBLIC_GA_ID;
@@ -85,18 +65,6 @@ const App = ({ Component, pageProps }: AppProps) => {
       document.head.removeChild(gaScript);
     };
   }, [router.events]);
-
-  if (loading) {
-    return (
-      <>
-        <main className={font.className}>
-          <div className={"h-[100dvh] flex justify-center"}>
-            <span className={"loading loading-spinner text-info loading-md"} />
-          </div>
-        </main>
-      </>
-    );
-  }
   return (
     <>
       <Script
@@ -116,7 +84,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         locale={router.locale || "jp"}
       >
         <main className={font.className}>
-          <Layout content={error}>
+          <Layout>
             <FcmTokenComp />
             <LeavePageProvider>
               <Component {...pageProps} />
