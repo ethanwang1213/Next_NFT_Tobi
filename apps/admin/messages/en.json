@@ -423,7 +423,7 @@
     "FileSupportInfo": "Only JPEG, PNG and PDF files up to 20MB in size are supported.",
     "FileUpload": "File Upload",
     "DefaultLicense": "Default License",
-    "ChangeLater": "It can be changed later.",
+    "ChangeLater": "You can set the default license for copyrights related to NFTs. This can be changed later.",
     "NoCopyrightInfringe": "I agree that the provided content does not infringe on any copyrights.",
     "Confirm": "Confirm",
     "JoinThisAccount": "Join TCP with this account",
