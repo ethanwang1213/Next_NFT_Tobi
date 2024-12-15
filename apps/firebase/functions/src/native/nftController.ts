@@ -27,7 +27,7 @@ const pubsub = new PubSub();
 export const mintNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
-  const {fcmToken, amount} = req.body;
+  const {fcmToken, amount, modelUrl} = req.body;
   if (!fcmToken) {
     res.status(401).send({
       status: "error",
@@ -70,7 +70,7 @@ export const mintNFT = async (req: Request, res: Response) => {
           return;
         }
         console.log("mintStart", mintCount, intAmount);
-        await mint(id, uid, notificationBatchId);
+        await mint(id, uid, notificationBatchId, modelUrl);
         console.log("mintEnd", mintCount, intAmount);
         mintCount++;
         setTimeout(mintProcess, 1000);
@@ -89,7 +89,7 @@ export const mintNFT = async (req: Request, res: Response) => {
       });
       res.status(200).send({
         status: "success",
-        data: "NFT is minting",
+        data: "minting-nft",
       });
     } catch (err) {
       if (err instanceof MintError) {
@@ -121,7 +121,7 @@ class MintError extends Error {
   }
 }
 
-export const mint = async (id: string, uid: string, notificationBatchId: number) => {
+export const mint = async (id: string, uid: string, notificationBatchId: number, modelUrl?: string) => {
   const notificationBatch = await prisma.notification_batch.findUnique({
     where: {
       id: notificationBatchId,
@@ -150,11 +150,7 @@ export const mint = async (id: string, uid: string, notificationBatchId: number)
     },
   });
   if (!digitalItem) {
-    throw new MintError(404, "DigitalItem does not found");
-  }
-  const modelUrl = digitalItem.meta_model_url;
-  if (!modelUrl) {
-    throw new MintError(400, "model_url-not-set");
+    throw new MintError(404, "item-not-found");
   }
 
   if (digitalItem.account.business) {
@@ -172,14 +168,37 @@ export const mint = async (id: string, uid: string, notificationBatchId: number)
   }
 
   if (digitalItem.limit && digitalItem.limit <= 0) {
-    throw new MintError(401, "Minting limit reached");
+    throw new MintError(401, "minting-limit-reached");
+  }
+
+  if (modelUrl) {
+    const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/";
+    if (!modelUrl.startsWith(prefixUrl)) {
+      throw new MintError(401, "invalid-model");
+    }
+    if (digitalItem.meta_model_url) {
+      throw new MintError(400, "already-exists");
+    } else {
+      await prisma.digital_items.update({
+        where: {
+          id: digitalItem.id
+        },
+        data: {
+          meta_model_url: modelUrl,
+        }
+      });
+    }
+  } else {
+    if (!digitalItem.meta_model_url) {
+      throw new MintError(400, "model-not-set");
+    }
   }
 
   const itemId = digitalItem.flow_item_id;
   const digitalItemId = digitalItem.id;
 
   if (!digitalItem.account.flow_account) {
-    throw new MintError(404, "FlowAccount does not found");
+    throw new MintError(404, "account-not-found");
   }
 
   let creatorName;
@@ -187,7 +206,7 @@ export const mint = async (id: string, uid: string, notificationBatchId: number)
     creatorName = digitalItem.account.business.content.name;
   } else {
     if (!digitalItem.account) {
-      throw new MintError(404, "User does not found");
+      throw new MintError(404, "user-not-found");
     }
     creatorName = digitalItem.account.username;
   }
@@ -473,106 +492,6 @@ export const generateNotificationBatchId = async (fcmToken: string) => {
     },
   });
   return column.id;
-};
-
-export const finalizeModelUrl = async (req: Request, res: Response) => {
-  const {id} = req.params;
-  const {authorization} = req.headers;
-  const {modelUrl}: { modelUrl: string } = req.body;
-
-  const prefixUrl = "https://firebasestorage.googleapis.com/v0/b/tobiratory-f6ae1.appspot.com/o/";
-  if (!modelUrl.includes(prefixUrl)) {
-    res.status(401).send({
-      status: "error",
-      data: "invalid-model",
-    });
-    return;
-  }
-
-  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
-    const uid = decodedToken.uid;
-    const digitalItem = await prisma.digital_items.findUnique({
-      where: {
-        id: Number(id),
-      },
-      include: {
-        account: {
-          include: {
-            business: {
-              include: {
-                content: true,
-              },
-            },
-            flow_account: true,
-          },
-        },
-      },
-    });
-
-    if (!digitalItem) {
-      res.status(404).send({
-        status: "error",
-        data: "digital-item-not-found",
-      });
-      return;
-    }
-
-    if (digitalItem.account.business) {
-      const content = digitalItem.account.business.content;
-      if (!content) {
-        res.status(404).send({
-          status: "error",
-          data: "content-not-found",
-        });
-        return;
-      }
-      if (content.businesses_uuid !== uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-creator",
-        });
-        return;
-      }
-    } else {
-      if (digitalItem.account_uuid !== uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-creator",
-        });
-        return;
-      }
-    }
-
-    if (digitalItem.meta_model_url) {
-      res.status(400).send({
-        status: "error",
-        data: "already-exists",
-      });
-    }
-
-    await prisma.digital_items.update({
-      where: {
-        id: Number(id),
-      },
-      data: {
-        meta_model_url: modelUrl,
-      },
-    });
-
-    res.status(200).send({
-      status: "success",
-      data: {
-        id: id,
-        modelUrl: modelUrl,
-      },
-    });
-  }).catch((error: FirebaseError) => {
-    res.status(401).send({
-      status: "error",
-      data: error,
-    });
-    return;
-  });
 };
 
 export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
