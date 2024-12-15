@@ -77,37 +77,37 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     itemId: number,
     nftModelBase64: string,
   ) => {
+    const binaryData = decodeBase64ToBinary(nftModelBase64);
+    const modelUrl = await uploadData(binaryData);
     if (nftModelBase64) {
-      const binaryData = decodeBase64ToBinary(nftModelBase64);
-      const modelUrl = await uploadData(binaryData);
-      const finalizeModelResult = await finalizeModel(itemId, {
-        fcmToken,
-        modelUrl,
+      const result = await postData(`native/items/${id}/mint`, {
+        fcmToken: fcmToken,
+        amount: 1,
       });
-      if (!finalizeModelResult) {
-        return;
-      }
-    }
-    const result = await postData(`native/items/${id}/mint`, {
-      fcmToken: fcmToken,
-      amount: 1,
-    });
 
-    if (!result) {
-      toast(
-        <MintNotification
-          title={s("MintFailed")}
-          text={s("MintFailedLimitExceeded")}
-        />,
-        {
-          className: "mint-notification",
-        },
-      );
-    } else {
-      deleteAllActionHistory();
-      trackSampleMint(data.modelType);
-      await getData(apiUrl);
-      setData(digitalItem);
+      if (!result) {
+        toast(
+          <MintNotification
+            title={s("MintFailed")}
+            text={s("MintFailedLimitExceeded")}
+          />,
+          {
+            className: "mint-notification",
+          },
+        );
+      } else {
+        const finalizeModelResult = await finalizeModel(itemId, {
+          fcmToken,
+          modelUrl,
+        });
+        if (!finalizeModelResult) {
+          return;
+        }
+        deleteAllActionHistory();
+        trackSampleMint(data.modelType);
+        await getData(apiUrl);
+        setData(digitalItem);
+      }
     }
   };
 
@@ -172,28 +172,29 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     async (value: string) => {
       if (value === "cancel") {
         return;
-      } else if (value === "mint") {
-        if (data.meta_model_url) {
-          await handleNftModelGenerated(data.id, "");
-        } else if (section === "showcase") {
-          requestNftModelGeneration({
-            itemId: data.id,
-            modelType: data.type,
-            modelUrl: data.modelUrl,
-            imageUrl: data.materialUrl || data.customThumbnailUrl,
-          });
+      }
+
+      if (value === "mint" && data.meta_model_url) {
+        const requestPayload = {
+          itemId: data.id,
+          modelType: data.type,
+          modelUrl: data.modelUrl,
+          imageUrl: data.materialUrl || data.customThumbnailUrl,
+        };
+
+        if (section === "showcase") {
+          requestNftModelGeneration(requestPayload);
         } else {
-          workspaceRequestNftModelGeneration({
-            itemId: data.id,
-            modelType: data.type,
-            modelUrl: data.modelUrl,
-            imageUrl: data.materialUrl || data.customThumbnailUrl,
-          });
+          workspaceRequestNftModelGeneration(requestPayload);
         }
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, fcmToken, id, postData, deleteAllActionHistory, trackSampleMint],
+    [
+      data,
+      section,
+      requestNftModelGeneration,
+      workspaceRequestNftModelGeneration,
+    ],
   );
 
   const deleteConfirmDialogHandler = useCallback(
