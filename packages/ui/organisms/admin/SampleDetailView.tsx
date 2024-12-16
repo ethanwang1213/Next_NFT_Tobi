@@ -199,6 +199,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
       data,
       section,
       requestNftModelGeneration,
+      handleNftModelGenerated,
       workspaceRequestNftModelGeneration,
     ],
   );
