@@ -77,14 +77,23 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     itemId: number,
     nftModelBase64: string,
   ) => {
-    const binaryData = decodeBase64ToBinary(nftModelBase64);
-    const modelUrl = await uploadData(binaryData);
+    let modelUrl: string | undefined;
 
-    const result = await postData(`native/items/${id}/mint`, {
+    if (nftModelBase64) {
+      const binaryData = decodeBase64ToBinary(nftModelBase64);
+      modelUrl = await uploadData(binaryData);
+    }
+
+    const payload: Record<string, any> = {
       fcmToken: fcmToken,
       amount: 1,
-      modelUrl,
-    });
+    };
+
+    if (modelUrl) {
+      payload.modelUrl = modelUrl;
+    }
+
+    const result = await postData(`native/items/${id}/mint`, payload);
 
     if (!result) {
       toast(
