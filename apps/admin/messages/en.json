@@ -42,7 +42,9 @@
     "Symbols": "Symbols ",
     "PasswordsDoNotMatch": "Passwords do not match.",
     "AccountDoesNotExist": "Tobiratory account does not exist.",
-    "EmailInUse": "This email address is already in use."
+    "EmailInUse": "This email address is already in use.",
+    "GoToAuthScreen": "Go to authentication screen",
+    "PasswordResetNotify": "Password has been reset"
   },
   "Menu": {
     "Workspace": "Workspace",

@@ -42,7 +42,9 @@
     "Symbols": "記号 ",
     "PasswordsDoNotMatch": "パスワードが一致しません。",
     "AccountDoesNotExist": "トビラトリー アカウントが存在しません。",
-    "EmailInUse": "このメールアドレスは既に使用されています。"
+    "EmailInUse": "このメールアドレスは既に使用されています。",
+    "GoToAuthScreen": "認証画面へ",
+    "PasswordResetNotify": "パスワードをリセットしました"
   },
   "Menu": {
     "Workspace": "ワークスペース",
