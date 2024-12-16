@@ -181,11 +181,11 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
     } else {
       await prisma.digital_items.update({
         where: {
-          id: digitalItem.id
+          id: digitalItem.id,
         },
         data: {
           meta_model_url: modelUrl,
-        }
+        },
       });
     }
   } else {
