@@ -38,6 +38,19 @@ model accounts {
     is_deleted              Boolean             @default(false)
     updated_date_time       DateTime            @default(now()) @db.Timestamp(6)
     created_date_time       DateTime            @default(now()) @db.Timestamp(6)
+    my_reports              reported_accounts[]
+}
+
+model reported_accounts {
+    id                Int      @id @default(autoincrement())
+    account_uuid      String   @db.VarChar(100)
+    account           accounts @relation(fields: [account_uuid], references: [uuid])
+    reporter_uuid     String?  @db.VarChar(255)
+    title             String   @db.VarChar(255)
+    description       String   @db.Text
+    is_solved         Boolean?
+    updated_date_time DateTime @default(now()) @db.Timestamp(6)
+    created_date_time DateTime @default(now()) @db.Timestamp(6)
 }
 
 model flow_accounts {

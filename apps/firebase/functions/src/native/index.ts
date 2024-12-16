@@ -3,7 +3,7 @@ import * as cors from "cors";
 import * as express from "express";
 import {allTraffic, REGION, timeoutTime, vpcName} from "../lib/constants";
 
-import {getAccountById, getOthersSaidans} from "./accountController";
+import {getAccountById, getOthersSaidans, reportAccount} from "./accountController";
 import
 {
   signUp,
@@ -100,6 +100,7 @@ app.get("/search/samples", searchDigitalItems);
 app.get("/hotpicks-digital-item", hotPicksDigitalItem);
 
 app.get("/accounts/:uid", getAccountById);
+app.put("/accounts/:uid", reportAccount);
 app.get("/accounts/:uid/saidans", getOthersSaidans);
 app.get("/business/:uid/content", getContentByUuid);
 

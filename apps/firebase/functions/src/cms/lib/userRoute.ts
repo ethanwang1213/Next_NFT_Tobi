@@ -14,9 +14,17 @@ router.get("/", async (req: Request, res: Response) => {
     // take: Number(pageSize),
     include: {
       business: true,
+      my_reports: true,
     },
   });
   const returnData = users.map((user)=>{
+    const reportLog = user.my_reports.map((report)=>{
+      return {
+        title: report.title,
+        description: report.title,
+        dateAdded: report.created_date_time,
+      }
+    })
     return {
       id: user.id,
       uuid: user.uuid,
@@ -30,12 +38,94 @@ router.get("/", async (req: Request, res: Response) => {
       tcp: user.business == null ? null: {
         joinTime: user.business.created_date_time,
       },
+      reportsLog: reportLog,
     };
   });
   res.status(200).send({
     status: "success",
     data: returnData,
   });
+});
+
+router.put("/:uid/ignore-report", async (req: Request, res: Response) => {
+  const {uid} = req.params;
+  try {
+    await prisma.reported_accounts.updateMany({
+      where: {
+        account_uuid: uid,
+      },
+      data: {
+        is_solved: true,
+      },
+    });
+
+    res.status(200).send({
+      status: "success",
+      data: "ignore",
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
+});
+
+router.put("/:uid/freeze-report", async (req: Request, res: Response) => {
+  const {uid} = req.params;
+  try {
+    const process = await prisma.reported_accounts.updateMany({
+      where: {
+        account_uuid: uid,
+        is_solved: null,
+      },
+      data: {
+        is_solved: false,
+      },
+    });
+    if (!process.count) {
+      const suspend = await prisma.reported_accounts.create({
+        data: {
+          reporter_uuid: null,
+          account_uuid: uid,
+          title: "admin",
+          description: "block",
+          is_solved: false,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: {
+          date: suspend.created_date_time,
+          title: suspend.title,
+          description: suspend.description,
+          isSolved: suspend.is_solved,
+        },
+      });
+      return;
+    }
+    const totalReports = await prisma.reported_accounts.findMany({
+      where: {
+        account_uuid: uid,
+      },
+    });
+    res.status(200).send({
+      status: "success",
+      data: totalReports.map((report)=>{
+        return {
+          date: report.created_date_time,
+          title: report.title,
+          description: report.description,
+          isSolved: report.is_solved,
+        };
+      }),
+    });
+  } catch (error) {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+  }
 });
 
 router.put("/:uid/notes", async (req: Request, res: Response) => {
