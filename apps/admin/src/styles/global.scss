@@ -23,6 +23,20 @@
   -moz-appearance: textfield;
 }
 
+.create-option {
+  padding: 8px;
+  border: 1px dashed #999;
+  border-radius: 8px;
+  color: #333;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.create-option:hover {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+}
+
 @layer components {
   .modal {
     @apply bg-black/40;

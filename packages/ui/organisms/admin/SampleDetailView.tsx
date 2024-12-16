@@ -57,7 +57,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   const mintConfirmDialogRef = useRef(null);
   const deleteConfirmDialogRef = useRef(null);
   const { token: fcmToken } = useFcmToken();
-  const [finalizeModelError, finalizeModel] = useFinalizeModel();
+  const [finalizeModelError] = useFinalizeModel();
   const { pauseUnityInputs, requestNftModelGeneration } =
     useShowcaseEditUnity();
   const {
@@ -73,43 +73,46 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     }
   }, [finalizeModelError]);
 
-  const handleNftModelGenerated = async (
-    itemId: number,
-    nftModelBase64: string,
-  ) => {
-    if (nftModelBase64) {
-      const binaryData = decodeBase64ToBinary(nftModelBase64);
-      const modelUrl = await uploadData(binaryData);
-      const finalizeModelResult = await finalizeModel(itemId, {
-        fcmToken,
-        modelUrl,
-      });
-      if (!finalizeModelResult) {
-        return;
-      }
-    }
-    const result = await postData(`native/items/${id}/mint`, {
-      fcmToken: fcmToken,
-      amount: 1,
-    });
+  const handleNftModelGenerated = useCallback(
+    async (itemId: number, nftModelBase64: string) => {
+      let modelUrl: string | undefined;
 
-    if (!result) {
-      toast(
-        <MintNotification
-          title={s("MintFailed")}
-          text={s("MintFailedLimitExceeded")}
-        />,
-        {
-          className: "mint-notification",
-        },
-      );
-    } else {
-      deleteAllActionHistory();
-      trackSampleMint(data.modelType);
-      await getData(apiUrl);
-      setData(digitalItem);
-    }
-  };
+      if (nftModelBase64) {
+        const binaryData = decodeBase64ToBinary(nftModelBase64);
+        modelUrl = await uploadData(binaryData);
+      }
+
+      const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
+        fcmToken: fcmToken,
+        amount: 1,
+      };
+
+      if (modelUrl) {
+        payload.modelUrl = modelUrl;
+      }
+
+      const result = await postData(`native/items/${id}/mint`, payload);
+
+      if (!result) {
+        toast(
+          <MintNotification
+            title={s("MintFailed")}
+            text={s("MintFailedLimitExceeded")}
+          />,
+          {
+            className: "mint-notification",
+          },
+        );
+      } else {
+        deleteAllActionHistory();
+        trackSampleMint(data.modelType);
+        await getData(apiUrl);
+        setData(digitalItem);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   handleNftModelGeneratedRef.current = handleNftModelGenerated;
 
@@ -172,28 +175,34 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     async (value: string) => {
       if (value === "cancel") {
         return;
-      } else if (value === "mint") {
+      }
+
+      if (value === "mint") {
         if (data.meta_model_url) {
-          await handleNftModelGenerated(data.id, "");
-        } else if (section === "showcase") {
-          requestNftModelGeneration({
-            itemId: data.id,
-            modelType: data.type,
-            modelUrl: data.modelUrl,
-            imageUrl: data.materialUrl || data.customThumbnailUrl,
-          });
+          handleNftModelGenerated(data.id, "");
         } else {
-          workspaceRequestNftModelGeneration({
+          const requestPayload = {
             itemId: data.id,
             modelType: data.type,
             modelUrl: data.modelUrl,
             imageUrl: data.materialUrl || data.customThumbnailUrl,
-          });
+          };
+
+          if (section === "showcase") {
+            requestNftModelGeneration(requestPayload);
+          } else {
+            workspaceRequestNftModelGeneration(requestPayload);
+          }
         }
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, fcmToken, id, postData, deleteAllActionHistory, trackSampleMint],
+    [
+      data,
+      section,
+      requestNftModelGeneration,
+      handleNftModelGenerated,
+      workspaceRequestNftModelGeneration,
+    ],
   );
 
   const deleteConfirmDialogHandler = useCallback(
@@ -260,7 +269,11 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                 </span>
                 <span className="text-[10px] font-medium w-[168px]">
                   {data?.copyrights.length
-                    ? `@${data.copyrights[0].name}`
+                    ? data.copyrights.map((copyright, index) => (
+                        <span key={index}>
+                          {index > 0 && ", "}©{copyright.name}
+                        </span>
+                      ))
                     : "-"}
                 </span>
               </div>

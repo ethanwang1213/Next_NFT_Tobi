@@ -2,6 +2,7 @@ import {
   hasAppleAccount,
   hasGoogleAccount,
   hasPasswordAccount,
+  useAuth,
 } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
@@ -12,6 +13,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { User } from "types/adminTypes";
 import AppleIcon from "ui/atoms/AppleIcon";
 import GoogleIcon from "ui/atoms/GoogleIcon";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
@@ -277,6 +279,7 @@ export default function Index() {
   const router = useRouter();
   const { data, dataRef, error, loading, setData, setLoading, postData } =
     useRestfulAPI(apiUrl);
+  const { setUser } = useAuth();
 
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
@@ -315,6 +318,17 @@ export default function Index() {
 
     if (await postData(apiUrl, { account: submitData }, ["account"])) {
       setModified(false);
+      const updatedUser: User = {
+        uuid: data?.userId,
+        name: data?.username,
+        email: data?.email,
+        icon: data?.icon,
+        emailVerified: true,
+        hasFlowAccount: true,
+        hasBusinessAccount: true,
+      };
+
+      setUser(updatedUser);
     } else {
       if (error) {
         if (error instanceof String) {

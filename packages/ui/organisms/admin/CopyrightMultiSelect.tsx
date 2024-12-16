@@ -1,8 +1,10 @@
 import clsx from "clsx";
 import { useCombobox, useMultipleSelection } from "downshift";
-import { useState, useMemo, useEffect, useRef } from "react";
-import CopyrightEditMenu from "./CopyrightEditMenu";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { useEffect, useMemo, useRef, useState } from "react";
+import CopyrightEditMenu from "./CopyrightEditMenu";
 
 const CopyrightMultiSelect = ({
   initialSelectedItems,
@@ -18,6 +20,7 @@ const CopyrightMultiSelect = ({
     id: 0,
     text: "",
   });
+  const t = useTranslations("ItemDetail");
 
   const apiUrl = "native/admin/copyrights";
   const {
@@ -304,22 +307,27 @@ const CopyrightMultiSelect = ({
           padding: "4px",
           margin: "4px 0 0 0",
         }}
-        className={clsx(
-          isOpen && elements && elements.length > 0 ? "" : "hidden",
-        )}
+        className={clsx(isOpen && items.length > 0 ? "" : "hidden")}
       >
-        {elements &&
-          elements.map((item, index) => (
-            <li
-              style={{
-                padding: "4px 8px",
-                borderRadius: "8px",
-              }}
-              className="flex justify-between items-center 
-                cursor-pointer hover:bg-secondary-200"
-              key={`${item.name}${index}`}
-              {...getItemProps({ item, index })}
-            >
+        <p className="text-[12px] pl-[20px] mb-2">{t("SelectCopyrights")}</p>
+        {items.map((item, index) => (
+          <li
+            style={{
+              padding: "4px 8px",
+              borderRadius: "8px",
+            }}
+            className="flex justify-between items-center 
+        cursor-pointer hover:bg-secondary-200"
+            key={`${item.name}${index}`}
+            {...getItemProps({ item, index })}
+          >
+            <div className="flex gap-2">
+              <Image
+                width={7}
+                height={11}
+                alt="more move"
+                src="/admin/images/icon/more-move.svg"
+              />
               <span
                 style={{
                   backgroundColor: "#1779DE",
@@ -335,42 +343,59 @@ const CopyrightMultiSelect = ({
               >
                 ©{item.name}
               </span>
-              <span
-                className="hover:bg-secondary-400"
-                style={{
-                  color: "#FFFFFF",
-                  paddingLeft: "12px",
-                  paddingRight: "12px",
-                  paddingTop: "4px",
-                  paddingBottom: "4px",
-                  borderRadius: "6px",
-                  fontWeight: 400,
-                  fontSize: "14px",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
+            </div>
+            <span
+              className="hover:bg-secondary-400"
+              style={{
+                color: "#FFFFFF",
+                paddingLeft: "12px",
+                paddingRight: "12px",
+                paddingTop: "4px",
+                paddingBottom: "4px",
+                borderRadius: "6px",
+                fontWeight: 400,
+                fontSize: "14px",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
 
-                  const rootDomRect = (
-                    rootElementRef.current as HTMLElement
-                  ).getBoundingClientRect();
-                  const targetDomRect = (
-                    e.target as HTMLElement
-                  ).getBoundingClientRect();
+                const rootDomRect = (
+                  rootElementRef.current as HTMLElement
+                ).getBoundingClientRect();
+                const targetDomRect = (
+                  e.target as HTMLElement
+                ).getBoundingClientRect();
 
-                  setPopupMenuPosition({
-                    x: targetDomRect.right - rootDomRect.left,
-                    y: targetDomRect.top - rootDomRect.top,
-                    id: item.id,
-                    text: item.name,
-                  });
-                  setPopupMenuOpen(true);
-                }}
-              >
-                •••
-              </span>
-            </li>
-          ))}
+                setPopupMenuPosition({
+                  x: targetDomRect.right - rootDomRect.left,
+                  y: targetDomRect.top - rootDomRect.top,
+                  id: item.id,
+                  text: item.name,
+                });
+                setPopupMenuOpen(true);
+              }}
+            >
+              •••
+            </span>
+          </li>
+        ))}
+        {inputValue && !items.some((item) => item.name === inputValue) && (
+          <li
+            className="p-[6px] rounded-[8px] bg-secondary-200 cursor-pointer mt-1"
+            onClick={() => {
+              const newItem = { id: null, name: inputValue };
+              setSelectedItems([...selectedItems, newItem]);
+              handleSelectedItemChange([...selectedItems, newItem]);
+              setInputValue("");
+            }}
+          >
+            <span className="text-[11px] mr-2 text-black">{t("Create")}:</span>
+            <span className="text-[14px] bg-primary p-1 pr-5 text-white rounded-[6px]">
+              ©{inputValue}
+            </span>
+          </li>
+        )}
         {popupMenuOpen && (
           <div
             style={{

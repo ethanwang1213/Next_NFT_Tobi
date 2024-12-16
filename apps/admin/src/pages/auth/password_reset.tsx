@@ -5,6 +5,7 @@ import {
   updatePassword,
 } from "firebase/auth";
 import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -27,6 +28,8 @@ const PasswordReset = () => {
   const [updatingPassword, setUpdatingPassword] = useState(false);
   const [updatedPassword, setUpdatedPassword] = useState(false);
   const [authError, setAuthError] = useState<ErrorMessage>(null);
+  const t = useTranslations("LogInSignUp");
+  const w = useTranslations("Workspace");
 
   useEffect(() => {
     const curHref = window.location.href;
@@ -62,7 +65,7 @@ const PasswordReset = () => {
           height={114}
           className={"mt-[200px]"}
         />
-        <div className={"mt-[40px]"}>パスワードをリセットしました</div>
+        <div className={"mt-[40px]"}>{t("PasswordResetNotify")}</div>
         <div>
           <button
             type={"button"}
@@ -71,7 +74,7 @@ const PasswordReset = () => {
             }
             onClick={() => router.push("/authentication")}
           >
-            認証画面へ
+            {t("GoToAuthScreen")}
           </button>
         </div>
       </div>
@@ -79,8 +82,8 @@ const PasswordReset = () => {
   } else {
     return (
       <FlowAgreementWithEmailAndPassword
-        title={"パスワードリセット"}
-        buttonText={"リセット"}
+        title={t("PasswordReset")}
+        buttonText={w("Reset")}
         email={""}
         isSubmitting={updatingPassword}
         pageType={PageType.PasswordReset}

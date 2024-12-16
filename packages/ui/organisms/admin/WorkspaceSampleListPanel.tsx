@@ -146,7 +146,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
 
   return (
     <div
-      className="absolute top-0 lg:w-[448px] w-[330px] bg-[#001327] h-full pt-8 z-20 flex flex-col gap-6 pointer-events-auto"
+      className="absolute top-0 lg:w-[448px] w-[330px] bg-[#001327] h-full pt-8 z-10 flex flex-col gap-6 pointer-events-auto"
       style={{ transition: "right 0.3s ease", right: props.isOpen ? 0 : -448 }}
       ref={panelRef}
     >

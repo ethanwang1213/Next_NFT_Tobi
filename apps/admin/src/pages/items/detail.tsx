@@ -63,7 +63,7 @@ const Detail = () => {
   const { id } = router.query;
   const [modified, setModified] = useState(false);
   const { token: fcmToken } = useFcmToken();
-  const [finalizeModelError, finalizeModel] = useFinalizeModel();
+  const [finalizeModelError] = useFinalizeModel();
 
   const [confirmDialogTitle, setConfirmDialogTitle] = useState("");
   const [confirmDialogDescriptions, setConfirmDialogDescriptions] = useState(
@@ -88,21 +88,23 @@ const Detail = () => {
     itemId: number,
     nftModelBase64: string,
   ) => {
+    let modelUrl: string | undefined;
+
     if (nftModelBase64) {
       const binaryData = decodeBase64ToBinary(nftModelBase64);
-      const modelUrl = await uploadData(binaryData);
-      const finalizeModelResult = await finalizeModel(itemId, {
-        fcmToken,
-        modelUrl,
-      });
-      if (!finalizeModelResult) {
-        return;
-      }
+      modelUrl = await uploadData(binaryData);
     }
-    const result = await postData(`native/items/${id}/mint`, {
+
+    const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
       fcmToken: fcmToken,
       amount: 1,
-    });
+    };
+
+    if (modelUrl) {
+      payload.modelUrl = modelUrl;
+    }
+
+    const result = await postData(`native/items/${id}/mint`, payload);
 
     if (!result) {
       toast(
@@ -116,8 +118,6 @@ const Detail = () => {
       );
     } else {
       trackSampleMint(digitalItem.type);
-
-      // refresh item data
       await getData(apiUrl);
     }
   };

@@ -58,6 +58,7 @@ const MainContents = ({ children }: Props) => {
 const Contents = ({ children }: Props) => {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [load, setLoad] = useState(true);
   const router = useRouter();
   const pagesWithoutSidebar = [
     "/authentication",
@@ -71,6 +72,12 @@ const Contents = ({ children }: Props) => {
   const apiUrl = "native/admin/content";
   const { loading, error, getData } = useRestfulAPI(null);
 
+  const spinner = (
+    <div className={"h-[100dvh] flex justify-center"}>
+      <span className={"loading loading-spinner text-info loading-md"} />
+    </div>
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,8 +87,9 @@ const Contents = ({ children }: Props) => {
       }
     };
 
-    if (user) {
+    if (user && load) {
       fetchData();
+      setLoad(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
@@ -113,8 +121,9 @@ const Contents = ({ children }: Props) => {
         </div>
       </NavbarProvider>
     );
+  } else if (loading) {
+    return spinner;
   }
-
   return (
     <div
       className={

@@ -42,7 +42,9 @@
     "Symbols": "Symbols ",
     "PasswordsDoNotMatch": "Passwords do not match.",
     "AccountDoesNotExist": "Tobiratory account does not exist.",
-    "EmailInUse": "This email address is already in use."
+    "EmailInUse": "This email address is already in use.",
+    "GoToAuthScreen": "Go to authentication screen",
+    "PasswordResetNotify": "Password has been reset"
   },
   "Menu": {
     "Workspace": "Workspace",
@@ -122,7 +124,9 @@
     "VisibleToAll": "This item will once again be visible to all users.",
     "PublishedAndForSale": "The item will be published and will also be available for sale and distribution.",
     "RequiredFieldsMissing": "There are required fields that have not been filled. Please check.",
-    "ConfirmContinue": "Do you wish to continue?"
+    "ConfirmContinue": "Do you wish to continue?",
+    "SelectCopyrights": "Select or create new copyrights",
+    "Create": "Create"
   },
   "License": {
     "ProhibitedActions": "Prohibited Actions under All Licenses",
@@ -304,7 +308,7 @@
     "ConfirmResetSettings": "Are you sure you want to reset the settings?",
     "Base": "Base",
     "Scale": "Scale",
-    "Reset": "reset",
+    "Reset": "Reset",
     "Done": "DONE",
     "Cancel": "Cancel",
     "BodyScale": "Body Scale",
@@ -423,7 +427,7 @@
     "FileSupportInfo": "Only JPEG, PNG and PDF files up to 20MB in size are supported.",
     "FileUpload": "File Upload",
     "DefaultLicense": "Default License",
-    "ChangeLater": "It can be changed later.",
+    "ChangeLater": "You can set the default license for copyrights related to NFTs. This can be changed later.",
     "NoCopyrightInfringe": "I agree that the provided content does not infringe on any copyrights.",
     "Confirm": "Confirm",
     "JoinThisAccount": "Join TCP with this account",

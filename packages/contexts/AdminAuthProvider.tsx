@@ -37,6 +37,7 @@ type ContextType = {
   finishBusinessAccountRegistration: () => void;
   setReauthStatus: React.Dispatch<React.SetStateAction<ReauthStatus>>;
   updateUserEmail: (email: string) => void;
+  setUser: (user: User) => void;
 };
 
 const AuthContext = createContext<ContextType>({} as ContextType);
@@ -135,6 +136,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             profile.data.userId,
             firebaseUser.email,
             profile.data.username,
+            profile.data.icon || "",
             firebaseUser.emailVerified,
             true,
             hasBusinessAccount,
@@ -183,6 +185,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             firebaseUser.uid,
             firebaseUser.email,
             "",
+            "",
             firebaseUser.emailVerified,
             false,
             false,
@@ -204,6 +207,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         await createUser(
           firebaseUser.uid,
           firebaseUser.email,
+          "",
           "",
           firebaseUser.emailVerified,
           false,
@@ -232,6 +236,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     uuid: string,
     email: string,
     name: string,
+    icon: string,
     emailVerified: boolean,
     hasFlowAccount: boolean,
     hasBusinessAccount: boolean,
@@ -241,6 +246,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         uuid,
         name: name || email.split("@")[0],
         email,
+        icon,
         emailVerified,
         hasFlowAccount,
         hasBusinessAccount,
@@ -319,6 +325,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           finishBusinessAccountRegistration: finishBusinessAccountRegistration,
           setReauthStatus,
           updateUserEmail,
+          setUser,
         }}
       >
         {children}

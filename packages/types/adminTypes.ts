@@ -14,6 +14,7 @@ export type User = {
   uuid: string;
   name: string;
   email: string;
+  icon: string;
   emailVerified: boolean;
   hasFlowAccount: boolean;
   hasBusinessAccount: boolean;
