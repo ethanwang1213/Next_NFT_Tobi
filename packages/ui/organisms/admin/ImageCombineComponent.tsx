@@ -301,7 +301,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
             aspect={aspect}
           >
             <div
-              className={`w-[400px] h-[385px] overflow-hidden flex justify-center items-center relative`}
+              className={`w-[400px] h-[385px] overflow-hidden flex justify-center items-center relative bg-gradient-to-r from-secondary to-secondary-200`}
               ref={imgWrapperRef}
             >
               {loading && (
@@ -315,6 +315,7 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
                   ref={imgCardRef}
                   src={props.imageCardUrl}
                   alt="card image"
+                  className="shadow-[0px_0px_5px_rgba(153,153,153,1)]"
                   style={{
                     maxWidth: "100%",
                     maxHeight: "100%",
