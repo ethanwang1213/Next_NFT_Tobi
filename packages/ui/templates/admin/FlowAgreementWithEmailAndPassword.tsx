@@ -1,3 +1,4 @@
+import { getAuth, verifyPasswordResetCode } from "firebase/auth";
 import useMailAuthForm from "hooks/useMailAuthForm";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -192,6 +193,7 @@ const FlowAgreementWithEmailAndPassword = ({
               pageType === PageType.PasswordUpdate
             }
             validateEmail={validateEmail}
+            disable={PageType.PasswordReset ? true : false}
           />
         </div>
         <div
@@ -308,9 +310,11 @@ const EmailField = ({
   email,
   visible,
   validateEmail,
+  disable,
 }: {
   email: string;
   visible: boolean;
+  disable?: boolean;
   validateEmail: (email: string) => void;
 }) => {
   const t = useTranslations("LogInSignUp");
@@ -328,6 +332,7 @@ const EmailField = ({
         onChange={(e) => {
           validateEmail(e.target.value);
         }}
+        disabled={disable}
       />
     </>
   );

@@ -6,6 +6,7 @@ import { auth } from "fetchers/firebase/client";
 import useUpdateEmail from "hooks/useUpdateEmail";
 import useUpdatePassword from "hooks/useUpdatePassword";
 import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -116,6 +117,7 @@ const PasswordUpdate = () => {
 };
 
 const PasswordUpdated = ({ onClick }: { onClick: () => void }) => {
+  const t = useTranslations("LogInSignUp");
   return (
     <div className="flex flex-col items-center justify-center p-8">
       <Image
@@ -125,14 +127,14 @@ const PasswordUpdated = ({ onClick }: { onClick: () => void }) => {
         height={317}
         className="mt-[200px]"
       />
-      <div className="mt-[40px]">Password has been reset!</div>
+      <div className="mt-[40px]">{t("PasswordResetNotify")}</div>
       <div>
         <Button
           type="button"
           className="w-[179px] h-[48px] rounded-2xl bg-primary font-normal text-[20px] text-primary-content mt-[20px]"
           onClick={onClick}
         >
-          Done
+          {t("Done")}
         </Button>
       </div>
     </div>
