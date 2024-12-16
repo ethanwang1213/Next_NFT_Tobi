@@ -104,6 +104,7 @@
     "Status": "STATUS",
     "Save": "Save",
     "MintNFT": "Mint as an NFT",
+    "Minting": "Minting",
     "Schedule": "SCHEDULE",
     "DropImage": "Drop your image here",
     "OnlyZero": "Only “0” can be set for now",
@@ -226,6 +227,7 @@
     "WishToContinue": "Do you wish to continue?",
     "ShortCut": "Short Cut",
     "MintNow": "Mint Now",
+    "StatusChangeMessage": "After minting, the status will change to Private and cannot be reverted to Draft.",
     "ReusableComponents": "Re-usable components built using Figr Design System"
   },
   "GiftReceivingSettings": {

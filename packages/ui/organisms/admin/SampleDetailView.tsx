@@ -83,13 +83,15 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         modelUrl = await uploadData(binaryData);
       }
 
-      const payload: { fcmToken: string; amount: number; modelUrl: string } = {
+      const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
         fcmToken: fcmToken,
         amount: 1,
-        modelUrl: data.meta_model_url ? data.meta_model_url : modelUrl,
+        ...(digitalItem?.meta_model_url || data?.meta_model_url
+          ? {}
+          : { modelUrl }),
       };
 
-      const result = await postData(`native/items/${id}/mint`, payload);
+      const result = await postData(`native/items/${itemId}/mint`, payload);
 
       if (!result) {
         toast(
@@ -119,11 +121,10 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     if (id > 0 && digitalItems) {
       const matchedItem = digitalItems.find((item) => item.id === id);
       setData(matchedItem);
-      setLoading(false);
     } else {
       setData(null);
-      setLoading(false);
     }
+    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -176,7 +177,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         return;
       }
 
-      if (value === "mint" && id > -1) {
+      if (value === "mint" && data) {
         setMinting(true);
         if (data.meta_model_url) {
           handleNftModelGenerated(data.id, "");

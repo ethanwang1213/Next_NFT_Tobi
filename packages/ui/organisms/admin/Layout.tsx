@@ -37,14 +37,15 @@ const Layout = ({ children }: Props) => {
 };
 
 const MainContents = ({ children }: Props) => {
+  const { user } = useAuth();
+  const router = useRouter();
+
   const spinner = (
     <div className={"h-[100dvh] flex justify-center"}>
       <span className={"loading loading-spinner text-info loading-md"} />
     </div>
   );
 
-  const { user } = useAuth();
-  const router = useRouter();
   if (
     !user ||
     (user.hasBusinessAccount && isApplyPage(router.pathname)) ||
@@ -58,7 +59,7 @@ const MainContents = ({ children }: Props) => {
 const Contents = ({ children }: Props) => {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [load, setLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pagesWithoutSidebar = [
     "/authentication",
@@ -70,13 +71,7 @@ const Contents = ({ children }: Props) => {
   ];
 
   const apiUrl = "native/admin/content";
-  const { loading, error, getData } = useRestfulAPI(null);
-
-  const spinner = (
-    <div className={"h-[100dvh] flex justify-center"}>
-      <span className={"loading loading-spinner text-info loading-md"} />
-    </div>
-  );
+  const { loading: apiLoading, error, getData } = useRestfulAPI(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,20 +79,28 @@ const Contents = ({ children }: Props) => {
         await getData(apiUrl);
       } catch (error) {
         console.log("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    if (user && load) {
+    if (user && isLoading) {
       fetchData();
-      setLoad(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, isLoading, getData]);
+
+  const aggregatedLoading = isLoading || apiLoading;
+
+  const spinner = (
+    <div className={"h-[100dvh] flex justify-center"}>
+      <span className={"loading loading-spinner text-info loading-md"} />
+    </div>
+  );
 
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&
     auth.currentUser &&
-    !loading &&
+    !aggregatedLoading &&
     user?.hasFlowAccount
   ) {
     return (
@@ -121,7 +124,7 @@ const Contents = ({ children }: Props) => {
         </div>
       </NavbarProvider>
     );
-  } else if (loading) {
+  } else if (aggregatedLoading) {
     return spinner;
   }
   return (

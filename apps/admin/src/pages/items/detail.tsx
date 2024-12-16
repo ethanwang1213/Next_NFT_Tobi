@@ -69,6 +69,7 @@ const Detail = () => {
   const [confirmDialogDescriptions, setConfirmDialogDescriptions] = useState(
     [],
   );
+  const [minting, setMinting] = useState(false);
   const [confirmDialogNotes, setConfirmDialogNotes] = useState([]);
   const [confirmDialogDisabled, setConfirmDialogDisabled] = useState(false);
   const [lastError, setLastError] = useState(null);
@@ -95,15 +96,13 @@ const Detail = () => {
       modelUrl = await uploadData(binaryData);
     }
 
-    const payload: { fcmToken: string; amount: number; modelUrl: string } = {
+    const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
       fcmToken: fcmToken,
       amount: 1,
-      modelUrl: digitalItem.meta_model_url
-        ? digitalItem.meta_model_url
-        : modelUrl,
+      ...(digitalItem.meta_model_url ? {} : { modelUrl }),
     };
 
-    const result = await postData(`native/items/${id}/mint`, payload);
+    const result = await postData(`native/items/${itemId}/mint`, payload);
 
     if (!result) {
       toast(
@@ -119,6 +118,7 @@ const Detail = () => {
       trackSampleMint(digitalItem.type);
       await getData(apiUrl);
     }
+    setMinting(false);
   };
 
   const { isSceneOpen, requestNftModelGeneration } =
@@ -467,6 +467,7 @@ const Detail = () => {
   const mintConfirmDialogHandler = useCallback(
     async (value: string) => {
       if (value == "mint") {
+        setMinting(true);
         if (digitalItem.meta_model_url) {
           await handleNftModelGenerated(digitalItem.id, "");
         } else {
@@ -930,29 +931,35 @@ const Detail = () => {
               </div>
               <div className="text-center h-12">
                 <Button
-                  className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800]
-                    flex justify-center items-center gap-2
-                  `}
+                  className={`w-full h-12 rounded-[30px] border-[3px] border-[#E96800] flex justify-center items-center ${
+                    minting ? "gap-6" : "gap-2"
+                  }`}
+                  disabled={minting}
                   onClick={() => {
-                    if (digitalItem.status == DigitalItemStatus.Draft) {
-                      if (mintConfirmDialogRef1.current) {
-                        mintConfirmDialogRef1.current.showModal();
-                      }
-                    } else {
-                      if (mintConfirmDialogRef.current) {
-                        mintConfirmDialogRef.current.showModal();
-                      }
+                    if (!minting) {
+                      const dialogRef =
+                        digitalItem.status === DigitalItemStatus.Draft
+                          ? mintConfirmDialogRef1.current
+                          : mintConfirmDialogRef.current;
+
+                      dialogRef?.showModal();
                     }
                   }}
                 >
-                  <NextImage
-                    src="/admin/images/icon/mint_icon.svg"
-                    width={16}
-                    height={20}
-                    alt="mint icon"
-                  />
+                  {minting ? (
+                    <div className="flex justify-center">
+                      <span className="loading loading-spinner text-info loading-md" />
+                    </div>
+                  ) : (
+                    <NextImage
+                      src="/admin/images/icon/mint_icon.svg"
+                      width={16}
+                      height={20}
+                      alt="mint icon"
+                    />
+                  )}
                   <span className="w-[260px] text-[#E96800] text-xl font-semibold text-center">
-                    {b("MintNFT")}
+                    {minting ? b("Minting") : b("MintNFT")}
                   </span>
                 </Button>
               </div>
