@@ -73,45 +73,46 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
     }
   }, [finalizeModelError]);
 
-  const handleNftModelGenerated = async (
-    itemId: number,
-    nftModelBase64: string,
-  ) => {
-    let modelUrl: string | undefined;
+  const handleNftModelGenerated = useCallback(
+    async (itemId: number, nftModelBase64: string) => {
+      let modelUrl: string | undefined;
 
-    if (nftModelBase64) {
-      const binaryData = decodeBase64ToBinary(nftModelBase64);
-      modelUrl = await uploadData(binaryData);
-    }
+      if (nftModelBase64) {
+        const binaryData = decodeBase64ToBinary(nftModelBase64);
+        modelUrl = await uploadData(binaryData);
+      }
 
-    const payload: Record<string, any> = {
-      fcmToken: fcmToken,
-      amount: 1,
-    };
+      const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
+        fcmToken: fcmToken,
+        amount: 1,
+      };
 
-    if (modelUrl) {
-      payload.modelUrl = modelUrl;
-    }
+      if (modelUrl) {
+        payload.modelUrl = modelUrl;
+      }
 
-    const result = await postData(`native/items/${id}/mint`, payload);
+      const result = await postData(`native/items/${id}/mint`, payload);
 
-    if (!result) {
-      toast(
-        <MintNotification
-          title={s("MintFailed")}
-          text={s("MintFailedLimitExceeded")}
-        />,
-        {
-          className: "mint-notification",
-        },
-      );
-    } else {
-      deleteAllActionHistory();
-      trackSampleMint(data.modelType);
-      await getData(apiUrl);
-      setData(digitalItem);
-    }
-  };
+      if (!result) {
+        toast(
+          <MintNotification
+            title={s("MintFailed")}
+            text={s("MintFailedLimitExceeded")}
+          />,
+          {
+            className: "mint-notification",
+          },
+        );
+      } else {
+        deleteAllActionHistory();
+        trackSampleMint(data.modelType);
+        await getData(apiUrl);
+        setData(digitalItem);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   handleNftModelGeneratedRef.current = handleNftModelGenerated;
 

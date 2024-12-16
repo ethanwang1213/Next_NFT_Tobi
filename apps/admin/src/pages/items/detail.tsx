@@ -95,7 +95,7 @@ const Detail = () => {
       modelUrl = await uploadData(binaryData);
     }
 
-    const payload: Record<string, any> = {
+    const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
       fcmToken: fcmToken,
       amount: 1,
     };
