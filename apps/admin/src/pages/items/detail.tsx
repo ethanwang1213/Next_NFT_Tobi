@@ -63,7 +63,7 @@ const Detail = () => {
   const { id } = router.query;
   const [modified, setModified] = useState(false);
   const { token: fcmToken } = useFcmToken();
-  const [finalizeModelError, finalizeModel] = useFinalizeModel();
+  const [finalizeModelError] = useFinalizeModel();
 
   const [confirmDialogTitle, setConfirmDialogTitle] = useState("");
   const [confirmDialogDescriptions, setConfirmDialogDescriptions] = useState(
