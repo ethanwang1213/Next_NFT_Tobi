@@ -302,6 +302,7 @@
     "ReturnToSampleList": "サンプルリストに戻す",
     "EditItemData": "アイテム詳細を編集",
     "MintAsNFT": "NFTとしてミント",
+    "Minting": "ミント中…",
     "ConfirmDelete": "本当に削除しますか？",
     "DeleteOperationWarning": "削除すると、以前の変更を元に戻したりやり直したりすることができなくなります。本当に実行してよいか確認してください。",
     "ConfirmContinue": "続行しますか？",

@@ -50,6 +50,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
   deleteAllActionHistory,
 }) => {
   const [data, setData] = useState<any>(null);
+  const [minting, setMinting] = useState(false);
   const [loading, setLoading] = useState(true);
   const dialogRef = useRef(null);
   const apiUrl = `native/admin/digital_items/${id}`;
@@ -82,14 +83,11 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         modelUrl = await uploadData(binaryData);
       }
 
-      const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
+      const payload: { fcmToken: string; amount: number; modelUrl: string } = {
         fcmToken: fcmToken,
         amount: 1,
+        modelUrl: data.meta_model_url ? data.meta_model_url : modelUrl,
       };
-
-      if (modelUrl) {
-        payload.modelUrl = modelUrl;
-      }
 
       const result = await postData(`native/items/${id}/mint`, payload);
 
@@ -109,6 +107,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         await getData(apiUrl);
         setData(digitalItem);
       }
+      setMinting(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -177,7 +176,8 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         return;
       }
 
-      if (value === "mint") {
+      if (value === "mint" && id > -1) {
+        setMinting(true);
         if (data.meta_model_url) {
           handleNftModelGenerated(data.id, "");
         } else {
@@ -355,21 +355,30 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             {data && (
               <div className="mx-auto">
                 <Button
-                  className="w-[192px] h-[46px] shrink-0 rounded-[30px] bg-[#E96700] flex justify-center items-center gap-2"
+                  className={`w-[192px] h-[46px] shrink-0 rounded-[30px] flex justify-center items-center  ${
+                    minting ? "bg-[#9A4500] gap-6" : "bg-[#E96700] gap-2"
+                  }`}
+                  disabled={minting}
                   onClick={() => {
-                    if (mintConfirmDialogRef.current) {
+                    if (mintConfirmDialogRef.current && !minting) {
                       mintConfirmDialogRef.current.showModal();
                     }
                   }}
                 >
-                  <Image
-                    src="/admin/images/icon/sample-icon.svg"
-                    width={16}
-                    height={20}
-                    alt="mint icon"
-                  />
+                  {minting ? (
+                    <div className="flex justify-center">
+                      <span className="loading loading-spinner bg-white text-info loading-md" />
+                    </div>
+                  ) : (
+                    <Image
+                      src="/admin/images/icon/sample-icon.svg"
+                      width={16}
+                      height={20}
+                      alt="mint icon"
+                    />
+                  )}
                   <span className="text-base-white text-base font-bold">
-                    {t("MintAsNFT")}
+                    {minting ? t("Minting") : t("MintAsNFT")}
                   </span>
                 </Button>
               </div>

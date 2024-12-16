@@ -95,14 +95,13 @@ const Detail = () => {
       modelUrl = await uploadData(binaryData);
     }
 
-    const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
+    const payload: { fcmToken: string; amount: number; modelUrl: string } = {
       fcmToken: fcmToken,
       amount: 1,
+      modelUrl: digitalItem.meta_model_url
+        ? digitalItem.meta_model_url
+        : modelUrl,
     };
-
-    if (modelUrl) {
-      payload.modelUrl = modelUrl;
-    }
 
     const result = await postData(`native/items/${id}/mint`, payload);
 
