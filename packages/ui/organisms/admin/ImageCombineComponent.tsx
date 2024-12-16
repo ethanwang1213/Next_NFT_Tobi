@@ -40,34 +40,56 @@ const ImageCombineComponent: React.FC<Props> = (props) => {
   const dragStartPos = useRef<{ x: number; y: number } | null>(null);
   const coordsRef = useRef(null);
 
+  const calculateNewCropPosition = (dx: number, dy: number) => {
+    let newDx = dx;
+    let newDy = dy;
+
+    if (crop.x + dx < 0) {
+      newDx = -crop.x;
+    }
+
+    if (crop.x + crop.width + dx >= imgWrapperRef.current?.clientWidth) {
+      newDx = imgWrapperRef.current?.clientWidth - crop.width - crop.x - 1;
+    }
+
+    if (crop.y + dy < 0) {
+      newDy = -crop.y;
+    }
+
+    if (crop.y + crop.height + dy >= imgWrapperRef.current?.clientHeight) {
+      newDy = imgWrapperRef.current?.clientHeight - crop.height - crop.y - 1;
+    }
+
+    return [newDx, newDy] as const;
+  };
+
   const onMouseDown = useCallback((event: React.MouseEvent) => {
     dragStartPos.current = { x: event.clientX, y: event.clientY };
     setIsDragging(true);
     event.stopPropagation();
   }, []);
 
-  const onMouseMove = useCallback(
-    (event: React.MouseEvent) => {
-      if (isDragging && dragStartPos.current) {
-        const dx = event.clientX - dragStartPos.current.x;
-        const dy = event.clientY - dragStartPos.current.y;
+  const onMouseMove = (event: React.MouseEvent) => {
+    if (isDragging && dragStartPos.current) {
+      const dx = event.clientX - dragStartPos.current.x;
+      const dy = event.clientY - dragStartPos.current.y;
+      const [newDx, newDy] = calculateNewCropPosition(dx, dy);
 
-        setPosition((prevPosition) => ({
-          x: prevPosition.x + dx,
-          y: prevPosition.y + dy,
-        }));
+      setPosition((prevPosition) => ({
+        x: prevPosition.x + newDx,
+        y: prevPosition.y + newDy,
+      }));
 
-        setCrop((prevCrop) => ({
+      setCrop((prevCrop) => {
+        return {
           ...prevCrop,
-          x: prevCrop.x + dx,
-          y: prevCrop.y + dy,
-        }));
-
-        dragStartPos.current = { x: event.clientX, y: event.clientY };
-      }
-    },
-    [isDragging],
-  );
+          x: prevCrop.x + newDx,
+          y: prevCrop.y + newDy,
+        };
+      });
+      dragStartPos.current = { x: event.clientX, y: event.clientY };
+    }
+  };
 
   const onMouseUp = useCallback(() => {
     setIsDragging(false);
