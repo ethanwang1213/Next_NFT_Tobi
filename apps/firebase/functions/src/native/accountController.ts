@@ -104,3 +104,50 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
     });
   });
 };
+
+export const reportAccount = async (req: Request, res: Response) => {
+  const {authorization} = req.headers;
+  const {uid} = req.params;
+  const {title, description} = req.body;
+  await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
+    try {
+      const reporterUid = decodedToken.uid;
+      const account = await prisma.accounts.findUnique({
+        where: {
+          uuid: uid,
+          is_deleted: false,
+        },
+      });
+      if (!account) {
+        res.status(404).send({
+          status: "error",
+          data: "not-exits",
+        });
+        return;
+      }
+      const createReport = await prisma.reported_accounts.create({
+        data: {
+          title: title,
+          description: description,
+          reporter_uuid: reporterUid,
+          account_uuid: uid,
+        },
+      });
+      res.status(200).send({
+        status: "success",
+        data: createReport.id,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
