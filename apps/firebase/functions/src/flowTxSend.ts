@@ -69,18 +69,23 @@ export const flowTxSend = functions.region(REGION)
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
         console.log(`Message ${messageId} published.`);
       } else if (txType == "createItem") {
-        const {txId} = await sendCreateItemTx(params.tobiratoryAccountUuid, params.digitalItemId, params.metadata);
-        await flowJobDocRef.update({
-          flowJobId,
-          txType,
-          params,
-          txId,
-          sentAt: new Date(),
-        });
-        await updateDigitalItemRecord(params.digitalItemId, txId);
-        const messageForMonitoring = {flowJobId, txType, params};
-        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
-        console.log(`Message ${messageId} published.`);
+        try {
+          const {txId} = await sendCreateItemTx(params.digitalItemId, params.metadata);
+          await flowJobDocRef.update({
+            flowJobId,
+            txType,
+            params,
+            txId,
+            sentAt: new Date(),
+          });
+          await updateDigitalItemRecord(params.digitalItemId, txId);
+          const messageForMonitoring = {flowJobId, txType, params};
+          const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
+          console.log(`Message ${messageId} published.`);
+        } catch (e) {
+          await updateMintNFTRecord(params.digitalItemNftId, mintStatus.error);
+          throw e;
+        }
       } else if (txType == "mintNFT") {
         const {id} = await createOrUpdateNFTRecord(params.digitalItemId, params.digitalItemNftId, params.tobiratoryAccountUuid, params.metadata, params.notificationBatchId);
         try {
@@ -193,6 +198,7 @@ const updateMintNFTRecord = async (digitalItemNftId: number, status: number) => 
       id: digitalItemNftId,
     },
     data: {
+      mint_status: status,
       nft_owner: {
         update: {
           status: status,
@@ -256,7 +262,7 @@ type Metadata = {
   copyrightHolders: string[],
 };
 
-const sendCreateItemTx = async (tobiratoryAccountUuid: string, digitalItemId: number, metadata: Metadata) => {
+const sendCreateItemTx = async (digitalItemId: number, metadata: Metadata) => {
   const nonFungibleTokenAddress = NON_FUNGIBLE_TOKEN_ADDRESS;
   const tobiratoryDigitalItemsAddress = TOBIRATORY_DIGITAL_ITEMS_ADDRESS;
   const fungibleTokenAddress = FUNGIBLE_TOKEN_ADDRESS;
