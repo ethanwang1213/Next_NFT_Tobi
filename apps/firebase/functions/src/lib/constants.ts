@@ -408,3 +408,5 @@ export const limitModelSize = 50; // this is limit of uploaded model size. 50MB
 export const allCharacter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 export const allTraffic = "ALL_TRAFFIC";
 export const defaultPageSize = 10;
+export const firstSaidanThumb = "https://storage.googleapis.com/tobiratory-dev_media/images/first-saidan-thumbnail.png";
+export const limitSaidanCount = 15;

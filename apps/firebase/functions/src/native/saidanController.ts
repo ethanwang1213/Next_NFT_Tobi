@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {FirebaseError, auth} from "firebase-admin";
 import {DecodedIdToken} from "firebase-admin/auth";
 import {prisma} from "../prisma";
+import {limitSaidanCount} from "../lib/constants";
 
 export const getSaidansById = async (req: Request, res: Response) => {
   const {saidanId} = req.params;
@@ -118,6 +119,18 @@ export const createSaidan = async (req: Request, res: Response) => {
         res.status(401).send({
           status: "error",
           data: "template-not-exist",
+        });
+        return;
+      }
+      const ownSaidans = await prisma.saidans.findMany({
+        where: {
+          account_uuid: uid,
+        },
+      });
+      if (ownSaidans.length>=limitSaidanCount) {
+        res.status(401).send({
+          status: "error",
+          data: "limited",
         });
         return;
       }

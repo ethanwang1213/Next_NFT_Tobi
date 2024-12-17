@@ -14,7 +14,11 @@ router.get("/", async (req: Request, res: Response) => {
     // take: Number(pageSize),
     include: {
       business: true,
-      my_reports: true,
+      my_reports: {
+        orderBy: {
+          created_date_time: "desc",
+        },
+      },
     },
   });
   const returnData = users.map((user)=>{
@@ -23,8 +27,9 @@ router.get("/", async (req: Request, res: Response) => {
         title: report.title,
         description: report.title,
         dateAdded: report.created_date_time,
-      }
-    })
+        isSolved: report.is_solved,
+      };
+    });
     return {
       id: user.id,
       uuid: user.uuid,

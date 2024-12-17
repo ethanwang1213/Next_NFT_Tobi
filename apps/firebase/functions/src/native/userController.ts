@@ -5,6 +5,7 @@ import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
 import {convertBaseString, increaseTransactionAmount, isEmptyObject, isValidUserId, statusOfLimitTransaction, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
+import {firstSaidanThumb} from "../lib/constants";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
   const {email}: {email: string} = req.body;
@@ -75,7 +76,7 @@ export const signUp = async (req: Request, res: Response) => {
             account_uuid: uid,
             title: username,
             template_id: saidanTemplates?.id??1,
-            thumbnail_image: saidanTemplates?.cover_image??"",
+            thumbnail_image: firstSaidanThumb,
           },
         });
         await prisma.accounts.update({
