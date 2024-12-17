@@ -347,7 +347,7 @@ transaction(
     arg(metadata.modelUrl ? String(metadata.modelUrl) : null, t.Optional(t.String)),
     arg(String(metadata.creatorName || ""), t.String),
     arg(metadata.limit || null, t.Optional(t.UInt32)),
-    arg(metadata.license ? String(metadata.license) : null, t.Optional(t.String)),
+    arg(metadata.license ? JSON.stringify(metadata.license) : null, t.Optional(t.String)),
     arg(metadata.copyrightHolders || [], t.Array(t.String)),
   ];
 
@@ -550,9 +550,9 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       console.log("metadata.modelUrl === modelUrl: " + (metadata.modelUrl === modelUrl));
       console.log("metadata.creatorName === creatorName: " + (metadata.creatorName === creatorName));
       console.log("metadata.limit == limit: " + (metadata.limit == limit));
-      console.log("metadata.license === license: " + (metadata.license === license));
+      console.log("JSON.stringify(metadata.license) === license: " + (JSON.stringify(metadata.license) === license));
       console.log("arraysEqual(metadata.copyrightHolders, copyrightHolders): " +
-        arraysEqual(metadata.copyrightHolders, copyrightHolders));
+        objectEqual(metadata.copyrightHolders, copyrightHolders));
 
       if (
         metadata.type === type &&
@@ -562,8 +562,8 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
         metadata.modelUrl === modelUrl &&
         metadata.creatorName === creatorName &&
         metadata.limit == limit &&
-        metadata.license === license &&
-        arraysEqual(metadata.copyrightHolders, copyrightHolders)
+        JSON.stringify(metadata.license) === license &&
+        objectEqual(metadata.copyrightHolders, copyrightHolders)
       ) {
         const signature = signWithKey({
           privateKey,
@@ -583,7 +583,7 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
   };
 };
 
-function arraysEqual(a: any[], b: any[]): boolean {
+function objectEqual(a: any, b: any): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
