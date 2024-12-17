@@ -86,7 +86,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
       const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
         fcmToken: fcmToken,
         amount: 1,
-        ...(digitalItem?.meta_model_url || data?.meta_model_url
+        ...(digitalItem?.metaModelUrl || data?.metaModelUrl
           ? {}
           : { modelUrl }),
       };
@@ -179,7 +179,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
 
       if (value === "mint" && data) {
         setMinting(true);
-        if (data.meta_model_url) {
+        if (data.metaModelUrl) {
           handleNftModelGenerated(data.id, "");
         } else {
           const requestPayload = {
@@ -361,7 +361,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
                   }`}
                   disabled={minting}
                   onClick={() => {
-                    if (mintConfirmDialogRef.current && !minting) {
+                    if (mintConfirmDialogRef.current) {
                       mintConfirmDialogRef.current.showModal();
                     }
                   }}

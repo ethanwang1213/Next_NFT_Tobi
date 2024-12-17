@@ -99,7 +99,7 @@ const Detail = () => {
     const payload: { fcmToken: string; amount: number; modelUrl?: string } = {
       fcmToken: fcmToken,
       amount: 1,
-      ...(digitalItem.meta_model_url ? {} : { modelUrl }),
+      ...(digitalItem.metaModelUrl ? {} : { modelUrl }),
     };
 
     const result = await postData(`native/items/${itemId}/mint`, payload);
@@ -468,7 +468,7 @@ const Detail = () => {
     async (value: string) => {
       if (value == "mint") {
         setMinting(true);
-        if (digitalItem.meta_model_url) {
+        if (digitalItem.metaModelUrl) {
           await handleNftModelGenerated(digitalItem.id, "");
         } else {
           requestNftModelGeneration({
@@ -936,14 +936,12 @@ const Detail = () => {
                   }`}
                   disabled={minting}
                   onClick={() => {
-                    if (!minting) {
-                      const dialogRef =
-                        digitalItem.status === DigitalItemStatus.Draft
-                          ? mintConfirmDialogRef1.current
-                          : mintConfirmDialogRef.current;
+                    const dialogRef =
+                      digitalItem.status === DigitalItemStatus.Draft
+                        ? mintConfirmDialogRef1.current
+                        : mintConfirmDialogRef.current;
 
-                      dialogRef?.showModal();
-                    }
+                    dialogRef?.showModal();
                   }}
                 >
                   {minting ? (

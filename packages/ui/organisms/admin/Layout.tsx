@@ -59,7 +59,7 @@ const MainContents = ({ children }: Props) => {
 const Contents = ({ children }: Props) => {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pagesWithoutSidebar = [
     "/authentication",
