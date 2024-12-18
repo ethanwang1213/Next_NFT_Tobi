@@ -1,8 +1,17 @@
 import { useAuth } from "contexts/AdminAuthProvider";
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { isProviderId, ProviderId } from "types/adminTypes";
 import Reauth from "ui/templates/admin/ReauthSns";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`/messages/${locale}.json`)).default,
+    },
+  };
+}
 
 const ReauthSns = () => {
   const { setReauthStatus } = useAuth();
