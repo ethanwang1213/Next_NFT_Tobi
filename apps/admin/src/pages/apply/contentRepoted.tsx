@@ -38,7 +38,7 @@ const ContentRepoted = () => {
   const uploadImageHandler = useCallback(
     async (
       image: string,
-      name: String,
+      name: string,
       extension: string,
     ): Promise<boolean> => {
       uploadImageRef.current = await uploadFiles(
@@ -81,7 +81,7 @@ const ContentRepoted = () => {
     [uploadImageHandler],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleButtonClick = () => {
     setIsButtonClicked(false);
