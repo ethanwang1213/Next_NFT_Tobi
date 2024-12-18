@@ -125,18 +125,26 @@ const ImageZoomCropComponent: React.FC<Props> = (props) => {
       throw new Error("No 2d context for final canvas");
     }
 
-    finalCanvas.width = crop.width * scale * scaleX;
-    finalCanvas.height = crop.height * scale * scaleY;
+    const cropSize = Math.min(crop.width, crop.height) * scale;
+    finalCanvas.width = cropSize * scaleX;
+    finalCanvas.height = cropSize * scaleY;
 
-    const adjustedCropX = (crop.x - offsetX) * scaleX;
-    const adjustedCropY = (crop.y - offsetY) * scaleY;
+    finalCtx.fillStyle = "white";
+    finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+    const adjustedCropX =
+      (crop.x - offsetX) * scaleX +
+      (rotatedNaturalWidth - image.naturalWidth) / 2;
+    const adjustedCropY =
+      (crop.y - offsetY) * scaleY +
+      (rotatedNaturalHeight - image.naturalHeight) / 2;
 
     finalCtx.drawImage(
       tempCanvas,
       adjustedCropX,
       adjustedCropY,
-      crop.width * scaleX,
-      crop.height * scaleY,
+      cropSize * scaleX,
+      cropSize * scaleY,
       0,
       0,
       finalCanvas.width,

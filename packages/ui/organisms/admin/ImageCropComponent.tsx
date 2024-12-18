@@ -196,6 +196,9 @@ const MaterialImageCropComponent: React.FC<Props> = (props) => {
     offscreen.width = swScaled;
     offscreen.height = shScaled;
 
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, swScaled, shScaled);
+
     ctx.drawImage(
       tempCanvas,
       sx * scaleX,
