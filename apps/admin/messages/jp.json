@@ -426,6 +426,7 @@
     "CopyrightStatement": "コピーライト(版権表記)",
     "SubmitSingleDocument": "ここでは１つのみ提出してください。あとから追加・変更が可能です。",
     "CopyrightLicenseInfo": "所有している著作権やライセンス情報の提供",
+    "LicenseForWork": "著作物に関するライセンス",
     "SubmitOfficialDocs": "著作権やライセンスを証明する公式文書を提出できます。",
     "FileSupportInfo": "20MB以内のJPEG、PNG、PDFファイルのみ対応しています。",
     "FileUpload": "ファイルアップロード",
@@ -465,7 +466,7 @@
     "Help": "ヘルプ",
     "VisualSetting": "ビジュアル設定"
   },
-  "ContentReiview": {
+  "ContentReview": {
     "UnderReview": "審査中",
     "ReviewMessage": "このページは審査が完了次第、アクセス可能になります。",
     "AdditionalDocuments": "一部の場合、追加書類の提出を求められることがあります。",

@@ -325,7 +325,7 @@ export default function Index() {
         icon: data?.icon,
         emailVerified: true,
         hasFlowAccount: true,
-        hasBusinessAccount: true,
+        hasBusinessAccount: "exist",
       };
 
       setUser(updatedUser);

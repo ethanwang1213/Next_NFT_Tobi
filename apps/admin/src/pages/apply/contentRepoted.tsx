@@ -3,24 +3,23 @@ import { ImageType, uploadFiles } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import ContentReportedNotification from "./ContentReportedNotification";
-import DocumentPreview from "./DocumentPreview";
-import DocumentUpload from "./DocumentUpload";
-import Spinner from "./Spinner";
+import ContentReportedNotification from "ui/organisms/admin/ContentReportedNotification";
+import DocumentPreview from "ui/organisms/admin/DocumentPreview";
+import DocumentUpload from "ui/organisms/admin/DocumentUpload";
+import Spinner from "ui/organisms/admin/Spinner";
 
-const ContentSuspendedComponent = () => {
+const ContentRepoted = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [documentData, setDocumentData] = useState([]);
   const uploadImageRef = useRef<string>("");
-  const postApiUrl = "native/admin/content/documents";
-  const getApiUrl = "native/admin/content/documents";
+  const apiUrl = "native/admin/content/documents";
   const { data, loading, getData, postData } = useRestfulAPI(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const apiHandle = async () => {
-        const result = await postData(postApiUrl, { documents: documentData });
+        const result = await postData(apiUrl, { documents: documentData });
         if (result) {
           setDocumentData([]);
         }
@@ -29,7 +28,7 @@ const ContentSuspendedComponent = () => {
       if (documentData.length > 0) {
         await apiHandle();
       } else if (documentData.length === 0) {
-        await getData(getApiUrl);
+        await getData(apiUrl);
       }
     };
     fetchData();
@@ -108,4 +107,4 @@ const ContentSuspendedComponent = () => {
   );
 };
 
-export default ContentSuspendedComponent;
+export default ContentRepoted;

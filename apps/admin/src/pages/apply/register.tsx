@@ -93,7 +93,7 @@ const Register = () => {
     }
 
     finishBusinessAccountRegistration();
-    router.replace("/apply/finish");
+    router.replace("/apply/contentApproval");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response, router]);
 

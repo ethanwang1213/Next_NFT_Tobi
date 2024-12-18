@@ -134,7 +134,7 @@ export const checkBusinessAccount = async () => {
   );
   if (res.ok) {
     const resData = await res.json();
-    return resData.data.exist;
+    return resData.data;
   } else {
     const resData = await res.text();
     console.log(resData);

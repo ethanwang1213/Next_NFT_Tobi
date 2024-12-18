@@ -13,8 +13,18 @@ const Index = () => {
     }
 
     if (user.hasFlowAccount) {
-      if (user.hasBusinessAccount) {
+      if (user.hasBusinessAccount === "exist") {
         router.push("/items");
+      } else if (
+        user.hasBusinessAccount === "reported" ||
+        user.hasBusinessAccount === "freezed"
+      ) {
+        router.push("/apply/contentRepoted");
+      } else if (
+        user.hasBusinessAccount === "not-approved" ||
+        user.hasBusinessAccount === "rejected"
+      ) {
+        router.push("/apply/contentApproval");
       } else {
         router.push("/apply");
       }

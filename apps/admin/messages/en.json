@@ -425,6 +425,7 @@
     "CopyrightsLicenses": "Copyrights & Licenses",
     "CopyrightStatement": "Copyright (Rights Statement)",
     "SubmitSingleDocument": "Please submit only one document here. Additional documents can be submitted or modified later.",
+    "LicenseForWork": "License for copyrighted works",
     "CopyrightLicenseInfo": "The copyright or license information you own",
     "SubmitOfficialDocs": "You may submit official documents proving copyright or license ownership.",
     "FileSupportInfo": "Only JPEG, PNG and PDF files up to 20MB in size are supported.",
@@ -465,7 +466,7 @@
     "Help": "Help",
     "VisualSetting": "Visual Setting"
   },
-  "ContentReiview": {
+  "ContentReview": {
     "UnderReview": "Under review",
     "ReviewMessage": "This page will become accessible after the review is completed.",
     "AdditionalDocuments": "In some cases, you may be required to submit additional documents.",

@@ -1,4 +1,3 @@
-import { getAuth, verifyPasswordResetCode } from "firebase/auth";
 import useMailAuthForm from "hooks/useMailAuthForm";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -61,8 +60,12 @@ const FlowAgreementWithEmailAndPassword = ({
     setPasswordConfirmationStatus,
   ] = useMailAuthForm(email);
   const t = useTranslations("LogInSignUp");
+  const pass = useTranslations("AccountResetPassword");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const emailFromUrl = params.get("email");
+    emailStatus.email = emailFromUrl;
     if (email) {
       validateEmail(email);
     }
@@ -199,7 +202,10 @@ const FlowAgreementWithEmailAndPassword = ({
         <div
           className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
         >
-          {t("Password")}
+          {pageType === PageType.PasswordReset ||
+          pageType === PageType.PasswordUpdate
+            ? pass("NewPassword")
+            : t("Password")}
         </div>
         <div className="relative mt-[10px]">
           <input

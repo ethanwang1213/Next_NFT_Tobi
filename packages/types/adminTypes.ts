@@ -17,7 +17,7 @@ export type User = {
   icon: string;
   emailVerified: boolean;
   hasFlowAccount: boolean;
-  hasBusinessAccount: boolean;
+  hasBusinessAccount: string;
 };
 
 export enum FILTER_TYPE {

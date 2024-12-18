@@ -150,7 +150,7 @@ export default function Index() {
     }
     placeSampleHandler(newSample);
     loadSamples(sampleAPIUrl);
-    digitalItemData(digitalItemAPIUrl);
+    await digitalItemData(digitalItemAPIUrl);
 
     if (sampleCreateDialogRef.current) {
       sampleCreateDialogRef.current.close();

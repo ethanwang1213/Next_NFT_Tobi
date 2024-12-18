@@ -148,10 +148,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           ];
           if (inaccessiblePaths.includes(Router.pathname)) {
             Router.push("/");
-          } else if (hasBusinessAccount && isApplyPage(Router.pathname)) {
+          } else if (
+            hasBusinessAccount === "exist" &&
+            isApplyPage(Router.pathname)
+          ) {
             Router.push("/");
           } else if (
-            !hasBusinessAccount &&
+            hasBusinessAccount !== "exist" &&
             !isPageForNonBusinessAccount(Router.pathname)
           ) {
             Router.push("/apply");
@@ -188,7 +191,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "",
             firebaseUser.emailVerified,
             false,
-            false,
+            "not-exist",
           );
           return;
         } else if (Router.pathname === "/auth/sns_auth") {
@@ -211,7 +214,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           "",
           firebaseUser.emailVerified,
           false,
-          false,
+          "not-exist",
         );
         Router.push("/auth/sns_auth");
       } else {
@@ -239,7 +242,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     icon: string,
     emailVerified: boolean,
     hasFlowAccount: boolean,
-    hasBusinessAccount: boolean,
+    hasBusinessAccount: string,
   ) => {
     try {
       const appUser: User = {
@@ -307,11 +310,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    if (user.hasBusinessAccount) {
+    if (user.hasBusinessAccount === "exist") {
       return;
     }
 
-    setUser((prev) => ({ ...prev, hasBusinessAccount: true }));
+    setUser((prev) => ({ ...prev, hasBusinessAccount: "exist" }));
   };
 
   if (user || unrestrictedPaths.includes(router.pathname)) {
@@ -343,7 +346,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 export const isApplyPage = (path: string) => {
   return (
     path === "/apply" ||
-    (path.startsWith("/apply/") && path !== "/apply/finish")
+    (path.startsWith("/apply/") && path !== "/apply/contentApproval")
   );
 };
 
@@ -353,7 +356,9 @@ export const isPageForNonBusinessAccount = (path: string) => {
     path === "/" ||
     path.startsWith("/auth/") ||
     path === "/account" ||
-    path.startsWith("/account/")
+    path.startsWith("/account/") ||
+    path === "/apply/contentApproval" ||
+    path === "/apply/contentRepoted"
   );
 };
 
