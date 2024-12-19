@@ -52,6 +52,7 @@ import {
   getDefaultItems,
   getMySaidans,
   getMySaidansById,
+  getOthersSaidanDecorationData,
   getSaidanDecorationData,
   getSaidanTemplates,
   getSaidansById,
@@ -112,6 +113,7 @@ app.put("/contents/:id", reportContent);
 app.get("/nfts/:id", getNftInfo);
 
 app.get("/saidans/:saidanId", getSaidansById);
+app.get("/saidans/:saidanId/decoration", getOthersSaidanDecorationData);
 app.get("/posts", dummyResponse);
 app.get("/posts/:id", dummyResponse);
 
