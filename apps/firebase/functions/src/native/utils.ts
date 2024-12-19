@@ -148,3 +148,7 @@ export const isValidUserId = (userId: string):boolean => {
 
   return userIdRegex.test(normalizedId);
 };
+
+export interface ContentData {
+  cmsApprove?: boolean | null;
+}

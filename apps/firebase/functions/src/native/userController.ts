@@ -3,9 +3,9 @@ import {FirebaseError, auth, firestore} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
-import {convertBaseString, increaseTransactionAmount, isEmptyObject, isValidUserId, statusOfLimitTransaction, statusOfShowcase} from "./utils";
+import {ContentData, convertBaseString, increaseTransactionAmount, isEmptyObject, isValidUserId, statusOfLimitTransaction, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
-import {firstSaidanThumb} from "../lib/constants";
+import {businessAccount, firstSaidanThumb} from "../lib/constants";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
   const {email}: {email: string} = req.body;
@@ -565,6 +565,9 @@ export const businessSubmission = async (req: Request, res: Response) => {
             },
           },
         });
+
+        const firestoreData: ContentData = {cmsApprove: null};
+        firestore().collection(businessAccount).doc(uid).set(firestoreData);
         const copyrights = copyrightHolder.map((copyright: string)=>{
           return {
             name: copyright,
@@ -631,24 +634,58 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
         uuid: uid,
         is_deleted: false,
       },
+      include: {
+        content: {
+          include: {
+            reported_contents: true,
+          },
+        },
+      },
     });
-    if (exist) {
+    if (exist?.content?.is_approved == null) {
       res.status(200).send({
-        status: "success",
-        data: {
-          exist: true,
-        },
-      });
-      return;
-    } else {
-      res.status(200).send({
-        status: "success",
-        data: {
-          exist: false,
-        },
+        status: "error",
+        data: "not-approved",
       });
       return;
     }
+
+    if (exist?.content?.is_approved == false) {
+      res.status(200).send({
+        status: "error",
+        data: "rejected",
+      });
+      return;
+    }
+
+    if (exist.content?.reported_contents.filter((report)=>report.is_solved==null).length>0) {
+      res.status(200).send({
+        status: "error",
+        data: "reported",
+      });
+      return;
+    }
+
+    if (exist.content?.reported_contents.filter((report)=>report.is_solved==false).length>0) {
+      res.status(200).send({
+        status: "error",
+        data: "freezed",
+      });
+      return;
+    }
+
+    if (!exist) {
+      res.status(200).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+
+    res.status(200).send({
+      status: "success",
+      data: "exist",
+    });
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
       status: "error",
