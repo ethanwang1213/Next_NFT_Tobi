@@ -180,7 +180,7 @@ export const getContentById = async (req: Request, res: Response) => {
             z: relationNFT.rotation[2] ?? 0,
           },
         };
-      }).filter((nft)=>(nft.status!=digitalItemStatus.draft));
+      });
       const favorite = await prisma.contents_favorite.findFirst({
         where: {
           account_uuid: uid,
