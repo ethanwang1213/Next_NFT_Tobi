@@ -1,6 +1,7 @@
 import { useAuth } from "contexts/AdminAuthProvider";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -20,56 +21,54 @@ export interface SidebarItem {
 export const useUpdatedSidebarItems = () => {
   const { user } = useAuth();
   const t = useTranslations("Menu");
+  const [sidebarItems, setSidebarItems] = useState<SidebarItem[]>([]);
 
-  const sidebarItems: SidebarItem[] = [
-    {
-      name: "Tobiratory Creator Program",
-      icon: "/admin/images/icon/contents.svg",
-      href: "/apply",
-      visible: false,
-    },
-    {
-      name: t("Workspace"),
-      icon: "/admin/images/icon/workspace.svg",
-      href: "/workspace",
-      visible: false,
-    },
-    {
-      name: t("Items"),
-      icon: "/admin/images/icon/tag.svg",
-      href: "/items",
-      visible: false,
-    },
-    {
-      name: t("Content"),
-      icon: "/admin/images/icon/contents.svg",
-      href: "/contents",
-      visible: false,
-    },
-    {
-      name: t("Gift"),
-      icon: "/admin/images/icon/gift.svg",
-      href: "/gift",
-      visible: false,
-    },
-    {
-      name: t("Account"),
-      icon: "/admin/images/icon/account.svg",
-      href: "/account",
-      visible: true,
-    },
-  ];
-
-  return sidebarItems.map((item) => {
+  useEffect(() => {
     const userBusiness = user.hasBusinessAccount === "exist";
 
-    return {
-      ...item,
-      visible: !userBusiness
-        ? item.name === "Tobiratory Creator Program" || item.visible
-        : item.name === "Tobiratory Creator Program"
-          ? false
-          : item.visible || userBusiness,
-    };
-  });
+    const updatedSidebarItems: SidebarItem[] = [
+      {
+        name: "Tobiratory Creator Program",
+        icon: "/admin/images/icon/contents.svg",
+        href: "/apply",
+        visible: !userBusiness,
+      },
+      {
+        name: t("Workspace"),
+        icon: "/admin/images/icon/workspace.svg",
+        href: "/workspace",
+        visible: userBusiness,
+      },
+      {
+        name: t("Items"),
+        icon: "/admin/images/icon/tag.svg",
+        href: "/items",
+        visible: userBusiness,
+      },
+      {
+        name: t("Content"),
+        icon: "/admin/images/icon/contents.svg",
+        href: "/contents",
+        visible: userBusiness,
+      },
+      {
+        name: t("Gift"),
+        icon: "/admin/images/icon/gift.svg",
+        href: "/gift",
+        visible: userBusiness,
+      },
+      {
+        name: t("Account"),
+        icon: "/admin/images/icon/account.svg",
+        href: "/account",
+        visible: true,
+      },
+    ];
+
+    setSidebarItems(updatedSidebarItems);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, t]);
+
+  return sidebarItems;
 };

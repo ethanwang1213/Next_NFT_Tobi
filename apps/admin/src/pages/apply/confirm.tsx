@@ -134,7 +134,7 @@ const ConfirmInformation = ({
           {userInfo.birthdayDate}日
         </span>
       </Row1>
-      <Row1 label={t("Email")} wide={false}>
+      <Row1 label={t("MailAddress")} wide={false}>
         <span className="">{userInfo.email}</span>
       </Row1>
       <Row1 label={t("PhoneNumber")} wide={false}>
