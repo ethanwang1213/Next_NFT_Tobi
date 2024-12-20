@@ -1,5 +1,8 @@
 import {Request, Response, Router} from "express";
 import {prisma} from "../../prisma";
+import {businessAccount} from "../../lib/constants";
+import {ContentData} from "../../native/utils";
+import {firestore} from "firebase-admin";
 
 const router: Router = Router();
 
@@ -231,7 +234,7 @@ router.put("/participation", async (req: Request, res: Response) => {
       });
       await Promise.all(
           allRequests.map(async (content) => {
-            await prisma.contents.update({
+            const updatedApprove = await prisma.contents.update({
               where: {
                 id: content.id,
               },
@@ -239,6 +242,9 @@ router.put("/participation", async (req: Request, res: Response) => {
                 is_approved: true,
               },
             });
+
+            const firestoreData: ContentData = {cmsApprove: true};
+            firestore().collection(businessAccount).doc(updatedApprove.businesses_uuid).update(firestoreData);
           })
       );
     } else {
@@ -251,7 +257,7 @@ router.put("/participation", async (req: Request, res: Response) => {
       });
       await Promise.all(
           allRequests.map(async (content) => {
-            await prisma.contents.update({
+            const updatedApprove = await prisma.contents.update({
               where: {
                 id: content.id,
               },
@@ -259,6 +265,9 @@ router.put("/participation", async (req: Request, res: Response) => {
                 is_approved: null,
               },
             });
+
+            const firestoreData: ContentData = {cmsApprove: false};
+            firestore().collection(businessAccount).doc(updatedApprove.businesses_uuid).update(firestoreData);
           })
       );
     }

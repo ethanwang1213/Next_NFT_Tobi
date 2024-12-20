@@ -75,6 +75,114 @@ export const getSaidansById = async (req: Request, res: Response) => {
   });
 };
 
+export const getOthersSaidanDecorationData = async (req: Request, res: Response) => {
+  const {saidanId} = req.params;
+  const {authorization} = req.headers;
+  await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    try {
+      const saidanData = await prisma.saidans.findUnique({
+        where: {
+          id: parseInt(saidanId),
+          is_deleted: false,
+        },
+      });
+      if (!saidanData) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      const saidanTemplate = await prisma.saidans_template.findUnique({
+        where: {
+          id: saidanData.template_id,
+        },
+      });
+      if (!saidanTemplate) {
+        res.status(401).send({
+          status: "error",
+          data: "missing-template",
+        });
+        return;
+      }
+      const saidanCamera = await prisma.saidan_camera.findUnique({
+        where: {
+          saidan_id: saidanData.id,
+        },
+      });
+      const saidanItems = await prisma.nft_owners.findMany({
+        where: {
+          saidan_id: saidanData.id,
+        },
+        include: {
+          nft: {
+            include: {
+              nft_camera: true,
+              digital_item: true,
+            },
+          },
+        },
+      });
+      const saidanItemList = saidanItems.map((item)=>{
+        return {
+          itemId: item.id,
+          name: item.nft.digital_item.name??"",
+          modelType: item.nft.digital_item.type,
+          modelUrl: item.nft.digital_item.meta_model_url,
+          thumbUrl: item.nft.digital_item.is_default_thumb?item.nft.digital_item.default_thumb_url:item.nft.digital_item.custom_thumb_url,
+          stageType: item.nft.nft_camera?.stage_type,
+          shelfSectionIndex: item.nft.nft_camera?.shelf_section_index,
+          position: {
+            x: item.nft.nft_camera?.position[0],
+            y: item.nft.nft_camera?.position[1],
+            z: item.nft.nft_camera?.position[2],
+          },
+          rotation: {
+            x: item.nft.nft_camera?.rotation[0],
+            y: item.nft.nft_camera?.rotation[1],
+            z: item.nft.nft_camera?.rotation[2],
+          },
+          itemMeterHeight: item.nft.nft_camera?.meter_height,
+          scale: item.nft.nft_camera?.scale,
+        };
+      });
+      const returnData = {
+        saidanId: saidanData.id,
+        saidanType: saidanTemplate.type,
+        saidanUrl: saidanTemplate.model_url,
+        saidanItemList: saidanItemList,
+        saidanCameraData: {
+          position: {
+            x: saidanCamera? saidanCamera.position[0]:0,
+            y: saidanCamera? saidanCamera.position[1]:0,
+            z: saidanCamera? saidanCamera.position[2]:0,
+          },
+          rotation: {
+            x: saidanCamera? saidanCamera.rotation[0]:0,
+            y: saidanCamera? saidanCamera.rotation[1]:0,
+            z: saidanCamera? saidanCamera.rotation[2]:0,
+          },
+        },
+      };
+      res.status(200).send({
+        status: "success",
+        data: returnData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
+  }).catch((error: FirebaseError) => {
+    res.status(401).send({
+      status: "error",
+      data: error,
+    });
+    return;
+  });
+};
+
 export const getSaidanTemplates = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{

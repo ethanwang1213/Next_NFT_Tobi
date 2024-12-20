@@ -94,6 +94,7 @@ export const searchAll = async (req: Request, res: Response) => {
             mode: "insensitive",
           },
           is_deleted: false,
+          is_public: true,
         },
         take: 2,
         include: {
@@ -443,6 +444,7 @@ export const searchSaidans = async (req: Request, res: Response) => {
             mode: "insensitive",
           },
           is_deleted: false,
+          is_public: true,
         },
         include: {
           saidans_template: true,
@@ -460,6 +462,7 @@ export const searchSaidans = async (req: Request, res: Response) => {
             mode: "insensitive",
           },
           is_deleted: false,
+          is_public: true,
         },
         include: {
           saidans_template: true,
