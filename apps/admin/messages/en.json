@@ -104,6 +104,7 @@
     "Status": "STATUS",
     "Save": "Save",
     "MintNFT": "Mint as an NFT",
+    "Minting": "Minting",
     "Schedule": "SCHEDULE",
     "DropImage": "Drop your image here",
     "OnlyZero": "Only “0” can be set for now",
@@ -226,6 +227,7 @@
     "WishToContinue": "Do you wish to continue?",
     "ShortCut": "Short Cut",
     "MintNow": "Mint Now",
+    "StatusChangeMessage": "After minting, the status will change to Private and cannot be reverted to Draft.",
     "ReusableComponents": "Re-usable components built using Figr Design System"
   },
   "GiftReceivingSettings": {
@@ -302,6 +304,7 @@
     "ReturnToSampleList": "Return to the sample list",
     "EditItemData": "Edit Item Data",
     "MintAsNFT": "Mint as an NFT",
+    "Minting": "Minting",
     "ConfirmDelete": "Are you sure you want to delete?",
     "DeleteOperationWarning": "Performing the Delete operation will disable the ability to undo or redo any previous changes. Please confirm that you want to proceed.",
     "ConfirmContinue": "Do you wish to continue?",
@@ -422,6 +425,7 @@
     "CopyrightsLicenses": "Copyrights & Licenses",
     "CopyrightStatement": "Copyright (Rights Statement)",
     "SubmitSingleDocument": "Please submit only one document here. Additional documents can be submitted or modified later.",
+    "LicenseForWork": "License for copyrighted works",
     "CopyrightLicenseInfo": "The copyright or license information you own",
     "SubmitOfficialDocs": "You may submit official documents proving copyright or license ownership.",
     "FileSupportInfo": "Only JPEG, PNG and PDF files up to 20MB in size are supported.",
@@ -462,7 +466,7 @@
     "Help": "Help",
     "VisualSetting": "Visual Setting"
   },
-  "ContentReiview": {
+  "ContentReview": {
     "UnderReview": "Under review",
     "ReviewMessage": "This page will become accessible after the review is completed.",
     "AdditionalDocuments": "In some cases, you may be required to submit additional documents.",

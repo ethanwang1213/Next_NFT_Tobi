@@ -150,7 +150,7 @@ const ConfirmInformation = ({
       <Row1 label={t("CopyrightStatement")} wide={false}>
         <span className="">©{copyrightInfo.copyrightHolder}</span>
       </Row1>
-      <Row3 label="著作物に関するライセンス">
+      <Row3 label={t("LicenseForWork")}>
         <div>{copyrightFiles()}</div>
       </Row3>
       <Row4 label={t("CopyrightLicenseInfo")}>

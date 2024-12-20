@@ -17,7 +17,7 @@ export type User = {
   icon: string;
   emailVerified: boolean;
   hasFlowAccount: boolean;
-  hasBusinessAccount: boolean;
+  hasBusinessAccount: HasBusinessAccount;
 };
 
 export enum FILTER_TYPE {
@@ -144,6 +144,14 @@ export type WasdParams = {
   sKey: boolean;
   dKey: boolean;
 };
+
+export type HasBusinessAccount =
+  | "exist"
+  | "not-exist"
+  | "reported"
+  | "freezed"
+  | "not-approved"
+  | "rejected";
 
 export const EMAIL_REGEX = /^[\w\-._+]+@[\w\-._]+\.[A-Za-z]+/;
 export const ProviderId = {

@@ -17,7 +17,7 @@ export interface SidebarItem {
   visible: boolean;
 }
 
-export const useUpdatedSidebarItems = (content: string) => {
+export const useUpdatedSidebarItems = () => {
   const { user } = useAuth();
   const t = useTranslations("Menu");
 
@@ -60,13 +60,16 @@ export const useUpdatedSidebarItems = (content: string) => {
     },
   ];
 
-  return sidebarItems.map((item) => ({
-    ...item,
-    visible:
-      content === "not-approved" || content === "approve-rejected"
-        ? item.visible
+  return sidebarItems.map((item) => {
+    const userBusiness = user.hasBusinessAccount === "exist";
+
+    return {
+      ...item,
+      visible: !userBusiness
+        ? item.name === "Tobiratory Creator Program" || item.visible
         : item.name === "Tobiratory Creator Program"
-          ? !user.hasBusinessAccount
-          : item.visible || user.hasBusinessAccount,
-  }));
+          ? false
+          : item.visible || userBusiness,
+    };
+  });
 };

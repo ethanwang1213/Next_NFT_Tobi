@@ -7,14 +7,11 @@ import {
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { CustomUnityProvider } from "contexts/CustomUnityContext";
 import { auth } from "fetchers/firebase/client";
-import useRestfulAPI from "hooks/useRestfulAPI";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
-import ContentReviewRequest from "./ContentReviewRquest";
-import ContentSuspendedComponent from "./ContentSuspendedComponent";
 import SpSidebar from "./SpSidebar";
 
 type Props = {
@@ -37,18 +34,20 @@ const Layout = ({ children }: Props) => {
 };
 
 const MainContents = ({ children }: Props) => {
+  const { user } = useAuth();
+  const router = useRouter();
+
   const spinner = (
     <div className={"h-[100dvh] flex justify-center"}>
       <span className={"loading loading-spinner text-info loading-md"} />
     </div>
   );
 
-  const { user } = useAuth();
-  const router = useRouter();
   if (
     !user ||
-    (user.hasBusinessAccount && isApplyPage(router.pathname)) ||
-    (!user.hasBusinessAccount && !isPageForNonBusinessAccount(router.pathname))
+    (user.hasBusinessAccount === "exist" && isApplyPage(router.pathname)) ||
+    (user.hasBusinessAccount !== "exist" &&
+      !isPageForNonBusinessAccount(router.pathname))
   ) {
     return spinner;
   }
@@ -58,7 +57,6 @@ const MainContents = ({ children }: Props) => {
 const Contents = ({ children }: Props) => {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [load, setLoad] = useState(true);
   const router = useRouter();
   const pagesWithoutSidebar = [
     "/authentication",
@@ -69,35 +67,9 @@ const Contents = ({ children }: Props) => {
     "/auth/confirmation_email_for_auth_page",
   ];
 
-  const apiUrl = "native/admin/content";
-  const { loading, error, getData } = useRestfulAPI(null);
-
-  const spinner = (
-    <div className={"h-[100dvh] flex justify-center"}>
-      <span className={"loading loading-spinner text-info loading-md"} />
-    </div>
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await getData(apiUrl);
-      } catch (error) {
-        console.log("Error fetching data:", error);
-      }
-    };
-
-    if (user && load) {
-      fetchData();
-      setLoad(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&
     auth.currentUser &&
-    !loading &&
     user?.hasFlowAccount
   ) {
     return (
@@ -107,22 +79,13 @@ const Contents = ({ children }: Props) => {
           <SpSidebar
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
-            content={error}
           />
-          <Sidebar content={error}>
-            {error === "reported" ? (
-              <ContentSuspendedComponent />
-            ) : error === "not-approved" || error === "approve-rejected" ? (
-              <ContentReviewRequest />
-            ) : (
-              <MainContents>{children}</MainContents>
-            )}
+          <Sidebar>
+            <MainContents>{children}</MainContents>
           </Sidebar>
         </div>
       </NavbarProvider>
     );
-  } else if (loading) {
-    return spinner;
   }
   return (
     <div

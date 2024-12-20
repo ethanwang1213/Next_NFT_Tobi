@@ -195,10 +195,10 @@ const Authentication = () => {
       return (
         <AuthTemplate
           loading={isEmailLoading}
-          googleLabel={t('SignUpWithGoogle')}
-          appleLabel={t('SignUpWithApple')}
-          mailLabel={t('SignUp')}
-          prompt={t('AlreadyHaveAccount')}
+          googleLabel={t("SignUpWithGoogle")}
+          appleLabel={t("SignUpWithApple")}
+          mailLabel={t("SignUp")}
+          prompt={t("AlreadyHaveAccount")}
           setAuthState={() => setAuthState(AuthStates.SignIn)}
           withMail={startMailSignUp}
           withGoogle={withGoogle}
@@ -209,10 +209,10 @@ const Authentication = () => {
       return (
         <AuthTemplate
           loading={isEmailLoading}
-          googleLabel={t('LogInWithGoogle')}
-          appleLabel={t('LogInWithApple')}
-          mailLabel={t('LogIn')}
-          prompt={t('NoAccountSignUp')}
+          googleLabel={t("LogInWithGoogle")}
+          appleLabel={t("LogInWithApple")}
+          mailLabel={t("LogIn")}
+          prompt={t("NoAccountSignUp")}
           setAuthState={() => setAuthState(AuthStates.SignUp)}
           withMail={startMailSignIn}
           withGoogle={withGoogle}
@@ -223,7 +223,7 @@ const Authentication = () => {
       return (
         <FlowAgreementWithEmailAndPassword
           title={""}
-          buttonText={t('Register')}
+          buttonText={t("Register")}
           email={email}
           isSubmitting={isRegisteringWithMailAndPassword}
           pageType={PageType.FlowAccountCreation}

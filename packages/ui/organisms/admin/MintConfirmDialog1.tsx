@@ -10,6 +10,7 @@ const MintConfirmDialog2 = ({
   changeHandler: (value: string) => void;
 }) => {
   const t = useTranslations("Showcase");
+  const l = useTranslations("GiftReceivingSettings");
   return (
     <dialog ref={dialogRef} className="modal">
       <div
@@ -19,8 +20,7 @@ const MintConfirmDialog2 = ({
           {t("ConfirmMint")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
-          After minting, the status will change to Private and cannot be
-          reverted to Draft.
+          {t("StatusChangeMessage")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
           {t("WishToContinue")}
@@ -35,7 +35,7 @@ const MintConfirmDialog2 = ({
               dialogRef.current.close();
             }}
           >
-            Cancel
+            {l("Cancel")}
           </Button>
           <Button
             type="button"
@@ -46,7 +46,7 @@ const MintConfirmDialog2 = ({
               dialogRef.current.close();
             }}
           >
-            Mint Now
+            {t("MintNow")}
           </Button>
         </div>
       </div>

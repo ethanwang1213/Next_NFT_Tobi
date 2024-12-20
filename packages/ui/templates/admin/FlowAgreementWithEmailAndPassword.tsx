@@ -1,8 +1,7 @@
-import { getAuth, verifyPasswordResetCode } from "firebase/auth";
 import useMailAuthForm from "hooks/useMailAuthForm";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
@@ -61,13 +60,7 @@ const FlowAgreementWithEmailAndPassword = ({
     setPasswordConfirmationStatus,
   ] = useMailAuthForm(email);
   const t = useTranslations("LogInSignUp");
-
-  useEffect(() => {
-    if (email) {
-      validateEmail(email);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const pass = useTranslations("AccountResetPassword");
 
   const getErrors = () => {
     return [
@@ -199,7 +192,10 @@ const FlowAgreementWithEmailAndPassword = ({
         <div
           className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
         >
-          {t("Password")}
+          {pageType === PageType.PasswordReset ||
+          pageType === PageType.PasswordUpdate
+            ? pass("NewPassword")
+            : t("Password")}
         </div>
         <div className="relative mt-[10px]">
           <input

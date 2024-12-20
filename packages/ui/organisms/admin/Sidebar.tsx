@@ -12,10 +12,9 @@ import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/Sideb
 
 type Props = {
   children: ReactNode;
-  content?: string;
 };
 
-const Sidebar = ({ children, content }: Props) => {
+const Sidebar = ({ children }: Props) => {
   const menuMinWidth = 60;
   const menuMaxWidth = 230;
   const tabletMenuMaxWidth = 165;
@@ -95,7 +94,7 @@ const Sidebar = ({ children, content }: Props) => {
   const normalTextColor = "inactive";
   const selectedColor = "primary";
 
-  const items = useUpdatedSidebarItems(content);
+  const items = useUpdatedSidebarItems();
 
   return (
     <div className="drawer drawer-open flex-1">

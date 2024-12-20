@@ -104,6 +104,7 @@
     "Status": "ステータス",
     "Save": "保存",
     "MintNFT": "NFTとしてミントする",
+    "Minting": "ミント中…",
     "Schedule": "スケジュール",
     "DropImage": "ドロップして画像を追加",
     "OnlyZero": "現在 “0” のみ設定可能です。",
@@ -226,6 +227,7 @@
     "WishToContinue": "続行しますか？",
     "ShortCut": "ショートカット",
     "MintNow": "今すぐミント",
+    "StatusChangeMessage": "ミント後、ステータスはプライベートに変更され、ドラフトに戻すことはできません。",
     "ReusableComponents": "Figrデザインシステムを使用して構築された再利用可能なコンポーネント"
   },
   "GiftReceivingSettings": {
@@ -302,6 +304,7 @@
     "ReturnToSampleList": "サンプルリストに戻す",
     "EditItemData": "アイテム詳細を編集",
     "MintAsNFT": "NFTとしてミント",
+    "Minting": "ミント中…",
     "ConfirmDelete": "本当に削除しますか？",
     "DeleteOperationWarning": "削除すると、以前の変更を元に戻したりやり直したりすることができなくなります。本当に実行してよいか確認してください。",
     "ConfirmContinue": "続行しますか？",
@@ -423,6 +426,7 @@
     "CopyrightStatement": "コピーライト(版権表記)",
     "SubmitSingleDocument": "ここでは１つのみ提出してください。あとから追加・変更が可能です。",
     "CopyrightLicenseInfo": "所有している著作権やライセンス情報の提供",
+    "LicenseForWork": "著作物に関するライセンス",
     "SubmitOfficialDocs": "著作権やライセンスを証明する公式文書を提出できます。",
     "FileSupportInfo": "20MB以内のJPEG、PNG、PDFファイルのみ対応しています。",
     "FileUpload": "ファイルアップロード",
@@ -462,7 +466,7 @@
     "Help": "ヘルプ",
     "VisualSetting": "ビジュアル設定"
   },
-  "ContentReiview": {
+  "ContentReview": {
     "UnderReview": "審査中",
     "ReviewMessage": "このページは審査が完了次第、アクセス可能になります。",
     "AdditionalDocuments": "一部の場合、追加書類の提出を求められることがあります。",

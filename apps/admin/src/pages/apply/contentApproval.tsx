@@ -1,17 +1,20 @@
+import { auth, db } from "fetchers/firebase/client";
+import useAccountRedirect from "hooks/useAccountRedirect";
+import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 
-const ContentReviewRequest = () => {
-  const router = useRouter();
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: (await import(`admin/messages/${locale}.json`)).default,
+    },
+  };
+}
 
-  useEffect(() => {
-    router.push("/account");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const t = useTranslations("ContentReiview");
+const ContentApproval = () => {
+  const t = useTranslations("ContentReview");
+  useAccountRedirect(auth, db);
 
   return (
     <div className="mt-10 px-20">
@@ -32,4 +35,4 @@ const ContentReviewRequest = () => {
   );
 };
 
-export default ContentReviewRequest;
+export default ContentApproval;
