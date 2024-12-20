@@ -242,7 +242,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     icon: string,
     emailVerified: boolean,
     hasFlowAccount: boolean,
-    hasBusinessAccount: string,
+    hasBusinessAccount:
+      | "exist"
+      | "not-exist"
+      | "reported"
+      | "freezed"
+      | "not-approved"
+      | "rejected",
   ) => {
     try {
       const appUser: User = {

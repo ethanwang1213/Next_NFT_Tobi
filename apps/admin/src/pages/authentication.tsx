@@ -170,9 +170,7 @@ const Authentication = () => {
     }
 
     const actionCodeSettings = {
-      url: `${window.location.origin}/${path}?email=${encodeURIComponent(
-        email,
-      )}`,
+      url: `${window.location.origin}/${path}`,
       handleCodeInApp: true,
     };
     try {

@@ -1,7 +1,7 @@
 import useMailAuthForm from "hooks/useMailAuthForm";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
@@ -61,16 +61,6 @@ const FlowAgreementWithEmailAndPassword = ({
   ] = useMailAuthForm(email);
   const t = useTranslations("LogInSignUp");
   const pass = useTranslations("AccountResetPassword");
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const emailFromUrl = params.get("email");
-    emailStatus.email = emailFromUrl;
-    if (email) {
-      validateEmail(email);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const getErrors = () => {
     return [

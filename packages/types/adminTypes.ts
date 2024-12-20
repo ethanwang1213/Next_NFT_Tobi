@@ -17,7 +17,13 @@ export type User = {
   icon: string;
   emailVerified: boolean;
   hasFlowAccount: boolean;
-  hasBusinessAccount: string;
+  hasBusinessAccount:
+    | "exist"
+    | "not-exist"
+    | "reported"
+    | "freezed"
+    | "not-approved"
+    | "rejected";
 };
 
 export enum FILTER_TYPE {
