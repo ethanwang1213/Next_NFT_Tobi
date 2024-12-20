@@ -16,7 +16,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { ProviderId, User } from "types/adminTypes";
+import { HasBusinessAccount, ProviderId, User } from "types/adminTypes";
 import Loading from "ui/atoms/Loading";
 
 type Props = {
@@ -242,13 +242,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     icon: string,
     emailVerified: boolean,
     hasFlowAccount: boolean,
-    hasBusinessAccount:
-      | "exist"
-      | "not-exist"
-      | "reported"
-      | "freezed"
-      | "not-approved"
-      | "rejected",
+    hasBusinessAccount: HasBusinessAccount,
   ) => {
     try {
       const appUser: User = {
