@@ -314,7 +314,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    setUser((prev) => ({ ...prev, hasBusinessAccount: "exist" }));
+    setUser((prev) => ({ ...prev, hasBusinessAccount: "not-approved" }));
   };
 
   if (user || unrestrictedPaths.includes(router.pathname)) {
