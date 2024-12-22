@@ -48,12 +48,14 @@ const PasswordUpdate = () => {
   useEffect(() => {
     if (passwordUpdateError) {
       setAuthError(passwordUpdateError);
+      setUpdatingEmailAndPassword(false);
     }
   }, [passwordUpdateError]);
 
   useEffect(() => {
     if (emailUpdateError) {
       setAuthError(emailUpdateError);
+      setUpdatingEmailAndPassword(false);
     }
   }, [emailUpdateError]);
 
