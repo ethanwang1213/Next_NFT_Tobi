@@ -187,7 +187,6 @@ const FlowAgreementWithEmailAndPassword = ({
               pageType === PageType.PasswordUpdate
             }
             validateEmail={validateEmail}
-            disable={PageType.PasswordReset ? true : false}
           />
         </div>
         <div
