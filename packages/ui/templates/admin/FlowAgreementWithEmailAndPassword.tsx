@@ -84,12 +84,13 @@ const FlowAgreementWithEmailAndPassword = ({
           !agreed || !passwordStatus.valid || !passwordConfirmationStatus.valid
         );
       case PageType.PasswordReset:
-      case PageType.PasswordUpdate:
         return (
           !emailStatus.valid ||
           !passwordStatus.valid ||
           !passwordConfirmationStatus.valid
         );
+      case PageType.PasswordUpdate:
+        return !passwordStatus.valid || !passwordConfirmationStatus.valid;
       default:
         return false;
     }
@@ -186,7 +187,6 @@ const FlowAgreementWithEmailAndPassword = ({
               pageType === PageType.PasswordUpdate
             }
             validateEmail={validateEmail}
-            disable={PageType.PasswordReset ? true : false}
           />
         </div>
         <div

@@ -30,7 +30,7 @@ const useAccountRedirect = (auth, db) => {
     interval = setInterval(fetchAccountData, 5000);
 
     return () => clearInterval(interval);
-  }, [auth.currentUser, db, router]);
+  }, [auth.currentUser, db, router, user]);
 };
 
 export default useAccountRedirect;
