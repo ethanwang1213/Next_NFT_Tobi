@@ -351,25 +351,27 @@ export const TermsOfService = ({
 
   return (
     <div className={"flex flex-row items-center"}>
-      <input
-        type={"checkbox"}
-        checked={agreed}
-        className={
-          "checkbox w-[16px] h-[16px] rounded bg-slate-200 shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-        }
-        onChange={() => setAgreed((prev) => !prev)}
-      />
-      <span className={"font-medium text-[12px]"}>
-        <a
-          href={"https://www.tobiratory.com/about"}
-          className={"text-primary ml-[5px] font-medium text-[12px]"}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t("Terms")}
-        </a>
-        {t("AgreeToTerms")}
-      </span>
+      <label>
+        <input
+          type={"checkbox"}
+          checked={agreed}
+          className={
+            "checkbox w-[16px] h-[16px] rounded bg-slate-200 shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+          }
+          onChange={() => setAgreed((prev) => !prev)}
+        />
+        <span className={"font-medium text-[12px]"}>
+          <a
+            href={"https://www.tobiratory.com/about"}
+            className={"text-primary ml-[5px] font-medium text-[12px]"}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t("Terms")}
+          </a>
+          {t("AgreeToTerms")}
+        </span>
+      </label>
     </div>
   );
 };

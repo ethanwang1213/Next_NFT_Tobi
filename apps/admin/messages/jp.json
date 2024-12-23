@@ -44,7 +44,9 @@
     "AccountDoesNotExist": "トビラトリー アカウントが存在しません。",
     "EmailInUse": "このメールアドレスは既に使用されています。",
     "GoToAuthScreen": "認証画面へ",
-    "PasswordResetNotify": "パスワードをリセットしました"
+    "PasswordResetNotify": "パスワードをリセットしました。",
+    "AccountVerification": "アカウントの本人確認",
+    "PromptPassword": "パスワードを入力してください"
   },
   "Menu": {
     "Workspace": "ワークスペース",
