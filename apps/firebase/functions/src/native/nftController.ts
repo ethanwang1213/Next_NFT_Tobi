@@ -512,6 +512,15 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
   try {
     console.log(`Fetch ownership history: ${ownerFlowAddress}, ${nftId}`);
     console.log(` flow.network: ${process.env.FLOW_NETWORK}, accessNode.api: ${process.env.FLOW_ACCESS_NODE_API}`);
+    console.log(JSON.stringify(await fcl.config().all()));
+
+    fcl.send([fcl.ping()])
+      .then(() => { console.log("SUCCESS"); })
+      .catch((e) => {
+        console.log(`ERROR: `);
+        throw e;
+      });
+
     const result = await fcl.query({
       cadence,
       args: (arg: any, t: any) => [arg(ownerFlowAddress, t.Address), arg(String(nftId), t.String)],
