@@ -44,7 +44,7 @@
     "AccountDoesNotExist": "Tobiratory account does not exist.",
     "EmailInUse": "This email address is already in use.",
     "GoToAuthScreen": "Go to authentication screen",
-    "PasswordResetNotify": "Password has been reset",
+    "PasswordResetNotify": "Password has been reset.",
     "AccountVerification": "Account Verification",
     "PromptPassword": "Please enter your password"
   },
