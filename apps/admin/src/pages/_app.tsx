@@ -82,6 +82,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <NextIntlClientProvider
         messages={pageProps.messages}
         locale={router.locale || "jp"}
+        timeZone={router.locale === "jp" ? "Asia/Tokyo" : "UTC"}
       >
         <main className={font.className}>
           <Layout>
