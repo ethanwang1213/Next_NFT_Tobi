@@ -28,6 +28,15 @@ export const mintNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {authorization} = req.headers;
   const {fcmToken, amount, modelUrl} = req.body;
+  /*
+  if (!fcmToken) {
+    res.status(401).send({
+      status: "error",
+      data: "invalid-params",
+    });
+    return;
+  }
+  */
   let intAmount = parseInt(amount);
   if (amount && intAmount <= 0) {
     res.status(401).send({
