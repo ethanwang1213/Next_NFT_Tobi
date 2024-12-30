@@ -3,11 +3,12 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Button from "ui/atoms/Button";
+import { getMessages } from "../../../messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

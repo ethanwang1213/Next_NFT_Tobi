@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ItemsManageTab from "ui/organisms/admin/ItemsManageTab";
+import {getMessages} from "../../../messages/messages";
 
 export const metadata: Metadata = {
   title: "ITEMS",
@@ -38,7 +39,7 @@ export default function Index() {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

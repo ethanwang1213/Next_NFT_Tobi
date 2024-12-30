@@ -1,0 +1,21 @@
+{
+  "License": {
+    "ProhibitedActions": "Prohibited Actions under All Licenses",
+    "Actions": [
+      "Use that violates public order and morals.",
+      "Use that significantly damages the image of our company, products, or characters.",
+      "Use that harms or could potentially harm the social reputation of the author of the work being used.",
+      "Use that infringes or could potentially infringe the rights of others.",
+      "Use that creates or could create the misconception that we support or endorse specific individuals, political parties, religious organizations, etc.",
+      "Copying or reproducing works without adding substantial modifications is considered “replication” and is prohibited."
+    ],
+    "CommercialUse": "Commercial Use (COM/NCM)",
+    "Adaptation": "Adaptation (ADP)",
+    "Derivative": "Derivative (DER)",
+    "Distribution": "Distribution (DST)",
+    "Merchandising": "Merchandising (MER)",
+    "CreditOmission": "Credit Omission (NCR)",
+    "ModificationRequest": "If you want to make changes, please modify them under 'Copyright.'",
+    "InvalidStatusChange": "Status change invalid: Cannot change to the same status."
+  }
+}

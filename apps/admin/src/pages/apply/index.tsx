@@ -6,11 +6,12 @@ import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
 import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
+import { getMessages } from "../../../messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

@@ -5,11 +5,12 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import FlowAgreementWithSnsAccount from "ui/templates/admin/FlowAgreementWithSnsAccount";
 import FlowRegister from "ui/templates/admin/FlowRegister";
+import { getMessages } from "../../../messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

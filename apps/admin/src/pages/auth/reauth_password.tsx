@@ -10,11 +10,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ErrorMessage, isProviderId, ProviderId } from "types/adminTypes";
 import Reauth from "ui/templates/admin/ReauthPassword";
+import { getMessages } from "../../../messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

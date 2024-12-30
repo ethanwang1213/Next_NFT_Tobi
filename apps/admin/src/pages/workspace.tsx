@@ -27,6 +27,7 @@ import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetail
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
 import { SampleItem } from "ui/types/adminTypes";
+import { getMessages } from "../../messages/messages";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

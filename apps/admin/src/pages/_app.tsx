@@ -123,9 +123,7 @@ App.getInitialProps = async (appContext: AppContext) => {
     await basicAuthCheck(req, res);
   }
   const appProps = await NextApp.getInitialProps(appContext);
-  const locale = appContext.ctx?.locale || "jp";
-  const messages = (await import(`../../messages/${locale}.json`)).default;
-  return { ...appProps, messages };
+  return { ...appProps };
 };
 
 export default App;

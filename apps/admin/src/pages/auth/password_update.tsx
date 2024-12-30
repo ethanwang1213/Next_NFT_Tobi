@@ -18,11 +18,12 @@ import FlowAgreementWithEmailAndPassword, {
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import ReauthPassword from "ui/templates/admin/ReauthPassword";
 import ReauthSns from "ui/templates/admin/ReauthSns";
+import { getMessages } from "../../../messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

@@ -21,6 +21,7 @@ import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import AuthTemplate, { LoginFormType } from "ui/templates/AuthTemplate";
+import { getMessages } from "../../messages/messages";
 
 const AuthStates = {
   SignUp: 0,
@@ -257,7 +258,7 @@ const Authentication = () => {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

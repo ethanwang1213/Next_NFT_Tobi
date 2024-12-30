@@ -1,0 +1,63 @@
+{
+  "Account": {
+    "UserName": "User name",
+    "UserID": "User ID",
+    "AboutMe": "About me",
+    "SocialMedia": "Social media",
+    "Gender": "Gender",
+    "Birthday": "Birthday",
+    "Email": "Email",
+    "Password": "Password",
+    "SocialLogin": "Social Login",
+    "Edit": "Edit",
+    "AddLink": "Add external link",
+    "Save": "SAVE",
+    "HideBirthdayNote": "Your Birthday will not be displayed on public profile.",
+    "HideGenderNote": "Your Gender will not be displayed on public profile.",
+    "SaveChanges": "Save changes",
+    "Cancel": "Cancel",
+    "Male": "Male",
+    "Female": "Female",
+    "Custom": "Custom",
+    "NoAnswer": "No answer",
+    "NotSet": "Not Set",
+    "IDInUse": "This UserID is already in use.",
+    "Unverified": "unverified",
+    "EnterName": "Please enter a name.",
+    "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_).",
+    "UserIdTooShort": "User ID must be at least 5 characters.",
+    "NewEmailAddress": "New Email Address"
+  },
+  "AccountPassword": {
+    "Name": "Name",
+    "Password": "Password",
+    "Continue": "Continue",
+    "EmailInUse": "The email address you entered is already in use.",
+    "SentConfirmation": "Sent a confirmation email!",
+    "CheckMailbox": "Please check your mailbox.\nAuthentication will be completed by clicking the authentication link in the email.",
+    "NoEmail": "Haven't received the email?",
+    "VerifyNewEmail": "Verified new email address",
+    "Done": "Done",
+    "PasswordConfirmation": "Password Confirmation"
+  },
+  "AccountSocialLogin": {
+    "Connected": "Connected",
+    "NotConnected": "Not connected",
+    "Disconnect": "Disconnect",
+    "Connect": "Connect",
+    "DisconnectWarning": "If you disconnect this account, you’ll no longer be able to use it to Login to your Tobiratory apps.",
+    "DisconnectTitle": "DISCONNECT A SOCIAL ACCOUNT"
+  },
+  "AccountResetPassword": {
+    "PasswordRequirements": "A string of 8 or more characters",
+    "CharacterTypes": "Includes at least 3 of the following character types",
+    "UppercaseLetters": "Uppercase letters",
+    "Numbers": "Numbers",
+    "LowercaseLetters": "Lowercase letters",
+    "Symbols": "Symbols (!@#$%^&*_-+=:;)",
+    "PasswordsMismatch": "Passwords do not match.",
+    "NewPassword": "New Password",
+    "ConfirmPassword": "Confirmation (Re-entry)",
+    "ResetSuccess": "Password has been reset!"
+  }
+}

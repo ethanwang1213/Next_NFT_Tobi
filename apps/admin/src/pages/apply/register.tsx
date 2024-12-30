@@ -17,6 +17,7 @@ import {
 } from "types/adminTypes";
 import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
+import { getMessages } from "../../../messages/messages";
 import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";
@@ -25,7 +26,7 @@ import UserInformation from "./userInfo";
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

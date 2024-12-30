@@ -1,0 +1,24 @@
+{
+  "Menu": {
+    "Workspace": "ワークスペース",
+    "Items": "アイテム",
+    "Content": "コンテンツ",
+    "Gift": "ギフト設定",
+    "Account": "アカウント設定"
+  },
+  "WelcomeMessage": {
+    "WelcomeToProgram": "Tobiratoryクリエイタープログラムへようこそ！",
+    "ProgramDescription": "Tobiratoryクリエイタープログラムへの参加申し込みを完了しました。",
+    "ContentNotice": "申し込み内容に問題があった場合、TCP機能が一時的に停止される可能性があります。",
+    "CreateYourWorld": "さあ、あなたの世界を作りましょう！",
+    "CreateOwnContent": "あなただけの素晴らしいコンテンツを作ってみましょう！"
+  },
+  "Tooltip": {
+    "Undo": "元に戻す",
+    "Redo": "やり直し",
+    "ToggleSafeArea": "セーフエリアの表示切替",
+    "ToggleUIVisibility": "UIの表示切替",
+    "Help": "ヘルプ",
+    "VisualSetting": "ビジュアル設定"
+  }
+}

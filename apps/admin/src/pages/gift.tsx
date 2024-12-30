@@ -7,6 +7,7 @@ import CreateButton from "ui/molecules/CreateButton";
 import BoxNameEditDialog from "ui/organisms/admin/BoxNameEditDialog";
 import BoxComponent from "ui/organisms/admin/GiftBoxComponent";
 import InventoryComponent from "ui/organisms/admin/InventoryComponent";
+import { getMessages } from "../../messages/messages";
 
 export const metadata: Metadata = {
   title: "ギフト受け取り設定",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

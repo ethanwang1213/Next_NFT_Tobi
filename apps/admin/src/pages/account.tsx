@@ -20,6 +20,7 @@ import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
 import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
 import ImageCropDialog from "ui/organisms/admin/ImageCropDialog";
+import { getMessages } from "../../messages/messages";
 
 export const metadata: Metadata = {
   title: "Account Setting",
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

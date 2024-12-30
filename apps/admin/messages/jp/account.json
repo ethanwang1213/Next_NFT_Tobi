@@ -1,0 +1,63 @@
+{
+  "Account": {
+    "UserName": "ユーザー名",
+    "UserID": "ユーザーID",
+    "AboutMe": "自己紹介",
+    "SocialMedia": "SNS",
+    "Gender": "性別",
+    "Birthday": "誕生日",
+    "Email": "メールアドレス",
+    "Password": "パスワード",
+    "SocialLogin": "ソーシャルログイン",
+    "Edit": "編集",
+    "AddLink": "外部リンクを追加",
+    "Save": "保存",
+    "HideBirthdayNote": "生年月日はプロフィールに公開されません",
+    "HideGenderNote": "性別はプロフィールに公開されません",
+    "SaveChanges": "変更を保存",
+    "Cancel": "キャンセル",
+    "Male": "男性",
+    "Female": "女性",
+    "Custom": "カスタム",
+    "NoAnswer": "回答しない",
+    "NotSet": "設定されていません",
+    "IDInUse": "このIDはすでに使用されています",
+    "Unverified": "未認証",
+    "EnterName": "名前を入力してください。",
+    "UserIdNoSpaces": "ユーザーIDは5〜20文字、英数字、ハイフン（-）、アンダースコア（_）のみを使用できます。",
+    "UserIdTooShort": "ユーザーIDは5文字以上である必要があります。",
+    "NewEmailAddress": "新しいメールアドレス"
+  },
+  "AccountPassword": {
+    "Name": "名前",
+    "Password": "パスワード",
+    "Continue": "続ける",
+    "EmailInUse": "このメールアドレスは既に使用されています。",
+    "SentConfirmation": "確認メールを送信しました！",
+    "CheckMailbox": "メールボックスをご確認ください。\nメール内の認証リンクをクリックすることで認証が完了します。",
+    "NoEmail": "メールが届きませんか？",
+    "VerifyNewEmail": "新しいメールアドレスを認証する",
+    "Done": "完了",
+    "PasswordConfirmation": "パスワード確認"
+  },
+  "AccountSocialLogin": {
+    "Connected": "に連携済み",
+    "NotConnected": "未連携",
+    "Disconnect": "連携を解除",
+    "Connect": "連携する",
+    "DisconnectWarning": "このアカウントを切断すると、Tobiratoryアプリにログインするためにこのアカウントを使用できなくなります。",
+    "DisconnectTitle": "ソーシャルアカウントの連携解除"
+  },
+  "AccountResetPassword": {
+    "PasswordRequirements": "8文字以上の文字列",
+    "CharacterTypes": "次の文字タイプのうち少なくとも3つを含む",
+    "UppercaseLetters": "大文字",
+    "Numbers": "数字",
+    "LowercaseLetters": "小文字",
+    "Symbols": "記号 (!@#$%^&*_-+=:;)",
+    "PasswordsMismatch": "パスワードが一致しません。",
+    "NewPassword": "新パスワード",
+    "ConfirmPassword": "確認（再入力）",
+    "ResetSuccess": "パスワードをリセットしました！"
+  }
+}
