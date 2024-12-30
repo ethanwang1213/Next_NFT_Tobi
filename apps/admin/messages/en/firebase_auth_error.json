@@ -1,0 +1,12 @@
+{
+  "FirebaseAuthError": {
+    "InvalidActionCode": "The link has expired. Please sign up again.",
+    "InvalidEmail": "Please enter the email address to which the link was sent.",
+    "EmailAlreadyInUse": "The email address you entered is already in use.",
+    "CredentialAlreadyInUse": "The email address you entered is already in use.",
+    "UserNotFound": "The Tobiratory account does not exist.",
+    "MissingPassword": "Passwords do not match.",
+    "WrongPassword": "Passwords do not match.",
+    "SomeError": "An error has occurred."
+  }
+}

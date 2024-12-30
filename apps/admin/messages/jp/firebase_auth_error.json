@@ -1,0 +1,12 @@
+{
+  "FirebaseAuthError": {
+    "InvalidActionCode": "リンクの有効期限が切れているため、サインアップを再度行ってください。",
+    "InvalidEmail": "リンクを送ったメールアドレスを入力してください。",
+    "EmailAlreadyInUse": "既に使われているメールアドレスです。",
+    "CredentialAlreadyInUse": "既に使われているメールアドレスです。",
+    "UserNotFound": "Tobiratoryアカウントが存在しません",
+    "MissingPassword": "パスワードが一致しません。",
+    "WrongPassword": "パスワードが一致しません。",
+    "SomeError": "エラーが発生しました。"
+  }
+}

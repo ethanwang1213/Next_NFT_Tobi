@@ -1,6 +1,6 @@
+import { useTranslations } from "next-intl";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import { useTranslations } from "next-intl";
 
 type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -9,26 +9,28 @@ type Props = DetailedHTMLProps<
   error: ErrorMessage;
 };
 const FirebaseAuthError = ({ error }: Props) => {
-  const t = useTranslations("LogInSignUp");
+  const t = useTranslations("FirebaseAuthError");
   const getErrorMessage = () => {
     if (!error) {
       return "";
     }
     switch (error.code) {
       case "auth/invalid-action-code":
-        return "リンクの有効期限が切れているため、サインアップを再度行ってください";
+        return t("InvalidActionCode");
       case "auth/invalid-email":
-        return "リンクを送ったメールアドレスを入力してください";
+        return t("InvalidEmail");
       case "auth/email-already-in-use":
+        return t("EmailAlreadyInUse");
       case "auth/credential-already-in-use":
-        return "The email address you entered is already in use.";
+        return t("CredentialAlreadyInUse");
       case "auth/user-not-found":
-        return "Tobiratoryアカウントが存在しません";
+        return t("UserNotFound");
       case "auth/missing-password":
+        return t("MissingPassword");
       case "auth/wrong-password":
-        return t('PasswordsDoNotMatch');
+        return t("WrongPassword");
       default:
-        return `エラーが発生しました: エラーコード: ${error.code}: ${error.message}`;
+        return `${t("SomeError")}: ${error.code}: ${error.message}`;
     }
   };
 
