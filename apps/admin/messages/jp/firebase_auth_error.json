@@ -7,6 +7,7 @@
     "UserNotFound": "Tobiratoryアカウントが存在しません",
     "MissingPassword": "パスワードが一致しません。",
     "WrongPassword": "パスワードが一致しません。",
+    "TooManyRequests": "リクエスト数が許容最大数を超えています。しばらく時間をおいてからお試し下さい。",
     "SomeError": "エラーが発生しました。"
   }
 }

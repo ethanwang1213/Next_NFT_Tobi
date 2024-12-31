@@ -7,6 +7,7 @@
     "UserNotFound": "The Tobiratory account does not exist.",
     "MissingPassword": "Passwords do not match.",
     "WrongPassword": "Passwords do not match.",
+    "TooManyRequests": "The number of requests exceeds the maximum allowed. Please try again after some time.",
     "SomeError": "An error has occurred."
   }
 }

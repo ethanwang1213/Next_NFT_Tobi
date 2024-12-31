@@ -14,6 +14,7 @@ const FirebaseAuthError = ({ error }: Props) => {
     if (!error) {
       return "";
     }
+    error.code = "auth/too-many-requests";
     switch (error.code) {
       case "auth/invalid-action-code":
         return t("InvalidActionCode");
@@ -29,6 +30,8 @@ const FirebaseAuthError = ({ error }: Props) => {
         return t("MissingPassword");
       case "auth/wrong-password":
         return t("WrongPassword");
+      case "auth/too-many-requests":
+        return t("TooManyRequests");
       default:
         return `${t("SomeError")}: ${error.code}: ${error.message}`;
     }
