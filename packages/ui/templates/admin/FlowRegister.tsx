@@ -59,7 +59,11 @@ const ProcesssingStatus = ({
 
   return (
     <>
-      <div className={"flex flex-row items-end font-bold text-[32px]"}>
+      <div
+        className={
+          "flex flex-row items-end justify-center font-bold text-[32px]"
+        }
+      >
         {t("CreatingFlowAccount")}
         <span className="loading loading-dots loading-md"></span>
       </div>
