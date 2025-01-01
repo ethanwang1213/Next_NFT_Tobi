@@ -185,7 +185,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             return;
           }
           await createUser(
-            firebaseUser.uid,
+            "",
             firebaseUser.email,
             "",
             "",
@@ -208,7 +208,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
         // not registered flow account yet
         await createUser(
-          firebaseUser.uid,
+          "",
           firebaseUser.email,
           "",
           "",
@@ -291,7 +291,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const finishFlowAccountRegistration = () => {
+  const finishFlowAccountRegistration = async () => {
     if (!user) {
       router.push("/authentication");
       return;
@@ -301,7 +301,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    setUser((prev) => ({ ...prev, hasFlowAccount: true }));
+    const profile = await fetchMyProfile().catch((error) => {
+      console.error(error);
+      auth.signOut();
+    });
+    if (!profile) {
+      Router.push("/authentication");
+      return;
+    }
+    setUser((prev) => ({
+      ...prev,
+      uuid: profile.data.userId,
+      hasFlowAccount: true,
+    }));
   };
 
   const finishBusinessAccountRegistration = () => {
