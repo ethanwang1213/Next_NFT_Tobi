@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ItemsManageTab from "ui/organisms/admin/ItemsManageTab";
-import {getMessages} from "../../../messages/messages";
+import {getMessages} from "admin/messages/messages";
 
 export const metadata: Metadata = {
   title: "ITEMS",

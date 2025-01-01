@@ -18,7 +18,7 @@ import FlowAgreementWithEmailAndPassword, {
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import ReauthPassword from "ui/templates/admin/ReauthPassword";
 import ReauthSns from "ui/templates/admin/ReauthSns";
-import { getMessages } from "../../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

@@ -13,7 +13,7 @@ import { ErrorMessage } from "types/adminTypes";
 import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
-import { getMessages } from "../../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

@@ -27,7 +27,7 @@ import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetail
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
 import { SampleItem } from "ui/types/adminTypes";
-import { getMessages } from "../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 export const metadata: Metadata = {
   title: "ワークスペース",

@@ -3,7 +3,7 @@ import useAccountRedirect from "hooks/useAccountRedirect";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { getMessages } from "../../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

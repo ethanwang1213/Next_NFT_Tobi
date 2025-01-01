@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ContentsManageTab from "ui/organisms/admin/ContentsManageTab";
-import { getMessages } from "../../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

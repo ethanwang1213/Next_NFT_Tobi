@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ErrorMessage, isProviderId, ProviderId } from "types/adminTypes";
 import Reauth from "ui/templates/admin/ReauthPassword";
-import { getMessages } from "../../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

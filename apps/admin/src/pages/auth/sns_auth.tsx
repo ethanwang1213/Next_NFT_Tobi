@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { useAuth } from "contexts/AdminAuthProvider";
 import { useTobiratoryAndFlowAccountRegistration } from "fetchers/adminUserAccount";
 import { GetStaticPropsContext } from "next";
@@ -5,7 +6,6 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import FlowAgreementWithSnsAccount from "ui/templates/admin/FlowAgreementWithSnsAccount";
 import FlowRegister from "ui/templates/admin/FlowRegister";
-import { getMessages } from "../../../messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

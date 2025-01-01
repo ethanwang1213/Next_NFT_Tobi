@@ -36,7 +36,7 @@ import {
   getDigitalItemStatusTitle,
   ScheduleItem,
 } from "ui/types/adminTypes";
-import {getMessages} from "../../../messages/messages";
+import {getMessages} from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

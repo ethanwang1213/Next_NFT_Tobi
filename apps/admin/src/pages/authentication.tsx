@@ -21,7 +21,7 @@ import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import AuthTemplate, { LoginFormType } from "ui/templates/AuthTemplate";
-import { getMessages } from "../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 const AuthStates = {
   SignUp: 0,

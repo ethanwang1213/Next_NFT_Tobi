@@ -17,7 +17,7 @@ import {
 } from "types/adminTypes";
 import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
-import { getMessages } from "../../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";

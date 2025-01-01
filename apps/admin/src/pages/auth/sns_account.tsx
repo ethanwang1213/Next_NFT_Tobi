@@ -18,7 +18,7 @@ import Button from "ui/atoms/Button";
 import GoogleIcon from "ui/atoms/GoogleIcon";
 import Loading from "ui/atoms/Loading";
 import BackLink from "ui/molecules/BackLink";
-import { getMessages } from "../../../messages/messages";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
