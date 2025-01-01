@@ -58,6 +58,7 @@
     "PasswordsMismatch": "Passwords do not match.",
     "NewPassword": "New Password",
     "ConfirmPassword": "Confirmation (Re-entry)",
-    "ResetSuccess": "Password has been reset!"
+    "ResetSuccess": "Password has been reset!",
+    "InvalidPasswordCharacters": "The password contains characters that are not allowed."
   }
 }

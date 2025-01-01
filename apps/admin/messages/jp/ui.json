@@ -20,5 +20,15 @@
     "ToggleUIVisibility": "UIの表示切替",
     "Help": "ヘルプ",
     "VisualSetting": "ビジュアル設定"
+  },
+  "Label": {
+    "Back": "戻る",
+    "Done": "完了",
+    "Email": "メールアドレス",
+    "Next": "次へ",
+    "Processing": "処理中",
+    "Register": "登録",
+    "ReRegistration": "再登録",
+    "Reset": "リセット"
   }
 }

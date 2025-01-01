@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import {
   hasPasswordAccount,
   VERIFIED_EMAIL_PATH,
@@ -18,7 +19,6 @@ import FlowAgreementWithEmailAndPassword, {
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import ReauthPassword from "ui/templates/admin/ReauthPassword";
 import ReauthSns from "ui/templates/admin/ReauthSns";
-import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -45,6 +45,8 @@ const PasswordUpdate = () => {
   const [updateEmail, , isEmailUpdateSuccessful, emailUpdateError] =
     useUpdateEmail();
   const [updatePassword, , , passwordUpdateError] = useUpdatePassword();
+  const t = useTranslations("LogInSignUp");
+  const l = useTranslations("Label");
 
   useEffect(() => {
     if (passwordUpdateError) {
@@ -105,8 +107,8 @@ const PasswordUpdate = () => {
       case AuthStates.NewPassword:
         return (
           <FlowAgreementWithEmailAndPassword
-            title={"パスワードリセット"}
-            buttonText={"リセット"}
+            title={t("PasswordReset")}
+            buttonText={l("Reset")}
             email={auth.currentUser.email}
             isSubmitting={updatingEmailAndPassword}
             pageType={PageType.PasswordUpdate}
