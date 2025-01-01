@@ -19,7 +19,7 @@ const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
         className={"mt-[90px]"}
       />
       <div className={"mt-[50px]"}>
-        <ProcesssingStatus registered={registered} error={error} />
+        <ProcessingStatus registered={registered} error={error} />
       </div>
       <div className={"mt-[15px]"}>
         <RegisterButton
@@ -32,7 +32,7 @@ const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
   );
 };
 
-const ProcesssingStatus = ({
+const ProcessingStatus = ({
   registered,
   error,
 }: {
