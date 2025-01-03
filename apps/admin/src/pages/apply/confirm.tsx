@@ -93,6 +93,7 @@ const ConfirmInformation = ({
       .map(([key]) => <Fragment key={key}>{key}, </Fragment>);
 
   const t = useTranslations("TCP");
+  const d = useTranslations("DateFormat");
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-col items-center">
@@ -128,10 +129,15 @@ const ConfirmInformation = ({
           {userInfo.lastName} {userInfo.firstName}
         </span>
       </Row1>
-      <Row1 label={"DateOfBirth"} wide={false}>
+      <Row1 label={t("DateOfBirth")} wide={false}>
         <span className="">
-          {userInfo.birthdayYear}年 {userInfo.birthdayMonth}月{" "}
-          {userInfo.birthdayDate}日
+          {d("Date", {
+            date: new Date(
+              userInfo.birthdayYear,
+              userInfo.birthdayMonth,
+              userInfo.birthdayDate,
+            ),
+          })}
         </span>
       </Row1>
       <Row1 label={t("MailAddress")} wide={false}>

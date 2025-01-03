@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { useAuth } from "contexts/AdminAuthProvider";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
@@ -6,7 +7,6 @@ import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
 import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
-import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

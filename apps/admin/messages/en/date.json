@@ -1,0 +1,5 @@
+{
+  "DateFormat": {
+    "Date": "{date, date, ::yyyyMMMd}"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "DateFormat": {
+    "Date": "{date, date, ::yyyy}年{date, date, ::M}月{date, date, ::d}日"
+  }
+}
