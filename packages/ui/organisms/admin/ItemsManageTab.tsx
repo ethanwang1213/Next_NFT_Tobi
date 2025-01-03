@@ -50,7 +50,7 @@ export default function ItemsManageTab({
 
   return (
     <>
-      <nav className="flex border-b border-[#D9D9D9] mt-1">
+      <nav className="min-w-[980px] flex border-b border-[#D9D9D9] mt-1">
         <TabSelector
           isActive={tab === "item"}
           onClick={() => handleTabChange("item")}

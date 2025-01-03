@@ -53,7 +53,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="h-14 ml-9 mr-7 mt-[34px] flex justify-between items-center">
+      <div className="sm:!min-w-[816px] h-14 ml-9 mr-7 mt-[34px] flex justify-between items-center">
         <h1 className="font-semibold text-secondary text-3xl uppercase">
           {t("Content")}
         </h1>

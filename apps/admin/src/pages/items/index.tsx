@@ -26,7 +26,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center uppercase">
+      <div className="sm:!min-w-[904px] h-14 ml-12 mr-7 mt-9 flex justify-between items-center uppercase">
         <h1 className="font-semibold text-secondary text-3xl">{t("Items")}</h1>
         <CreateButton {...(links[selectedTab] ?? links.item)} height={56} />
       </div>
