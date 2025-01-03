@@ -1,10 +1,10 @@
 // items-tab.tsx
-import React, { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "ui/atoms/tab-selector";
-import { DigitalItemTable } from "./DigitalItemTable";
 import FilterPopupButton from "ui/organisms/admin/FilterPopupButton";
-import { useTranslations } from "next-intl";
+import { DigitalItemTable } from "./DigitalItemTable";
 
 const useFilterControl = (initialFilters) => {
   const [filters, setFilters] = useState(initialFilters);
@@ -24,8 +24,8 @@ export default function ItemsManageTab({
   onTabChange: (value: string) => void;
 }) {
   const [tab, setTab] = useTabs(["item"]);
-  const t = useTranslations('Item');
-  const m = useTranslations('Menu');
+  const t = useTranslations("Item");
+  const m = useTranslations("Menu");
 
   const [filterArray, toggleFilter] = useFilterControl([false, false, false]);
 
@@ -41,7 +41,7 @@ export default function ItemsManageTab({
     from: new Date(),
     to: new Date(),
   });
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleTabChange = (tab) => {
     setTab(tab);
@@ -56,7 +56,7 @@ export default function ItemsManageTab({
           onClick={() => handleTabChange("item")}
           className="ml-12"
         >
-          {m('Items')}
+          {m("Items")}
         </TabSelector>
       </nav>
       <div className="flex justify-start">
@@ -72,7 +72,7 @@ export default function ItemsManageTab({
         />
         <input
           className="text-base text-secondary/[76] outline-none"
-          placeholder={t('Filter')}
+          placeholder={t("Filter")}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>

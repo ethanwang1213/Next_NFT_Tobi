@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
