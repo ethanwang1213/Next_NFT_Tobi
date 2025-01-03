@@ -21,7 +21,6 @@ import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
 import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
 import ImageCropDialog from "ui/organisms/admin/ImageCropDialog";
-import { getMessages } from "admin/messages/messages";
 
 export const metadata: Metadata = {
   title: "Account Setting",

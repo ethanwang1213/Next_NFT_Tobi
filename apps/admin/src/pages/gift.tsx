@@ -8,7 +8,6 @@ import CreateButton from "ui/molecules/CreateButton";
 import BoxNameEditDialog from "ui/organisms/admin/BoxNameEditDialog";
 import BoxComponent from "ui/organisms/admin/GiftBoxComponent";
 import InventoryComponent from "ui/organisms/admin/InventoryComponent";
-import { getMessages } from "admin/messages/messages";
 
 export const metadata: Metadata = {
   title: "ギフト受け取り設定",
