@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import {
   hasAppleAccount,
   hasGoogleAccount,
@@ -48,7 +49,7 @@ const AccountFieldComponent = ({
 }) => {
   return (
     <div
-      className={`flex border-b-[0.5px] border-secondary py-4 
+      className={`flex border-b-[0.5px] border-secondary py-4 mr-7
     ${alignTop ? "items-start" : "items-center"} `}
     >
       <span className="w-[122px] shrink-0 text-[16px] text-base-200-content font-normal break-words">

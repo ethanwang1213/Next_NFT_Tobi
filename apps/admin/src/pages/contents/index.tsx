@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
