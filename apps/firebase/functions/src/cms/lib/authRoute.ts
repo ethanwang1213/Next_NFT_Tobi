@@ -1,14 +1,16 @@
 import {Request, Response, Router} from "express";
 import {jwtSecretKey, userCredentials} from "../constants";
 import * as JWT from "jsonwebtoken";
+import * as bcrypt from 'bcrypt';
 // import { prisma } from '../prisma';
 
 const router: Router = Router();
-router.post("/login", (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response) => {
   const {email, password} = req.body;
   const user = userCredentials.find((user)=> user.email == email);
   if (user) {
-    if (password == user.password) {
+    const isValid = await bcrypt.compare(password, user.hashedPassword);
+    if (isValid) {
       const token = JWT.sign(user, jwtSecretKey);
       res.status(200).send({
         status: "success",
