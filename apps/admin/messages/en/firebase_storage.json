@@ -1,0 +1,6 @@
+{
+  "FirebaseStorage": {
+    "UploadableFileType": "Only JPEG, PNG, and PDF files can be uploaded.",
+    "ExceedsMaximumUploadSize": "Please keep the file size within 20MB."
+  }
+}

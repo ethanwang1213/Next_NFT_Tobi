@@ -62,6 +62,8 @@
     "FreeDistributionNote": "※販売は今後実装予定です。",
     "DisplaySampleItems": "サンプルデジタルアイテムの公開",
     "DisplaySampleItemsDescription": "SAIDANで販売したいデジタルアイテムを飾り、自由に公開することが可能です。",
-    "SingleContentLimit": "1アカウントにつき申請可能なコンテンツは1つまでとなります。"
+    "SingleContentLimit": "1アカウントにつき申請可能なコンテンツは1つまでとなります。",
+    "Registered": "登録が完了しました。",
+    "RegistrationFailed": "登録に失敗しました。"
   }
 }

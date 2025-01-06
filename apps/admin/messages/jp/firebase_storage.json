@@ -1,0 +1,6 @@
+{
+  "FirebaseStorage": {
+    "UploadableFileType": "アップロードできるファイル形式は、JPEG、PNG、PDFのみです。",
+    "ExceedsMaximumUploadSize": "ファイルサイズは20MB以内にしてください。"
+  }
+}
