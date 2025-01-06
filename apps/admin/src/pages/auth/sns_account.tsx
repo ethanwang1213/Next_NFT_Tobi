@@ -18,11 +18,12 @@ import Button from "ui/atoms/Button";
 import GoogleIcon from "ui/atoms/GoogleIcon";
 import Loading from "ui/atoms/Loading";
 import BackLink from "ui/molecules/BackLink";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

@@ -3,7 +3,7 @@ import { useAuth } from "contexts/AdminAuthProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUpdatedSidebarItems } from "../../components/BurgerMenu/assets/SidebarItems";
+import { useUpdatedSidebarItems } from "ui/components/BurgerMenu/assets/SidebarItems";
 
 interface SidebarProps {
   sidebarOpen: boolean;

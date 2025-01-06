@@ -1,0 +1,59 @@
+{
+  "ContentShowcase": {
+    "NewShowcase": "新しいショーケース",
+    "LastUpdatedDate": "最終更新日：",
+    "ShowcaseName": "ショーケース 名",
+    "ShowcaseDescription": "ショーケース 説明",
+    "Publish": "公開",
+    "Draft": "下書き",
+    "Public": "公開",
+    "Published": "公開中",
+    "Schedule": "公開予約",
+    "Scheduled": "公開予約",
+    "Private": "非公開",
+    "Delete": "削除"
+  },
+  "ContentBrand": {
+    "ContentImage": "コンテンツ画像",
+    "ImageGuidelines": "少なくとも320x100ピクセル、4MB以下の画像を使用してください。ファイル形式はPNG、JPEG、またはGIF（アニメーションなし）が可能です。",
+    "OfficialMerchandiseSticker": "証紙画像",
+    "MerchandiseImageGuidelines": "最良の結果を得るには、少なくとも500x500ピクセル、4MB以下の画像を使用してください。受け入れられるファイル形式はPNGまたはGIF（アニメーションなし）です。",
+    "Change": "変更",
+    "Delete": "削除",
+    "Upload": "アップロード"
+  },
+  "ContentSettings": {
+    "Showcase": "ショーケース",
+    "Brand": "ブランド",
+    "Settings": "設定",
+    "ContentNameChange": "コンテンツ名の変更",
+    "ContentNameChangeGuidelines": "コンテンツ名は3ヶ月に1度変更可能です。変更後、ユーザーに表示されるコンテンツ名は審査が完了次第更新されます。",
+    "contentNameChangeRequest": "コンテンツ名の変更リクエストは現在審査中です。\n承認されると、名前が更新されます。さらに、変更後は3ヶ月間再度変更することはできません。",
+    "NameChangeRequest": "コンテンツ名の変更申請をしました！",
+    "NameChangeCompletion": "名称は審査完了後に変更されます。審査には最大で1週間かかる場合があります。あらかじめご了承ください。",
+    "ContentName": "コンテンツ名",
+    "ChangeContentNameGuidelines": "コンテンツ名を変更できます。変更には審査が必要で、承認されると名前が更新されます。変更後、3ヶ月間は再度変更できません。",
+    "ContentDescription": "コンテンツ説明",
+    "EditDescription": "コンテンツの説明を自由に編集できます。",
+    "DefaultLicenseSetting": "デフォルトライセンス設定",
+    "SetDefaultLicense": "各デジタルアイテムのレコードに対してデフォルトのライセンスを設定します。",
+    "CopyrightHolders": "著作権者",
+    "SetDefaultCopyrightHolders": "各デジタルアイテムのレコードに対してデフォルトの著作権保有者を設定します。タグのように入力でき、この変更には再審査は必要ありません。",
+    "CustomizeImage": "画像をカスタム",
+    "ConfirmSave": "確認して保存",
+    "Save": "保存",
+    "Discard": "破棄",
+    "Cancel": "キャンセル",
+    "Done": "完了",
+    "Public": "公開",
+    "AddCopyrightHolder": "コピーライトタグを追加",
+    "GotIt": "了解しました",
+    "DiscardChanges": "変更を破棄しますか？"
+  },
+  "ContentReview": {
+    "UnderReview": "審査中",
+    "ReviewMessage": "このページは審査が完了次第、アクセス可能になります。",
+    "AdditionalDocuments": "一部の場合、追加書類の提出を求められることがあります。",
+    "ForInquiries": "お問い合わせ先: TCP-support@tobiratory.com"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "GiftReceivingSettings": {
+    "TogglePermission": "このページでは、ギフト受取の許可設定を切り替えることができます。各インベントリやボックスごとに設定を調整してください。",
+    "Permitted": "受取可",
+    "Blocked": "受取不可",
+    "Warning": "警告！",
+    "DeleteBoxWarning": "ボックスを削除すると、そのボックス内に含まれるデジタルアイテム（NFT）も削除されます。この操作を行う前に、必ずボックスの内容をよく確認してください。",
+    "Cancel": "キャンセル",
+    "Delete": "削除",
+    "BoxNameTooLong": "ボックス名が長すぎます。",
+    "SaveChanges": "変更を保存",
+    "QrCodeSaveInstruction": "QRコードをクリックして保存することができます。",
+    "QrCodeCloseInstruction": "この画面を閉じるには、QRコードの外側をクリックしてください。"
+  }
+}

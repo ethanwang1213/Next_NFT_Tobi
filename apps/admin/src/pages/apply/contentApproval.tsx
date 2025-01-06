@@ -3,11 +3,12 @@ import useAccountRedirect from "hooks/useAccountRedirect";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

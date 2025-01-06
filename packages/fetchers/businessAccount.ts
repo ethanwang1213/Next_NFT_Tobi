@@ -1,4 +1,5 @@
 import { deleteObject, listAll, ref, uploadBytes } from "firebase/storage";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { TcpFormType } from "types/adminTypes";
 import { auth, storage } from "./firebase/client";
@@ -7,6 +8,7 @@ export const useTcpRegistration = (setError: (arg: string | null) => void) => {
   const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const filePath = `/users/${auth.currentUser.uid}/tcp/copyright/files`;
+  const t = useTranslations();
 
   const registerTcp = async (data: TcpFormType) => {
     try {
@@ -25,52 +27,52 @@ export const useTcpRegistration = (setError: (arg: string | null) => void) => {
       await uploadFiles(validFiles, fileNames, filePath);
       const res = await postTcpData(data, fileNames);
       if (res.ok) {
-        setResponse("登録が完了しました。");
+        setResponse(t("TCP.Registered"));
       } else {
         const resData = await res.text();
         console.error(resData);
-        setError("エラーが発生しました。もう一度お試しください。");
+        setError(t("Error.Retry"));
         setLoading(false);
       }
     } catch (error) {
       deleteFiles(filePath).catch((e) => console.error(e));
       console.error(String(error));
-      setError("エラーが発生しました。もう一度お試しください。");
+      setError(t("Error.Retry"));
       setLoading(false);
     }
   };
 
-  return [registerTcp, response, loading] as const;
-};
+  const uploadFiles = async (
+    files: File[],
+    fileNames: string[],
+    path: string,
+  ) => {
+    // When using foreach, we cannot catch exceptions thrown by uploadBytes,
+    // so we should use for loop instead.
+    for (let i = 0; i < files.length; i++) {
+      if (!files[i]) continue;
 
-const uploadFiles = async (
-  files: File[],
-  fileNames: string[],
-  path: string,
-) => {
-  // When using foreach, we cannot catch exceptions thrown by uploadBytes,
-  // so we should use for loop instead.
-  for (let i = 0; i < files.length; i++) {
-    if (!files[i]) continue;
+      validateCopyrightFile(files[i]);
 
-    validateCopyrightFile(files[i]);
+      const storageRef = ref(storage, `${path}/${fileNames[i]}`);
+      await uploadBytes(storageRef, files[i]);
+    }
+  };
 
-    const storageRef = ref(storage, `${path}/${fileNames[i]}`);
-    await uploadBytes(storageRef, files[i]);
-  }
-};
+  const validateCopyrightFile = (file: File) => {
+    const maxFileSize = 20 * 1024 * 1024; // 20MB
+    const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
 
-export const validateCopyrightFile = (file: File) => {
-  const maxFileSize = 20 * 1024 * 1024; // 20MB
-  const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
+    if (!fileTypes.includes(file.type)) {
+      throw new Error(t("FirebaseStorage.UploadableFileType"));
+    }
 
-  if (!fileTypes.includes(file.type)) {
-    throw new Error("アップロードできるファイル形式は、JPEG、PNG、PDFのみです");
-  }
+    if (file.size > maxFileSize) {
+      throw new Error(t("FirebaseStorage.ExceedsMaximumUploadSize"));
+    }
+  };
 
-  if (file.size > maxFileSize) {
-    throw new Error("ファイルサイズは20MB以内にしてください");
-  }
+  return [registerTcp, validateCopyrightFile, response, loading] as const;
 };
 
 const postTcpData = async (data: TcpFormType, fileNames: string[]) => {
@@ -137,7 +139,7 @@ export const checkBusinessAccount = async () => {
     return resData.data;
   } else {
     const resData = await res.text();
-    console.log(resData);
-    throw new Error("エラーが発生しました。もう一度お試しください。");
+    console.error(resData);
+    throw new Error("An error occurred. Please try again.");
   }
 };

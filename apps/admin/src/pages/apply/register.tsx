@@ -1,9 +1,7 @@
+import { getMessages } from "admin/messages/messages";
 import clsx from "clsx";
 import { useAuth } from "contexts/AdminAuthProvider";
-import {
-  useTcpRegistration,
-  validateCopyrightFile,
-} from "fetchers/businessAccount";
+import { useTcpRegistration } from "fetchers/businessAccount";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
@@ -25,7 +23,7 @@ import UserInformation from "./userInfo";
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }
@@ -85,7 +83,8 @@ const Register = () => {
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
 
-  const [registerTcp, response, loading] = useTcpRegistration(setError);
+  const [registerTcp, validateCopyrightFile, response, loading] =
+    useTcpRegistration(setError);
 
   useEffect(() => {
     if (!response) {

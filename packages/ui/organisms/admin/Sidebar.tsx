@@ -102,7 +102,7 @@ const Sidebar = ({ children }: Props) => {
       {/* Therefore, any className intended for later use should be added to this className. */}
       <div className="bg-primary bg-inactive text-inactive hidden"></div>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content">{children}</div>
+      <div className="drawer-content overflow-scroll">{children}</div>
       <div className="drawer-side border-r-base-content border-r-[0.5px] h-full sm:!block !hidden z-10 bg-white">
         <ul className="pt-[17px]">
           {items

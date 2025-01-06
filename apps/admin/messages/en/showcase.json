@@ -1,0 +1,33 @@
+{
+  "Showcase": {
+    "ItemTitle": "Item Title",
+    "Exit": "Exit",
+    "SampleItems": "Sample Items",
+    "Inventory": "Inventory",
+    "Settings": "Settings",
+    "Position": "Position",
+    "Rotation": "Rotation",
+    "Scale": "Scale",
+    "Wallpaper": "Wallpaper",
+    "Tint": "Tint",
+    "Floor": "Floor",
+    "Lighting": "Lighting",
+    "SceneLight": "Scene Light",
+    "Brightness": "Brightness",
+    "PointLight": "Point Light",
+    "ReturnItem": "Return Item",
+    "DeleteSelectingItem": "Delete a selecting Item from Showcase",
+    "MintFailed": "Mint failed.",
+    "MintFailedLimitExceeded": "Mint failed because the daily transaction limit was exceeded.",
+    "PreviewDisplayed": "The 3D preview will be displayed here when an item is selected.",
+    "ConfirmMint": "Are you sure you want to mint?",
+    "MintOperationWarning": "Performing the Mint operation will disable the ability to undo",
+    "Or": "or redo",
+    "MintOperationWarningTo": "any previous changes. Please confirm that you want to proceed.",
+    "WishToContinue": "Do you wish to continue?",
+    "ShortCut": "Short Cut",
+    "MintNow": "Mint Now",
+    "StatusChangeMessage": "After minting, the status will change to Private and cannot be reverted to Draft.",
+    "ReusableComponents": "Re-usable components built using Figr Design System"
+  }
+}

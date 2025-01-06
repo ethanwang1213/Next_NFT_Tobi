@@ -1,0 +1,59 @@
+{
+  "ContentShowcase": {
+    "NewShowcase": "NEW SHOWCASE",
+    "LastUpdatedDate": "Last Updated Date：",
+    "ShowcaseName": "Showcase Name",
+    "ShowcaseDescription": "Showcase Description",
+    "Publish": "Publish",
+    "Draft": "Draft",
+    "Public": "Public",
+    "Published": "Public",
+    "Schedule": "Schedule",
+    "Scheduled": "Scheduled",
+    "Private": "Private",
+    "Delete": "Delete"
+  },
+  "ContentBrand": {
+    "ContentImage": "Content Image",
+    "ImageGuidelines": "For best results, use an image that is at least 320x100 pixels and no more than 4MB in size. Accepted file formats are PNG, JPEG, or GIF (non-animated).",
+    "OfficialMerchandiseSticker": "Official merchandise sticker",
+    "MerchandiseImageGuidelines": "For best results, use an image that is at least 500x500 pixels and no more than 4MB in size. Accepted file formats are PNG or GIF (non-animated).",
+    "Change": "Change",
+    "Delete": "Delete",
+    "Upload": "Upload"
+  },
+  "ContentSettings": {
+    "Showcase": "Showcase",
+    "Brand": "Brand",
+    "Settings": "Settings",
+    "ContentNameChange": "Content Name Change",
+    "ContentNameChangeGuidelines": "The content name can be changed once every three months. After the change, the content name visible to users will be updated once the review is completed.",
+    "contentNameChangeRequest": "The content name change request is currently under review. \nOnce approved, the name will be updated. Additionally, after the change, it cannot be modified again for three months.",
+    "NameChangeRequest": "Submitted a request to change the content name!",
+    "NameChangeCompletion": "The name will be changed once the review is completed. Please note that the review process may take up to one week.",
+    "ContentName": "Content Name",
+    "ChangeContentNameGuidelines": "You can change the name of the content. A review is required after the change, and if approved, the name will be updated. Once changed, the name cannot be modified again for 3 months.",
+    "ContentDescription": "Content Description",
+    "EditDescription": "You can freely edit the description of the content.",
+    "DefaultLicenseSetting": "Default License Setting",
+    "SetDefaultLicense": "Set the default license for each DigitalItem record.",
+    "CopyrightHolders": "Copyright Holders",
+    "SetDefaultCopyrightHolders": "Set the default copyright holders for each DigitalItem record. You can enter this like tags, and no re-review is required for this change.",
+    "CustomizeImage": "Customize Image",
+    "ConfirmSave": "Confirm Save",
+    "Save": "Save",
+    "Discard": "Discard",
+    "Cancel": "Cancel",
+    "Done": "Done",
+    "Public": "Public",
+    "AddCopyrightHolder": "Add a Copyright holder tag",
+    "GotIt": "Got it",
+    "DiscardChanges": "Do you want to discard the changes?"
+  },
+  "ContentReview": {
+    "UnderReview": "Under review",
+    "ReviewMessage": "This page will become accessible after the review is completed.",
+    "AdditionalDocuments": "In some cases, you may be required to submit additional documents.",
+    "ForInquiries": "For inquiries: TCP-support@tobiratory.com"
+  }
+}

@@ -72,7 +72,7 @@ const FlowAgreementWithEmailAndPassword = ({
 
   const getPasswordError = (password: string) => {
     if (new RegExp(`[^A-Za-z0-9${symbolPattern}]`).test(password)) {
-      return "パスワードに使用できない文字が含まれています";
+      return pass("InvalidPasswordCharacters");
     }
     return "";
   };
@@ -103,7 +103,7 @@ const FlowAgreementWithEmailAndPassword = ({
       setEmailStatus({
         email,
         valid: false,
-        error: "メールアドレスの形式で入力してください",
+        error: t("EnterValidEmail"),
       });
     }
   };

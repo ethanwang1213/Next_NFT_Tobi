@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }
@@ -68,7 +69,7 @@ export default function Index() {
       <div className="text-xs font-medium text-neutral-400">
         {t("TogglePermission")}
       </div>
-      <div className="flex justify-end mt-8">
+      <div className="flex justify-end mt-8 mr-7">
         {loadingNewBox ? (
           <span className="loading loading-spinner loading-md my-3 text-secondary-600" />
         ) : (
@@ -80,7 +81,7 @@ export default function Index() {
         )}
       </div>
       {data && (
-        <div className="rounded-2xl border border-[#CCCBCB ] ml-8 mt-4">
+        <div className="rounded-2xl border border-[#CCCBCB ] ml-8 mr-7 mt-4">
           <InventoryComponent
             giftPermission={data.giftPermission}
             address={data.address}

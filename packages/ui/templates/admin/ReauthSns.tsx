@@ -1,5 +1,6 @@
 import { hasAppleAccount, hasGoogleAccount } from "contexts/AdminAuthProvider";
 import useSnsReauthentication from "hooks/useSnsReauthentication";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { ErrorMessage, ProviderId } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
@@ -20,6 +21,7 @@ const ReauthSns = ({
 }) => {
   const [reauthenticate, reauthenticating, userCredential, reauthError] =
     useSnsReauthentication();
+  const t = useTranslations("LogInSignUp");
 
   useEffect(() => {
     if (!userCredential) {
@@ -43,14 +45,14 @@ const ReauthSns = ({
             {hasGoogleAccount() &&
               (!providerId || providerId === ProviderId.GOOGLE) && (
                 <GoogleButton
-                  label={"Googleでログイン"}
+                  label={t("LogInWithGoogle")}
                   onClick={() => reauthenticate(ProviderId.GOOGLE)}
                 />
               )}
             {hasAppleAccount() &&
               (!providerId || providerId === ProviderId.APPLE) && (
                 <AppleButton
-                  label={"Appleでログイン"}
+                  label={t("LogInWithApple")}
                   onClick={() => reauthenticate(ProviderId.APPLE)}
                 />
               )}

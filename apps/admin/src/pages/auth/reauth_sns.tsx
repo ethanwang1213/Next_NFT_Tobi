@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { useAuth } from "contexts/AdminAuthProvider";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
@@ -8,7 +9,7 @@ import Reauth from "ui/templates/admin/ReauthSns";
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }
