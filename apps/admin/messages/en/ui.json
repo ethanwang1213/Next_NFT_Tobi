@@ -20,5 +20,15 @@
     "ToggleUIVisibility": "Toggle UI Visibility",
     "Help": "Help",
     "VisualSetting": "Visual Setting"
+  },
+  "Label": {
+    "Back": "Back",
+    "Done": "Done",
+    "Email": "E-mail",
+    "Next": "Next",
+    "Processing": "Processing",
+    "Register": "Register",
+    "ReRegistration": "Re-registration",
+    "Reset": "Reset"
   }
 }

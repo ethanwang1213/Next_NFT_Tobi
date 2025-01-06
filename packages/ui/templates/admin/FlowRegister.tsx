@@ -1,4 +1,5 @@
 import { useAuth } from "contexts/AdminAuthProvider";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Button from "ui/atoms/Button";
 
@@ -18,7 +19,7 @@ const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
         className={"mt-[90px]"}
       />
       <div className={"mt-[50px]"}>
-        <ProcesssingStatus registered={registered} error={error} />
+        <ProcessingStatus registered={registered} error={error} />
       </div>
       <div className={"mt-[15px]"}>
         <RegisterButton
@@ -31,18 +32,19 @@ const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
   );
 };
 
-const ProcesssingStatus = ({
+const ProcessingStatus = ({
   registered,
   error,
 }: {
   registered: boolean;
   error?: string;
 }) => {
+  const t = useTranslations("LogInSignUp");
   if (error) {
     return (
       <>
         <div className={"font-bold text-[32px]"}>
-          Flow アカウント作成に失敗しました
+          {t("FailedToCreateFlowAccount")}
         </div>
         <div className={"font-semibold text-[12px] text-attention text-center"}>
           {error}
@@ -51,29 +53,32 @@ const ProcesssingStatus = ({
     );
   } else if (registered) {
     return (
-      <div className={"font-bold text-[32px]"}>
-        Flow アカウントを作成しました
-      </div>
+      <div className={"font-bold text-[32px]"}>{t("FlowAccountCreated")}</div>
     );
   }
 
   return (
     <>
-      <div className={"flex flex-row items-end font-bold text-[32px]"}>
-        Flow アカウント作成中
+      <div
+        className={
+          "flex flex-row items-end justify-center font-bold text-[32px]"
+        }
+      >
+        {t("CreatingFlowAccount")}
         <span className="loading loading-dots loading-md"></span>
       </div>
       <div className={"font-medium text-[14px] mt-[15px]"}>
-        Flow アカウントの作成には時間がかかることがあります。
+        {t("FlowAccountCreationNotice")}
       </div>
       <div className={"font-medium text-[14px] text-center mt-[100px]"}>
-        アカウントが作成されると通知されます
+        {t("AccountCreationNotification")}
       </div>
     </>
   );
 };
 
 const RegisterButton = ({ registered, error, onClickRegister }: Props) => {
+  const t = useTranslations("Label");
   const { finishFlowAccountRegistration } = useAuth();
   if (error) {
     return (
@@ -81,7 +86,7 @@ const RegisterButton = ({ registered, error, onClickRegister }: Props) => {
         className="bg-primary text-primary-content w-[179px] h-[48px] rounded-2xl"
         onClick={onClickRegister}
       >
-        <span className={"font-normal text-[20px]"}>再登録</span>
+        <span className={"font-normal text-[20px]"}>{t("ReRegistration")}</span>
       </Button>
     );
   } else if (registered) {
@@ -90,7 +95,7 @@ const RegisterButton = ({ registered, error, onClickRegister }: Props) => {
         className="bg-primary text-primary-content w-[179px] h-[48px] rounded-2xl"
         onClick={finishFlowAccountRegistration}
       >
-        <span className={"font-normal text-[20px]"}>完了</span>
+        <span className={"font-normal text-[20px]"}>{t("Done")}</span>
       </Button>
     );
   }
@@ -98,6 +103,7 @@ const RegisterButton = ({ registered, error, onClickRegister }: Props) => {
 };
 
 export const LoadingButton = () => {
+  const t = useTranslations("Label");
   return (
     <button
       type="button"
@@ -106,7 +112,9 @@ export const LoadingButton = () => {
     >
       <div className={"flex flex-row items-center justify-center"}>
         <span className="loading loading-spinner loading-sm"></span>
-        <span className="font-normal text-[20px] ml-[5px]">処理中</span>
+        <span className="font-normal text-[20px] ml-[5px]">
+          {t("Processing")}
+        </span>
       </div>
     </button>
   );

@@ -58,6 +58,7 @@
     "PasswordsMismatch": "パスワードが一致しません。",
     "NewPassword": "新パスワード",
     "ConfirmPassword": "確認（再入力）",
-    "ResetSuccess": "パスワードをリセットしました！"
+    "ResetSuccess": "パスワードをリセットしました！",
+    "InvalidPasswordCharacters": "パスワードに使用できない文字が含まれています"
   }
 }

@@ -62,6 +62,8 @@
     "FreeDistributionNote": "※Sales functionality will be implemented in the future.",
     "DisplaySampleItems": "Display of Sample Digital Items",
     "DisplaySampleItemsDescription": "You can freely display and showcase digital items you wish to sell on SAIDAN.",
-    "SingleContentLimit": "Please note that only one piece of content can be applied for per account."
+    "SingleContentLimit": "Please note that only one piece of content can be applied for per account.",
+    "Registered": "Registration has been completed.",
+    "RegistrationFailed": "Registration has failed."
   }
 }

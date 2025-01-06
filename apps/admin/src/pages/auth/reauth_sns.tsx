@@ -1,10 +1,10 @@
+import { getMessages } from "admin/messages/messages";
 import { useAuth } from "contexts/AdminAuthProvider";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { isProviderId, ProviderId } from "types/adminTypes";
 import Reauth from "ui/templates/admin/ReauthSns";
-import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

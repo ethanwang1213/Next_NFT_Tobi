@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
@@ -5,7 +6,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ContentsManageTab from "ui/organisms/admin/ContentsManageTab";
-import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -53,7 +53,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="h-14 ml-9 mr-7 mt-[34px] flex justify-between items-center">
+      <div className="sm:!min-w-[816px] h-14 ml-9 mr-7 mt-[34px] flex justify-between items-center">
         <h1 className="font-semibold text-secondary text-3xl uppercase">
           {t("Content")}
         </h1>

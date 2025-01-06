@@ -13,9 +13,7 @@ const Row1 = ({ label, wide, children }) => {
             : "sm:w-[40%] w-full sm:justify-start justify-between"
         } flex-none flex flex-row items-center`}
       >
-        <span className="text-base mr-4 md:text-wrap sm:text-nowrap text-wrap">
-          {label}
-        </span>
+        <span className="text-base mr-4 text-wrap">{label}</span>
         {label.length ? <RequireMark /> : <></>}
       </div>
       <div className={`flex-auto break-all md:pl-10${wide ? "" : ""}`}>
@@ -93,6 +91,7 @@ const ConfirmInformation = ({
       .map(([key]) => <Fragment key={key}>{key}, </Fragment>);
 
   const t = useTranslations("TCP");
+  const d = useTranslations("DateFormat");
   return (
     <div>
       <div className="mb-6 text-title-color flex flex-col items-center">
@@ -128,10 +127,15 @@ const ConfirmInformation = ({
           {userInfo.lastName} {userInfo.firstName}
         </span>
       </Row1>
-      <Row1 label={"DateOfBirth"} wide={false}>
+      <Row1 label={t("DateOfBirth")} wide={false}>
         <span className="">
-          {userInfo.birthdayYear}年 {userInfo.birthdayMonth}月{" "}
-          {userInfo.birthdayDate}日
+          {d("Date", {
+            date: new Date(
+              userInfo.birthdayYear,
+              userInfo.birthdayMonth,
+              userInfo.birthdayDate,
+            ),
+          })}
         </span>
       </Row1>
       <Row1 label={t("MailAddress")} wide={false}>
@@ -150,10 +154,10 @@ const ConfirmInformation = ({
       <Row1 label={t("CopyrightStatement")} wide={false}>
         <span className="">©{copyrightInfo.copyrightHolder}</span>
       </Row1>
-      <Row3 label={t("LicenseForWork")}>
+      <Row3 label={t("CopyrightLicenseInfo")}>
         <div>{copyrightFiles()}</div>
       </Row3>
-      <Row4 label={t("CopyrightLicenseInfo")}>
+      <Row4 label={t("LicenseForWork")}>
         <span className="uppercase">
           {getDefaultLicense(copyrightInfo.license)}
         </span>

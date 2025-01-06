@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
@@ -7,7 +8,6 @@ import CreateButton from "ui/molecules/CreateButton";
 import BoxNameEditDialog from "ui/organisms/admin/BoxNameEditDialog";
 import BoxComponent from "ui/organisms/admin/GiftBoxComponent";
 import InventoryComponent from "ui/organisms/admin/InventoryComponent";
-import { getMessages } from "admin/messages/messages";
 
 export const metadata: Metadata = {
   title: "ギフト受け取り設定",
@@ -69,7 +69,7 @@ export default function Index() {
       <div className="text-xs font-medium text-neutral-400">
         {t("TogglePermission")}
       </div>
-      <div className="flex justify-end mt-8">
+      <div className="flex justify-end mt-8 mr-7">
         {loadingNewBox ? (
           <span className="loading loading-spinner loading-md my-3 text-secondary-600" />
         ) : (
@@ -81,7 +81,7 @@ export default function Index() {
         )}
       </div>
       {data && (
-        <div className="rounded-2xl border border-[#CCCBCB ] ml-8 mt-4">
+        <div className="rounded-2xl border border-[#CCCBCB ] ml-8 mr-7 mt-4">
           <InventoryComponent
             giftPermission={data.giftPermission}
             address={data.address}

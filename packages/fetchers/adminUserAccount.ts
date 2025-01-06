@@ -1,4 +1,5 @@
 import { auth } from "fetchers/firebase/client";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ApiProfileData } from "types/adminTypes";
 
@@ -15,7 +16,7 @@ export const fetchMyProfile = async () => {
   if (res.ok) {
     return resData;
   } else {
-    console.log(resData);
+    console.error(resData);
     return resData;
   }
 };
@@ -24,6 +25,7 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
   const [response, setResponse] = useState<ApiProfileData>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations();
 
   const register = async () => {
     try {
@@ -48,16 +50,16 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
               return;
             }
           }
-          setError("Failed to register");
+          setError(t("TCP.RegistrationFailed"));
         }
       } else {
         const resData = await res.text();
-        console.log(resData);
-        setError("エラーが発生しました。もう一度お試し下さい。");
+        console.error(resData);
+        setError(t("Error.Retry"));
       }
     } catch (error) {
-      console.log(String(error))
-      setError("エラーが発生しました。もう一度お試し下さい。");
+      console.error(String(error));
+      setError(t("Error.Retry"));
     }
     setLoading(false);
   };

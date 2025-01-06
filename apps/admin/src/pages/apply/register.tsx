@@ -1,9 +1,7 @@
+import { getMessages } from "admin/messages/messages";
 import clsx from "clsx";
 import { useAuth } from "contexts/AdminAuthProvider";
-import {
-  useTcpRegistration,
-  validateCopyrightFile,
-} from "fetchers/businessAccount";
+import { useTcpRegistration } from "fetchers/businessAccount";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
@@ -17,7 +15,6 @@ import {
 } from "types/adminTypes";
 import Button from "ui/atoms/Button";
 import TripleToggleSwitch from "ui/molecules/TripleToggleSwitch";
-import { getMessages } from "admin/messages/messages";
 import ConfirmInformation from "./confirm";
 import ContentInformation from "./contentInfo";
 import CopyrightInformation from "./copyrightInfo";
@@ -86,7 +83,8 @@ const Register = () => {
   const [originalContentDeclaration, setOriginalContentDeclaration] =
     useState(false);
 
-  const [registerTcp, response, loading] = useTcpRegistration(setError);
+  const [registerTcp, validateCopyrightFile, response, loading] =
+    useTcpRegistration(setError);
 
   useEffect(() => {
     if (!response) {
