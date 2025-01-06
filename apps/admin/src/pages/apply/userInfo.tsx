@@ -116,8 +116,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         </div>
       </Row1>
       <Row1 label={t("DateOfBirth")}>
-        <div className="flex flex-row items-end w-[49%]">
-          <div className="flex flex-row items-end w-[40%]">
+        <div className="flex flex-row items-end min-w-[260px] w-[49%]">
+          <div className="flex flex-row items-end w-[110px]">
             <input
               id="user_birthday_year"
               className={clsx(
@@ -133,7 +133,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             />
             <span className="mx-4">/</span>
           </div>
-          <div className="flex flex-row items-end w-[30%]">
+          <div className="flex flex-row items-end w-[95px]">
             <input
               id="user_birthday_month"
               className={clsx(
@@ -149,7 +149,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             />
             <span className="mx-4">/</span>
           </div>
-          <div className="flex flex-row items-end w-[30%]">
+          <div className="flex flex-row items-end w-[55px]">
             <input
               id="user_birthday_date"
               className={clsx(
@@ -170,7 +170,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         <input
           id="user_email"
           className={clsx(
-            "flex-1 w-[49%] h-12 pl-5",
+            "flex-1 min-w-[200px] w-[49%] h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
@@ -185,7 +185,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         <input
           id="user_phone"
           className={clsx(
-            "w-[49%] h-12 pl-5",
+            "min-w-[200px] w-[49%] h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",

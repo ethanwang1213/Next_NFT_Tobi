@@ -13,9 +13,7 @@ const Row1 = ({ label, wide, children }) => {
             : "sm:w-[40%] w-full sm:justify-start justify-between"
         } flex-none flex flex-row items-center`}
       >
-        <span className="text-base mr-4 md:text-wrap sm:text-nowrap text-wrap">
-          {label}
-        </span>
+        <span className="text-base mr-4 text-wrap">{label}</span>
         {label.length ? <RequireMark /> : <></>}
       </div>
       <div className={`flex-auto break-all md:pl-10${wide ? "" : ""}`}>
@@ -156,10 +154,10 @@ const ConfirmInformation = ({
       <Row1 label={t("CopyrightStatement")} wide={false}>
         <span className="">©{copyrightInfo.copyrightHolder}</span>
       </Row1>
-      <Row3 label={t("LicenseForWork")}>
+      <Row3 label={t("CopyrightLicenseInfo")}>
         <div>{copyrightFiles()}</div>
       </Row3>
-      <Row4 label={t("CopyrightLicenseInfo")}>
+      <Row4 label={t("LicenseForWork")}>
         <span className="uppercase">
           {getDefaultLicense(copyrightInfo.license)}
         </span>

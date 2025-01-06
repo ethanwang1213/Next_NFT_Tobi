@@ -64,7 +64,7 @@ const Index = () => {
         alt="Tobiratory"
         className="mx-auto sm:w-[191px] sm:h-[194px] w-[78px] h-[79px]"
       />
-      <p className="text-[20px] sm:text-[48px] sm:mt-28 mt-10 font-bold">
+      <p className="text-[20px] sm:text-[48px] sm:mt-28 mt-10 font-bold leading-normal">
         {t("Program")}
       </p>
       <p className="mt-6 mb-10 sm:text-[16px] text-[13px] sm:text-center text-left font-semibold">
