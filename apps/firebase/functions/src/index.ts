@@ -15,6 +15,7 @@ import {flowTxMonitor} from "./flowTxMonitor";
 import {taskWrapperLink} from "./taskWrapperLink";
 import {tobiratoryCms} from "./cms";
 import {cronForNative} from "./native/nativeCron";
+import {flowScriptDebugFunction} from "./flowScriptDebugFunction";
 
 // initializeApp() is not needed in Cloud Functions for Firebase
 initializeApp({
@@ -38,6 +39,7 @@ exports.native = native;
 exports.taskWrapperLink = taskWrapperLink;
 exports.tobiratoryCms = tobiratoryCms;
 exports.cronForNative = cronForNative;
+exports.flowScriptDebugFunction = flowScriptDebugFunction;
 
 if (process.env.PUBSUB_EMULATOR_HOST) {
   exports.devtool = require("./devtool");
