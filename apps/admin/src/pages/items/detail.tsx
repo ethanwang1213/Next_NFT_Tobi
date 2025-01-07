@@ -490,7 +490,7 @@ const Detail = () => {
       <div className="hidden">
         <CustomUnity isSceneOpen={isSceneOpen} />
       </div>
-      <div className={`ml-8 mr-[104px] h-12 flex items-center gap-4`}>
+      <div className={`ml-8 md:mr-[104px] h-12 flex items-center gap-4 min-w-[900px]`}>
         <button onClick={handleLinkClick}>
           <NextImage
             src="/admin/images/icon/arrow_back.svg"
