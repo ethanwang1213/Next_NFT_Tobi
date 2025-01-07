@@ -14,7 +14,7 @@ const FirebaseAuthError = ({ error }: Props) => {
     if (!error) {
       return "";
     }
-    error.code = "auth/too-many-requests";
+
     switch (error.code) {
       case "auth/invalid-action-code":
         return t("InvalidActionCode");
