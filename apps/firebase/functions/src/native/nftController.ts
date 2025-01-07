@@ -517,11 +517,13 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
     console.log(JSON.stringify(await fcl.config().all()));
 
     fcl.send([fcl.ping()])
-      .then(() => { console.log("SUCCESS"); })
-      .catch((e) => {
-        console.log(`ERROR: `);
-        throw e;
-      });
+        .then(() => {
+          console.log("SUCCESS");
+        })
+        .catch((e) => {
+          console.log("ERROR: ");
+          throw e;
+        });
 
     const result = await fcl.query({
       cadence,
