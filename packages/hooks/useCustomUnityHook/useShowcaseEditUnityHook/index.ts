@@ -13,10 +13,7 @@ import {
   SampleSaveData,
   UpdatingSaidanSettings,
 } from "types/unityTypes";
-import {
-  DefaultAcrylicBaseScaleRatio,
-  DefaultItemMeterHeight,
-} from "../constants";
+import { DefaultAcrylicBaseScaleRatio } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
@@ -135,8 +132,6 @@ export const useShowcaseEditUnityHook = ({
           shelfSectionIndex: v.shelfSectionIndex ?? -1,
           acrylicBaseScaleRatio:
             v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
-          canScale: true,
-          itemMeterHeight: DefaultItemMeterHeight,
           itemName: v.name,
         };
       });
@@ -147,8 +142,6 @@ export const useShowcaseEditUnityHook = ({
           imageUrl: "",
           shelfSectionIndex: v.shelfSectionIndex ?? -1,
           acrylicBaseScaleRatio: DefaultAcrylicBaseScaleRatio,
-          canScale: true,
-          itemMeterHeight: DefaultItemMeterHeight,
           itemName: v.name,
         };
       });

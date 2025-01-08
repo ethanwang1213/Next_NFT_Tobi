@@ -13,10 +13,7 @@ import {
   SampleSaveData,
   TextureParam,
 } from "types/unityTypes";
-import {
-  DefaultAcrylicBaseScaleRatio,
-  DefaultItemMeterHeight,
-} from "../constants";
+import { DefaultAcrylicBaseScaleRatio } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
@@ -130,8 +127,6 @@ export const useWorkspaceUnityHook = ({
         shelfSectionIndex: -1,
         acrylicBaseScaleRatio:
           v.acrylicBaseScaleRatio ?? DefaultAcrylicBaseScaleRatio,
-        canScale: true,
-        itemMeterHeight: DefaultItemMeterHeight,
         itemName: v.name,
       };
     });

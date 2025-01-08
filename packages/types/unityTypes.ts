@@ -186,10 +186,7 @@ export type SaidanItemData = ItemBaseData &
   DecorationId &
   ItemTransform &
   ItemStageType &
-  ItemShelfSectionIndex & {
-    canScale: boolean;
-    itemMeterHeight: number;
-  };
+  ItemShelfSectionIndex;
 
 ///////////////////////////////////////
 // types for load data with arrangement
@@ -208,9 +205,7 @@ export type NftLoadData = NftBaseDataForLoading &
   DecorationId &
   ItemTransform &
   ItemStageType &
-  ItemShelfSectionIndex & {
-    itemMeterHeight: number;
-  };
+  ItemShelfSectionIndex;
 
 ///////////////////////////////////////
 // types for item save data
