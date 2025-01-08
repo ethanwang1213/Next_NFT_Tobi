@@ -37,46 +37,55 @@ const ImageCropDialog = ({
   const t = useTranslations("ContentSettings");
   const b = useTranslations("GiftReceivingSettings");
 
+  const calculateCrop = (width, height) => {
+    let newCrop;
+    if (aspectRatio) {
+      newCrop = makeAspectCrop(
+        { unit: "%", width: 100 },
+        aspectRatio,
+        width,
+        height,
+      );
+    } else {
+      newCrop = {
+        unit: "%",
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+      };
+    }
+    newCrop = convertToPixelCrop(newCrop, width, height);
+    newCrop.x = (imgWrapperRef.current.clientWidth - newCrop.width) / 2;
+    newCrop.y = (imgWrapperRef.current.clientHeight - newCrop.height) / 2;
+    setCrop(newCrop);
+  };
+
+  useEffect(() => {
+    setImageURL(initialValue);
+
+    const img = imgRef.current;
+    if (img) {
+      const { width, height } = img;
+      calculateCrop(width, height);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValue, aspectRatio]);
+
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
-      if (!imgRef.current || !imgWrapperRef.current) return;
       const { width, height } = e.currentTarget;
-      let newCrop;
-      if (aspectRatio) {
-        newCrop = makeAspectCrop(
-          {
-            unit: "%",
-            width: 100,
-          },
-          aspectRatio,
-          width,
-          height,
-        );
-      } else {
-        newCrop = {
-          unit: "%", // Can be 'px' or '%'
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 100,
-        };
-      }
-      newCrop = convertToPixelCrop(newCrop, width, height);
-      newCrop.x = (imgWrapperRef.current.clientWidth - newCrop.width) / 2;
-      newCrop.y = (imgWrapperRef.current.clientHeight - newCrop.height) / 2;
-      setCrop(newCrop);
+      calculateCrop(width, height);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [aspectRatio],
   );
 
   const onCropChange = useCallback((c: Crop) => {
     const { width, height } = imgRef.current;
     const { clientWidth, clientHeight } = imgWrapperRef.current;
-    // check the image region
-    // check left-top corner
     if (c.x < (clientWidth - width) / 2) return;
     if (c.y < (clientHeight - height) / 2) return;
-    // check right-bottom corder
     if (c.x + c.width > (clientWidth + width) / 2) return;
     if (c.y + c.height > (clientHeight + height) / 2) return;
 
@@ -90,9 +99,6 @@ const ImageCropDialog = ({
     }
 
     const { clientWidth, clientHeight } = imgWrapperRef.current;
-    // This will size relative to the uploaded image
-    // size. If you want to size according to what they
-    // are looking at on screen, remove scaleX + scaleY
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
 
@@ -119,8 +125,6 @@ const ImageCropDialog = ({
       crop.height * scaleY,
     );
 
-    // You might want { type: "image/jpeg", quality: <0 to 1> } to
-    // reduce image size
     const blob = await offscreen.convertToBlob({
       type: "image/png",
     });
