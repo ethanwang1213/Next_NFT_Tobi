@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { UseFormRegister } from "react-hook-form/dist/types/form";
@@ -34,7 +35,7 @@ const EmailTextField = ({ placeholder, className, register }: Props) => {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

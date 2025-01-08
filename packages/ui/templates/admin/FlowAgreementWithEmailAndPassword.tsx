@@ -72,7 +72,7 @@ const FlowAgreementWithEmailAndPassword = ({
 
   const getPasswordError = (password: string) => {
     if (new RegExp(`[^A-Za-z0-9${symbolPattern}]`).test(password)) {
-      return "パスワードに使用できない文字が含まれています";
+      return pass("InvalidPasswordCharacters");
     }
     return "";
   };
@@ -84,12 +84,13 @@ const FlowAgreementWithEmailAndPassword = ({
           !agreed || !passwordStatus.valid || !passwordConfirmationStatus.valid
         );
       case PageType.PasswordReset:
-      case PageType.PasswordUpdate:
         return (
           !emailStatus.valid ||
           !passwordStatus.valid ||
           !passwordConfirmationStatus.valid
         );
+      case PageType.PasswordUpdate:
+        return !passwordStatus.valid || !passwordConfirmationStatus.valid;
       default:
         return false;
     }
@@ -102,7 +103,7 @@ const FlowAgreementWithEmailAndPassword = ({
       setEmailStatus({
         email,
         valid: false,
-        error: "メールアドレスの形式で入力してください",
+        error: t("EnterValidEmail"),
       });
     }
   };
@@ -186,7 +187,6 @@ const FlowAgreementWithEmailAndPassword = ({
               pageType === PageType.PasswordUpdate
             }
             validateEmail={validateEmail}
-            disable={PageType.PasswordReset ? true : false}
           />
         </div>
         <div
@@ -351,25 +351,27 @@ export const TermsOfService = ({
 
   return (
     <div className={"flex flex-row items-center"}>
-      <input
-        type={"checkbox"}
-        checked={agreed}
-        className={
-          "checkbox w-[16px] h-[16px] rounded bg-slate-200 shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-        }
-        onChange={() => setAgreed((prev) => !prev)}
-      />
-      <span className={"font-medium text-[12px]"}>
-        <a
-          href={"https://www.tobiratory.com/about"}
-          className={"text-primary ml-[5px] font-medium text-[12px]"}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t("Terms")}
-        </a>
-        {t("AgreeToTerms")}
-      </span>
+      <label>
+        <input
+          type={"checkbox"}
+          checked={agreed}
+          className={
+            "checkbox w-[16px] h-[16px] rounded bg-slate-200 shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+          }
+          onChange={() => setAgreed((prev) => !prev)}
+        />
+        <span className={"font-medium text-[12px]"}>
+          <a
+            href={"https://www.tobiratory.com/about"}
+            className={"text-primary ml-[5px] font-medium text-[12px]"}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t("Terms")}
+          </a>
+          {t("AgreeToTerms")}
+        </span>
+      </label>
     </div>
   );
 };

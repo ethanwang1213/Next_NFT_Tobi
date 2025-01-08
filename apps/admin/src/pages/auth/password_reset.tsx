@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { auth } from "fetchers/firebase/client";
 import {
   isSignInWithEmailLink,
@@ -17,7 +18,7 @@ import FlowAgreementWithEmailAndPassword, {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }
@@ -29,7 +30,7 @@ const PasswordReset = () => {
   const [updatedPassword, setUpdatedPassword] = useState(false);
   const [authError, setAuthError] = useState<ErrorMessage>(null);
   const t = useTranslations("LogInSignUp");
-  const w = useTranslations("Workspace");
+  const l = useTranslations("Label");
 
   useEffect(() => {
     const curHref = window.location.href;
@@ -83,7 +84,7 @@ const PasswordReset = () => {
     return (
       <FlowAgreementWithEmailAndPassword
         title={t("PasswordReset")}
-        buttonText={w("Reset")}
+        buttonText={l("Reset")}
         email={""}
         isSubmitting={updatingPassword}
         pageType={PageType.PasswordReset}

@@ -1,0 +1,33 @@
+{
+  "Showcase": {
+    "ItemTitle": "アイテムタイトル",
+    "Exit": "退出",
+    "SampleItems": "サンプル",
+    "Inventory": "インベントリ",
+    "Settings": "設定",
+    "Position": "位置",
+    "Rotation": "回転",
+    "Scale": "拡大/縮小",
+    "Wallpaper": "壁紙",
+    "Tint": "色合い",
+    "Floor": "床",
+    "Lighting": "照明",
+    "SceneLight": "シーンライト",
+    "Brightness": "明るさ",
+    "PointLight": "ポイントライト",
+    "ReturnItem": "アイテムを戻す",
+    "DeleteSelectingItem": "選択中のアイテムをショーケース上から削除",
+    "MintFailed": "ミントに失敗しました。",
+    "MintFailedLimitExceeded": "ミントに失敗しました。1日の取引制限を超えています。",
+    "PreviewDisplayed": "アイテムが選択されると、ここに3Dプレビューが表示されます。",
+    "ConfirmMint": "本当にミントしますか？",
+    "MintOperationWarning": "ミント操作を実行すると、以前の変更を元に戻す ",
+    "Or": "またはやり直す",
+    "MintOperationWarningTo": " ことができなくなります。 本当に実行するか確認してください。",
+    "WishToContinue": "続行しますか？",
+    "ShortCut": "ショートカット",
+    "MintNow": "今すぐミント",
+    "StatusChangeMessage": "ミント後、ステータスはプライベートに変更され、ドラフトに戻すことはできません。",
+    "ReusableComponents": "Figrデザインシステムを使用して構築された再利用可能なコンポーネント"
+  }
+}

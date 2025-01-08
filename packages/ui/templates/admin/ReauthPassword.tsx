@@ -78,8 +78,9 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
     <ReauthTemplate position={Position.Top} onClickBack={onClickBack}>
       <div className="flex w-[780px] h-[80px] flex-col justify-center shrink-0 mt-[50px]">
         <span className="text-secondary text-center text-[32px] font-bold leading-[normal]">
-          {t("PasswordReset")}
+          {t("AccountVerification")}
         </span>
+        <br />
       </div>
       <div className="w-[408px] h-[52px] shrink-0 mt-[103px]">
         <input
@@ -93,7 +94,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
         <input
           type={"password"}
           value={password}
-          placeholder={"Password"}
+          placeholder={t("PromptPassword")}
           className="rounded-[16px] bg-base-100 text-[16px] text-secondary font-normal w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_4px_8px_0_rgb(0,0,0,0.5)]"
           onChange={(e) => setPassword(e.target.value)}
         />

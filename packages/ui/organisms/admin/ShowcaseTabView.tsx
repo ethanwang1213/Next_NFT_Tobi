@@ -130,7 +130,7 @@ const ShowcaseTabView = ({
       {showRestoreMenu && (
         <div
           className="absolute w-full h-full bg-secondary bg-opacity-75 backdrop-blur-sm 
-            flex flex-col gap-6 justify-center items-center z-10 select-none"
+            flex flex-col gap-6 justify-center items-center z-50 rounded-[20px] select-none"
           onMouseUp={handleMouseUp}
           onTouchEnd={handleMouseUp}
         >

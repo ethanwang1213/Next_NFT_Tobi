@@ -6,8 +6,8 @@ export const useMyUnityContext = () => {
 
   return useUnityContext({
     loaderUrl: `${buildFilePath}.loader.js`,
-    dataUrl: `${buildFilePath}.data`,
-    frameworkUrl: `${buildFilePath}.framework.js`,
-    codeUrl: `${buildFilePath}.wasm`,
+    dataUrl: `${buildFilePath}.data.gz`,
+    frameworkUrl: `${buildFilePath}.framework.js.gz`,
+    codeUrl: `${buildFilePath}.wasm.gz`,
   });
 };

@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
@@ -24,7 +25,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="h-14 ml-12 mr-7 mt-9 flex justify-between items-center uppercase">
+      <div className="sm:!min-w-[904px] h-14 ml-12 mr-7 mt-9 flex justify-between items-center uppercase">
         <h1 className="font-semibold text-secondary text-3xl">{t("Items")}</h1>
         <CreateButton {...(links[selectedTab] ?? links.item)} height={56} />
       </div>
@@ -38,7 +39,7 @@ export default function Index() {
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }

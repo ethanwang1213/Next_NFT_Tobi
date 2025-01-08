@@ -36,11 +36,12 @@ import {
   getDigitalItemStatusTitle,
   ScheduleItem,
 } from "ui/types/adminTypes";
+import {getMessages} from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
-      messages: (await import(`admin/messages/${locale}.json`)).default,
+      messages: await getMessages(locale),
     },
   };
 }
