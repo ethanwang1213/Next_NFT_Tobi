@@ -170,7 +170,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         <input
           id="user_email"
           className={clsx(
-            "flex-1 min-w-[200px] w-[49%] h-12 pl-5",
+            "flex-1 min-w-[286px] w-[49%] h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
@@ -185,7 +185,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         <input
           id="user_phone"
           className={clsx(
-            "min-w-[200px] w-[49%] h-12 pl-5",
+            "min-w-[286px] w-[49%] h-12 pl-5",
             "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
             "text-sm font-normal text-input-color",
             "placeholder:text-placeholder-color placeholder:font-normal",
