@@ -251,7 +251,7 @@ export const useShowcaseEditUnityHook = ({
         {
           sampleItemList,
           nftItemList,
-          thumbnailImageBase64: messageBody.saidanThumbnailBase64,
+          thumbnailImageBase64: messageBody.fixedPointSaidanThumbnailBase64,
           settings: messageBody.saidanData.saidanSettings,
         },
         updateIdValues,
