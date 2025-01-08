@@ -23,6 +23,21 @@ export const getAccountById = async (req: Request, res: Response) => {
         return;
       }
 
+      const flowAccountData = await prisma.flow_accounts.findUnique({
+        where: {
+          account_uuid: uid,
+          is_deleted: false,
+        },
+      });
+
+      if (!flowAccountData) {
+        res.status(401).send({
+          status: "error",
+          data: "Flow Account does not exist!",
+        });
+        return;
+      }
+
       const resData = {
         uuid: accountData.uuid,
         userId: accountData.user_id,
@@ -34,6 +49,11 @@ export const getAccountById = async (req: Request, res: Response) => {
         socialLinks: accountData.social_links,
         gender: accountData.gender,
         birth: accountData.birth,
+        flow: {
+          flowAddress: flowAccountData.flow_address,
+          publicKey: flowAccountData.public_key,
+          txId: flowAccountData.tx_id,
+        },
         createdAt: accountData.created_date_time,
       };
       res.status(200).send({
@@ -69,6 +89,9 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
             where: {
               is_deleted: false,
             },
+            include: {
+              favorite_users: true,
+            },
           },
         },
       });
@@ -84,7 +107,9 @@ export const getOthersSaidans = async (req: Request, res: Response) => {
       const resData = accountData.saidans.map((saidan)=>{
         return {
           id: saidan.id,
+          title: saidan.title,
           thumbImage: saidan.thumbnail_image,
+          favorite: saidan.favorite_users.filter((user)=>user.account_uuid == uid).length!=0,
         };
       });
       res.status(200).send({

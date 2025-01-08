@@ -642,6 +642,15 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
         },
       },
     });
+
+    if (!exist) {
+      res.status(200).send({
+        status: "error",
+        data: "not-exist",
+      });
+      return;
+    }
+
     if (exist?.content?.is_approved == null) {
       res.status(200).send({
         status: "error",
@@ -670,14 +679,6 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "error",
         data: "freezed",
-      });
-      return;
-    }
-
-    if (!exist) {
-      res.status(200).send({
-        status: "error",
-        data: "not-exist",
       });
       return;
     }

@@ -794,8 +794,8 @@ export const decorationSaidan = async (req: Request, res: Response) => {
 export const getSaidanDecorationData = async (req: Request, res: Response) => {
   const {saidanId} = req.params;
   const {authorization} = req.headers;
-  await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
-    const uid = decodedToken.uid;
+  await auth().verifyIdToken(authorization??"").then(async (_decodedToken: DecodedIdToken)=>{
+    // const uid = decodedToken.uid;
     try {
       const saidanData = await prisma.saidans.findUnique({
         where: {
@@ -810,13 +810,13 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (saidanData.account_uuid != uid) {
-        res.status(401).send({
-          status: "error",
-          data: "not-yours",
-        });
-        return;
-      }
+      // if (saidanData.account_uuid != uid) {
+      //   res.status(401).send({
+      //     status: "error",
+      //     data: "not-yours",
+      //   });
+      //   return;
+      // }
       const saidanTemplate = await prisma.saidans_template.findUnique({
         where: {
           id: saidanData.template_id,
