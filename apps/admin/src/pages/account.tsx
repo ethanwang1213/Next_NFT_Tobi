@@ -65,6 +65,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
   const [facebookUrl, setFacebookUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [urls, setUrls] = useState([]);
+  const [toastVisible, setToastVisible] = useState(false);
   const t = useTranslations("Account");
 
   const layoutClass = "flex items-center gap-4 mb-4";
@@ -94,6 +95,42 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const showToast = (message: string) => {
+    if (!toastVisible) {
+      setToastVisible(true);
+      toast.error(message, {
+        onClose: () => setToastVisible(false),
+      });
+    }
+  };
+
+  const validateUrl = (type: string, url: string) => {
+    let isValid = true;
+    let errorMessage = "";
+
+    if (type === "facebook") {
+      const facebookRegex = /^https?:\/\/(www\.)?facebook\.com\//i;
+      if (!facebookRegex.test(url)) {
+        isValid = false;
+        errorMessage = t("Errors.FacebookUrl");
+      }
+    } else if (type === "youtube") {
+      const youtubeRegex = /^https?:\/\/(www\.)?youtube\.com\//i;
+      if (!youtubeRegex.test(url)) {
+        isValid = false;
+        errorMessage = t("Errors.YouTubeUrl");
+      }
+    } else if (type === "siteLink") {
+      const siteLinkRegex = /^https?:\/\//i;
+      if (!siteLinkRegex.test(url)) {
+        isValid = false;
+        errorMessage = t("Errors.SiteLink");
+      }
+    }
+
+    return { isValid, errorMessage };
+  };
+
   const platforms = {
     X: "https://x.com/",
     Instagram: "https://instagram.com/",
@@ -109,6 +146,18 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       redirectUrl = `${baseUrl}${userName}`;
     }
     window.open(redirectUrl, "_blank", "noreferrer");
+  };
+
+  const socialLinksValidation = (type, url) => {
+    let validation = { isValid: true, errorMessage: "" };
+    if (type === 2) validation = validateUrl("facebook", url);
+    if (type === 3) validation = validateUrl("youtube", url);
+    if (type >= 4) validation = validateUrl("siteLink", url);
+
+    if (!validation.isValid) {
+      toast.dismiss();
+      showToast(validation.errorMessage);
+    }
   };
 
   const urlChangeHandler = (type, url) => {
@@ -153,7 +202,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 px-2">
+    <div className="flex flex-col gap-2 px-2 w-full">
       <div className={`${layoutClass}`}>
         <Image
           width={23}
@@ -208,7 +257,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           className={`${valueClass} flex-1 outline-none`}
           value={facebookUrl}
           onChange={(e) => urlChangeHandler(2, e.target.value)}
-          placeholder="http://example.com"
+          onBlur={() => {
+            socialLinksValidation(2, facebookUrl);
+          }}
+          placeholder="https://example.com"
         />
       </div>
       <div className={`${layoutClass}`}>
@@ -227,7 +279,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           className={`${valueClass} flex-1 outline-none`}
           value={youtubeUrl}
           onChange={(e) => urlChangeHandler(3, e.target.value)}
-          placeholder="http://example.com"
+          onBlur={() => {
+            socialLinksValidation(3, youtubeUrl);
+          }}
+          placeholder="https://example.com"
         />
       </div>
       {urls &&
@@ -253,7 +308,10 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
               className={`${valueClass} flex-1 outline-none ml-10`}
               value={url}
               onChange={(e) => urlChangeHandler(index + 4, e.target.value)}
-              placeholder="http://example.com"
+              placeholder="https://example.com"
+              onBlur={() => {
+                socialLinksValidation(index + 4, youtubeUrl);
+              }}
             />
           </div>
         ))}
@@ -429,7 +487,7 @@ export default function Index() {
               <input
                 type="text"
                 className={`${valueClass} outline-none`}
-                value={data?.userId ?? ""}
+                value={data?.userId ? `@${data.userId}` : ""}
                 placeholder={t("UserIdNoSpaces")}
                 onChange={(e) => fieldChangeHandler("userId", e.target.value)}
               />

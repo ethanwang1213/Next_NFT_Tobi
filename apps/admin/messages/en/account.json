@@ -3,7 +3,7 @@
     "UserName": "User name",
     "UserID": "User ID",
     "AboutMe": "About me",
-    "SocialMedia": "Social media",
+    "SocialMedia": "Social links",
     "Gender": "Gender",
     "Birthday": "Birthday",
     "Email": "Email",
@@ -26,7 +26,12 @@
     "EnterName": "Please enter a name.",
     "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_).",
     "UserIdTooShort": "User ID must be at least 5 characters.",
-    "NewEmailAddress": "New Email Address"
+    "NewEmailAddress": "New Email Address",
+    "Errors": {
+      "FacebookUrl": "Facebook URL must start with https://www.facebook.com/",
+      "YouTubeUrl": "YouTube URL must start with https://www.youtube.com/",
+      "SiteLink": "Site link must start with https://"
+    }
   },
   "AccountPassword": {
     "Name": "Name",
