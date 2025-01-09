@@ -182,10 +182,7 @@ const FlowAgreementWithEmailAndPassword = ({
         <div className={"mt-[30px]"}>
           <EmailField
             email={emailStatus.email}
-            visible={
-              pageType === PageType.PasswordReset ||
-              pageType === PageType.PasswordUpdate
-            }
+            visible={pageType === PageType.PasswordReset}
             validateEmail={validateEmail}
           />
         </div>
