@@ -5,7 +5,7 @@ import Button from "ui/atoms/Button";
 type AccountInfo = {
   name: string;
   email: string;
-  avatarUrl?: string;
+  icon?: string;
 };
 
 type ButtonProp = {
@@ -46,11 +46,7 @@ const AccountConfirmDialog = ({
           {title}
         </div>
         <Image
-          src={
-            account && account.avatarUrl
-              ? account.avatarUrl
-              : "/admin/images/icon/profile.svg"
-          }
+          src={account.icon || "/admin/images/icon/profile.svg"}
           alt={"profile image"}
           width={153}
           height={153}
@@ -63,14 +59,14 @@ const AccountConfirmDialog = ({
             "text-center sm:mt-[30px] mt-4 sm:text-2xl text-[20px] text-base-200-content"
           }
         >
-          {account && account.name ? account.name : "Account Name"}
+          {account.name || "Account Name"}
         </div>
         <div
           className={
             "text-center text-[15px] text-base-200-content font-normal mt-4"
           }
         >
-          {account && account.email ? account.email : "@account_name"}
+          {account.email || "@account_name"}
         </div>
         <div className="modal-action justify-center sm:mt-[70px] mt-[24px] sm:mb-[33px]">
           <form method="dialog">
