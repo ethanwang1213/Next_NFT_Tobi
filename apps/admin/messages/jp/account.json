@@ -32,6 +32,8 @@
       "YouTubeUrl": "YouTubeのURLはhttps://www.youtube.com/で始まる必要があります。",
       "SiteLink": "サイトリンクはhttps://で始まる必要があります。"
     }
+    "PromptPassword": "メールアドレスを変更するには<color><underline>先にパスワードの設定をする必要</underline></color>があります",
+    "GoToSetPassword": "パスワード設定に進む"
   },
   "AccountPassword": {
     "Name": "名前",

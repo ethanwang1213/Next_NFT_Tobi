@@ -114,7 +114,8 @@ export type UnityMessageJson = {
 
 export type MessageBodyForSavingSaidanData = {
   saidanData: SaidanLikeData;
-  saidanThumbnailBase64: string;
+  fixedPointSaidanThumbnailBase64: string;
+  lastPointSaidanThumbnailBase64: string;
 };
 
 /// NOTE(Toruto): All of Workspace, SAIDAN and Showcase views are handled almost the same way in Unity side.
