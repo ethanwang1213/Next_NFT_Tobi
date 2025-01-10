@@ -311,7 +311,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
               onChange={(e) => urlChangeHandler(index + 4, e.target.value)}
               placeholder="https://example.com"
               onBlur={() => {
-                socialLinksValidation(index + 4, youtubeUrl);
+                socialLinksValidation(index + 4, url);
               }}
             />
           </div>
