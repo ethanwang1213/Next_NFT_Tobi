@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { User } from "types/adminTypes";
 import AppleIcon from "ui/atoms/AppleIcon";
 import GoogleIcon from "ui/atoms/GoogleIcon";
+import PasswordPromptDialog from "ui/molecules/PasswordPromptDialog";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
 import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
@@ -289,6 +290,7 @@ export default function Index() {
   const emailEditDialogRef = useRef(null);
   const t = useTranslations("Account");
   const [tempImageUrlProfile, setTempImageUrlProfile] = useState(null);
+  const [openPasswordPrompt, setOpenPasswordPrompt] = useState(false);
 
   const submitHandler = async () => {
     const submitData = {
@@ -365,12 +367,16 @@ export default function Index() {
     );
   };
 
-  const handleClickEmailEditButton = async () => {
+  const handleClickEmailEditButton = () => {
     if (hasPasswordAccount()) {
       emailEditDialogRef.current?.showModal();
     } else {
-      router.push("/auth/password_update");
+      setOpenPasswordPrompt(true);
     }
+  };
+
+  const handleClickPasswordEditButton = () => {
+    router.push("/auth/password_update");
   };
 
   return (
@@ -516,7 +522,7 @@ export default function Index() {
               </span>
               <button
                 className={editBtnClass}
-                onClick={() => router.push("/auth/password_update")}
+                onClick={handleClickPasswordEditButton}
               >
                 {t("Edit")}
               </button>
@@ -551,6 +557,11 @@ export default function Index() {
             changeHandler={(value) => fieldChangeHandler("birth", value)}
           />
           <EmailEditDialog dialogRef={emailEditDialogRef} />
+          <PasswordPromptDialog
+            isOpen={openPasswordPrompt}
+            onClickCancel={() => setOpenPasswordPrompt(false)}
+            onClickNext={handleClickPasswordEditButton}
+          />
         </div>
       )}
       <input

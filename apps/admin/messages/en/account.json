@@ -26,7 +26,9 @@
     "EnterName": "Please enter a name.",
     "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_).",
     "UserIdTooShort": "User ID must be at least 5 characters.",
-    "NewEmailAddress": "New Email Address"
+    "NewEmailAddress": "New Email Address",
+    "PromptPassword": "To change your email address, you need to <color><underline>set your password first</underline></color>.",
+    "GoToSetPassword": "Proceed to set a password"
   },
   "AccountPassword": {
     "Name": "Name",

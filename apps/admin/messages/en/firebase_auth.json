@@ -6,6 +6,7 @@
     "CredentialAlreadyInUse": "The email address you entered is already in use.",
     "UserNotFound": "The Tobiratory account does not exist.",
     "MissingPassword": "Passwords do not match.",
+    "RequiresRecentLogin": "Reauthentication is required due to inactivity. Please click the “Back” link and authenticate again.",
     "WrongPassword": "Passwords do not match.",
     "TooManyRequests": "The number of requests exceeds the maximum allowed. Please try again after some time.",
     "SomeError": "An error has occurred."
