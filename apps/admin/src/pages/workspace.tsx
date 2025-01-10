@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { WorkspaceEditUnityProvider } from "contexts/WorkspaceEditUnityContext";
 import {
@@ -27,7 +28,6 @@ import WorkspaceSampleDetailPanel from "ui/organisms/admin/WorkspaceSampleDetail
 import WorkspaceSampleListPanel from "ui/organisms/admin/WorkspaceSampleListPanel";
 import WorkspaceShortcutDialog from "ui/organisms/admin/WorkspaceShortcutDialog";
 import { SampleItem } from "ui/types/adminTypes";
-import { getMessages } from "admin/messages/messages";
 
 export const metadata: Metadata = {
   title: "ワークスペース",
@@ -633,10 +633,7 @@ export default function Index() {
                   : "none",
             }}
           >
-            <WorkspaceShortcutDialog
-              dialogRef={shortcutDialogRef}
-              changeHandler={null}
-            />
+            <WorkspaceShortcutDialog dialogRef={shortcutDialogRef} />
           </div>
           <WorkspaceSampleDetailPanel
             id={selectedSampleItem}
