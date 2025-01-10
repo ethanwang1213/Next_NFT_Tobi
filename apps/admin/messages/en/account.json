@@ -31,7 +31,7 @@
       "FacebookUrl": "Facebook URL must start with https://www.facebook.com/",
       "YouTubeUrl": "YouTube URL must start with https://www.youtube.com/",
       "SiteLink": "Site link must start with https://"
-    }
+    },
     "PromptPassword": "To change your email address, you need to <color><underline>set your password first</underline></color>.",
     "GoToSetPassword": "Proceed to set a password"
   },
