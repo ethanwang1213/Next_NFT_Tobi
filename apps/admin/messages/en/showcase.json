@@ -25,9 +25,39 @@
     "Or": "or redo",
     "MintOperationWarningTo": "any previous changes. Please confirm that you want to proceed.",
     "WishToContinue": "Do you wish to continue?",
-    "ShortCut": "Short Cut",
     "MintNow": "Mint Now",
     "StatusChangeMessage": "After minting, the status will change to Private and cannot be reverted to Draft.",
-    "ReusableComponents": "Re-usable components built using Figr Design System"
+    "Movement" :{
+      "title": "W A S D ( ↑ ← ↓ → )",
+      "description": "View Movement: Up, Down, Left, Right"
+    },
+    "WheelScroll" :{
+      "title": "Wheel Scroll",
+      "description": "Zoom In / Zoom Out"
+    },
+    "MouseWheelDrag" :{
+      "title": "Mouse Wheel Drag",
+      "description": "Camera Movement Up and Down, Left and Right"
+    },
+    "RightDrag" :{
+      "title": "Right Drag",
+      "description": "Camera View Rotation"
+    },
+    "UndoAction" :{
+      "title": "Ctrl ( ⌘ ) + Z",
+      "description": "Undo the last action"
+    },
+    "RedoAction" :{
+      "title": "Ctrl ( ⌘ ) + Shift + Z",
+      "description": "Redo the last undone action"
+    },
+    "Duplicate" :{
+      "title": "Ctrl ( ⌘ ) + D",
+      "description": "Duplicate (only possible for sample items)"
+    },
+    "RestoreItem" :{
+      "title": "Delete / Backspace",
+      "description": "Restore the selected item"
+    }
   }
 }
