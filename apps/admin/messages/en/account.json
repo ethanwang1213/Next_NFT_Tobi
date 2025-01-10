@@ -33,7 +33,8 @@
       "SiteLink": "Site link must start with https://"
     },
     "PromptPassword": "To change your email address, you need to <color><underline>set your password first</underline></color>.",
-    "GoToSetPassword": "Proceed to set a password"
+    "GoToSetPassword": "Proceed to set a password",
+    "VerifiedNewEmailAddress": "Verified new email address"
   },
   "AccountPassword": {
     "Name": "Name",

@@ -1,10 +1,22 @@
+import { getMessages } from "admin/messages/messages";
+import { GetStaticPropsContext } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "ui/atoms/Button";
 import BackLink from "ui/molecules/BackLink";
 
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: await getMessages(locale),
+    },
+  };
+}
+
 const VerifiedEmail = () => {
   const router = useRouter();
+  const t = useTranslations();
 
   return (
     <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
@@ -18,7 +30,7 @@ const VerifiedEmail = () => {
       </div>
       <div className="flex flex-col items-center justify-center shrink-0">
         <span className="text-base-content text-center text-[48px] font-bold">
-          Verified new email address
+          {t("Account.VerifiedNewEmailAddress")}
         </span>
         <Image
           src="/admin/images/icon/task-complete.svg"
@@ -32,7 +44,7 @@ const VerifiedEmail = () => {
               text-base-white text-[20px] leading-3 font-normal hover:bg-primary hover:border-primary"
           onClick={() => router.push("/account")}
         >
-          Done
+          {t("Label.Done")}
         </Button>
       </div>
     </div>
