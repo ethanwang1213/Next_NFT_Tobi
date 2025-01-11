@@ -4,12 +4,21 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import ColorizedSvg from "ui/atoms/ColorizedSvg";
 
+export const Locale = {
+  JA: "ja",
+  EN: "en",
+} as const;
+
+export const defaultLocale = Locale.JA;
+
 const LanguageSwitch = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { locale, route } = useRouter();
-  const [selectedLanguage, setSelectedLanguage] = useState(locale || "jp");
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    locale || defaultLocale,
+  );
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -63,29 +72,29 @@ const LanguageSwitch = () => {
         {isOpen && (
           <ul className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-30">
             <li className="h-[40px] border-b">
-              <Link href={route} locale="jp" passHref>
+              <Link href={route} locale={Locale.JA} passHref>
                 <button
                   className={`block px-4 py-2 w-full flex justify-start items-center gap-4 ${
-                    selectedLanguage === "jp"
+                    selectedLanguage === Locale.JA
                       ? "text-blue-500"
                       : "text-gray-700"
                   } hover:bg-gray-100`}
-                  onClick={() => handleLanguageSelect("jp")}
+                  onClick={() => handleLanguageSelect(Locale.JA)}
                 >
-                  <span className="font-black">JP</span>
+                  <span className="font-black">JA</span>
                   <span className="font-medium">日本語</span>
                 </button>
               </Link>
             </li>
             <li className="h-[40px]">
-              <Link href={route} locale="en" passHref>
+              <Link href={route} locale={Locale.EN} passHref>
                 <button
                   className={`block px-4 py-2 w-full flex justify-start items-center gap-4 ${
-                    selectedLanguage === "en"
+                    selectedLanguage === Locale.EN
                       ? "text-blue-500"
                       : "text-gray-700"
                   } hover:bg-gray-100`}
-                  onClick={() => handleLanguageSelect("en")}
+                  onClick={() => handleLanguageSelect(Locale.EN)}
                 >
                   <span className="font-black">EN</span>
                   <span className="font-medium">ENGLISH</span>

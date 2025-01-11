@@ -23,6 +23,7 @@ import Script from "next/script";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
+import { Locale } from "ui/organisms/admin/LanguageSwitch";
 import Layout from "ui/organisms/admin/Layout";
 config.autoAddCss = false;
 
@@ -81,8 +82,8 @@ const App = ({ Component, pageProps }: AppProps) => {
       />
       <NextIntlClientProvider
         messages={pageProps.messages}
-        locale={router.locale || "jp"}
-        timeZone={router.locale === "jp" ? "Asia/Tokyo" : "UTC"}
+        locale={router.locale || Locale.JA}
+        timeZone={router.locale === Locale.JA ? "Asia/Tokyo" : "UTC"}
       >
         <main className={font.className}>
           <Layout>
