@@ -5,9 +5,10 @@ import {
 import { auth } from "fetchers/firebase/client";
 import { sendSignInLinkToEmail } from "firebase/auth";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
+import { getPathWithLocale } from "types/localeTypes";
 import Button from "ui/atoms/Button";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import Loading from "ui/atoms/Loading";
@@ -31,12 +32,15 @@ const ReauthPassword = ({
   onClickNext: () => void;
 }) => {
   const [page, setPage] = useState<Page>(Page.Main);
+  const locale = useLocale();
 
   const handleClickPasswordReset = async () => {
+    const path = getPathWithLocale(locale, PASSWORD_RESET_PATH);
     const actionCodeSettings = {
-      url: `${window.location.origin}/${PASSWORD_RESET_PATH}`,
+      url: `${window.location.origin}/${path}`,
       handleCodeInApp: true,
     };
+    auth.languageCode = locale;
     sendSignInLinkToEmail(
       auth,
       getMailAddressOfPasswordAccount(),

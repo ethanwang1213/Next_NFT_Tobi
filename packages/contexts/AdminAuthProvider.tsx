@@ -17,6 +17,7 @@ import React, {
   useState,
 } from "react";
 import { HasBusinessAccount, ProviderId, User } from "types/adminTypes";
+import { LocalePlaceholder } from "types/localeTypes";
 import Loading from "ui/atoms/Loading";
 
 type Props = {
@@ -42,8 +43,8 @@ type ContextType = {
 
 const AuthContext = createContext<ContextType>({} as ContextType);
 
-export const PASSWORD_RESET_PATH = "/admin/auth/password_reset";
-export const VERIFIED_EMAIL_PATH = "/admin/auth/verified_email";
+export const PASSWORD_RESET_PATH = `/admin/${LocalePlaceholder}/auth/password_reset`;
+export const VERIFIED_EMAIL_PATH = `/admin/${LocalePlaceholder}/auth/verified_email`;
 
 /**
  * firebaseによるユーザー情報やログイン状態を管理するコンテキストプロバイダー
