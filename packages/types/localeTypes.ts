@@ -8,8 +8,10 @@ export type Locale = (typeof Locale)[keyof typeof Locale];
 
 export const DefaultLocale = Locale.DEFAULT;
 
-export const isLocale = (value: string): value is Locale =>
-  Object.values(Locale).includes(value as Locale);
+export const isLocale = (value: string): value is Locale => {
+  const locales = Object.values(Locale) as string[];
+  return locales.includes(value);
+};
 
 export const getTimeZone = (locale: string) => {
   const targets = [Locale.DEFAULT, Locale.JA] as string[];
