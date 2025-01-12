@@ -2,14 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { DefaultLocale, Locale } from "types/localeTypes";
 import ColorizedSvg from "ui/atoms/ColorizedSvg";
-
-export const Locale = {
-  JA: "ja",
-  EN: "en",
-} as const;
-
-export const defaultLocale = Locale.JA;
 
 const LanguageSwitch = () => {
   const router = useRouter();
@@ -17,7 +11,7 @@ const LanguageSwitch = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { locale, route } = useRouter();
   const [selectedLanguage, setSelectedLanguage] = useState(
-    locale || defaultLocale,
+    locale || DefaultLocale,
   );
 
   const toggleDropdown = () => {

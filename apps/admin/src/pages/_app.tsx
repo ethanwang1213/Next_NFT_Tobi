@@ -22,8 +22,8 @@ import { NextIntlClientProvider } from "next-intl";
 import Script from "next/script";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getTimeZone, getValidLocale, Locale } from "types/localeTypes";
 import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
-import { Locale } from "ui/organisms/admin/LanguageSwitch";
 import Layout from "ui/organisms/admin/Layout";
 config.autoAddCss = false;
 
@@ -31,6 +31,7 @@ const font = M_PLUS_2({ subsets: ["latin"] });
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
+  const locale = getValidLocale(router.locale || Locale.DEFAULT);
 
   useEffect(() => {
     const gaId = process.env.NEXT_PUBLIC_GA_ID;
@@ -82,8 +83,8 @@ const App = ({ Component, pageProps }: AppProps) => {
       />
       <NextIntlClientProvider
         messages={pageProps.messages}
-        locale={router.locale || Locale.JA}
-        timeZone={router.locale === Locale.JA ? "Asia/Tokyo" : "UTC"}
+        locale={locale}
+        timeZone={getTimeZone(locale)}
       >
         <main className={font.className}>
           <Layout>
