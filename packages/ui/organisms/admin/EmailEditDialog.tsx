@@ -121,7 +121,7 @@ const Reauth = ({
   onClickCancel: () => void;
   onClickNext: () => void;
 }) => {
-  const [password, setPassword] = useState<string | null>(null);
+  const [password, setPassword] = useState<string>("");
   const [passwordVisible, togglePasswordVisible] = useToggle(false);
   const [reauthenticate, reauthenticating, userCredential, error] =
     usePasswordReauthentication();

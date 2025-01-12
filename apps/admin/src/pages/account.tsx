@@ -501,7 +501,7 @@ export default function Index() {
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
                 className={`${valueClass} h-[118px] outline-none resize-none`}
-                value={data?.aboutMe}
+                value={data?.aboutMe || ""}
                 placeholder={t("NotSet")}
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
               />
@@ -605,7 +605,7 @@ export default function Index() {
             </AccountFieldComponent>
           </div>
           <GenderEditDialog
-            initialValue={data?.gender}
+            initialValue={data?.gender || ""}
             dialogRef={genderEditDialogRef}
             changeHandler={(value) => fieldChangeHandler("gender", value)}
           />
