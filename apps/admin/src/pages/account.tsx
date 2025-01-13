@@ -373,12 +373,18 @@ export default function Index() {
     setModified(true);
   };
 
-  const handleFileInputChange = async (event) => {
-    const file = event.target.files[0];
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      setTempImageUrlProfile(URL.createObjectURL(file));
-      profileIconCropDlgRef.current.showModal();
+      const reader = new FileReader();
+      reader.onload = () => {
+        setTempImageUrlProfile(reader.result);
+        profileIconCropDlgRef.current?.showModal();
+      };
+      reader.readAsDataURL(file);
     }
+
+    e.target.value = "";
   };
 
   const isEmailVerified = () => {
