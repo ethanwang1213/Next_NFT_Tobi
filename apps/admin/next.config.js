@@ -61,7 +61,7 @@ module.exports = {
     ];
   },
   i18n: {
-    locales: ['ja', 'en'],
-    defaultLocale: 'ja'
+    locales: ['default', 'ja', 'en'],
+    defaultLocale: 'default',
   }
 };

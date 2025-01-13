@@ -2,8 +2,8 @@ import clsx from "clsx";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { ReactNode } from "react";
+import { shouldUseJaLocale } from "types/localeTypes";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
-import { Locale } from "ui/organisms/admin/LanguageSwitch";
 
 const Row1 = ({
   label,
@@ -16,14 +16,10 @@ const Row1 = ({
   optional?: boolean;
   children: ReactNode;
 }) => {
-  const lang = useLocale();
+  const isJaLocale = shouldUseJaLocale(useLocale());
   return (
     <div className="sm:flex flex-row sm:py-4 sm:pl-6 py-3">
-      <div
-        className={`h-12 ${
-          lang === Locale.JA ? "min-w-[400px]" : "min-w-[480px]"
-        }`}
-      >
+      <div className={`h-12 ${isJaLocale ? "min-w-[400px]" : "min-w-[480px]"}`}>
         <div className="flex-none flex flex-row items-center">
           <span className="text-base mr-4">{label ? label : ""}</span>
           {optional ? <OptionMark /> : <RequireMark />}
