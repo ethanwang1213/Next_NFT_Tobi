@@ -85,7 +85,7 @@ const BoxComponent = (props: {
   return (
     data && (
       <div className="h-14 border-b border-neutral-100 pl-4 pr-1 hover:bg-neutral-100 flex items-center gap-4">
-        <span className="flex-1">{data.name}</span>
+        <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{data.name}</span>
         {loadingChangePerm ? (
           <span className="loading loading-spinner loading-md mr-3 text-secondary-600" />
         ) : (

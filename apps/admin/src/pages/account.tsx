@@ -35,7 +35,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const valueClass = "text-[20px] font-normal flex-1";
+const valueClass = "text-[20px] font-normal flex-1 overflow-hidden text-ellipsis whitespace-nowrap";
 const editBtnClass = "text-[20px] text-primary font-normal";
 
 const AccountFieldComponent = ({
@@ -406,7 +406,7 @@ export default function Index() {
   };
 
   return (
-    <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
+    <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5 min-w-[600px]">
       <div className="h-14 flex justify-between items-start">
         <span className="text-3xl text-secondary-600 font-semibold">
           ACCOUNT
@@ -438,7 +438,7 @@ export default function Index() {
               className="rounded-full"
             />
             <button
-              className="text-[14px] bg-primary text-white font-normal rounded-lg px-3 py-[6px]"
+              className="text-[14px] bg-primary text-white font-normal rounded-lg px-3 py-[6px] w-[90px]"
               onClick={() => {
                 if (imageFileRef.current) {
                   imageFileRef.current.click();

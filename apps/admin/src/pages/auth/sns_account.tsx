@@ -225,7 +225,7 @@ const AccountList = () => {
       <div className="w-full">
         <BackLink hideText={true} onClickBack={() => router.push("/account")} />
       </div>
-      <div className="flex justify-center">
+      <div className="w-full">
         <div className="flex flex-row w-[908px] h-[128px] shrink-0">
           <div className="flex w-[748px] flex-col items-start gap-[16px]">
             <AccountItem

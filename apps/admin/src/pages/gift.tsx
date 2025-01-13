@@ -62,7 +62,7 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="container max-w-[1024px] pt-9 pl-9">
+    <div className="container max-w-[1024px] pt-9 pl-9 min-w-[600px]">
       <div className="text-3xl font-semibold text-secondary mb-4 uppercase">
         GIFT RECEIVING SETTINGS
       </div>
