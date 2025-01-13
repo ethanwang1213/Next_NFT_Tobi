@@ -214,7 +214,7 @@ export const getSaidanTemplates = async (req: Request, res: Response) => {
 
 export const createSaidan = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {title, templateId}:{title: string, templateId: number} = req.body;
+  const {title, templateId, favorite}:{title: string, templateId: number, favorite?: boolean | null} = req.body;
   await auth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
@@ -250,7 +250,15 @@ export const createSaidan = async (req: Request, res: Response) => {
           thumbnail_image: saidanTemplate.cover_image,
         },
       });
-      const favorite = await prisma.saidans_favorite.findMany({
+      if (favorite) {
+        await prisma.saidans_favorite.create({
+          data: {
+            saidan_id: saveData.id,
+            account_uuid: uid,
+          },
+        });
+      }
+      const favoriteValue = await prisma.saidans_favorite.findMany({
         where: {
           saidan_id: saveData.id,
           account_uuid: uid,
@@ -264,7 +272,7 @@ export const createSaidan = async (req: Request, res: Response) => {
         thumbUrl: saveData.thumbnail_image,
         modelType: saidanTemplate.type,
         isPublic: saveData.is_public,
-        favorite: favorite.length!=0,
+        favorite: favoriteValue.length!=0,
       };
       res.status(200).send({
         status: "success",
