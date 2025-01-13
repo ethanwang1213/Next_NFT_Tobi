@@ -38,6 +38,7 @@ const ImageCropDialog = ({
   const b = useTranslations("GiftReceivingSettings");
 
   const calculateCrop = (width, height) => {
+    if (!imgWrapperRef.current) return;
     let newCrop;
     if (aspectRatio) {
       newCrop = makeAspectCrop(
@@ -62,12 +63,14 @@ const ImageCropDialog = ({
   };
 
   useEffect(() => {
-    setImageURL(initialValue);
+    if (initialValue) {
+      setImageURL(initialValue);
 
-    const img = imgRef.current;
-    if (img) {
-      const { width, height } = img;
-      calculateCrop(width, height);
+      const img = imgRef.current;
+      if (img && img.complete) {
+        const { width, height } = img;
+        calculateCrop(width, height);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValue, aspectRatio]);

@@ -35,7 +35,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const valueClass = "text-[20px] font-normal flex-1";
+const valueClass = "text-[20px] font-normal flex-1 overflow-hidden text-ellipsis whitespace-nowrap";
 const editBtnClass = "text-[20px] text-primary font-normal";
 
 const AccountFieldComponent = ({
@@ -65,8 +65,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
   const [instagramUrl, setInstagramUrl] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
-  const [urls, setUrls] = useState([]);
-  const [toastVisible, setToastVisible] = useState(false);
+  const [siteUrl, setSiteUrls] = useState("");
   const t = useTranslations("Account");
 
   const layoutClass = "flex items-center gap-4 mb-4";
@@ -77,7 +76,6 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
     const facebookRegex = /^https?:\/\/(www\.)?facebook\.com\//i;
     const youtubeRegex = /^https?:\/\/(www\.)?youtube\.com\//i;
 
-    const newUrls = [];
     socialLinks.forEach((link) => {
       if (twitterRegex.test(link)) {
         setTwitterUrl(link);
@@ -88,22 +86,11 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       } else if (youtubeRegex.test(link)) {
         setYoutubeUrl(link);
       } else {
-        if (link !== "") newUrls.push(link);
+        if (link !== "") setSiteUrls(link);
       }
     });
-    setUrls(newUrls);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const showToast = (message: string) => {
-    if (!toastVisible) {
-      setToastVisible(true);
-      toast.error(message, {
-        onClose: () => setToastVisible(false),
-      });
-    }
-  };
 
   const validateUrl = (type: string, url: string) => {
     let isValid = true;
@@ -157,7 +144,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 
     if (!validation.isValid) {
       toast.dismiss();
-      showToast(validation.errorMessage);
+      toast.error(validation.errorMessage);
     }
   };
 
@@ -167,7 +154,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       instagramUrl,
       facebookUrl,
       youtubeUrl,
-      ...urls,
+      siteUrl,
     ];
     switch (type) {
       case 0:
@@ -188,18 +175,11 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         break;
 
       default:
-        urls[type - 4] = url;
-        setUrls(urls);
-        newUrls[type] = url;
+        setSiteUrls(url);
+        newUrls[4] = url;
         break;
     }
     changeHandler(newUrls.filter((value) => value !== null && value !== ""));
-  };
-
-  const addNewUrl = () => {
-    if (urls.length < 1) {
-      setUrls([...urls, ""]);
-    }
   };
 
   return (
@@ -286,49 +266,31 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           placeholder="https://example.com"
         />
       </div>
-      {urls &&
-        urls.map((url, index) => (
-          <div key={`social-${index}`}>
-            <div className="flex gap-4">
-              <Image
-                width={23}
-                height={23}
-                src="/admin/images/icon/globe-icon.svg"
-                alt="social icon"
-                className="cursor-pointer"
-                onClick={() => {
-                  handleRedirect("social", url);
-                }}
-              />
-              <span className="text-[22px] font-semibold text-placeholder-color">
-                Site Link
-              </span>
-            </div>
-            <input
-              type="text"
-              className={`${valueClass} flex-1 outline-none ml-10`}
-              value={url}
-              onChange={(e) => urlChangeHandler(index + 4, e.target.value)}
-              placeholder="https://example.com"
-              onBlur={() => {
-                socialLinksValidation(index + 4, youtubeUrl);
-              }}
-            />
-          </div>
-        ))}
-      {urls.length < 1 && (
-        <div className={`${layoutClass} cursor-pointer`} onClick={addNewUrl}>
-          <Image
-            width={23}
-            height={20}
-            src="/admin/images/icon/add-social-icon.svg"
-            alt="add social icon"
-          />
-          <span className={`${valueClass} flex-1 outline-none`}>
-            {t("AddLink")}
-          </span>
-        </div>
-      )}
+      <div className="flex gap-4">
+        <Image
+          width={23}
+          height={23}
+          src="/admin/images/icon/globe-icon.svg"
+          alt="social icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("social", siteUrl);
+          }}
+        />
+        <span className="text-[22px] font-semibold text-placeholder-color">
+          Site Link
+        </span>
+      </div>
+      <input
+        type="text"
+        className={`${valueClass} flex-1 outline-none ml-10`}
+        value={siteUrl}
+        onChange={(e) => urlChangeHandler(4, e.target.value)}
+        placeholder="https://example.com"
+        onBlur={() => {
+          socialLinksValidation(4, siteUrl);
+        }}
+      />
     </div>
   );
 };
@@ -411,12 +373,18 @@ export default function Index() {
     setModified(true);
   };
 
-  const handleFileInputChange = async (event) => {
-    const file = event.target.files[0];
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      setTempImageUrlProfile(URL.createObjectURL(file));
-      profileIconCropDlgRef.current.showModal();
+      const reader = new FileReader();
+      reader.onload = () => {
+        setTempImageUrlProfile(reader.result);
+        profileIconCropDlgRef.current?.showModal();
+      };
+      reader.readAsDataURL(file);
     }
+
+    e.target.value = "";
   };
 
   const isEmailVerified = () => {
@@ -438,7 +406,7 @@ export default function Index() {
   };
 
   return (
-    <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
+    <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5 min-w-[600px]">
       <div className="h-14 flex justify-between items-start">
         <span className="text-3xl text-secondary-600 font-semibold">
           ACCOUNT
@@ -470,7 +438,7 @@ export default function Index() {
               className="rounded-full"
             />
             <button
-              className="text-[14px] bg-primary text-white font-normal rounded-lg px-3 py-[6px]"
+              className="text-[14px] bg-primary text-white font-normal rounded-lg px-3 py-[6px] w-[90px]"
               onClick={() => {
                 if (imageFileRef.current) {
                   imageFileRef.current.click();
