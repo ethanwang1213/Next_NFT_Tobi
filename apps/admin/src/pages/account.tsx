@@ -65,8 +65,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
   const [instagramUrl, setInstagramUrl] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
-  const [urls, setUrls] = useState([]);
-  const [toastVisible, setToastVisible] = useState(false);
+  const [siteUrl, setSiteUrls] = useState("");
   const t = useTranslations("Account");
 
   const layoutClass = "flex items-center gap-4 mb-4";
@@ -77,7 +76,6 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
     const facebookRegex = /^https?:\/\/(www\.)?facebook\.com\//i;
     const youtubeRegex = /^https?:\/\/(www\.)?youtube\.com\//i;
 
-    const newUrls = [];
     socialLinks.forEach((link) => {
       if (twitterRegex.test(link)) {
         setTwitterUrl(link);
@@ -88,22 +86,11 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       } else if (youtubeRegex.test(link)) {
         setYoutubeUrl(link);
       } else {
-        if (link !== "") newUrls.push(link);
+        if (link !== "") setSiteUrls(link);
       }
     });
-    setUrls(newUrls);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const showToast = (message: string) => {
-    if (!toastVisible) {
-      setToastVisible(true);
-      toast.error(message, {
-        onClose: () => setToastVisible(false),
-      });
-    }
-  };
 
   const validateUrl = (type: string, url: string) => {
     let isValid = true;
@@ -157,7 +144,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
 
     if (!validation.isValid) {
       toast.dismiss();
-      showToast(validation.errorMessage);
+      toast.error(validation.errorMessage);
     }
   };
 
@@ -167,7 +154,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       instagramUrl,
       facebookUrl,
       youtubeUrl,
-      ...urls,
+      siteUrl,
     ];
     switch (type) {
       case 0:
@@ -188,18 +175,11 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         break;
 
       default:
-        urls[type - 4] = url;
-        setUrls(urls);
-        newUrls[type] = url;
+        setSiteUrls(url);
+        newUrls[4] = url;
         break;
     }
     changeHandler(newUrls.filter((value) => value !== null && value !== ""));
-  };
-
-  const addNewUrl = () => {
-    if (urls.length < 1) {
-      setUrls([...urls, ""]);
-    }
   };
 
   return (
@@ -286,49 +266,31 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
           placeholder="https://example.com"
         />
       </div>
-      {urls &&
-        urls.map((url, index) => (
-          <div key={`social-${index}`}>
-            <div className="flex gap-4">
-              <Image
-                width={23}
-                height={23}
-                src="/admin/images/icon/globe-icon.svg"
-                alt="social icon"
-                className="cursor-pointer"
-                onClick={() => {
-                  handleRedirect("social", url);
-                }}
-              />
-              <span className="text-[22px] font-semibold text-placeholder-color">
-                Site Link
-              </span>
-            </div>
-            <input
-              type="text"
-              className={`${valueClass} flex-1 outline-none ml-10`}
-              value={url}
-              onChange={(e) => urlChangeHandler(index + 4, e.target.value)}
-              placeholder="https://example.com"
-              onBlur={() => {
-                socialLinksValidation(index + 4, url);
-              }}
-            />
-          </div>
-        ))}
-      {urls.length < 1 && (
-        <div className={`${layoutClass} cursor-pointer`} onClick={addNewUrl}>
-          <Image
-            width={23}
-            height={20}
-            src="/admin/images/icon/add-social-icon.svg"
-            alt="add social icon"
-          />
-          <span className={`${valueClass} flex-1 outline-none`}>
-            {t("AddLink")}
-          </span>
-        </div>
-      )}
+      <div className="flex gap-4">
+        <Image
+          width={23}
+          height={23}
+          src="/admin/images/icon/globe-icon.svg"
+          alt="social icon"
+          className="cursor-pointer"
+          onClick={() => {
+            handleRedirect("social", siteUrl);
+          }}
+        />
+        <span className="text-[22px] font-semibold text-placeholder-color">
+          Site Link
+        </span>
+      </div>
+      <input
+        type="text"
+        className={`${valueClass} flex-1 outline-none ml-10`}
+        value={siteUrl}
+        onChange={(e) => urlChangeHandler(4, e.target.value)}
+        placeholder="https://example.com"
+        onBlur={() => {
+          socialLinksValidation(4, siteUrl);
+        }}
+      />
     </div>
   );
 };
