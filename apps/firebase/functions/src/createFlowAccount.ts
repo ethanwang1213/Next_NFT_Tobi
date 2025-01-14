@@ -18,9 +18,9 @@ export const createFlowAccountDemo = functions.region(REGION).https.onRequest(as
   });
 });
 
-export const createFlowAccount = async (tobiratoryAccountUuid: string) => {
+export const createFlowAccount = async (tobiratoryAccountUuid: string, fcmToken?: string) => {
   const flowJobId = uuidv4();
-  const message = {flowJobId, txType: "createFlowAccount", params: {tobiratoryAccountUuid}};
+  const message = {flowJobId, txType: "createFlowAccount", params: {tobiratoryAccountUuid, fcmToken}};
   const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
   console.log(`Message ${messageId} published.`);
   return {message: "success", flowJobId};

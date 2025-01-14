@@ -16,6 +16,7 @@ import {SHA3} from "sha3";
 import {ec as EC} from "elliptic";
 import {prisma} from "./prisma";
 import {giftStatus, mintStatus} from "./native/utils";
+import {pushToDevice} from "./appSendPushMessage";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -57,6 +58,7 @@ export const flowTxSend = functions.region(REGION)
 
       // Add processing here according to txType
       if (txType == "createFlowAccount") {
+        try {
         const txId = await generateKeysAndSendFlowAccountCreationTx(params.tobiratoryAccountUuid);
         await flowJobDocRef.update({
           flowJobId,
@@ -68,6 +70,16 @@ export const flowTxSend = functions.region(REGION)
         const messageForMoitoring = {flowJobId, txType, params};
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
         console.log(`Message ${messageId} published.`);
+        } catch (e) {
+          if (params.fcmToken) {
+            if (e instanceof Error) {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "createFlowAccount", message: e.message}) });
+            } else {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "createFlowAccount", message: "Unknown error"}) });
+            }
+          }
+          throw e;
+        }
       } else if (txType == "createItem") {
         try {
           const {txId} = await sendCreateItemTx(params.digitalItemId, params.metadata);
@@ -83,6 +95,13 @@ export const flowTxSend = functions.region(REGION)
           const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
           console.log(`Message ${messageId} published.`);
         } catch (e) {
+          if (params.fcmToken) {
+            if (e instanceof Error) {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: e.message}) });
+            } else {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: "Unknown error"}) });
+            }
+          }
           await updateMintNFTRecord(params.digitalItemNftId, mintStatus.error);
           throw e;
         }
@@ -103,6 +122,13 @@ export const flowTxSend = functions.region(REGION)
           const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
           console.log(`Message ${messageId} published.`);
         } catch (e) {
+          if (params.fcmToken) {
+            if (e instanceof Error) {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: e.message}) });
+            } else {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: "Unknown error"}) });
+            }
+          }
           await updateMintNFTRecord(id, mintStatus.error);
           throw e;
         }
@@ -121,6 +147,13 @@ export const flowTxSend = functions.region(REGION)
           const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMonitoring});
           console.log(`Message ${messageId} published.`);
         } catch (e) {
+          if (params.fcmToken) {
+            if (e instanceof Error) {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "giftNFT", message: e.message}) });
+            } else {
+              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "giftNFT", message: "Unknown error"}) });
+            }
+          }
           await updateGiftNFTRecord(params.digitalItemNftId, giftStatus.error, -1);
           throw e;
         }

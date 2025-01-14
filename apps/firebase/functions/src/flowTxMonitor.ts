@@ -35,8 +35,11 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
       throw new Error("FLOW_ACCOUNT_NOT_FOUND");
     }
     try {
-      await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref, flowJobId);
+      const address = await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref, flowJobId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
+      if (params.fcmToken && address) {
+        pushToDevice(params.fcmToken, undefined, { status: "success", body: JSON.stringify({ type: "createFlowAccount", address }) });
+      }
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
@@ -60,6 +63,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         digitalItemNftId: params.digitalItemNftId,
         metadata: params.metadata,
         notificationBatchId: params.notificationBatchId,
+        fcmToken: params.fcmToken,
       }};
       const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: mintMessage});
       console.log(`Message ${messageId} published.`);
@@ -254,6 +258,7 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, notificationBatchId:
         title: "NFTの作成が完了しました",
         body: "タップして見に行ってみよう!",
       }, {
+        status: "success",
         body: JSON.stringify({
           type: "mintCompleted",
           data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
@@ -435,6 +440,7 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
           title: "NFTのプレゼントが完了しました",
           body: "タップして受け取ってみよう!",
         }, {
+          status: "success",
           body: JSON.stringify({
             type: "giftCompleted",
             data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
@@ -528,8 +534,10 @@ const fetchAndUpdateFlowAddress = async (flowAccountRef: firestore.DocumentRefer
         txId,
         flowJobId,
       });
+      return String(address);
     }
   }
+  return null;
 };
 
 const fetchFlowAddress = async (txId: string) => {

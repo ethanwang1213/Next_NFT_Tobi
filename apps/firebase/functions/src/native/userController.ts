@@ -97,11 +97,13 @@ export const signUp = async (req: Request, res: Response) => {
         },
       });
       if (decodedToken.email_verified && !flowAcc) {
+        const {fcmToken}: { fcmToken?: string } = req.body;
+
         // console.log(`Flow account was not found: ${uid}`);
         const firestoreFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", uid).get();
         if (firestoreFlowAccounts.size <= 0) {
           // console.log("Creating...");
-          await createFlowAccount(uid);
+          await createFlowAccount(uid, fcmToken);
         } else {
           const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
           const data = existingFlowAccountSnapshot.data();
@@ -112,7 +114,7 @@ export const signUp = async (req: Request, res: Response) => {
 
             if (flowJobs.size <= 0) {
               // console.log("flowJobs has failed. Create again...");
-              await createFlowAccount(uid);
+              await createFlowAccount(uid, fcmToken);
             } else {
               // console.log("Attempting to store in database");
               const flowJob = flowJobs.docs[0].data();
@@ -136,7 +138,7 @@ export const signUp = async (req: Request, res: Response) => {
             }
           } else {
             // console.log("txId is not found");
-            await createFlowAccount(uid);
+            await createFlowAccount(uid, fcmToken);
           }
         }
       }
@@ -210,7 +212,8 @@ export const createFlowAcc = async (req: Request, res: Response) => {
           },
         });
       }
-      const flowInfo = await createFlowAccount(uid);
+      const {fcmToken}: { fcmToken?: string } = req.body;
+      const flowInfo = await createFlowAccount(uid, fcmToken);
       const flowAccInfo = {
         account_uuid: uid,
         flow_job_id: flowInfo.flowJobId,

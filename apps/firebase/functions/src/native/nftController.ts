@@ -72,7 +72,7 @@ export const mintNFT = async (req: Request, res: Response) => {
           return;
         }
         console.log("mintStart", mintCount, intAmount);
-        await mint(id, uid, notificationBatchId, modelUrl);
+        await mint(id, uid, notificationBatchId, modelUrl, fcmToken);
         console.log("mintEnd", mintCount, intAmount);
         mintCount++;
         setTimeout(mintProcess, 1000);
@@ -84,6 +84,7 @@ export const mintNFT = async (req: Request, res: Response) => {
         title: "NFTの作成を開始しました",
         body: "作成完了までしばらくお待ちください",
       }, {
+        status: "success",
         body: JSON.stringify({
           type: "mintBegan",
           data: {id: id},
@@ -123,7 +124,7 @@ class MintError extends Error {
   }
 }
 
-export const mint = async (id: string, uid: string, notificationBatchId: number, modelUrl?: string) => {
+export const mint = async (id: string, uid: string, notificationBatchId: number, modelUrl?: string, fcmToken?: string) => {
   const notificationBatch = await prisma.notification_batch.findUnique({
     where: {
       id: notificationBatchId,
@@ -252,6 +253,7 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
         digitalItemNftId: undefined,
         metadata,
         notificationBatchId,
+        fcmToken,
       },
     };
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
@@ -290,6 +292,7 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
         digitalItemId,
         metadata,
         notificationBatchId,
+        fcmToken,
       },
     };
     const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
@@ -465,6 +468,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, notif
       digitalItemNftId: digitalItemNft.id,
       receiveFlowId,
       notificationBatchId,
+      fcmToken,
     },
   };
   const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage({json: message});
@@ -479,6 +483,7 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, notif
     title: title,
     body: body,
   }, {
+    status: "success",
     body: JSON.stringify({
       type: "transferBegan",
       data: {id: id},
