@@ -270,6 +270,7 @@ export const createSaidan = async (req: Request, res: Response) => {
         description: saveData.description,
         modelUrl: saidanTemplate.model_url,
         thumbUrl: saveData.thumbnail_image,
+        lastThumb: saveData.last_point_thumb ?? saveData.thumbnail_image,
         modelType: saidanTemplate.type,
         isPublic: saveData.is_public,
         favorite: favoriteValue.length!=0,
@@ -313,6 +314,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
         title: saidan.title,
         modelUrl: saidan.saidans_template.model_url,
         thumbUrl: saidan.thumbnail_image,
+        lastThumb: saidan.last_point_thumb ?? saidan.thumbnail_image,
         modelType: saidan.saidans_template.type,
         description: saidan.description,
         isPublic: saidan.is_public,
@@ -460,6 +462,7 @@ export const updateMySaidan = async (req: Request, res: Response) => {
       title: updatedSaidan?.title,
       modelUrl: template?.model_url,
       thumbUrl: updatedSaidan?.thumbnail_image,
+      lastThumb: updatedSaidan?.last_point_thumb ?? updatedSaidan?.thumbnail_image,
       modelType: template?.type,
       description: updatedSaidan?.description,
       isPublic: updatedSaidan?.is_public,
@@ -588,7 +591,8 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
 export const decorationSaidan = async (req: Request, res: Response) => {
   const {saidanId} = req.params;
   const {authorization} = req.headers;
-  const {itemList, cameraData, thumbImage}: {itemList: ItemType[], cameraData: CameraData, thumbImage: string} = req.body;
+  const {itemList, cameraData, thumbImage, lastPointThumb}
+    :{itemList: ItemType[], cameraData: CameraData, thumbImage: string, lastPointThumb: string} = req.body;
 
   interface ItemType {
     itemId: number;
@@ -661,6 +665,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         },
         data: {
           thumbnail_image: thumbImage,
+          last_point_thumb: lastPointThumb,
         },
       });
       const cameraUpdate = await prisma.saidan_camera.upsert({
