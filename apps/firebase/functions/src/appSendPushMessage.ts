@@ -10,13 +10,14 @@ export const pushDemo = functions.region(REGION).https.onRequest(async (req, res
     body: "Notification Body",
   },
   {
+    status: "success",
     body: "{ \"type\": \"mintCompleted\", \"data\": { \"id\": 0 } }",
   });
 
   response.status(200).send("submit").end();
 });
 
-export const pushToDevice = (deviceToken: string, notification?: { title: string, body: string, }, data?: { body: string, }) => {
+export const pushToDevice = (deviceToken: string, notification?: { title: string, body: string, }, data?: { status: string, body: string, }) => {
   const body: any = {
     android: {
       notification: {
@@ -42,6 +43,7 @@ export const pushToDevice = (deviceToken: string, notification?: { title: string
   }
   if (data) {
     body.data = {
+      status: data.status,
       body: data.body,
     };
   }
