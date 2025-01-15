@@ -128,6 +128,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           ) {
             await saveEmail(profileApiUrl, {
               account: {
+                userId: profile.data.userId,
                 email: firebaseUser.email,
               },
             });
