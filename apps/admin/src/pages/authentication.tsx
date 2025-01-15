@@ -1,3 +1,4 @@
+import { getMessages } from "admin/messages/messages";
 import { PASSWORD_RESET_PATH } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import {
@@ -12,16 +13,16 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { GetStaticPropsContext } from "next";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
+import { getPathWithLocale, LocalePlaceholder } from "types/localeTypes";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
 import EmailAndPasswordSignIn from "ui/templates/admin/EmailAndPasswordSignIn";
 import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 import AuthTemplate, { LoginFormType } from "ui/templates/AuthTemplate";
-import { getMessages } from "admin/messages/messages";
 
 const AuthStates = {
   SignUp: 0,
@@ -43,6 +44,7 @@ const Authentication = () => {
     setIsRegisteringWithMailAndPassword,
   ] = useState(false);
   const t = useTranslations("LogInSignUp");
+  const locale = useLocale();
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
@@ -95,7 +97,9 @@ const Authentication = () => {
     setIsRegisteringWithMailAndPassword(true);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailOwnershipVerification("admin/auth/email_auth");
+      await sendEmailOwnershipVerification(
+        `admin/${LocalePlaceholder}/auth/email_auth`,
+      );
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setAuthState(AuthStates.SignInWithEmailAndPassword);
@@ -116,7 +120,9 @@ const Authentication = () => {
       );
       const user = userCredential.user;
       if (!user.emailVerified) {
-        await sendEmailOwnershipVerification("admin/auth/sns_auth");
+        await sendEmailOwnershipVerification(
+          `admin/${LocalePlaceholder}/auth/sns_auth`,
+        );
       }
     } catch (error) {
       const errorCode = error.code;
@@ -147,10 +153,12 @@ const Authentication = () => {
   };
 
   const sendEmailOwnershipVerification = async (path: string) => {
+    const newPath = getPathWithLocale(locale, path);
     const actionCodeSettings = {
-      url: `${window.location.origin}/${path}`,
+      url: `${window.location.origin}/${newPath}`,
       handleCodeInApp: true,
     };
+    auth.languageCode = locale;
     try {
       await sendEmailVerification(auth.currentUser, actionCodeSettings);
       setAuthState(AuthStates.EmailSent);
@@ -170,10 +178,12 @@ const Authentication = () => {
       return;
     }
 
+    const newPath = getPathWithLocale(locale, path);
     const actionCodeSettings = {
-      url: `${window.location.origin}/${path}`,
+      url: `${window.location.origin}/${newPath}`,
       handleCodeInApp: true,
     };
+    auth.languageCode = locale;
     try {
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem("emailForSignIn", email);
