@@ -1,5 +1,5 @@
 import { auth } from "fetchers/firebase/client";
-import { sendEmailVerification, updateEmail } from "firebase/auth";
+import { verifyBeforeUpdateEmail } from "firebase/auth";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
@@ -18,13 +18,15 @@ const useUpdateEmail = () => {
     const newPath = getPathWithLocale(locale, path);
     auth.languageCode = locale;
     try {
-      await updateEmail(auth.currentUser, email);
-
       const actionCodeSettings = {
         url: `${window.location.origin}/${newPath}`,
         handleCodeInApp: true,
       };
-      await sendEmailVerification(auth.currentUser, actionCodeSettings);
+      await verifyBeforeUpdateEmail(
+        auth.currentUser,
+        email,
+        actionCodeSettings,
+      );
       setIsSuccessfull(true);
       setUpdating(false);
     } catch (error) {
