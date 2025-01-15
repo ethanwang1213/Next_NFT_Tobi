@@ -47,7 +47,7 @@ const ShowcaseEditMenu = ({
 
   return (
     <ul
-      className="w-52 rounded bg-white"
+      className="w-52 rounded bg-white z-30"
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >
       {menuItems.map((item, index) => {

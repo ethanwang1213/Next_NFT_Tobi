@@ -149,9 +149,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       [],
     );
     if (jsonData) {
-      if (status == ShowcaseStatus.Public) {
-        props.refreshHandler();
-      }
+      props.refreshHandler();
       setModifiedTime(jsonData.updateTime);
     } else {
       if (error) {
@@ -176,11 +174,12 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
     const jsonData = await putData(
       `${apiUrl}/${props.id}`,
-      { scheduleTimeJST },
+      { scheduleTime: scheduleTimeJST, status: 2 },
       [],
     );
     if (jsonData) {
       setScheduleTimeChanged(false);
+      props.refreshHandler();
       setModifiedTime(jsonData.updateTime);
     } else {
       if (error) {
@@ -367,8 +366,35 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
 const ShowcasePanel = ({ reload }) => {
   const apiUrl = "native/admin/showcases";
-  const { data, getData, setData, putData } = useRestfulAPI(apiUrl);
+  const { data, getData, setData } = useRestfulAPI(apiUrl);
   const [localReload, setLocalReload] = useState(0);
+
+  const sortData = (data) => {
+    return data?.slice().sort((a, b) => {
+      if (a.status === 1) return -1;
+      if (b.status === 1) return 1;
+
+      if (a.status === 2 && b.status === 2) {
+        return (
+          new Date(a.scheduleTime).getTime() -
+          new Date(b.scheduleTime).getTime()
+        );
+      }
+
+      if (a.status === 0 && b.status === 0) {
+        return (
+          new Date(b.updateTime).getTime() - new Date(a.updateTime).getTime()
+        );
+      }
+
+      if (a.status === 2 && b.status === 0) return -1;
+      if (a.status === 0 && b.status === 2) return 1;
+
+      return 0;
+    });
+  };
+
+  const sortedData = sortData(data);
 
   const handleStatusChange = (id, newStatus) => {
     const updatedShowcases = data.map((showcase) => {
@@ -394,28 +420,24 @@ const ShowcasePanel = ({ reload }) => {
   }, [reload, localReload]);
 
   return (
-    <>
-      <div className="flex flex-wrap gap-x-24 gap-y-12 select-none">
-        {data &&
-          data.length > 0 &&
-          data.map((showcase, index) => {
-            return (
-              <ShowcaseComponent
-                key={`showcase-${showcase.id}`}
-                id={showcase.id}
-                title={showcase.title}
-                description={showcase.description}
-                status={showcase.status}
-                thumbImage={showcase.thumbImage}
-                scheduleTime={showcase.scheduleTime}
-                updateTime={showcase.updateTime}
-                refreshHandler={() => setLocalReload(localReload + 1)}
-                onStatusChange={handleStatusChange}
-              />
-            );
-          })}
-      </div>
-    </>
+    <div className="flex flex-wrap gap-x-24 gap-y-12 select-none">
+      {sortedData &&
+        sortedData.length > 0 &&
+        sortedData.map((showcase) => (
+          <ShowcaseComponent
+            key={`showcase-${showcase.id}`}
+            id={showcase.id}
+            title={showcase.title}
+            description={showcase.description}
+            status={showcase.status}
+            thumbImage={showcase.thumbImage}
+            scheduleTime={showcase.scheduleTime}
+            updateTime={showcase.updateTime}
+            refreshHandler={() => setLocalReload(localReload + 1)}
+            onStatusChange={handleStatusChange}
+          />
+        ))}
+    </div>
   );
 };
 
