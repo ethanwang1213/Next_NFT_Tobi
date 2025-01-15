@@ -16,17 +16,27 @@ const ShowcaseNameEditDialog = ({
 }) => {
   const [title, setTitle] = useState(showcaseTitle);
   const [description, setDescription] = useState(showcaseDescription);
-  const { resumeUnityInputs } = useShowcaseEditUnity();
+  const { unityProvider, resumeUnityInputs } = useShowcaseEditUnity();
   const t = useTranslations("ContentShowcase");
   const l = useTranslations("GiftReceivingSettings");
 
   useEffect(() => {
     setTitle(showcaseTitle);
-  }, [showcaseTitle]);
-
-  useEffect(() => {
     setDescription(showcaseDescription);
-  }, [showcaseDescription]);
+  }, [showcaseTitle, showcaseDescription]);
+
+  const handleCancel = () => {
+    setTitle(showcaseTitle);
+    setDescription(showcaseDescription);
+    dialogRef.current.close();
+    unityProvider && resumeUnityInputs();
+  };
+
+  const handleSave = () => {
+    changeHandler(title, description);
+    dialogRef.current.close();
+    resumeUnityInputs();
+  };
 
   return (
     <dialog ref={dialogRef} className="modal">
@@ -70,10 +80,7 @@ const ShowcaseNameEditDialog = ({
             className="px-4 py-2 rounded-[64px] border-2 border-primary
               hover:shadow-xl hover:-top-[3px] transition-shadow
               text-primary text-sm leading-4 font-semibold"
-            onClick={() => {
-              dialogRef.current.close();
-              resumeUnityInputs();
-            }}
+            onClick={handleCancel}
           >
             {l("Cancel")}
           </button>
@@ -82,11 +89,7 @@ const ShowcaseNameEditDialog = ({
             className="px-4 py-2 bg-primary rounded-[64px] 
               hover:shadow-xl hover:-top-[3px] transition-shadow
               text-base-white text-sm leading-4 font-semibold"
-            onClick={() => {
-              dialogRef.current.close();
-              changeHandler(title, description);
-              resumeUnityInputs();
-            }}
+            onClick={handleSave}
           >
             {l("SaveChanges")}
           </button>

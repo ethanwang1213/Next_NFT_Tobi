@@ -52,7 +52,7 @@ const AccountFieldComponent = ({
       className={`flex border-b-[0.5px] border-secondary py-4 mr-7
     ${alignTop ? "items-start" : "items-center"} `}
     >
-      <span className="w-[122px] shrink-0 text-[16px] text-base-200-content font-normal break-words">
+      <span className="w-[155px] shrink-0 text-[16px] text-base-200-content font-normal break-words">
         {label}
       </span>
       {children}
@@ -553,7 +553,7 @@ export default function Index() {
                 {t("Edit")}
               </button>
             </AccountFieldComponent>
-            <AccountFieldComponent label={"Social Account"}>
+            <AccountFieldComponent label={t("SocialLogin")}>
               <div className="flex justify-between w-full">
                 <div className="flex gap-[17px]">
                   <GoogleIcon

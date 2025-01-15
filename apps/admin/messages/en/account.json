@@ -1,12 +1,12 @@
 {
   "Account": {
-    "UserName": "User name",
+    "UserName": "User Name",
     "UserID": "User ID",
-    "AboutMe": "About me",
-    "SocialMedia": "Social links",
+    "AboutMe": "About Me",
+    "SocialMedia": "Social Links",
     "Gender": "Gender",
     "Birthday": "Birthday",
-    "Email": "Email",
+    "Email": "E-mail",
     "Password": "Password",
     "SocialLogin": "Social Login",
     "Edit": "Edit",
