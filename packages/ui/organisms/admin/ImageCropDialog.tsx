@@ -34,6 +34,10 @@ const ImageCropDialog = ({
   const blobUrlRef = useRef("");
   const [crop, setCrop] = useState<Crop>(null);
   const [imageURL, setImageURL] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
+    null,
+  );
   const t = useTranslations("ContentSettings");
   const b = useTranslations("GiftReceivingSettings");
 
@@ -48,13 +52,7 @@ const ImageCropDialog = ({
         height,
       );
     } else {
-      newCrop = {
-        unit: "%",
-        x: 0,
-        y: 0,
-        width: 100,
-        height: 100,
-      };
+      newCrop = { unit: "%", x: 0, y: 0, width: 100, height: 100 };
     }
     newCrop = convertToPixelCrop(newCrop, width, height);
     newCrop.x = (imgWrapperRef.current.clientWidth - newCrop.width) / 2;
@@ -65,7 +63,6 @@ const ImageCropDialog = ({
   useEffect(() => {
     if (initialValue) {
       setImageURL(initialValue);
-
       const img = imgRef.current;
       if (img && img.complete) {
         const { width, height } = img;
@@ -143,6 +140,42 @@ const ImageCropDialog = ({
     setImageURL(initialValue);
   }, [initialValue]);
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!dragStart) {
+      setDragStart({ x: e.clientX, y: e.clientY });
+    }
+    setIsDragging(true);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging || !dragStart) return;
+
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
+
+    const newCrop = { ...crop };
+    newCrop.x = crop.x + dx;
+    newCrop.y = crop.y + dy;
+
+    setCrop(newCrop);
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    setDragStart(null);
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, crop, dragStart]);
+
   return (
     <dialog ref={dialogRef} className="modal">
       <div
@@ -171,6 +204,7 @@ const ImageCropDialog = ({
           <div
             ref={imgWrapperRef}
             className="w-full h-[360px] flex justify-center items-center border-neutral-200"
+            onMouseDown={handleMouseDown}
           >
             {
               // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
