@@ -49,7 +49,7 @@
     "PasswordConfirmation": "パスワード確認"
   },
   "AccountSocialLogin": {
-    "Connected": "に連携済み",
+    "Connected": "連携済み",
     "NotConnected": "未連携",
     "Disconnect": "連携を解除",
     "Connect": "連携する",
