@@ -148,19 +148,22 @@ const ImageCropDialog = ({
     e.preventDefault();
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !dragStart) return;
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging || !dragStart) return;
 
-    const dx = e.clientX - dragStart.x;
-    const dy = e.clientY - dragStart.y;
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
 
-    const newCrop = { ...crop };
-    newCrop.x = crop.x + dx;
-    newCrop.y = crop.y + dy;
+      const newCrop = { ...crop };
+      newCrop.x = crop.x + dx;
+      newCrop.y = crop.y + dy;
 
-    setCrop(newCrop);
-    setDragStart({ x: e.clientX, y: e.clientY });
-  };
+      setCrop(newCrop);
+      setDragStart({ x: e.clientX, y: e.clientY });
+    },
+    [isDragging, dragStart, crop],
+  );
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -174,7 +177,7 @@ const ImageCropDialog = ({
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, crop, dragStart]);
+  }, [handleMouseMove]);
 
   return (
     <dialog ref={dialogRef} className="modal">
