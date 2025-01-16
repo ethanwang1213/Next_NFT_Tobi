@@ -122,24 +122,40 @@ const replaceFileName = (name?: string) => {
   return newFileName;
 };
 
-export const checkBusinessAccount = async () => {
-  const idToken = await auth.currentUser.getIdToken();
-  const res = await fetch(
-    `/backend/api/functions/native/my/business/checkexist`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: idToken,
-        "Content-Type": "application/json",
+export const checkBusinessAccount = async (options: string) => {
+  try {
+    const idToken = await auth.currentUser.getIdToken();
+    const res = await fetch(
+      `/backend/api/functions/native/my/business/checkexist`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: idToken,
+          "Content-Type": "application/json",
+        },
       },
-    },
-  );
-  if (res.ok) {
-    const resData = await res.json();
-    return resData.data;
-  } else {
-    const resData = await res.text();
-    console.error(resData);
-    throw new Error("An error occurred. Please try again.");
+    );
+
+    const isJson = res.headers
+      .get("content-type")
+      ?.includes("application/json");
+    const responseData = isJson ? await res.json() : await res.text();
+
+    if (!res.ok) {
+      console.error(responseData);
+      throw new Error(`Error: ${responseData || "An unknown error occurred."}`);
+    }
+
+    switch (options) {
+      case "businessAccount":
+        return responseData.data;
+      case "rejectedContent":
+        return responseData.msg;
+      default:
+        throw new Error("Invalid option provided.");
+    }
+  } catch (error) {
+    console.error("checkBusinessAccount Error:", error);
+    throw error;
   }
 };

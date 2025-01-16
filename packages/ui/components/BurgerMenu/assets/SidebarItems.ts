@@ -24,6 +24,20 @@ export const useUpdatedSidebarItems = () => {
   const t = useTranslations("Menu");
   const [sidebarItems, setSidebarItems] = useState<SidebarItem[]>([]);
 
+  const getApplyHref = (status: string) => {
+    switch (status) {
+      case "not-approved":
+        return "/apply/contentApproval";
+      case "rejected":
+        return "/apply/contentRejected";
+      case "reported":
+      case "freezed":
+        return "/apply/contentReported";
+      default:
+        return "/apply";
+    }
+  };
+
   useEffect(() => {
     const userBusiness = user.hasBusinessAccount === "exist";
 
@@ -31,7 +45,7 @@ export const useUpdatedSidebarItems = () => {
       {
         name: "Tobiratory Creator Program",
         icon: "/admin/images/icon/contents.svg",
-        href: "/apply",
+        href: getApplyHref(user.hasBusinessAccount),
         visible: !userBusiness,
       },
       {

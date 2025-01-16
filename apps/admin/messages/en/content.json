@@ -54,6 +54,11 @@
     "UnderReview": "Under review",
     "ReviewMessage": "This page will become accessible after the review is completed.",
     "AdditionalDocuments": "In some cases, you may be required to submit additional documents.",
-    "ForInquiries": "For inquiries: TCP-support@tobiratory.com"
+    "ForInquiries": "For inquiries: TCP-support@tobiratory.com",
+    "ApplicationReturned": "Your application has been returned for revisions.",
+    "ReviewProcessIdentified": "The review process identified issues that require your attention.",
+    "ReviseAndResubmit": "Please revise the highlighted fields below and resubmit your application.",
+    "Comment": "Comment:",
+    "EditAndResubmit": "Edit and Resubmit"
   }
 }
