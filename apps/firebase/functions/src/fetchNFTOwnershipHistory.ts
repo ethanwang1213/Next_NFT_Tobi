@@ -40,7 +40,6 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
       cadence,
       args: (arg: any, t: any) => [arg(ownerFlowAddress, t.Address), arg(String(nftId), t.String)],
     });
-    console.log(`Result: ${JSON.parse(result)}`);
     return result;
   } catch (e) {
     console.log("The error occurs while fetching ownership history: ");
@@ -50,7 +49,7 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
   return;
 };
 
-export const flowScriptDebugFunction = functions.region(REGION).https.onRequest(async (request, response) => {
+export const fetchNFTOwnershipHistory = functions.region(REGION).https.onRequest(async (request, response) => {
   const { account, id } = request.query;
   if (!account || !id) {
     response.status(500).send("Invalid parameter 'account' or 'id'").end();
