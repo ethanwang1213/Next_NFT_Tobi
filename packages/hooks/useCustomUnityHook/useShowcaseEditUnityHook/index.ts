@@ -18,6 +18,7 @@ import {
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
   SaidanLikeData,
+  SaidanTextureType,
   SaidanType,
   showcaseOffset,
   UndoneOrRedoneHandler,
@@ -151,6 +152,7 @@ export const useShowcaseEditUnityHook = ({
         saidanId: loadData.showcaseId,
         saidanType: (loadData.showcaseType + showcaseOffset) as SaidanType,
         saidanUrl: loadData.showcaseUrl,
+        saidanTextureType: SaidanTextureType.White,
         saidanItemList,
         saidanCameraData: {
           position: { x: 0, y: 0, z: 0 },
