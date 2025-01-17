@@ -143,7 +143,7 @@ model contents {
     license            content_license?
     license_data       String[]             @default([]) @db.VarChar(255)
     is_approved        Boolean?             @default(false)
-    handle_msg         String?               @db.Text
+    handle_msg         String?              @db.Text
     is_deleted         Boolean              @default(false)
     updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
     created_date_time  DateTime             @default(now()) @db.Timestamp(6)
