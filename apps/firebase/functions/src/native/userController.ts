@@ -462,22 +462,76 @@ export const myBusiness = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const businesses = await prisma.businesses.findMany({
-      where: {
-        uuid: uid,
-        is_deleted: false,
-      },
-    });
-    const resData = {
-      first_name: businesses[0].first_name,
-      phone: businesses[0].phone,
-      bankAccount: businesses[0].bank_account,
-      balance: businesses[0].balance,
-    };
-    res.status(200).send({
-      status: "success",
-      data: resData,
-    });
+    try {
+      const business = await prisma.businesses.findUnique({
+        where: {
+          uuid: uid,
+          is_deleted: false,
+        },
+        include: {
+          content: {
+            include: {
+              copyrights: true,
+              license: true,
+            }
+          },
+          account: true,
+        }
+      });
+      if (!business) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      const date = new Date(business.birth);
+
+      const year = date.getFullYear(); 
+      const month = date.getMonth() + 1; 
+      const day = date.getDate();
+      const resData = {
+        content: {
+          name: business.content?.name,
+          url: business.content?.url,
+          description: business.content?.description,
+        },
+        user: {
+          firstName: business.first_name,
+          lastName: business.last_name,
+          birthdayYear: year,
+          birthdayMonth: month,
+          birthdayDate: day,
+          email: business.email,
+          phone: business.phone,
+          building: business.building,
+          street: business.street,
+          city: business.city,
+          province: business.province,
+          postalCode: business.postal_code,
+          country: business.country,
+        },
+        copyright: {
+          copyrightHolder: business.content?.copyrights.map((copyright)=>{
+            return copyright.name;
+          }),
+          license: business.content?.license,
+          file1: business.content?.license_data[0]??undefined,
+          file2: business.content?.license_data[1]??undefined,
+          file3: business.content?.license_data[2]??undefined,
+          file4: business.content?.license_data[3]??undefined,
+        },
+      };
+      res.status(200).send({
+        status: "success",
+        data: resData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
   });
 };
 
