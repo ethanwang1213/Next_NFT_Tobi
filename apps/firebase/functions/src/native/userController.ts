@@ -465,22 +465,76 @@ export const myBusiness = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const businesses = await prisma.businesses.findMany({
-      where: {
-        uuid: uid,
-        is_deleted: false,
-      },
-    });
-    const resData = {
-      first_name: businesses[0].first_name,
-      phone: businesses[0].phone,
-      bankAccount: businesses[0].bank_account,
-      balance: businesses[0].balance,
-    };
-    res.status(200).send({
-      status: "success",
-      data: resData,
-    });
+    try {
+      const business = await prisma.businesses.findUnique({
+        where: {
+          uuid: uid,
+          is_deleted: false,
+        },
+        include: {
+          content: {
+            include: {
+              copyrights: true,
+              license: true,
+            }
+          },
+          account: true,
+        }
+      });
+      if (!business) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist",
+        });
+        return;
+      }
+      const date = new Date(business.birth);
+
+      const year = date.getFullYear(); 
+      const month = date.getMonth() + 1; 
+      const day = date.getDate();
+      const resData = {
+        content: {
+          name: business.content?.name,
+          url: business.content?.url,
+          description: business.content?.description,
+        },
+        user: {
+          firstName: business.first_name,
+          lastName: business.last_name,
+          birthdayYear: year,
+          birthdayMonth: month,
+          birthdayDate: day,
+          email: business.email,
+          phone: business.phone,
+          building: business.building,
+          street: business.street,
+          city: business.city,
+          province: business.province,
+          postalCode: business.postal_code,
+          country: business.country,
+        },
+        copyright: {
+          copyrightHolder: business.content?.copyrights.map((copyright)=>{
+            return copyright.name;
+          }),
+          license: business.content?.license,
+          file1: business.content?.license_data[0]??undefined,
+          file2: business.content?.license_data[1]??undefined,
+          file3: business.content?.license_data[2]??undefined,
+          file4: business.content?.license_data[3]??undefined,
+        },
+      };
+      res.status(200).send({
+        status: "success",
+        data: resData,
+      });
+    } catch (error) {
+      res.status(401).send({
+        status: "error",
+        data: error,
+      });
+    }
   });
 };
 
@@ -518,19 +572,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
   } = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const exist = await prisma.businesses.findFirst({
-      where: {
-        uuid: uid,
-      },
-    });
-    if (exist) {
-      res.status(400).send({
-        status: "error",
-        data: "already-exist",
-      });
-      return;
-    }
-
     const birth = new Date(birthdayYear, birthdayMonth - 1, birthdayDate);
     const businessData = {
       uuid: uid,
@@ -557,50 +598,128 @@ export const businessSubmission = async (req: Request, res: Response) => {
       license_data: [file1, file2, file3, file4].filter(Boolean),
     };
     try {
-      const returnData = await prisma.$transaction(async (tx) => {
-        const savedBusinessData = await tx.businesses.create({
-          data: businessData,
-        });
-        const savedContentData = await tx.contents.create({
-          data: {...contentData,
-            license: {
-              create: license,
+      const exist = await prisma.businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+        include: {
+          content: {
+            include: {
+              reported_contents: true,
             },
           },
-        });
-
-        const firestoreData: ContentData = {cmsApprove: null};
-        firestore().collection(businessAccount).doc(uid).set(firestoreData);
-        const copyrights = copyrightHolder.map((copyright: string)=>{
-          return {
-            name: copyright,
-            content_id: savedContentData.id,
-          };
-        });
-        await tx.copyrights.createMany({
-          data: copyrights,
-        });
-        const showcaseTemplate = await tx.showcase_template.findUnique({
-          where: {
-            id: 1, // default template id
-          },
-        });
-        if (!showcaseTemplate) {
-          throw new Error("not-template");
-        }
-        await tx.showcases.create({
-          data: {
-            title: contentName,
-            description: description,
-            account_uuid: savedBusinessData.uuid,
-            content_id: savedContentData.id,
-            template_id: showcaseTemplate.id,
-            thumb_url: showcaseTemplate.cover_image,
-            status: statusOfShowcase.public,
-          },
-        });
-        return {...savedBusinessData, content: {...savedContentData}};
+        },
       });
+      if (exist&&exist.content?.is_approved != false) {
+        res.status(400).send({
+          status: "error",
+          data: "already-exist",
+        });
+        return;
+      }
+      let returnData;
+      if (!exist) {
+        returnData = await prisma.$transaction(async (tx) => {
+          const savedBusinessData = await tx.businesses.create({
+            data: businessData,
+          });
+          const savedContentData = await tx.contents.create({
+            data: {...contentData,
+              license: {
+                create: license,
+              },
+            },
+          });
+
+          const firestoreData: ContentData = {cmsApprove: null};
+          firestore().collection(businessAccount).doc(uid).set(firestoreData);
+          const copyrights = copyrightHolder.map((copyright: string)=>{
+            return {
+              name: copyright,
+              content_id: savedContentData.id,
+            };
+          });
+          await tx.copyrights.createMany({
+            data: copyrights,
+          });
+          const showcaseTemplate = await tx.showcase_template.findUnique({
+            where: {
+              id: 1, // default template id
+            },
+          });
+          if (!showcaseTemplate) {
+            throw new Error("not-template");
+          }
+          await tx.showcases.create({
+            data: {
+              title: contentName,
+              description: description,
+              account_uuid: savedBusinessData.uuid,
+              content_id: savedContentData.id,
+              template_id: showcaseTemplate.id,
+              thumb_url: showcaseTemplate.cover_image,
+              status: statusOfShowcase.public,
+            },
+          });
+          return {...savedBusinessData, content: {...savedContentData}};
+        });
+      } else {
+        returnData = await prisma.$transaction(async (tx) => {
+          const savedBusinessData = await tx.businesses.update({
+            where: {id: exist.id},
+            data: businessData,
+          });
+          const savedContentData = await tx.contents.update({
+            where: {id: exist.id},
+            data: {...contentData,
+              is_approved: null,
+              license: {
+                update: license,
+              },
+            },
+          });
+
+          const firestoreData: ContentData = {cmsApprove: null};
+          firestore().collection(businessAccount).doc(uid).set(firestoreData);
+          const copyrights = copyrightHolder.map((copyright: string)=>{
+            return {
+              name: copyright,
+              content_id: savedContentData.id,
+            };
+          });
+          await tx.copyrights.deleteMany({
+            where: {
+              content_id: savedContentData.id,
+            },
+          });
+          await tx.copyrights.createMany({
+            data: copyrights,
+          });
+          const showcaseTemplate = await tx.showcase_template.findUnique({
+            where: {
+              id: 1, // default template id
+            },
+          });
+          if (!showcaseTemplate) {
+            throw new Error("not-template");
+          }
+          await tx.showcases.updateMany({
+            where: {
+              content_id: savedContentData.id,
+            },
+            data: {
+              title: contentName,
+              description: description,
+              account_uuid: savedBusinessData.uuid,
+              content_id: savedContentData.id,
+              template_id: showcaseTemplate.id,
+              thumb_url: showcaseTemplate.cover_image,
+              status: statusOfShowcase.public,
+            },
+          });
+          return {...savedBusinessData, content: {...savedContentData}};
+        });
+      }
 
       res.status(200).send({
         status: "success",
@@ -666,6 +785,7 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "error",
         data: "rejected",
+        msg: exist?.content.handle_msg,
       });
       return;
     }

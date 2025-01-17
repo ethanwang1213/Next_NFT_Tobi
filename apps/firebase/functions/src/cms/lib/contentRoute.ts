@@ -222,7 +222,7 @@ router.get("/participation", async (req: Request, res: Response) => {
 });
 
 router.put("/participation", async (req: Request, res: Response) => {
-  const {processType, contentIds}: { processType: boolean, contentIds: number[] } = req.body;
+  const {processType, contentIds, msg}: { processType: boolean, contentIds: number[], msg: string } = req.body;
   try {
     if (processType) {
       const allRequests = await prisma.contents.findMany({
@@ -240,6 +240,7 @@ router.put("/participation", async (req: Request, res: Response) => {
               },
               data: {
                 is_approved: true,
+                handle_msg: msg,
               },
             });
 
@@ -263,6 +264,7 @@ router.put("/participation", async (req: Request, res: Response) => {
               },
               data: {
                 is_approved: null,
+                handle_msg: msg,
               },
             });
 
