@@ -515,19 +515,6 @@ export const businessSubmission = async (req: Request, res: Response) => {
   } = req.body;
   await getAuth().verifyIdToken(authorization??"").then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-    const exist = await prisma.businesses.findFirst({
-      where: {
-        uuid: uid,
-      },
-    });
-    if (exist) {
-      res.status(400).send({
-        status: "error",
-        data: "already-exist",
-      });
-      return;
-    }
-
     const birth = new Date(birthdayYear, birthdayMonth - 1, birthdayDate);
     const businessData = {
       uuid: uid,
@@ -554,50 +541,128 @@ export const businessSubmission = async (req: Request, res: Response) => {
       license_data: [file1, file2, file3, file4].filter(Boolean),
     };
     try {
-      const returnData = await prisma.$transaction(async (tx) => {
-        const savedBusinessData = await tx.businesses.create({
-          data: businessData,
-        });
-        const savedContentData = await tx.contents.create({
-          data: {...contentData,
-            license: {
-              create: license,
+      const exist = await prisma.businesses.findFirst({
+        where: {
+          uuid: uid,
+        },
+        include: {
+          content: {
+            include: {
+              reported_contents: true,
             },
           },
-        });
-
-        const firestoreData: ContentData = {cmsApprove: null};
-        firestore().collection(businessAccount).doc(uid).set(firestoreData);
-        const copyrights = copyrightHolder.map((copyright: string)=>{
-          return {
-            name: copyright,
-            content_id: savedContentData.id,
-          };
-        });
-        await tx.copyrights.createMany({
-          data: copyrights,
-        });
-        const showcaseTemplate = await tx.showcase_template.findUnique({
-          where: {
-            id: 1, // default template id
-          },
-        });
-        if (!showcaseTemplate) {
-          throw new Error("not-template");
-        }
-        await tx.showcases.create({
-          data: {
-            title: contentName,
-            description: description,
-            account_uuid: savedBusinessData.uuid,
-            content_id: savedContentData.id,
-            template_id: showcaseTemplate.id,
-            thumb_url: showcaseTemplate.cover_image,
-            status: statusOfShowcase.public,
-          },
-        });
-        return {...savedBusinessData, content: {...savedContentData}};
+        },
       });
+      if (exist&&exist.content?.is_approved != false) {
+        res.status(400).send({
+          status: "error",
+          data: "already-exist",
+        });
+        return;
+      }
+      let returnData;
+      if (!exist) {
+        returnData = await prisma.$transaction(async (tx) => {
+          const savedBusinessData = await tx.businesses.create({
+            data: businessData,
+          });
+          const savedContentData = await tx.contents.create({
+            data: {...contentData,
+              license: {
+                create: license,
+              },
+            },
+          });
+
+          const firestoreData: ContentData = {cmsApprove: null};
+          firestore().collection(businessAccount).doc(uid).set(firestoreData);
+          const copyrights = copyrightHolder.map((copyright: string)=>{
+            return {
+              name: copyright,
+              content_id: savedContentData.id,
+            };
+          });
+          await tx.copyrights.createMany({
+            data: copyrights,
+          });
+          const showcaseTemplate = await tx.showcase_template.findUnique({
+            where: {
+              id: 1, // default template id
+            },
+          });
+          if (!showcaseTemplate) {
+            throw new Error("not-template");
+          }
+          await tx.showcases.create({
+            data: {
+              title: contentName,
+              description: description,
+              account_uuid: savedBusinessData.uuid,
+              content_id: savedContentData.id,
+              template_id: showcaseTemplate.id,
+              thumb_url: showcaseTemplate.cover_image,
+              status: statusOfShowcase.public,
+            },
+          });
+          return {...savedBusinessData, content: {...savedContentData}};
+        });
+      } else {
+        returnData = await prisma.$transaction(async (tx) => {
+          const savedBusinessData = await tx.businesses.update({
+            where: {id: exist.id},
+            data: businessData,
+          });
+          const savedContentData = await tx.contents.update({
+            where: {id: exist.id},
+            data: {...contentData,
+              is_approved: null,
+              license: {
+                update: license,
+              },
+            },
+          });
+
+          const firestoreData: ContentData = {cmsApprove: null};
+          firestore().collection(businessAccount).doc(uid).set(firestoreData);
+          const copyrights = copyrightHolder.map((copyright: string)=>{
+            return {
+              name: copyright,
+              content_id: savedContentData.id,
+            };
+          });
+          await tx.copyrights.deleteMany({
+            where: {
+              content_id: savedContentData.id,
+            },
+          });
+          await tx.copyrights.createMany({
+            data: copyrights,
+          });
+          const showcaseTemplate = await tx.showcase_template.findUnique({
+            where: {
+              id: 1, // default template id
+            },
+          });
+          if (!showcaseTemplate) {
+            throw new Error("not-template");
+          }
+          await tx.showcases.updateMany({
+            where: {
+              content_id: savedContentData.id,
+            },
+            data: {
+              title: contentName,
+              description: description,
+              account_uuid: savedBusinessData.uuid,
+              content_id: savedContentData.id,
+              template_id: showcaseTemplate.id,
+              thumb_url: showcaseTemplate.cover_image,
+              status: statusOfShowcase.public,
+            },
+          });
+          return {...savedBusinessData, content: {...savedContentData}};
+        });
+      }
 
       res.status(200).send({
         status: "success",
@@ -663,6 +728,7 @@ export const checkExistBusinessAcc = async (req: Request, res: Response) => {
       res.status(200).send({
         status: "error",
         data: "rejected",
+        msg: exist?.content.handle_msg,
       });
       return;
     }

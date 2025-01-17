@@ -72,7 +72,7 @@ model saidans {
     saidans_template  saidans_template   @relation(fields: [template_id], references: [id])
     template_id       Int
     thumbnail_image   String             @db.VarChar(255)
-    last_point_thumb  String?             @db.VarChar(255)
+    last_point_thumb  String?            @db.VarChar(255)
     is_public         Boolean            @default(false)
     max_item_count    Int                @default(0)
     account           accounts?          @relation(fields: [account_uuid], references: [uuid])
@@ -143,6 +143,7 @@ model contents {
     license            content_license?
     license_data       String[]             @default([]) @db.VarChar(255)
     is_approved        Boolean?             @default(false)
+    handle_msg         String?               @db.Text
     is_deleted         Boolean              @default(false)
     updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
     created_date_time  DateTime             @default(now()) @db.Timestamp(6)
