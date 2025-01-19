@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import { formatDateToLocal } from "ui/atoms/Formatters";
 import CustomDatePicker from "./CustomDatePicker";
+import ShowcaseConfirmDialog from "./ShowcaseConfirmDialog";
 import ShowcaseEditMenu from "./ShowcaseEditMenu";
 import ShowcaseNameEditDialog from "./ShowcaseNameEditDialog";
 
@@ -31,6 +32,7 @@ type ShowcaseComponentProps = {
   updateTime: string;
   refreshHandler: () => void;
   onStatusChange: (id: number, newStatus: string) => void;
+  onDeleteShowcase: () => void;
 };
 
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
@@ -95,25 +97,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         changeStatus(ShowcaseStatus.ScheduledPublic);
         break;
       case 4:
-        deleteHandler();
+        props.onDeleteShowcase();
         break;
 
       default:
         break;
-    }
-  };
-
-  const deleteHandler = async () => {
-    if (await deleteData(`${apiUrl}/${props.id}`)) {
-      props.refreshHandler();
-    } else {
-      if (error) {
-        if (error instanceof String) {
-          toast(error);
-        } else {
-          toast(error.toString());
-        }
-      }
     }
   };
 
@@ -366,8 +354,10 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
 const ShowcasePanel = ({ reload }) => {
   const apiUrl = "native/admin/showcases";
-  const { data, getData, setData } = useRestfulAPI(apiUrl);
+  const { error, data, getData, setData, deleteData } = useRestfulAPI(apiUrl);
   const [localReload, setLocalReload] = useState(0);
+  const showcaseConfirmDialogRef = useRef(null);
+  const [deleteShowcaseId, setDeleteShowcaseId] = useState(null);
 
   const sortData = (data) => {
     return data?.slice().sort((a, b) => {
@@ -395,6 +385,24 @@ const ShowcasePanel = ({ reload }) => {
   };
 
   const sortedData = sortData(data);
+
+  const showcaseDeleteHandler = async () => {
+    if (
+      deleteShowcaseId &&
+      (await deleteData(`${apiUrl}/${deleteShowcaseId}`))
+    ) {
+      setLocalReload(localReload + 1);
+      setDeleteShowcaseId(null);
+    } else {
+      if (error) {
+        if (typeof error === "string") {
+          toast(error);
+        } else {
+          toast(error.toString());
+        }
+      }
+    }
+  };
 
   const handleStatusChange = (id, newStatus) => {
     const updatedShowcases = data.map((showcase) => {
@@ -435,8 +443,16 @@ const ShowcasePanel = ({ reload }) => {
             updateTime={showcase.updateTime}
             refreshHandler={() => setLocalReload(localReload + 1)}
             onStatusChange={handleStatusChange}
+            onDeleteShowcase={() => {
+              setDeleteShowcaseId(showcase.id);
+              showcaseConfirmDialogRef.current.showModal();
+            }}
           />
         ))}
+      <ShowcaseConfirmDialog
+        dialogRef={showcaseConfirmDialogRef}
+        deleteHandler={showcaseDeleteHandler}
+      />
     </div>
   );
 };

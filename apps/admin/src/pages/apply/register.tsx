@@ -2,7 +2,6 @@ import { getMessages } from "admin/messages/messages";
 import clsx from "clsx";
 import { useAuth } from "contexts/AdminAuthProvider";
 import { useTcpRegistration } from "fetchers/businessAccount";
-import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
@@ -34,8 +33,6 @@ const Register = () => {
   const switchLabels = [t("Content"), t("RegistrantInfo"), t("Other")];
   const [switchValue, setSwitchValue] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const apiUrl = "native/my/business";
-  const { data, setData } = useRestfulAPI(apiUrl);
 
   const router = useRouter();
   const { finishBusinessAccountRegistration, user } = useAuth();
