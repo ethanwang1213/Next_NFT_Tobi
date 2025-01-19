@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { MutableRefObject, useRef } from "react";
 import Button from "ui/atoms/Button";
-import AccountConfirmDialog from "ui/organisms/admin/AccountConfirmDialog";
+import TcpConfirmDialog from "ui/organisms/admin/TcpConfirmDialog";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -30,17 +30,15 @@ const ConfirmModal = ({
   const t = useTranslations("TCP");
 
   return (
-    <AccountConfirmDialog
+    <TcpConfirmDialog
       title={t("JoinThisAccount")}
       account={user}
-      firstButtonProp={{
+      linkProp={{
         caption: t("ApplyDifferentAccount"),
-        isPrimary: false,
         callback: signOut,
       }}
-      secondButtonProp={{
+      buttonProp={{
         caption: t("Next"),
-        isPrimary: true,
         callback: () => router.replace("/apply/terms"),
       }}
       dialogRef={dialogRef}
