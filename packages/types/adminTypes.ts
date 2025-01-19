@@ -16,6 +16,7 @@ export type User = {
   email: string;
   icon: string;
   emailVerified: boolean;
+  hasTobiratoryAccount: boolean;
   hasFlowAccount: boolean;
   hasBusinessAccount: HasBusinessAccount;
 };
