@@ -4,7 +4,6 @@ import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Button from "ui/atoms/Button";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -49,9 +48,12 @@ const ContentRejected = () => {
             <span className="underline font-semibold">{t("ForInquiries")}</span>
           </Link>
           <div className="my-6 text-sm text-warning-300 font-semibold">
-            <Button type="button" className="bg-white rounded-[50px] py-2 px-4">
+            <Link
+              href="/apply/register"
+              className="bg-white rounded-[50px] py-2 px-4"
+            >
               {t("EditAndResubmit")}
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
