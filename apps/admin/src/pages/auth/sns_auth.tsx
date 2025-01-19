@@ -26,7 +26,16 @@ const SnsAuth = () => {
       router.push("/authentication");
     } else if (user.hasFlowAccount) {
       router.push("/");
+    } else if (
+      user.hasTobiratoryAccount &&
+      !registering &&
+      !response &&
+      !error
+    ) {
+      // When the screen is reloaded during Flow account creation
+      register();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, user]);
 
   if (!user) {
