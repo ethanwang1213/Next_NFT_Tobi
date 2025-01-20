@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 import {FirebaseError, storage} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
-import {getFunctions, httpsCallable} from "firebase/functions";
 import {v4 as uuidv4} from "uuid";
 import {TOPIC_NAMES} from "../lib/constants";
 import {PubSub} from "@google-cloud/pubsub";
@@ -16,10 +15,9 @@ import {
   notificationBatchStatus,
   digitalItemStatus,
 } from "./utils";
+import fetch from "node-fetch";
 
 const pubsub = new PubSub();
-const functions = getFunctions();
-const fetchNFTOwnershipHistory = httpsCallable(functions, "fetchNFTOwnershipHistory");
 
 export const mintNFT = async (req: Request, res: Response) => {
   const {id} = req.params;
@@ -499,9 +497,24 @@ export const generateNotificationBatchId = async (fcmToken: string) => {
 };
 
 export const getOwnershipHistory = async (ownerFlowAddress: string, nftId: number) => {
-  const result = await fetchNFTOwnershipHistory({ account: ownerFlowAddress, id: nftId });
-  console.log(`Ownership history has been fetched: ${result.data}`);  
-  return JSON.parse(String(result.data));
+  const baseUrl = "https://asia-northeast1-tobiratory-f6ae1.cloudfunctions.net/fetchNFTOwnershipHistory";
+  try {
+    const url = `${baseUrl}?account=${encodeURIComponent(ownerFlowAddress)}&id=${encodeURIComponent(nftId)}`;
+    const response = await fetch(url, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Ownership history:", data);
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error fetching ownership history:", error);
+    return null;
+  }
 };
 
 export const fetchNftThumb = async (req: Request, res: Response) => {
