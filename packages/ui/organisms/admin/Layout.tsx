@@ -90,13 +90,13 @@ const Contents = ({ children }: Props) => {
   return (
     <div
       className={
-        "flex flow-row sm:justify-center min-h-screen h-min min-w-[760px]"
+        "flex flow-row sm:justify-center min-h-screen min-w-[425px]"
       }
     >
-      <div className={"grow flex flex-col self-stretch"}>
+      <div className="grow flex flex-col self-stretch">
         {children}
         <div className={"flex grow justify-center"}>
-          <div className="self-end font-normal text-[12px] text-base-content">
+          <div className="self-end font-normal text-[12px] text-base-content pb-6">
             Tobiratory Inc. all rights reserved.
           </div>
         </div>

@@ -115,12 +115,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
         const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
         if (hasFlowAccount) {
-          const hasBusinessAccount = await checkBusinessAccount().catch(
-            (error) => {
-              console.error(error);
-              auth.signOut();
-            },
-          );
+          const hasBusinessAccount = await checkBusinessAccount(
+            "businessAccount",
+          ).catch((error) => {
+            console.error(error);
+            auth.signOut();
+          });
 
           if (
             firebaseUser.emailVerified &&

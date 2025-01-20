@@ -54,6 +54,11 @@
     "UnderReview": "審査中",
     "ReviewMessage": "このページは審査が完了次第、アクセス可能になります。",
     "AdditionalDocuments": "一部の場合、追加書類の提出を求められることがあります。",
-    "ForInquiries": "お問い合わせ先: TCP-support@tobiratory.com"
+    "ForInquiries": "お問い合わせ先: TCP-support@tobiratory.com",
+    "ApplicationReturned": "申請が修正のために返却されました。",
+    "ReviewProcessIdentified": "審査プロセスで対応が必要な問題が特定されました。",
+    "ReviseAndResubmit": "以下のハイライトされた項目を修正し、再提出してください。",
+    "Comment": "コメント：",
+    "EditAndResubmit": "編集して再提出"
   }
 }

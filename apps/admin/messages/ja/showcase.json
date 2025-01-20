@@ -27,35 +27,38 @@
     "WishToContinue": "続行しますか？",
     "MintNow": "今すぐミント",
     "StatusChangeMessage": "ミント後、ステータスはプライベートに変更され、ドラフトに戻すことはできません。",
-    "Movement" :{
+    "DeleteShowcase": "ショーケースを削除しますか？",
+    "DeleteConfirmationMessage": "この操作により、ショーケースとその関連データが削除されます。この操作は取り消すことができません。",
+    "ProceedConfirmation": "削除してもよろしいですか？",
+    "Movement": {
       "title": "W A S D ( ↑ ← ↓ → )",
       "description": "視点移動：上下左右"
     },
-    "WheelScroll" :{
+    "WheelScroll": {
       "title": "ホイールスクロール",
       "description": "ズームイン・ズームアウト"
     },
-    "MouseWheelDrag" :{
+    "MouseWheelDrag": {
       "title": "マウスホイールドラッグ",
       "description": "カメラの上下左右移動"
     },
-    "RightDrag" :{
+    "RightDrag": {
       "title": "右ドラッグ",
       "description": "カメラの視点回転"
     },
-    "UndoAction" :{
+    "UndoAction": {
       "title": "Ctrl ( ⌘ ) + Z",
       "description": "操作を一つ巻き戻す"
     },
-    "RedoAction" :{
+    "RedoAction": {
       "title": "Ctrl ( ⌘ ) + Shift + Z",
       "description": "巻き戻した操作を一つ進める"
     },
-    "Duplicate" :{
+    "Duplicate": {
       "title": "Ctrl ( ⌘ ) + D",
       "description": "複製（サンプルアイテムのみ可能）"
     },
-    "RestoreItem" :{
+    "RestoreItem": {
       "title": "Delete / Backspace",
       "description": "選択しているアイテムを戻す"
     }

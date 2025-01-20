@@ -30,11 +30,10 @@ const Index = () => {
         user.hasBusinessAccount === "freezed"
       ) {
         router.push("/apply/contentRepoted");
-      } else if (
-        user.hasBusinessAccount === "not-approved" ||
-        user.hasBusinessAccount === "rejected"
-      ) {
+      } else if (user.hasBusinessAccount === "not-approved") {
         router.push("/apply/contentApproval");
+      } else if (user.hasBusinessAccount === "rejected") {
+        router.push("/apply/contentRejected");
       } else {
         router.push("/apply");
       }
