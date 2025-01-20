@@ -7,7 +7,7 @@
     "SubmitApplication": "Submit Application",
     "ContentInfo": "Content Information",
     "Content": "Content Info",
-    "RegistrantInfo": "Registrant Info",
+    "RegistrantInfo": "Review Your Application",
     "ContentName": "Content Name",
     "Other": "Other",
     "ContentDescription": "Content Description",
@@ -61,7 +61,7 @@
     "FreeDistributionDescription": "You can freely distribute exclusive items to users.",
     "FreeDistributionNote": "※Sales functionality will be implemented in the future.",
     "DisplaySampleItems": "Display of Sample Digital Items",
-    "DisplaySampleItemsDescription": "You can freely display and showcase digital items you wish to sell on SAIDAN.",
+    "DisplaySampleItemsDescription": "You can freely display and showcase digital items you wish to sell in the Showcase.",
     "SingleContentLimit": "Please note that only one piece of content can be applied for per account.",
     "Registered": "Registration has been completed.",
     "RegistrationFailed": "Registration has failed."
