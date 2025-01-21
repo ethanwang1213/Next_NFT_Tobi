@@ -14,7 +14,8 @@ import {
 } from "firebase/auth";
 import { GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import { getPathWithLocale, LocalePlaceholder } from "types/localeTypes";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
@@ -45,6 +46,13 @@ const Authentication = () => {
   ] = useState(false);
   const t = useTranslations("LogInSignUp");
   const locale = useLocale();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      router.push("/");
+    }
+  }, []);
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
