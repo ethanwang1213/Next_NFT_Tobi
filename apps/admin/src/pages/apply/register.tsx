@@ -2,6 +2,7 @@ import { getMessages } from "admin/messages/messages";
 import clsx from "clsx";
 import { useAuth } from "contexts/AdminAuthProvider";
 import { useTcpRegistration } from "fetchers/businessAccount";
+import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
@@ -33,9 +34,52 @@ const Register = () => {
   const switchLabels = [t("Content"), t("RegistrantInfo"), t("Other")];
   const [switchValue, setSwitchValue] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const apiUrl = "native/my/business";
+  const { data } = useRestfulAPI(apiUrl);
 
   const router = useRouter();
   const { finishBusinessAccountRegistration, user } = useAuth();
+
+  useEffect(() => {
+    if (data) {
+      setContentInfo({
+        name: data.content?.name,
+        url: data.content?.url,
+        description: data.content?.description,
+      });
+      setUserInfo({
+        lastName: data.user?.lastName,
+        firstName: data.user?.firstName,
+        birthdayYear: data.user?.birthdayYear,
+        birthdayMonth: data.user?.birthdayMonth,
+        birthdayDate: data.user?.birthdayDate,
+        email: data.user?.email,
+        phone: data.user?.phone,
+        building: data.user?.building,
+        street: data.user?.street,
+        city: data.user?.city,
+        province: data.user?.province,
+        postalCode: data.user?.postalCode,
+        country: data.user?.country,
+      });
+      setCopyrightInfo({
+        agreement: true,
+        copyrightHolder: data.copyright?.copyrightHolder || [],
+        file1: "",
+        file2: "",
+        file3: "",
+        file4: "",
+        license: {
+          com: data.copyright?.license?.com || true,
+          adp: data.copyright?.license?.adp || true,
+          der: data.copyright?.license?.der || true,
+          mer: data.copyright?.license?.mer || true,
+          dst: data.copyright?.license?.dst || true,
+          ncr: data.copyright?.license?.ncr || true,
+        },
+      });
+    }
+  }, [data]);
 
   const [contentInfo, setContentInfo] = useState<TcpContent>({
     name: user.name,
