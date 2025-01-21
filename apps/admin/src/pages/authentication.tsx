@@ -54,6 +54,7 @@ const Authentication = () => {
     if (auth.currentUser) {
       router.push("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startMailSignUp = async (data: LoginFormType) => {
