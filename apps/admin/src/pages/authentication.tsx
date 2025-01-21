@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import { getPathWithLocale, LocalePlaceholder } from "types/localeTypes";
+import FullScreenLoading from "ui/molecules/FullScreenLoading";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
 import EmailAndPasswordSignIn from "ui/templates/admin/EmailAndPasswordSignIn";
 import FlowAgreementWithEmailAndPassword, {
@@ -39,6 +40,7 @@ const Authentication = () => {
   const [email, setEmail] = useState("");
   const [authError, setAuthError] = useState<ErrorMessage>(null);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [authState, setAuthState] = useState<AuthState>(AuthStates.SignIn);
   const [
     isRegisteringWithMailAndPassword,
@@ -145,6 +147,7 @@ const Authentication = () => {
 
     try {
       await signInWithPopup(auth, provider);
+      setIsLoading(true);
     } catch (error) {
       console.error("Googleログインに失敗しました。", error);
     }
@@ -155,6 +158,7 @@ const Authentication = () => {
 
     try {
       await signInWithPopup(auth, provider);
+      setIsLoading(true);
     } catch (error) {
       console.error("Appleログインに失敗しました。", error);
     }
@@ -212,31 +216,37 @@ const Authentication = () => {
   switch (authState) {
     case AuthStates.SignUp:
       return (
-        <AuthTemplate
-          loading={isEmailLoading}
-          googleLabel={t("SignUpWithGoogle")}
-          appleLabel={t("SignUpWithApple")}
-          mailLabel={t("SignUp")}
-          prompt={t("AlreadyHaveAccount")}
-          setAuthState={() => setAuthState(AuthStates.SignIn)}
-          withMail={startMailSignUp}
-          withGoogle={withGoogle}
-          withApple={withApple}
-        />
+        <>
+          <AuthTemplate
+            loading={isEmailLoading}
+            googleLabel={t("SignUpWithGoogle")}
+            appleLabel={t("SignUpWithApple")}
+            mailLabel={t("SignUp")}
+            prompt={t("AlreadyHaveAccount")}
+            setAuthState={() => setAuthState(AuthStates.SignIn)}
+            withMail={startMailSignUp}
+            withGoogle={withGoogle}
+            withApple={withApple}
+          />
+          <FullScreenLoading isOpen={isLoading} />
+        </>
       );
     case AuthStates.SignIn:
       return (
-        <AuthTemplate
-          loading={isEmailLoading}
-          googleLabel={t("LogInWithGoogle")}
-          appleLabel={t("LogInWithApple")}
-          mailLabel={t("LogIn")}
-          prompt={t("NoAccountSignUp")}
-          setAuthState={() => setAuthState(AuthStates.SignUp)}
-          withMail={startMailSignIn}
-          withGoogle={withGoogle}
-          withApple={withApple}
-        />
+        <>
+          <AuthTemplate
+            loading={isEmailLoading}
+            googleLabel={t("LogInWithGoogle")}
+            appleLabel={t("LogInWithApple")}
+            mailLabel={t("LogIn")}
+            prompt={t("NoAccountSignUp")}
+            setAuthState={() => setAuthState(AuthStates.SignUp)}
+            withMail={startMailSignIn}
+            withGoogle={withGoogle}
+            withApple={withApple}
+          />
+          <FullScreenLoading isOpen={isLoading} />
+        </>
       );
     case AuthStates.SignUpWithEmailAndPassword:
       return (
