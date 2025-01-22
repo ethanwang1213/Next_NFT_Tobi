@@ -787,6 +787,7 @@ export const saveMyShowcase = async (req: Request, res: Response) => {
           lighting_scene_brightness: settings.lighting.sceneLight.brightness,
           lighting_point_tint: settings.lighting.pointLight.tint,
           lighting_point_bright: settings.lighting.pointLight.brightness,
+          updated_date_time: new Date(),
         },
       });
       res.status(200).send({
