@@ -64,7 +64,7 @@ const Register = () => {
       });
       setCopyrightInfo({
         agreement: true,
-        copyrightHolder: data.copyright?.copyrightHolder || [],
+        copyrightHolder: data.copyright?.copyrightHolder[0] || [],
         file1: "",
         file2: "",
         file3: "",
