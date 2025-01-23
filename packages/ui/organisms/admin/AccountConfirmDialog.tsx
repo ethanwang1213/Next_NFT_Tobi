@@ -42,7 +42,7 @@ const AccountConfirmDialog = ({
             </button>
           </form>
         </div>
-        <div className="text-center sm:text-2xl text-[14px] text-base-200-content font-normal mt-6">
+        <div className="text-center sm:text-2xl text-[14px] text-base-200-content font-bold mt-6">
           {title}
         </div>
         <Image
