@@ -52,6 +52,7 @@ export const searchAll = async (req: Request, res: Response) => {
           uuid: user.uuid,
           avatar: user.icon_url,
           username: user.username,
+          userId: user.user_id,
           aboutMe: user.about_me,
         };
       });
@@ -221,6 +222,7 @@ export const searchUsers = async (req: Request, res: Response) => {
         return {
           uuid: user.uuid,
           avatar: user.icon_url,
+          userId: user.user_id,
           username: user.username,
           aboutMe: user.about_me,
         };
