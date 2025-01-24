@@ -129,6 +129,13 @@ export default function Index() {
     }
   };
 
+  const fetchData = async () => {
+    await Promise.all([
+      loadSamples(sampleAPIUrl),
+      digitalItemsData(digitalItemsAPIUrl),
+    ]);
+  };
+
   const onItemThumbnailGenerated = async (thumbnailBase64: string) => {
     sampleThumbRef.current = await uploadImage(
       thumbnailBase64,
@@ -160,10 +167,7 @@ export default function Index() {
       await digitalItemData(digitalItemAPIUrl);
     }
 
-    await Promise.all([
-      loadSamples(sampleAPIUrl),
-      digitalItemsData(digitalItemsAPIUrl),
-    ]);
+    await fetchData();
 
     if (sampleCreateDialogRef.current) {
       sampleCreateDialogRef.current.close();
@@ -184,8 +188,8 @@ export default function Index() {
         const submitData = {
           name: digitalItem.name,
           description: digitalItem.description,
-          customThumbnailUrl: digitalItem.customThumbnailUrl,
-          isCustomThumbnailSelected: digitalItem.isCustomThumbnailSelected,
+          customThumbnailUrl: sampleThumbRef.current,
+          isCustomThumbnailSelected: true,
           price: parseInt(digitalItem.price ?? 0),
           ...(digitalItem.status > 2 && { status: digitalItem.status }),
           startDate: digitalItem.startDate,
@@ -197,6 +201,8 @@ export default function Index() {
         };
 
         await postDigitalItem(digitalItemAPIUrl, submitData);
+        await fetchData();
+
         setCreateThumbnail(false);
         dialogRef.current?.close();
       };
@@ -375,6 +381,7 @@ export default function Index() {
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
       if (sample) {
+        debugger;
         placeNewSample({
           itemId: sample.sampleItemId,
           digitalItemId: sample.digitalItemId,
