@@ -176,6 +176,7 @@ export default function Index() {
 
   useEffect(() => {
     if (digitalItem && createThumbnail) {
+      // eslint-disable-next-line no-unused-vars
       const {
         updated_date_time: _updatedDateTime,
         created_date_time: _createdDateTime,
@@ -381,7 +382,6 @@ export default function Index() {
   const placeSampleHandler = useCallback(
     (sample: SampleItem) => {
       if (sample) {
-        debugger;
         placeNewSample({
           itemId: sample.sampleItemId,
           digitalItemId: sample.digitalItemId,
