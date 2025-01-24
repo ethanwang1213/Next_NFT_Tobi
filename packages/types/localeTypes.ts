@@ -35,6 +35,6 @@ export const shouldUseJaLocale = (locale: string) => {
 
 export const getPathWithLocale = (locale: string, path: string) => {
   const newLocale = getValidLocale(locale);
-  const localePath = newLocale === Locale.DEFAULT ? "" : `/${newLocale}/`;
+  const localePath = newLocale === Locale.DEFAULT ? "/" : `/${newLocale}/`;
   return path.replace(`/${LocalePlaceholder}/`, localePath);
 };
