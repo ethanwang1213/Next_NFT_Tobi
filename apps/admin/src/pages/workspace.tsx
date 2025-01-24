@@ -172,6 +172,7 @@ export default function Index() {
 
   useEffect(() => {
     if (digitalItem && createThumbnail) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {
         updated_date_time,
         created_date_time,
@@ -203,6 +204,7 @@ export default function Index() {
 
       processDigitalItem();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [digitalItem, createThumbnail]);
 
   const onRemoveSampleEnabled = () => {
