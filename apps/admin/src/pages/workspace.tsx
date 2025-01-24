@@ -172,12 +172,11 @@ export default function Index() {
 
   useEffect(() => {
     if (digitalItem && createThumbnail) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {
-        updated_date_time,
-        created_date_time,
-        id,
-        digital_items_id,
+        updated_date_time: _updatedDateTime,
+        created_date_time: _createdDateTime,
+        id: _id,
+        digital_items_id: _digitalItemsId,
         ...filteredLicense
       } = digitalItem.license;
 
