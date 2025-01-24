@@ -163,11 +163,10 @@ export default function Index() {
         return;
       }
       placeSampleHandler(newSample);
+      await fetchData();
     } else {
       await digitalItemData(digitalItemAPIUrl);
     }
-
-    await fetchData();
 
     if (sampleCreateDialogRef.current) {
       sampleCreateDialogRef.current.close();
@@ -176,7 +175,7 @@ export default function Index() {
 
   useEffect(() => {
     if (digitalItem && createThumbnail) {
-      // eslint-disable-next-line no-unused-vars
+      /* eslint-disable no-unused-vars */
       const {
         updated_date_time: _updatedDateTime,
         created_date_time: _createdDateTime,
@@ -184,6 +183,7 @@ export default function Index() {
         digital_items_id: _digitalItemsId,
         ...filteredLicense
       } = digitalItem.license;
+      /* eslint-enable no-unused-vars */
 
       const processDigitalItem = async () => {
         const submitData = {
