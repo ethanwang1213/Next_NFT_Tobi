@@ -52,6 +52,7 @@ export default function Index() {
   const [showToast, setShowToast] = useState(false);
   const [mainToast, toggleMainToast] = useToggle(true);
   const [showSettingsButton, setShowSettingsButton] = useState(false);
+  const [createThumbnail, setCreateThumbnail] = useState(false);
   const timerId = useRef(null);
   const [message, setMessage] = useState("");
   const router = useRouter();
@@ -59,6 +60,7 @@ export default function Index() {
   const [matchingSample, secondaryMatchSample] = useState(null);
   const tooltip = useTranslations("Tooltip");
   const { id } = router.query;
+  const sampleThumbRef = useRef<string | null>(null);
 
   const [isSampleCreateDialogOpen, setIsSampleCreateDialogOpen] =
     useState(false);
@@ -82,9 +84,16 @@ export default function Index() {
     deleteData: deleteSamples,
   } = useRestfulAPI(sampleAPIUrl);
 
-  const digitalItemAPIUrl = "native/admin/digital_items";
-  const { data: digitalItems, getData: digitalItemData } =
-    useRestfulAPI(digitalItemAPIUrl);
+  const digitalItemsAPIUrl = "native/admin/digital_items";
+  const { data: digitalItems, getData: digitalItemsData } =
+    useRestfulAPI(digitalItemsAPIUrl);
+
+  const digitalItemAPIUrl = `native/admin/digital_items/${selectedSampleItem}`;
+  const {
+    data: digitalItem,
+    getData: digitalItemData,
+    postData: postDigitalItem,
+  } = useRestfulAPI(null);
 
   const materialAPIUrl = "native/materials";
   const {
@@ -121,7 +130,7 @@ export default function Index() {
   };
 
   const onItemThumbnailGenerated = async (thumbnailBase64: string) => {
-    const sampleThumb = await uploadImage(
+    sampleThumbRef.current = await uploadImage(
       thumbnailBase64,
       ImageType.SampleThumbnail,
     );
@@ -130,33 +139,71 @@ export default function Index() {
       (value) => value.image === generateMaterialImage.current,
     );
 
-    const postData = {
-      thumbUrl: sampleThumb,
-      ...(generateSampleType.current === 1 || generateSampleType.current === 3
-        ? { croppedUrl: generateCroppedImage.current }
-        : {}),
-      modelUrl: generateModelUrl.current,
-      materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
-      type: generateSampleType.current,
-    };
+    if (!createThumbnail) {
+      const postData = {
+        thumbUrl: sampleThumbRef.current,
+        ...(generateSampleType.current === 1 || generateSampleType.current === 3
+          ? { croppedUrl: generateCroppedImage.current }
+          : {}),
+        modelUrl: generateModelUrl.current,
+        materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
+        type: generateSampleType.current,
+      };
 
-    if (materialIndex == -1) {
-      delete postData.materialId;
+      const newSample = await createSample(sampleAPIUrl, postData);
+      if (newSample === false) {
+        setGenerateSampleError(true);
+        return;
+      }
+      placeSampleHandler(newSample);
+    } else {
+      await digitalItemData(digitalItemAPIUrl);
     }
 
-    const newSample = await createSample(sampleAPIUrl, postData);
-    if (newSample === false) {
-      setGenerateSampleError(true);
-      return;
-    }
-    placeSampleHandler(newSample);
-    loadSamples(sampleAPIUrl);
-    await digitalItemData(digitalItemAPIUrl);
+    await Promise.all([
+      loadSamples(sampleAPIUrl),
+      digitalItemsData(digitalItemsAPIUrl),
+    ]);
 
     if (sampleCreateDialogRef.current) {
       sampleCreateDialogRef.current.close();
     }
   };
+
+  useEffect(() => {
+    if (digitalItem && createThumbnail) {
+      const {
+        updated_date_time,
+        created_date_time,
+        id,
+        digital_items_id,
+        ...filteredLicense
+      } = digitalItem.license;
+
+      const processDigitalItem = async () => {
+        const submitData = {
+          name: digitalItem.name,
+          description: digitalItem.description,
+          customThumbnailUrl: digitalItem.customThumbnailUrl,
+          isCustomThumbnailSelected: digitalItem.isCustomThumbnailSelected,
+          price: parseInt(digitalItem.price ?? 0),
+          ...(digitalItem.status > 2 && { status: digitalItem.status }),
+          startDate: digitalItem.startDate,
+          endDate: digitalItem.endDate,
+          quantityLimit: parseInt(digitalItem.quantityLimit),
+          license: filteredLicense,
+          copyrights: digitalItem.copyrights,
+          schedules: digitalItem.schedules,
+        };
+
+        await postDigitalItem(digitalItemAPIUrl, submitData);
+        setCreateThumbnail(false);
+        dialogRef.current?.close();
+      };
+
+      processDigitalItem();
+    }
+  }, [digitalItem, createThumbnail]);
 
   const onRemoveSampleEnabled = () => {
     setShowRestoreMenu(true);
@@ -208,6 +255,17 @@ export default function Index() {
     onActionUndone: handleAction,
     onNftModelGenerated: handleNftModelGeneratedRef.current,
   });
+
+  const handleChangeThumbnail = async (itemid: number, newRatio: number) => {
+    setCreateThumbnail(true);
+    applyAcrylicBaseScaleRatio(itemid, newRatio);
+    requestItemThumbnail({
+      modelType: 2,
+      modelUrl: matchingSample.modelUrl,
+      acrylicBaseScaleRatio: newRatio,
+      imageUrl: "",
+    });
+  };
 
   const {
     isSceneOpen,
@@ -594,7 +652,8 @@ export default function Index() {
           selectedItem={selectedSampleItemId}
           dialogRef={dialogRef}
           data={matchingSample}
-          scaleRatioSettingHandler={applyAcrylicBaseScaleRatio}
+          scaleRatioSettingHandler={handleChangeThumbnail}
+          loading={createThumbnail}
         />
         {!isItemsLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-20">
