@@ -33,7 +33,11 @@ const EmailAuth = () => {
   }, [router, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (user?.hasFlowAccount) {
-    return <div>redirect to top page</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loading className="text-info" />
+      </div>
+    );
   } else if (registering || response || error) {
     return (
       <FlowRegister
