@@ -135,22 +135,28 @@ export const SaidanType = {
   // for Workspace
   Workspace: 0,
   // for SAIDAN
-  SaidanOpenShelf: 10001,
-  SaidanBookShelf: 10002,
-  SaidanWallShelf: 10003,
-  SaidanCollectionCase: 10004,
+  SaidanSmallWallShelf: 10001,
+  SaidanBoxWallShelf: 10002,
+  SaidanOpenShelf: 10003,
   // for Showcase
   ShowcaseWallShelf: 20001,
-  ShowcaseOpenShelf: 20002,
-  ShowcaseBookShelf: 20003,
-  ShowcaseCollectionCase: 20004,
 } as const;
 export type SaidanType = (typeof SaidanType)[keyof typeof SaidanType];
+
+// Currently, only White will be used in admin.
+export const SaidanTextureType = {
+  White: 1,
+  Wood: 2,
+  Black: 3,
+};
+export type SaidanTextureType =
+  (typeof SaidanTextureType)[keyof typeof SaidanTextureType];
 
 export type SaidanLikeData = {
   saidanId: number;
   saidanType: SaidanType;
   saidanUrl: string;
+  saidanTextureType: SaidanTextureType;
   saidanItemList: SaidanItemData[];
   saidanCameraData: {
     position: Vector3;
