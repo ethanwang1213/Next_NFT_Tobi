@@ -175,7 +175,7 @@ export default function Index() {
 
   useEffect(() => {
     if (digitalItem && createThumbnail) {
-      /* eslint-disable no-unused-vars */
+      /* eslint-disable @typescript-eslint/no-unused-vars */
       const {
         updated_date_time,
         created_date_time,
@@ -183,7 +183,7 @@ export default function Index() {
         digital_items_id,
         ...filteredLicense
       } = digitalItem.license;
-      /* eslint-enable no-unused-vars */
+      /* eslint-enable @typescript-eslint/no-unused-vars */
 
       const processDigitalItem = async () => {
         const submitData = {
