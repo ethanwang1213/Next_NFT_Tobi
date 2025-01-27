@@ -35,7 +35,8 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const valueClass = "text-[20px] font-normal flex-1 overflow-hidden text-ellipsis whitespace-nowrap";
+const valueClass =
+  "text-[20px] font-normal flex-1 overflow-hidden text-ellipsis whitespace-nowrap";
 const editBtnClass = "text-[20px] text-primary font-normal";
 
 const AccountFieldComponent = ({
@@ -388,12 +389,6 @@ export default function Index() {
     e.target.value = "";
   };
 
-  const isEmailVerified = () => {
-    return (
-      auth.currentUser.emailVerified && data?.email === auth.currentUser.email
-    );
-  };
-
   const handleClickEmailEditButton = () => {
     if (hasPasswordAccount()) {
       emailEditDialogRef.current?.showModal();
@@ -529,13 +524,6 @@ export default function Index() {
               <span className={`${valueClass} text-secondary`}>
                 {auth.currentUser.email}
               </span>
-              {!isEmailVerified() && (
-                <div className="flex w-[148px] h-[48px] py-[8px] px-[16px] mr-[10px] justify-center items-center gap-[8px] rounded-[64px] bg-secondary">
-                  <span className="text-base-white text-[20px] font-bold leading-[120%]">
-                    {t("Unverified")}
-                  </span>
-                </div>
-              )}
               <button
                 className={editBtnClass}
                 onClick={handleClickEmailEditButton}
