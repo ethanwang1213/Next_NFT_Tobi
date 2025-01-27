@@ -177,10 +177,10 @@ export default function Index() {
     if (digitalItem && createThumbnail) {
       /* eslint-disable no-unused-vars */
       const {
-        updated_date_time: _updatedDateTime,
-        created_date_time: _createdDateTime,
-        id: _id,
-        digital_items_id: _digitalItemsId,
+        updated_date_time,
+        created_date_time,
+        id,
+        digital_items_id,
         ...filteredLicense
       } = digitalItem.license;
       /* eslint-enable no-unused-vars */

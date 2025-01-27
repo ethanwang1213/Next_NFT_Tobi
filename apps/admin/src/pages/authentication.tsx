@@ -72,7 +72,7 @@ const Authentication = () => {
       }
       setIsLoading(false);
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, router]);
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
