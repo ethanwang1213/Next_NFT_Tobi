@@ -47,7 +47,7 @@
     "EmailInUse": "This email address is already in use.",
     "GoToAuthScreen": "Go to authentication screen",
     "PasswordResetNotify": "Password has been reset.",
-    "AccountVerification": "Account Verification",
+    "AccountVerification": "Verify Your Password",
     "PromptPassword": "Please enter your password"
   }
 }
