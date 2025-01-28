@@ -151,6 +151,7 @@ export const getOthersSaidanDecorationData = async (req: Request, res: Response)
         saidanType: saidanTemplate.type,
         saidanUrl: saidanTemplate.model_url,
         saidanItemList: saidanItemList,
+        textureType: saidanData.texture_type,
         saidanCameraData: {
           position: {
             x: saidanCamera? saidanCamera.position[0]:0,
@@ -315,6 +316,7 @@ export const getMySaidans = async (req: Request, res: Response) => {
         modelUrl: saidan.saidans_template.model_url,
         thumbUrl: saidan.thumbnail_image,
         lastThumb: saidan.last_point_thumb ?? saidan.thumbnail_image,
+        textureType: saidan.texture_type,
         modelType: saidan.saidans_template.type,
         description: saidan.description,
         isPublic: saidan.is_public,
@@ -591,8 +593,8 @@ export const favoriteSaidan = async (req: Request, res: Response) => {
 export const decorationSaidan = async (req: Request, res: Response) => {
   const {saidanId} = req.params;
   const {authorization} = req.headers;
-  const {itemList, cameraData, thumbImage, lastPointThumb}
-    :{itemList: ItemType[], cameraData: CameraData, thumbImage: string, lastPointThumb: string} = req.body;
+  const {itemList, cameraData, thumbImage, lastPointThumb, textureType}
+    :{itemList: ItemType[], cameraData: CameraData, thumbImage: string, lastPointThumb: string, textureType: number} = req.body;
 
   interface ItemType {
     itemId: number;
@@ -666,6 +668,7 @@ export const decorationSaidan = async (req: Request, res: Response) => {
         data: {
           thumbnail_image: thumbImage,
           last_point_thumb: lastPointThumb,
+          texture_type: textureType,
         },
       });
       const cameraUpdate = await prisma.saidan_camera.upsert({
@@ -888,6 +891,7 @@ export const getSaidanDecorationData = async (req: Request, res: Response) => {
         saidanType: saidanTemplate.type,
         saidanUrl: saidanTemplate.model_url,
         saidanItemList: saidanItemList,
+        textureType: saidanData.texture_type,
         saidanCameraData: {
           position: {
             x: saidanCamera? saidanCamera.position[0]:0,
