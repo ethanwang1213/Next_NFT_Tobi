@@ -4,6 +4,7 @@ import { useTobiratoryAndFlowAccountRegistration } from "fetchers/adminUserAccou
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import Loading from "ui/atoms/Loading";
 import FlowAgreementWithSnsAccount from "ui/templates/admin/FlowAgreementWithSnsAccount";
 import FlowRegister from "ui/templates/admin/FlowRegister";
 
@@ -38,12 +39,12 @@ const SnsAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, user]);
 
-  if (!user) {
-    return <div>redirect to signin page</div>;
-  }
-
-  if (user.hasFlowAccount) {
-    return <div>redirect to top page</div>;
+  if (!user || user.hasFlowAccount) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loading className="text-info" />
+      </div>
+    );
   } else if (registering || response || error) {
     return (
       <FlowRegister

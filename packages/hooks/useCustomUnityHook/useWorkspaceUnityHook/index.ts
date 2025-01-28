@@ -18,6 +18,7 @@ import { DefaultAcrylicBaseScaleRatio } from "../constants";
 import {
   MessageBodyForSavingSaidanData,
   NftModelGeneratedHandler,
+  SaidanTextureType,
   SaidanType,
   UndoneOrRedoneHandler,
   UnityMessageJson,
@@ -136,6 +137,7 @@ export const useWorkspaceUnityHook = ({
       saidanId: -2,
       saidanType: SaidanType.Workspace,
       saidanUrl: "",
+      saidanTextureType: SaidanTextureType.White,
       saidanItemList,
       saidanCameraData: {
         position: {
