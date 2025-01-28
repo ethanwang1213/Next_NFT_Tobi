@@ -1,5 +1,5 @@
 import { getMessages } from "admin/messages/messages";
-import { PASSWORD_RESET_PATH } from "contexts/AdminAuthProvider";
+import { PASSWORD_RESET_PATH, useAuth } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import {
   createUserWithEmailAndPassword,
@@ -15,7 +15,7 @@ import {
 import { GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import { getPathWithLocale, LocalePlaceholder } from "types/localeTypes";
 import FullScreenLoading from "ui/molecules/FullScreenLoading";
@@ -37,10 +37,13 @@ const AuthStates = {
 type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
 const Authentication = () => {
+  const { user } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [authError, setAuthError] = useState<ErrorMessage>(null);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const hasRedirected = useRef(false);
   const [authState, setAuthState] = useState<AuthState>(AuthStates.SignIn);
   const [
     isRegisteringWithMailAndPassword,
@@ -56,6 +59,29 @@ const Authentication = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      if (user && !hasRedirected.current) {
+        hasRedirected.current = true;
+        if (user.hasBusinessAccount === "exist") {
+          router.push("/items");
+        } else if (
+          user.hasBusinessAccount === "reported" ||
+          user.hasBusinessAccount === "freezed"
+        ) {
+          router.push("/apply/contentRepoted");
+        } else if (user.hasBusinessAccount === "not-approved") {
+          router.push("/apply/contentApproval");
+        } else if (user.hasBusinessAccount === "rejected") {
+          router.push("/apply/contentRejected");
+        } else {
+          router.push("/apply");
+        }
+      }
+      setIsLoading(false);
+    }
+  }, [user, isLoading, router]);
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
@@ -213,6 +239,14 @@ const Authentication = () => {
     setAuthError(null);
     setAuthState(authState);
   };
+
+  if (isLoading) {
+    return (
+      <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-20">
+        <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+      </div>
+    );
+  }
 
   switch (authState) {
     case AuthStates.SignUp:

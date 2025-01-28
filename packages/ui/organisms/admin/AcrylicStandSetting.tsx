@@ -12,6 +12,7 @@ interface AcrylicStandSettingDialogProps {
   data: any;
   scaleRatioSettingHandler: (itemId: number, newRatio: number) => void;
   selectedItem: number;
+  loading: boolean;
 }
 
 const AcrylicStandSettingDialog = ({
@@ -19,6 +20,7 @@ const AcrylicStandSettingDialog = ({
   data,
   scaleRatioSettingHandler,
   selectedItem,
+  loading,
 }: AcrylicStandSettingDialogProps) => {
   const confirmDialogRef = useRef(null);
   const [scaleRatio, setScaleRatio] = useState(
@@ -85,6 +87,11 @@ const AcrylicStandSettingDialog = ({
   return (
     <dialog ref={dialogRef} className="modal">
       <div className="modal-box max-w-[878px] rounded-3xl px-10 py-8 flex flex-col gap-3 justify-between items-center bg-[#2E2E2EF2]">
+        {loading && (
+          <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-20">
+            <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+          </div>
+        )}
         <ResetConfirmDialog
           dialogRef={confirmDialogRef}
           confirmHandler={resetConfirmHandler}
@@ -172,7 +179,6 @@ const AcrylicStandSettingDialog = ({
                 className="text-[20px] font-bold rounded-[32px] px-8 py-3 bg-primary"
                 onClick={() => {
                   scaleRatioSettingHandler(selectedItem, scaleRatio);
-                  dialogRef.current?.close();
                 }}
               >
                 {t("Done")}
