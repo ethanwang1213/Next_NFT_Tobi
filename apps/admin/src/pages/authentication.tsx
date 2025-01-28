@@ -42,7 +42,7 @@ const Authentication = () => {
   const [email, setEmail] = useState("");
   const [authError, setAuthError] = useState<ErrorMessage>(null);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const hasRedirected = useRef(false);
   const [authState, setAuthState] = useState<AuthState>(AuthStates.SignIn);
   const [
@@ -51,7 +51,6 @@ const Authentication = () => {
   ] = useState(false);
   const t = useTranslations("LogInSignUp");
   const locale = useLocale();
-  const router = useRouter();
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -61,27 +60,24 @@ const Authentication = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoading) {
-      if (user && !hasRedirected.current) {
-        hasRedirected.current = true;
-        if (user.hasBusinessAccount === "exist") {
-          router.push("/items");
-        } else if (
-          user.hasBusinessAccount === "reported" ||
-          user.hasBusinessAccount === "freezed"
-        ) {
-          router.push("/apply/contentRepoted");
-        } else if (user.hasBusinessAccount === "not-approved") {
-          router.push("/apply/contentApproval");
-        } else if (user.hasBusinessAccount === "rejected") {
-          router.push("/apply/contentRejected");
-        } else {
-          router.push("/apply");
-        }
+    if (user && !hasRedirected.current) {
+      hasRedirected.current = true;
+      if (user.hasBusinessAccount === "exist") {
+        router.push("/items");
+      } else if (
+        user.hasBusinessAccount === "reported" ||
+        user.hasBusinessAccount === "freezed"
+      ) {
+        router.push("/apply/contentRepoted");
+      } else if (user.hasBusinessAccount === "not-approved") {
+        router.push("/apply/contentApproval");
+      } else if (user.hasBusinessAccount === "rejected") {
+        router.push("/apply/contentRejected");
+      } else {
+        router.push("/apply");
       }
-      setIsLoading(false);
     }
-  }, [user, isLoading, router]);
+  }, [user, router]);
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
@@ -239,14 +235,6 @@ const Authentication = () => {
     setAuthError(null);
     setAuthState(authState);
   };
-
-  if (isLoading) {
-    return (
-      <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-20">
-        <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
-      </div>
-    );
-  }
 
   switch (authState) {
     case AuthStates.SignUp:
