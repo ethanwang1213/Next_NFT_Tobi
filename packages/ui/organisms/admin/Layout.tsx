@@ -38,8 +38,8 @@ const MainContents = ({ children }: Props) => {
   const router = useRouter();
 
   const spinner = (
-    <div className={"h-[100dvh] flex justify-center"}>
-      <span className={"loading loading-spinner text-info loading-md"} />
+    <div className="h-[100dvh] flex justify-center">
+      <span className="loading loading-spinner text-info loading-md" />
     </div>
   );
 
@@ -60,6 +60,7 @@ const Contents = ({ children }: Props) => {
   const router = useRouter();
   const pagesWithoutSidebar = [
     "/authentication",
+    "/auth/email_update",
     "/auth/password_reset",
     "/auth/password_update",
     "/auth/reauth_password",
@@ -88,25 +89,21 @@ const Contents = ({ children }: Props) => {
     );
   }
   return (
-    <div
-      className={
-        "flex flow-row sm:justify-center min-h-screen min-w-[425px]"
-      }
-    >
+    <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
       <div className="grow flex flex-col self-stretch">
         {children}
-        <div className={"flex grow justify-center"}>
+        <div className="flex grow justify-center">
           <div className="self-end font-normal text-[12px] text-base-content pb-6">
             Tobiratory Inc. all rights reserved.
           </div>
         </div>
       </div>
-      <div className={"flex flex-row max-sm:hidden grow overflow-hidden"}>
+      <div className="flex flex-row max-sm:hidden grow overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={"/admin/images/admin-logo.svg"}
-          alt={"Tobiratory Logo"}
-          className={"object-cover"}
+          src="/admin/images/admin-logo.svg"
+          alt="Tobiratory Logo"
+          className="object-cover"
         />
       </div>
     </div>

@@ -390,11 +390,7 @@ export default function Index() {
   };
 
   const handleClickEmailEditButton = () => {
-    if (hasPasswordAccount()) {
-      emailEditDialogRef.current?.showModal();
-    } else {
-      setOpenPasswordPrompt(true);
-    }
+    router.push("/auth/email_update");
   };
 
   const handleClickPasswordEditButton = () => {

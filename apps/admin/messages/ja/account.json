@@ -46,7 +46,8 @@
     "NoEmail": "メールが届きませんか？",
     "VerifyNewEmail": "新しいメールアドレスを認証する",
     "Done": "完了",
-    "PasswordConfirmation": "パスワード確認"
+    "PasswordConfirmation": "パスワード確認",
+    "Title": "パスワードを設定してください"
   },
   "AccountSocialLogin": {
     "Connected": "連携済み",
@@ -68,5 +69,8 @@
     "ConfirmPassword": "確認（再入力）",
     "ResetSuccess": "パスワードをリセットしました！",
     "InvalidPasswordCharacters": "パスワードに使用できない文字が含まれています"
+  },
+  "AccountNewEmail": {
+    "Title": "メールアドレスを設定してください"
   }
 }
