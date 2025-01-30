@@ -365,6 +365,7 @@ export const getMyDigitalItems = async (req: Request, res: Response) => {
           quantityLimit: digitalItem.limit,
           status: digitalItem.sales.length > 0 ? digitalItem.sales[0].status : digitalItem.metadata_status,
           type: digitalItem.type,
+          createdDate: digitalItem.created_date_time,
         };
       });
       res.status(200).send({

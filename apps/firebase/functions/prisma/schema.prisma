@@ -71,6 +71,7 @@ model saidans {
     description       String?            @db.Text
     saidans_template  saidans_template   @relation(fields: [template_id], references: [id])
     template_id       Int
+    texture_type      Int                @default(2)
     thumbnail_image   String             @db.VarChar(255)
     last_point_thumb  String?            @db.VarChar(255)
     is_public         Boolean            @default(false)
