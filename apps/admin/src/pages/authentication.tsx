@@ -274,7 +274,7 @@ const Authentication = () => {
     case AuthStates.SignUpWithEmailAndPassword:
       return (
         <FlowAgreementWithEmailAndPassword
-          title={""}
+          title={t("SettingPasswordTitle")}
           buttonText={t("Register")}
           email={email}
           isSubmitting={isRegisteringWithMailAndPassword}
