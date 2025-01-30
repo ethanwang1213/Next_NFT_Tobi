@@ -37,6 +37,14 @@ export type ErrorMessage = {
   message: string;
 };
 
+export const isErrorMessage = (arg: any): arg is ErrorMessage => {
+    return (
+        arg &&
+        typeof arg.code === "string" &&
+        typeof arg.message === "string"
+    );
+}
+
 export type ApiProfileData = {
   userId: string;
   username: string;
