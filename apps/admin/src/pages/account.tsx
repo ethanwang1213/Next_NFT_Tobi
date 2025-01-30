@@ -19,7 +19,6 @@ import AppleIcon from "ui/atoms/AppleIcon";
 import GoogleIcon from "ui/atoms/GoogleIcon";
 import PasswordPromptDialog from "ui/molecules/PasswordPromptDialog";
 import BirthdayEditDialog from "ui/organisms/admin/BirthdayEditDialog";
-import EmailEditDialog from "ui/organisms/admin/EmailEditDialog";
 import GenderEditDialog from "ui/organisms/admin/GenderEditDialog";
 import ImageCropDialog from "ui/organisms/admin/ImageCropDialog";
 
@@ -308,7 +307,6 @@ export default function Index() {
   const genderEditDialogRef = useRef(null);
   const imageFileRef = useRef(null);
   const profileIconCropDlgRef = useRef(null);
-  const emailEditDialogRef = useRef(null);
   const t = useTranslations("Account");
   const [tempImageUrlProfile, setTempImageUrlProfile] = useState(null);
   const [openPasswordPrompt, setOpenPasswordPrompt] = useState(false);
@@ -567,7 +565,6 @@ export default function Index() {
             dialogRef={birthEditDialogRef}
             changeHandler={(value) => fieldChangeHandler("birth", value)}
           />
-          <EmailEditDialog dialogRef={emailEditDialogRef} />
           <PasswordPromptDialog
             isOpen={openPasswordPrompt}
             onClickCancel={() => setOpenPasswordPrompt(false)}
