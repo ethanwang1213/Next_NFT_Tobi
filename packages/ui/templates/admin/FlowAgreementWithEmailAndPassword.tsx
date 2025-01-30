@@ -349,8 +349,8 @@ export const TermsOfService = ({
   }
 
   return (
-    <div className={"flex flex-row items-center"}>
-      <label>
+    <div>
+      <label className={"flex flex-row items-center"}>
         <input
           type={"checkbox"}
           checked={agreed}
