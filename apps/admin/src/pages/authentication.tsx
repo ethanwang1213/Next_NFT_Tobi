@@ -8,7 +8,7 @@ import {
   GoogleAuthProvider,
   OAuthProvider,
   sendEmailVerification,
-  sendPasswordResetEmail,
+  sendSignInLinkToEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -220,7 +220,7 @@ const Authentication = () => {
     };
     auth.languageCode = locale;
     try {
-      await sendPasswordResetEmail(auth, email, actionCodeSettings);
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem("emailForSignIn", email);
       setAuthState(AuthStates.EmailSent);
     } catch (error) {
