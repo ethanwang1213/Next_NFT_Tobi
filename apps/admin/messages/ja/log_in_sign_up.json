@@ -48,6 +48,7 @@
     "GoToAuthScreen": "認証画面へ",
     "PasswordResetNotify": "パスワードをリセットしました。",
     "AccountVerification": "アカウントの本人確認",
-    "PromptPassword": "パスワードを入力してください"
+    "PromptPassword": "パスワードを入力してください",
+    "PasswordAccountExists": "すでにアカウントをお持ちのようです"
   }
 }

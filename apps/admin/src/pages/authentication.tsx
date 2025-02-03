@@ -1,5 +1,9 @@
 import { getMessages } from "admin/messages/messages";
-import { PASSWORD_RESET_PATH, useAuth } from "contexts/AdminAuthProvider";
+import {
+  hasSnsAccountForEmail,
+  PASSWORD_RESET_PATH,
+  useAuth,
+} from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import {
   createUserWithEmailAndPassword,
@@ -24,6 +28,7 @@ import EmailAndPasswordSignIn from "ui/templates/admin/EmailAndPasswordSignIn";
 import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
+import SnsSignIn from "ui/templates/admin/SnsSignIn";
 import AuthTemplate, { LoginFormType } from "ui/templates/AuthTemplate";
 
 const AuthStates = {
@@ -31,8 +36,9 @@ const AuthStates = {
   SignIn: 1,
   SignInWithEmailAndPassword: 2,
   SignUpWithEmailAndPassword: 3,
-  PasswordReset: 4,
-  EmailSent: 5,
+  SignInWithSnsAccount: 4,
+  PasswordReset: 5,
+  EmailSent: 6,
 } as const;
 type AuthState = (typeof AuthStates)[keyof typeof AuthStates];
 
@@ -105,6 +111,9 @@ const Authentication = () => {
 
     if (notSetPassword) {
       sendEmailForPasswordReset(data.email, PASSWORD_RESET_PATH);
+    } else if (hasSnsAccountForEmail(data.email)) {
+      setEmail(data.email);
+      setAuthState(AuthStates.SignInWithSnsAccount);
     } else {
       setEmail(data.email);
       setAuthState(AuthStates.SignInWithEmailAndPassword);
@@ -295,6 +304,18 @@ const Authentication = () => {
             sendEmailForPasswordReset(email, PASSWORD_RESET_PATH)
           }
           withMailSignIn={withMailSignIn}
+        />
+      );
+    case AuthStates.SignInWithSnsAccount:
+      return (
+        <SnsSignIn
+          email={email}
+          loading={isLoading}
+          googleLabel={t("LogInWithGoogle")}
+          appleLabel={t("LogInWithApple")}
+          withGoogle={withGoogle}
+          withApple={withApple}
+          onClickBack={() => handleClickBack(AuthStates.SignIn)}
         />
       );
     case AuthStates.EmailSent:
