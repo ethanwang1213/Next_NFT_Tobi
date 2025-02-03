@@ -1,10 +1,6 @@
 import { getMessages } from "admin/messages/messages";
 import { auth } from "fetchers/firebase/client";
-import {
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-  updatePassword,
-} from "firebase/auth";
+import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -25,7 +21,8 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 
 const PasswordReset = () => {
   const router = useRouter();
-  const [emailLink, setEmailLink] = useState("");
+  const [email, setEmail] = useState<string | null>(null);
+  const [oobCode, setOobCode] = useState<string | null>(null);
   const [updatingPassword, setUpdatingPassword] = useState(false);
   const [updatedPassword, setUpdatedPassword] = useState(false);
   const [authError, setAuthError] = useState<ErrorMessage>(null);
@@ -33,24 +30,40 @@ const PasswordReset = () => {
   const l = useTranslations("Label");
 
   useEffect(() => {
-    const curHref = window.location.href;
-    if (!isSignInWithEmailLink(auth, curHref)) {
-      router.push("/authentication");
+    if (!router.isReady) return;
+
+    const { oobCode } = router.query;
+    if (typeof oobCode !== "string") {
+      setAuthError({
+        code: "invalid_code",
+        message: "Invalid or missing reset code.",
+      });
       return;
     }
-    setEmailLink(curHref);
-  }, [router]);
 
-  const resetPassword = async (email: string, password: string) => {
+    setOobCode(oobCode);
+
+    verifyPasswordResetCode(auth, oobCode)
+      .then((email) => {
+        setEmail(email);
+      })
+      .catch((error) => {
+        console.error("Error verifying reset code:", error);
+        setAuthError({ code: error.code, message: error.message });
+      });
+  }, [router.isReady, router.query]);
+
+  const resetPassword = async (email, password) => {
+    if (!oobCode || !password) return;
     setUpdatingPassword(true);
     setAuthError(null);
+
     try {
-      const userCredential = await signInWithEmailLink(auth, email, emailLink);
-      await updatePassword(userCredential.user, password);
+      await confirmPasswordReset(auth, oobCode, password);
       setUpdatedPassword(true);
       await auth.signOut();
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("Error resetting password:", error);
       setAuthError({ code: error.code, message: error.message });
       setUpdatingPassword(false);
     }
@@ -73,7 +86,7 @@ const PasswordReset = () => {
             className={
               "btn-link font-medium text-[14px] text-primary mt-[20px]"
             }
-            onClick={() => router.push("/authentication")}
+            onClick={() => (window.location.href = "/auth/authentication")}
           >
             {t("GoToAuthScreen")}
           </button>
@@ -85,7 +98,7 @@ const PasswordReset = () => {
       <FlowAgreementWithEmailAndPassword
         title={t("PasswordReset")}
         buttonText={l("Reset")}
-        email={""}
+        email={email}
         isSubmitting={updatingPassword}
         pageType={PageType.PasswordReset}
         authError={authError}
