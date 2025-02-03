@@ -15,6 +15,7 @@
     "Register": "登録",
     "PasswordEntry": "パスワード入力",
     "ConfirmPassword": "確認(再入力)",
+    "ReEnter": "再入力",
     "NoAccountSignUp": "アカウントを持っていませんか？　- 新規登録",
     "AlreadyHaveAccount": "既にアカウントをお持ちですか？- ログイン",
     "DigitalItemsInfo": "デジタルアイテムを所有するために",
@@ -48,6 +49,7 @@
     "GoToAuthScreen": "認証画面へ",
     "PasswordResetNotify": "パスワードをリセットしました。",
     "AccountVerification": "アカウントの本人確認",
-    "PromptPassword": "パスワードを入力してください"
+    "PromptPassword": "パスワードを入力してください",
+    "SettingPasswordTitle": "パスワード設定"
   }
 }

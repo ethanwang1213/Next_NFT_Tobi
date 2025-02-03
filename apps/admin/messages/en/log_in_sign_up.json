@@ -15,6 +15,7 @@
     "Register": "Next",
     "PasswordEntry": "Password",
     "ConfirmPassword": "Confirm",
+    "ReEnter": "Re-enter",
     "NoAccountSignUp": "Don't have an account? - Sign Up",
     "AlreadyHaveAccount": "Already have an account? - Log In",
     "DigitalItemsInfo": "To Own Digital Items",
@@ -48,6 +49,7 @@
     "GoToAuthScreen": "Go to authentication screen",
     "PasswordResetNotify": "Password has been reset.",
     "AccountVerification": "Verify Your Password",
-    "PromptPassword": "Please enter your password"
+    "PromptPassword": "Please enter your password",
+    "SettingPasswordTitle": "Setting Password"
   }
 }
