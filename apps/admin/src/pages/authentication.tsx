@@ -206,10 +206,7 @@ const Authentication = () => {
   const sendEmailForPasswordReset = async (email: string, path: string) => {
     const signInMethods = await fetchSignInMethodsForEmail(auth, email);
     if (signInMethods.length === 0) {
-      setAuthError({
-        code: "auth/user-not-found",
-        message: "Tobiratoryアカウントが存在しません",
-      });
+      setAuthState(AuthStates.EmailSent);
       return;
     }
 
