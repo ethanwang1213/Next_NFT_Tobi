@@ -7,7 +7,8 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import Router, { useRouter } from "next/router";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import React, {
   createContext,
   ReactNode,
@@ -62,11 +63,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     [ProviderId.GOOGLE]: false,
     [ProviderId.APPLE]: false,
   });
+
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const unrestrictedPaths = useMemo(
     () => [
       "/authentication",
       "/auth/password_reset",
+      "/auth/auth_action",
       "/auth/confirmation_email_for_auth_page",
     ],
     [],
@@ -79,15 +85,15 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }, [error]);
 
   useEffect(() => {
-    if (!router.isReady) {
+    if (!pathname) {
       return;
     }
 
     // Enable navigation to VERIFIED_EMAIL_PATH after logging in.
-    if (VERIFIED_EMAIL_PATH.endsWith(router.pathname) && !user) {
+    if (VERIFIED_EMAIL_PATH.endsWith(pathname) && !user) {
       setShouldRedirectToVerifiedEmailPath(true);
     } else if (
-      !VERIFIED_EMAIL_PATH.endsWith(router.pathname) &&
+      !VERIFIED_EMAIL_PATH.endsWith(pathname) &&
       user &&
       shouldRedirectToVerifiedEmailPath
     ) {
@@ -100,7 +106,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      // ログイン状態の場合
+      // ログイン状態の場合|
+      if (pathname === "/auth/auth_action") {
+        const mode = searchParams.get("mode");
+        const oobCode = searchParams.get("oobCode");
+        const apiKey = searchParams.get("apiKey");
+        const lang = searchParams.get("lang");
+
+        if (mode === "resetPassword" && oobCode) {
+          router.push(
+            `/${lang}/auth/password_reset?oobCode=${oobCode}&apiKey=${apiKey}`,
+          );
+        }
+        return;
+      }
+
       if (firebaseUser) {
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.
@@ -109,7 +129,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           auth.signOut();
         });
         if (!profile) {
-          Router.push("/authentication");
+          router.push("/authentication");
           return;
         }
 
@@ -149,18 +169,15 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "/auth/email_auth",
             "/auth/sns_auth",
           ];
-          if (inaccessiblePaths.includes(Router.pathname)) {
-            Router.push("/");
-          } else if (
-            hasBusinessAccount === "exist" &&
-            isApplyPage(Router.pathname)
-          ) {
-            Router.push("/");
+          if (inaccessiblePaths.includes(pathname)) {
+            router.push("/");
+          } else if (hasBusinessAccount === "exist" && isApplyPage(pathname)) {
+            router.push("/");
           } else if (
             hasBusinessAccount !== "exist" &&
-            !isPageForNonBusinessAccount(Router.pathname)
+            !isPageForNonBusinessAccount(pathname)
           ) {
-            Router.push("/apply");
+            router.push("/apply");
           }
           return;
         }
@@ -170,21 +187,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           firebaseUser.email,
         );
 
-        if (Router.pathname === "/authentication") {
+        if (pathname === "/authentication") {
           // new user sign up
           if (!firebaseUser.emailVerified) {
             return;
           }
-        } else if (Router.pathname === "/auth/password_reset") {
+        } else if (pathname === "/auth/password_reset") {
           return;
-        } else if (Router.pathname === "/auth/email_auth") {
+        } else if (pathname === "/auth/email_auth") {
           if (
             !signInMethods.includes(
               EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
             ) ||
             !firebaseUser.emailVerified
           ) {
-            Router.push("/authentication");
+            router.push("/authentication");
             return;
           }
           await createUser(
@@ -198,7 +215,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "not-exist",
           );
           return;
-        } else if (Router.pathname === "/auth/sns_auth") {
+        } else if (pathname === "/auth/sns_auth") {
           if (emailLinkOnly(signInMethods) || !firebaseUser.emailVerified) {
             await auth.signOut();
             return;
@@ -221,11 +238,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           false,
           "not-exist",
         );
-        Router.push("/auth/sns_auth");
+        router.push("/auth/sns_auth");
       } else {
         setUser(null);
-        if (!unrestrictedPaths.includes(Router.pathname)) {
-          Router.push("/authentication");
+        if (!unrestrictedPaths.includes(pathname)) {
+          router.push("/authentication");
         }
       }
     });
@@ -313,7 +330,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       auth.signOut();
     });
     if (!profile) {
-      Router.push("/authentication");
+      router.push("/authentication");
       return;
     }
     setUser((prev) => ({
@@ -336,7 +353,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     setUser((prev) => ({ ...prev, hasBusinessAccount: "not-approved" }));
   };
 
-  if (user || unrestrictedPaths.includes(router.pathname)) {
+  if (user || unrestrictedPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
         value={{
