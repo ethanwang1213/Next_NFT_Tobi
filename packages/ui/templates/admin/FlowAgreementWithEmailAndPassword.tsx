@@ -54,6 +54,7 @@ const FlowAgreementWithEmailAndPassword = ({
       emailStatus.email = email;
       setEmailStatus({ email, valid: true, error: "" });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email]);
 
   const toggleConfirmPasswordVisibility = () => {

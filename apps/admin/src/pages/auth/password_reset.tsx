@@ -62,7 +62,7 @@ const PasswordReset = () => {
       await confirmPasswordReset(auth, oobCode, password);
       setUpdatedPassword(true);
       await auth.signOut();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error resetting password:", error);
       setAuthError({ code: error.code, message: error.message });
       setUpdatingPassword(false);
