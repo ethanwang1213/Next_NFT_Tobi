@@ -7,7 +7,6 @@ import {
 } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
-import { unlink } from "firebase/auth";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
@@ -312,12 +311,6 @@ export default function Index() {
   const [tempImageUrlProfile, setTempImageUrlProfile] = useState(null);
   const [openPasswordPrompt, setOpenPasswordPrompt] = useState(false);
 
-  useEffect(() => {
-    if (true) return;
-    unlink(auth.currentUser, "password").then(() => {
-      console.log("Unlinked");
-    });
-  }, []);
   const submitHandler = async () => {
     const submitData = {
       userId: data?.userId,
