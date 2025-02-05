@@ -97,6 +97,8 @@ const Authentication = () => {
     setEmail(data.email);
     if (usedPasswordAuthenticationAlready) {
       setAuthState(AuthStates.SignInWithEmailAndPassword);
+    } else if (await hasSnsAccountForEmail(data.email)) {
+      setAuthState(AuthStates.SignInWithSnsAccount);
     } else {
       setAuthState(AuthStates.SignUpWithEmailAndPassword);
     }
