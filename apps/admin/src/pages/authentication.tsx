@@ -111,7 +111,7 @@ const Authentication = () => {
 
     if (notSetPassword) {
       sendEmailForPasswordReset(data.email, PASSWORD_RESET_PATH);
-    } else if (hasSnsAccountForEmail(data.email)) {
+    } else if (await hasSnsAccountForEmail(data.email)) {
       setEmail(data.email);
       setAuthState(AuthStates.SignInWithSnsAccount);
     } else {
