@@ -42,7 +42,7 @@ const SnsSignIn = ({
       setInitializing(false);
     };
     fetchProviders();
-  }, []);
+  }, [email]);
 
   return (
     <div>
