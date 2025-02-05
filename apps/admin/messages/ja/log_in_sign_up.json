@@ -50,6 +50,7 @@
     "PasswordResetNotify": "パスワードをリセットしました。",
     "AccountVerification": "アカウントの本人確認",
     "PromptPassword": "パスワードを入力してください",
+    "PasswordAccountExists": "すでにアカウントをお持ちのようです",
     "SettingPasswordTitle": "パスワード設定"
   }
 }
