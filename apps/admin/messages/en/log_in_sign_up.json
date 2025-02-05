@@ -50,7 +50,7 @@
     "PasswordResetNotify": "Password has been reset.",
     "AccountVerification": "Verify Your Password",
     "PromptPassword": "Please enter your password",
-    "PasswordAccountExists": "It seems you already have an account."
+    "PasswordAccountExists": "It seems you already have an account.",
     "SettingPasswordTitle": "Setting Password"
   }
 }
