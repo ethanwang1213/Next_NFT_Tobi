@@ -12,7 +12,7 @@ import {
   GoogleAuthProvider,
   OAuthProvider,
   sendEmailVerification,
-  sendSignInLinkToEmail,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -215,10 +215,7 @@ const Authentication = () => {
   const sendEmailForPasswordReset = async (email: string, path: string) => {
     const signInMethods = await fetchSignInMethodsForEmail(auth, email);
     if (signInMethods.length === 0) {
-      setAuthError({
-        code: "auth/user-not-found",
-        message: "Tobiratoryアカウントが存在しません",
-      });
+      setAuthState(AuthStates.EmailSent);
       return;
     }
 
@@ -229,7 +226,7 @@ const Authentication = () => {
     };
     auth.languageCode = locale;
     try {
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem("emailForSignIn", email);
       setAuthState(AuthStates.EmailSent);
     } catch (error) {
@@ -283,7 +280,7 @@ const Authentication = () => {
     case AuthStates.SignUpWithEmailAndPassword:
       return (
         <FlowAgreementWithEmailAndPassword
-          title={""}
+          title={t("SettingPasswordTitle")}
           buttonText={t("Register")}
           email={email}
           isSubmitting={isRegisteringWithMailAndPassword}

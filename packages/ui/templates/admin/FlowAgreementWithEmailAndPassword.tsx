@@ -1,9 +1,10 @@
 import useMailAuthForm from "hooks/useMailAuthForm";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { SetStateAction, useState } from "react";
+import { useRouter } from "next/router";
+import { SetStateAction, useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { EMAIL_REGEX, ErrorMessage } from "types/adminTypes";
+import { ErrorMessage } from "types/adminTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import BackLink from "ui/molecules/BackLink";
 import { LoadingSpinnerButton } from "../AuthTemplate";
@@ -42,10 +43,19 @@ const FlowAgreementWithEmailAndPassword = ({
   const [agreed, setAgreed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    if (email) {
+      emailStatus.email = email;
+      setEmailStatus({ email, valid: true, error: "" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email]);
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
@@ -93,18 +103,6 @@ const FlowAgreementWithEmailAndPassword = ({
         return !passwordStatus.valid || !passwordConfirmationStatus.valid;
       default:
         return false;
-    }
-  };
-
-  const validateEmail = (email: string) => {
-    if (email === "" || email.match(EMAIL_REGEX)) {
-      setEmailStatus({ email, valid: true, error: "" });
-    } else {
-      setEmailStatus({
-        email,
-        valid: false,
-        error: t("EnterValidEmail"),
-      });
     }
   };
 
@@ -183,7 +181,10 @@ const FlowAgreementWithEmailAndPassword = ({
           <EmailField
             email={emailStatus.email}
             visible={pageType === PageType.PasswordReset}
-            validateEmail={validateEmail}
+            disable={
+              pageType === PageType.PasswordReset ||
+              pageType === PageType.PasswordUpdate
+            }
           />
         </div>
         <div
@@ -197,8 +198,9 @@ const FlowAgreementWithEmailAndPassword = ({
         <div className="relative mt-[10px]">
           <input
             type={showPassword ? "text" : "password"}
+            placeholder={t("Password")}
             value={passwordStatus.password}
-            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
             onChange={(e) => {
               validatePassword(e.target.value);
             }}
@@ -219,8 +221,9 @@ const FlowAgreementWithEmailAndPassword = ({
         <div className="relative mt-[10px]">
           <input
             type={showConfirmPassword ? "text" : "password"}
+            placeholder={t("ReEnter")}
             value={passwordConfirmationStatus.password}
-            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
             onChange={(e) => {
               validatePasswordConfirmation(
                 passwordStatus.password,
@@ -302,13 +305,11 @@ const TitleLogoImage = ({ pageType }: { pageType: PageType }) => {
 const EmailField = ({
   email,
   visible,
-  validateEmail,
   disable,
 }: {
   email: string;
   visible: boolean;
   disable?: boolean;
-  validateEmail: (email: string) => void;
 }) => {
   const t = useTranslations("LogInSignUp");
   if (!visible) {
@@ -322,9 +323,6 @@ const EmailField = ({
         type={"text"}
         value={email}
         className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
-        onChange={(e) => {
-          validateEmail(e.target.value);
-        }}
         disabled={disable}
       />
     </>
@@ -347,8 +345,8 @@ export const TermsOfService = ({
   }
 
   return (
-    <div className={"flex flex-row items-center"}>
-      <label>
+    <div>
+      <label className={"flex flex-row items-center"}>
         <input
           type={"checkbox"}
           checked={agreed}
@@ -446,10 +444,6 @@ const ValidationIcon = ({ valid, alt }: { valid: boolean; alt: string }) => {
 };
 
 const ValidationProgressBars = ({ step }: { step: number }) => {
-  const activeIcon = "active-bar.svg";
-  const inactiveIcon = "inactive-bar.svg";
-  const activeAlt = "active";
-  const inactiveAlt = "inactive";
   return (
     <div className={"grid grid-cols-3 gap-x-[6px]"}>
       <ValidationProgressBar valid={step > 0} />
