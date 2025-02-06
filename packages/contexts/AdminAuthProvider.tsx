@@ -423,24 +423,6 @@ export const hasPasswordAccount = () => {
   return hasAccountWithProviderId(ProviderId.PASSWORD);
 };
 
-export const hasGoogleAccountForEmail = async (email: string) => {
-  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-  return signInMethods.includes(ProviderId.GOOGLE);
-};
-
-export const hasAppleAccountForEmail = async (email: string) => {
-  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-  return signInMethods.includes(ProviderId.APPLE);
-};
-
-export const hasSnsAccountForEmail = async (email: string) => {
-  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-  return (
-    signInMethods.includes(ProviderId.GOOGLE) ||
-    signInMethods.includes(ProviderId.APPLE)
-  );
-};
-
 export const getMailAddressByProviderId = (providerId: ProviderId) => {
   return auth.currentUser.providerData.find(
     (profile) => profile.providerId === providerId,
