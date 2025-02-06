@@ -86,7 +86,7 @@ const Authentication = () => {
       return;
     }
 
-    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
     const usedPasswordAuthenticationAlready = signInMethods.includes(
       EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
     );
@@ -106,28 +106,20 @@ const Authentication = () => {
       return;
     }
 
-    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-    const notSetPassword = usedEmailLinkButNotSetPassword(signInMethods);
+    const mailLinkMethod = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
+    const passwordMethod = EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD;
+    const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
 
     setEmail(data.email);
-    if (notSetPassword) {
-      sendEmailForPasswordReset(data.email, PASSWORD_RESET_PATH);
-    } else if (
-      signInMethods.includes(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
-    ) {
+    if (signInMethods.includes(passwordMethod)) {
       setAuthState(AuthStates.SignInWithEmailAndPassword);
+    } else if (signInMethods.includes(mailLinkMethod)) {
+      sendEmailForPasswordReset(data.email, PASSWORD_RESET_PATH);
     } else if (hasSnsAccount(signInMethods)) {
       setAuthState(AuthStates.SignInWithSnsAccount);
     } else {
       setAuthState(AuthStates.SignInWithEmailAndPassword);
     }
-  };
-
-  const usedEmailLinkButNotSetPassword = (signInMethods: string[]) => {
-    return (
-      signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) &&
-      !signInMethods.includes(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
-    );
   };
 
   const hasSnsAccount = (signInMethods: string[]) => {
