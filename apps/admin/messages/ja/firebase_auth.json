@@ -6,7 +6,7 @@
     "CredentialAlreadyInUse": "既に使われているメールアドレスです。",
     "UserNotFound": "Tobiratoryアカウントが存在しません",
     "MissingPassword": "パスワードが一致しません。",
-    "RequiresRecentLogin": "セキュリティ上の理由により、再ログインが必要です。もう一度ログインしてください。",
+    "RequiresRecentLogin": "セキュリティ上の理由により、再ログインが必要です。<br></br>もう一度ログインしてください。",
     "WrongPassword": "パスワードが一致しません。",
     "TooManyRequests": "リクエスト数が許容最大数を超えています。しばらく時間をおいてからお試し下さい。",
     "SomeError": "エラーが発生しました。"
