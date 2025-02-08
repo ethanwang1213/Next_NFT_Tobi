@@ -34,7 +34,12 @@
     },
     "PromptPassword": "メールアドレスを変更するには<color><underline>先にパスワードの設定をする必要</underline></color>があります",
     "GoToSetPassword": "パスワード設定に進む",
-    "VerifiedNewEmailAddress": "新しいメールアドレスの確認をしました"
+    "VerifiedNewEmailAddress": "新しいメールアドレスの確認をしました",
+    "VerifiedEmailTitle": "メールアドレスが確認されました",
+    "VerifiedEmailNote": "新しいアカウントでログインできます。",
+    "continueBtn": "再ログイン"
+
+    
   },
   "AccountPassword": {
     "Name": "名前",

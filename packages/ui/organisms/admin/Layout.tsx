@@ -1,3 +1,4 @@
+import VerifiedEmail from "admin/src/pages/auth/verified_email";
 import {
   AuthProvider,
   isApplyPage,
@@ -62,11 +63,33 @@ const Contents = ({ children }: Props) => {
     "/authentication",
     "/auth/email_update",
     "/auth/password_reset",
+    "/auth/verified_email",
+    "/auth/auth_action",
     "/auth/password_update",
     "/auth/reauth_password",
     "/auth/reauth_sns",
     "/auth/confirmation_email_for_auth_page",
   ];
+  const isVerifiedEmailPage = router.pathname === "/auth/verified_email";
+  const isVerifiedActionPage = router.pathname === "/auth/auth_action";
+
+  if (isVerifiedEmailPage) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center bg-gray-100">
+        <div className="flex flex-col w-full h-full">
+          <VerifiedEmail />
+        </div>
+      </div>
+    );
+  }
+
+  if (isVerifiedActionPage) {
+    return (
+      <div className="w-[568px] h-screen mx-auto my-10 flex flex-row justify-center">
+        <span className="loading loading-spinner text-info loading-md" />
+      </div>
+    );
+  }
 
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&

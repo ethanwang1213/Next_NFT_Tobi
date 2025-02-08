@@ -34,7 +34,10 @@
     },
     "PromptPassword": "To change your email address, you need to <color><underline>set your password first</underline></color>.",
     "GoToSetPassword": "Proceed to set a password",
-    "VerifiedNewEmailAddress": "Verified new email address"
+    "VerifiedNewEmailAddress": "Verified new email address",
+    "VerifiedEmailTitle": "Your email has been verified",
+    "VerifiedEmailNote": "You can now log in with your new account.",
+    "continueBtn": "continue"
   },
   "AccountPassword": {
     "Name": "Name",

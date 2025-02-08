@@ -72,6 +72,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     () => [
       "/authentication",
       "/auth/password_reset",
+      "/auth/verified_email",
       "/auth/auth_action",
       "/auth/confirmation_email_for_auth_page",
     ],
@@ -118,6 +119,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             `/${lang}/auth/password_reset?oobCode=${oobCode}&apiKey=${apiKey}`,
           );
         }
+        if (mode === "verifyEmail") {
+          router.push(`/${lang}/auth/verified_email`);
+        }
+
         return;
       }
 

@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "ui/atoms/Button";
-import BackLink from "ui/molecules/BackLink";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -16,36 +15,40 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 
 const VerifiedEmail = () => {
   const router = useRouter();
-  const t = useTranslations();
+  const t = useTranslations("Account");
 
   return (
-    <div className="pt-9 pr-5 pl-12 pb-5 flex flex-col gap-5">
-      <div className="h-14 flex justify-between items-start">
-        <span className="text-3xl text-secondary-600 font-semibold">
-          ACCOUNT
-        </span>
-      </div>
-      <div className={"w-full"}>
-        <BackLink hideText={true} onClickBack={() => router.push("/account")} />
-      </div>
-      <div className="flex flex-col items-center justify-center shrink-0">
-        <span className="text-base-content text-center text-[48px] font-bold">
-          {t("Account.VerifiedNewEmailAddress")}
-        </span>
-        <Image
-          src="/admin/images/icon/task-complete.svg"
-          alt="Tobiratory logo"
-          width={317}
-          height={317}
-          className="mt-[127px]"
-        />
-        <Button
-          className="btn btn-block w-[179px] h-[48px] min-h-[48px] mt-[20px] px-[14px] py-[8px] bg-primary rounded-[64px]
-              text-base-white text-[20px] leading-3 font-normal hover:bg-primary hover:border-primary"
-          onClick={() => router.push("/account")}
-        >
-          {t("Label.Done")}
-        </Button>
+    <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
+      <div className="w-[1000px] h-[600px]">
+        <div className="flex justify-center w-full h-[302px]">
+          <Image
+            src="/admin/images/mail.svg"
+            alt="Tobiratory logo"
+            width={264}
+            height={226}
+            className="mt-[50px] invert text-base-primary"
+          />
+        </div>
+        <div className="text-base-content text-center text-[32px]  md:text-[28px] sm:text-[24px] font-bold mt-[8px]">
+          {t("VerifiedEmailTitle")}
+        </div>
+        <div className="text-base-content text-center text-[16px]  md:text-[14px] sm:text-[12px] mt-[24px]">
+          {t("VerifiedEmailNote")}
+        </div>
+        <div className="flex justify-center mt-[40px] lg:mt-[20px] md:mt-[10px] sm:mt-[5px]">
+          <Button
+            className="btn btn-block w-[179px] h-[48px] px-[14px] py-[8px] bg-primary rounded-[12px]
+              text-base-white text-[16px] md:text-[16px] sm:text-[9px] leading-3 font-normal hover:bg-primary hover:border-primary"
+            onClick={() => router.push("/auth/sns_auth")}
+          >
+            {t("continueBtn")}
+          </Button>
+        </div>
+        <div className="flex justify-center mt-[153px]">
+          <div className="self-end font-normal text-[12px] text-base-content pb-6">
+            Tobiratory Inc. all rights reserved.
+          </div>
+        </div>
       </div>
     </div>
   );
