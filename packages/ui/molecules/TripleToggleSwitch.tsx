@@ -1,4 +1,3 @@
-import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import { useEffect, useRef, useState } from "react";
 
 const TripleToggleSwitch = ({ labels, value, onChange }) => {
@@ -6,7 +5,6 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
   const selectedItemRef = useRef(null);
   const containerRef = useRef(null);
   const [selectedItemStyle, setSelectedItemStyle] = useState({});
-  const { displayWidth } = useWindowSize();
 
   const onClickSwitchItem = (newValue) => {
     if (newValue === value) {
@@ -15,25 +13,29 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
     onChange(newValue);
   };
 
-  const updateSelectedItemPosition = () => {
+  const updateSelectedItemPosition = (animation: boolean) => {
     if (!!switchItemRef?.current[value] || value == 3) {
       const currentElement =
         value === 3
           ? switchItemRef.current[value - 1]
           : switchItemRef.current[value];
-      setSelectedItemStyle({
+      const newStyle = {
         left: currentElement.offsetLeft + "px",
         top: currentElement.offsetTop + "px",
         width: currentElement.clientWidth + "px",
         height: currentElement.clientHeight + "px",
-      });
+      };
+      if (animation) {
+        newStyle["transition"] = "all linear .5s";
+      }
+      setSelectedItemStyle(newStyle);
     }
   };
 
   useEffect(() => {
-    updateSelectedItemPosition();
+    updateSelectedItemPosition(true);
     const handleResize = () => {
-      updateSelectedItemPosition();
+      updateSelectedItemPosition(false);
     };
     window.addEventListener("resize", handleResize);
     return () => {
@@ -45,7 +47,7 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
   return (
     <div className="flex flex-row switch-pane relative" ref={containerRef}>
       <div
-        className="selected-item absolute bg-blue-500 transition-all duration-200 ease-in-out"
+        className="selected-item absolute bg-blue-500"
         ref={selectedItemRef}
         style={selectedItemStyle}
       ></div>
