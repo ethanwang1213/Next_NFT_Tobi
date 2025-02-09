@@ -38,7 +38,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
       const address = await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref, flowJobId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
       if (params.fcmToken && address) {
-        pushToDevice(params.fcmToken, undefined, { status: "success", body: JSON.stringify({ type: "createFlowAccount", address }) });
+        pushToDevice(params.fcmToken, undefined, {status: "success", body: JSON.stringify({type: "createFlowAccount", address})});
       }
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {

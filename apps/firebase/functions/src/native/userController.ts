@@ -361,7 +361,6 @@ export const postMyProfile = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
     try {
-
       // validate user id to match with our regex
       const validateUserId = isValidUserId(account?.userId??"");
       if (!validateUserId&&account?.userId) {
@@ -477,10 +476,10 @@ export const myBusiness = async (req: Request, res: Response) => {
             include: {
               copyrights: true,
               license: true,
-            }
+            },
           },
           account: true,
-        }
+        },
       });
       if (!business) {
         res.status(401).send({
@@ -491,8 +490,8 @@ export const myBusiness = async (req: Request, res: Response) => {
       }
       const date = new Date(business.birth);
 
-      const year = date.getFullYear(); 
-      const month = date.getMonth() + 1; 
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
       const day = date.getDate();
       const resData = {
         content: {
