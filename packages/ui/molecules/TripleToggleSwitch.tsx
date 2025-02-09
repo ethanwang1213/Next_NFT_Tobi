@@ -1,3 +1,4 @@
+import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 import { useEffect, useRef, useState } from "react";
 
 const TripleToggleSwitch = ({ labels, value, onChange }) => {
@@ -5,6 +6,7 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
   const selectedItemRef = useRef(null);
   const containerRef = useRef(null);
   const [selectedItemStyle, setSelectedItemStyle] = useState({});
+  const { displayWidth } = useWindowSize();
 
   const onClickSwitchItem = (newValue) => {
     if (newValue === value) {
@@ -14,8 +16,11 @@ const TripleToggleSwitch = ({ labels, value, onChange }) => {
   };
 
   const updateSelectedItemPosition = () => {
-    if (!!switchItemRef?.current[value]) {
-      const currentElement = switchItemRef.current[value];
+    if (!!switchItemRef?.current[value] || value == 3) {
+      const currentElement =
+        value === 3
+          ? switchItemRef.current[value - 1]
+          : switchItemRef.current[value];
       setSelectedItemStyle({
         left: currentElement.offsetLeft + "px",
         top: currentElement.offsetTop + "px",
