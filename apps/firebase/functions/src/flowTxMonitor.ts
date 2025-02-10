@@ -254,16 +254,19 @@ const fetchAndUpdateMintNFT = async (digitalItemId: number, notificationBatchId:
     const length = nfts.filter((nft) => !nft.notified).length;
     console.log(length);
     if (length == 1) {
-      pushToDevice(notificationBatch.fcm_token, {
-        title: "NFTの作成が完了しました",
-        body: "タップして見に行ってみよう!",
-      }, {
-        status: "success",
-        body: JSON.stringify({
-          type: "mintCompleted",
-          data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
-        }),
-      });
+      const fcmToken = notificationBatch.fcm_token;
+      if (fcmToken) {
+        pushToDevice(fcmToken, {
+          title: "NFTの作成が完了しました",
+          body: "タップして見に行ってみよう!",
+        }, {
+          status: "success",
+          body: JSON.stringify({
+            type: "mintCompleted",
+            data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
+          }),
+        });
+      }
       await prisma.digital_item_nfts.updateMany({
         where: {
           id: {
@@ -436,16 +439,19 @@ const fetchAndUpdateGiftNFT = async (nftId: number, notificationBatchId: number)
       const length = nfts.filter((nft) => !nft.notified).length;
       console.log(length);
       if (length == 1) {
-        pushToDevice(notificationBatch.fcm_token, {
-          title: "NFTのプレゼントが完了しました",
-          body: "タップして受け取ってみよう!",
-        }, {
-          status: "success",
-          body: JSON.stringify({
-            type: "giftCompleted",
-            data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
-          }),
-        });
+        const fcmToken = notificationBatch.fcm_token;
+        if (fcmToken) {
+          pushToDevice(fcmToken, {
+            title: "NFTのプレゼントが完了しました",
+            body: "タップして受け取ってみよう!",
+          }, {
+            status: "success",
+            body: JSON.stringify({
+              type: "giftCompleted",
+              data: {ids: notificationBatch.nfts.map((nft) => nft.id)},
+            }),
+          });
+        }
         await prisma.digital_item_nfts.updateMany({
           where: {
             id: {
