@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {jwtSecretKey} from "../constants";
 import * as JWT from "jsonwebtoken";
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 import {firestore} from "firebase-admin";
 // import { prisma } from '../prisma';
 
@@ -29,9 +29,9 @@ router.post("/login", async (req: Request, res: Response) => {
   const user = {
     id: cmsAccount.id,
     name: cmsAccount.name,
-    email: cmsAccount.email
-  }
-  const hashedPassword = cmsAccount.hashedPassword
+    email: cmsAccount.email,
+  };
+  const hashedPassword = cmsAccount.hashedPassword;
 
   const isValid = await bcrypt.compare(password, hashedPassword);
   if (!isValid) {

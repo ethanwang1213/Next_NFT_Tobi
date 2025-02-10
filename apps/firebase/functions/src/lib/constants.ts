@@ -411,3 +411,4 @@ export const defaultPageSize = 10;
 export const firstSaidanThumb = "https://storage.googleapis.com/tobiratory-dev_media/images/first-saidan-thumbnail.png";
 export const limitSaidanCount = 15;
 export const businessAccount = "businessAccount";
+export const profiles = "profiles";
