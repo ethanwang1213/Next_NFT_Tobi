@@ -19,7 +19,11 @@ const Row1 = ({
   const isJaLocale = shouldUseJaLocale(useLocale());
   return (
     <div className="sm:flex flex-row sm:py-4 sm:pl-6 py-3">
-      <div className={`h-12 ${isJaLocale ? "min-w-[400px]" : "min-w-[480px]"}`}>
+      <div
+        className={`h-12 ${
+          isJaLocale ? "w-[400px] min-w-[400px]" : "w-[480px] min-w-[480px]"
+        }`}
+      >
         <div className="flex-none flex flex-row items-center">
           <span className="text-base mr-4">{label ? label : ""}</span>
           {optional ? <OptionMark /> : <RequireMark />}
