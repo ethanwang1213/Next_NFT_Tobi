@@ -31,7 +31,7 @@ const CheckEmail = ({ onsubmit, email }) => {
         <div className="text-base-content leading-[2] text-center text-[18px] md:text-[16px] sm:text-[14px] mt-[24px]">
           {t("CheckEmailNote_1")}
           &nbsp;{" "}
-          <span className="text-blue-500">
+          <span className="text-blue-500" onClick={onsubmit}>
             &#91; <span>{email}</span> &#93;
           </span>
           &nbsp;

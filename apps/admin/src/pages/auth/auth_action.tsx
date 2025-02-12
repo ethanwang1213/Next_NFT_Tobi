@@ -18,9 +18,10 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 const AuthAction = () => {
   const auth = getAuth();
   const router = useRouter();
-  const { oobCode, continueUrl, mode } = router.query;
+  const { oobCode, mode } = router.query;
   const [error, setError] = useState<string | null>(null);
   const [verified, setVerified] = useState(true);
+
   if (mode === "verifyEmail") {
     const handleVerifyEmail = async () => {
       if (!oobCode) {
