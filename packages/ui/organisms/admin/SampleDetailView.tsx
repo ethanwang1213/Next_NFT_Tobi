@@ -188,7 +188,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
             modelUrl: data.modelUrl,
             imageUrl: data.materialUrl || data.customThumbnailUrl,
           };
-          
+
           if (section === "showcase") {
             requestNftModelGeneration(requestPayload);
           } else {
