@@ -113,14 +113,17 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         const oobCode = searchParams.get("oobCode");
         const apiKey = searchParams.get("apiKey");
         const lang = searchParams.get("lang");
+        const continueUrl = searchParams.get("continueUrl");
 
         if (mode === "resetPassword" && oobCode) {
           router.push(
             `/${lang}/auth/password_reset?oobCode=${oobCode}&apiKey=${apiKey}`,
           );
         }
-        if (mode === "verifyEmail") {
-          router.push(`/${lang}/auth/verified_email`);
+        if (oobCode) {
+          router.push(
+            `/${lang}/auth/auth_action?oobCode=${oobCode}&mood=${mode}&continueUrl=${continueUrl}`,
+          );
         }
 
         return;
