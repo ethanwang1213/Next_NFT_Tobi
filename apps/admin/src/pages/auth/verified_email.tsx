@@ -2,7 +2,6 @@ import { getMessages } from "admin/messages/messages";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import Button from "ui/atoms/Button";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
