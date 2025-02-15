@@ -11,7 +11,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const CheckEmail = ({ onsubmit, email }) => {
+const CheckEmail = ({ email }) => {
   const t = useTranslations("Account");
   return (
     <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
@@ -31,7 +31,10 @@ const CheckEmail = ({ onsubmit, email }) => {
         <div className="text-base-content leading-[2] text-center text-[18px] md:text-[16px] sm:text-[14px] mt-[24px]">
           {t("CheckEmailNote_1")}
           &nbsp;{" "}
-          <span className="text-blue-500" onClick={onsubmit}>
+          <span
+            className="text-blue-500"
+            onClick={() => (window.location.href = "/admin/authentication")}
+          >
             &#91; <span>{email}</span> &#93;
           </span>
           &nbsp;

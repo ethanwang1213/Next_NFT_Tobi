@@ -14,7 +14,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const VerifyAndChangeEmail = ({ verified, error, onVerify }) => {
+const VerifyAndChangeEmail = () => {
   const t = useTranslations("Account");
   const auth = getAuth();
   const email = useMemo(
@@ -47,17 +47,11 @@ const VerifyAndChangeEmail = ({ verified, error, onVerify }) => {
           <Button
             className="btn btn-block w-[179px] h-[48px] px-[14px] py-[8px] bg-primary rounded-[12px]
               text-base-white text-[16px] md:text-[16px] sm:text-[9px] leading-3 font-normal hover:bg-primary hover:border-primary"
-            onClick={onVerify}
-            disabled={!verified}
+            onClick={() => (window.location.href = "/admin/authentication")}
           >
             {t("continueBtn")}
           </Button>
         </div>
-        {!verified && error && (
-          <small className="flex justify-center mt-[40px] lg:mt-[20px] md:mt-[10px] sm:mt-[5px] text-red-500">
-            {error}
-          </small>
-        )}
         <div className="flex justify-center mt-[153px]">
           <div className="self-end font-normal text-[12px] text-base-content pb-6">
             Tobiratory Inc. all rights reserved.

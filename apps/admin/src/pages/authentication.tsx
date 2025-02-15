@@ -66,23 +66,35 @@ const Authentication = () => {
   }, []);
 
   useEffect(() => {
-    if (user && !hasRedirected.current) {
-      hasRedirected.current = true;
-      if (user.hasBusinessAccount === "exist") {
-        router.push("/items");
-      } else if (
-        user.hasBusinessAccount === "reported" ||
-        user.hasBusinessAccount === "freezed"
-      ) {
-        router.push("/apply/contentRepoted");
-      } else if (user.hasBusinessAccount === "not-approved") {
-        router.push("/apply/contentApproval");
-      } else if (user.hasBusinessAccount === "rejected") {
-        router.push("/apply/contentRejected");
-      } else {
-        router.push("/apply");
+    const checkEmailVerification = async () => {
+      if (auth.currentUser) {
+        await auth.currentUser.reload();
+        if (auth.currentUser.emailVerified) {
+          if (user && !hasRedirected.current) {
+            hasRedirected.current = true;
+            if (user.hasBusinessAccount === "exist") {
+              router.push("/items");
+            } else if (
+              user.hasBusinessAccount === "reported" ||
+              user.hasBusinessAccount === "freezed"
+            ) {
+              router.push("/apply/contentRepoted");
+            } else if (user.hasBusinessAccount === "not-approved") {
+              router.push("/apply/contentApproval");
+            } else if (user.hasBusinessAccount === "rejected") {
+              router.push("/apply/contentRejected");
+            } else {
+              router.push("/apply");
+            }
+          }
+        } else {
+          setAuthState(AuthStates.EmailSent);
+        }
       }
-    }
+    };
+
+    checkEmailVerification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, router]);
 
   const startMailSignUp = async (data: LoginFormType) => {

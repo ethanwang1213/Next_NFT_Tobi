@@ -2,8 +2,9 @@ import { getMessages } from "admin/messages/messages";
 import { applyActionCode, getAuth } from "firebase/auth";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UpdateEmail from "./updateEmail";
+import VerificationError from "./verificationError";
 import VerifiedEmail from "./verified_email";
 import VerifyAndChangeEmail from "./verifyAndChangeEmail";
 
@@ -19,75 +20,42 @@ const AuthAction = () => {
   const auth = getAuth();
   const router = useRouter();
   const { oobCode, mode } = router.query;
-  const [error, setError] = useState<string | null>(null);
-  const [verified, setVerified] = useState(true);
+  const [error, setError] = useState(false);
+  const [verified, setVerified] = useState(false);
 
-  if (mode === "verifyEmail") {
-    const handleVerifyEmail = async () => {
-      if (!oobCode) {
-        setError("Invalid verification link.");
-        setVerified(false);
-        return;
-      }
-      try {
-        await applyActionCode(auth, oobCode as string);
-        await auth.currentUser?.reload();
-        window.location.href = "/admin/auth/email_auth";
-      } catch (err) {
-        setVerified(false);
-        setError("Verification failed. The link may have expired.");
-      }
-    };
-    return (
-      <VerifiedEmail
-        verified={verified}
-        error={error}
-        onVerify={handleVerifyEmail}
-      />
-    );
-  }
+  useEffect(() => {
+    if (auth) {
+      const verifyEmail = async () => {
+        if (mode === "verifyEmail" && oobCode) {
+          try {
+            await applyActionCode(auth, oobCode as string);
+            await auth.currentUser?.reload();
+            setVerified(true);
+          } catch {
+            setError(true);
+          }
+        }
+        if (mode === "verifyAndChangeEmail" || mode === "recoverEmail" && oobCode) {
+          const auth = getAuth();
+          try {
+            await applyActionCode(auth, oobCode as string);
+            setVerified(true);
+          } catch {
+            setError(true);
+          }
+        }
+      };
 
-  if (mode === "recoverEmail") {
-    const handleVerifyEmail = async () => {
-      if (!oobCode) {
-        setError("Invalid verification link.");
-        setVerified(false);
-        return;
-      }
-      try {
-        await applyActionCode(auth, oobCode as string);
-        await auth.currentUser?.reload();
-      } catch (err) {
-        setVerified(false);
-        setError("Verification failed. The link may have expired.");
-      }
-      window.location.href = "/admin/authentication";
-    };
-    return <UpdateEmail onVerify={handleVerifyEmail} />;
-  }
-  if (mode === "verifyAndChangeEmail") {
-    const handleVerifyAndChangeEmail = async () => {
-      if (!oobCode) {
-        setError("Invalid verification link.");
-        setVerified(false);
-        return;
-      }
-      try {
-        await applyActionCode(auth, oobCode as string);
-        await auth.currentUser?.reload();
-      } catch (err) {
-        setVerified(false);
-        setError("Verification failed. The link may have expired.");
-      }
-      window.location.href = "/admin/apply";
-    };
-    return (
-      <VerifyAndChangeEmail
-        verified={verified}
-        error={error}
-        onVerify={handleVerifyAndChangeEmail}
-      />
-    );
+      verifyEmail();
+    }
+  }, [auth, mode, oobCode]);
+
+  if (error) return <VerificationError />;
+  if (mode === "verifyEmail" && oobCode && verified) return <VerifiedEmail />;
+  if (mode === "recoverEmail" && oobCode && verified) return <UpdateEmail />;
+  if (mode === "verifyAndChangeEmail" && oobCode && verified) {
+   
+    return <VerifyAndChangeEmail/>;
   }
 };
 

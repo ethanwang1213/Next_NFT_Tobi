@@ -71,8 +71,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const unrestrictedPaths = useMemo(
     () => [
       "/authentication",
-      "/auth/password_reset",
-      "/auth/verified_email",
       "/auth/auth_action",
       "/auth/confirmation_email_for_auth_page",
     ],
@@ -113,7 +111,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         const oobCode = searchParams.get("oobCode");
         const apiKey = searchParams.get("apiKey");
         const lang = searchParams.get("lang");
-        const continueUrl = searchParams.get("continueUrl");
 
         if (mode === "resetPassword" && oobCode) {
           router.push(
@@ -122,7 +119,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         }
         if (oobCode) {
           router.push(
-            `/${lang}/auth/auth_action?oobCode=${oobCode}&mood=${mode}&continueUrl=${continueUrl}`,
+            `/${lang}/auth/auth_action?oobCode=${oobCode}&mood=${mode}`,
           );
         }
 
@@ -136,7 +133,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           console.error(error);
           auth.signOut();
         });
-        if (!profile) {
+        if (!profile || !profile.data) {
           router.push("/authentication");
           return;
         }
@@ -197,7 +194,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
         if (pathname === "/authentication") {
           // new user sign up
-          if (!firebaseUser.emailVerified) {
+          if (firebaseUser.emailVerified) {
+            auth.signOut;
             return;
           }
         } else if (pathname === "/auth/password_reset") {
@@ -246,7 +244,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           false,
           "not-exist",
         );
-        router.push("/auth/sns_auth");
       } else {
         setUser(null);
         if (!unrestrictedPaths.includes(pathname)) {
@@ -414,7 +411,7 @@ export const hasPassword = async (email: string) => {
 };
 
 export const hasAccountWithProviderId = (providerId: ProviderId) => {
-  return auth.currentUser.providerData.some(
+  return auth?.currentUser?.providerData.some(
     (profile) => profile.providerId === providerId,
   );
 };

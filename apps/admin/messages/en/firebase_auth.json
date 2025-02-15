@@ -9,6 +9,8 @@
     "RequiresRecentLogin": "Reauthentication is required due to inactivity. Please click the “Back” link and authenticate again.",
     "WrongPassword": "Passwords do not match.",
     "TooManyRequests": "The number of requests exceeds the maximum allowed. Please try again after some time.",
-    "SomeError": "An error has occurred."
+    "SomeError": "An error has occurred.",
+    "VerificationErrorTitle": "Please check your email address again.",
+    "VerificationError": "Your request to verify your email address has expired or the link is already in use"
   }
 }

@@ -2,6 +2,7 @@ import { getMessages } from "admin/messages/messages";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import Button from "ui/atoms/Button";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
@@ -12,9 +13,9 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const VerifiedEmail = ({verified, error, onVerify}) => {
+const VerifiedEmail = () => {
   const t = useTranslations("Account");
-
+  const router = useRouter();
   return (
     <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
       <div className="w-[1000px] h-[600px]">
@@ -37,17 +38,11 @@ const VerifiedEmail = ({verified, error, onVerify}) => {
           <Button
             className="btn btn-block w-[179px] h-[48px] px-[14px] py-[8px] bg-primary rounded-[12px]
               text-base-white text-[16px] md:text-[16px] sm:text-[9px] leading-3 font-normal hover:bg-primary hover:border-primary"
-            disabled={!verified}
-            onClick={onVerify}
+            onClick={() => (window.location.href = "/admin/auth/email_auth")}
           >
             {t("continueBtn")}
           </Button>
         </div>
-        {!verified && error && (
-          <small className="flex justify-center mt-[40px] lg:mt-[20px] md:mt-[10px] sm:mt-[5px] text-red-500">
-            {error}
-          </small>
-        )}
         <div className="flex justify-center mt-[153px]">
           <div className="self-end font-normal text-[12px] text-base-content pb-6">
             Tobiratory Inc. all rights reserved.
