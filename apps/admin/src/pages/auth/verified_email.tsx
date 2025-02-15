@@ -15,7 +15,6 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 
 const VerifiedEmail = () => {
   const t = useTranslations("Account");
-  const router = useRouter();
   return (
     <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
       <div className="w-[1000px] h-[600px]">
