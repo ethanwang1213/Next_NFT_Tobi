@@ -106,5 +106,9 @@ service cloud.firestore {
     match /cmsAccount/{email} {
       allow read, write: if isAdmin();
     }
+
+    match /profiles/{userId} {
+      allow read, write: if isCurrentUser(userId);
+    }
   }
 }

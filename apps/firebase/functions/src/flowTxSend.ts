@@ -59,23 +59,23 @@ export const flowTxSend = functions.region(REGION)
       // Add processing here according to txType
       if (txType == "createFlowAccount") {
         try {
-        const txId = await generateKeysAndSendFlowAccountCreationTx(params.tobiratoryAccountUuid);
-        await flowJobDocRef.update({
-          flowJobId,
-          txType,
-          params,
-          txId,
-          sentAt: new Date(),
-        });
-        const messageForMoitoring = {flowJobId, txType, params};
-        const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
-        console.log(`Message ${messageId} published.`);
+          const txId = await generateKeysAndSendFlowAccountCreationTx(params.tobiratoryAccountUuid);
+          await flowJobDocRef.update({
+            flowJobId,
+            txType,
+            params,
+            txId,
+            sentAt: new Date(),
+          });
+          const messageForMoitoring = {flowJobId, txType, params};
+          const messageId = await pubsub.topic(TOPIC_NAMES["flowTxMonitor"]).publishMessage({json: messageForMoitoring});
+          console.log(`Message ${messageId} published.`);
         } catch (e) {
           if (params.fcmToken) {
             if (e instanceof Error) {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "createFlowAccount", message: e.message}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "createFlowAccount", message: e.message})});
             } else {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "createFlowAccount", message: "Unknown error"}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "createFlowAccount", message: "Unknown error"})});
             }
           }
           throw e;
@@ -97,9 +97,9 @@ export const flowTxSend = functions.region(REGION)
         } catch (e) {
           if (params.fcmToken) {
             if (e instanceof Error) {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: e.message}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "mintNFT", message: e.message})});
             } else {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: "Unknown error"}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "mintNFT", message: "Unknown error"})});
             }
           }
           await updateMintNFTRecord(params.digitalItemNftId, mintStatus.error);
@@ -124,9 +124,9 @@ export const flowTxSend = functions.region(REGION)
         } catch (e) {
           if (params.fcmToken) {
             if (e instanceof Error) {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: e.message}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "mintNFT", message: e.message})});
             } else {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "mintNFT", message: "Unknown error"}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "mintNFT", message: "Unknown error"})});
             }
           }
           await updateMintNFTRecord(id, mintStatus.error);
@@ -149,9 +149,9 @@ export const flowTxSend = functions.region(REGION)
         } catch (e) {
           if (params.fcmToken) {
             if (e instanceof Error) {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "giftNFT", message: e.message}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "giftNFT", message: e.message})});
             } else {
-              pushToDevice(params.fcmToken, undefined, { status: "error", body: JSON.stringify({ type: "giftNFT", message: "Unknown error"}) });
+              pushToDevice(params.fcmToken, undefined, {status: "error", body: JSON.stringify({type: "giftNFT", message: "Unknown error"})});
             }
           }
           await updateGiftNFTRecord(params.digitalItemNftId, giftStatus.error, -1);

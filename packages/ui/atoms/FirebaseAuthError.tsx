@@ -33,7 +33,9 @@ const FirebaseAuthError = ({ error }: Props) => {
       case "auth/too-many-requests":
         return t("TooManyRequests");
       case "auth/requires-recent-login":
-        return t("RequiresRecentLogin");
+        return t.rich("RequiresRecentLogin", {
+          br: () => <br />,
+        });
       default:
         return `${t("SomeError")}: ${error.code}: ${error.message}`;
     }

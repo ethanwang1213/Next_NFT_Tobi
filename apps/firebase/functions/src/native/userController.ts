@@ -5,7 +5,7 @@ import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
 import {ContentData, convertBaseString, increaseTransactionAmount, isEmptyObject, isValidUserId, statusOfLimitTransaction, statusOfShowcase} from "./utils";
 import {prisma} from "../prisma";
-import {businessAccount, firstSaidanThumb} from "../lib/constants";
+import {businessAccount, firstSaidanThumb, profiles} from "../lib/constants";
 
 export const checkPasswordSet = async (req: Request, res: Response) => {
   const {email}: {email: string} = req.body;
@@ -360,42 +360,46 @@ export const postMyProfile = async (req: Request, res: Response) => {
   };
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken)=>{
     const uid = decodedToken.uid;
-
-    // validate user id to match with our regex
-    const validateUserId = isValidUserId(account?.userId??"");
-    if (!validateUserId) {
-      res.status(401).send({
-        status: "error",
-        data: "invalid-userId",
-      });
-    }
-
-    // check double user id
-    const doubleUser = await prisma.accounts.findFirst({
-      where: {
-        user_id: account?.userId,
-      },
-    });
-    if (doubleUser&&doubleUser.uuid!=uid) {
-      res.status(401).send({
-        status: "error",
-        data: "double-userId",
-      });
-    }
-    let accountData; let flowData;
-    const userExist = await prisma.accounts.findUnique({
-      where: {
-        uuid: uid,
-        is_deleted: false,
-      },
-    });
-    if (!userExist) {
-      res.status(401).send({
-        status: "error",
-        data: "not-exist-user",
-      });
-    }
     try {
+      if (account?.userId) {
+        // validate user id to match with our regex
+        const validateUserId = isValidUserId(account?.userId);
+        if (!validateUserId) {
+          res.status(401).send({
+            status: "error",
+            data: "invalid-userId",
+          });
+        }
+
+        // check double user id
+        const doubleUsers = await prisma.accounts.findMany({
+          where: {
+            user_id: account?.userId,
+          },
+        });
+        console.log(doubleUsers);
+
+        if (doubleUsers.length>1) {
+          res.status(401).send({
+            status: "error",
+            data: "double-userId",
+          });
+        }
+      }
+
+      let accountData; let flowData;
+      const userExist = await prisma.accounts.findUnique({
+        where: {
+          uuid: uid,
+          is_deleted: false,
+        },
+      });
+      if (!userExist) {
+        res.status(401).send({
+          status: "error",
+          data: "not-exist-user",
+        });
+      }
       if (account&&isEmptyObject(account)) {
         await prisma.accounts.update({
           where: {
@@ -417,6 +421,35 @@ export const postMyProfile = async (req: Request, res: Response) => {
           data: flowUpdated,
         });
       }
+      const updatedProfileData = {
+        userId: accountData?.user_id,
+        username: accountData?.username,
+        email: accountData?.email,
+        icon: accountData?.icon_url,
+        sns: accountData?.sns,
+        aboutMe: accountData?.about_me,
+        socialLinks: accountData?.social_links,
+        gender: accountData?.gender,
+        birth: accountData?.birth,
+        firstSaidan: {
+          id: accountData?.first_saidan_id,
+          removedDefaultItem: accountData?.removed_default_items,
+        },
+        giftPermission: accountData?.gift_permission,
+        createdAt: accountData?.created_date_time,
+      };
+      await firestore().collection(profiles).doc(uid).set(updatedProfileData, {merge: true});
+      res.status(200).send({
+        status: "success",
+        data: {
+          account: updatedProfileData,
+          flow: flowData==null ? undefined : {
+            flowAddress: flowData.flow_address,
+            publicKey: flowData.public_key,
+            txId: flowData.tx_id,
+          },
+        },
+      });
     } catch (error) {
       console.log(error);
       res.status(401).send({
@@ -425,34 +458,6 @@ export const postMyProfile = async (req: Request, res: Response) => {
       });
       return;
     }
-
-    res.status(200).send({
-      status: "success",
-      data: {
-        account: {
-          userId: accountData?.user_id,
-          username: accountData?.username,
-          email: accountData?.email,
-          icon: accountData?.icon_url,
-          sns: accountData?.sns,
-          aboutMe: accountData?.about_me,
-          socialLinks: accountData?.social_links,
-          gender: accountData?.gender,
-          birth: accountData?.birth,
-          firstSaidan: {
-            id: accountData?.first_saidan_id,
-            removedDefaultItem: accountData?.removed_default_items,
-          },
-          giftPermission: accountData?.gift_permission,
-          createdAt: accountData?.created_date_time,
-        },
-        flow: flowData==null ? undefined : {
-          flowAddress: flowData.flow_address,
-          publicKey: flowData.public_key,
-          txId: flowData.tx_id,
-        },
-      },
-    });
   }).catch((error: FirebaseError)=>{
     res.status(401).send({
       status: "error",
@@ -476,10 +481,10 @@ export const myBusiness = async (req: Request, res: Response) => {
             include: {
               copyrights: true,
               license: true,
-            }
+            },
           },
           account: true,
-        }
+        },
       });
       if (!business) {
         res.status(401).send({
@@ -490,8 +495,8 @@ export const myBusiness = async (req: Request, res: Response) => {
       }
       const date = new Date(business.birth);
 
-      const year = date.getFullYear(); 
-      const month = date.getMonth() + 1; 
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
       const day = date.getDate();
       const resData = {
         content: {

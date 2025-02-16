@@ -138,6 +138,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           return;
         }
 
+        if (!firebaseUser.emailVerified) {
+          if (unrestrictedPaths.includes(pathname)) {
+            return;
+          } else {
+            await auth.signOut();
+            router.push("/authentication");
+            return;
+          }
+        }
+
         const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
         if (hasFlowAccount) {
           const hasBusinessAccount = await checkBusinessAccount(
@@ -426,24 +436,6 @@ export const hasAppleAccount = () => {
 
 export const hasPasswordAccount = () => {
   return hasAccountWithProviderId(ProviderId.PASSWORD);
-};
-
-export const hasGoogleAccountForEmail = async (email: string) => {
-  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-  return signInMethods.includes(ProviderId.GOOGLE);
-};
-
-export const hasAppleAccountForEmail = async (email: string) => {
-  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-  return signInMethods.includes(ProviderId.APPLE);
-};
-
-export const hasSnsAccountForEmail = async (email: string) => {
-  const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-  return (
-    signInMethods.includes(ProviderId.GOOGLE) ||
-    signInMethods.includes(ProviderId.APPLE)
-  );
 };
 
 export const getMailAddressByProviderId = (providerId: ProviderId) => {

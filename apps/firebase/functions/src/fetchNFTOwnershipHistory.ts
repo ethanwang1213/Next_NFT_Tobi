@@ -1,4 +1,4 @@
-import { REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS } from "./lib/constants";
+import {REGION, TOBIRATORY_DIGITAL_ITEMS_ADDRESS} from "./lib/constants";
 import * as fcl from "@onflow/fcl";
 import * as functions from "firebase-functions";
 
@@ -28,13 +28,13 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
     console.log(JSON.stringify(await fcl.config().all()));
 
     fcl.send([fcl.ping()])
-      .then(() => {
-        console.log("SUCCESS");
-      })
-      .catch((e) => {
-        console.log("ERROR: ");
-        throw e;
-      });
+        .then(() => {
+          console.log("SUCCESS");
+        })
+        .catch((e) => {
+          console.log("ERROR: ");
+          throw e;
+        });
 
     const result = await fcl.query({
       cadence,
@@ -50,7 +50,7 @@ access(all) fun main(address: Address, id: String): {UFix64: Address}? {
 };
 
 export const fetchNFTOwnershipHistory = functions.region(REGION).https.onRequest(async (request, response) => {
-  const { account, id } = request.query;
+  const {account, id} = request.query;
   if (!account || !id) {
     response.status(500).send("Invalid parameter 'account' or 'id'").end();
     return;

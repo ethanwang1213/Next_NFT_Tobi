@@ -128,7 +128,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
       <div className={"md:flex flex-row justify-between md:mb-[50px] mb-1"}>
         <div className="flex flex-col md:text-nowrap">
           <div className="mb-4 flex flex-row items-center sm:justify-start justify-between">
-            <p className="md:w-auto w-[80%] text-base sm:mr-8">
+            <p className="md:w-auto text-base sm:mr-8">
               {t("CopyrightLicenseInfo")}
             </p>
             <OptionMark />
@@ -158,9 +158,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
       <div className="md:flex flex-row justify-between">
         <div className="flex flex-col md:text-nowrap">
           <div className="mb-4 flex flex-row items-center sm:justify-start justify-between">
-            <p className="md:w-auto w-[80%] text-base sm:mr-8">
-              {t("DefaultLicense")}
-            </p>
+            <p className="md:w-auto text-base sm:mr-8">{t("DefaultLicense")}</p>
             <OptionMark />
           </div>
           <div className="flex flex-row items-center gap-1">
