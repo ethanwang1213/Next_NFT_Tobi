@@ -133,6 +133,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           return;
         }
 
+        if (!firebaseUser.emailVerified) {
+          if (unrestrictedPaths.includes(pathname)) {
+            return;
+          } else {
+            await auth.signOut();
+            router.push("/authentication");
+            return;
+          }
+        }
+
         const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
         if (hasFlowAccount) {
           const hasBusinessAccount = await checkBusinessAccount(
