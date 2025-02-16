@@ -86,6 +86,7 @@ const Authentication = () => {
         } else {
           setAuthState(AuthStates.EmailSent);
         }
+      }
     };
 
     checkEmailVerification();
