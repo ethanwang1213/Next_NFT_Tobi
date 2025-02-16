@@ -75,8 +75,6 @@ const Authentication = () => {
         router.push("/apply/contentApproval");
       } else if (user.hasBusinessAccount === "rejected") {
         router.push("/apply/contentRejected");
-      } else {
-        router.push("/apply");
       }
     }
   }, [user, router]);
