@@ -127,9 +127,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       }
 
       if (firebaseUser && firebaseUser.email) {
-        console.log('firebaseUser: ', firebaseUser);
-        // If we use the router, we need to include it in the dependencies,
-        // and useEffect gets called multiple times. So, let's avoid using the router.
         const profile = await fetchMyProfile().catch((error) => {
           console.error(error);
           auth.signOut();
@@ -138,7 +135,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           router.push("/authentication");
           return;
         }
-        console.log('profile: ', profile);
 
         if (!firebaseUser.emailVerified) {
           if (unrestrictedPaths.includes(pathname)) {
