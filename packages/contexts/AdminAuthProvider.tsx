@@ -107,8 +107,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合|
       if (firebaseUser && firebaseUser.email) {
-        // If we use the router, we need to include it in the dependencies,
-        // and useEffect gets called multiple times. So, let's avoid using the router.
         const profile = await fetchMyProfile().catch((error) => {
           console.error(error);
           auth.signOut();

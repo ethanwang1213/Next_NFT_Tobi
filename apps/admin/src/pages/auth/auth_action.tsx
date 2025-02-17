@@ -14,7 +14,8 @@ import PasswordReset from "ui/templates/admin/auth_action/password_reset";
 import UpdateEmail from "ui/templates/admin/auth_action/updateEmail";
 import VerificationError from "ui/templates/admin/auth_action/verificationError";
 import VerifyAndChangeEmail from "ui/templates/admin/auth_action/verifyAndChangeEmail";
-import VerifiedEmail from "./verified_email";
+import VerificationError from "ui/templates/admin/auth_action/verificationError";
+import VerifiedEmail from "ui/templates/admin/auth_action/verified_email";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
