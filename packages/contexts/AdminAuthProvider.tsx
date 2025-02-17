@@ -32,7 +32,7 @@ type ReauthStatus = {
 
 // AuthContextのデータ型
 type ContextType = {
-  user?: User;
+  user: User | null;
   reauthStatus: ReauthStatus;
   signOut: () => Promise<void>;
   finishFlowAccountRegistration: () => void;
@@ -126,7 +126,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         return;
       }
 
-      if (firebaseUser) {
+      if (firebaseUser && firebaseUser.email) {
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.
         const profile = await fetchMyProfile().catch((error) => {
@@ -193,11 +193,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         );
 
         if (pathname === "/authentication") {
-          // new user sign up
-          if (firebaseUser.emailVerified) {
-            auth.signOut;
-            return;
-          }
+          auth.signOut();
+          return;
         } else if (pathname === "/auth/password_reset") {
           return;
         } else if (pathname === "/auth/email_auth") {
@@ -244,6 +241,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           false,
           "not-exist",
         );
+        router.push("/auth/sns_auth");
       } else {
         setUser(null);
         if (!unrestrictedPaths.includes(pathname)) {
@@ -295,7 +293,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     if (!user) {
       return;
     }
-    setUser((prev) => ({ ...prev, email }));
+    setUser((prev) => ({ ...prev!, email }));
   };
 
   const signOut = async () => {
@@ -339,7 +337,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
     setUser((prev) => ({
-      ...prev,
+      ...prev!,
       uuid: profile.data.userId,
       hasFlowAccount: true,
     }));
@@ -355,14 +353,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    setUser((prev) => ({ ...prev, hasBusinessAccount: "not-approved" }));
+    setUser((prev) => ({ ...prev!, hasBusinessAccount: "not-approved" }));
   };
 
   if (user || unrestrictedPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
         value={{
-          user,
+          user: user || null,
           reauthStatus,
           signOut,
           finishFlowAccountRegistration: finishFlowAccountRegistration,
@@ -447,7 +445,7 @@ export const hasSnsAccountForEmail = async (email: string) => {
 };
 
 export const getMailAddressByProviderId = (providerId: ProviderId) => {
-  return auth.currentUser.providerData.find(
+  return auth?.currentUser?.providerData.find(
     (profile) => profile.providerId === providerId,
   )?.email;
 };

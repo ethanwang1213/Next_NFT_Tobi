@@ -50,9 +50,7 @@
     "VerifiedEmailTitle": "メールアドレスが確認されました",
     "VerifiedEmailNote": "新しいアカウントでログインできます。",
     "continueBtn": "再ログイン"
-
-    
-  },
+    },
   "AccountPassword": {
     "Name": "名前",
     "Password": "パスワード",

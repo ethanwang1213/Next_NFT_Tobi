@@ -14,13 +14,13 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const VerifyAndChangeEmail = () => {
+const VerifyAndChangeEmail = ({restoredEmail}) => {
   const t = useTranslations("Account");
   const auth = getAuth();
-  const email = useMemo(
-    () => auth?.currentUser?.email,
-    [auth?.currentUser?.email],
-  );
+  // const email = useMemo(
+  //   () => auth?.currentUser?.email,
+  //   [auth?.currentUser?.email],
+  // );
 
   return (
     <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
@@ -41,7 +41,7 @@ const VerifyAndChangeEmail = () => {
           {t("VerifyAndChangeEmailNote")}
         </div>
         <div className="text-base-content text-center text-[16px] text-blue-500 md:text-[14px] sm:text-[12px] mt-[24px]">
-          &#91; <span>{email}</span> &#93;
+          &#91; <span>{restoredEmail}</span> &#93;
         </div>
         <div className="flex justify-center mt-[40px] lg:mt-[20px] md:mt-[10px] sm:mt-[5px]">
           <Button
