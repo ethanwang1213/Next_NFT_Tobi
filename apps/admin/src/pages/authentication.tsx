@@ -1,9 +1,5 @@
 import { getMessages } from "admin/messages/messages";
-import {
-  hasSnsAccountForEmail,
-  PASSWORD_RESET_PATH,
-  useAuth,
-} from "contexts/AdminAuthProvider";
+import { PASSWORD_RESET_PATH, useAuth } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
 import {
   createUserWithEmailAndPassword,
@@ -20,7 +16,7 @@ import { GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { ErrorMessage } from "types/adminTypes";
+import { ErrorMessage, ProviderId } from "types/adminTypes";
 import { getPathWithLocale, LocalePlaceholder } from "types/localeTypes";
 import FullScreenLoading from "ui/molecules/FullScreenLoading";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
@@ -100,13 +96,16 @@ const Authentication = () => {
       return;
     }
 
-    const usedPasswordAuthenticationAlready = await usedPasswordAuthentication(
-      data.email,
+    const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
+    const usedPasswordAuthenticationAlready = signInMethods.includes(
+      EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
     );
 
     setEmail(data.email);
     if (usedPasswordAuthenticationAlready) {
       setAuthState(AuthStates.SignInWithEmailAndPassword);
+    } else if (hasSnsAccount(signInMethods)) {
+      setAuthState(AuthStates.SignInWithSnsAccount);
     } else {
       setAuthState(AuthStates.SignUpWithEmailAndPassword);
     }
@@ -117,31 +116,26 @@ const Authentication = () => {
       return;
     }
 
-    const notSetPassword = await usedEmailLinkButNotSetPassword(data.email);
+    const mailLinkMethod = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
+    const passwordMethod = EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD;
+    const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
 
-    if (notSetPassword) {
+    setEmail(data.email);
+    if (signInMethods.includes(passwordMethod)) {
+      setAuthState(AuthStates.SignInWithEmailAndPassword);
+    } else if (signInMethods.includes(mailLinkMethod)) {
       sendEmailForPasswordReset(data.email, PASSWORD_RESET_PATH);
-    } else if (hasSnsAccountForEmail(data.email)) {
-      setEmail(data.email);
+    } else if (hasSnsAccount(signInMethods)) {
       setAuthState(AuthStates.SignInWithSnsAccount);
     } else {
-      setEmail(data.email);
       setAuthState(AuthStates.SignInWithEmailAndPassword);
     }
   };
 
-  const usedPasswordAuthentication = async (email: string) => {
-    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-    return signInMethods.includes(
-      EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
-    );
-  };
-
-  const usedEmailLinkButNotSetPassword = async (email: string) => {
-    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+  const hasSnsAccount = (signInMethods: string[]) => {
     return (
-      signInMethods.includes(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) &&
-      !signInMethods.includes(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
+      signInMethods.includes(ProviderId.GOOGLE) ||
+      signInMethods.includes(ProviderId.APPLE)
     );
   };
 

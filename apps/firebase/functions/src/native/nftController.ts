@@ -75,16 +75,18 @@ export const mintNFT = async (req: Request, res: Response) => {
 
       await mintProcess();
 
-      pushToDevice(fcmToken, {
-        title: "NFTの作成を開始しました",
-        body: "作成完了までしばらくお待ちください",
-      }, {
-        status: "success",
-        body: JSON.stringify({
-          type: "mintBegan",
-          data: {id: id},
-        }),
-      });
+      if (fcmToken) {
+        pushToDevice(fcmToken, {
+          title: "NFTの作成を開始しました",
+          body: "作成完了までしばらくお待ちください",
+        }, {
+          status: "success",
+          body: JSON.stringify({
+            type: "mintBegan",
+            data: {id: id},
+          }),
+        });
+      }
       res.status(200).send({
         status: "success",
         data: "minting-nft",
@@ -474,16 +476,18 @@ export const gift = async (id: number, uid: string, receiveFlowId: string, notif
     title = "NFTを削除しています";
     body = "削除完了までしばらくお待ちください";
   }
-  pushToDevice(fcmToken, {
-    title: title,
-    body: body,
-  }, {
-    status: "success",
-    body: JSON.stringify({
-      type: "transferBegan",
-      data: {id: id},
-    }),
-  });
+  if (fcmToken) {
+    pushToDevice(fcmToken, {
+      title: title,
+      body: body,
+    }, {
+      status: "success",
+      body: JSON.stringify({
+        type: "transferBegan",
+        data: {id: id},
+      }),
+    });
+  }
 };
 
 export const generateNotificationBatchId = async (fcmToken: string) => {
