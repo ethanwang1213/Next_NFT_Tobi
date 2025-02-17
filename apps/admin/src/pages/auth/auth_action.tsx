@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import Loading from "ui/atoms/Loading";
 import UpdateEmail from "ui/templates/admin/auth_action/updateEmail";
 import VerifyAndChangeEmail from "ui/templates/admin/auth_action/verifyAndChangeEmail";
-import VerificationError from "./verificationError";
-import VerifiedEmail from "./verified_email";
+import VerificationError from "ui/templates/admin/auth_action/verificationError";
+import VerifiedEmail from "ui/templates/admin/auth_action/verified_email";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -43,7 +43,6 @@ const AuthAction = () => {
           mode === "verifyAndChangeEmail" ||
           (mode === "recoverEmail" && oobCode)
         ) {
-          const auth = getAuth();
           try {
             const actionCodeInfo = await checkActionCode(
               auth,
