@@ -183,7 +183,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         if (pathname === "/authentication") {
           auth.signOut();
           return;
-        } else if (pathname === "/auth/password_reset") {
+        } else if (pathname === "/auth/auth_action") {
           return;
         } else if (pathname === "/auth/email_auth") {
           if (
