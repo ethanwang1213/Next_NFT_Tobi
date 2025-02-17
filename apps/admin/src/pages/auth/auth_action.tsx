@@ -13,9 +13,8 @@ import Loading from "ui/atoms/Loading";
 import PasswordReset from "ui/templates/admin/auth_action/password_reset";
 import UpdateEmail from "ui/templates/admin/auth_action/updateEmail";
 import VerificationError from "ui/templates/admin/auth_action/verificationError";
-import VerifyAndChangeEmail from "ui/templates/admin/auth_action/verifyAndChangeEmail";
-import VerificationError from "ui/templates/admin/auth_action/verificationError";
 import VerifiedEmail from "ui/templates/admin/auth_action/verified_email";
+import VerifyAndChangeEmail from "ui/templates/admin/auth_action/verifyAndChangeEmail";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
