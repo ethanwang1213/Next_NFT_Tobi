@@ -106,26 +106,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合|
-      if (pathname === "/auth/auth_action") {
-        const mode = searchParams.get("mode");
-        const oobCode = searchParams.get("oobCode");
-        const apiKey = searchParams.get("apiKey");
-        const lang = searchParams.get("lang");
-
-        if (mode === "resetPassword" && oobCode) {
-          router.push(
-            `/${lang}/auth/password_reset?oobCode=${oobCode}&apiKey=${apiKey}`,
-          );
-        }
-        if (oobCode) {
-          router.push(
-            `/${lang}/auth/auth_action?oobCode=${oobCode}&mood=${mode}`,
-          );
-        }
-
-        return;
-      }
-
       if (firebaseUser && firebaseUser.email) {
         // If we use the router, we need to include it in the dependencies,
         // and useEffect gets called multiple times. So, let's avoid using the router.

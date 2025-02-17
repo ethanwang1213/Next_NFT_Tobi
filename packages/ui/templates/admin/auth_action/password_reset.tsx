@@ -1,57 +1,25 @@
-import { getMessages } from "admin/messages/messages";
 import { auth } from "fetchers/firebase/client";
-import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
-import { GetStaticPropsContext } from "next";
+import { confirmPasswordReset } from "firebase/auth";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
 import FlowAgreementWithEmailAndPassword, {
   PageType,
 } from "ui/templates/admin/FlowAgreementWithEmailAndPassword";
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
-  return {
-    props: {
-      messages: await getMessages(locale),
-    },
-  };
-}
-
-const PasswordReset = () => {
-  const router = useRouter();
-  const [email, setEmail] = useState<string | null>(null);
-  const [oobCode, setOobCode] = useState<string | null>(null);
+const PasswordReset = ({
+  email,
+  oobCode,
+}: {
+  email: string;
+  oobCode: string;
+}) => {
   const [updatingPassword, setUpdatingPassword] = useState(false);
   const [updatedPassword, setUpdatedPassword] = useState(false);
   const [authError, setAuthError] = useState<ErrorMessage>(null);
   const t = useTranslations("LogInSignUp");
   const l = useTranslations("Label");
-
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    const { oobCode } = router.query;
-    if (typeof oobCode !== "string") {
-      setAuthError({
-        code: "invalid_code",
-        message: "Invalid or missing reset code.",
-      });
-      return;
-    }
-
-    setOobCode(oobCode);
-
-    verifyPasswordResetCode(auth, oobCode)
-      .then((email) => {
-        setEmail(email);
-      })
-      .catch((error) => {
-        console.error("Error verifying reset code:", error);
-        setAuthError({ code: error.code, message: error.message });
-      });
-  }, [router.isReady, router.query]);
 
   const resetPassword = async (email, password) => {
     if (!oobCode || !password) return;

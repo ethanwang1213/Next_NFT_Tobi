@@ -1,15 +1,5 @@
-import { getMessages } from "admin/messages/messages";
-import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
-  return {
-    props: {
-      messages: await getMessages(locale),
-    },
-  };
-}
 
 const CheckEmail = ({ email }) => {
   const t = useTranslations("Account");

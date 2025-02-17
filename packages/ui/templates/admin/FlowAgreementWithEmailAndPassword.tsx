@@ -1,7 +1,6 @@
 import useMailAuthForm from "hooks/useMailAuthForm";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { SetStateAction, useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ErrorMessage } from "types/adminTypes";
@@ -43,7 +42,6 @@ const FlowAgreementWithEmailAndPassword = ({
   const [agreed, setAgreed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -177,16 +175,7 @@ const FlowAgreementWithEmailAndPassword = ({
         <div className={"mt-[10px]"}>
           <PasswordValidation {...passwordStatus} />
         </div>
-        <div className={"mt-[30px]"}>
-          <EmailField
-            email={emailStatus.email}
-            visible={pageType === PageType.PasswordReset}
-            disable={
-              pageType === PageType.PasswordReset ||
-              pageType === PageType.PasswordUpdate
-            }
-          />
-        </div>
+        <div className={"mt-[30px]"} />
         <div
           className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
         >
