@@ -1,3 +1,4 @@
+import AuthAction from "admin/src/pages/auth/auth_action";
 import {
   AuthProvider,
   isApplyPage,
@@ -62,11 +63,24 @@ const Contents = ({ children }: Props) => {
     "/authentication",
     "/auth/email_update",
     "/auth/password_reset",
+    "/auth/verified_email",
+    "/auth/auth_action",
     "/auth/password_update",
     "/auth/reauth_password",
     "/auth/reauth_sns",
     "/auth/confirmation_email_for_auth_page",
   ];
+  const isVerifiedActionPage = router.pathname === "/auth/auth_action";
+
+  if (isVerifiedActionPage) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center bg-gray-100">
+        <div className="flex flex-col w-full h-full">
+          <AuthAction />
+        </div>
+      </div>
+    );
+  }
 
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&

@@ -3,7 +3,7 @@ import { verifyBeforeUpdateEmail } from "firebase/auth";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import { getPathWithLocale } from "types/localeTypes";
+import { getNormalLocale, getPathWithLocale } from "types/localeTypes";
 
 const useUpdateEmail = () => {
   const [updating, setUpdating] = useState<boolean>(false);
@@ -16,7 +16,7 @@ const useUpdateEmail = () => {
     setIsSuccessfull(false);
     setUpdating(true);
     const newPath = getPathWithLocale(locale, path);
-    auth.languageCode = locale;
+    auth.languageCode = getNormalLocale(locale);
     try {
       const actionCodeSettings = {
         url: `${window.location.origin}/${newPath}`,

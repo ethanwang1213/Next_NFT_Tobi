@@ -28,6 +28,11 @@ export const getValidLocale = (locale: string) => {
   return isLocale(locale) ? locale : DefaultLocale;
 };
 
+export const getNormalLocale = (locale: string) => {
+  const validLocale = getValidLocale(locale);
+  return validLocale === Locale.DEFAULT ? Locale.JA : validLocale;
+}
+
 export const shouldUseJaLocale = (locale: string) => {
   const targets = [Locale.DEFAULT, Locale.JA] as string[];
   return targets.includes(locale);

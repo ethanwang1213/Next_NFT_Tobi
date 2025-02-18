@@ -32,7 +32,7 @@ type ReauthStatus = {
 
 // AuthContextのデータ型
 type ContextType = {
-  user?: User;
+  user: User | null;
   reauthStatus: ReauthStatus;
   signOut: () => Promise<void>;
   finishFlowAccountRegistration: () => void;
@@ -71,7 +71,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const unrestrictedPaths = useMemo(
     () => [
       "/authentication",
-      "/auth/password_reset",
       "/auth/auth_action",
       "/auth/confirmation_email_for_auth_page",
     ],
@@ -107,28 +106,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合|
-      if (pathname === "/auth/auth_action") {
-        const mode = searchParams.get("mode");
-        const oobCode = searchParams.get("oobCode");
-        const apiKey = searchParams.get("apiKey");
-        const lang = searchParams.get("lang");
-
-        if (mode === "resetPassword" && oobCode) {
-          router.push(
-            `/${lang}/auth/password_reset?oobCode=${oobCode}&apiKey=${apiKey}`,
-          );
-        }
-        return;
-      }
-
-      if (firebaseUser) {
-        // If we use the router, we need to include it in the dependencies,
-        // and useEffect gets called multiple times. So, let's avoid using the router.
+      if (firebaseUser && firebaseUser.email) {
         const profile = await fetchMyProfile().catch((error) => {
           console.error(error);
           auth.signOut();
         });
-        if (!profile) {
+        if (!profile || !profile.data) {
           router.push("/authentication");
           return;
         }
@@ -198,11 +181,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         );
 
         if (pathname === "/authentication") {
-          // new user sign up
-          if (!firebaseUser.emailVerified) {
-            return;
-          }
-        } else if (pathname === "/auth/password_reset") {
+          auth.signOut();
+          return;
+        } else if (pathname === "/auth/auth_action") {
           return;
         } else if (pathname === "/auth/email_auth") {
           if (
@@ -300,7 +281,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     if (!user) {
       return;
     }
-    setUser((prev) => ({ ...prev, email }));
+    setUser((prev) => ({ ...prev!, email }));
   };
 
   const signOut = async () => {
@@ -344,7 +325,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
     setUser((prev) => ({
-      ...prev,
+      ...prev!,
       uuid: profile.data.userId,
       hasFlowAccount: true,
     }));
@@ -360,14 +341,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    setUser((prev) => ({ ...prev, hasBusinessAccount: "not-approved" }));
+    setUser((prev) => ({ ...prev!, hasBusinessAccount: "not-approved" }));
   };
 
   if (user || unrestrictedPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
         value={{
-          user,
+          user: user || null,
           reauthStatus,
           signOut,
           finishFlowAccountRegistration: finishFlowAccountRegistration,
@@ -416,7 +397,7 @@ export const hasPassword = async (email: string) => {
 };
 
 export const hasAccountWithProviderId = (providerId: ProviderId) => {
-  return auth.currentUser.providerData.some(
+  return auth?.currentUser?.providerData.some(
     (profile) => profile.providerId === providerId,
   );
 };
@@ -434,7 +415,7 @@ export const hasPasswordAccount = () => {
 };
 
 export const getMailAddressByProviderId = (providerId: ProviderId) => {
-  return auth.currentUser.providerData.find(
+  return auth?.currentUser?.providerData.find(
     (profile) => profile.providerId === providerId,
   )?.email;
 };
