@@ -5,6 +5,7 @@ import {
 import { auth } from "fetchers/firebase/client";
 import { sendPasswordResetEmail } from "firebase/auth";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
+import { getNormalLocale} from "types/localeTypes";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
