@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import { getPathWithLocale, Locale } from "types/localeTypes";
+import { getNormalLocale, getPathWithLocale, Locale } from "types/localeTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import Loading from "ui/atoms/Loading";
 import CheckEmail from "./checkEmail";
@@ -28,7 +28,7 @@ const UpdateEmail = ({
       url: `${window.location.origin}/${newPath}`,
       handleCodeInApp: true,
     };
-    auth.languageCode = locale;
+    auth.languageCode = getNormalLocale(locale);
     setAuthError(null);
     setSendingEmail(true);
     try {

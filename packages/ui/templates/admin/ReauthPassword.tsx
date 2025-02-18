@@ -40,7 +40,7 @@ const ReauthPassword = ({
       url: `${window.location.origin}/${path}`,
       handleCodeInApp: true,
     };
-    auth.languageCode = locale;
+    auth.languageCode = getNormalLocale(locale);
     sendPasswordResetEmail(
       auth,
       getMailAddressOfPasswordAccount(),

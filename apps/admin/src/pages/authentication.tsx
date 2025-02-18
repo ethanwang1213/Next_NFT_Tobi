@@ -17,7 +17,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { ErrorMessage, ProviderId } from "types/adminTypes";
-import { getPathWithLocale, LocalePlaceholder } from "types/localeTypes";
+import {
+  getNormalLocale,
+  getPathWithLocale,
+  LocalePlaceholder
+} from "types/localeTypes";
 import FullScreenLoading from "ui/molecules/FullScreenLoading";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
 import EmailAndPasswordSignIn from "ui/templates/admin/EmailAndPasswordSignIn";
@@ -206,7 +210,7 @@ const Authentication = () => {
       url: `${window.location.origin}/${newPath}`,
       handleCodeInApp: true,
     };
-    auth.languageCode = locale;
+    auth.languageCode = getNormalLocale(locale);
     try {
       await sendEmailVerification(auth.currentUser, actionCodeSettings);
       setAuthState(AuthStates.EmailSent);
@@ -228,7 +232,7 @@ const Authentication = () => {
       url: `${window.location.origin}/${newPath}`,
       handleCodeInApp: true,
     };
-    auth.languageCode = locale;
+    auth.languageCode = getNormalLocale(locale);
     try {
       await sendPasswordResetEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem("emailForSignIn", email);
