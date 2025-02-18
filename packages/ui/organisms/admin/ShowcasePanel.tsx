@@ -36,7 +36,8 @@ type ShowcaseComponentProps = {
 };
 
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
-  const [status, setStatus] = useState(ShowcaseStatus.Private);
+  const [status, setStatus] = useState(props.status);
+  const [prevstatus, setPrevStatus] = useState(ShowcaseStatus.Private);
   const [title, setTitle] = useState(props.title);
   const [description, setDescription] = useState(props.description);
   const [scheduleTime, setScheduleTime] = useState(
@@ -56,13 +57,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
     setIsHovered(false);
   };
   const apiUrl = "native/admin/showcases";
-  const { error, putData, deleteData } = useRestfulAPI(null);
+  const { error, putData } = useRestfulAPI(null);
   const t = useTranslations("ContentShowcase");
 
   const popupRef = useRef(null);
-  const datePickerRef = useRef(null);
   const dialogRef = useRef(null);
-
   useEffect(() => {
     function handleClickOutside(event) {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -94,7 +93,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         changeStatus(ShowcaseStatus.Private);
         break;
       case 2:
-        changeStatus(ShowcaseStatus.ScheduledPublic);
+        setDatePickerVisible(true);
         break;
       case 4:
         props.onDeleteShowcase();
@@ -128,7 +127,6 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
   const changeStatus = async (status) => {
     props.onStatusChange(props.id, status);
-    setStatus(status);
     const jsonData = await putData(
       `${apiUrl}/${props.id}`,
       status == ShowcaseStatus.ScheduledPublic
@@ -165,6 +163,8 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       { scheduleTime: scheduleTimeJST, status: 2 },
       [],
     );
+    console.log('scheduleTimeJST: ', scheduleTimeJST);
+
     if (jsonData) {
       setScheduleTimeChanged(false);
       props.refreshHandler();
@@ -182,6 +182,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
+    setPrevStatus(status)
   };
 
   const getStatusLabel = () => {
@@ -195,6 +196,10 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       default:
         return "";
     }
+  };
+  const handleClose = (done:boolean) => {
+    setDatePickerVisible(false);
+    done ? changeStatus(ShowcaseStatus.ScheduledPublic) : changeStatus(prevstatus)
   };
 
   return (
@@ -216,21 +221,32 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         onMouseEnter={handleHoverEnter}
         onMouseLeave={handleHoverLeave}
       >
-        <div className="absolute right-0 top-0 shadow-lg shadow-[#00000033] z-40 ">
-          {isDatePickerVisible && (
+        {isDatePickerVisible && (
+          <>
+            {/* Overlay */}
+            <div className="fixed inset-0 z-40 flex items-center justify-center">
+              <div className="absolute backdrop-blur-[7px] inset-0"></div>
+            </div>
+
+            {/* CustomDatePicker */}
+            <div className="absolute fixed inset-0 z-50 flex items-center justify-center">
             <CustomDatePicker
-              onDateTimeChange={(date) => {
-                setScheduleTime(date);
-                setScheduleTimeChanged(true);
-              }}
-              onClose={() => {
-                setDatePickerVisible(false);
-                changeScheduleTime();
-              }}
-              initialDateTime={scheduleTime}
-            />
-          )}
-        </div>
+                onDateTimeChange={(date) => {
+                  setScheduleTime(date);
+                  setScheduleTimeChanged(true);
+                }}
+                onScheduleDone={() => {
+                  changeScheduleTime();
+                  handleClose(true)
+                }}
+                onClose={() => {
+                handleClose(false)
+                }}
+                initialDateTime={scheduleTime}
+              />
+            </div>
+          </>
+        )}
         {isHovered && (
           <Link href={`/contents/showcase?id=${props.id}`}>
             <div
@@ -248,11 +264,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
             </div>
           </Link>
         )}
-        {status == ShowcaseStatus.ScheduledPublic && (
+        {status === ShowcaseStatus.ScheduledPublic && (
           <div className="flex justify-center items-center cursor-pointer mt-6">
             <div
               className="flex gap-2 z-20 text-primary text-[17px] leading-4 font-normal"
-              onClick={() => setDatePickerVisible(!isDatePickerVisible)}
+              onClick={() => statusChangeHandler(2)}
             >
               <span className="bg-base-white rounded-[6px] h-9 flex items-center px-3">
                 {scheduleTime.toLocaleDateString("en-US", {
@@ -361,25 +377,11 @@ const ShowcasePanel = ({ reload }) => {
 
   const sortData = (data) => {
     return data?.slice().sort((a, b) => {
-      if (a.status === 1) return -1;
-      if (b.status === 1) return 1;
+      // Move "PUBLISH" status (1) items to the front
+      if (a.status === 1 && b.status !== 1) return -1;
+      if (b.status === 1 && a.status !== 1) return 1;
 
-      if (a.status === 2 && b.status === 2) {
-        return (
-          new Date(a.scheduleTime).getTime() -
-          new Date(b.scheduleTime).getTime()
-        );
-      }
-
-      if (a.status === 0 && b.status === 0) {
-        return (
-          new Date(b.updateTime).getTime() - new Date(a.updateTime).getTime()
-        );
-      }
-
-      if (a.status === 2 && b.status === 0) return -1;
-      if (a.status === 0 && b.status === 2) return 1;
-
+      // For all other statuses, preserve original order (no sorting)
       return 0;
     });
   };

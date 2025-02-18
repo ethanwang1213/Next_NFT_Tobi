@@ -1,27 +1,36 @@
 import { addMonths, endOfMonth, format, getDay, startOfMonth } from "date-fns";
-import { format as tzFormat, fromZonedTime, toZonedTime } from "date-fns-tz";
+import { format as tzFormat, toZonedTime } from "date-fns-tz";
 import React, { useEffect, useRef, useState } from "react";
 
 interface CustomDatePickerProps {
   onDateTimeChange: (date: Date) => void;
   onClose: () => void;
+  onScheduleDone: () => void;
   initialDateTime: Date;
 }
 
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   onDateTimeChange,
   onClose,
+  onScheduleDone,
   initialDateTime,
 }) => {
   const timeZone = "Asia/Tokyo";
   const [selectedDate, setSelectedDate] = useState<Date>(
     toZonedTime(initialDateTime, timeZone),
   );
-  const [time, setTime] = useState<string>(
-    tzFormat(fromZonedTime(initialDateTime, timeZone), "HH:mm", {
-      timeZone,
-    }),
-  );
+  const getCurrentTokyoTimePlusTwoHours = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 2);
+
+    if (now.getDate() !== new Date().getDate()) {
+       const newDate = new Date(selectedDate);
+       newDate.setDate(selectedDate.getDate() + 1);
+       setSelectedDate(newDate);
+    }
+    return tzFormat(toZonedTime(now, timeZone), "HH:mm", { timeZone });
+  };
+  const [time, setTime] = useState<string>( getCurrentTokyoTimePlusTwoHours() );
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
@@ -44,7 +53,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   useEffect(() => {
     const zonedDate = toZonedTime(initialDateTime, timeZone);
     setSelectedDate(zonedDate);
-    setTime(tzFormat(zonedDate, "HH:mm", { timeZone }));
   }, [initialDateTime]);
 
   const handleDateChange = (day: number) => {
@@ -74,8 +82,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   };
 
   const updateDateTime = (date: Date) => {
-    const utcDate = fromZonedTime(date, timeZone);
-    onDateTimeChange(utcDate);
+    onDateTimeChange(date);
   };
 
   const daysInMonth = () => {
@@ -100,7 +107,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   return (
     <div
       ref={datePickerRef}
-      className="date-picker absolute bg-white border border-gray-300 rounded-lg p-2.5 text-center mt-3"
+      className="date-picker absolute bg-white border border-gray-300 rounded-2xl p-2.5 text-center mt-3"
     >
       <div className="mb-3">
         <div className="flex justify-start items-center mb-1 pl-3">
@@ -115,6 +122,9 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             {" "}
             &gt;{" "}
           </button>
+          <div className="absolute right-5" onClick={() => onClose()}>
+            X
+          </div>
         </div>
         <div className="day-names grid my-1 text-sm grid-cols-7">
           {dayNames.map((day) => (
@@ -124,49 +134,66 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           ))}
         </div>
         <div className="days grid gap-1 grid-cols-7">
-          {daysInMonth().map((day, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center w-[44px] h-[44px]"
-            >
-              {day ? (
-                <button
-                  onClick={() => handleDateChange(day)}
-                  className={`flex items-center border-none p-6 cursor-pointer w-[44px] h-[44px] rounded-full justify-center ${
-                    selectedDate.getDate() === day
-                      ? "bg-[#b4d5f8] text-primary text-[24px]"
-                      : "text-black text-[20px]"
-                  }`}
-                >
-                  {day}
-                </button>
-              ) : null}
-            </div>
-          ))}
+          {daysInMonth().map((day, index) => {
+            const isPastDay =
+              day &&
+              new Date(
+                selectedDate.getFullYear(),
+                selectedDate.getMonth(),
+                day,
+              ) < new Date(new Date().setHours(0, 0, 0, 0));
+
+            return (
+              <div
+                key={index}
+                className="flex items-center justify-center w-[44px] h-[44px]"
+              >
+                {day ? (
+                  <button
+                    onClick={() => !isPastDay && handleDateChange(day)}
+                    className={`flex items-center border-none p-6 cursor-pointer w-[44px] h-[44px] rounded-full justify-center ${
+                      isPastDay
+                        ? "text-gray-500 cursor-not-allowed"
+                        : selectedDate.getDate() === day
+                          ? "bg-[#b4d5f8] text-primary text-[24px]"
+                          : "text-black text-[20px]"
+                    }`}
+                    disabled={isPastDay}
+                  >
+                    {day}
+                  </button>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="flex justify-between items-center mt-2 text-black text-base font-medium rounded-b-[16px] border-t border-gray-300 pt-2">
         <div className="pl-4">Publish</div>
         <div className="flex items-center">
           <input
+            id="appointment-time"
+            name="appointment-time"
             type="time"
             value={time}
             onChange={handleTimeChange}
             className="w-22 bg-[#7878801F] text-center py-1 px-[10px] rounded-[6px] border-none outline-none"
           />
-          <button
-            onClick={() => {
-              const [hours, minutes] = time.split(":").map(Number);
-              const updatedDate = new Date(selectedDate);
-              updatedDate.setHours(hours, minutes);
-              updateDateTime(updatedDate);
-              onClose();
-            }}
-            className="ml-2 bg-primary text-white px-4 py-1 rounded-[40px] text-[15px]"
-          >
-            Done
-          </button>
         </div>
+      </div>
+      <div className="float-right mt-3">
+        <button
+          onClick={() => {
+            const [hours, minutes] = time.split(":").map(Number);
+            const updatedDate = new Date(selectedDate);
+            updatedDate.setHours(hours, minutes);
+            updateDateTime(updatedDate);
+            onScheduleDone();
+          }}
+          className="ml-2 bg-primary text-white px-4 py-1 rounded-[40px] text-[15px]"
+        >
+          Schedule
+        </button>
       </div>
     </div>
   );
