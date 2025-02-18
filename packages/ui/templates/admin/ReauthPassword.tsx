@@ -3,7 +3,7 @@ import {
   PASSWORD_RESET_PATH,
 } from "contexts/AdminAuthProvider";
 import { auth } from "fetchers/firebase/client";
-import { sendSignInLinkToEmail } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -41,7 +41,7 @@ const ReauthPassword = ({
       handleCodeInApp: true,
     };
     auth.languageCode = locale;
-    sendSignInLinkToEmail(
+    sendPasswordResetEmail(
       auth,
       getMailAddressOfPasswordAccount(),
       actionCodeSettings,
