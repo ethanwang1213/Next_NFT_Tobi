@@ -46,6 +46,7 @@ const AuthAction = () => {
     if (!params.lang) return;
 
     router.push(router.pathname, router.asPath, { locale: params.lang });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.lang]);
 
   useEffect(() => {
@@ -65,6 +66,7 @@ const AuthAction = () => {
       mode: getSingleValue(router.query.mode),
       lang: locale,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, router.query]);
 
   useEffect(() => {
@@ -102,7 +104,7 @@ const AuthAction = () => {
     } else {
       verifyEmail();
     }
-  }, [auth, params.mode, params.oobCode]);
+  }, [params.mode, params.oobCode]);
 
   const getSingleValue = (value: string | string[] | null) => {
     if (Array.isArray(value)) {
