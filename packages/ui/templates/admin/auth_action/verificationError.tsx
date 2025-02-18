@@ -1,14 +1,4 @@
-import { getMessages } from "admin/messages/messages";
-import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
-
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
-  return {
-    props: {
-      messages: await getMessages(locale),
-    },
-  };
-}
 
 const VerificationError = () => {
   const t = useTranslations("FirebaseAuthError");

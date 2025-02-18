@@ -106,26 +106,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合|
-      if (pathname === "/auth/auth_action") {
-        const mode = searchParams.get("mode");
-        const oobCode = searchParams.get("oobCode");
-        const apiKey = searchParams.get("apiKey");
-        const lang = searchParams.get("lang");
-
-        if (mode === "resetPassword" && oobCode) {
-          router.push(
-            `/${lang}/auth/password_reset?oobCode=${oobCode}&apiKey=${apiKey}`,
-          );
-        }
-        if (oobCode) {
-          router.push(
-            `/${lang}/auth/auth_action?oobCode=${oobCode}&mood=${mode}`,
-          );
-        }
-
-        return;
-      }
-
       if (firebaseUser && firebaseUser.email) {
         const profile = await fetchMyProfile().catch((error) => {
           console.error(error);
@@ -203,7 +183,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         if (pathname === "/authentication") {
           auth.signOut();
           return;
-        } else if (pathname === "/auth/password_reset") {
+        } else if (pathname === "/auth/auth_action") {
           return;
         } else if (pathname === "/auth/email_auth") {
           if (

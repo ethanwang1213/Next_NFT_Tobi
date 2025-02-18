@@ -1,21 +1,9 @@
-import { getMessages } from "admin/messages/messages";
-import { getAuth } from "firebase/auth";
-import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Button from "ui/atoms/Button";
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
-  return {
-    props: {
-      messages: await getMessages(locale),
-    },
-  };
-}
-
 const VerifyAndChangeEmail = ({ restoredEmail }) => {
   const t = useTranslations("Account");
-  const auth = getAuth();
 
   return (
     <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">

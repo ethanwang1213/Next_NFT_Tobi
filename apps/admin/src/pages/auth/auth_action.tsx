@@ -1,13 +1,20 @@
 import { getMessages } from "admin/messages/messages";
-import { applyActionCode, checkActionCode, getAuth } from "firebase/auth";
+import { auth } from "fetchers/firebase/client";
+import {
+  applyActionCode,
+  checkActionCode,
+  verifyPasswordResetCode,
+} from "firebase/auth";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { getNormalLocale, Locale } from "types/localeTypes";
 import Loading from "ui/atoms/Loading";
+import PasswordReset from "ui/templates/admin/auth_action/password_reset";
 import UpdateEmail from "ui/templates/admin/auth_action/updateEmail";
-import VerifyAndChangeEmail from "ui/templates/admin/auth_action/verifyAndChangeEmail";
 import VerificationError from "ui/templates/admin/auth_action/verificationError";
 import VerifiedEmail from "ui/templates/admin/auth_action/verified_email";
+import VerifyAndChangeEmail from "ui/templates/admin/auth_action/verifyAndChangeEmail";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -17,50 +24,94 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
+type QueryParams = {
+  oobCode: string | null;
+  mode: string | null;
+  lang: Locale | null;
+};
+
 const AuthAction = () => {
-  const auth = getAuth();
   const router = useRouter();
-  const { oobCode, mode, lang, apiKey } = router.query;
   const [error, setError] = useState(false);
   const [verified, setVerified] = useState(false);
   const [loading, setLoading] = useState(true);
   const [restoredEmail, setRestoredEmail] = useState<string | null>(null);
+  const [params, setParams] = useState<QueryParams>({
+    oobCode: null,
+    mode: null,
+    lang: null,
+  });
+
   useEffect(() => {
-    if (auth) {
-      const verifyEmail = async () => {
-        if (mode === "verifyEmail" && oobCode) {
-          try {
-            await applyActionCode(auth, oobCode as string);
-            await auth.currentUser?.reload();
-            setVerified(true);
-          } catch {
-            setError(true);
-          } finally {
-            setLoading(false);
-          }
-        }
-        if (
-          mode === "verifyAndChangeEmail" ||
-          (mode === "recoverEmail" && oobCode)
+    if (!params.lang) return;
+
+    router.push(router.pathname, router.asPath, { locale: params.lang });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.lang]);
+
+  useEffect(() => {
+    if (!router.isReady || params.oobCode) {
+      return;
+    }
+
+    if (!router.query.oobCode) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
+
+    const locale = getNormalLocale(getSingleValue(router.query.lang));
+    setParams({
+      oobCode: getSingleValue(router.query.oobCode),
+      mode: getSingleValue(router.query.mode),
+      lang: locale,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    const verifyEmail = async () => {
+      try {
+        if (params.mode === "resetPassword") {
+          const email = await verifyPasswordResetCode(auth, params.oobCode);
+          setRestoredEmail(email);
+          setVerified(true);
+        } else if (params.mode === "verifyEmail") {
+          await applyActionCode(auth, params.oobCode);
+          await auth.currentUser?.reload();
+          setVerified(true);
+        } else if (
+          params.mode === "verifyAndChangeEmail" ||
+          params.mode === "recoverEmail"
         ) {
-          try {
-            const actionCodeInfo = await checkActionCode(
-              auth,
-              oobCode as string,
-            );
-            setRestoredEmail(actionCodeInfo.data.email);
-            await applyActionCode(auth, oobCode as string);
-            setVerified(true);
-          } catch {
-            setError(true);
-          } finally {
-            setLoading(false);
-          }
+          const actionCodeInfo = await checkActionCode(auth, params.oobCode);
+          setRestoredEmail(actionCodeInfo.data.email);
+          await applyActionCode(auth, params.oobCode);
+          setVerified(true);
+        } else {
+          setError(true);
         }
-      };
+      } catch (error) {
+        console.error(error);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!params.oobCode) {
+      return;
+    } else {
       verifyEmail();
     }
-  }, [auth, mode, oobCode]);
+  }, [params.mode, params.oobCode]);
+
+  const getSingleValue = (value: string | string[] | null) => {
+    if (Array.isArray(value)) {
+      return value[0];
+    }
+    return value;
+  };
 
   if (loading) {
     return (
@@ -69,19 +120,25 @@ const AuthAction = () => {
       </div>
     );
   }
+
   if (error) return <VerificationError />;
-  if (mode === "verifyEmail" && oobCode && verified) return <VerifiedEmail />;
-  if (mode === "recoverEmail" && oobCode && verified)
-    return (
-      <UpdateEmail
-        restoredEmail={restoredEmail}
-        oobCode={oobCode}
-        lang={lang}
-        apiKey={apiKey}
-      />
-    );
-  if (mode === "verifyAndChangeEmail" && oobCode && verified) {
-    return <VerifyAndChangeEmail restoredEmail={restoredEmail} />;
+
+  if (verified) {
+    if (params.mode === "resetPassword") {
+      return <PasswordReset email={restoredEmail} oobCode={params.oobCode} />;
+    } else if (params.mode === "verifyEmail") {
+      return <VerifiedEmail />;
+    } else if (params.mode === "recoverEmail") {
+      return (
+        <UpdateEmail
+          email={restoredEmail}
+          oobCode={params.oobCode}
+          locale={params.lang}
+        />
+      );
+    } else if (params.mode === "verifyAndChangeEmail") {
+      return <VerifyAndChangeEmail restoredEmail={restoredEmail} />;
+    }
   }
   return <VerificationError />;
 };
