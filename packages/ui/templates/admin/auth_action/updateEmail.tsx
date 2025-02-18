@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import { Locale } from "types/localeTypes";
+import { getPathWithLocale, Locale } from "types/localeTypes";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import Loading from "ui/atoms/Loading";
 import CheckEmail from "./checkEmail";
@@ -23,11 +23,16 @@ const UpdateEmail = ({
   const [authError, setAuthError] = useState<ErrorMessage | null>(null);
 
   const sendEmailForPasswordReset = async () => {
+    const newPath = getPathWithLocale(locale, "/auth/authentication");
+    const actionCodeSettings = {
+      url: `${window.location.origin}/${newPath}`,
+      handleCodeInApp: true,
+    };
     auth.languageCode = locale;
     setAuthError(null);
     setSendingEmail(true);
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
       setCheck(true);
     } catch (error) {
       console.error(error);
