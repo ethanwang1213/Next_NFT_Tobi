@@ -99,7 +99,7 @@ const Authentication = () => {
     if (!data) {
       return;
     }
-
+    setIsEmailLoading(true);
     const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
     const usedPasswordAuthenticationAlready = signInMethods.includes(
       EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
@@ -119,7 +119,7 @@ const Authentication = () => {
     if (!data) {
       return;
     }
-
+    setIsEmailLoading(true);
     const mailLinkMethod = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
     const passwordMethod = EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD;
     const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
@@ -134,6 +134,7 @@ const Authentication = () => {
     } else {
       setAuthState(AuthStates.SignInWithEmailAndPassword);
     }
+    setIsEmailLoading(false);
   };
 
   const hasSnsAccount = (signInMethods: string[]) => {
