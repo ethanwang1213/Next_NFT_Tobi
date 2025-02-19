@@ -16,9 +16,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   initialDateTime,
 }) => {
   const timeZone = "Asia/Tokyo";
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    toZonedTime(initialDateTime, timeZone),
-  );
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDateTime);
   const getCurrentTokyoTimePlusTwoHours = () => {
     const now = new Date();
     now.setHours(now.getHours() + 2);
@@ -50,10 +48,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     };
   }, [onClose]);
 
-  useEffect(() => {
-    const zonedDate = toZonedTime(initialDateTime, timeZone);
-    setSelectedDate(zonedDate);
-  }, [initialDateTime]);
 
   const handleDateChange = (day: number) => {
     const newDate = new Date(
@@ -148,7 +142,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 key={index}
                 className="flex items-center justify-center w-[44px] h-[44px]"
               >
-                {day ? (
+                {day && 
                   <button
                     onClick={() => !isPastDay && handleDateChange(day)}
                     className={`flex items-center border-none p-6 cursor-pointer w-[44px] h-[44px] rounded-full justify-center ${
@@ -162,7 +156,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                   >
                     {day}
                   </button>
-                ) : null}
+                }
               </div>
             );
           })}

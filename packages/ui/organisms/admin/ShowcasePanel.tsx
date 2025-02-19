@@ -37,7 +37,7 @@ type ShowcaseComponentProps = {
 
 const ShowcaseComponent = (props: ShowcaseComponentProps) => {
   const [status, setStatus] = useState(props.status);
-  const [prevstatus, setPrevStatus] = useState(ShowcaseStatus.Private);
+  const [prevStatus, setPrevStatus] = useState(ShowcaseStatus.Private);
   const [title, setTitle] = useState(props.title);
   const [description, setDescription] = useState(props.description);
   const [scheduleTime, setScheduleTime] = useState(
@@ -163,7 +163,6 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       { scheduleTime: scheduleTimeJST, status: 2 },
       [],
     );
-    console.log('scheduleTimeJST: ', scheduleTimeJST);
 
     if (jsonData) {
       setScheduleTimeChanged(false);
@@ -182,7 +181,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
-    setPrevStatus(status)
+    setPrevStatus(status);
   };
 
   const getStatusLabel = () => {
@@ -197,9 +196,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         return "";
     }
   };
-  const handleClose = (done:boolean) => {
+  const handleClose = (done: boolean) => {
     setDatePickerVisible(false);
-    done ? changeStatus(ShowcaseStatus.ScheduledPublic) : changeStatus(prevstatus)
+    done
+      ? changeStatus(ShowcaseStatus.ScheduledPublic)
+      : changeStatus(prevStatus);
   };
 
   return (
@@ -230,17 +231,17 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
             {/* CustomDatePicker */}
             <div className="absolute fixed inset-0 z-50 flex items-center justify-center">
-            <CustomDatePicker
+              <CustomDatePicker
                 onDateTimeChange={(date) => {
                   setScheduleTime(date);
                   setScheduleTimeChanged(true);
                 }}
                 onScheduleDone={() => {
                   changeScheduleTime();
-                  handleClose(true)
+                  handleClose(true);
                 }}
                 onClose={() => {
-                handleClose(false)
+                  handleClose(false);
                 }}
                 initialDateTime={scheduleTime}
               />
@@ -267,7 +268,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         {status === ShowcaseStatus.ScheduledPublic && (
           <div className="flex justify-center items-center cursor-pointer mt-6">
             <div
-              className="flex gap-2 z-20 text-primary text-[17px] leading-4 font-normal"
+              className="flex gap-2 z-10 text-primary text-[17px] leading-4 font-normal"
               onClick={() => statusChangeHandler(2)}
             >
               <span className="bg-base-white rounded-[6px] h-9 flex items-center px-3">
@@ -331,7 +332,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
           </div>
 
           {isMenuOpen && (
-            <div className="absolute left-0 top-10 z-10">
+            <div className="absolute left-0 top-10 z-50">
               <ShowcaseEditMenu
                 clickHandler={statusChangeHandler}
                 status={status}
