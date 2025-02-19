@@ -163,7 +163,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       { scheduleTime: scheduleTimeJST, status: 2 },
       [],
     );
-    console.log('scheduleTimeJST: ', scheduleTimeJST);
+    console.log("scheduleTimeJST: ", scheduleTimeJST);
 
     if (jsonData) {
       setScheduleTimeChanged(false);
@@ -182,7 +182,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
-    setPrevStatus(status)
+    setPrevStatus(status);
   };
 
   const getStatusLabel = () => {
@@ -197,9 +197,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         return "";
     }
   };
-  const handleClose = (done:boolean) => {
+  const handleClose = (done: boolean) => {
     setDatePickerVisible(false);
-    done ? changeStatus(ShowcaseStatus.ScheduledPublic) : changeStatus(prevstatus)
+    done
+      ? changeStatus(ShowcaseStatus.ScheduledPublic)
+      : changeStatus(prevstatus);
   };
 
   return (
@@ -230,17 +232,17 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
             {/* CustomDatePicker */}
             <div className="absolute fixed inset-0 z-50 flex items-center justify-center">
-            <CustomDatePicker
+              <CustomDatePicker
                 onDateTimeChange={(date) => {
                   setScheduleTime(date);
                   setScheduleTimeChanged(true);
                 }}
                 onScheduleDone={() => {
                   changeScheduleTime();
-                  handleClose(true)
+                  handleClose(true);
                 }}
                 onClose={() => {
-                handleClose(false)
+                  handleClose(false);
                 }}
                 initialDateTime={scheduleTime}
               />
