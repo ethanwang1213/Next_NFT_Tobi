@@ -22,13 +22,13 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     now.setHours(now.getHours() + 2);
 
     if (now.getDate() !== new Date().getDate()) {
-       const newDate = new Date(selectedDate);
-       newDate.setDate(selectedDate.getDate() + 1);
-       setSelectedDate(newDate);
+      const newDate = new Date(selectedDate);
+      newDate.setDate(selectedDate.getDate() + 1);
+      setSelectedDate(newDate);
     }
     return tzFormat(toZonedTime(now, timeZone), "HH:mm", { timeZone });
   };
-  const [time, setTime] = useState<string>( getCurrentTokyoTimePlusTwoHours() );
+  const [time, setTime] = useState<string>(getCurrentTokyoTimePlusTwoHours());
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
