@@ -74,7 +74,7 @@ const Contents = ({ children }: Props) => {
 
   if (isVerifiedActionPage) {
     return (
-      <div className="h-screen w-screen flex justify-center items-center bg-gray-100">
+      <div className="h-screen w-screen flex justify-center items-center">
         <div className="flex flex-col w-full h-full">
           <AuthAction />
         </div>

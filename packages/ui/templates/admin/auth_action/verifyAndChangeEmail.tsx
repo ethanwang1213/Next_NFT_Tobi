@@ -32,7 +32,7 @@ const VerifyAndChangeEmail = ({ restoredEmail }) => {
               text-base-white text-[16px] md:text-[16px] sm:text-[9px] leading-3 font-normal hover:bg-primary hover:border-primary"
             onClick={() => (window.location.href = "/admin/authentication")}
           >
-            {t("continueBtn")}
+            {t("ContinueButton")}
           </Button>
         </div>
         <div className="flex justify-center mt-[153px]">
