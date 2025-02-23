@@ -188,8 +188,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         );
 
         if (currentPath === "/authentication") {
-          auth.signOut();
-          return;
+          if (!firebaseUser.emailVerified) {
+            return;
+          }
         } else if (currentPath === "/auth/auth_action") {
           return;
         } else if (currentPath === "/auth/email_auth") {
