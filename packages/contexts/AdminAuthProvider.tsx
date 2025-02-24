@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import React, {
   createContext,
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [currentPath, setCurrentPath] = useState(pathname);
 
   const unrestrictedPaths = useMemo(
     () => [
@@ -84,15 +84,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }, [error]);
 
   useEffect(() => {
-    if (!pathname) {
+    setCurrentPath(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!currentPath) {
       return;
     }
 
     // Enable navigation to VERIFIED_EMAIL_PATH after logging in.
-    if (VERIFIED_EMAIL_PATH.endsWith(pathname) && !user) {
+    if (VERIFIED_EMAIL_PATH.endsWith(currentPath) && !user) {
       setShouldRedirectToVerifiedEmailPath(true);
     } else if (
-      !VERIFIED_EMAIL_PATH.endsWith(pathname) &&
+      !VERIFIED_EMAIL_PATH.endsWith(currentPath) &&
       user &&
       shouldRedirectToVerifiedEmailPath
     ) {
@@ -117,7 +121,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         }
 
         if (!firebaseUser.emailVerified) {
-          if (unrestrictedPaths.includes(pathname)) {
+          if (unrestrictedPaths.includes(currentPath)) {
             return;
           } else {
             await auth.signOut();
@@ -162,13 +166,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "/auth/email_auth",
             "/auth/sns_auth",
           ];
-          if (inaccessiblePaths.includes(pathname)) {
+          if (inaccessiblePaths.includes(currentPath)) {
             router.push("/");
-          } else if (hasBusinessAccount === "exist" && isApplyPage(pathname)) {
+          } else if (
+            hasBusinessAccount === "exist" &&
+            isApplyPage(currentPath)
+          ) {
             router.push("/");
           } else if (
             hasBusinessAccount !== "exist" &&
-            !isPageForNonBusinessAccount(pathname)
+            !isPageForNonBusinessAccount(currentPath)
           ) {
             router.push("/apply");
           }
@@ -180,12 +187,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           firebaseUser.email,
         );
 
-        if (pathname === "/authentication") {
-          auth.signOut();
+        if (currentPath === "/authentication") {
+          if (!firebaseUser.emailVerified) {
+            return;
+          }
+        } else if (currentPath === "/auth/auth_action") {
           return;
-        } else if (pathname === "/auth/auth_action") {
-          return;
-        } else if (pathname === "/auth/email_auth") {
+        } else if (currentPath === "/auth/email_auth") {
           if (
             !signInMethods.includes(
               EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
@@ -206,7 +214,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "not-exist",
           );
           return;
-        } else if (pathname === "/auth/sns_auth") {
+        } else if (currentPath === "/auth/sns_auth") {
           if (emailLinkOnly(signInMethods) || !firebaseUser.emailVerified) {
             await auth.signOut();
             return;
@@ -232,14 +240,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         router.push("/auth/sns_auth");
       } else {
         setUser(null);
-        if (!unrestrictedPaths.includes(pathname)) {
+        if (!unrestrictedPaths.includes(currentPath)) {
           router.push("/authentication");
         }
       }
     });
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unrestrictedPaths]);
+  }, [unrestrictedPaths, currentPath]);
 
   const emailLinkOnly = (signInMethods: string[]) => {
     return (

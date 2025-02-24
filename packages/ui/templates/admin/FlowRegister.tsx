@@ -61,7 +61,7 @@ const ProcessingStatus = ({
     <>
       <div
         className={
-          "flex flex-row items-end justify-center font-bold text-[32px]"
+          "flex flex-row items-end justify-center font-bold text-[20px] sm:text-[32px]"
         }
       >
         {t("CreatingFlowAccount")}
