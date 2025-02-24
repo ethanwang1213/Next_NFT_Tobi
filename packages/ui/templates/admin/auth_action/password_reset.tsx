@@ -67,15 +67,32 @@ const PasswordReset = ({
     );
   } else {
     return (
-      <FlowAgreementWithEmailAndPassword
-        title={t("PasswordReset")}
-        buttonText={l("Reset")}
-        email={email}
-        isSubmitting={updatingPassword}
-        pageType={PageType.PasswordReset}
-        authError={authError}
-        onClickSubmit={resetPassword}
-      />
+      <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
+        <div className="grow flex flex-col self-stretch">
+          <FlowAgreementWithEmailAndPassword
+            title={t("PasswordReset")}
+            buttonText={l("Reset")}
+            email={email}
+            isSubmitting={updatingPassword}
+            pageType={PageType.PasswordReset}
+            authError={authError}
+            onClickSubmit={resetPassword}
+          />
+          <div className="flex grow justify-center mt-20">
+            <div className="self-end font-normal text-[12px] text-base-content pb-6">
+              Tobiratory Inc. all rights reserved.
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row max-sm:hidden grow overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/admin/images/admin-logo.svg"
+            alt="Tobiratory Logo"
+            className="object-cover"
+          />
+        </div>
+      </div>
     );
   }
 };
