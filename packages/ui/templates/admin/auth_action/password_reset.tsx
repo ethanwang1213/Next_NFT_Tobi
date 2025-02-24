@@ -11,9 +11,11 @@ import FlowAgreementWithEmailAndPassword, {
 const PasswordReset = ({
   email,
   oobCode,
+  lang,
 }: {
   email: string;
   oobCode: string;
+  lang: string;
 }) => {
   const [updatingPassword, setUpdatingPassword] = useState(false);
   const [updatedPassword, setUpdatedPassword] = useState(false);
@@ -21,7 +23,7 @@ const PasswordReset = ({
   const t = useTranslations("LogInSignUp");
   const l = useTranslations("Label");
 
-  const resetPassword = async (email, password) => {
+  const resetPassword = async (password) => {
     if (!oobCode || !password) return;
     setUpdatingPassword(true);
     setAuthError(null);
@@ -54,7 +56,9 @@ const PasswordReset = ({
             className={
               "btn-link font-medium text-[14px] text-primary mt-[20px]"
             }
-            onClick={() => (window.location.href = "/auth/authentication")}
+            onClick={() =>
+              (window.location.href = `/admin/${lang}/authentication`)
+            }
           >
             {t("GoToAuthScreen")}
           </button>
