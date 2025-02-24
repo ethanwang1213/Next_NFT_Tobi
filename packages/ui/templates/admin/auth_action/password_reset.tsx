@@ -54,7 +54,7 @@ const PasswordReset = ({
             className={
               "btn-link font-medium text-[14px] text-primary mt-[20px]"
             }
-            onClick={() => (window.location.href = "/auth/authentication")}
+            onClick={() => (window.location.href = "/admin/authentication")}
           >
             {t("GoToAuthScreen")}
           </button>

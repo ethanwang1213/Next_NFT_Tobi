@@ -49,7 +49,7 @@
     "VerifiedNewEmailAddress": "新しいメールアドレスの確認をしました",
     "VerifiedEmailTitle": "メールアドレスが確認されました",
     "VerifiedEmailNote": "新しいアカウントでログインできます。",
-    "continueBtn": "再ログイン"
+    "ContinueButton": "続ける"
     },
   "AccountPassword": {
     "Name": "名前",
