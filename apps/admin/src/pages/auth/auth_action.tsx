@@ -125,7 +125,13 @@ const AuthAction = () => {
 
   if (verified) {
     if (params.mode === "resetPassword") {
-      return <PasswordReset email={restoredEmail} oobCode={params.oobCode} />;
+      return (
+        <PasswordReset
+          email={restoredEmail}
+          oobCode={params.oobCode}
+          lang={params.lang}
+        />
+      );
     } else if (params.mode === "verifyEmail") {
       return <VerifiedEmail />;
     } else if (params.mode === "recoverEmail") {

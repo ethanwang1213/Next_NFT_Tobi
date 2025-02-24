@@ -11,9 +11,11 @@ import FlowAgreementWithEmailAndPassword, {
 const PasswordReset = ({
   email,
   oobCode,
+  lang,
 }: {
   email: string;
   oobCode: string;
+  lang: string;
 }) => {
   const [updatingPassword, setUpdatingPassword] = useState(false);
   const [updatedPassword, setUpdatedPassword] = useState(false);
@@ -21,7 +23,7 @@ const PasswordReset = ({
   const t = useTranslations("LogInSignUp");
   const l = useTranslations("Label");
 
-  const resetPassword = async (email, password) => {
+  const resetPassword = async (password) => {
     if (!oobCode || !password) return;
     setUpdatingPassword(true);
     setAuthError(null);
@@ -54,7 +56,9 @@ const PasswordReset = ({
             className={
               "btn-link font-medium text-[14px] text-primary mt-[20px]"
             }
-            onClick={() => (window.location.href = "/admin/authentication")}
+            onClick={() =>
+              (window.location.href = `/admin/${lang}/authentication`)
+            }
           >
             {t("GoToAuthScreen")}
           </button>
@@ -63,15 +67,32 @@ const PasswordReset = ({
     );
   } else {
     return (
-      <FlowAgreementWithEmailAndPassword
-        title={t("PasswordReset")}
-        buttonText={l("Reset")}
-        email={email}
-        isSubmitting={updatingPassword}
-        pageType={PageType.PasswordReset}
-        authError={authError}
-        onClickSubmit={resetPassword}
-      />
+      <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
+        <div className="grow flex flex-col self-stretch">
+          <FlowAgreementWithEmailAndPassword
+            title={t("PasswordReset")}
+            buttonText={l("Reset")}
+            email={email}
+            isSubmitting={updatingPassword}
+            pageType={PageType.PasswordReset}
+            authError={authError}
+            onClickSubmit={resetPassword}
+          />
+          <div className="flex grow justify-center mt-20">
+            <div className="self-end font-normal text-[12px] text-base-content pb-6">
+              Tobiratory Inc. all rights reserved.
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row max-sm:hidden grow overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/admin/images/admin-logo.svg"
+            alt="Tobiratory Logo"
+            className="object-cover"
+          />
+        </div>
+      </div>
     );
   }
 };

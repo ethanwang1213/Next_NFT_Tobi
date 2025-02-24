@@ -49,7 +49,7 @@
     "VerifiedNewEmailAddress": "Verified new email address",
     "VerifiedEmailTitle": "Your email has been verified",
     "VerifiedEmailNote": "You can now log in with your new account.",
-    "ContinueButton": "continue"
+    "continueButton": "CONTINUE"
   },
   "AccountPassword": {
     "Name": "Name",
