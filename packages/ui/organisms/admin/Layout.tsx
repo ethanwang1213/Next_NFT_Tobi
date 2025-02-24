@@ -74,8 +74,8 @@ const Contents = ({ children }: Props) => {
 
   if (isVerifiedActionPage) {
     return (
-      <div className="h-screen w-screen flex justify-center items-center bg-gray-100">
-        <div className="flex flex-col w-full h-full">
+      <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
+        <div className="grow flex flex-col self-stretch">
           <AuthAction />
         </div>
       </div>
@@ -106,7 +106,7 @@ const Contents = ({ children }: Props) => {
     <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
       <div className="grow flex flex-col self-stretch">
         {children}
-        <div className="flex grow justify-center">
+        <div className="flex grow justify-center mt-20">
           <div className="self-end font-normal text-[12px] text-base-content pb-6">
             Tobiratory Inc. all rights reserved.
           </div>

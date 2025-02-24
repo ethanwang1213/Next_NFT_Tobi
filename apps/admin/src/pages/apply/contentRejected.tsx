@@ -28,7 +28,7 @@ const ContentRejected = () => {
   }, []);
 
   return (
-    <div className="mt-10 px-20">
+    <div className="mt-10 px-8 md:px-20 ">
       <div className="py-9 px-8 bg-warning-300 mx-auto rounded-2xl font-sans">
         <div className="text-white border-l-4 border-white pl-4">
           <p className="text-[24px] font-semibold">
