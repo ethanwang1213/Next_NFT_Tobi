@@ -80,6 +80,8 @@ export const useWorkspaceUnityHook = ({
     placeNewSampleWithDrag,
     removeItem,
     updateIdValues,
+    setIsUndoable,
+    setIsRedoable,
     undoAction,
     redoAction,
     deleteAllActionHistory,
@@ -192,15 +194,17 @@ export const useWorkspaceUnityHook = ({
   );
 
   const removeSamplesByItemId = useCallback(
-    (itemIdList: number[]) => {
+    (itemIdList: number[], shouldClearActionHistory: boolean = true) => {
       const list = itemIdList.map((itemId) => ({
         itemType: ItemType.Sample,
         itemId,
       }));
       postMessageToUnity(
         "RemoveItemsMessageReceiver",
-        JSON.stringify({ itemRefList: list }),
+        JSON.stringify({ itemRefList: list, shouldClearActionHistory }),
       );
+      setIsUndoable(false);
+      setIsRedoable(false);
     },
     [postMessageToUnity],
   );

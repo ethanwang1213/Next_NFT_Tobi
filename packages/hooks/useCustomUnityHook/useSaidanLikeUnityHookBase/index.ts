@@ -85,6 +85,8 @@ export const useSaidanLikeUnityHookBase = ({
   const {
     isUndoable,
     isRedoable,
+    setIsUndoable,
+    setIsRedoable,
     undoAction,
     redoAction,
     deleteAllActionHistory,
@@ -362,6 +364,8 @@ export const useSaidanLikeUnityHookBase = ({
     placeNewNftWithDrag,
     removeItem,
     updateIdValues,
+    setIsUndoable,
+    setIsRedoable,
     undoAction,
     redoAction,
     deleteAllActionHistory,
