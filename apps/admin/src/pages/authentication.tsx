@@ -64,19 +64,21 @@ const Authentication = () => {
   useEffect(() => {
     if (user && !hasRedirected.current) {
       hasRedirected.current = true;
-      if (user.hasBusinessAccount === "exist") {
-        router.push("/items");
-      } else if (
-        user.hasBusinessAccount === "reported" ||
-        user.hasBusinessAccount === "freezed"
-      ) {
-        router.push("/apply/contentRepoted");
-      } else if (user.hasBusinessAccount === "not-approved") {
-        router.push("/apply/contentApproval");
-      } else if (user.hasBusinessAccount === "rejected") {
-        router.push("/apply/contentRejected");
-      } else {
-        router.push("/apply");
+      if (user.hasFlowAccount) {
+        if (user.hasBusinessAccount === "exist") {
+          router.push("/items");
+        } else if (
+          user.hasBusinessAccount === "reported" ||
+          user.hasBusinessAccount === "freezed"
+        ) {
+          router.push("/apply/contentRepoted");
+        } else if (user.hasBusinessAccount === "not-approved") {
+          router.push("/apply/contentApproval");
+        } else if (user.hasBusinessAccount === "rejected") {
+          router.push("/apply/contentRejected");
+        } else {
+          router.push("/apply");
+        }
       }
     }
   }, [user, router]);
