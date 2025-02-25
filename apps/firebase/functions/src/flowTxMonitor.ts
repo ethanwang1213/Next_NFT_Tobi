@@ -12,6 +12,10 @@ import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
 import {digitalItemStatus, giftStatus, mintStatus, notificationBatchStatus} from "./native/utils";
+import {
+  createFlowAccountCreationMail,
+} from "./mail_template/flow_account_creation/flow_account_creation";
+import {sendEmail} from "./lib/mail";
 
 fcl.config({
   "flow.network": process.env.FLOW_NETWORK ?? "FLOW_NETWORK",
@@ -37,8 +41,13 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
     try {
       const address = await fetchAndUpdateFlowAddress(flowAccounts.docs[0].ref, flowJobId);
       await flowJobDocRef.update({status: "done", updatedAt: new Date()});
-      if (params.fcmToken && address) {
-        pushToDevice(params.fcmToken, undefined, {status: "success", body: JSON.stringify({type: "createFlowAccount", address})});
+      if (address) {
+        if (params.fcmToken) {
+          pushToDevice(params.fcmToken, undefined, {status: "success", body: JSON.stringify({type: "createFlowAccount", address})});
+        }
+        if (params.email) {
+          await sendAccountCreationEmail(params.email, params.name, params.locale);
+        }
       }
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
@@ -589,4 +598,9 @@ const upsertFlowAccountRecord = async (
       flow_job_id: flowJobId,
     },
   });
+};
+
+const sendAccountCreationEmail = async (email: string, name?: string, locale?: string) => {
+  const mailData = createFlowAccountCreationMail(name, locale);
+  await sendEmail(email, mailData.subject, mailData.body);
 };
