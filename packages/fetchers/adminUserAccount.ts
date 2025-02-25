@@ -1,5 +1,5 @@
 import { auth } from "fetchers/firebase/client";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { ApiProfileData } from "types/adminTypes";
 
@@ -26,12 +26,13 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations();
+  const locale = useLocale();
 
   const register = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await registerToTobiratoryAndFlowAccount();
+      const res = await registerToTobiratoryAndFlowAccount(locale);
       if (res.ok) {
         const resData = await res.json();
         if (resData.data.flow?.flowAddress) {
@@ -67,13 +68,15 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
   return [register, response, loading, error] as const;
 };
 
-const registerToTobiratoryAndFlowAccount = async () => {
+const registerToTobiratoryAndFlowAccount = async (locale: string) => {
   const idToken = await auth.currentUser.getIdToken(true);
+  const data = { locale };
   return await fetch(`/backend/api/functions/native/signup`, {
     method: "POST",
     headers: {
       Authorization: idToken,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(data),
   });
 };
