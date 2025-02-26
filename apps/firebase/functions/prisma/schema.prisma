@@ -59,6 +59,8 @@ model flow_accounts {
     flow_address      String?  @db.VarChar(255)
     public_key        String?  @db.VarChar(255)
     tx_id             String?  @db.VarChar(255)
+    tx_retry_count    Int      @default(0)
+    status            Int      @default(0)
     flow_job_id       String?  @db.VarChar(255)
     is_deleted        Boolean  @default(false)
     updated_date_time DateTime @default(now()) @db.Timestamp(6)
@@ -198,6 +200,7 @@ model digital_items {
     nfts              digital_item_nfts[]
     sales             sales[]
     flow_item_id      Int?
+    tx_retry_count    Int                       @default(0)
     tx_id             String?                   @db.VarChar(255)
     metadata_status   Int
     minted_count      Int                       @default(0)
@@ -262,6 +265,8 @@ model digital_item_nfts {
     metadata              String?              @db.Text
     mint_status           Int                  @default(0)
     gift_status           Int                  @default(0)
+    mint_tx_retry_count   Int                  @default(0)
+    gift_tx_retry_count   Int                  @default(0)
     mint_tx_id            String?              @db.VarChar(255)
     gift_tx_id            String?              @db.VarChar(255)
     notification_batch_id Int?
