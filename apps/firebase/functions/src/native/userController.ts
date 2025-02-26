@@ -679,7 +679,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
             data: {...contentData,
               is_approved: null,
               license: {
-                update: license,
+                upsert: license,
               },
             },
           });
