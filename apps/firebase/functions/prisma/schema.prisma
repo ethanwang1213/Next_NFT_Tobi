@@ -16,7 +16,7 @@ model accounts {
     sns                     String?             @db.VarChar(255)
     icon_url                String?             @db.VarChar(255)
     about_me                String?             @db.VarChar(255)
-    social_links            String[]            @default([]) @db.VarChar(255)
+    social_links            String[]            @default(["", "", "", "", "", ""]) @db.VarChar(255)
     gender                  String?             @db.VarChar(255)
     birth                   String?             @db.VarChar(255)
     gift_permission         Boolean             @default(false)
@@ -74,8 +74,8 @@ model saidans {
     saidans_template  saidans_template   @relation(fields: [template_id], references: [id])
     template_id       Int
     texture_type      Int                @default(2)
-    thumbnail_image   String             @db.VarChar(255)
-    last_point_thumb  String?            @db.VarChar(255)
+    thumbnail_image   String             @db.Text
+    last_point_thumb  String?            @db.Text
     is_public         Boolean            @default(false)
     max_item_count    Int                @default(0)
     account           accounts?          @relation(fields: [account_uuid], references: [uuid])
@@ -145,7 +145,7 @@ model contents {
     reported_documents reported_documents[]
     license            content_license?
     license_data       String[]             @default([]) @db.VarChar(255)
-    is_approved        Boolean?             @default(false)
+    is_approved        Boolean?
     handle_msg         String?              @db.Text
     is_deleted         Boolean              @default(false)
     updated_date_time  DateTime             @default(now()) @db.Timestamp(6)
