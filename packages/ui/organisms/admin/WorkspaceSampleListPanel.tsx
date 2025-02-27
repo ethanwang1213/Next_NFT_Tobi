@@ -255,7 +255,9 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
       )}
       {selectState && (
         <span className="text-white text-xl font-normal text-center">
-          {t("SelectedItemCount", { count: selectedItems.length })}
+          {selectedItems.length === 1
+            ? t("SelectedItemCount", { count: selectedItems.length })
+            : t("SelectedItemsCount", { count: selectedItems.length })}
         </span>
       )}
       <DeleteConfirmDialog2
