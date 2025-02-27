@@ -333,6 +333,11 @@ const DigitalItemTable = (filters: {
               </tr>
             </thead>
             <tbody className="bg-white">
+              {!digitalItems && (
+                <div className="absolute left-0 top-3 w-full h-full flex justify-center items-center z-20">
+                  <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
+                </div>
+              )}
               {digitalItems?.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="text-center pt-28">

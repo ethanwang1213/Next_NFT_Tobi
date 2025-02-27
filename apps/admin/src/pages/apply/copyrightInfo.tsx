@@ -126,7 +126,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
         </label>
       </div>
       <div className={"md:flex flex-row justify-between md:mb-[50px] mb-1"}>
-        <div className="flex flex-col md:text-nowrap">
+        <div className="flex flex-col">
           <div className="mb-4 flex flex-row items-center sm:justify-start justify-between">
             <p className="md:w-auto text-base sm:mr-8">
               {t("CopyrightLicenseInfo")}
@@ -147,7 +147,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             </span>
           </div>
         </div>
-        <div className={"flex flex-col w-full pl-[10px]"}>
+        <div className={"flex flex-col max-w-[400px] pl-[10px]"}>
           <FileUploadButtons
             names={fileNames}
             refs={fileInputRefs}
@@ -296,7 +296,7 @@ const FileUploadButton = ({
   };
 
   return (
-    <div className="flex flex-row items-center md:mb-6 mb-4">
+    <div className="flex flex-row justify-between items-center md:mb-6 mb-4">
       <input
         className="hidden"
         type="file"
@@ -305,7 +305,7 @@ const FileUploadButton = ({
           handleChange(index, false, e);
         }}
       />
-      <div className="md:flex-1 text-title-color text-left mr-[15px] h-[24px]">
+      <div className="md:flex-1 flex text-title-color text-left mr-[15px] h-[24px]">
         {name && (
           <>
             <span className={"align-baseline"}>{truncateString(name)}</span>

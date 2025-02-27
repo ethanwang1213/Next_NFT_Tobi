@@ -17,12 +17,12 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
-import { Tooltip } from "react-tooltip";
 import Button from "ui/atoms/Button";
 import { CustomUnity } from "ui/molecules/CustomUnity";
 import StyledTextArea from "ui/molecules/StyledTextArea";
 import StyledTextInput, { TextKind } from "ui/molecules/StyledTextInput";
 import CopyrightMultiSelect from "ui/organisms/admin/CopyrightMultiSelect";
+import InfoTooltip from "ui/organisms/admin/InfoTooltip";
 import MintConfirmDialog from "ui/organisms/admin/MintConfirmDialog";
 import MintConfirmDialog1 from "ui/organisms/admin/MintConfirmDialog1";
 import RadioButtonGroup from "ui/organisms/admin/RadioButtonGroup";
@@ -31,12 +31,12 @@ import ScheduleCalendar from "ui/organisms/admin/ScheduleCalendar";
 import StatusConfirmDialog from "ui/organisms/admin/StatusConfirmDialog";
 import StatusDropdownSelect from "ui/organisms/admin/StatusDropdownSelect";
 
+import { getMessages } from "admin/messages/messages";
 import {
   DigitalItemStatus,
   getDigitalItemStatusTitle,
   ScheduleItem,
 } from "ui/types/adminTypes";
-import {getMessages} from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -490,7 +490,9 @@ const Detail = () => {
       <div className="hidden">
         <CustomUnity isSceneOpen={isSceneOpen} />
       </div>
-      <div className={`ml-8 md:mr-[104px] h-12 flex items-center gap-4 min-w-[900px]`}>
+      <div
+        className={`ml-8 md:mr-[104px] h-12 flex items-center gap-4 min-w-[900px]`}
+      >
         <button onClick={handleLinkClick}>
           <NextImage
             src="/admin/images/icon/arrow_back.svg"
@@ -581,33 +583,10 @@ const Detail = () => {
                       fieldChangeHandler("price", value)
                     }
                   />
-                  <div className="flex">
-                    <NextImage
-                      src="/admin/images/info-icon-2.svg"
-                      width={16}
-                      height={16}
-                      alt="information"
-                      id="image_price_info"
-                      data-tooltip-id={`tooltip_price_info`}
-                      data-tooltip-content={b("OnlyZero")}
-                    />
-                    <Tooltip
-                      id={`tooltip_price_info`}
-                      data-tooltip-id={`image_price_info`}
-                      place="right"
-                      noArrow={false}
-                      className="px-4 py-2 text-center z-1"
-                      border="1px solid #717171"
-                      style={{
-                        whiteSpace: "pre-line",
-                        backgroundColor: "#FFFFFF",
-                        color: "#1779DE",
-                        fontSize: "12px",
-                        lineHeight: "18px",
-                        borderRadius: "4px",
-                      }}
-                    />
-                  </div>
+                  <InfoTooltip
+                    Tooltiptext={b("OnlyZero")}
+                    className="min-w-48"
+                  />
                   <StyledTextInput
                     className=""
                     placeholder={b("QuantityLimit")}
@@ -647,31 +626,9 @@ const Detail = () => {
                     >
                       {b("NoLimit")}
                     </label>
-                    <NextImage
-                      src="/admin/images/info-icon-2.svg"
-                      width={16}
-                      height={16}
-                      alt="information"
-                      id="image_quantity_info"
-                      data-tooltip-id={`tooltip_quantity_info`}
-                      data-tooltip-content={b("CheckBoxMaxLimit")}
-                    />
-                    <Tooltip
-                      id={`tooltip_quantity_info`}
-                      data-tooltip-id={`image_quantity_info`}
-                      place="right"
-                      noArrow={false}
-                      border="1px solid #717171"
-                      className="px-4 py-2 text-center z-1"
-                      style={{
-                        whiteSpace: "pre-line",
-                        backgroundColor: "#FFFFFF",
-                        color: "#1779DE",
-                        fontSize: "12px",
-                        lineHeight: "18px",
-
-                        borderRadius: "4px",
-                      }}
+                    <InfoTooltip
+                      Tooltiptext={b("CheckBoxMaxLimit")}
+                      className="w-[17vw] min-w-60"
                     />
                   </div>
                 </div>
@@ -689,30 +646,9 @@ const Detail = () => {
                       }}
                       readOnly={isReadOnly()}
                     />
-                    <NextImage
-                      src="/admin/images/info-icon-2.svg"
-                      width={16}
-                      height={16}
-                      alt="information"
-                      id="image_copyright_info"
-                      data-tooltip-id={`tooltip_copyright_info`}
-                      data-tooltip-content={b("ExampleCopyright")}
-                    />
-                    <Tooltip
-                      id={`tooltip_copyright_info`}
-                      data-tooltip-id={`image_copyright_info`}
-                      place="right"
-                      noArrow={false}
-                      border="1px solid #717171"
-                      className="px-4 py-2 text-center z-1"
-                      style={{
-                        whiteSpace: "pre-line",
-                        backgroundColor: "#FFFFFF",
-                        color: "#1779DE",
-                        fontSize: "12px",
-                        lineHeight: "18px",
-                        borderRadius: "4px",
-                      }}
+                    <InfoTooltip
+                      Tooltiptext={b("ExampleCopyright")}
+                      className="min-w-32"
                     />
                   </div>
                   <div className="flex items-start gap-6">

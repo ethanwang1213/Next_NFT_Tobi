@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import useRestfulAPI from "hooks/useRestfulAPI";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import React, {
   createContext,
@@ -32,7 +32,7 @@ type ReauthStatus = {
 
 // AuthContextのデータ型
 type ContextType = {
-  user?: User;
+  user: User | null;
   reauthStatus: ReauthStatus;
   signOut: () => Promise<void>;
   finishFlowAccountRegistration: () => void;
@@ -66,12 +66,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [currentPath, setCurrentPath] = useState(pathname);
 
   const unrestrictedPaths = useMemo(
     () => [
       "/authentication",
-      "/auth/password_reset",
       "/auth/auth_action",
       "/auth/confirmation_email_for_auth_page",
     ],
@@ -85,15 +84,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }, [error]);
 
   useEffect(() => {
-    if (!pathname) {
+    setCurrentPath(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!currentPath) {
       return;
     }
 
     // Enable navigation to VERIFIED_EMAIL_PATH after logging in.
-    if (VERIFIED_EMAIL_PATH.endsWith(pathname) && !user) {
+    if (VERIFIED_EMAIL_PATH.endsWith(currentPath) && !user) {
       setShouldRedirectToVerifiedEmailPath(true);
     } else if (
-      !VERIFIED_EMAIL_PATH.endsWith(pathname) &&
+      !VERIFIED_EMAIL_PATH.endsWith(currentPath) &&
       user &&
       shouldRedirectToVerifiedEmailPath
     ) {
@@ -107,30 +110,24 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合|
-      if (pathname === "/auth/auth_action") {
-        const mode = searchParams.get("mode");
-        const oobCode = searchParams.get("oobCode");
-        const apiKey = searchParams.get("apiKey");
-        const lang = searchParams.get("lang");
-
-        if (mode === "resetPassword" && oobCode) {
-          router.push(
-            `/${lang}/auth/password_reset?oobCode=${oobCode}&apiKey=${apiKey}`,
-          );
-        }
-        return;
-      }
-
-      if (firebaseUser) {
-        // If we use the router, we need to include it in the dependencies,
-        // and useEffect gets called multiple times. So, let's avoid using the router.
+      if (firebaseUser && firebaseUser.email) {
         const profile = await fetchMyProfile().catch((error) => {
           console.error(error);
           auth.signOut();
         });
-        if (!profile) {
+        if (!profile || !profile.data) {
           router.push("/authentication");
           return;
+        }
+
+        if (!firebaseUser.emailVerified) {
+          if (unrestrictedPaths.includes(currentPath)) {
+            return;
+          } else {
+            await auth.signOut();
+            router.push("/authentication");
+            return;
+          }
         }
 
         const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
@@ -169,13 +166,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "/auth/email_auth",
             "/auth/sns_auth",
           ];
-          if (inaccessiblePaths.includes(pathname)) {
+          if (inaccessiblePaths.includes(currentPath)) {
             router.push("/");
-          } else if (hasBusinessAccount === "exist" && isApplyPage(pathname)) {
+          } else if (
+            hasBusinessAccount === "exist" &&
+            isApplyPage(currentPath)
+          ) {
             router.push("/");
           } else if (
             hasBusinessAccount !== "exist" &&
-            !isPageForNonBusinessAccount(pathname)
+            !isPageForNonBusinessAccount(currentPath)
           ) {
             router.push("/apply");
           }
@@ -187,14 +187,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           firebaseUser.email,
         );
 
-        if (pathname === "/authentication") {
-          // new user sign up
+        if (currentPath === "/authentication") {
           if (!firebaseUser.emailVerified) {
             return;
           }
-        } else if (pathname === "/auth/password_reset") {
+        } else if (currentPath === "/auth/auth_action") {
           return;
-        } else if (pathname === "/auth/email_auth") {
+        } else if (currentPath === "/auth/email_auth") {
           if (
             !signInMethods.includes(
               EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
@@ -215,7 +214,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "not-exist",
           );
           return;
-        } else if (pathname === "/auth/sns_auth") {
+        } else if (currentPath === "/auth/sns_auth") {
           if (emailLinkOnly(signInMethods) || !firebaseUser.emailVerified) {
             await auth.signOut();
             return;
@@ -241,14 +240,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         router.push("/auth/sns_auth");
       } else {
         setUser(null);
-        if (!unrestrictedPaths.includes(pathname)) {
+        if (!unrestrictedPaths.includes(currentPath)) {
           router.push("/authentication");
         }
       }
     });
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unrestrictedPaths]);
+  }, [unrestrictedPaths, currentPath]);
 
   const emailLinkOnly = (signInMethods: string[]) => {
     return (
@@ -290,7 +289,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     if (!user) {
       return;
     }
-    setUser((prev) => ({ ...prev, email }));
+    setUser((prev) => ({ ...prev!, email }));
   };
 
   const signOut = async () => {
@@ -334,7 +333,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
     setUser((prev) => ({
-      ...prev,
+      ...prev!,
       uuid: profile.data.userId,
       hasFlowAccount: true,
     }));
@@ -350,14 +349,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    setUser((prev) => ({ ...prev, hasBusinessAccount: "not-approved" }));
+    setUser((prev) => ({ ...prev!, hasBusinessAccount: "not-approved" }));
   };
 
   if (user || unrestrictedPaths.includes(pathname)) {
     return (
       <AuthContext.Provider
         value={{
-          user,
+          user: user || null,
           reauthStatus,
           signOut,
           finishFlowAccountRegistration: finishFlowAccountRegistration,
@@ -406,7 +405,7 @@ export const hasPassword = async (email: string) => {
 };
 
 export const hasAccountWithProviderId = (providerId: ProviderId) => {
-  return auth.currentUser.providerData.some(
+  return auth?.currentUser?.providerData.some(
     (profile) => profile.providerId === providerId,
   );
 };
@@ -424,7 +423,7 @@ export const hasPasswordAccount = () => {
 };
 
 export const getMailAddressByProviderId = (providerId: ProviderId) => {
-  return auth.currentUser.providerData.find(
+  return auth?.currentUser?.providerData.find(
     (profile) => profile.providerId === providerId,
   )?.email;
 };

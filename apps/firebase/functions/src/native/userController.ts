@@ -3,7 +3,16 @@ import {FirebaseError, auth, firestore} from "firebase-admin";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {createFlowAccount} from "../createFlowAccount";
 import {UserRecord} from "firebase-functions/v1/auth";
-import {ContentData, convertBaseString, increaseTransactionAmount, isEmptyObject, isValidUserId, statusOfLimitTransaction, statusOfShowcase} from "./utils";
+import {
+  ContentData,
+  convertBaseString,
+  flowAccountStatus,
+  increaseTransactionAmount,
+  isEmptyObject,
+  isValidUserId,
+  statusOfLimitTransaction,
+  statusOfShowcase
+} from "./utils";
 import {prisma} from "../prisma";
 import {businessAccount, firstSaidanThumb, profiles} from "../lib/constants";
 
@@ -263,7 +272,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
       if (!accountData) {
         res.status(401).send({
           status: "error",
-          data: "Account does not exist!",
+          data: {
+            "type": "account-not-exists"
+          },
         });
         return;
       }
@@ -278,9 +289,48 @@ export const getMyProfile = async (req: Request, res: Response) => {
       if (!flowAccountData) {
         res.status(401).send({
           status: "error",
-          data: "Flow Account does not exist!",
+          data: {
+            "type": "flow-account-not-exists"
+          },
         });
         return;
+      }
+
+      if (!flowAccountData.flow_address) {
+        switch (flowAccountData.status) {
+          case flowAccountStatus.creating:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-address-creating"
+              },
+            });
+            return;
+          case flowAccountStatus.error:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-account-create-error"
+              },
+            });
+            return;
+          case flowAccountStatus.retrying:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-account-retrying"
+              },
+            });
+            return;
+          default:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-account-not-exists"
+              },
+            });
+            return;
+        }
       }
 
       const resData = {
@@ -682,7 +732,7 @@ export const businessSubmission = async (req: Request, res: Response) => {
             data: {...contentData,
               is_approved: null,
               license: {
-                update: license,
+                upsert: license,
               },
             },
           });

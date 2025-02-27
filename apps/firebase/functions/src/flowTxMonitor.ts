@@ -11,7 +11,14 @@ import {v4 as uuidv4} from "uuid";
 import * as fcl from "@onflow/fcl";
 import {pushToDevice} from "./appSendPushMessage";
 import {prisma} from "./prisma";
-import {digitalItemStatus, giftStatus, mintStatus, notificationBatchStatus} from "./native/utils";
+import {
+  digitalItemStatus,
+  flowAccountStatus,
+  giftStatus,
+  mintStatus,
+  notificationBatchStatus,
+  transactionMaxRetryCount
+} from "./native/utils";
 import {
   createFlowAccountCreationMail,
 } from "./mail_template/flow_account_creation/flow_account_creation";
@@ -51,6 +58,43 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
       }
     } catch (e) {
       if (e instanceof Error && e.message === "TX_FAILED") {
+        const flowAccount = await prisma.flow_accounts.findUnique({
+          where: {
+            account_uuid: params.tobiratoryAccountUuid,
+          }
+        });
+        if (flowAccount) {
+          if (flowAccount.tx_retry_count >= transactionMaxRetryCount) {
+            await prisma.flow_accounts.update({
+              where: {
+                account_uuid: params.tobiratoryAccountUuid,
+              },
+              data: {
+                status: flowAccountStatus.error,
+                tx_retry_count: 0,
+              }
+            });
+            await flowJobDocRef.update({status: "error", updatedAt: new Date()});
+            return;
+          }
+          await prisma.flow_accounts.update({
+            where: {
+              account_uuid: params.tobiratoryAccountUuid,
+            },
+            data: {
+              status: flowAccountStatus.retrying,
+              tx_retry_count: flowAccount.tx_retry_count + 1,
+            }
+          });
+        } else {
+          await prisma.flow_accounts.create({
+            data: {
+              account_uuid: params.tobiratoryAccountUuid,
+              status: flowAccountStatus.retrying,
+              tx_retry_count: 1,
+            }
+          });
+        }
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);
         console.log(`Message ${messageId} published.`);
         await flowJobDocRef.update({status: "retrying", updatedAt: new Date()});
@@ -589,6 +633,7 @@ const upsertFlowAccountRecord = async (
       flow_address: address,
       public_key: publicKey,
       tx_id: txId,
+      status: flowAccountStatus.success,
     },
     create: {
       account_uuid: tobiratoryAccountUuid,
@@ -596,6 +641,7 @@ const upsertFlowAccountRecord = async (
       public_key: publicKey,
       tx_id: txId,
       flow_job_id: flowJobId,
+      status: flowAccountStatus.success,
     },
   });
 };
