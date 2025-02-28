@@ -301,7 +301,7 @@ export default function Index() {
   const router = useRouter();
   const { data, dataRef, error, loading, setData, setLoading, postData } =
     useRestfulAPI(apiUrl);
-  const { setUser } = useAuth();
+  const { setUser, user } = useAuth();
 
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
@@ -348,7 +348,7 @@ export default function Index() {
         emailVerified: true,
         hasTobiratoryAccount: true,
         hasFlowAccount: true,
-        hasBusinessAccount: "exist",
+        hasBusinessAccount: user.hasBusinessAccount,
       };
 
       setUser(updatedUser);

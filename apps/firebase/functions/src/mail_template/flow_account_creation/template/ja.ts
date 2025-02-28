@@ -1,7 +1,7 @@
-export const flowAccountCreationSubjectJa =
+export const flowAccountCreationSubject =
     "Flowアカウントの作成が完了しました";
 
-export const flowAccountCreationBodyJa = `
+export const flowAccountCreationBody = `
 __NAME__ 様
 
 Tobiratoryをご利用いただき、ありがとうございます。

@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {FirebaseError} from "firebase-admin";
 import {prisma} from "../prisma";
+import {flowAccountStatus} from "./utils";
 
 export const getAccountById = async (req: Request, res: Response) => {
   const {uid} = req.params;
@@ -18,7 +19,9 @@ export const getAccountById = async (req: Request, res: Response) => {
       if (!accountData) {
         res.status(404).send({
           status: "error",
-          data: "not-exist",
+          data: {
+            "type": "account-not-exists"
+          },
         });
         return;
       }
@@ -33,9 +36,48 @@ export const getAccountById = async (req: Request, res: Response) => {
       if (!flowAccountData) {
         res.status(401).send({
           status: "error",
-          data: "Flow Account does not exist!",
+          data: {
+            "type": "flow-account-not-exists"
+          },
         });
         return;
+      }
+
+      if (!flowAccountData.flow_address) {
+        switch (flowAccountData.status) {
+          case flowAccountStatus.creating:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-address-creating"
+              },
+            });
+            return;
+          case flowAccountStatus.error:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-account-create-error"
+              },
+            });
+            return;
+          case flowAccountStatus.retrying:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-account-retrying"
+              },
+            });
+            return;
+          default:
+            res.status(401).send({
+              status: "error",
+              data: {
+                "type": "flow-account-not-exists"
+              },
+            });
+            return;
+        }
       }
 
       const resData = {

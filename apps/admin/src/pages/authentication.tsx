@@ -17,7 +17,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { ErrorMessage, ProviderId } from "types/adminTypes";
-import { getPathWithLocale, LocalePlaceholder } from "types/localeTypes";
+import {
+  getNormalLocale,
+  getPathWithLocale,
+  LocalePlaceholder
+} from "types/localeTypes";
 import FullScreenLoading from "ui/molecules/FullScreenLoading";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
 import EmailAndPasswordSignIn from "ui/templates/admin/EmailAndPasswordSignIn";
@@ -62,32 +66,40 @@ const Authentication = () => {
   }, []);
 
   useEffect(() => {
-    if (user && !hasRedirected.current) {
-      hasRedirected.current = true;
-      if (user.hasFlowAccount) {
-        if (user.hasBusinessAccount === "exist") {
-          router.push("/items");
-        } else if (
-          user.hasBusinessAccount === "reported" ||
-          user.hasBusinessAccount === "freezed"
-        ) {
-          router.push("/apply/contentRepoted");
-        } else if (user.hasBusinessAccount === "not-approved") {
-          router.push("/apply/contentApproval");
-        } else if (user.hasBusinessAccount === "rejected") {
-          router.push("/apply/contentRejected");
+    const checkEmailVerification = async () => {
+      if (auth.currentUser) {
+        await auth.currentUser.reload();
+        if (auth.currentUser.emailVerified) {
+          if (user && !hasRedirected.current) {
+            hasRedirected.current = true;
+            if (user.hasBusinessAccount === "exist") {
+              router.push("/items");
+            } else if (
+              user.hasBusinessAccount === "reported" ||
+              user.hasBusinessAccount === "freezed"
+            ) {
+              router.push("/apply/contentRepoted");
+            } else if (user.hasBusinessAccount === "not-approved") {
+              router.push("/apply/contentApproval");
+            } else if (user.hasBusinessAccount === "rejected") {
+              router.push("/apply/contentRejected");
+            }
+          }
         } else {
-          router.push("/apply");
+          setAuthState(AuthStates.EmailSent);
         }
       }
-    }
+    };
+
+    checkEmailVerification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, router]);
 
   const startMailSignUp = async (data: LoginFormType) => {
     if (!data) {
       return;
     }
-
+    setIsEmailLoading(true);
     const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
     const usedPasswordAuthenticationAlready = signInMethods.includes(
       EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
@@ -107,7 +119,7 @@ const Authentication = () => {
     if (!data) {
       return;
     }
-
+    setIsEmailLoading(true);
     const mailLinkMethod = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
     const passwordMethod = EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD;
     const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
@@ -122,6 +134,7 @@ const Authentication = () => {
     } else {
       setAuthState(AuthStates.SignInWithEmailAndPassword);
     }
+    setIsEmailLoading(false);
   };
 
   const hasSnsAccount = (signInMethods: string[]) => {
@@ -198,7 +211,7 @@ const Authentication = () => {
       url: `${window.location.origin}/${newPath}`,
       handleCodeInApp: true,
     };
-    auth.languageCode = locale;
+    auth.languageCode = getNormalLocale(locale);
     try {
       await sendEmailVerification(auth.currentUser, actionCodeSettings);
       setAuthState(AuthStates.EmailSent);
@@ -220,7 +233,7 @@ const Authentication = () => {
       url: `${window.location.origin}/${newPath}`,
       handleCodeInApp: true,
     };
-    auth.languageCode = locale;
+    auth.languageCode = getNormalLocale(locale);
     try {
       await sendPasswordResetEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem("emailForSignIn", email);

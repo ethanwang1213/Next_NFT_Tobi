@@ -18,7 +18,7 @@ const ContentApproval = () => {
   useAccountRedirect(auth, db);
 
   return (
-    <div className="mt-10 px-20">
+    <div className="mt-10 px-8 md:px-20">
       <div className="py-9 px-8 bg-primary mx-auto rounded-2xl font-sans">
         <div className="text-white border-l-4 border-white pl-4">
           <p className="text-2xl font-semibold">{t("UnderReview")}</p>

@@ -275,6 +275,7 @@ export const createSaidan = async (req: Request, res: Response) => {
         modelType: saidanTemplate.type,
         isPublic: saveData.is_public,
         favorite: favoriteValue.length!=0,
+        textureType: saveData.texture_type,
       };
       res.status(200).send({
         status: "success",

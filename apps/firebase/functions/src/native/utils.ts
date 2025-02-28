@@ -31,6 +31,15 @@ export const statusOfShowcase = {
   publicSchedule: 2,
 };
 
+export const transactionMaxRetryCount = 3;
+
+export const flowAccountStatus = {
+  creating: 0,
+  success: 1,
+  retrying: 2,
+  error: 3,
+}
+
 export const digitalItemStatus = {
   draft: 1,
   private: 2,

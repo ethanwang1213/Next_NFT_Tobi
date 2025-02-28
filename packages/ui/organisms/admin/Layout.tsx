@@ -1,3 +1,4 @@
+import AuthAction from "admin/src/pages/auth/auth_action";
 import {
   AuthProvider,
   isApplyPage,
@@ -62,11 +63,24 @@ const Contents = ({ children }: Props) => {
     "/authentication",
     "/auth/email_update",
     "/auth/password_reset",
+    "/auth/verified_email",
+    "/auth/auth_action",
     "/auth/password_update",
     "/auth/reauth_password",
     "/auth/reauth_sns",
     "/auth/confirmation_email_for_auth_page",
   ];
+  const isVerifiedActionPage = router.pathname === "/auth/auth_action";
+
+  if (isVerifiedActionPage) {
+    return (
+      <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
+        <div className="grow flex flex-col self-stretch">
+          <AuthAction />
+        </div>
+      </div>
+    );
+  }
 
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&
@@ -92,7 +106,7 @@ const Contents = ({ children }: Props) => {
     <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
       <div className="grow flex flex-col self-stretch">
         {children}
-        <div className="flex grow justify-center">
+        <div className="flex grow justify-center mt-20">
           <div className="self-end font-normal text-[12px] text-base-content pb-6">
             Tobiratory Inc. all rights reserved.
           </div>

@@ -20,8 +20,8 @@ const Row1 = ({
   return (
     <div className="sm:flex flex-row sm:py-4 sm:pl-6 py-3">
       <div
-        className={`h-12 ${
-          isJaLocale ? "w-[400px] min-w-[400px]" : "w-[480px] min-w-[480px]"
+        className={`${
+          isJaLocale ? "w-full max-w-[400px]" : "w-[480px] min-w-[480px]"
         }`}
       >
         <div className="flex-none flex flex-row items-center">
@@ -29,7 +29,7 @@ const Row1 = ({
           {optional ? <OptionMark /> : <RequireMark />}
         </div>
         {description ? (
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-start">
             <Image
               src="/admin/images/info-icon-2.svg"
               width={16}

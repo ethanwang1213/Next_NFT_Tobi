@@ -105,14 +105,14 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
         );
       } else {
         deleteAllActionHistory();
-        trackSampleMint(data.modelType);
+        trackSampleMint(data?.modelType);
         await getData(apiUrl);
         setData(digitalItem);
       }
       setMinting(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [fcmToken, digitalItem, data],
   );
 
   handleNftModelGeneratedRef.current = handleNftModelGenerated;

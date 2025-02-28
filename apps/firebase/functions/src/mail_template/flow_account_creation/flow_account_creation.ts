@@ -1,10 +1,10 @@
 import {
-  flowAccountCreationBodyEn,
-  flowAccountCreationSubjectEn,
+  flowAccountCreationBody as flowAccountCreationBodyEn,
+  flowAccountCreationSubject as flowAccountCreationSubjectEn,
 } from "./template/en";
 import {
-  flowAccountCreationBodyJa,
-  flowAccountCreationSubjectJa,
+  flowAccountCreationBody as flowAccountCreationBodyJa,
+  flowAccountCreationSubject as flowAccountCreationSubjectJa,
 } from "./template/ja";
 
 export const flowAccountCreationMail = {
