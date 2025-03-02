@@ -113,6 +113,7 @@ const Authentication = () => {
     } else {
       setAuthState(AuthStates.SignUpWithEmailAndPassword);
     }
+    setIsEmailLoading(false);
   };
 
   const startMailSignIn = async (data: LoginFormType) => {
