@@ -60,6 +60,10 @@ const Authentication = () => {
 
   useEffect(() => {
     if (auth.currentUser) {
+      if (!auth.currentUser.emailVerified) {
+        auth.signOut();
+        return;
+      }
       router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
