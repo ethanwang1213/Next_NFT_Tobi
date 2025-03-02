@@ -103,6 +103,11 @@ const Authentication = () => {
     if (!data) {
       return;
     }
+
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     setIsEmailLoading(true);
     const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
     const usedPasswordAuthenticationAlready = signInMethods.includes(
@@ -124,6 +129,11 @@ const Authentication = () => {
     if (!data) {
       return;
     }
+
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     setIsEmailLoading(true);
     const mailLinkMethod = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
     const passwordMethod = EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD;
@@ -189,6 +199,10 @@ const Authentication = () => {
   };
 
   const withGoogle = async () => {
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     const provider = new GoogleAuthProvider();
 
     try {
@@ -200,6 +214,10 @@ const Authentication = () => {
   };
 
   const withApple = async () => {
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     const provider = new OAuthProvider("apple.com");
 
     try {
