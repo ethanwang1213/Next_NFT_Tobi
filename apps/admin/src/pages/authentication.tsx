@@ -20,7 +20,7 @@ import { ErrorMessage, ProviderId } from "types/adminTypes";
 import {
   getNormalLocale,
   getPathWithLocale,
-  LocalePlaceholder
+  LocalePlaceholder,
 } from "types/localeTypes";
 import FullScreenLoading from "ui/molecules/FullScreenLoading";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
