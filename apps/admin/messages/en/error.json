@@ -7,8 +7,7 @@
     "title": "Unauthorized",
     "content": "Looks like you brought the wrong key. Try another one, purhaps?",
     "bottomTitle": "This could be caused by the following",
-    "list1": "Your username or password might not be correct",
-    "list2": "You need to log in to access this page"
+    "list": ["Your username or password might not be correct", "You need to log in to access this page"]
   },
   "error_403": {
     "status": "403",

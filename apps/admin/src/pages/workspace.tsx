@@ -719,6 +719,7 @@ export default function Index() {
               setShowListView(false);
               addButtonHandler();
             }}
+            setShowDetailView={setShowDetailView}
             selectHandler={sampleSelectHandler}
             deleteHandler={deleteSamplesHandler}
             dragHandler={sampleDragHandler}
