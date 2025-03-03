@@ -428,7 +428,7 @@ export default function Index() {
               className="rounded-full"
             />
             <button
-              className="text-[14px] bg-primary text-white font-normal rounded-lg px-3 py-[6px] w-[90px]"
+              className="text-[14px] bg-primary text-white font-normal rounded-lg px-1 py-[10px] w-[90px]"
               onClick={() => {
                 if (imageFileRef.current) {
                   imageFileRef.current.click();
