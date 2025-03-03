@@ -3,6 +3,7 @@
     "ItemTitle": "アイテムタイトル",
     "CreateNewItem": "新しいアイテムを作成",
     "SelectedItemCount": "{count} 個のアイテムを選択中",
+    "SelectedItemsCount": "{count} 個のアイテムを選択中",
     "Delete": "削除",
     "ItemGeneratorDescription": "オリジナルアイテムを簡単に作成できるジェネレーターです。お気に入りのデザインで、アクリルスタンドやポスター、メッセージカードなどが作成できます。直感的な操作で、あなただけのユニークなアイテムを作り上げましょう。",
     "ModelUploadWarning": "アップロードされた3Dモデルのサイズが大きいと、ユーザーエクスペリエンスに悪影響を与える可能性があります。",

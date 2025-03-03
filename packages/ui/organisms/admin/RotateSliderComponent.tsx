@@ -17,29 +17,38 @@ const RotateSliderComponent: React.FC<Props> = ({
   const [inputValue, setInputValue] = useState("0°");
 
   const inputValueChangeHandler = useCallback(
-    (value) => {
-      // Remove the degree sign and parse the number
-      let numericValue = parseInt(value.replace("°", ""), 10);
+    (value: string) => {
+      // Remove non-numeric characters except "-" and parse the number
+      let numericValue = parseInt(value.replace(/[^\d-]/g, ""), 10);
 
       if (!isNaN(numericValue)) {
-        if (numericValue > 180) numericValue = 180;
-        if (numericValue < -180) numericValue = -180;
+        numericValue = Math.max(-180, Math.min(180, numericValue));
         setRotate(180 - numericValue);
         setInputValue(`${numericValue}°`);
       } else {
-        setInputValue(value);
+        setInputValue(value === "" ? "" : "0°"); 
       }
     },
-    [setRotate],
+    [setRotate]
   );
 
   const sliderValueChangeHandler = useCallback(
-    (value) => {
+    (value: number) => {
       setInputValue(`${180 - value}°`);
       setRotate(value);
     },
-    [setRotate],
+    [setRotate]
   );
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      setInputValue((prev) => {
+        const newValue = prev.slice(0, -1); 
+        inputValueChangeHandler(newValue); 
+        return newValue;
+      });
+    }
+  };
 
   return (
     <div className={`flex flex-col items-center ${className}`}>
@@ -81,7 +90,7 @@ const RotateSliderComponent: React.FC<Props> = ({
         height={16}
         src="/admin/images/icon/rotate_right.svg"
         alt="rotate right"
-        className={`cursor-pointer mt-4`}
+        className="cursor-pointer mt-4"
         onClick={() => {
           setRotate(180);
           setInputValue("0°");
@@ -92,7 +101,8 @@ const RotateSliderComponent: React.FC<Props> = ({
         className="w-8 h-4 mt-2 rounded-[3px] border border-primary bg-[#D9F1FD] outline-none
           text-secondary text-[8px] text-center pl-1"
         value={inputValue}
-        onChange={(v) => inputValueChangeHandler(v.target.value)}
+        onKeyDown={handleKeyDown}
+        onChange={(e) => inputValueChangeHandler(e.target.value)}
       />
     </div>
   );

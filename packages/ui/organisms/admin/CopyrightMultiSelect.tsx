@@ -53,7 +53,8 @@ const CopyrightMultiSelect = ({
   }, [selectedItems, elements]);
 
   useEffect(() => {
-    setSelectedItems(initialSelectedItems);
+    const sortedItems = [...initialSelectedItems].sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+    setSelectedItems(sortedItems);
   }, [initialSelectedItems]);
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =

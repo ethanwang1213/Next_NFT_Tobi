@@ -41,6 +41,9 @@ const config = {
         },
         "3xl": ["32px", "48px"],
       },
+      fontFamily: {
+        mplus: ['"M PLUS 2"', 'sans-serif']
+      },
       height: {
         "screen-minus-56": "calc(100vh - 56px)",
         "screen-minus-170": "calc(100vh - 151px)",
