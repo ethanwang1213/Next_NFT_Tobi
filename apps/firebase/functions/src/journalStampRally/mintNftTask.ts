@@ -23,7 +23,7 @@ const mintNFT = async (
     onComplete?: () => void
 ) => {
   const txDetails = await sendMintJournalStampRallyNftTx(name, description);
-  console.log({txDetails});
+  console.log(JSON.stringify({txDetails}));
   const events = txDetails.events;
 
   let imageUrl = null;

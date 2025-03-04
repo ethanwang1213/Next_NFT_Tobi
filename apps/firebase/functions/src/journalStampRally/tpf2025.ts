@@ -71,7 +71,7 @@ exports.checkRewardTpf2025 = functions
 
       if (
         correctStampEntry === "TobirapolisFestival2025" &&
-      !isBefore(new Date("2025-03-02T00:00:00+09:00"))
+      !isBefore(new Date("2025-04-01T00:00:00+09:00"))
       ) {
         throw new functions.https.HttpsError("invalid-argument", "The keyword is expired.");
       }
