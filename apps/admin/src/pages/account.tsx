@@ -458,7 +458,7 @@ export default function Index() {
             </AccountFieldComponent>
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
-                className={`${valueClass} h-[118px] outline-none resize-none`}
+                className={"text-[20px] font-normal flex-1 overflow-hidden text-ellipsis h-[118px] outline-none resize-none"}
                 value={data?.aboutMe || ""}
                 placeholder={t("NotSet")}
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
