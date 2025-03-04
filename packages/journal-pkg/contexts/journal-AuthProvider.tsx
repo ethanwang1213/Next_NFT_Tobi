@@ -297,6 +297,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setUser((state) => {
         return { ...state, isStampTpfw2024Checked: true };
       });
+    } else if (mode === "TOBIRAPOLISFESTIVAL2025") {
+      setUser((state) => {
+        return { ...state, isStampTpf2025Checked: true };
+      });
     }
   };
 
