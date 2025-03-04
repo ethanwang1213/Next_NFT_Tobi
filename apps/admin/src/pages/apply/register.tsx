@@ -124,8 +124,6 @@ const Register = () => {
     },
   });
 
-  const [originalContentDeclaration, setOriginalContentDeclaration] =
-    useState(false);
 
   const [registerTcp, validateCopyrightFile, response, loading] =
     useTcpRegistration(setError);
@@ -308,8 +306,6 @@ const Register = () => {
   const isButtonDisabled = () => {
     if (switchValue === 2 && !checkCopyrightInfos()) {
       return true;
-    } else if (switchValue === 3 && !originalContentDeclaration) {
-      return true;
     }
     return false;
   };
@@ -358,8 +354,6 @@ const Register = () => {
               userInfo={userInfo}
               contentInfo={contentInfo}
               copyrightInfo={copyrightInfo}
-              originalContentDeclaration={originalContentDeclaration}
-              setOriginalContentDeclaration={setOriginalContentDeclaration}
             />
           )}
         </div>
@@ -377,7 +371,7 @@ const Register = () => {
             switchValue === 2
               ? t("Confirm")
               : switchValue === 3
-                ? t("Apply")
+                ? t("Submit")
                 : t("Next")
           }
           color={nextButtonColor()}
