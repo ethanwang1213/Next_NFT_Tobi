@@ -1,5 +1,5 @@
 import { getMessages } from "admin/messages/messages";
-import { useAuth } from "contexts/AdminAuthProvider";
+import { isFlowAccountProcessing, useAuth } from "contexts/AdminAuthProvider";
 import { useTobiratoryAndFlowAccountRegistration } from "fetchers/adminUserAccount";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
@@ -28,7 +28,7 @@ const SnsAuth = () => {
     } else if (user.hasFlowAccount) {
       router.push("/");
     } else if (
-      user.hasTobiratoryAccount &&
+      isFlowAccountProcessing(user.flowAccountStatus) &&
       !registering &&
       !response &&
       !error

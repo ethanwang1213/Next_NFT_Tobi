@@ -1,7 +1,7 @@
 import { auth } from "fetchers/firebase/client";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { ApiProfileData } from "types/adminTypes";
+import { ApiProfileData, FlowAccountStatus } from "types/adminTypes";
 
 export const fetchMyProfile = async () => {
   const idToken = await auth.currentUser.getIdToken();
@@ -49,9 +49,11 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
               setResponse(profile.data);
               setLoading(false);
               return;
+            } else if (profile.data?.type === FlowAccountStatus.Error) {
+              break;
             }
           }
-          setError(t("TCP.RegistrationFailed"));
+          setError(t("LogInSignUp.FailedMessageToCreateFlowAccount"));
         }
       } else {
         const resData = await res.text();

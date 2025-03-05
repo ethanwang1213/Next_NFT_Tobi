@@ -31,7 +31,9 @@
     "CreatingFlowAccount": "Flowアカウント作成中",
     "FlowAccountCreationNotice": "Flowアカウントの作成には時間がかかることがあります。",
     "FlowAccountCreated": "Flowアカウントを作成しました。",
-    "FailedToCreateFlowAccount": "Flowアカウントの作成に失敗しました。",
+    "FailedToCreateFlowAccount": "Flowアカウントの作成に失敗しました",
+    "FailedMessageToCreateFlowAccount": "Flowアカウントの作成中にエラーが発生しました。",
+    "FailedDescriptionToCreateFlowAccount": "ネットワーク接続を確認するか、<br></br>しばらく待ってから再試行してください。",
     "AccountCreationNotification": "アカウントが作成されると通知されます。",
     "ConfirmationEmailSent": "確認メールを送信しました！",
     "CheckEmail": "メールボックスをご確認ください。",
@@ -51,6 +53,7 @@
     "AccountVerification": "アカウントの本人確認",
     "PromptPassword": "パスワードを入力してください",
     "PasswordAccountExists": "すでにアカウントをお持ちのようです",
-    "SettingPasswordTitle": "パスワード設定"
+    "SettingPasswordTitle": "パスワード設定",
+    "LoginWithAnotherAccount": "別のアカウントでログインする"
   }
 }
