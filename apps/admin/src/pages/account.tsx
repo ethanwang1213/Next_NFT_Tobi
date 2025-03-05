@@ -448,17 +448,30 @@ export default function Index() {
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={t("UserID")}>
-              <input
-                type="text"
-                className={`${valueClass} outline-none`}
-                value={data?.userId ? `@${data.userId}` : ""}
-                placeholder={t("UserIdNoSpaces")}
-                onChange={(e) => fieldChangeHandler("userId", e.target.value)}
-              />
+              <div>
+                <div className="flex items-center">
+                  <span>@</span>
+                  <input
+                    type="text"
+                    className={`${valueClass} outline-none`}
+                    value={data?.userId || ""}
+                    onChange={(e) =>
+                      fieldChangeHandler("userId", e.target.value)
+                    }
+                  />
+                </div>
+                {(!data?.userId || data.userId.trim() === "") && (
+                  <p className="text-gray-500 text-xs mt-1">
+                    {t("UserIdNoSpaces")}
+                  </p>
+                )}
+              </div>
             </AccountFieldComponent>
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
-                className={"text-[20px] font-normal flex-1 overflow-hidden text-ellipsis h-[118px] outline-none resize-none"}
+                className={
+                  "text-[20px] font-normal flex-1 overflow-hidden text-ellipsis h-[118px] outline-none resize-none"
+                }
                 value={data?.aboutMe || ""}
                 placeholder={t("NotSet")}
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
