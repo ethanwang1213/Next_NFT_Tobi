@@ -455,6 +455,7 @@ export default function Index() {
                     type="text"
                     className={`${valueClass} outline-none`}
                     value={data?.userId || ""}
+                    placeholder="user_1234567890"
                     onChange={(e) =>
                       fieldChangeHandler("userId", e.target.value)
                     }
