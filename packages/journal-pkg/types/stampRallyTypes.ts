@@ -13,13 +13,15 @@ export type FormStatus =
 export type StampRallyEvents =
   | "TOBIRAPOLISFESTIVAL2023"
   | "TOBIRAMUSICFESTIVAL2024"
-  | "TOBIRAPOLISFIREWORKS2024";
+  | "TOBIRAPOLISFIREWORKS2024"
+  | "TOBIRAPOLISFESTIVAL2025";
 
 // mint状態データ変更メソッド用（全てoptionalじゃなく設定）
 export type MintStatusForSetMethod = {
   TOBIRAPOLISFESTIVAL2023: Tpf2023StampRallyData;
   TOBIRAMUSICFESTIVAL2024: Tmf2024StampRallyData;
   TOBIRAPOLISFIREWORKS2024: Tpfw2024StampRallyData;
+  TOBIRAPOLISFESTIVAL2025: Tpf2025StampRallyData;
 };
 
 // mint状態データ
@@ -44,7 +46,11 @@ export type StampRallyData<T extends string> = {
   [key in T]?: MintStatusType;
 };
 
-export type StampRallyEventType = "tpf2023" | "tmf2024" | "tpfw2024";
+export type StampRallyEventType =
+  | "tpf2023"
+  | "tmf2024"
+  | "tpfw2024"
+  | "tpf2025";
 
 ////////////////////////////////////
 /// TOBIRAPOLIS祭2023スタンプラリー ///
@@ -108,6 +114,26 @@ export const Tpfw2024StampMetadata: {
   },
   ReflectedInTheRiver: {
     name: "Reflected in the river",
+    description: "",
+  },
+};
+
+////////////////////////////////////
+/// TOBIRAPOLIS祭2025スタンプラリー ///
+////////////////////////////////////
+
+// TOBIRAPOLIS祭2025のスタンプラリーのスタンプタイプ
+export type Tpf2025StampType = "TobirapolisFestival2025";
+
+// TOBIRAPOLIS祭2025のmint状態データ
+export type Tpf2025StampRallyData = StampRallyData<Tpf2025StampType>;
+
+// TOBIRAPOLIS祭2025のNFT Metadata
+export const Tpf2025StampMetadata: {
+  [key in Tpf2025StampType]: { name: string; description: string };
+} = {
+  TobirapolisFestival2025: {
+    name: "TOBIRAPOLIS FESTIVAL2025",
     description: "",
   },
 };
