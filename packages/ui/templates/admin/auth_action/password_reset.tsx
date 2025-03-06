@@ -23,7 +23,7 @@ const PasswordReset = ({
   const t = useTranslations("LogInSignUp");
   const l = useTranslations("Label");
 
-  const resetPassword = async (password) => {
+  const resetPassword = async (email: string, password: string) => {
     if (!oobCode || !password) return;
     setUpdatingPassword(true);
     setAuthError(null);
