@@ -24,7 +24,7 @@
     "IDInUse": "This UserID is already in use.",
     "Unverified": "unverified",
     "EnterName": "Please enter a name.",
-    "UserIdNoSpaces": "User ID: 5-20 chars, letters, numbers, hyphens (-), underscores (_).",
+    "UserIdNoSpaces": "5-20 characters. Only alphanumeric characters and underscores (_) are allowed.",
     "UserIdTooShort": "User ID must be at least 5 characters.",
     "NewEmailAddress": "New E-mail Address",
     "Errors": {
