@@ -1,9 +1,12 @@
 import clsx from "clsx";
 import { useAuth } from "contexts/AdminAuthProvider";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MutableRefObject, useRef } from "react";
 import { useUpdatedSidebarItems } from "ui/components/BurgerMenu/assets/SidebarItems";
+import AccountConfirmDialog from "./AccountConfirmDialog";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -13,9 +16,9 @@ interface SidebarProps {
 const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const { user } = useAuth();
   const pathname = usePathname();
-
+  const signOutModalRef = useRef<HTMLDialogElement>(null);
   const items = useUpdatedSidebarItems();
-
+  const t = useTranslations("TCP");
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
   const selectedColor = "primary";
@@ -50,7 +53,7 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </div>
             <div className="flex flex-col ml-[12px] text-base-200-content w-[132px]">
               <div className={"text-[15px] font-normal"}>{user.name}</div>
-              <div className={"text-[10px] font-normal"}>UID：{user.uuid}</div>
+              <div className={"text-[10px] font-normal"}>UID：@{user.uuid}</div>
             </div>
           </div>
           <ul className="border-solid border-[1px] border-gray-300">
@@ -88,10 +91,60 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </Link>
                 </li>
               ))}
+            <li className="mb-[3px] text-base-content">
+              <button
+                className={
+                  "btn-block btn-square bg-base-100 hover:bg-hover-item pl-[14px] gap-4 flex flex-row items-center rounded-none border-0 border-l-[4px] border-l-active hover:border-l-active text-primary"
+                }
+                onClick={() => {
+                  signOutModalRef.current.showModal();
+                }}
+              >
+                <Image
+                  src={"/admin/images/icon/signout.svg"}
+                  alt={"Logout Button"}
+                  width={24}
+                  height={24}
+                />
+
+                <div className={"w-[132px]"}>
+                  <div
+                    className={
+                      "text-start text-base-content text-[15px] font-normal"
+                    }
+                  >
+                    {t("Logout")}
+                  </div>
+                </div>
+              </button>
+            </li>
           </ul>
+          <ConfirmSignOutModal dialogRef={signOutModalRef} />
         </div>
       </aside>
     </div>
+  );
+};
+
+const ConfirmSignOutModal = ({
+  dialogRef,
+}: {
+  dialogRef: MutableRefObject<HTMLDialogElement>;
+}) => {
+  const { signOut, user } = useAuth();
+  const t = useTranslations("TCP");
+  return (
+    <AccountConfirmDialog
+      title={t("LogoutPrompt")}
+      account={user}
+      firstButtonProp={{
+        caption: t("Logout"),
+        isPrimary: true,
+        callback: signOut,
+      }}
+      secondButtonProp={{ caption: t("Cancel"), isPrimary: false }}
+      dialogRef={dialogRef}
+    />
   );
 };
 

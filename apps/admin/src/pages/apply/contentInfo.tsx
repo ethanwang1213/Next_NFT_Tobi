@@ -1,8 +1,7 @@
 import clsx from "clsx";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ReactNode } from "react";
-import { shouldUseJaLocale } from "types/localeTypes";
 import { OptionMark, RequireMark } from "ui/atoms/Marks";
 
 const Row1 = ({
@@ -16,15 +15,12 @@ const Row1 = ({
   optional?: boolean;
   children: ReactNode;
 }) => {
-  const isJaLocale = shouldUseJaLocale(useLocale());
   return (
-    <div className="sm:flex flex-row sm:py-4 sm:pl-6 py-3">
+    <div className="flex flex-col md:flex-row gap-4 sm:py-4 sm:p1-6 py-3">
       <div
-        className={`${
-          isJaLocale ? "w-full max-w-[400px]" : "w-[480px] min-w-[480px]"
-        }`}
+        className="w-full md:w-1/3"        
       >
-        <div className="flex-none flex flex-row items-center">
+        <div className="flex-none flex flex-row items-center justify-between">
           <span className="text-base mr-4">{label ? label : ""}</span>
           {optional ? <OptionMark /> : <RequireMark />}
         </div>
@@ -40,7 +36,7 @@ const Row1 = ({
           </div>
         ) : null}
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="w-full">{children}</div>
     </div>
   );
 };

@@ -12,7 +12,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   };
 }
 
-const VerifiedEmail = () => {
+const VerifiedEmail = ({ lang }: { lang: string }) => {
   const t = useTranslations("Account");
   return (
     <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
@@ -36,7 +36,7 @@ const VerifiedEmail = () => {
           <Button
             className="btn btn-block w-[179px] h-[48px] px-[14px] py-[8px] bg-primary rounded-[12px]
               text-base-white text-[16px] md:text-[16px] sm:text-[9px] leading-3 font-normal hover:bg-primary hover:border-primary"
-            onClick={() => (window.location.href = "/admin/auth/email_auth")}
+            onClick={() => (window.location.href = `/admin/${lang}/auth/email_auth`)}
           >
             {t("ContinueButton")}
           </Button>

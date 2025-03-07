@@ -397,7 +397,7 @@ const LoadingButton = ({
 
   if (loading) {
     return (
-      <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-center">
+      <div className="w-full md:w-[568px] h-14 mx-auto my-10 flex flex-row justify-center">
         <span className={"loading loading-spinner text-info loading-md"} />
       </div>
     );
