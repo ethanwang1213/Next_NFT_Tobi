@@ -4,10 +4,10 @@ import { useTobiratoryAndFlowAccountRegistration } from "fetchers/adminUserAccou
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { FlowAccountStatus } from "types/adminTypes";
 import Loading from "ui/atoms/Loading";
 import FlowAgreementWithSnsAccount from "ui/templates/admin/FlowAgreementWithSnsAccount";
 import FlowRegister from "ui/templates/admin/FlowRegister";
-
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
     props: {
@@ -19,7 +19,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 const SnsAuth = () => {
   const { user } = useAuth();
   const router = useRouter();
-  const [register, response, registering, error] =
+  const [register, response, registering, error, setError] =
     useTobiratoryAndFlowAccountRegistration();
 
   useEffect(() => {
@@ -27,6 +27,8 @@ const SnsAuth = () => {
       router.push("/authentication");
     } else if (user.hasFlowAccount) {
       router.push("/");
+    } else if (user.flowAccountStatus === FlowAccountStatus.Error) {
+      setError(FlowAccountStatus.Error);
     } else if (
       isFlowAccountProcessing(user.flowAccountStatus) &&
       !registering &&

@@ -70,7 +70,9 @@ const ProcessingStatus = ({
         )}
       </div>
       <div className={"font-medium text-[14px] mt-[15px] text-center"}>
-        {error || t("FlowAccountCreationNotice")}
+        {error
+          ? t("FailedMessageToCreateFlowAccount")
+          : t("FlowAccountCreationNotice")}
       </div>
       <div className={"font-medium text-[14px] text-center mt-[100px]"}>
         {error ? faildedDesc : t("AccountCreationNotification")}

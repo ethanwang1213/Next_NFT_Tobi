@@ -67,7 +67,7 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
     setLoading(false);
   };
 
-  return [register, response, loading, error] as const;
+  return [register, response, loading, error, setError] as const;
 };
 
 const registerToTobiratoryAndFlowAccount = async (locale: string) => {
