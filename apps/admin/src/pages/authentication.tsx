@@ -69,7 +69,9 @@ const Authentication = () => {
     const checkEmailVerification = async () => {
       if (auth.currentUser) {
         await auth.currentUser.reload();
-        if (auth.currentUser.emailVerified) {
+        if (!auth.currentUser) {
+          return;
+        } else if (auth.currentUser.emailVerified) {
           if (user && !hasRedirected.current) {
             hasRedirected.current = true;
             if (user.hasBusinessAccount === "exist") {
