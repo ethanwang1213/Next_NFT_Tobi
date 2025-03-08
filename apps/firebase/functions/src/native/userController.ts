@@ -307,6 +307,14 @@ export const getMyProfile = async (req: Request, res: Response) => {
             });
             return;
           case flowAccountStatus.error:
+            await prisma.flow_accounts.update({
+              where: {
+                account_uuid: uid,
+              },
+              data: {
+                "status": flowAccountStatus.idle,
+              },
+            });
             res.status(401).send({
               status: "error",
               data: {
