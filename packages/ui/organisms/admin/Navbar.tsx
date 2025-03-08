@@ -166,7 +166,7 @@ const UserMenu = () => {
               <div className="flex flex-col ml-[12px] text-base-200-content w-[132px]">
                 <div className={"text-[15px] font-normal"}>{user.name}</div>
                 <div className={"text-[10px] font-normal"}>
-                  @user-{user.uuid}
+                  @{user.uuid}
                 </div>
               </div>
             </div>

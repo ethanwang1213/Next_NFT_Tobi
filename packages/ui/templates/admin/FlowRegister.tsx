@@ -65,7 +65,7 @@ const ProcessingStatus = ({
         ) : (
           <>
             {t("CreatingFlowAccount")}
-            <span className="loading loading-dots loading-md"></span>
+            <span className="flex justify-center w-full loading loading-dots loading-md"></span>
           </>
         )}
       </div>

@@ -133,7 +133,7 @@ const AuthAction = () => {
         />
       );
     } else if (params.mode === "verifyEmail") {
-      return <VerifiedEmail />;
+      return <VerifiedEmail lang={params.lang} />;
     } else if (params.mode === "recoverEmail") {
       return (
         <UpdateEmail
@@ -143,7 +143,7 @@ const AuthAction = () => {
         />
       );
     } else if (params.mode === "verifyAndChangeEmail") {
-      return <VerifyAndChangeEmail restoredEmail={restoredEmail} />;
+      return <VerifyAndChangeEmail restoredEmail={restoredEmail} lang={params.lang} />;
     }
   }
   return <VerificationError />;
