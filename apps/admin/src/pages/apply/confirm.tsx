@@ -27,7 +27,7 @@ const Row3 = ({ label, children }) => {
   return (
     <div className="md:flex flex-row items-center py-4 w-full">
       <div className="sm:w-[40%] w-full flex-none flex flex-row items-center sm:justify-start justify-between">
-        <span className="text-base mr-4 md:text-wrap text-nowrap">{label}</span>
+        <span className="text-base mr-4 md:text-wrap">{label}</span>
         {label.length ? <OptionMark /> : <></>}
       </div>
       <div className="flex-auto break-all md:pl-10">{children}</div>

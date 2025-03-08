@@ -54,7 +54,11 @@ const LanguageSwitch = () => {
             alt="language icon"
           />
           <button className="p-2 rounded text-gray-500 font-semibold">
-            LANGUAGE
+            {selectedLanguage
+              ? selectedLanguage === "en"
+                ? "ENGLISH"
+                : "日本語"
+              : "LANGUAGE"}
           </button>
           <ColorizedSvg
             url={"/admin/images/icon/down-arrow-icon.svg"}
