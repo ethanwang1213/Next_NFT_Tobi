@@ -59,12 +59,8 @@ const Authentication = () => {
   const locale = useLocale();
 
   useEffect(() => {
-    if (auth.currentUser) {
-      if (!auth.currentUser.emailVerified) {
-        auth.signOut();
-        return;
-      }
-      router.push("/");
+    if (!auth.currentUser?.emailVerified) {
+      auth.signOut();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

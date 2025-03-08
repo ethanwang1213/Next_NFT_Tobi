@@ -1,3 +1,4 @@
+import { auth } from "fetchers/firebase/client";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -28,7 +29,7 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
     <>
       <div className="flex flex-col items-center justify-center p-8">
         <div className={"w-full"}>
-          <BackLInk onClickBack={() => router.push("/authentication")} />
+          <BackLInk onClickBack={() => auth.signOut()} />
         </div>
         <Image
           src={"/admin/images/tobiratory-flow.svg"}
