@@ -60,19 +60,13 @@ const ProcessingStatus = ({
           "flex flex-row items-end justify-center font-bold text-[20px] sm:text-[32px]"
         }
       >
-        {error ? (
-          t("FailedToCreateFlowAccount")
-        ) : (
-          <>
-            {t("CreatingFlowAccount")}
-            <span className="flex justify-center w-full loading loading-dots loading-md"></span>
-          </>
-        )}
+        {t("CreatingFlowAccount")}
       </div>
-      <div className={"font-medium text-[14px] mt-[15px] text-center"}>
-        {error
-          ? t("FailedMessageToCreateFlowAccount")
-          : t("FlowAccountCreationNotice")}
+      <div className="w-full flex justify-center text-[20px] sm:text-[32px] mt-3">
+        <span className="loading loading-dots loading-md"></span>
+      </div>
+      <div className={"font-medium text-[14px] mt-[15px]"}>
+        {t("FlowAccountCreationNotice")}
       </div>
       <div className={"font-medium text-[14px] text-center mt-[100px]"}>
         {error ? faildedDesc : t("AccountCreationNotification")}

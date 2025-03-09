@@ -58,11 +58,41 @@ const BirthdayEditDialog = ({
             showYearDropdown
             dropdownMode="select"
             locale="ja"
-            className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none text-base-black text-sm leading-4 font-normal"
-            placeholderText="2022/05/21"
+            customInput={
+              <div className="relative">
+                <input
+                  value={birthday ? birthday.toLocaleDateString("ja-JP") : ""}
+                  readOnly
+                  className="rounded-full w-full border border-neutral-200 py-3 pl-3 pr-10 outline-none text-black text-sm leading-4"
+                  placeholder="YYYY/MM/DD"
+                />
+                {birthday && (
+                  <button
+                    type="button"
+                    onClick={() => setBirthday(null)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                    aria-label="Clear date"
+                  >
+                    <span
+                      role="img"
+                      aria-label="clear"
+                      className="flex items-center justify-center w-5 h-5 bg-primary rounded-full text-base-white text-[10px] font-semibold"
+                      style={{ lineHeight: "1" }}
+                    >
+                      <Image
+                        src="/admin/images/icon/close2.svg"
+                        width={16}
+                        height={16}
+                        className="invert text-white font-semibold"
+                        alt="close icon"
+                      />
+                    </span>
+                  </button>
+                )}
+              </div>
+            }
             popperPlacement="top-start"
             popperClassName="custom-datepicker-popper"
-            isClearable
           />
         </div>
         <div className="modal-action flex justify-end gap-4">
