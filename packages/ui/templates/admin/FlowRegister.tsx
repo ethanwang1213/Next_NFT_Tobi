@@ -1,4 +1,5 @@
 import { useAuth } from "contexts/AdminAuthProvider";
+import { auth } from "fetchers/firebase/client";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Button from "ui/atoms/Button";
@@ -9,15 +10,10 @@ type Props = {
   onClickRegister: () => void;
 };
 const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
+  const t = useTranslations("LogInSignUp");
   return (
-    <div className="flex flex-col items-center justify-center p-8">
-      <Image
-        src={"/admin/images/flow-logo.svg"}
-        alt={"flow logo"}
-        width={160}
-        height={160}
-        className={"mt-[90px]"}
-      />
+    <div className="flex flex-col items-center justify-center h-full p-8">
+      <Logo errorOccurred={!!error} />
       <div className={"mt-[50px]"}>
         <ProcessingStatus registered={registered} error={error} />
       </div>
@@ -27,6 +23,13 @@ const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
           error={error}
           onClickRegister={onClickRegister}
         />
+      </div>
+      <div className="flex items-end grow">
+        <button className="btn btn-link" onClick={() => auth.signOut()}>
+          <span className="text-primary text-center text-[12px] font-semibold">
+            {t("LoginWithAnotherAccount")}
+          </span>
+        </button>
       </div>
     </div>
   );
@@ -40,18 +43,11 @@ const ProcessingStatus = ({
   error?: string;
 }) => {
   const t = useTranslations("LogInSignUp");
-  if (error) {
-    return (
-      <>
-        <div className={"font-bold text-[32px]"}>
-          {t("FailedToCreateFlowAccount")}
-        </div>
-        <div className={"font-semibold text-[12px] text-attention text-center"}>
-          {error}
-        </div>
-      </>
-    );
-  } else if (registered) {
+  const faildedDesc = t.rich("FailedDescriptionToCreateFlowAccount", {
+    br: () => <br />,
+  });
+
+  if (registered) {
     return (
       <div className={"font-bold text-[32px]"}>{t("FlowAccountCreated")}</div>
     );
@@ -64,15 +60,22 @@ const ProcessingStatus = ({
           "flex flex-row items-end justify-center font-bold text-[20px] sm:text-[32px]"
         }
       >
-        {t("CreatingFlowAccount")}
-       
+        {error ? (
+          t("FailedToCreateFlowAccount")
+        ) : (
+          <>
+            {t("CreatingFlowAccount")}
+            <span className="flex justify-center w-full loading loading-dots loading-md"></span>
+          </>
+        )}
       </div>
-      <span className="flex justify-center w-full loading loading-dots loading-md"></span>
-      <div className={"font-medium text-[14px] mt-[15px]"}>
-        {t("FlowAccountCreationNotice")}
+      <div className={"font-medium text-[14px] mt-[15px] text-center"}>
+        {error
+          ? t("FailedMessageToCreateFlowAccount")
+          : t("FlowAccountCreationNotice")}
       </div>
       <div className={"font-medium text-[14px] text-center mt-[100px]"}>
-        {t("AccountCreationNotification")}
+        {error ? faildedDesc : t("AccountCreationNotification")}
       </div>
     </>
   );
@@ -118,6 +121,30 @@ export const LoadingButton = () => {
         </span>
       </div>
     </button>
+  );
+};
+
+const Logo = ({ errorOccurred }: { errorOccurred: boolean }) => {
+  if (errorOccurred) {
+    return (
+      <Image
+        src={"/admin/images/icon/report-problem.svg"}
+        alt={"flow logo"}
+        width={160}
+        height={160}
+        className={"mt-[90px]"}
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={"/admin/images/flow-logo.svg"}
+      alt={"flow logo"}
+      width={160}
+      height={160}
+      className={"mt-[90px]"}
+    />
   );
 };
 

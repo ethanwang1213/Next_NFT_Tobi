@@ -17,7 +17,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { HasBusinessAccount, ProviderId, User } from "types/adminTypes";
+import {
+  FlowAccountStatus,
+  HasBusinessAccount,
+  ProviderId,
+  User,
+} from "types/adminTypes";
 import { LocalePlaceholder } from "types/localeTypes";
 import Loading from "ui/atoms/Loading";
 
@@ -236,7 +241,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           !!profile?.data?.userId,
           false,
           "not-exist",
+          profile?.data?.type,
         );
+
         router.push("/auth/sns_auth");
       } else {
         setUser(null);
@@ -262,9 +269,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     name: string,
     icon: string,
     emailVerified: boolean,
-    hasTobiratoryAccount: boolean,
     hasFlowAccount: boolean,
     hasBusinessAccount: HasBusinessAccount,
+    flowAccountStatus?: FlowAccountStatus,
   ) => {
     try {
       const appUser: User = {
@@ -273,9 +280,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         email,
         icon,
         emailVerified,
-        hasTobiratoryAccount,
         hasFlowAccount,
         hasBusinessAccount,
+        flowAccountStatus,
       };
       setUser(appUser);
     } catch (error) {
@@ -336,6 +343,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       ...prev!,
       uuid: profile.data.userId,
       hasFlowAccount: true,
+      flowAccountStatus: FlowAccountStatus.Created,
     }));
   };
 
@@ -449,6 +457,12 @@ export const getProviderName = (providerId: ProviderId) => {
     default:
       return "";
   }
+};
+
+export const isFlowAccountProcessing = (status: FlowAccountStatus) => {
+  return (
+    status == FlowAccountStatus.Creating || status == FlowAccountStatus.Retrying
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);
