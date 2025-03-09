@@ -163,7 +163,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             profile.data.icon || "",
             firebaseUser.emailVerified,
             true,
-            true,
             hasBusinessAccount,
           );
           const inaccessiblePaths = [
@@ -214,7 +213,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
             "",
             "",
             firebaseUser.emailVerified,
-            !!profile?.data?.userId,
             false,
             "not-exist",
           );
@@ -238,7 +236,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           "",
           "",
           firebaseUser.emailVerified,
-          !!profile?.data?.userId,
           false,
           "not-exist",
           profile?.data?.type,
