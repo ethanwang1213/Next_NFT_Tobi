@@ -57,7 +57,7 @@ const ProcessingStatus = ({
     <>
       <div
         className={
-          "flex flex-col items-center justify-center font-bold text-[20px] sm:text-[32px]"
+          "flex flex-row items-center justify-center font-bold text-[20px] sm:text-[32px]"
         }
       >
         {error ? (
@@ -65,7 +65,7 @@ const ProcessingStatus = ({
         ) : (
           <>
             {t("CreatingFlowAccount")}
-            <div className="w-full flex justify-center text-[20px] sm:text-[32px] mt-3">
+            <div className="flex justify-center text-[20px] sm:text-[32px] mt-3">
               <span className="loading loading-dots loading-md"></span>
             </div>
           </>
