@@ -325,21 +325,25 @@ export default function Index() {
   }, [id, workspaceData, isItemsLoaded]);
 
   useEffect(() => {
-      if (selectedSample && samples) {
-        setSelectedSampleItem(selectedSample.digitalItemId);
-        setSelectedSampleItemId(selectedSample.sampleItemId);
-        setHasHandlerBeenCalled(false);
-        const matchingSample = samples.find(
-          (sample) => sample.digitalItemId === selectedSample.digitalItemId,
-        );
-        setShowSettingsButton(matchingSample?.type === 2);
-        secondaryMatchSample(matchingSample);
-      } else if (!hasHandlerBeenCalled) {
+    if (!selectedSample || !samples) {
+      if (!hasHandlerBeenCalled) {
         setShowSettingsButton(false);
         setSelectedSampleItem(-1);
         setSelectedSampleItemId(-1);
+      }
+      return;
     }
-  }, [selectedSample, samples,hasHandlerBeenCalled]);
+    const { digitalItemId, sampleItemId } = selectedSample;
+    setSelectedSampleItem(digitalItemId);
+    setSelectedSampleItemId(sampleItemId);
+    setHasHandlerBeenCalled(false);
+    const matchingSample = samples.find(
+      (sample) => sample.digitalItemId === digitalItemId,
+    );
+    setShowSettingsButton(matchingSample?.type === 2);
+    secondaryMatchSample(matchingSample);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSample, samples, hasHandlerBeenCalled]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
