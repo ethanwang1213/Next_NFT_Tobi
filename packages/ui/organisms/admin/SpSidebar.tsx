@@ -4,9 +4,10 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MutableRefObject, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import { useUpdatedSidebarItems } from "ui/components/BurgerMenu/assets/SidebarItems";
 import AccountConfirmDialog from "./AccountConfirmDialog";
+import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -22,6 +23,16 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
   const selectedColor = "primary";
+  const { innerWidth } = useWindowSize();
+
+  const checkScreenSize = () => {
+    innerWidth > 560 && setSidebarOpen(false);
+  };
+
+  useEffect(() => {
+    checkScreenSize(); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [innerWidth]);
 
   return (
     <div
