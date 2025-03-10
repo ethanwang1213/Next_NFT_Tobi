@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { MutableRefObject, useEffect, useRef } from "react";
 import { useUpdatedSidebarItems } from "ui/components/BurgerMenu/assets/SidebarItems";
 import AccountConfirmDialog from "./AccountConfirmDialog";
+import { useWindowSize } from "hooks/useWindowSize/useWindowSize";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -22,19 +23,16 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const normalIconColor = "inactive";
   const normalTextColor = "inactive";
   const selectedColor = "primary";
+  const { innerWidth } = useWindowSize();
 
   const checkScreenSize = () => {
-    setSidebarOpen(window.innerWidth < 560);
+    innerWidth > 560 && setSidebarOpen(false);
   };
 
   useEffect(() => {
     checkScreenSize(); 
-    window.addEventListener("resize", checkScreenSize); 
-    return () => {
-      window.removeEventListener("resize", checkScreenSize); 
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [innerWidth]);
 
   return (
     <div
