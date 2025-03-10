@@ -2,7 +2,12 @@
 import React from 'react';
 import Image from 'next/image';
 
-const CustomInput=({ birthday, setBirthday }) => {
+interface CustomInputProps {
+  birthday: Date | null; 
+  setBirthday: (date: Date | null) => void; 
+  onClick: () => void;
+}
+const CustomInput: React.FC<CustomInputProps> = ({ birthday, setBirthday, onClick  }) => {
   return (
     <div className="relative">
                 <input
@@ -10,6 +15,7 @@ const CustomInput=({ birthday, setBirthday }) => {
                   readOnly
                   className="rounded-full w-full border border-neutral-200 py-3 pl-3 pr-10 outline-none text-black text-sm leading-4"
                   placeholder="YYYY/MM/DD"
+                  onClick={onClick}
                 />
                 {birthday && (
                   <button
