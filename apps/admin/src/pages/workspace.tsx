@@ -325,21 +325,21 @@ export default function Index() {
   }, [id, workspaceData, isItemsLoaded]);
 
   useEffect(() => {
-      if (selectedSample && samples) {
-        setSelectedSampleItem(selectedSample.digitalItemId);
-        setSelectedSampleItemId(selectedSample.sampleItemId);
-        setHasHandlerBeenCalled(false);
-        const matchingSample = samples.find(
-          (sample) => sample.digitalItemId === selectedSample.digitalItemId,
-        );
-        setShowSettingsButton(matchingSample?.type === 2);
-        secondaryMatchSample(matchingSample);
-      } else if (!hasHandlerBeenCalled) {
-        setShowSettingsButton(false);
-        setSelectedSampleItem(-1);
-        setSelectedSampleItemId(-1);
+    if (selectedSample && samples) {
+      setSelectedSampleItem(selectedSample.digitalItemId);
+      setSelectedSampleItemId(selectedSample.sampleItemId);
+      setHasHandlerBeenCalled(false);
+      const matchingSample = samples.find(
+        (sample) => sample.digitalItemId === selectedSample.digitalItemId,
+      );
+      setShowSettingsButton(matchingSample?.type === 2);
+      secondaryMatchSample(matchingSample);
+    } else if (!hasHandlerBeenCalled) {
+      setShowSettingsButton(false);
+      setSelectedSampleItem(-1);
+      setSelectedSampleItemId(-1);
     }
-  }, [selectedSample, samples,hasHandlerBeenCalled]);
+  }, [selectedSample, samples, hasHandlerBeenCalled]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
