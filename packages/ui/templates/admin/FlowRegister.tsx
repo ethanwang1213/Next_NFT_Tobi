@@ -57,7 +57,7 @@ const ProcessingStatus = ({
     <>
       <div
         className={
-          "flex flex-col items-end justify-center font-bold text-[20px] sm:text-[32px]"
+          "flex flex-col items-center justify-center font-bold text-[20px] sm:text-[32px]"
         }
       >
         {error ? (
