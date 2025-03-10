@@ -74,6 +74,7 @@ export default function Index() {
 
   const [selectedSampleItem, setSelectedSampleItem] = useState(-1);
   const [selectedSampleItemId, setSelectedSampleItemId] = useState(-1);
+  const [hasHandlerBeenCalled, setHasHandlerBeenCalled] = useState(false);
 
   const sampleAPIUrl = "native/my/samples";
   const {
@@ -324,20 +325,21 @@ export default function Index() {
   }, [id, workspaceData, isItemsLoaded]);
 
   useEffect(() => {
-    if (selectedSample && samples) {
-      setSelectedSampleItem(selectedSample.digitalItemId);
-      setSelectedSampleItemId(selectedSample.sampleItemId);
-      const matchingSample = samples.find(
-        (sample) => sample.digitalItemId === selectedSample.digitalItemId,
-      );
-      setShowSettingsButton(matchingSample?.type === 2);
-      secondaryMatchSample(matchingSample);
-    } else {
-      setShowSettingsButton(false);
-      setSelectedSampleItem(-1);
-      setSelectedSampleItemId(-1);
+      if (selectedSample && samples) {
+        setSelectedSampleItem(selectedSample.digitalItemId);
+        setSelectedSampleItemId(selectedSample.sampleItemId);
+        setHasHandlerBeenCalled(false);
+        const matchingSample = samples.find(
+          (sample) => sample.digitalItemId === selectedSample.digitalItemId,
+        );
+        setShowSettingsButton(matchingSample?.type === 2);
+        secondaryMatchSample(matchingSample);
+      } else if (!hasHandlerBeenCalled) {
+        setShowSettingsButton(false);
+        setSelectedSampleItem(-1);
+        setSelectedSampleItemId(-1);
     }
-  }, [selectedSample, samples]);
+  }, [selectedSample, samples,hasHandlerBeenCalled]);
 
   const requestSaveDataInterval = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
@@ -415,6 +417,7 @@ export default function Index() {
 
   const selectedSampleHandler = (index: number) => {
     if (index !== -1 && samples) {
+      setHasHandlerBeenCalled(true);
       setSelectedSampleItem(samples[index].digitalItemId);
       highlightSamplesByItemId(samples[index].sampleItemId);
       const matchingSample = samples.find(
