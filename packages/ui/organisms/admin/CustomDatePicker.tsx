@@ -1,7 +1,7 @@
 import { addMonths, endOfMonth, format, getDay, startOfMonth } from "date-fns";
 import { format as tzFormat, toZonedTime } from "date-fns-tz";
-import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
 interface CustomDatePickerProps {
   onDateTimeChange: (date: Date) => void;
   onClose: () => void;
@@ -47,7 +47,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
-
 
   const handleDateChange = (day: number) => {
     const newDate = new Date(
@@ -118,12 +117,12 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           </button>
           <button className="absolute right-5" onClick={() => onClose()}>
             <Image
-                         src="/admin/images/icon/close.svg"
-                         width={12}
-                         height={12}
-                         alt="close icon"
-                         className="invert text-base-black"
-                       />
+              src="/admin/images/icon/close.svg"
+              width={12}
+              height={12}
+              alt="close icon"
+              className="invert text-base-black"
+            />
           </button>
         </div>
         <div className="day-names grid my-1 text-sm grid-cols-7">
@@ -148,7 +147,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 key={index}
                 className="flex items-center justify-center w-[35px] h-[35px]"
               >
-                {day && 
+                {day && (
                   <button
                     onClick={() => !isPastDay && handleDateChange(day)}
                     className={`flex items-center border-none p-6 cursor-pointer w-[44px] h-[44px] rounded-full justify-center ${
@@ -162,7 +161,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                   >
                     {day}
                   </button>
-                }
+                )}
               </div>
             );
           })}
