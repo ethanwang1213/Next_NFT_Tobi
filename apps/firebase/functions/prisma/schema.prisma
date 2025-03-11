@@ -180,7 +180,7 @@ model reported_documents {
 
 model digital_items {
     id                Int                       @id @default(autoincrement())
-    account           accounts                  @relation(fields: [account_uuid], references: [uuid])
+    account           accounts?                  @relation(fields: [account_uuid], references: [uuid])
     account_uuid      String                    @db.VarChar(100)
     name              String?                   @db.VarChar(255)
     model_url         String                    @db.Text

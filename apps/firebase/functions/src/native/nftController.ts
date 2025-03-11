@@ -153,8 +153,8 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
     throw new MintError(404, "item-not-found");
   }
 
-  if (digitalItem.account.business) {
-    const content = digitalItem.account.business.content;
+  if (digitalItem.account?.business) {
+    const content = digitalItem.account?.business.content;
     if (!content) {
       throw new MintError(404, "content-not-found");
     }
@@ -197,13 +197,13 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
   const itemId = digitalItem.flow_item_id;
   const digitalItemId = digitalItem.id;
 
-  if (!digitalItem.account.flow_account) {
+  if (!digitalItem.account?.flow_account) {
     throw new MintError(404, "account-not-found");
   }
 
   let creatorName;
-  if (digitalItem.account.business?.content) {
-    creatorName = digitalItem.account.business.content.name;
+  if (digitalItem.account?.business?.content) {
+    creatorName = digitalItem.account?.business.content.name;
   } else {
     if (!digitalItem.account) {
       throw new MintError(404, "user-not-found");
@@ -244,7 +244,7 @@ export const mint = async (id: string, uid: string, notificationBatchId: number,
     const message = {
       flowJobId, txType: "mintNFT", params: {
         tobiratoryAccountUuid: uid,
-        itemCreatorAddress: digitalItem.account.flow_account.flow_address,
+        itemCreatorAddress: digitalItem.account?.flow_account.flow_address,
         itemId,
         digitalItemId,
         digitalItemNftId: undefined,
