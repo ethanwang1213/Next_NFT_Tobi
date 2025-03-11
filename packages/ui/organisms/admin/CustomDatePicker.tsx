@@ -42,6 +42,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     if (now.getDate() !== originalNow.getDate()) {
       setSelectedDate(new Date(now));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
