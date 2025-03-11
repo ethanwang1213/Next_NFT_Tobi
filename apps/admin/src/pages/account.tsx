@@ -346,7 +346,6 @@ export default function Index() {
         email: data?.email,
         icon: data?.icon,
         emailVerified: true,
-        hasTobiratoryAccount: true,
         hasFlowAccount: true,
         hasBusinessAccount: user.hasBusinessAccount,
       };
@@ -470,7 +469,7 @@ export default function Index() {
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
                 className={
-                  "text-[20px] font-normal flex-1 overflow-hidden text-ellipsis h-[118px] outline-none resize-none"
+                  "text-[20px] font-normal flex-1 overflow-auto text-ellipsis h-[118px] outline-none resize-none"
                 }
                 value={data?.aboutMe || ""}
                 placeholder={t("NotSet")}

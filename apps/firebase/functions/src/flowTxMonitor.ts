@@ -17,7 +17,7 @@ import {
   giftStatus,
   mintStatus,
   notificationBatchStatus,
-  transactionMaxRetryCount
+  transactionMaxRetryCount,
 } from "./native/utils";
 import {
   createFlowAccountCreationMail,
@@ -61,7 +61,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
         const flowAccount = await prisma.flow_accounts.findUnique({
           where: {
             account_uuid: params.tobiratoryAccountUuid,
-          }
+          },
         });
         if (flowAccount) {
           if (flowAccount.tx_retry_count >= transactionMaxRetryCount) {
@@ -72,7 +72,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
               data: {
                 status: flowAccountStatus.error,
                 tx_retry_count: 0,
-              }
+              },
             });
             await flowJobDocRef.update({status: "error", updatedAt: new Date()});
             return;
@@ -84,7 +84,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
             data: {
               status: flowAccountStatus.retrying,
               tx_retry_count: flowAccount.tx_retry_count + 1,
-            }
+            },
           });
         } else {
           await prisma.flow_accounts.create({
@@ -92,7 +92,7 @@ export const flowTxMonitor = functions.region(REGION).pubsub.topic(TOPIC_NAMES["
               account_uuid: params.tobiratoryAccountUuid,
               status: flowAccountStatus.retrying,
               tx_retry_count: 1,
-            }
+            },
           });
         }
         const messageId = await pubsub.topic(TOPIC_NAMES["flowTxSend"]).publishMessage(message);

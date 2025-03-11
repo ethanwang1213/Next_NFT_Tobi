@@ -31,7 +31,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 
 const Register = () => {
   const t = useTranslations("TCP");
-  const switchLabels = [t("Content"), t("RegistrantInfo"), t("Other")];
+  const switchLabels = [t("Content"), t("Registrant"), t("Other")];
   const [switchValue, setSwitchValue] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const apiUrl = "native/my/business";

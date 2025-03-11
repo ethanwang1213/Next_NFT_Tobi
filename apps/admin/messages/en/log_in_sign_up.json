@@ -31,7 +31,9 @@
     "CreatingFlowAccount": "Creating a Flow account",
     "FlowAccountCreationNotice": "Creating a Flow account may take some time. You will be notified once it is created.",
     "FlowAccountCreated": "Created a Flow account.",
-    "FailedToCreateFlowAccount": "Failed to create a Flow account.",
+    "FailedToCreateFlowAccount": "Failed to create a Flow account",
+    "FailedMessageToCreateFlowAccount": "An error occurred while creating your Flow account.",
+    "FailedDescriptionToCreateFlowAccount": "Check your network connection or<br></br>Wait a moment and try again.",
     "AccountCreationNotification": "You will be notified once the account is created.",
     "ConfirmationEmailSent": "Sent a confirmation email!",
     "CheckEmail": "Please check your mailbox.",
@@ -51,6 +53,7 @@
     "AccountVerification": "Verify Your Password",
     "PromptPassword": "Please enter your password",
     "PasswordAccountExists": "It seems you already have an account.",
-    "SettingPasswordTitle": "Setting Password"
+    "SettingPasswordTitle": "Setting Password",
+    "LoginWithAnotherAccount": "Log in with a different account"
   }
 }

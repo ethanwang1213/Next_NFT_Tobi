@@ -16,9 +16,9 @@ export type User = {
   email: string;
   icon: string;
   emailVerified: boolean;
-  hasTobiratoryAccount: boolean;
   hasFlowAccount: boolean;
   hasBusinessAccount: HasBusinessAccount;
+  flowAccountStatus?: FlowAccountStatus;
 };
 
 export enum FILTER_TYPE {
@@ -168,3 +168,13 @@ export const ProviderId = {
 export type ProviderId = (typeof ProviderId)[keyof typeof ProviderId];
 export const isProviderId = (arg: string): arg is ProviderId =>
   Object.values(ProviderId).includes(arg as ProviderId);
+
+export const FlowAccountStatus = {
+  Creating: "flow-address-creating",
+  Retrying: "flow-account-retrying",
+  Error: "flow-account-create-error",
+  NotExists: "flow-account-not-exists",
+  Created: "flow-account-created",
+} as const;
+export type FlowAccountStatus =
+  (typeof FlowAccountStatus)[keyof typeof FlowAccountStatus];
