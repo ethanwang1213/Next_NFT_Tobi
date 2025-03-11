@@ -59,7 +59,7 @@ const BirthdayEditDialog = ({
             showYearDropdown
             dropdownMode="select"
             locale="ja"
-            customInput={<CustomInput birthday={birthday} setBirthday={setBirthday} />}
+            customInput={<CustomInput birthday={birthday} setBirthday={setBirthday} onClick={() => datePickerRef.current?.setOpen(true)}/>}
             popperPlacement="top-start"
             popperClassName="custom-datepicker-popper"
           />
