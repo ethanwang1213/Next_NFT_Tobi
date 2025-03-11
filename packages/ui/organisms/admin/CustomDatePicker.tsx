@@ -18,19 +18,32 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   const timeZone = "Asia/Tokyo";
   const [selectedDate, setSelectedDate] = useState<Date>(initialDateTime);
   const getCurrentTokyoTimePlusTwoHours = () => {
+    const originalNow = new Date();
     const now = new Date();
     now.setHours(now.getHours() + 2);
 
-    if (now.getDate() !== new Date().getDate()) {
-      const newDate = new Date(selectedDate);
-      newDate.setDate(selectedDate.getDate() + 1);
-      setSelectedDate(newDate);
-    }
-    return tzFormat(toZonedTime(now, timeZone), "HH:mm", { timeZone });
+    const targetDate = originalNow < initialDateTime ? initialDateTime : now;
+    return tzFormat(toZonedTime(targetDate, timeZone), "HH:mm", { timeZone });
   };
   const [time, setTime] = useState<string>(getCurrentTokyoTimePlusTwoHours());
 
   const datePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const originalNow = new Date();
+
+    if (originalNow < initialDateTime) {
+      return;
+    }
+
+    const now = new Date(originalNow);
+    now.setHours(now.getHours() + 2);
+
+    if (now.getDate() !== originalNow.getDate()) {
+      setSelectedDate(new Date(now));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,7 +60,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
-
 
   const handleDateChange = (day: number) => {
     const newDate = new Date(
@@ -142,7 +154,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 key={index}
                 className="flex items-center justify-center w-[44px] h-[44px]"
               >
-                {day && 
+                {day && (
                   <button
                     onClick={() => !isPastDay && handleDateChange(day)}
                     className={`flex items-center border-none p-6 cursor-pointer w-[44px] h-[44px] rounded-full justify-center ${
@@ -156,7 +168,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                   >
                     {day}
                   </button>
-                }
+                )}
               </div>
             );
           })}

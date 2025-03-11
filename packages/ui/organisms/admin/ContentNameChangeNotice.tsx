@@ -37,10 +37,10 @@ const ContentNameChangeNotice = ({
           {t("contentNameChangeRequest")
             .split("\n")
             .map((line, index) => (
-              <>
+              <div key={index}>
                 {line}
                 <br />
-              </>
+              </div>
             ))}
         </div>
         <div className="flex justify-between items-center gap-4 pl-[92px] pr-[80px]">
