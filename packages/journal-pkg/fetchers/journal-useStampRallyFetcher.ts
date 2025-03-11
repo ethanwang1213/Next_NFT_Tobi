@@ -7,6 +7,7 @@ import {
   StampRallyRewardFormType,
   Tmf2024StampType,
   Tpf2023StampType,
+  Tpf2025StampType,
   Tpfw2024StampType,
 } from "journal-pkg/types/stampRallyTypes";
 import { db, functions } from "./firebase/journal-client";
@@ -116,6 +117,37 @@ export const useStampRallyFetcher = () => {
       });
   };
 
+  const requestTpf2025Reward = (data: StampRallyRewardFormType) => {
+    console.log(data);
+    isSubmitting.set(true);
+    isIncorrect.set(false);
+
+    const callable = httpsCallable<
+      BodyType,
+      StampRallyResultType<Tpf2025StampType>
+    >(functions, "journalStampRally-checkRewardTpf2025");
+    callable({ keyword: data.keyword })
+      .then((result) => {
+        console.log(result);
+        const d = result.data;
+        setMintStatus(
+          "TOBIRAPOLISFESTIVAL2025",
+          d.stamp,
+          "IN_PROGRESS",
+          d.isComplete,
+        );
+
+        isSubmitting.set(false);
+        console.log("success");
+      })
+      .catch((error) => {
+        console.log(error);
+        isSubmitting.set(false);
+        isIncorrect.set(true);
+        console.log("error");
+      });
+  };
+
   const requestStampRallyReward = (data: StampRallyRewardFormType) => {
     switch (data.event) {
       case "TOBIRAPOLISFESTIVAL2023":
@@ -127,6 +159,9 @@ export const useStampRallyFetcher = () => {
       case "TOBIRAPOLISFIREWORKS2024":
         console.log("tpfw2024");
         requestTpfw2024Reward(data);
+        break;
+      case "TOBIRAPOLISFESTIVAL2025":
+        requestTpf2025Reward(data);
         break;
       default:
         break;
@@ -163,10 +198,25 @@ export const useStampRallyFetcher = () => {
     }
   };
 
+  const checkMintedTpf2025Stamp = () => {
+    try {
+      if (user.isStampTpf2025Checked) return true;
+
+      const usersSrcRef = doc(db, `users/${user.id}`);
+      setDoc(usersSrcRef, { isStampTpf2025Checked: true }, { merge: true });
+      checkLocalStampMinted();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   return {
     isSubmitting,
     requestStampRallyReward,
     checkMintedTmf2024Stamp,
     checkMintedTpfw2024Stamp,
+    checkMintedTpf2025Stamp,
   };
 };

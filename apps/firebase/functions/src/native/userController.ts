@@ -46,6 +46,7 @@ export const signUp = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken((authorization ?? "")).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const name: string | undefined= decodedToken.name;
     const email = decodedToken.email;
     if (email==undefined) {
       res.status(401).send({
@@ -106,13 +107,13 @@ export const signUp = async (req: Request, res: Response) => {
         },
       });
       if (decodedToken.email_verified && !flowAcc) {
-        const {fcmToken}: { fcmToken?: string } = req.body;
+        const {fcmToken, locale}: { fcmToken?: string, locale?: string } = req.body;
 
         // console.log(`Flow account was not found: ${uid}`);
         const firestoreFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", uid).get();
         if (firestoreFlowAccounts.size <= 0) {
           // console.log("Creating...");
-          await createFlowAccount(uid, fcmToken);
+          await createFlowAccount(uid, fcmToken, email, name, locale);
         } else {
           const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
           const data = existingFlowAccountSnapshot.data();
@@ -123,7 +124,7 @@ export const signUp = async (req: Request, res: Response) => {
 
             if (flowJobs.size <= 0) {
               // console.log("flowJobs has failed. Create again...");
-              await createFlowAccount(uid, fcmToken);
+              await createFlowAccount(uid, fcmToken, email, name, locale);
             } else {
               // console.log("Attempting to store in database");
               const flowJob = flowJobs.docs[0].data();
@@ -147,7 +148,7 @@ export const signUp = async (req: Request, res: Response) => {
             }
           } else {
             // console.log("txId is not found");
-            await createFlowAccount(uid, fcmToken);
+            await createFlowAccount(uid, fcmToken, email, name, locale);
           }
         }
       }
@@ -190,6 +191,8 @@ export const createFlowAcc = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await getAuth().verifyIdToken((authorization ?? "").toString()).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
+    const name: string | undefined= decodedToken.name;
+    const email: string | undefined = decodedToken.email;
     const checkLimit = await increaseTransactionAmount(uid);
     if (checkLimit == statusOfLimitTransaction.notExistAccount) {
       res.status(401).send({
@@ -221,8 +224,8 @@ export const createFlowAcc = async (req: Request, res: Response) => {
           },
         });
       }
-      const {fcmToken}: { fcmToken?: string } = req.body;
-      const flowInfo = await createFlowAccount(uid, fcmToken);
+      const {fcmToken, locale}: { fcmToken?: string, locale?: string } = req.body;
+      const flowInfo = await createFlowAccount(uid, fcmToken, email, name, locale);
       const flowAccInfo = {
         account_uuid: uid,
         flow_job_id: flowInfo.flowJobId,
@@ -304,6 +307,14 @@ export const getMyProfile = async (req: Request, res: Response) => {
             });
             return;
           case flowAccountStatus.error:
+            await prisma.flow_accounts.update({
+              where: {
+                account_uuid: uid,
+              },
+              data: {
+                "status": flowAccountStatus.idle,
+              },
+            });
             res.status(401).send({
               status: "error",
               data: {

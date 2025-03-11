@@ -1,5 +1,47 @@
 {
   "Error": {
     "Retry": "An error occurred. Please try again."
+  },
+  "error_401": {
+    "status": "401",
+    "title": "Unauthorized",
+    "content": "Looks like you brought the wrong key. Try another one, purhaps?",
+    "bottomTitle": "This could be caused by the following",
+    "list": ["Your username or password might not be correct", "You need to log in to access this page"]
+  },
+  "error_403": {
+    "status": "403",
+    "title": "Forbidden",
+    "content": "The cat seems to want some alone time right now Best not to bother them",
+    "bottomTitle": "This could be caused by the following",
+    "list": "You do not have permission to access this page."
+  },
+  "error_404": {
+    "status": "404",
+    "title": "Not Found",
+    "content": "The cat you're looking for isn't here Maybe they’ve moved to a new home",
+    "bottomTitle": "This could be caused by the following",
+    "list": "The page you are looking for could not be found. Please check the URL."
+  },
+  "error_500": {
+    "status": "500",
+    "title": "Internal Server Error",
+    "content": "The cat is too full to move Give them a moment to recover",
+    "bottomTitle": "This could be caused by the following",
+    "list": "An error occurred on the server. Please try again later."
+  },
+  "error_503": {
+    "status": "503",
+    "title": "Service Unavailable",
+    "content": "・・・",
+    "bottomTitle": "This could be caused by the following",
+    "list": "The service is temporarily unavailable. Please try again later."
+  },
+  "error_504": {
+    "status": "504",
+    "title": "Gateway Timeout",
+    "content": "The cat ran as fast as they could but just couldn’t make it in time",
+    "bottomTitle": "This could be caused by the following",
+    "list": "The server did not respond in time. Please try again later."
   }
 }

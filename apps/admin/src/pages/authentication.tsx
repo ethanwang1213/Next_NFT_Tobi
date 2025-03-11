@@ -20,7 +20,7 @@ import { ErrorMessage, ProviderId } from "types/adminTypes";
 import {
   getNormalLocale,
   getPathWithLocale,
-  LocalePlaceholder
+  LocalePlaceholder,
 } from "types/localeTypes";
 import FullScreenLoading from "ui/molecules/FullScreenLoading";
 import ConfirmationSent from "ui/templates/admin/ConfirmationSent";
@@ -59,8 +59,8 @@ const Authentication = () => {
   const locale = useLocale();
 
   useEffect(() => {
-    if (auth.currentUser) {
-      router.push("/");
+    if (!auth.currentUser?.emailVerified) {
+      auth.signOut();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -69,7 +69,9 @@ const Authentication = () => {
     const checkEmailVerification = async () => {
       if (auth.currentUser) {
         await auth.currentUser.reload();
-        if (auth.currentUser.emailVerified) {
+        if (!auth.currentUser) {
+          return;
+        } else if (auth.currentUser.emailVerified) {
           if (user && !hasRedirected.current) {
             hasRedirected.current = true;
             if (user.hasBusinessAccount === "exist") {
@@ -99,6 +101,11 @@ const Authentication = () => {
     if (!data) {
       return;
     }
+
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     setIsEmailLoading(true);
     const signInMethods = await fetchSignInMethodsForEmail(auth, data.email);
     const usedPasswordAuthenticationAlready = signInMethods.includes(
@@ -113,12 +120,18 @@ const Authentication = () => {
     } else {
       setAuthState(AuthStates.SignUpWithEmailAndPassword);
     }
+    setIsEmailLoading(false);
   };
 
   const startMailSignIn = async (data: LoginFormType) => {
     if (!data) {
       return;
     }
+
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     setIsEmailLoading(true);
     const mailLinkMethod = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
     const passwordMethod = EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD;
@@ -184,6 +197,10 @@ const Authentication = () => {
   };
 
   const withGoogle = async () => {
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     const provider = new GoogleAuthProvider();
 
     try {
@@ -195,6 +212,10 @@ const Authentication = () => {
   };
 
   const withApple = async () => {
+    if (!auth.currentUser?.emailVerified) {
+      await auth.signOut();
+    }
+
     const provider = new OAuthProvider("apple.com");
 
     try {

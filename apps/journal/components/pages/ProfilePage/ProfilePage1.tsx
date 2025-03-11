@@ -3,7 +3,7 @@ import { useDiscordOAuth } from "@/contexts/journal-DiscordOAuthProvider";
 import useDateFormat from "@/hooks/useDateFormat";
 import { mockCharacteristicList } from "@/libs/mocks/mockProfile0";
 import { useAuth } from "journal-pkg/contexts/journal-AuthProvider";
-import { Tpfw2024StampRally } from "journal-pkg/ui/organisms/journal-StampRally";
+import { Tpf2025StampRally } from "journal-pkg/ui/organisms/journal-StampRally";
 import { useEffect, useMemo, useState } from "react";
 import CharacteristicLine from "../../TypeValueLine/CharacteristicLine";
 
@@ -74,7 +74,7 @@ const ProfilePage1: React.FC = () => {
       </div>
       {/* // TOBIRAPOLIS祭スタンプラリー用 */}
       <div className="mt-6 sm:mt-12">
-        <Tpfw2024StampRally />
+        <Tpf2025StampRally />
       </div>
     </div>
   );

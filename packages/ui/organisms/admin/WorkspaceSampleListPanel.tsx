@@ -15,6 +15,7 @@ type ItemProps = {
   selectHandler: () => void;
   dragStartHandler: () => void;
   selectedSampleHandler: () => void;
+  setShowDetailView: (value: boolean) => void;
 };
 
 const SampleItemComponent: React.FC<ItemProps> = (props) => {
@@ -55,20 +56,25 @@ const SampleItemComponent: React.FC<ItemProps> = (props) => {
   return (
     <div
       className="flex items-center gap-8 py-3 pl-10 pr-6 hover:bg-[#787878]"
-      onClick={props.selectedSampleHandler}
+      onClick={() => {
+        props.selectedSampleHandler();
+        props.setShowDetailView(true);
+      }}
     >
-      <Image
-        width={25}
-        height={20}
-        className="h-[20px] object-contain cursor-pointer"
-        src="/admin/images/icon/workspace-icon.svg"
-        alt="workspace icon"
-        draggable={false}
-        onClick={clickHandler}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-      />
+      {!props.selectState && (
+        <Image
+          width={25}
+          height={20}
+          className="h-[20px] object-contain cursor-pointer"
+          src="/admin/images/icon/workspace-icon.svg"
+          alt="workspace icon"
+          draggable={false}
+          onClick={clickHandler}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+        />
+      )}
       {props.selectState && (
         <input
           ref={checkboxRef}
@@ -102,6 +108,7 @@ type ListProps = {
   deleteHandler: (ids: number[]) => void;
   dragHandler: (index: number) => void;
   showRestoreMenu: boolean;
+  setShowDetailView: (value: boolean) => void;
   selectedSampleHandler: (index: number) => void;
 };
 
@@ -228,6 +235,7 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
                   changeHandler={(value) =>
                     selectionChangeHandler(sample.sampleItemId, value)
                   }
+                  setShowDetailView={(value) => props.setShowDetailView(value)}
                   selectHandler={() => props.selectHandler(originalIndex)}
                   dragStartHandler={() => props.dragHandler(originalIndex)}
                   selectedSampleHandler={() =>
@@ -255,7 +263,9 @@ const WorkspaceSampleListPanel: React.FC<ListProps> = (props) => {
       )}
       {selectState && (
         <span className="text-white text-xl font-normal text-center">
-          {t("SelectedItemCount", { count: selectedItems.length })}
+          {selectedItems.length === 1
+            ? t("SelectedItemCount", { count: selectedItems.length })
+            : t("SelectedItemsCount", { count: selectedItems.length })}
         </span>
       )}
       <DeleteConfirmDialog2

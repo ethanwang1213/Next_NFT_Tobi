@@ -33,6 +33,10 @@ export const TPFW2024_STAMP_RALLY_KEYWORDS = {
   ReflectedInTheRiver: "TPFWEPT2024",
 };
 
+export const TPF2025_STAMP_RALLY_KEYWORDS = {
+  TobirapolisFestival2025: "くらすわーるど",
+};
+
 export const NON_FUNGIBLE_TOKEN_ADDRESS =
     process.env.FLOW_NETWORK === "mainnet" ? "1d7e57aa55817448" :
         process.env.FLOW_NETWORK === "testnet" ? "631e88ae7f1d7c20" :

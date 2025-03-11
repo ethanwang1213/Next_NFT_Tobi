@@ -10,18 +10,20 @@ import {
   Tpf2023StampType,
   Tmf2024StampType,
   Tpfw2024StampType,
+  Tpf2025StampType,
+  MintStatusType,
 } from "journal-pkg/types/stampRallyTypes";
 
 const mintNFT = async (
     name: string,
     description: string,
     userId: string,
-    type: Tpf2023StampType | CompleteStampType | Tmf2024StampType | Tpfw2024StampType,
+    type: Tpf2023StampType | CompleteStampType | Tmf2024StampType | Tpfw2024StampType | Tpf2025StampType,
     stampRallyEventType: StampRallyEventType,
     onComplete?: () => void
 ) => {
   const txDetails = await sendMintJournalStampRallyNftTx(name, description);
-  console.log({txDetails});
+  console.log(JSON.stringify({txDetails}));
   const events = txDetails.events;
 
   let imageUrl = null;
@@ -32,6 +34,8 @@ const mintNFT = async (
     imageUrl = `${process.env.TMF2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
   } else if (stampRallyEventType === "tpfw2024") {
     imageUrl = `${process.env.TPFW2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
+  } else if (stampRallyEventType === "tpf2025") {
+    imageUrl = `${process.env.TPF2025_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;  
   }
 
   if (!imageUrl) {
@@ -103,7 +107,21 @@ export const mintJournalStampRallyNftTask = functions.region(REGION).runWith({})
       const setData: { mintStatus: MintStatus } = {
         mintStatus: {
           TOBIRAPOLISFIREWORKS2024: {
-            [type as Tmf2024StampType]: "DONE",
+            [type as Tpfw2024StampType]: "DONE" as MintStatusType,
+          },
+        },
+      };
+      await recordNewActivity(userId, `${name} を獲得した`);
+      await firestore().collection("users").doc(userId).set(setData, {
+        merge: true,
+      });
+    });
+  } else if (event === "tpf2025") {
+    await mintNFT(name, description, userId, type, event, async () => {
+      const setData: { mintStatus: MintStatus } = {
+        mintStatus: {
+          TOBIRAPOLISFESTIVAL2025: {
+            [type as Tpf2025StampType]: "DONE" as MintStatusType,
           },
         },
       };

@@ -27,7 +27,7 @@ const Row3 = ({ label, children }) => {
   return (
     <div className="md:flex flex-row items-center py-4 w-full">
       <div className="sm:w-[40%] w-full flex-none flex flex-row items-center sm:justify-start justify-between">
-        <span className="text-base mr-4 md:text-wrap text-nowrap">{label}</span>
+        <span className="text-base mr-4 md:text-wrap">{label}</span>
         {label.length ? <OptionMark /> : <></>}
       </div>
       <div className="flex-auto break-all md:pl-10">{children}</div>
@@ -58,8 +58,6 @@ const ConfirmInformation = ({
   contentInfo,
   userInfo,
   copyrightInfo,
-  originalContentDeclaration,
-  setOriginalContentDeclaration,
 }) => {
   const copyrightFiles = () => {
     return [
@@ -165,23 +163,6 @@ const ConfirmInformation = ({
       <Row1 label={t("NoCopyrightInfringe")} wide={true}>
         <span className="">{t("Agree")}</span>
       </Row1>
-      <div className="flex flex-row justify-center items-center mt-6">
-        <input
-          id={"originalContentDeclaration"}
-          type={"checkbox"}
-          checked={originalContentDeclaration}
-          className="w-6 h-6 sm:mr-3 mr-1 outline-none"
-          onChange={(e) => setOriginalContentDeclaration(e.target.checked)}
-        />
-        <label
-          className={`font-medium text-[16px] ${
-            originalContentDeclaration ? "text-black" : "text-base-content"
-          }`}
-          htmlFor={"originalContentDeclaration"}
-        >
-          {t("DeclarationOfOriginal")}
-        </label>
-      </div>
     </div>
   );
 };

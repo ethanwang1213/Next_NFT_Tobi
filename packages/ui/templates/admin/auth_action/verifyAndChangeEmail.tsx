@@ -2,7 +2,12 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Button from "ui/atoms/Button";
 
-const VerifyAndChangeEmail = ({ restoredEmail }) => {
+interface VerifyAndChangeEmailProps {
+  restoredEmail: string;
+  lang: string;
+}
+
+const VerifyAndChangeEmail: React.FC<VerifyAndChangeEmailProps> = ({ restoredEmail, lang }) => {
   const t = useTranslations("Account");
 
   return (
@@ -30,7 +35,7 @@ const VerifyAndChangeEmail = ({ restoredEmail }) => {
           <Button
             className="btn btn-block w-[179px] h-[48px] px-[14px] py-[8px] bg-primary rounded-[12px]
               text-base-white text-[16px] md:text-[16px] sm:text-[9px] leading-3 font-normal hover:bg-primary hover:border-primary"
-            onClick={() => (window.location.href = "/admin/authentication")}
+            onClick={() => (window.location.href = `/admin/${lang}/authentication`)}
           >
             {t("ContinueButton")}
           </Button>

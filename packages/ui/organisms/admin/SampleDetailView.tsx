@@ -224,7 +224,7 @@ const SampleDetailView: React.FC<SampleDetailViewProps> = ({
       ) : (
         <div className="w-full h-full gap-6 flex flex-col justify-center items-center text-base-white">
           <span className="text-base font-semibold ">{data?.content.name}</span>
-          <span className="text-2xl font-bold text-center">
+          <span className="text-2xl font-bold text-center w-full truncate">
             {data ? data.name || t("ItemTitle") : ""}
           </span>
           <Image

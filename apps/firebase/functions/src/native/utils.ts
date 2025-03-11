@@ -38,6 +38,7 @@ export const flowAccountStatus = {
   success: 1,
   retrying: 2,
   error: 3,
+  idle: 4,
 };
 
 export const digitalItemStatus = {

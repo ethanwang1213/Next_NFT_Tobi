@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import CustomInput from "./CustomInput";
 
 registerLocale("ja", ja);
 
@@ -58,11 +59,9 @@ const BirthdayEditDialog = ({
             showYearDropdown
             dropdownMode="select"
             locale="ja"
-            className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none text-base-black text-sm leading-4 font-normal"
-            placeholderText="2022/05/21"
+            customInput={<CustomInput birthday={birthday} setBirthday={setBirthday} />}
             popperPlacement="top-start"
             popperClassName="custom-datepicker-popper"
-            isClearable
           />
         </div>
         <div className="modal-action flex justify-end gap-4">

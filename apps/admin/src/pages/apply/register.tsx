@@ -31,7 +31,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 
 const Register = () => {
   const t = useTranslations("TCP");
-  const switchLabels = [t("Content"), t("RegistrantInfo"), t("Other")];
+  const switchLabels = [t("Content"), t("Registrant"), t("Other")];
   const [switchValue, setSwitchValue] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const apiUrl = "native/my/business";
@@ -124,8 +124,6 @@ const Register = () => {
     },
   });
 
-  const [originalContentDeclaration, setOriginalContentDeclaration] =
-    useState(false);
 
   const [registerTcp, validateCopyrightFile, response, loading] =
     useTcpRegistration(setError);
@@ -308,8 +306,6 @@ const Register = () => {
   const isButtonDisabled = () => {
     if (switchValue === 2 && !checkCopyrightInfos()) {
       return true;
-    } else if (switchValue === 3 && !originalContentDeclaration) {
-      return true;
     }
     return false;
   };
@@ -358,8 +354,6 @@ const Register = () => {
               userInfo={userInfo}
               contentInfo={contentInfo}
               copyrightInfo={copyrightInfo}
-              originalContentDeclaration={originalContentDeclaration}
-              setOriginalContentDeclaration={setOriginalContentDeclaration}
             />
           )}
         </div>
@@ -377,7 +371,7 @@ const Register = () => {
             switchValue === 2
               ? t("Confirm")
               : switchValue === 3
-                ? t("Apply")
+                ? t("Submit")
                 : t("Next")
           }
           color={nextButtonColor()}
@@ -403,7 +397,7 @@ const LoadingButton = ({
 
   if (loading) {
     return (
-      <div className="w-[568px] h-14 mx-auto my-10 flex flex-row justify-center">
+      <div className="w-full md:w-[568px] h-14 mx-auto my-10 flex flex-row justify-center">
         <span className={"loading loading-spinner text-info loading-md"} />
       </div>
     );

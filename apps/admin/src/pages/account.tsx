@@ -346,7 +346,6 @@ export default function Index() {
         email: data?.email,
         icon: data?.icon,
         emailVerified: true,
-        hasTobiratoryAccount: true,
         hasFlowAccount: true,
         hasBusinessAccount: user.hasBusinessAccount,
       };
@@ -428,7 +427,7 @@ export default function Index() {
               className="rounded-full"
             />
             <button
-              className="text-[14px] bg-primary text-white font-normal rounded-lg px-3 py-[6px] w-[90px]"
+              className="text-[14px] bg-primary text-white font-normal rounded-lg px-1 py-[10px] w-[90px]"
               onClick={() => {
                 if (imageFileRef.current) {
                   imageFileRef.current.click();
@@ -448,17 +447,30 @@ export default function Index() {
               />
             </AccountFieldComponent>
             <AccountFieldComponent label={t("UserID")}>
-              <input
-                type="text"
-                className={`${valueClass} outline-none`}
-                value={data?.userId ? `@${data.userId}` : ""}
-                placeholder={t("UserIdNoSpaces")}
-                onChange={(e) => fieldChangeHandler("userId", e.target.value)}
-              />
+              <div>
+                <div className="flex items-center">
+                  <span>@</span>
+                  <input
+                    type="text"
+                    className={`${valueClass} outline-none`}
+                    value={data?.userId || ""}
+                    placeholder="user_1234567890"
+                    onChange={(e) =>
+                      fieldChangeHandler("userId", e.target.value)
+                    }
+                  />
+                </div>
+                  <p className="text-gray-500 text-xs
+                   mt-1">
+                    {t("UserIdNoSpaces")}
+                  </p>
+              </div>
             </AccountFieldComponent>
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
-                className={`${valueClass} h-[118px] outline-none resize-none`}
+                className={
+                  "text-[20px] font-normal flex-1 overflow-auto text-ellipsis h-[118px] outline-none resize-none"
+                }
                 value={data?.aboutMe || ""}
                 placeholder={t("NotSet")}
                 onChange={(e) => fieldChangeHandler("aboutMe", e.target.value)}
