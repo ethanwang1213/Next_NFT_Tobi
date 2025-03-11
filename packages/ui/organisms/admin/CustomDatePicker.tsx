@@ -18,9 +18,12 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   const timeZone = "Asia/Tokyo";
   const [selectedDate, setSelectedDate] = useState<Date>(initialDateTime);
   const getCurrentTokyoTimePlusTwoHours = () => {
+    const originalNow = new Date();
     const now = new Date();
     now.setHours(now.getHours() + 2);
-    return tzFormat(toZonedTime(now, timeZone), "HH:mm", { timeZone });
+
+    const targetDate = originalNow < initialDateTime ? initialDateTime : now;
+    return tzFormat(toZonedTime(targetDate, timeZone), "HH:mm", { timeZone });
   };
   const [time, setTime] = useState<string>(getCurrentTokyoTimePlusTwoHours());
 
@@ -28,6 +31,11 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 
   useEffect(() => {
     const originalNow = new Date();
+
+    if (originalNow < initialDateTime) {
+      return;
+    }
+
     const now = new Date(originalNow);
     now.setHours(now.getHours() + 2);
 
