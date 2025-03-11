@@ -20,7 +20,7 @@ export const getAccountById = async (req: Request, res: Response) => {
         res.status(404).send({
           status: "error",
           data: {
-            "type": "account-not-exists"
+            "type": "account-not-exists",
           },
         });
         return;
@@ -37,7 +37,7 @@ export const getAccountById = async (req: Request, res: Response) => {
         res.status(401).send({
           status: "error",
           data: {
-            "type": "flow-account-not-exists"
+            "type": "flow-account-not-exists",
           },
         });
         return;
@@ -49,7 +49,7 @@ export const getAccountById = async (req: Request, res: Response) => {
             res.status(401).send({
               status: "error",
               data: {
-                "type": "flow-address-creating"
+                "type": "flow-address-creating",
               },
             });
             return;
@@ -57,7 +57,7 @@ export const getAccountById = async (req: Request, res: Response) => {
             res.status(401).send({
               status: "error",
               data: {
-                "type": "flow-account-create-error"
+                "type": "flow-account-create-error",
               },
             });
             return;
@@ -65,7 +65,7 @@ export const getAccountById = async (req: Request, res: Response) => {
             res.status(401).send({
               status: "error",
               data: {
-                "type": "flow-account-retrying"
+                "type": "flow-account-retrying",
               },
             });
             return;
@@ -73,7 +73,7 @@ export const getAccountById = async (req: Request, res: Response) => {
             res.status(401).send({
               status: "error",
               data: {
-                "type": "flow-account-not-exists"
+                "type": "flow-account-not-exists",
               },
             });
             return;

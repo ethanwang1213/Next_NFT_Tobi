@@ -194,7 +194,10 @@ router.get("/participation", async (req: Request, res: Response) => {
       // skip: skip,
       // take: Number(pageSize),
       where: {
-        is_approved: false,
+        OR: [
+          {is_approved: false},
+          {is_approved: null},
+        ],
       },
       orderBy: {
         created_date_time: "asc",
