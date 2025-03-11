@@ -218,13 +218,13 @@ export const getInventoryData = async (req: Request, res: Response) => {
                 modelUrl: nft.digital_item.meta_model_url,
                 modelType: nft.digital_item.type,
                 materialUrl: nft.digital_item.material_image?.image,
-                content: nft.digital_item.account?.business?{
-                  name: nft.digital_item.account?.business.content?.name,
+                content: nft.digital_item.account.business?{
+                  name: nft.digital_item.account.business.content?.name,
                 }:null,
                 creator: {
-                  uuid: nft.digital_item.account?.uuid,
-                  username: nft.digital_item.account?.username,
-                  avatar: nft.digital_item.account?.icon_url,
+                  uuid: nft.digital_item.account.uuid,
+                  username: nft.digital_item.account.username,
+                  avatar: nft.digital_item.account.icon_url,
                 },
                 license: nft.digital_item.license,
                 mintedCount: nft.digital_item.minted_count,
@@ -335,13 +335,13 @@ export const getInventoryData = async (req: Request, res: Response) => {
               modelUrl: nft.digital_item.meta_model_url,
               modelType: nft.digital_item.type,
               materialUrl: nft.digital_item.material_image?.image,
-              content: nft.digital_item.account?.business?{
-                name: nft.digital_item.account?.business.content?.name,
+              content: nft.digital_item.account.business?{
+                name: nft.digital_item.account.business.content?.name,
               }:null,
               creator: {
-                uuid: nft.digital_item.account?.uuid,
-                username: nft.digital_item.account?.username,
-                avatar: nft.digital_item.account?.icon_url,
+                uuid: nft.digital_item.account.uuid,
+                username: nft.digital_item.account.username,
+                avatar: nft.digital_item.account.icon_url,
               },
               license: nft.digital_item.license,
               mintedCount: nft.digital_item.minted_count,
@@ -493,8 +493,8 @@ export const getBoxData = async (req: Request, res: Response) => {
             modelUrl: nft.digital_item.meta_model_url,
             modelType: nft.digital_item.type,
             materialUrl: nft.digital_item.material_image?.image,
-            content: nft.digital_item.account?.business?{
-              name: nft.digital_item.account?.business.content?.name,
+            content: nft.digital_item.account.business?{
+              name: nft.digital_item.account.business.content?.name,
             }:null,
             items: [
               {
@@ -646,8 +646,8 @@ export const openNFT = async (req: Request, res: Response) => {
           modelUrl: updatedNFT.digital_item.meta_model_url,
           modelType: updatedNFT.digital_item.type,
           materialUrl: updatedNFT.digital_item.material_image?.image,
-          content: updatedNFT.digital_item.account?.business?{
-            name: updatedNFT.digital_item.account?.business.content?.name,
+          content: updatedNFT.digital_item.account.business?{
+            name: updatedNFT.digital_item.account.business.content?.name,
           }:null,
           items: [
             {
@@ -874,8 +874,8 @@ export const moveNFT = async (req: Request, res: Response) => {
                 modelUrl: nft.digital_item.meta_model_url,
                 modelType: nft.digital_item.type,
                 materialUrl: nft.digital_item.material_image?.image,
-                content: nft.digital_item.account?.business?{
-                  name: nft.digital_item.account?.business.content?.name,
+                content: nft.digital_item.account.business?{
+                  name: nft.digital_item.account.business.content?.name,
                 }:null,
                 items: [
                   {

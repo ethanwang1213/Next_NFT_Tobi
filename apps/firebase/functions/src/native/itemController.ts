@@ -1405,8 +1405,8 @@ export const getDigitalItemInfo = async (req: Request, res: Response) => {
         modelUrl: digitalItemData.model_url,
         thumbUrl: digitalItemData.is_default_thumb ? digitalItemData.default_thumb_url : digitalItemData.custom_thumb_url,
         creator: {
-          uuid: digitalItemData.account?.uuid,
-          username: digitalItemData.account?.username,
+          uuid: digitalItemData.account.uuid,
+          username: digitalItemData.account.username,
         },
         copyrights: digitalItemData.copyrights.map((copy) => {
           return {

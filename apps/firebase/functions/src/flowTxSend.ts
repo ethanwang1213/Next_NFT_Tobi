@@ -525,8 +525,8 @@ const createItemAuthz = (digitalItemId: number) => async (account: any) => {
       }
 
       let dbCreatorName = "";
-      if (digitalItem.account?.business?.content) {
-        dbCreatorName = digitalItem.account?.business?.content.name;
+      if (digitalItem.account.business?.content) {
+        dbCreatorName = digitalItem.account.business?.content.name;
       } else {
         const user = await prisma.accounts.findUnique({
           where: {
@@ -650,7 +650,7 @@ const sendMintNFTTx = async (tobiratoryAccountUuid: string, itemCreatorAddress: 
     throw new functions.https.HttpsError("not-found", "The sample item does not exist.");
   }
   let creatorUuid = tobiratoryAccountUuid;
-  if (digitalItem.account?.business?.content) {
+  if (digitalItem.account.business?.content) {
     creatorUuid = digitalItem.account.business?.content.businesses_uuid;
   }
 
