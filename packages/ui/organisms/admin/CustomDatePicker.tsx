@@ -32,11 +32,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     now.setHours(now.getHours() + 2);
 
     if (now.getDate() !== originalNow.getDate()) {
-      setSelectedDate((prevDate) => {
-        const newDate = new Date(prevDate);
-        newDate.setDate(now.getDate());
-        return newDate;
-      });
+      setSelectedDate(new Date(now));
     }
   }, []);
 
