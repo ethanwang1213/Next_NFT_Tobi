@@ -1,9 +1,9 @@
 import * as sendgrid from "@sendgrid/mail";
 
 export const sendEmail = async (
-  address: string,
-  subject: string,
-  text: string,
+    address: string,
+    subject: string,
+    text: string,
 ) => {
   const sgAPIKey = process.env.SENDGRID_API_KEY || "SG.xxx";
   sendgrid.setApiKey(sgAPIKey);

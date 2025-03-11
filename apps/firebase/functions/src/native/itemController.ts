@@ -242,7 +242,6 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   }: { thumbUrl: string, modelUrl: string, croppedUrl?: string, materialId?: number, type: number } = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    console.log(decodedToken.provider_id="anonymous")
     try {
       if (decodedToken.provider_id == "anonymous") {
         await prisma.accounts.create({
