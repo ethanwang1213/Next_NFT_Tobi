@@ -24,6 +24,7 @@ export default function Index() {
   const { postData } = useRestfulAPI(null);
   const apiUrl = "native/admin/showcases";
   const [reload, setReload] = useState(0);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const t = useTranslations("Menu");
   const l = useTranslations("ContentShowcase");
@@ -32,15 +33,20 @@ export default function Index() {
     showcase: {
       label: l("NewShowcase"),
       clickHandler: () => {
+        setLoading(true);
         postData(apiUrl, {
           title: "The showcase title",
           description: "",
           templateId: 1,
-        }).then((response) => {
-          const showcaseId = response.id;
-          router.push(`/contents/showcase?id=${showcaseId}`);
-          setReload(reload + 1);
-        });
+        })
+          .then((response) => {
+            const showcaseId = response.id;
+            router.push(`/contents/showcase?id=${showcaseId}`);
+            setReload(reload + 1);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       },
     },
     brand: {
@@ -57,7 +63,16 @@ export default function Index() {
         <h1 className="font-semibold text-secondary text-3xl uppercase">
           {t("Content")}
         </h1>
-        <CreateButton {...(links[selectedTab] ?? links.showcase)} height={56} />
+        {loading ? (
+          <div className="h-14 mx-auto my-10 flex flex-row justify-center mr-28">
+            <span className={"loading loading-spinner text-info loading-md"} />
+          </div>
+        ) : (
+          <CreateButton
+            {...(links[selectedTab] ?? links.showcase)}
+            height={56}
+          />
+        )}
       </div>
       <div>
         <ContentsManageTab onTabChange={setSelectedTab} reload={reload} />

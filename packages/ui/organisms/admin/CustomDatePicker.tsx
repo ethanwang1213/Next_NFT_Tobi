@@ -1,7 +1,7 @@
 import { addMonths, endOfMonth, format, getDay, startOfMonth } from "date-fns";
 import { format as tzFormat, toZonedTime } from "date-fns-tz";
+import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-
 interface CustomDatePickerProps {
   onDateTimeChange: (date: Date) => void;
   onClose: () => void;
@@ -113,10 +113,10 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   return (
     <div
       ref={datePickerRef}
-      className="date-picker absolute bg-white border border-gray-300 rounded-2xl p-2.5 text-center mt-3"
+      className="w-[370px] h-[440px] date-picker absolute bg-white border border-gray-300 rounded-2xl p-2.5 text-center mt-3"
     >
       <div className="mb-3">
-        <div className="flex justify-start items-center mb-1 pl-3">
+        <div className="flex justify-start h-[44px] items-center mb-1 pl-3">
           <button onClick={() => handleMonthChange(-1)} className="font-bold">
             {" "}
             &lt;{" "}
@@ -128,9 +128,15 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             {" "}
             &gt;{" "}
           </button>
-          <div className="absolute right-5" onClick={() => onClose()}>
-            X
-          </div>
+          <button className="absolute right-5" onClick={() => onClose()}>
+            <Image
+              src="/admin/images/icon/close.svg"
+              width={12}
+              height={12}
+              alt="close icon"
+              className="invert text-base-black"
+            />
+          </button>
         </div>
         <div className="day-names grid my-1 text-sm grid-cols-7">
           {dayNames.map((day) => (
@@ -139,7 +145,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             </div>
           ))}
         </div>
-        <div className="days grid gap-1 grid-cols-7">
+        <div className="days grid gap-1 grid-cols-7 h-[240px]">
           {daysInMonth().map((day, index) => {
             const isPastDay =
               day &&
@@ -152,7 +158,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             return (
               <div
                 key={index}
-                className="flex items-center justify-center w-[44px] h-[44px]"
+                className="flex items-center justify-center w-[35px] h-[35px]"
               >
                 {day && (
                   <button
@@ -183,7 +189,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             type="time"
             value={time}
             onChange={handleTimeChange}
-            className="w-22 bg-[#7878801F] text-center py-1 px-[10px] rounded-[6px] border-none outline-none"
+            className="w-22 bg-[#7878801F] text-center py-1 px-[10px] rounded-[6px] border-none outline-none hover:cursor-pointer"
           />
         </div>
       </div>

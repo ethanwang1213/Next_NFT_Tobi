@@ -202,7 +202,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
       ? changeStatus(ShowcaseStatus.ScheduledPublic)
       : changeStatus(prevStatus);
   };
-
+  const isPublic = status === ShowcaseStatus.Public || false;
   return (
     <div className="flex flex-col gap-2">
       <div
@@ -291,7 +291,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         <div
           className="absolute bottom-[12px] right-[13px] flex flex-row-reverse justify-between z-20"
           ref={popupRef}
-          onClick={status !== ShowcaseStatus.Public ? handleClick : undefined}
+          onClick={handleClick}
         >
           <div
             className={`rounded-[27px] p-0 flex justify-between items-center
@@ -316,7 +316,6 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
             >
               {getStatusLabel()}
             </button>
-            {status != ShowcaseStatus.Public && (
               <button className="w-8 flex justify-center items-center relative py-1">
                 <Image
                   src="/admin/images/icon/down-arrow-icon.svg"
@@ -328,7 +327,6 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
                   }`}
                 />
               </button>
-            )}
           </div>
 
           {isMenuOpen && (
@@ -336,6 +334,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
               <ShowcaseEditMenu
                 clickHandler={statusChangeHandler}
                 status={status}
+                isPublic={isPublic}
               />
             </div>
           )}

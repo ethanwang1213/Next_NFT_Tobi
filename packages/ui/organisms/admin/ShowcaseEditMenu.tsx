@@ -24,12 +24,16 @@ const menuItems = [
   { type: "menu", icon: "delete-icon.svg", text: "Delete", color: "error" },
 ];
 
-const ShowcaseEditMenu = ({
-  clickHandler,
-  status,
-}: {
+interface ShowcaseEditMenuProps {
   clickHandler: (index: number) => void;
   status: number;
+  isPublic: boolean;
+}
+
+const ShowcaseEditMenu: React.FC<ShowcaseEditMenuProps> = ({
+  clickHandler,
+  status,
+  isPublic,
 }) => {
   const t = useTranslations("ContentShowcase");
   const getIndexFromStatus = (status: number) => {
@@ -44,13 +48,16 @@ const ShowcaseEditMenu = ({
         return -1;
     }
   };
+  const filteredMenuItems = isPublic
+  ? menuItems.filter(item => item.text !== "Schedule")
+  : menuItems;
 
   return (
     <ul
       className="w-52 rounded bg-white z-30"
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >
-      {menuItems.map((item, index) => {
+      {filteredMenuItems.map((item, index) => {
         return item.type == "menu" ? (
           <li
             key={`item-menu-${index}`}
