@@ -73,7 +73,7 @@ export const signUp = async (req: Request, res: Response) => {
           is_deleted: false,
         },
         update: {},
-        create: {...userData, first_saidan_id: 0},
+        create: userData,
       });
       const saidanTemplates = await prisma.saidans_template.findFirst({
         where: {

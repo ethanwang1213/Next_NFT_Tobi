@@ -35,7 +35,7 @@ const mintNFT = async (
   } else if (stampRallyEventType === "tpfw2024") {
     imageUrl = `${process.env.TPFW2024_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
   } else if (stampRallyEventType === "tpf2025") {
-    imageUrl = `${process.env.TPF2025_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;  
+    imageUrl = `${process.env.TPF2025_STAMP_IMAGE_URL}${type.toLowerCase()}.png`;
   }
 
   if (!imageUrl) {

@@ -243,6 +243,16 @@ export const createDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
+      if (decodedToken.provider_id == "anonymous") {
+        await prisma.accounts.create({
+          data: {
+            uuid: uid,
+            email: Date.now().toString() + "@anonymous.com",
+            username: "anonymous",
+            user_id: Date.now().toString(),
+          },
+        });
+      }
       const content = await prisma.contents.findUnique({
         where: {
           businesses_uuid: uid,
