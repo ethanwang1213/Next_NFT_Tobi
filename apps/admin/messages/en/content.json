@@ -14,7 +14,9 @@
     "Delete": "Delete"
   },
   "ContentBrand": {
-    "ContentImage": "Content Image",
+    "ContentImage": "Content Banner",
+    "ContentIcon": "Content Icon",
+    "Description": "For best results, use an image that is at least 100x100 pixels and no more than 4MB in size. Accepted file formats are PNG, JPEG, or GIF (non-animated).",
     "ImageGuidelines": "For best results, use an image that is at least 320x100 pixels and no more than 4MB in size. Accepted file formats are PNG, JPEG, or GIF (non-animated).",
     "OfficialMerchandiseSticker": "Official merchandise sticker",
     "MerchandiseImageGuidelines": "For best results, use an image that is at least 500x500 pixels and no more than 4MB in size. Accepted file formats are PNG or GIF (non-animated).",
