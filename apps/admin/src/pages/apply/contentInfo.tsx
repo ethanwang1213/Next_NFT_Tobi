@@ -17,24 +17,25 @@ const Row1 = ({
 }) => {
   return (
     <div className="flex flex-col md:flex-row gap-4 sm:py-4 sm:p1-6 py-3">
-      <div
-        className="w-full md:w-1/3"        
-      >
+      <div className="w-full md:w-1/3">
         <div className="flex-none flex flex-row items-center justify-between">
           <span className="text-base mr-4">{label ? label : ""}</span>
           {optional ? <OptionMark /> : <RequireMark />}
         </div>
-        {description ? (
+        {description && (
           <div className="flex gap-1 items-start">
-            <Image
-              src="/admin/images/info-icon-2.svg"
-              width={16}
-              height={16}
-              alt="information"
-            />
+            <span className="shrink-0 text-[12px] leading-[1.3]">
+              <Image
+                src="/admin/images/info-icon-2.svg"
+                width={16}
+                height={16}
+                alt="information"
+                className="inline-block"
+              />
+            </span>
             <span className="text-[12px]">{description}</span>
           </div>
-        ) : null}
+        )}
       </div>
       <div className="w-full">{children}</div>
     </div>
