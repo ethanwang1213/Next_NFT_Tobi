@@ -48,7 +48,7 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
           placeholder={user?.email}
           disabled={true}
           className={
-            "rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            "rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
           }
         />
         <div className={"mt-[10px]"}>
