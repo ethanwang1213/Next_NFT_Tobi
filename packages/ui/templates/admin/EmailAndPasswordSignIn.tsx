@@ -51,14 +51,14 @@ const EmailAndPasswordSignIn = ({
             type={"text"}
             value={email}
             disabled={true}
-            className="rounded-lg bg-disabled-field base-200-content font-normal w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-disabled-field base-200-content font-normal w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
           />
           <div className="relative mt-[40px]">
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               placeholder="Password"
-              className="rounded-lg base-content font-normal w-[408px] h-[52px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+              className="rounded-lg base-content font-normal w-[408px] h-[52px] px-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
               onChange={(e) => setPassword(e.target.value)}
             />
             <button

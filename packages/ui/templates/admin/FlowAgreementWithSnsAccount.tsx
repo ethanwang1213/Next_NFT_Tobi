@@ -48,11 +48,11 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
           placeholder={user?.email}
           disabled={true}
           className={
-            "rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            "rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
           }
         />
-        <div className={"mt-[30px]"}>
-          <AboutFlowAccount />
+        <div className={"mt-[10px]"}>
+          <LoginWithAnotherAccount />
         </div>
         <div className={"mt-[100px]"}>
           <TermsOfService
@@ -73,13 +73,14 @@ const FlowAgreementWithSnsAccount = ({ user, onClickRegister }: Props) => {
   );
 };
 
-const AboutFlowAccount = () => {
+export const LoginWithAnotherAccount = () => {
   const t = useTranslations("LogInSignUp");
   return (
-    <InfoLink
-      url={"https://www.tobiratory.com/about"}
-      text={t("LinkFlowAccountInfo")}
-    />
+    <button className="btn btn-link" onClick={() => auth.signOut()}>
+      <span className="text-primary text-center text-[12px] font-semibold">
+        {t("LoginWithAnotherAccount")}
+      </span>
+    </button>
   );
 };
 

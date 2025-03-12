@@ -1,11 +1,11 @@
 import { faApple } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import Button from "ui/atoms/Button";
 import EmailTextField from "ui/atoms/EmailTextField";
 import LanguageSwitch from "../organisms/admin/LanguageSwitch";
-import { useTranslations } from "next-intl";
 
 export type LoginFormType = {
   email: string;
@@ -43,7 +43,7 @@ const AuthTemplate = ({
       email: "",
     },
   });
-  const t = useTranslations('LogInSignUp');
+  const t = useTranslations("LogInSignUp");
   return (
     <div>
       <div className="flex items-center justify-center p-8 flex-col">
@@ -72,8 +72,8 @@ const AuthTemplate = ({
           </div>
           <div className="w-[408px]">
             <EmailTextField
-              placeholder={t('Email')}
-              className="rounded-xl base-content font-normal w-[408px] h-[48px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+              placeholder={t("Email")}
+              className="rounded-xl base-content font-normal w-[408px] h-[48px] px-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
               register={register}
             />
             <div className={"text-right"}>

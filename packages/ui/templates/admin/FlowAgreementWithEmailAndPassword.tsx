@@ -189,7 +189,7 @@ const FlowAgreementWithEmailAndPassword = ({
             type={showPassword ? "text" : "password"}
             placeholder={t("Password")}
             value={passwordStatus.password}
-            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-slate-100 w-[408px] h-[52px] px-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
             onChange={(e) => {
               validatePassword(e.target.value);
             }}
@@ -212,7 +212,7 @@ const FlowAgreementWithEmailAndPassword = ({
             type={showConfirmPassword ? "text" : "password"}
             placeholder={t("ReEnter")}
             value={passwordConfirmationStatus.password}
-            className="rounded-lg bg-slate-100 w-[408px] h-[52px] pl-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-slate-100 w-[408px] h-[52px] px-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
             onChange={(e) => {
               validatePasswordConfirmation(
                 passwordStatus.password,
