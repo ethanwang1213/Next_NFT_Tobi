@@ -1,8 +1,8 @@
 import { useAuth } from "contexts/AdminAuthProvider";
-import { auth } from "fetchers/firebase/client";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Button from "ui/atoms/Button";
+import { LoginWithAnotherAccount } from "ui/templates/admin/FlowAgreementWithSnsAccount";
 
 type Props = {
   registered: boolean;
@@ -24,13 +24,11 @@ const FlowRegister = ({ registered, error, onClickRegister }: Props) => {
           onClickRegister={onClickRegister}
         />
       </div>
-      <div className="flex items-end grow">
-        <button className="btn btn-link" onClick={() => auth.signOut()}>
-          <span className="text-primary text-center text-[12px] font-semibold">
-            {t("LoginWithAnotherAccount")}
-          </span>
-        </button>
-      </div>
+      {error && (
+        <div className="flex items-end grow">
+          <LoginWithAnotherAccount />
+        </div>
+      )}
     </div>
   );
 };
@@ -71,7 +69,11 @@ const ProcessingStatus = ({
           </>
         )}
       </div>
-      <div className={"font-medium text-[14px] mt-[15px]"}>
+      <div
+        className={`font-medium text-[14px] ${
+          error ? "text-center" : ""
+        } mt-[15px]`}
+      >
         {error
           ? t("FailedMessageToCreateFlowAccount")
           : t("FlowAccountCreationNotice")}
