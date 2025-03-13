@@ -5,11 +5,10 @@ import {
 import { auth } from "fetchers/firebase/client";
 import { sendPasswordResetEmail } from "firebase/auth";
 import usePasswordReauthentication from "hooks/usePasswordReauthentication";
-import { getNormalLocale} from "types/localeTypes";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "types/adminTypes";
-import { getPathWithLocale } from "types/localeTypes";
+import { getNormalLocale, getPathWithLocale } from "types/localeTypes";
 import Button from "ui/atoms/Button";
 import FirebaseAuthError from "ui/atoms/FirebaseAuthError";
 import Loading from "ui/atoms/Loading";
@@ -92,7 +91,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
           type={"text"}
           value={getMailAddressOfPasswordAccount()}
           disabled={true}
-          className="rounded-[16px] bg-disabled-field base-200-content text-[16px] font-normal w-[408px] h-[52px] mt-[10px] pl-[16px] placeholder:text-center input-bordered shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]"
+          className="rounded-[16px] bg-disabled-field base-200-content text-[16px] font-normal w-[408px] h-[52px] mt-[10px] px-[16px] placeholder:text-center input-bordered shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]"
         />
       </div>
       <div className="w-[408px] h-[52px] mt-[48px]">
@@ -100,7 +99,7 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
           type={"password"}
           value={password}
           placeholder={t("PromptPassword")}
-          className="rounded-[16px] bg-base-100 text-[16px] text-secondary font-normal w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_4px_8px_0_rgb(0,0,0,0.5)]"
+          className="rounded-[16px] bg-base-100 text-[16px] text-secondary font-normal w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_4px_8px_0_rgb(0,0,0,0.5)]"
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
