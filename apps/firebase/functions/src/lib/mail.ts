@@ -10,7 +10,6 @@ export const sendEmail = async (
   const mailOptions = {
     from: process.env.SENDGRID_SENDER_EMAIL || "",
     to: address,
-    bcc: process.env.SENDGRID_SENDER_EMAIL || "",
     subject: subject,
     text: text,
   };
