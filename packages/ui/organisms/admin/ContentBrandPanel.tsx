@@ -20,15 +20,19 @@ const ContentBrandPanel = ({
     useRestfulAPI(apiUrl);
   const t = useTranslations("ContentBrand");
 
+  const contentIconFileRef = useRef(null);
   const contentImageFileRef = useRef(null);
   const stickerImageFileRef = useRef(null);
 
+  const iconCropDlgRef = useRef(null);
   const imageCropDlgRef = useRef(null);
   const stickerCropDlgRef = useRef(null);
 
   const [activeImageFlag, setActiveImageFlag] = useState(false);
+  const [activeIconFlag, setActiveIconFlag] = useState(false);
   const modifiedRef = useRef(false);
 
+  const [tempIconUrlContent, setTempIconUrlContent] = useState(null);
   const [tempImageUrlContent, setTempImageUrlContent] = useState(null);
   const [tempImageUrlSticker, setTempImageUrlSticker] = useState(null);
 
@@ -44,19 +48,14 @@ const ContentBrandPanel = ({
     const submitHandler = async () => {
       const submitData = {
         image: data.image,
+        icon: data.icon,
         sticker: data.sticker,
       };
-      if (submitData.image != dataRef.current.image) {
-        submitData.image = await uploadImage(
-          submitData.image,
-          ImageType.ContentBrand,
-        );
-      }
-      if (submitData.sticker != dataRef.current.sticker) {
-        submitData.sticker = await uploadImage(
-          submitData.sticker,
-          ImageType.ContentBrand,
-        );
+      const imageFields = ['image', 'icon', 'sticker'];
+      for (const field of imageFields) {
+        if (submitData[field] !== dataRef.current[field]) {
+          submitData[field] = await uploadImage(submitData[field], ImageType.ContentBrand);
+        }
       }
       if (await putData(apiUrl, submitData, [])) {
         modifiedRef.current = false;
@@ -73,7 +72,7 @@ const ContentBrandPanel = ({
 
   const checkUploadFile = (file) => {
     const fileExtension = file.name.split(".").pop().toLowerCase();
-    if (activeImageFlag) {
+    if (activeImageFlag || activeIconFlag) {
       if (!["png", "gif", "jpg", "jpeg"].includes(fileExtension)) {
         toast("Please select PNG, JPEG or GIF(non-animated) file.");
         return false;
@@ -91,8 +90,15 @@ const ContentBrandPanel = ({
     return true;
   };
 
-  const checkUploadImage = (flag, width, height) => {
-    if (flag) {
+  const checkUploadImage = (activeImageFlag, activeIconFlag, width, height) => {
+    if (activeIconFlag) {
+      if (width < 100 || height < 100) {     
+        toast("Please select an image of at least 100x100 size.");
+        return false;
+      }
+      return true
+    }
+    else if (activeImageFlag) {
       if (width < 320 || height < 100) {
         toast("Please select an image of at least 320x100 size.");
         return false;
@@ -113,8 +119,12 @@ const ContentBrandPanel = ({
       const imageUrl = URL.createObjectURL(file);
       const img = new Image();
       img.onload = function () {
-        if (!checkUploadImage(activeImageFlag, img.width, img.height)) return;
-        if (activeImageFlag) {
+        if (!checkUploadImage(activeImageFlag, activeIconFlag, img.width, img.height)) return;
+        if (activeIconFlag) {
+          setTempIconUrlContent(imageUrl);
+          iconCropDlgRef.current.showModal();
+        }
+        else if (activeImageFlag) {
           setTempImageUrlContent(imageUrl);
           imageCropDlgRef.current.showModal();
         } else {
@@ -158,6 +168,7 @@ const ContentBrandPanel = ({
               className="text-xs font-medium text-primary"
               onClick={() => {
                 setActiveImageFlag(true);
+                setActiveIconFlag(false);
                 if (data.image) {
                   imageCropDlgRef.current.showModal();
                 } else {
@@ -179,6 +190,58 @@ const ContentBrandPanel = ({
             </button>
           </div>
         </div>
+
+        <div className="flex flex-col gap-2 mt-3">
+          <h2 className="text-secondary text-2xl font-bold">
+            {t("ContentIcon")}
+          </h2>
+          <span className="text-neutral-400 text-xs font-medium py-2">
+            {t("Description")}
+          </span>
+          <div className="flex items-end gap-12">
+            <div className="flex justify-center w-80">
+            {data.icon ? (
+              <NextImage
+                src={data.icon}
+                width={100}
+                height={100}
+                alt="content icon"
+                className="rounded-full max-w-[100px] max-h-[100px]"
+              />
+            ) : (
+              <div
+                style={{ width: 100, height: 100 }}
+                className="rounded-full border-2 border-primary-400 border-dashed"
+              ></div>
+            )}
+            </div>
+            <button
+              className="text-xs font-medium text-primary"
+              onClick={() => {
+                setActiveIconFlag(true);
+                setActiveImageFlag(false);
+                if (data.icon) {
+                  iconCropDlgRef.current.showModal();
+                } else {
+                  contentIconFileRef.current.click();
+                }
+              }}
+            >
+              {data.icon ? t("Change") : t("Upload")}
+            </button>
+            <button
+              className="text-xs font-medium text-primary"
+              onClick={() => {
+                setData({ ...data, ["icon"]: "" });
+                modifiedRef.current = true;
+                changeHandler();
+              }}
+            >
+              {t("Delete")}
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-2">
           <h2 className="text-secondary text-2xl font-bold">
             {t("OfficialMerchandiseSticker")}
@@ -227,6 +290,7 @@ const ContentBrandPanel = ({
               className="text-xs font-medium text-primary"
               onClick={() => {
                 setActiveImageFlag(false);
+                setActiveIconFlag(false);
                 if (data.sticker) {
                   stickerCropDlgRef.current.showModal();
                 } else {
@@ -249,6 +313,13 @@ const ContentBrandPanel = ({
           </div>
         </div>
         <input
+          ref={contentIconFileRef}
+          type="file"
+          accept=".png, .jpg, .jpeg, .gif"
+          onChange={(e) => handleFileInputChange(e)}
+          className="hidden"
+        />
+        <input
           ref={contentImageFileRef}
           type="file"
           accept=".png, .jpg, .jpeg, .gif"
@@ -261,6 +332,19 @@ const ContentBrandPanel = ({
           accept=".png, .gif"
           onChange={(e) => handleFileInputChange(e)}
           className="hidden"
+        />
+        <ImageCropDialog
+          initialValue={data.icon || tempIconUrlContent}
+          dialogRef={iconCropDlgRef}
+          aspectRatio={1}
+          cropHandler={(image) => {
+            setData({ ...data, ["icon"]: image });
+            modifiedRef.current = true;
+            changeHandler();
+            setTempIconUrlContent(null);
+          }}
+          circle={true}
+          classname="w-[520px]"
         />
         <ImageCropDialog
           initialValue={data.image || tempImageUrlContent}
