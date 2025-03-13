@@ -88,7 +88,7 @@ const BirthdayEditDialog = ({
                     day: "numeric",
                   }),
                 );
-              }
+              } else ( changeHandler(null))
               dialogRef.current.close();
             }}
           >
