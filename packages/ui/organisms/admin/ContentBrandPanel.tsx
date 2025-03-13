@@ -156,7 +156,7 @@ const ContentBrandPanel = ({
                 width={320}
                 height={100}
                 alt="content image"
-                className="rounded-x1 max-w-[320px] max-h-[100px]"
+                className="rounded-xl max-w-[320px] max-h-[100px]"
               />
             ) : (
               <div
