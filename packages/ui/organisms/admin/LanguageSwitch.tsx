@@ -6,7 +6,6 @@ import { DefaultLocale, Locale } from "types/localeTypes";
 import ColorizedSvg from "ui/atoms/ColorizedSvg";
 
 const LanguageSwitch = () => {
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { locale, route } = useRouter();
@@ -22,6 +21,10 @@ const LanguageSwitch = () => {
     setSelectedLanguage(language);
     setIsOpen(false);
   };
+  
+  useEffect(() => {
+    setSelectedLanguage(locale);
+  }, [locale]);
 
   useEffect(() => {
     // Close the dropdown when clicking outside

@@ -56,7 +56,7 @@ const SpSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <div className="flex flex-row items-center pl-[14px] py-6">
             <div>
               <Image
-                src="/admin/images/icon/profile.svg"
+                 src={user.icon || "/admin/images/icon/profile.svg"}
                 alt={"profile image"}
                 width={36}
                 height={36}
