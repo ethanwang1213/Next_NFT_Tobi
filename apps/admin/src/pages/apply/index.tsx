@@ -104,7 +104,7 @@ const Index = () => {
       </div>
       <Button
         type="button"
-        className={`text-[16px] bg-primary text-white rounded-[88px] py-4 px-8 mt-16`}
+        className={`text-[16px] bg-primary text-white rounded-[88px] py-3 sm:py-4 px-5 sm:px-8 mt-16`}
         onClick={handleButtonClick}
       >
         {t("Program")}

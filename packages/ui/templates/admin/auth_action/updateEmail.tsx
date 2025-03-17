@@ -44,8 +44,8 @@ const UpdateEmail = ({
   return check ? (
     <CheckEmail email={email} />
   ) : (
-    <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
-      <div className="w-[1000px] h-[600px]">
+    <div className="flex grow w-full py-20 justify-center items-center">
+      <div className="w-full lg:w-[1000px] h-[600px]">
         <div className="flex justify-center w-full h-[302px]">
           <Image
             src="/admin/images/updateEmail.svg"

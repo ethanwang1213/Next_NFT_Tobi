@@ -16,17 +16,17 @@ const mainImageSizes: Record<string, { width: number; height: number }> = {
 
 const getImageSize = (
   sizeMap: Record<string, { width: number; height: number }>,
-  status: string
+  status: string,
 ) => sizeMap[status] || { width: 285, height: 386 };
 
 const StatusErrors = ({ status }: StatusErrorsProps) => {
   const t = useTranslations(`error_${status}`);
   const list = t.raw("list");
   const mainImage = getImageSize(mainImageSizes, status);
-  
+
   return (
     <div className="flex min-h-screen justify-center items-center font-mplus px-4">
-      <div className="w-screen md:w-[1000px] h-[600px] py-10 sm:p-0 flex md:flex-row justify-between gap-6">
+      <div className="w-screen lg:max-w-[1000px] h-[600px] py-10 sm:p-0 flex md:flex-row justify-between gap-6">
         <div className="flex flex-col w-full md:w-1/2 relative">
           <Image
             src={`/admin/images/error/${status}_text.svg`}

@@ -14,19 +14,19 @@ const ConfirmationSent = ({ onClickBack }: Props) => {
         <div className={"w-full"}>
           <BackLink hideText={true} onClickBack={onClickBack} />
         </div>
-        <div className={"font-bold text-[40px]"}>
+        <div className={"font-bold text-xl sm:text-[40px]"}>
           {t("ConfirmationEmailSent")}
         </div>
         <Image
           src={"/admin/images/mail.svg"}
           alt={"sent mail"}
-          width={329}
+          width={320}
           height={282}
           className={"mt-[100px]"}
         />
         <div
           className={
-            "w-[463px] mt-[50px] font-medium text-[20px] text-base-content text-center"
+            "w-full sm:w-[463px] mt-[50px] font-medium text-sm sm:text-[20px] text-base-content text-center"
           }
         >
           {t("CheckEmail")}
