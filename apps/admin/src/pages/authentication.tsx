@@ -177,6 +177,7 @@ const Authentication = () => {
   const withMailSignIn = async (email: string, password: string) => {
     setIsEmailLoading(true);
     try {
+      const uid = auth.currentUser?.uid;
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -187,6 +188,10 @@ const Authentication = () => {
         await sendEmailOwnershipVerification(
           `admin/${LocalePlaceholder}/auth/sns_auth`,
         );
+      } else {
+        if (user.uid === uid) {
+          router.push("/");
+        }
       }
     } catch (error) {
       const errorCode = error.code;
@@ -204,8 +209,12 @@ const Authentication = () => {
     const provider = new GoogleAuthProvider();
 
     try {
-      await signInWithPopup(auth, provider);
+      const uid = auth.currentUser?.uid;
+      const credential = await signInWithPopup(auth, provider);
       setIsLoading(true);
+      if (credential.user.uid === uid) {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Googleログインに失敗しました。", error);
     }
@@ -219,8 +228,12 @@ const Authentication = () => {
     const provider = new OAuthProvider("apple.com");
 
     try {
-      await signInWithPopup(auth, provider);
+      const uid = auth.currentUser?.uid;
+      const credential = await signInWithPopup(auth, provider);
       setIsLoading(true);
+      if (credential.user.uid == uid) {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Appleログインに失敗しました。", error);
     }
