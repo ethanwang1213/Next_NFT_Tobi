@@ -475,7 +475,7 @@ export const getContentByUuid = async (req: Request, res: Response) => {
 
 export const updateMyContentInfo = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
-  const {name, description, license, copyrightHolders, image, sticker}:
+  const {name, description, license, copyrightHolders, image, sticker, icon}:
     { name?: string, description?: string, license?: {
       com: boolean,
       adp: boolean,
@@ -483,7 +483,10 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
       dst: boolean,
       mer: boolean,
       ncr: boolean,
-    }, copyrightHolders?: {id: number|null, name: string}[], image?: string, sticker?: string } = req.body;
+    }, copyrightHolders?: {id: number|null, name: string}[],
+    image?: string,
+    sticker?: string,
+    icon?: string,} = req.body;
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     try {
       const uid = decodedToken.uid;
@@ -539,6 +542,7 @@ export const updateMyContentInfo = async (req: Request, res: Response) => {
           },
           image: image,
           sticker: sticker,
+          icon: icon,
           changed_name_time: name==undefined?undefined:new Date(),
         },
         include: {
