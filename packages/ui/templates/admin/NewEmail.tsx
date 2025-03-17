@@ -36,40 +36,40 @@ const NewEmail = ({
 
   return (
     <ReauthTemplate position={Position.Top} onClickBack={onClickBack}>
-      <div className="flex w-[780px] h-[80px] flex-col justify-center shrink-0 mt-[50px]">
-        <span className="text-secondary text-center text-[32px] font-bold leading-[normal]">
+      <div className="flex w-full sm:w-[780px] h-[80px] flex-col justify-center shrink-0 mt-[50px]">
+        <span className="text-secondary text-center text-2xl sm:text-[32px] font-bold leading-[normal]">
           {t("AccountNewEmail.Title")}
         </span>
         <br />
       </div>
-      <div className="w-[408px] h-[32px] shrink-0 mt-[71px]">
+      <div className="w-full sm:w-[408px] h-[32px] shrink-0 mt-[71px]">
         <span className="text-secondary text-[16px] font-medium">
           {t("Label.EmailAddress")}
         </span>
       </div>
-      <div className="w-[408px] h-[52px] shrink-0">
+      <div className="w-full sm:w-[408px] h-[52px] shrink-0">
         <input
           type="text"
           value={auth.currentUser.email}
           disabled={true}
-          className="rounded-[16px] bg-disabled-field base-200-content text-[16px] font-normal w-[408px] h-[52px] pl-[16px] placeholder:text-center input-bordered shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]"
+          className="rounded-[16px] bg-disabled-field base-200-content text-[16px] font-normal w-full sm:w-[408px] h-[52px] pl-[16px] placeholder:text-center input-bordered shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]"
         />
       </div>
-      <div className="w-[408px] h-[32px] shrink-0 mt-[48px]">
+      <div className="w-full sm:w-[408px] h-[32px] shrink-0 mt-[48px]">
         <span className="text-secondary text-[16px] font-medium">
           {t("Account.NewEmailAddress")}
         </span>
       </div>
-      <div className="w-[408px] h-[52px]">
+      <div className="w-full sm:w-[408px] h-[52px]">
         <input
           type="text"
           value={email}
           placeholder="@example.com"
-          className="rounded-[16px] bg-base-100 text-[16px] text-secondary font-normal w-[408px] h-[52px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_4px_8px_0_rgb(0,0,0,0.5)]"
+          className="rounded-[16px] bg-base-100 text-[16px] text-secondary font-normal w-full sm:w-[408px] h-[52px] pl-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_4px_8px_0_rgb(0,0,0,0.5)]"
           onChange={(e) => handleChangeEmail(e.target.value)}
         />
       </div>
-      <div className="w-[408px] h-[52px] mt-[20px] text-right">
+      <div className="w-full sm:w-[408px] h-[52px] mt-[20px] text-right">
         {email && <Error error={error || authError} />}
       </div>
       <div className="flex justify-center gap-4 mt-[20px] w-[179px] h-[48px] shrink-0">

@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 type Props = {
   hideText?: boolean;
@@ -13,7 +13,7 @@ const BackLink = ({ hideText, onClickBack }: Props) => {
       className="btn-link no-underline text-base-content"
       onClick={onClickBack}
     >
-      <div className={"flex flex-row mb-[60px]"}>
+      <div className={"flex flex-row mb-[60px] mt-12"}>
         <Image
           src={"/admin/images/left-arrow.svg"}
           alt={"back"}
@@ -22,7 +22,7 @@ const BackLink = ({ hideText, onClickBack }: Props) => {
         />
         {!hideText && (
           <div className={"font-medium text-[20px] ml-[10px] text-nowrap"}>
-            {t('Back')}
+            {t("Back")}
           </div>
         )}
       </div>

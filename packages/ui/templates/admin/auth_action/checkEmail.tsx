@@ -4,8 +4,8 @@ import Image from "next/image";
 const CheckEmail = ({ email }) => {
   const t = useTranslations("Account");
   return (
-    <div className="flex grow w-full py-[210px] lg:py-[30px] md:py-[10px] sm:py-[5px] justify-center items-center">
-      <div className="w-[1000px] h-[600px]">
+    <div className="flex grow w-full justify-center items-center">
+      <div className="w-full lg:w-[1000px] h-[600px]">
         <div className="flex justify-center w-full h-[302px]">
           <Image
             src="/admin/images/checkEmail.svg"
@@ -15,10 +15,10 @@ const CheckEmail = ({ email }) => {
             className="mt-[50px] text-base-primary"
           />
         </div>
-        <div className="text-base-content text-center text-[32px] md:text-[28px] sm:text-[24px] font-bold mt-[33px]">
+        <div className="text-2xl sm:text-[32px] font-bold mt-[33px]">
           {t("CheckEmail")}
         </div>
-        <div className="text-base-content leading-[2] text-center text-[18px] md:text-[16px] sm:text-[14px] mt-[24px]">
+        <div className="text-base-content leading-[2] text-center text-md sm:text-lg mt-[24px]">
           {t("CheckEmailNote_1")}
           &nbsp;{" "}
           <span

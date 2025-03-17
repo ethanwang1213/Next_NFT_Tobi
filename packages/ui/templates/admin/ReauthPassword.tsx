@@ -80,30 +80,30 @@ const Reauth = ({ error, onClickPasswordReset, onClickBack, onClickNext }) => {
 
   return (
     <ReauthTemplate position={Position.Top} onClickBack={onClickBack}>
-      <div className="flex w-[780px] h-[80px] flex-col justify-center shrink-0 mt-[50px]">
-        <span className="text-secondary text-center text-[32px] font-bold leading-[normal]">
+      <div className="flex w-full md:w-[780px] h-[80px] flex-col justify-center shrink-0 mt-[50px]">
+        <span className="text-secondary text-center text-2xl sm:text-[32px] font-bold leading-[normal]">
           {t("AccountVerification")}
         </span>
         <br />
       </div>
-      <div className="w-[408px] h-[52px] shrink-0 mt-[103px]">
+      <div className="w-full sm:w-[408px] h-[52px] shrink-0 mt-[103px]">
         <input
           type={"text"}
           value={getMailAddressOfPasswordAccount()}
           disabled={true}
-          className="rounded-[16px] bg-disabled-field base-200-content text-[16px] font-normal w-[408px] h-[52px] mt-[10px] px-[16px] placeholder:text-center input-bordered shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]"
+          className="rounded-[16px] bg-disabled-field base-200-content text-[16px] font-normal w-full sm:w-[408px] h-[52px] mt-[10px] px-[16px] placeholder:text-center input-bordered shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]"
         />
       </div>
-      <div className="w-[408px] h-[52px] mt-[48px]">
+      <div className="w-full sm:w-[408px] h-[52px] mt-[48px]">
         <input
           type={"password"}
           value={password}
           placeholder={t("PromptPassword")}
-          className="rounded-[16px] bg-base-100 text-[16px] text-secondary font-normal w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_4px_8px_0_rgb(0,0,0,0.5)]"
+          className="rounded-[16px] bg-base-100 text-[16px] text-secondary font-normal w-full sm:w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_4px_8px_0_rgb(0,0,0,0.5)]"
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="flex flex-col justify-center w-[418px] h-[24px] mt-[8px]">
+      <div className="flex flex-col justify-center w-full sm:w-[418px] h-[24px] mt-[8px]">
         <button
           type={"button"}
           className={

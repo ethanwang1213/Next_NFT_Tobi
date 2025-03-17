@@ -34,31 +34,32 @@ const EmailAndPasswordSignIn = ({
   return (
     <>
       <div className="flex flex-col items-center justify-center p-8">
-        <div className={"w-full"}>
+        <div className={"w-full sm:w-[408px]"}>
           <BackLink onClickBack={onClickBack} />
         </div>
         <Image
           src={"/admin/images/tobiratory-name-logo.svg"}
           alt={"link tobiratory account with flow account"}
-          width={450}
+          width={320}
           height={96}
+          className="w-full sm:w-[450px]"
         />
         <div className={"text-[32px] h-[80px] mt-[50px] font-bold"}>
           {t("PasswordEntry")}
         </div>
-        <div className="w-[408px] mt-[80px]">
+        <div className="w-full sm:w-[408px] mt-[80px]">
           <input
             type={"text"}
             value={email}
             disabled={true}
-            className="rounded-lg bg-disabled-field base-200-content font-normal w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-disabled-field base-200-content font-normal w-full sm:w-[408px] h-[52px] mt-[10px] px-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
           />
           <div className="relative mt-[40px]">
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               placeholder="Password"
-              className="rounded-lg base-content font-normal w-[408px] h-[52px] px-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+              className="rounded-lg base-content font-normal w-full sm:w-[408px] h-[52px] px-[15px] placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
@@ -70,7 +71,7 @@ const EmailAndPasswordSignIn = ({
             </button>
           </div>
         </div>
-        <div className={"w-[408px] mt-[10px] text-right"}>
+        <div className={"w-full sm:w-[408px] mt-[10px] text-right"}>
           <button
             type={"button"}
             className={

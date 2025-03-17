@@ -54,8 +54,9 @@ const SnsSignIn = ({
           <Image
             src={"/admin/images/tobiratory-name-logo.svg"}
             alt={"link tobiratory account with flow account"}
-            width={450}
+            width={320}
             height={96}
+            className="w-full sm:w-[450px]"
           />
           {initializing ? (
             <Loading className="h-[56px] text-info" />

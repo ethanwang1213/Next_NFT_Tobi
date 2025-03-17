@@ -169,7 +169,7 @@ const FlowAgreementWithEmailAndPassword = ({
           />
         </div>
         <TitleLogoImage pageType={pageType} />
-        <div className={"text-[32px] h-[80px] mt-[30px] font-bold"}>
+        <div className={"text-2xl sm:text-[32px] h-[80px] mt-[30px] font-bold"}>
           {title}
         </div>
         <div className={"mt-[10px]"}>
@@ -177,19 +177,21 @@ const FlowAgreementWithEmailAndPassword = ({
         </div>
         <div className={"mt-[30px]"} />
         <div
-          className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
+          className={
+            "w-full sm:w-[412px] mt-[10px] font-medium text-[16px] text-left"
+          }
         >
           {pageType === PageType.PasswordReset ||
           pageType === PageType.PasswordUpdate
             ? pass("NewPassword")
             : t("Password")}
         </div>
-        <div className="relative mt-[10px]">
+        <div className="relative w-full sm:w-[408px] mt-[10px]">
           <input
             type={showPassword ? "text" : "password"}
             placeholder={t("Password")}
             value={passwordStatus.password}
-            className="rounded-lg bg-slate-100 w-[408px] h-[52px] px-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-slate-100 w-full h-[52px] px-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
             onChange={(e) => {
               validatePassword(e.target.value);
             }}
@@ -203,16 +205,18 @@ const FlowAgreementWithEmailAndPassword = ({
           </button>
         </div>
         <div
-          className={"w-[412px] mt-[10px] font-medium text-[16px] text-left"}
+          className={
+            "w-full sm:w-[412px] mt-[10px] font-medium text-[16px] text-left"
+          }
         >
           {t("ConfirmPassword")}
         </div>
-        <div className="relative mt-[10px]">
+        <div className="relative mt-[10px] w-full sm:w-[408px]">
           <input
             type={showConfirmPassword ? "text" : "password"}
             placeholder={t("ReEnter")}
             value={passwordConfirmationStatus.password}
-            className="rounded-lg bg-slate-100 w-[408px] h-[52px] px-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+            className="rounded-lg bg-slate-100 w-full h-[52px] px-[15px] placeholder:text-secondary-300 placeholder:font-normal placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
             onChange={(e) => {
               validatePasswordConfirmation(
                 passwordStatus.password,
@@ -311,7 +315,7 @@ const EmailField = ({
       <input
         type={"text"}
         value={email}
-        className="rounded-lg bg-slate-100 w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+        className="rounded-lg bg-slate-100 w-full sm:w-[408px] h-[52px] mt-[10px] pl-[15px] placeholder:text-center input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
         disabled={disable}
       />
     </>
@@ -344,10 +348,10 @@ export const TermsOfService = ({
           }
           onChange={() => setAgreed((prev) => !prev)}
         />
-        <span className={"font-medium text-[12px]"}>
+        <span className={"font-medium text-[12px] ml-3"}>
           <a
             href={"https://www.tobiratory.com/about"}
-            className={"text-primary ml-[5px] font-medium text-[12px]"}
+            className={"text-primary font-medium text-[12px]"}
             target="_blank"
             rel="noreferrer"
           >
@@ -459,7 +463,7 @@ const ValidationProgressBar = ({ valid }: { valid: boolean }) => {
 
 const Error = ({ errors }: { errors: string[] }) => {
   return (
-    <div className={"w-[412px] text-right"}>
+    <div className={"w-full sm:w-[412px] text-right"}>
       {errors.map((error, index) => {
         if (error) {
           return (
