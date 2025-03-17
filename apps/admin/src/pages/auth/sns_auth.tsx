@@ -24,7 +24,7 @@ const SnsAuth = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push("/authentication");
+      return;
     } else if (user.hasFlowAccount) {
       router.push("/");
     } else if (user.flowAccountStatus === FlowAccountStatus.Error) {
