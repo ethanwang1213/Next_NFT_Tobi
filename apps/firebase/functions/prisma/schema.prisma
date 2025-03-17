@@ -136,6 +136,7 @@ model contents {
     changed_name_time  DateTime             @default(now()) @db.Timestamp(6)
     image              String               @db.VarChar(255)
     sticker            String?              @db.VarChar(255)
+    icon               String?              @db.VarChar(255)
     url                String               @db.VarChar(255)
     description        String               @db.VarChar(255)
     copyrights         copyrights[]
