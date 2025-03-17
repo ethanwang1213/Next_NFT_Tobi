@@ -106,52 +106,6 @@ export const signUp = async (req: Request, res: Response) => {
           account_uuid: uid,
         },
       });
-      if (decodedToken.email_verified && !flowAcc) {
-        const {fcmToken, locale}: { fcmToken?: string, locale?: string } = req.body;
-
-        // console.log(`Flow account was not found: ${uid}`);
-        const firestoreFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", uid).get();
-        if (firestoreFlowAccounts.size <= 0) {
-          // console.log("Creating...");
-          await createFlowAccount(uid, fcmToken, email, name, locale);
-        } else {
-          const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
-          const data = existingFlowAccountSnapshot.data();
-
-          if (data.txId) {
-            // console.log("Found on Firestore");
-            const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
-
-            if (flowJobs.size <= 0) {
-              // console.log("flowJobs has failed. Create again...");
-              await createFlowAccount(uid, fcmToken, email, name, locale);
-            } else {
-              // console.log("Attempting to store in database");
-              const flowJob = flowJobs.docs[0].data();
-              await prisma.flow_accounts.upsert({
-                where: {
-                  account_uuid: uid,
-                },
-                update: {
-                  flow_address: data.address,
-                  public_key: data.pubKey,
-                  tx_id: data.txId,
-                },
-                create: {
-                  account_uuid: uid,
-                  flow_address: data.address,
-                  public_key: data.pubKey,
-                  tx_id: data.txId,
-                  flow_job_id: flowJob.flowJobId,
-                },
-              });
-            }
-          } else {
-            // console.log("txId is not found");
-            await createFlowAccount(uid, fcmToken, email, name, locale);
-          }
-        }
-      }
       res.status(200).send({
         status: "success",
         data: {
@@ -193,6 +147,82 @@ export const createFlowAcc = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     const name: string | undefined= decodedToken.name;
     const email: string | undefined = decodedToken.email;
+
+    const flowAcc = await prisma.flow_accounts.findUnique({
+      where: {
+        account_uuid: uid,
+      },
+    });
+    if (flowAcc) {
+      switch (flowAcc.status) {
+        case flowAccountStatus.creating:
+          res.status(401).send({
+            status: "error",
+            data: "flow-account-creating",
+          });
+          return;
+        case flowAccountStatus.retrying:
+          res.status(401).send({
+            status: "error",
+            data: "flow-account-retrying",
+          });
+          return;
+        case flowAccountStatus.idle:
+        case flowAccountStatus.error:
+          res.status(401).send({
+            status: "error",
+            data: "flow-account-creating-error",
+          });
+          return;
+      }
+      if (flowAcc.flow_address) {
+        res.status(401).send({
+          status: "error",
+          data: "flow-account-already-exists",
+        });
+        return;
+      }
+    }
+
+    if (!decodedToken.email_verified) {
+      res.status(401).send({
+        status: "error",
+        data: "email-not-verified",
+      });
+      return;
+    }
+
+    const firestoreFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", uid).get();
+        if (firestoreFlowAccounts.size > 0) {
+          const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
+          const data = existingFlowAccountSnapshot.data();
+
+          if (data.txId) {
+            const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
+
+            if (flowJobs.size > 0) {
+              const flowJob = flowJobs.docs[0].data();
+              await prisma.flow_accounts.upsert({
+                where: {
+                  account_uuid: uid,
+                },
+                update: {
+                  flow_address: data.address,
+                  public_key: data.pubKey,
+                  tx_id: data.txId,
+                },
+                create: {
+                  account_uuid: uid,
+                  flow_address: data.address,
+                  public_key: data.pubKey,
+                  tx_id: data.txId,
+                  flow_job_id: flowJob.flowJobId,
+                },
+              });
+            }
+          }
+        }
+
     const checkLimit = await increaseTransactionAmount(uid);
     if (checkLimit == statusOfLimitTransaction.notExistAccount) {
       res.status(401).send({
