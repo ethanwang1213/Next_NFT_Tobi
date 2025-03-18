@@ -94,7 +94,7 @@ const ConfirmInformation = ({
     <div>
       <div className="mb-6 text-title-color flex flex-col items-center">
         <span className="sm:text-[40px] font-medium">
-          {t("RegistrantInfo")}
+          {t("ReviewApplication")}
         </span>
         <div className="flex flex-row gap-2 items-center">
           <Image
