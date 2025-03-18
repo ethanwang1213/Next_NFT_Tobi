@@ -920,6 +920,8 @@ const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
       throw new functions.https.HttpsError("already-exists", "The transaction has already been sent.");
     }
     return existingFlowAccountSnapshot.ref;
+  } else {
+    await prisma.flow_accounts.create({data:{account_uuid: tobiratoryAccountUuid}});
   }
   return await firestore().collection("flowAccounts").add({
     tobiratoryAccountUuid,
