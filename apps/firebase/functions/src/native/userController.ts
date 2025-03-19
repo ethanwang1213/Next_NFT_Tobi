@@ -46,7 +46,6 @@ export const signUp = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken((authorization ?? "")).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const name: string | undefined= decodedToken.name;
     const email = decodedToken.email;
     if (email==undefined) {
       res.status(401).send({
