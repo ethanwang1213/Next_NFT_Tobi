@@ -413,7 +413,7 @@ export const isPageForNonBusinessAccount = (path: string) => {
     path === "/account" ||
     path.startsWith("/account/") ||
     path === "/apply/contentApproval" ||
-    path === "/apply/contentRepoted"
+    path === "/apply/contentReported"
   );
 };
 

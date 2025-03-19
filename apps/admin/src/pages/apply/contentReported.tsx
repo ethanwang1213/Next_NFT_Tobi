@@ -8,7 +8,7 @@ import DocumentPreview from "ui/organisms/admin/DocumentPreview";
 import DocumentUpload from "ui/organisms/admin/DocumentUpload";
 import Spinner from "ui/organisms/admin/Spinner";
 
-const ContentRepoted = () => {
+const ContentReported = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [documentData, setDocumentData] = useState([]);
@@ -107,4 +107,4 @@ const ContentRepoted = () => {
   );
 };
 
-export default ContentRepoted;
+export default ContentReported;
