@@ -72,8 +72,16 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
 
 const registerToTobiratoryAndFlowAccount = async (locale: string) => {
   const idToken = await auth.currentUser.getIdToken(true);
+  await fetch(`/backend/api/functions/native/signup`, {
+    method: "POST",
+    headers: {
+      Authorization: idToken,
+      "Content-Type": "application/json",
+    },
+  });
+
   const data = { locale };
-  return await fetch(`/backend/api/functions/native/signup`, {
+  return await fetch(`/backend/api/functions/native/create-flow`, {
     method: "POST",
     headers: {
       Authorization: idToken,
