@@ -101,7 +101,7 @@ const DocumentPreview: React.FC<DocumentPreview> = ({ documents }) => {
           Documents
         </p>
         <div className="grid grid-cols-4 gap-4 overflow-auto">
-          {documents.map((document, index) => {
+          {documents?.map((document, index) => {
             const fileExtension = getFileExtension(document.documentLink);
             if (fileExtension === "pdf") {
               return <PdfPreview key={index} document={document} />;
