@@ -46,7 +46,6 @@ export const signUp = async (req: Request, res: Response) => {
   const {authorization} = req.headers;
   await auth().verifyIdToken((authorization ?? "")).then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
-    const name: string | undefined= decodedToken.name;
     const email = decodedToken.email;
     if (email==undefined) {
       res.status(401).send({
@@ -193,35 +192,35 @@ export const createFlowAcc = async (req: Request, res: Response) => {
     }
 
     const firestoreFlowAccounts = await firestore().collection("flowAccounts").where("tobiratoryAccountUuid", "==", uid).get();
-        if (firestoreFlowAccounts.size > 0) {
-          const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
-          const data = existingFlowAccountSnapshot.data();
+    if (firestoreFlowAccounts.size > 0) {
+      const existingFlowAccountSnapshot = firestoreFlowAccounts.docs[0];
+      const data = existingFlowAccountSnapshot.data();
 
-          if (data.txId) {
-            const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
+      if (data.txId) {
+        const flowJobs = await firestore().collection("flowJobs").where("txId", "==", data.txId).get();
 
-            if (flowJobs.size > 0) {
-              const flowJob = flowJobs.docs[0].data();
-              await prisma.flow_accounts.upsert({
-                where: {
-                  account_uuid: uid,
-                },
-                update: {
-                  flow_address: data.address,
-                  public_key: data.pubKey,
-                  tx_id: data.txId,
-                },
-                create: {
-                  account_uuid: uid,
-                  flow_address: data.address,
-                  public_key: data.pubKey,
-                  tx_id: data.txId,
-                  flow_job_id: flowJob.flowJobId,
-                },
-              });
-            }
-          }
+        if (flowJobs.size > 0) {
+          const flowJob = flowJobs.docs[0].data();
+          await prisma.flow_accounts.upsert({
+            where: {
+              account_uuid: uid,
+            },
+            update: {
+              flow_address: data.address,
+              public_key: data.pubKey,
+              tx_id: data.txId,
+            },
+            create: {
+              account_uuid: uid,
+              flow_address: data.address,
+              public_key: data.pubKey,
+              tx_id: data.txId,
+              flow_job_id: flowJob.flowJobId,
+            },
+          });
         }
+      }
+    }
 
     const checkLimit = await increaseTransactionAmount(uid);
     if (checkLimit == statusOfLimitTransaction.notExistAccount) {
@@ -766,11 +765,14 @@ export const businessSubmission = async (req: Request, res: Response) => {
             data: businessData,
           });
           const savedContentData = await tx.contents.update({
-            where: {id: exist.id},
+            where: {id: exist.content!.id},
             data: {...contentData,
               is_approved: null,
               license: {
-                upsert: license,
+                upsert: {
+                  create: license,
+                  update: license,
+                },
               },
             },
           });

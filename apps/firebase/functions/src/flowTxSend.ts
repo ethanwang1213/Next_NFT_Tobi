@@ -921,7 +921,7 @@ const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
     }
     return existingFlowAccountSnapshot.ref;
   } else {
-    await prisma.flow_accounts.create({data:{account_uuid: tobiratoryAccountUuid}});
+    await prisma.flow_accounts.create({data: {account_uuid: tobiratoryAccountUuid}});
   }
   return await firestore().collection("flowAccounts").add({
     tobiratoryAccountUuid,

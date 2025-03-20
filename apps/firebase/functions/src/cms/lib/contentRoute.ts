@@ -195,7 +195,7 @@ router.get("/participation", async (req: Request, res: Response) => {
       // take: Number(pageSize),
       where: {
         OR: [
-          {is_approved: false},
+          // {is_approved: false},
           {is_approved: null},
         ],
       },
@@ -266,7 +266,7 @@ router.put("/participation", async (req: Request, res: Response) => {
                 id: content.id,
               },
               data: {
-                is_approved: null,
+                is_approved: false,
                 handle_msg: msg,
               },
             });
