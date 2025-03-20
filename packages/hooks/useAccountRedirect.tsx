@@ -18,11 +18,7 @@ const useAccountRedirect = (auth, db) => {
         if (snapshot.exists()) {
           const data = snapshot.data();
           if (data.cmsApprove) {
-            user.hasBusinessAccount = "exist";
             router.push("/items");
-          } else if (data.cmsApprove === false) {
-            user.hasBusinessAccount = "rejected";
-            router.push("/apply/contentRejected");
           }
         }
       }
