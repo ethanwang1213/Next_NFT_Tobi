@@ -23,7 +23,7 @@ const EmailAuth = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push("/authentication");
+      return;
     } else if (user.hasFlowAccount) {
       router.push("/");
     } else {
