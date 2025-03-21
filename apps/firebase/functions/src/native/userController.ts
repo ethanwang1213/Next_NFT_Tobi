@@ -157,7 +157,7 @@ export const createFlowAcc = async (req: Request, res: Response) => {
         case flowAccountStatus.creating:
           res.status(401).send({
             status: "error",
-            data: "flow-account-creating",
+            data: "flow-address-creating",
           });
           return;
         case flowAccountStatus.retrying:
@@ -170,7 +170,7 @@ export const createFlowAcc = async (req: Request, res: Response) => {
         case flowAccountStatus.error:
           res.status(401).send({
             status: "error",
-            data: "flow-account-creating-error",
+            data: "flow-account-create-error",
           });
           return;
       }
