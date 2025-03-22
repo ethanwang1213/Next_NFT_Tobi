@@ -175,6 +175,7 @@ export const FlowAccountStatus = {
   Error: "flow-account-create-error",
   NotExists: "flow-account-not-exists",
   Created: "flow-account-created",
+  Exists: "flow-account-already-exists",
 } as const;
 export type FlowAccountStatus =
   (typeof FlowAccountStatus)[keyof typeof FlowAccountStatus];

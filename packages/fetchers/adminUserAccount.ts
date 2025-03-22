@@ -59,6 +59,12 @@ export const useTobiratoryAndFlowAccountRegistration = () => {
               setResponse(waitResult);
               return;
             }
+          } else if (
+            data.data === FlowAccountStatus.Created ||
+            data.data === FlowAccountStatus.Exists
+          ) {
+            setResponse(data.data);
+            return;
           }
           setError(t("LogInSignUp.FailedMessageToCreateFlowAccount"));
         } catch {
