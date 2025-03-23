@@ -346,6 +346,8 @@ export default function Index() {
         email: data?.email,
         icon: data?.icon,
         emailVerified: true,
+        hasTobiratoryAccount: true,
+        hasFlowAccount: true,
         hasFlowAddress: true,
         hasBusinessAccount: user.hasBusinessAccount,
       };
@@ -460,10 +462,12 @@ export default function Index() {
                     }
                   />
                 </div>
-                  <p className="text-gray-500 text-xs
-                   mt-1">
-                    {t("UserIdNoSpaces")}
-                  </p>
+                <p
+                  className="text-gray-500 text-xs
+                   mt-1"
+                >
+                  {t("UserIdNoSpaces")}
+                </p>
               </div>
             </AccountFieldComponent>
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
