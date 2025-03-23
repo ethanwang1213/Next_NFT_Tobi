@@ -30,7 +30,8 @@ const SnsAuth = () => {
     } else if (user.flowAccountStatus === FlowAccountStatus.Error) {
       setError(FlowAccountStatus.Error);
     } else if (
-      isFlowAccountProcessing(user.flowAccountStatus) &&
+      ((user.hasTobiratoryAccount && !user.hasFlowAccount) ||
+        isFlowAccountProcessing(user.flowAccountStatus)) &&
       !registering &&
       !response &&
       !error
