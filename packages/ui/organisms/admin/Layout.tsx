@@ -85,7 +85,7 @@ const Contents = ({ children }: Props) => {
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&
     auth.currentUser &&
-    user?.hasFlowAccount
+    user?.hasFlowAddress
   ) {
     return (
       <NavbarProvider>

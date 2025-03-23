@@ -150,8 +150,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           }
         }
 
-        const hasFlowAccount = !!profile?.data?.flow?.flowAddress;
-        if (hasFlowAccount) {
+        const hasFlowAddress = !!profile?.data?.flow?.flowAddress;
+        if (hasFlowAddress) {
           const hasBusinessAccount = await checkBusinessAccount(
             "businessAccount",
           ).catch((error) => {
@@ -281,7 +281,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     name: string,
     icon: string,
     emailVerified: boolean,
-    hasFlowAccount: boolean,
+    hasFlowAddress: boolean,
     hasBusinessAccount: HasBusinessAccount,
     flowAccountStatus?: FlowAccountStatus,
   ) => {
@@ -292,7 +292,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         email,
         icon,
         emailVerified,
-        hasFlowAccount,
+        hasFlowAddress,
         hasBusinessAccount,
         flowAccountStatus,
       };
@@ -339,7 +339,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    if (user.hasFlowAccount) {
+    if (user.hasFlowAddress) {
       return;
     }
 
@@ -354,7 +354,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     setUser((prev) => ({
       ...prev!,
       uuid: profile.data.userId,
-      hasFlowAccount: true,
+      hasFlowAddress: true,
       flowAccountStatus: FlowAccountStatus.Created,
     }));
   };
