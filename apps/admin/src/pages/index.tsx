@@ -22,7 +22,7 @@ const Index = () => {
       return;
     }
 
-    if (user.hasFlowAccount) {
+    if (user.hasFlowAddress) {
       if (user.hasBusinessAccount === "exist") {
         router.push("/items");
       } else if (

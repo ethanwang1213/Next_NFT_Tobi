@@ -346,7 +346,7 @@ export default function Index() {
         email: data?.email,
         icon: data?.icon,
         emailVerified: true,
-        hasFlowAccount: true,
+        hasFlowAddress: true,
         hasBusinessAccount: user.hasBusinessAccount,
       };
 
