@@ -15,11 +15,10 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useToggle } from "react-use";
 import {
-  SendSampleRemovalResult,
-  UpdateIdValues,
-  WorkspaceSaveData,
+  WorkspaceRemoveItemRequestedHandler,
+  WorkspaceSaveDataGeneratedHandler,
 } from "types/adminTypes";
-import { ActionType, ModelType } from "types/unityTypes";
+import { ActionType, ItemType, ModelType } from "types/unityTypes";
 import { CustomUnity } from "ui/molecules/CustomUnity";
 import AcrylicStandSettingDialog from "ui/organisms/admin/AcrylicStandSetting";
 import CustomToast from "ui/organisms/admin/CustomToast";
@@ -111,15 +110,29 @@ export default function Index() {
   const generateModelUrl = useRef(null);
   const generateCroppedImage = useRef(null);
 
-  const onSaveDataGenerated = async (
-    workspaceSaveData: WorkspaceSaveData,
-    updateIdValues: UpdateIdValues,
+  const onSaveDataGenerated: WorkspaceSaveDataGeneratedHandler = async (
+    workspaceSaveData,
+    newItemInfo,
+    notifySavingResult,
   ) => {
-    const updateIds = await storeWorkspaceData(workspaceAPIUrl, {
+    const idPairs = await storeWorkspaceData(workspaceAPIUrl, {
       itemList: workspaceSaveData.workspaceItemList,
     });
-    if (updateIds.length > 0) {
-      updateIdValues({ idPairs: updateIds });
+    // notify saving result to Unity
+    if (typeof idPairs === "boolean" && !idPairs) {
+      // failed to save
+      notifySavingResult({
+        isSuccess: false,
+        idPairs: [],
+        apiRequestId: newItemInfo.apiRequestId,
+      });
+    } else if (idPairs.length > 0) {
+      // success to save
+      notifySavingResult({
+        isSuccess: true,
+        idPairs: idPairs,
+        apiRequestId: newItemInfo.apiRequestId,
+      });
     }
   };
 
@@ -222,16 +235,22 @@ export default function Index() {
     setShowRestoreMenu(false);
   };
 
-  const onRemoveSampleRequested = async (
-    id: number,
-    itemId: number,
-    sendSampleRemovalResult: SendSampleRemovalResult,
+  const onRemoveSampleRequested: WorkspaceRemoveItemRequestedHandler = async (
+    id,
+    apiRequestId,
+    notifyRemoveRequestResult,
   ) => {
     setShowRestoreMenu(false);
     const result = await storeWorkspaceData(`${workspaceAPIUrl}/throw`, {
       id: id,
     });
-    sendSampleRemovalResult(id, result !== false);
+    // notify remove result to unity
+    notifyRemoveRequestResult(
+      result !== false,
+      ItemType.Sample,
+      id,
+      apiRequestId,
+    );
   };
 
   const handleAction = (actionType: ActionType, text: string): void => {

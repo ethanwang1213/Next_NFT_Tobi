@@ -1,7 +1,9 @@
+import { getMessages } from "admin/messages/messages";
 import { useLeavePage } from "contexts/LeavePageProvider";
 import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { useShowcaseEditUnityHook } from "hooks/useCustomUnityHook";
+import { NewItemInfo } from "hooks/useCustomUnityHook/types";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
@@ -10,7 +12,11 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
-import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
+import {
+  NotifyAddRequestResult,
+  ShowcaseRemoveItemRequestedHandler,
+  ShowcaseSaveData,
+} from "types/adminTypes";
 import {
   ActionType,
   ItemType,
@@ -24,7 +30,6 @@ import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
-import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -75,13 +80,14 @@ const Showcase = () => {
   // showcase unity view event handlers
   const onSaveDataGenerated = async (
     showcaseSaveData: ShowcaseSaveData,
-    updateIdValues,
+    newItemInfo: NewItemInfo,
+    notifyAddRequestResult: NotifyAddRequestResult,
   ) => {
     const thumbnailUrl = await uploadImage(
       showcaseSaveData.thumbnailImageBase64,
       ImageType.ShowcaseThumbnail,
     );
-    const IdPairs = await postData(`${apiUrl}/${id}`, {
+    const idPairs = await postData(`${apiUrl}/${id}`, {
       sampleItemList: showcaseSaveData.sampleItemList,
       nftItemList: showcaseSaveData.nftItemList,
       thumbnailImage: thumbnailUrl,
@@ -104,7 +110,22 @@ const Showcase = () => {
         },
       },
     });
-    updateIdValues({ idPairs: IdPairs });
+    // notify saving result to Unity
+    if (typeof idPairs === "boolean" && !idPairs) {
+      // failed to save
+      notifyAddRequestResult({
+        isSuccess: false,
+        idPairs: [],
+        apiRequestId: newItemInfo.apiRequestId,
+      });
+    } else {
+      // success to save
+      notifyAddRequestResult({
+        isSuccess: true,
+        idPairs: idPairs,
+        apiRequestId: newItemInfo.apiRequestId,
+      });
+    }
   };
 
   const onRemoveItemEnabled = () => {
@@ -115,11 +136,11 @@ const Showcase = () => {
     setShowRestoreMenu(false);
   };
 
-  const onRemoveItemRequested = async (
-    itemType: ItemType,
-    uniqueId: number,
-    itemId: number,
-    sendItemRemovalResult: SendItemRemovalResult,
+  const onRemoveItemRequested: ShowcaseRemoveItemRequestedHandler = async (
+    itemType,
+    uniqueId,
+    apiRequestId,
+    nofityRemoveRequestResult,
   ) => {
     // hide the restore menu
     setShowRestoreMenu(false);
@@ -135,11 +156,13 @@ const Showcase = () => {
       });
       // update remains count for NFT item
     }
-    if (postResult == "thrown") {
-      sendItemRemovalResult(itemType, uniqueId, true);
-    } else {
-      sendItemRemovalResult(itemType, uniqueId, false);
-    }
+    // notify remove result to unity
+    nofityRemoveRequestResult(
+      postResult == "thrown",
+      itemType,
+      uniqueId,
+      apiRequestId,
+    );
   };
 
   const handleAction: (actionType: ActionType, text: string) => void = (

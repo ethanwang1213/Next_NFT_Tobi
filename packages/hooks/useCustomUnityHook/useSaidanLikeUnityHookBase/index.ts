@@ -1,6 +1,6 @@
 import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { UpdateIdValues } from "types/adminTypes";
+import { NotifyAddRequestResult } from "types/adminTypes";
 import {
   DecorationId,
   ItemBaseData,
@@ -251,12 +251,14 @@ export const useSaidanLikeUnityHookBase = ({
     postMessageToUnity("RemoveSelectedItemMessageReceiver", "");
   }, [postMessageToUnity]);
 
-  const updateIdValues: UpdateIdValues = useCallback(
-    ({ idPairs }) => {
+  const notifyAddRequestResult: NotifyAddRequestResult = useCallback(
+    ({ isSuccess, idPairs, apiRequestId }) => {
       postMessageToUnity(
-        "UpdateItemIdMessageReceiver",
+        "NotifyAddRequestResultMessageReceiver",
         JSON.stringify({
+          isSuccess,
           idPairs,
+          apiRequestId,
         }),
       );
     },
@@ -363,7 +365,7 @@ export const useSaidanLikeUnityHookBase = ({
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
     removeItem,
-    updateIdValues,
+    notifyAddRequestResult,
     setIsUndoable,
     setIsRedoable,
     undoAction,

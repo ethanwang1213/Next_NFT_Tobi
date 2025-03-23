@@ -58,9 +58,9 @@ export type MessageDestination =
   | "RemoveItemsMessageReceiver"
   | "RemoveRecentItemMessageReceiver"
   | "RemoveSelectedItemMessageReceiver"
-  | "RemovalResultMessageReceiver"
+  | "NotifyRemoveRequestResultMessageReceiver"
   | "ItemMenuXMessageReceiver"
-  | "UpdateItemIdMessageReceiver"
+  | "NotifyAddRequestResultMessageReceiver"
   | "UpdateSettingsMessageReceiver"
   | "InputWasdMessageReceiver"
   | "UndoActionMessageReceiver"
@@ -112,10 +112,17 @@ export type UnityMessageJson = {
   messageBody: string;
 };
 
+export type NewItemInfo = ItemTypeParam &
+  ItemBaseId &
+  DecorationId & {
+    apiRequestId: number;
+  };
+
 export type MessageBodyForSavingSaidanData = {
   saidanData: SaidanLikeData;
   fixedPointSaidanThumbnailBase64: string;
   lastPointSaidanThumbnailBase64: string;
+  newItemInfo: NewItemInfo;
 };
 
 /// NOTE(Toruto): All of Workspace, SAIDAN and Showcase views are handled almost the same way in Unity side.

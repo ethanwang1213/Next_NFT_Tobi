@@ -1,10 +1,10 @@
 import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback } from "react";
 import {
-  SendSampleRemovalResult,
-  UpdateIdValues,
+  NotifyRemoveRequestResult,
   WorkspaceLoadData,
-  WorkspaceSaveData,
+  WorkspaceRemoveItemRequestedHandler,
+  WorkspaceSaveDataGeneratedHandler,
 } from "types/adminTypes";
 import {
   AcrylicBaseScaleRatio,
@@ -29,18 +29,7 @@ import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useApplyAcrylicBaseScaleRatio } from "./useApplyAcrylicBaseScaleRatio";
 import { useHighlightSamples } from "./useHighlightSamples";
 
-type SaveDataGeneratedHandler = (
-  workspaceSaveData: WorkspaceSaveData,
-  updateIdValues: UpdateIdValues,
-) => void;
-
 type ItemThumbnailGeneratedHandler = (thumbnailBase64: string) => void;
-
-type RemoveSampleRequestedHandler = (
-  id: number,
-  itemId: number,
-  sendSampleRemovalResult: SendSampleRemovalResult,
-) => void;
 
 export const useWorkspaceUnityHook = ({
   sampleMenuX = -1,
@@ -54,11 +43,11 @@ export const useWorkspaceUnityHook = ({
   onNftModelGenerated,
 }: {
   sampleMenuX?: number;
-  onSaveDataGenerated?: SaveDataGeneratedHandler;
+  onSaveDataGenerated?: WorkspaceSaveDataGeneratedHandler;
   onItemThumbnailGenerated?: ItemThumbnailGeneratedHandler;
   onRemoveSampleEnabled?: () => void;
   onRemoveSampleDisabled?: () => void;
-  onRemoveSampleRequested?: RemoveSampleRequestedHandler;
+  onRemoveSampleRequested?: WorkspaceRemoveItemRequestedHandler;
   onActionUndone?: UndoneOrRedoneHandler;
   onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
@@ -79,7 +68,7 @@ export const useWorkspaceUnityHook = ({
     placeNewSample,
     placeNewSampleWithDrag,
     removeItem,
-    updateIdValues,
+    notifyAddRequestResult,
     setIsUndoable,
     setIsRedoable,
     undoAction,
@@ -209,14 +198,15 @@ export const useWorkspaceUnityHook = ({
     [postMessageToUnity],
   );
 
-  const sendRemovalResult = useCallback(
-    (id: number, completed: boolean) => {
+  const notifyRemoveRequestResult: NotifyRemoveRequestResult = useCallback(
+    (isSuccess, itemType, id, apiRequestId) => {
       postMessageToUnity(
-        "RemovalResultMessageReceiver",
+        "NotifyRemoveRequestResultMessageReceiver",
         JSON.stringify({
-          itemType: ItemType.Sample,
+          isSuccess,
+          itemType,
           id,
-          completed,
+          apiRequestId,
         }),
       );
     },
@@ -263,9 +253,13 @@ export const useWorkspaceUnityHook = ({
           scale: v.scale,
           acrylicBaseScaleRatio: v.acrylicBaseScaleRatio,
         }));
-      onSaveDataGenerated({ workspaceItemList }, updateIdValues);
+      onSaveDataGenerated(
+        { workspaceItemList },
+        messageBody.newItemInfo,
+        notifyAddRequestResult,
+      );
     },
-    [onSaveDataGenerated, updateIdValues],
+    [onSaveDataGenerated, notifyAddRequestResult],
   );
 
   const handleItemThumbnailGenerated = useCallback(
@@ -289,19 +283,20 @@ export const useWorkspaceUnityHook = ({
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
         itemType: ItemType;
-        id: number;
         itemId: number;
+        id: number;
+        apiRequestId: number;
       };
 
       if (!messageBody) return;
 
       onRemoveSampleRequested(
         messageBody.id,
-        messageBody.itemId,
-        sendRemovalResult,
+        messageBody.apiRequestId,
+        notifyRemoveRequestResult,
       );
     },
-    [onRemoveSampleRequested, sendRemovalResult],
+    [onRemoveSampleRequested, notifyRemoveRequestResult],
   );
 
   const { applyAcrylicBaseScaleRatio } = useApplyAcrylicBaseScaleRatio({
