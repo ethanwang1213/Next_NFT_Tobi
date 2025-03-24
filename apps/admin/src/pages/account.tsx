@@ -5,6 +5,7 @@ import {
   hasPasswordAccount,
   useAuth,
 } from "contexts/AdminAuthProvider";
+import { useLoading } from "contexts/LoadingContext";
 import { auth } from "fetchers/firebase/client";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
@@ -299,9 +300,10 @@ export default function Index() {
   const apiUrl = "native/my/profile";
   const [modified, setModified] = useState(false);
   const router = useRouter();
-  const { data, dataRef, error, loading, setData, setLoading, postData } =
+  const { data, dataRef, error, loading, setData, postData } =
     useRestfulAPI(apiUrl);
   const { setUser, user } = useAuth();
+  const { setLoading } = useLoading();
 
   const birthEditDialogRef = useRef(null);
   const genderEditDialogRef = useRef(null);
@@ -310,6 +312,11 @@ export default function Index() {
   const t = useTranslations("Account");
   const [tempImageUrlProfile, setTempImageUrlProfile] = useState(null);
   const [openPasswordPrompt, setOpenPasswordPrompt] = useState(false);
+
+  useEffect(() => {
+    setLoading(loading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const submitHandler = async () => {
     const submitData = {
@@ -460,10 +467,12 @@ export default function Index() {
                     }
                   />
                 </div>
-                  <p className="text-gray-500 text-xs
-                   mt-1">
-                    {t("UserIdNoSpaces")}
-                  </p>
+                <p
+                  className="text-gray-500 text-xs
+                   mt-1"
+                >
+                  {t("UserIdNoSpaces")}
+                </p>
               </div>
             </AccountFieldComponent>
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>

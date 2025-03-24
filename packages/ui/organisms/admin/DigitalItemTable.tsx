@@ -34,6 +34,7 @@ const DigitalItemTable = (filters: {
   const {
     data: digitalItems,
     dataRef,
+    loading,
     setData,
     getData,
     deleteData,
@@ -220,9 +221,9 @@ const DigitalItemTable = (filters: {
   }, [filters, sortOrder]);
 
   useEffect(() => {
-    setLoading(!digitalItems?.length);
+    setLoading(loading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [digitalItems]);
+  }, [loading]);
 
   return (
     <div className="flow-root">

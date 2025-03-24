@@ -37,17 +37,15 @@ const Layout = ({ children }: Props) => {
 
 function PageLoader({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const { setLoading } = useLoading();
-  const [pageLoaded, setPageLoaded] = useState(false);
+  const { loading, setLoading } = useLoading();
 
   useEffect(() => {
     const handleStart = () => {
-      setPageLoaded(false); // Reset when navigation starts
       setLoading(true);
     };
 
     const handleComplete = () => {
-      setPageLoaded(true);
+      setLoading(false);
     };
 
     router.events.on("routeChangeStart", handleStart);
@@ -61,11 +59,6 @@ function PageLoader({ children }: { children: ReactNode }) {
     };
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, setLoading]);
-  useEffect(() => {
-    if (pageLoaded) {
-      setLoading(false);
-    }
-  }, [pageLoaded, setLoading]);
 
   return <>{children}</>;
 }
