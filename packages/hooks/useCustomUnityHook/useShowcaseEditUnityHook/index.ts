@@ -34,6 +34,7 @@ type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
 export const useShowcaseEditUnityHook = ({
   itemMenuX = -1,
+  rollbackDialogRef,
   onSaveDataGenerated,
   onRemoveItemEnabled,
   onRemoveItemDisabled,
@@ -43,6 +44,7 @@ export const useShowcaseEditUnityHook = ({
   onNftModelGenerated,
 }: {
   itemMenuX?: number;
+  rollbackDialogRef: React.RefObject<HTMLDialogElement>;
   onSaveDataGenerated?: ShowcaseSaveDataGeneratedHandler;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
@@ -95,6 +97,7 @@ export const useShowcaseEditUnityHook = ({
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX,
+    rollbackDialogRef,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onActionUndone,
@@ -172,6 +175,9 @@ export const useShowcaseEditUnityHook = ({
 
   const notifyRemoveRequestResult: NotifyRemoveRequestResult = useCallback(
     (isSuccess, itemType, id, apiRequestId) => {
+      if (!isSuccess) {
+        rollbackDialogRef.current?.showModal();
+      }
       postMessageToUnity(
         "NotifyRemoveRequestResultMessageReceiver",
         JSON.stringify({ isSuccess, itemType, id, apiRequestId }),

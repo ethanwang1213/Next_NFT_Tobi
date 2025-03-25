@@ -33,6 +33,7 @@ type ItemThumbnailGeneratedHandler = (thumbnailBase64: string) => void;
 
 export const useWorkspaceUnityHook = ({
   sampleMenuX = -1,
+  rollbackDialogRef,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
   onRemoveSampleEnabled,
@@ -43,6 +44,7 @@ export const useWorkspaceUnityHook = ({
   onNftModelGenerated,
 }: {
   sampleMenuX?: number;
+  rollbackDialogRef: React.RefObject<HTMLDialogElement>;
   onSaveDataGenerated?: WorkspaceSaveDataGeneratedHandler;
   onItemThumbnailGenerated?: ItemThumbnailGeneratedHandler;
   onRemoveSampleEnabled?: () => void;
@@ -95,6 +97,7 @@ export const useWorkspaceUnityHook = ({
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX: sampleMenuX,
+    rollbackDialogRef,
     onRemoveItemEnabled: onRemoveSampleEnabled,
     onRemoveItemDisabled: onRemoveSampleDisabled,
     onActionUndone,
@@ -200,6 +203,9 @@ export const useWorkspaceUnityHook = ({
 
   const notifyRemoveRequestResult: NotifyRemoveRequestResult = useCallback(
     (isSuccess, itemType, id, apiRequestId) => {
+      if (!isSuccess) {
+        rollbackDialogRef.current?.showModal();
+      }
       postMessageToUnity(
         "NotifyRemoveRequestResultMessageReceiver",
         JSON.stringify({

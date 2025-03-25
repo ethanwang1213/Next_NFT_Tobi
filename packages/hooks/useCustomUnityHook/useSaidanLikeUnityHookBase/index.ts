@@ -31,6 +31,7 @@ import { useUndoRedo } from "./useUndoRedo";
 export const useSaidanLikeUnityHookBase = ({
   sceneType,
   itemMenuX,
+  rollbackDialogRef,
   onRemoveItemEnabled,
   onRemoveItemDisabled,
   onActionUndone,
@@ -39,6 +40,7 @@ export const useSaidanLikeUnityHookBase = ({
 }: {
   sceneType: UnitySceneType;
   itemMenuX: number;
+  rollbackDialogRef: React.RefObject<HTMLDialogElement>;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onActionUndone?: UndoneOrRedoneHandler;
@@ -253,6 +255,9 @@ export const useSaidanLikeUnityHookBase = ({
 
   const notifyAddRequestResult: NotifyAddRequestResult = useCallback(
     ({ isSuccess, idPairs, apiRequestId }) => {
+      if (!isSuccess) {
+        rollbackDialogRef.current?.showModal();
+      }
       postMessageToUnity(
         "NotifyAddRequestResultMessageReceiver",
         JSON.stringify({

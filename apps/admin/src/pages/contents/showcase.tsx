@@ -25,6 +25,7 @@ import {
 } from "types/unityTypes";
 import Button from "ui/atoms/Button";
 import { CustomUnity } from "ui/molecules/CustomUnity";
+import { RollbackDialog } from "ui/molecules/RollbackDialog";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
@@ -60,6 +61,7 @@ const Showcase = () => {
   const [selectedSampleItem, setSelectedSampleItem] = useState(0);
   const [loading, setLoading] = useState(false);
   const dialogRef = useRef(null);
+  const rollbackDialogRef = useRef(null);
   const apiUrl = "native/admin/showcases";
   const {
     data: showcaseData,
@@ -179,6 +181,7 @@ const Showcase = () => {
 
   const unityHookOutput = useShowcaseEditUnityHook({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
+    rollbackDialogRef,
     onSaveDataGenerated,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
@@ -642,6 +645,7 @@ const Showcase = () => {
             dialogRef={dialogRef}
             changeHandler={changeShowcaseDetail}
           />
+          <RollbackDialog dialogRef={rollbackDialogRef} />
         </div>
       </div>
     </ShowcaseEditUnityProvider>

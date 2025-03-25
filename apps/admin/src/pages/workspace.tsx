@@ -20,6 +20,7 @@ import {
 } from "types/adminTypes";
 import { ActionType, ItemType, ModelType } from "types/unityTypes";
 import { CustomUnity } from "ui/molecules/CustomUnity";
+import { RollbackDialog } from "ui/molecules/RollbackDialog";
 import AcrylicStandSettingDialog from "ui/organisms/admin/AcrylicStandSetting";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import WorkspaceSampleCreateDialog from "ui/organisms/admin/WorkspaceSampleCreateDialog";
@@ -56,6 +57,7 @@ export default function Index() {
   const [message, setMessage] = useState("");
   const router = useRouter();
   const dialogRef = useRef(null);
+  const rollbackDialogRef = useRef(null);
   const [matchingSample, secondaryMatchSample] = useState(null);
   const tooltip = useTranslations("Tooltip");
   const { id } = router.query;
@@ -274,6 +276,7 @@ export default function Index() {
 
   const unityHookOutput = useWorkspaceUnityHook({
     sampleMenuX: contentWidth - (showListView ? 448 : 30),
+    rollbackDialogRef,
     onSaveDataGenerated,
     onItemThumbnailGenerated,
     onRemoveSampleEnabled,
@@ -689,6 +692,7 @@ export default function Index() {
           scaleRatioSettingHandler={handleChangeThumbnail}
           loading={createThumbnail}
         />
+        <RollbackDialog dialogRef={rollbackDialogRef} />
         {!isItemsLoaded && (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center bg-[#00000080] z-20">
             <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
