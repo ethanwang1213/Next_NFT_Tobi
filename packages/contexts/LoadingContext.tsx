@@ -24,12 +24,11 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    if (loading) {
-      setProgress(0);
+    if (loading && progress == 0) {
       interval = setInterval(() => {
         setProgress((prev) => (prev < 90 ? prev + 10 : prev));
-      }, 200);
-    } else {
+      }, 500);
+    } else if (!loading && progress > 0) {
       setProgress(100);
       setTimeout(() => setProgress(0), 500);
     }
