@@ -184,7 +184,7 @@ export const useShowcaseEditUnityHook = ({
         JSON.stringify({ isSuccess, itemType, id, apiRequestId }),
       );
     },
-    [postMessageToUnity],
+    [rollbackDialogRef, postMessageToUnity],
   );
 
   const { updateItemTransform, handleItemTransformUpdated } =

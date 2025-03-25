@@ -270,7 +270,7 @@ export const useSaidanLikeUnityHookBase = ({
         }),
       );
     },
-    [postMessageToUnity],
+    [rollbackDialogRef, postMessageToUnity],
   );
 
   useKeyShortcut({

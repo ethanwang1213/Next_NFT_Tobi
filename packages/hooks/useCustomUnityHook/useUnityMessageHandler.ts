@@ -163,6 +163,7 @@ export const useUnityMessageHandler = ({
       handleSaidanDetailViewIsInitialized,
       handleLoadingCompleted,
       handleCheckConnection,
+      handleIntMaxActionHistory,
     ],
   );
 

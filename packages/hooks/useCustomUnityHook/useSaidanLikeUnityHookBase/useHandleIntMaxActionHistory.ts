@@ -7,7 +7,7 @@ export const useHandleIntMaxActionHistory = () => {
 
   const handleIntMaxActionHistory = useCallback(() => {
     router.reload();
-  }, []);
+  }, [router]);
 
   return { handleIntMaxActionHistory };
 };

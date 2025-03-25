@@ -199,7 +199,7 @@ export const useWorkspaceUnityHook = ({
       setIsUndoable(false);
       setIsRedoable(false);
     },
-    [postMessageToUnity],
+    [setIsUndoable, setIsRedoable, postMessageToUnity],
   );
 
   const notifyRemoveRequestResult: NotifyRemoveRequestResult = useCallback(
@@ -217,7 +217,7 @@ export const useWorkspaceUnityHook = ({
         }),
       );
     },
-    [postMessageToUnity],
+    [rollbackDialogRef, postMessageToUnity],
   );
 
   const requestItemThumbnail = useCallback(
