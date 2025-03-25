@@ -7,11 +7,11 @@ import {
 } from "contexts/AdminAuthProvider";
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { CustomUnityProvider } from "contexts/CustomUnityContext";
-import { LoadingProvider, useLoading } from "contexts/LoadingContext";
+import { LoadingProvider } from "contexts/LoadingContext";
 import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import Navbar from "ui/organisms/admin/Navbar";
 import Sidebar from "ui/organisms/admin/Sidebar";
 import SpSidebar from "./SpSidebar";
@@ -34,34 +34,6 @@ const Layout = ({ children }: Props) => {
     </>
   );
 };
-
-function PageLoader({ children }: { children: ReactNode }) {
-  const router = useRouter();
-  const { loading, setLoading } = useLoading();
-
-  useEffect(() => {
-    const handleStart = () => {
-      setLoading(true);
-    };
-
-    const handleComplete = () => {
-      setLoading(false);
-    };
-
-    router.events.on("routeChangeStart", handleStart);
-    router.events.on("routeChangeComplete", handleComplete);
-    router.events.on("routeChangeError", handleComplete);
-
-    return () => {
-      router.events.off("routeChangeStart", handleStart);
-      router.events.off("routeChangeComplete", handleComplete);
-      router.events.off("routeChangeError", handleComplete);
-    };
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router, setLoading]);
-
-  return <>{children}</>;
-}
 
 const MainContents = ({ children }: Props) => {
   const { user } = useAuth();
@@ -118,23 +90,18 @@ const Contents = ({ children }: Props) => {
   ) {
     return (
       <LoadingProvider>
-        <PageLoader>
-          <NavbarProvider>
-            <div className="flex flex-col h-screen">
-              <Navbar
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-              />
-              <SpSidebar
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-              />
-              <Sidebar>
-                <MainContents>{children}</MainContents>
-              </Sidebar>
-            </div>
-          </NavbarProvider>
-        </PageLoader>
+        <NavbarProvider>
+          <div className="flex flex-col h-screen">
+            <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            <SpSidebar
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+            <Sidebar>
+              <MainContents>{children}</MainContents>
+            </Sidebar>
+          </div>
+        </NavbarProvider>
       </LoadingProvider>
     );
   }
