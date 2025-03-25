@@ -41,7 +41,9 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
   return (
     <LoadingContext.Provider value={{ loading, setLoading }}>
       <div
-        className="fixed top-0 left-0 h-1 bg-blue-500 transition-all"
+        className={`fixed top-0 left-0 h-1 bg-blue-500 transition-all ${
+          progress === 0 ? "invisible" : "visible"
+        }`}
         style={{
           width: `${progress}%`,
           opacity: progress === 100 ? 0 : 1,
