@@ -45,9 +45,7 @@ const DigitalItemTable = (filters: {
 
     const handleMessage = (event: MessageEvent) => {
       if (event.data === "dataUpdated") {
-        setLoading(true);
         getData(apiUrl);
-        setLoading(false);
       }
     };
     channel.addEventListener("message", handleMessage);
@@ -455,7 +453,6 @@ const DigitalItemTable = (filters: {
               <Button
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
-                  setLoading(true);
                   const result = await deleteData(apiUrl, {
                     digitalItemIds: selDigitalItemIds,
                   });
@@ -463,7 +460,6 @@ const DigitalItemTable = (filters: {
                     setSelDigitalItemIds([]);
                     getData(apiUrl);
                   }
-                  setLoading(false);
                 }}
               >
                 <div className="flex gap-3 items-center justify-center">
