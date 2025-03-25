@@ -26,8 +26,8 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
 
     if (loading && progress == 0) {
       interval = setInterval(() => {
-        setProgress((prev) => (prev < 90 ? prev + 10 : prev));
-      }, 500);
+        setProgress((prev) => (prev < 95 ? prev + 1 : prev));
+      }, 100);
     } else if (!loading && progress > 0) {
       setProgress(100);
       setTimeout(() => setProgress(0), 500);
