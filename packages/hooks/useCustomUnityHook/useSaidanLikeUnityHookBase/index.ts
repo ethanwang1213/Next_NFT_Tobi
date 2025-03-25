@@ -258,7 +258,7 @@ export const useSaidanLikeUnityHookBase = ({
 
   const notifyAddRequestResult: NotifyAddRequestResult = useCallback(
     ({ isSuccess, idPairs, apiRequestId }) => {
-      if (!isSuccess) {
+      if (!isSuccess && apiRequestId !== -1) {
         rollbackDialogRef.current?.showModal();
       }
       postMessageToUnity(

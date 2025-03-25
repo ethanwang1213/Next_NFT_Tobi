@@ -176,7 +176,7 @@ export const useShowcaseEditUnityHook = ({
 
   const notifyRemoveRequestResult: NotifyRemoveRequestResult = useCallback(
     (isSuccess, itemType, id, apiRequestId) => {
-      if (!isSuccess) {
+      if (!isSuccess && apiRequestId !== -1) {
         rollbackDialogRef.current?.showModal();
       }
       postMessageToUnity(
