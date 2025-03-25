@@ -1,4 +1,6 @@
+import { getMessages } from "admin/messages/messages";
 import { useLeavePage } from "contexts/LeavePageProvider";
+import { useLoading } from "contexts/LoadingContext";
 import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { useShowcaseEditUnityHook } from "hooks/useCustomUnityHook";
@@ -24,7 +26,6 @@ import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
 import ShowcaseTabView from "ui/organisms/admin/ShowcaseTabView";
 import { NftItem, SampleItem } from "ui/types/adminTypes";
-import { getMessages } from "admin/messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
@@ -53,12 +54,13 @@ const Showcase = () => {
   const [message, setMessage] = useState("");
   const [containerWidth, setContainerWidth] = useState(0);
   const [selectedSampleItem, setSelectedSampleItem] = useState(0);
-  const [loading, setLoading] = useState(false);
   const dialogRef = useRef(null);
+  const { setLoading } = useLoading();
   const apiUrl = "native/admin/showcases";
   const {
     data: showcaseData,
     error,
+    loading,
     getData,
     putData,
     postData,
@@ -71,7 +73,10 @@ const Showcase = () => {
   const tooltip = useTranslations("Tooltip");
 
   const [showRestoreMenu, setShowRestoreMenu] = useState(false);
-
+  useEffect(() => {
+    setLoading(loading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
   // showcase unity view event handlers
   const onSaveDataGenerated = async (
     showcaseSaveData: ShowcaseSaveData,
@@ -220,7 +225,6 @@ const Showcase = () => {
   };
 
   const changeShowcaseDetail = async (title: string, description: string) => {
-    setLoading(true);
     const jsonData = await putData(`${apiUrl}/${id}`, { title, description });
     if (jsonData) {
       showcaseData.title = jsonData.title;
@@ -234,7 +238,6 @@ const Showcase = () => {
         }
       }
     }
-    setLoading(false);
   };
 
   useEffect(() => {

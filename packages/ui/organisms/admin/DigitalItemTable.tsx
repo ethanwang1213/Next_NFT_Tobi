@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useLoading } from "contexts/LoadingContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -29,9 +30,11 @@ const DigitalItemTable = (filters: {
 }) => {
   const apiUrl = "native/admin/digital_items";
   const router = useRouter();
+  const { setLoading } = useLoading();
   const {
     data: digitalItems,
     dataRef,
+    loading,
     setData,
     getData,
     deleteData,
@@ -42,7 +45,9 @@ const DigitalItemTable = (filters: {
 
     const handleMessage = (event: MessageEvent) => {
       if (event.data === "dataUpdated") {
+        setLoading(true);
         getData(apiUrl);
+        setLoading(false);
       }
     };
     channel.addEventListener("message", handleMessage);
@@ -215,6 +220,11 @@ const DigitalItemTable = (filters: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, sortOrder]);
 
+  useEffect(() => {
+    setLoading(loading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
   return (
     <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -333,11 +343,6 @@ const DigitalItemTable = (filters: {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {!digitalItems && (
-                <div className="absolute left-0 top-3 w-full h-full flex justify-center items-center z-20">
-                  <span className="dots-circle-spinner loading2 text-[80px] text-[#FF811C]"></span>
-                </div>
-              )}
               {digitalItems?.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="text-center pt-28">
@@ -450,6 +455,7 @@ const DigitalItemTable = (filters: {
               <Button
                 className="w-[208px] h-14 rounded-[30px] bg-[#FB0000] px-7"
                 onClick={async () => {
+                  setLoading(true);
                   const result = await deleteData(apiUrl, {
                     digitalItemIds: selDigitalItemIds,
                   });
@@ -457,6 +463,7 @@ const DigitalItemTable = (filters: {
                     setSelDigitalItemIds([]);
                     getData(apiUrl);
                   }
+                  setLoading(false);
                 }}
               >
                 <div className="flex gap-3 items-center justify-center">
