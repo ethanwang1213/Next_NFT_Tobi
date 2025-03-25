@@ -634,6 +634,7 @@ const upsertFlowAccountRecord = async (
       public_key: publicKey,
       tx_id: txId,
       status: flowAccountStatus.success,
+      flow_job_id: flowJobId,
     },
     create: {
       account_uuid: tobiratoryAccountUuid,
