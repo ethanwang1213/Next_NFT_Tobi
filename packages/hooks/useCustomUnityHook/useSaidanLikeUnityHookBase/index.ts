@@ -22,6 +22,7 @@ import {
   UnitySceneType,
 } from "../types";
 import { useCustomUnityHookBase } from "../useCustomUnityHookBase";
+import { useHandleIntMaxActionHistory } from "./useHandleIntMaxActionHistory";
 import { useKeyShortcut } from "./useKeyShortcut";
 import { useLoadData } from "./useLoadData";
 import { useMouseUp } from "./useMouseUp";
@@ -101,6 +102,8 @@ export const useSaidanLikeUnityHookBase = ({
     onActionRedone,
     postMessageToUnity,
   });
+
+  const { handleIntMaxActionHistory } = useHandleIntMaxActionHistory();
 
   // functions
   const requestSaveData = () => {
@@ -394,5 +397,6 @@ export const useSaidanLikeUnityHookBase = ({
     handleMouseUp,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   };
 };

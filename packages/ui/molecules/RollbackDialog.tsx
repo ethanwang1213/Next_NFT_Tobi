@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 type RollbackDialogProps = {
@@ -5,6 +6,8 @@ type RollbackDialogProps = {
 };
 
 export const RollbackDialog = ({ dialogRef }: RollbackDialogProps) => {
+  const t = useTranslations("Unity");
+
   return (
     <dialog ref={dialogRef} className="modal">
       <div
@@ -21,10 +24,10 @@ export const RollbackDialog = ({ dialogRef }: RollbackDialogProps) => {
           </button>
         </form>
         <div className="text-base-black text-base font-bold">
-          {"アイテムがロールバックされました"}
+          {t("RollbackDialogTitle")}
         </div>
         <div className="text-neutral-700 text-sm font-normal mt-4">
-          {"保存に失敗したため、1つのアイテムの配置が元に戻されました。"}
+          {t("RollbackDialogText")}
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">

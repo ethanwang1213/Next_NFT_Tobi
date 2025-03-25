@@ -94,6 +94,7 @@ export const useShowcaseEditUnityHook = ({
     handleMouseUp,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX,
@@ -300,6 +301,7 @@ export const useShowcaseEditUnityHook = ({
     handleItemTransformUpdated,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   });
 
   return {

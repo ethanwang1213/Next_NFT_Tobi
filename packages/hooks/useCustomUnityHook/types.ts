@@ -102,6 +102,8 @@ export const UnityMessageType = {
   SwitchDisplayFromThumbnail: 20,
   LoadingCompleted: 21,
   CheckConnection: 22,
+  Vibration: 23,
+  IntMaxActionHistory: 24,
 } as const;
 export type UnityMessageType =
   (typeof UnityMessageType)[keyof typeof UnityMessageType];

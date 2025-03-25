@@ -94,6 +94,7 @@ export const useWorkspaceUnityHook = ({
     handleMouseUp,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX: sampleMenuX,
@@ -329,6 +330,7 @@ export const useWorkspaceUnityHook = ({
     handleActionRedone,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   });
 
   return {
