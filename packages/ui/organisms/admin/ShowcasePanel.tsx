@@ -13,6 +13,7 @@ import CustomDatePicker from "./CustomDatePicker";
 import ShowcaseConfirmDialog from "./ShowcaseConfirmDialog";
 import ShowcaseEditMenu from "./ShowcaseEditMenu";
 import ShowcaseNameEditDialog from "./ShowcaseNameEditDialog";
+import { useLoading } from "contexts/LoadingContext";
 
 registerLocale("ja", ja);
 
@@ -370,10 +371,11 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
 
 const ShowcasePanel = ({ reload }) => {
   const apiUrl = "native/admin/showcases";
-  const { error, data, getData, setData, deleteData } = useRestfulAPI(apiUrl);
+  const { error, data,loading, getData, setData, deleteData } = useRestfulAPI(apiUrl);
   const [localReload, setLocalReload] = useState(0);
   const showcaseConfirmDialogRef = useRef(null);
   const [deleteShowcaseId, setDeleteShowcaseId] = useState(null);
+  const { setLoading } = useLoading();
 
   const sortData = (data) => {
     return data?.slice().sort((a, b) => {
@@ -429,6 +431,10 @@ const ShowcasePanel = ({ reload }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload, localReload]);
 
+  useEffect(() => {
+    setLoading(loading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
   return (
     <div className="flex flex-wrap gap-x-24 gap-y-12 select-none">
       {sortedData &&

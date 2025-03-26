@@ -169,7 +169,7 @@ export default function Index() {
           ? { croppedUrl: generateCroppedImage.current }
           : {}),
         modelUrl: generateModelUrl.current,
-        materialId: materialIndex == -1 ? 0 : materials[materialIndex].id,
+        materialId: materialIndex == -1 ? null : materials[materialIndex].id,
         type: generateSampleType.current,
       };
 

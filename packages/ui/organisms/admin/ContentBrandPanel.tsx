@@ -51,10 +51,13 @@ const ContentBrandPanel = ({
         icon: data.icon,
         sticker: data.sticker,
       };
-      const imageFields = ['image', 'icon', 'sticker'];
+      const imageFields = ["image", "icon", "sticker"];
       for (const field of imageFields) {
         if (submitData[field] !== dataRef.current[field]) {
-          submitData[field] = await uploadImage(submitData[field], ImageType.ContentBrand);
+          submitData[field] = await uploadImage(
+            submitData[field],
+            ImageType.ContentBrand,
+          );
         }
       }
       if (await putData(apiUrl, submitData, [])) {
@@ -92,13 +95,12 @@ const ContentBrandPanel = ({
 
   const checkUploadImage = (activeImageFlag, activeIconFlag, width, height) => {
     if (activeIconFlag) {
-      if (width < 100 || height < 100) {     
+      if (width < 100 || height < 100) {
         toast("Please select an image of at least 100x100 size.");
         return false;
       }
-      return true
-    }
-    else if (activeImageFlag) {
+      return true;
+    } else if (activeImageFlag) {
       if (width < 320 || height < 100) {
         toast("Please select an image of at least 320x100 size.");
         return false;
@@ -119,12 +121,19 @@ const ContentBrandPanel = ({
       const imageUrl = URL.createObjectURL(file);
       const img = new Image();
       img.onload = function () {
-        if (!checkUploadImage(activeImageFlag, activeIconFlag, img.width, img.height)) return;
+        if (
+          !checkUploadImage(
+            activeImageFlag,
+            activeIconFlag,
+            img.width,
+            img.height,
+          )
+        )
+          return;
         if (activeIconFlag) {
           setTempIconUrlContent(imageUrl);
           iconCropDlgRef.current.showModal();
-        }
-        else if (activeImageFlag) {
+        } else if (activeImageFlag) {
           setTempImageUrlContent(imageUrl);
           imageCropDlgRef.current.showModal();
         } else {
@@ -200,20 +209,20 @@ const ContentBrandPanel = ({
           </span>
           <div className="flex items-end gap-12">
             <div className="flex justify-center w-80">
-            {data.icon ? (
-              <NextImage
-                src={data.icon}
-                width={100}
-                height={100}
-                alt="content icon"
-                className="rounded-full max-w-[100px] max-h-[100px]"
-              />
-            ) : (
-              <div
-                style={{ width: 100, height: 100 }}
-                className="rounded-full border-2 border-primary-400 border-dashed"
-              ></div>
-            )}
+              {data.icon ? (
+                <NextImage
+                  src={data.icon}
+                  width={100}
+                  height={100}
+                  alt="content icon"
+                  className="rounded-full max-w-[100px] max-h-[100px]"
+                />
+              ) : (
+                <div
+                  style={{ width: 100, height: 100 }}
+                  className="rounded-full border-2 border-primary-400 border-dashed"
+                ></div>
+              )}
             </div>
             <button
               className="text-xs font-medium text-primary"

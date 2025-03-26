@@ -1,9 +1,10 @@
 import { getMessages } from "admin/messages/messages";
+import { useLoading } from "contexts/LoadingContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateButton from "ui/molecules/CreateButton";
 import ContentsManageTab from "ui/organisms/admin/ContentsManageTab";
 
@@ -21,10 +22,10 @@ export const metadata: Metadata = {
 
 export default function Index() {
   const [selectedTab, setSelectedTab] = useState("showcase");
-  const { postData } = useRestfulAPI(null);
+  const { postData, loading } = useRestfulAPI(null);
   const apiUrl = "native/admin/showcases";
   const [reload, setReload] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const { setLoading } = useLoading();
   const router = useRouter();
   const t = useTranslations("Menu");
   const l = useTranslations("ContentShowcase");
@@ -56,6 +57,11 @@ export default function Index() {
       label: "",
     },
   };
+
+  useEffect(() => {
+    setLoading(loading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <>

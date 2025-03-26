@@ -7,6 +7,7 @@ import {
 } from "contexts/AdminAuthProvider";
 import { NavbarProvider } from "contexts/AdminNavbarProvider";
 import { CustomUnityProvider } from "contexts/CustomUnityContext";
+import { LoadingProvider } from "contexts/LoadingContext";
 import { auth } from "fetchers/firebase/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -85,21 +86,23 @@ const Contents = ({ children }: Props) => {
   if (
     !pagesWithoutSidebar.includes(router.pathname) &&
     auth.currentUser &&
-    user?.hasFlowAccount
+    user?.hasFlowAddress
   ) {
     return (
-      <NavbarProvider>
-        <div className="flex flex-col h-screen">
-          <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          <SpSidebar
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-          />
-          <Sidebar>
-            <MainContents>{children}</MainContents>
-          </Sidebar>
-        </div>
-      </NavbarProvider>
+      <LoadingProvider>
+        <NavbarProvider>
+          <div className="flex flex-col h-screen">
+            <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            <SpSidebar
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+            <Sidebar>
+              <MainContents>{children}</MainContents>
+            </Sidebar>
+          </div>
+        </NavbarProvider>
+      </LoadingProvider>
     );
   }
   return (

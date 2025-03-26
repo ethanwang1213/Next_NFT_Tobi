@@ -25,12 +25,13 @@ const SnsAuth = () => {
   useEffect(() => {
     if (!user) {
       return;
-    } else if (user.hasFlowAccount) {
+    } else if (user.hasFlowAddress) {
       router.push("/");
     } else if (user.flowAccountStatus === FlowAccountStatus.Error) {
       setError(FlowAccountStatus.Error);
     } else if (
-      isFlowAccountProcessing(user.flowAccountStatus) &&
+      ((user.hasTobiratoryAccount && !user.hasFlowAccount) ||
+        isFlowAccountProcessing(user.flowAccountStatus)) &&
       !registering &&
       !response &&
       !error
@@ -41,7 +42,7 @@ const SnsAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, user]);
 
-  if (!user || user.hasFlowAccount) {
+  if (!user || user.hasFlowAddress) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loading className="text-info" />
