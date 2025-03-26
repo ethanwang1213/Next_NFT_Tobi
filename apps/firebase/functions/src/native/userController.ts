@@ -257,6 +257,21 @@ export const createFlowAcc = async (req: Request, res: Response) => {
       const {fcmToken, locale}: { fcmToken?: string, locale?: string } = req.body;
       const flowInfo = await createFlowAccount(uid, fcmToken, email, name, locale);
 
+      await prisma.flow_accounts.upsert({
+        where: {
+          account_uuid: uid,
+        },
+        update: {
+          flow_job_id: flowInfo.flowJobId,
+          status: flowAccountStatus.creating,
+        },
+        create: {
+          account_uuid: uid,
+          flow_job_id: flowInfo.flowJobId,
+          status: flowAccountStatus.creating,
+        },
+      });
+
       if (flowInfo.message == "success") {
         res.status(200).send({
           status: "success",
