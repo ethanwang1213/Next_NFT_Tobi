@@ -45,7 +45,7 @@
     "Numbers": "Numbers",
     "LowercaseLetters": "Lowercase letters",
     "Symbols": "Symbols ",
-    "PasswordsDoNotMatch": "Passwords do not match.",
+    "PasswordsDoNotMatch": "The email or password is incorrect.",
     "AccountDoesNotExist": "Tobiratory account does not exist.",
     "EmailInUse": "This email address is already in use.",
     "GoToAuthScreen": "Go to authentication screen",

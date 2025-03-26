@@ -47,7 +47,7 @@ const EmailAndPasswordSignIn = ({
         <div className={"text-[32px] h-[80px] mt-[50px] font-bold"}>
           {t("PasswordEntry")}
         </div>
-        <div className="w-full sm:w-[408px] mt-[80px]">
+        <div className="w-full sm:w-[408px] mt-[68px]">
           <input
             type={"text"}
             value={email}
