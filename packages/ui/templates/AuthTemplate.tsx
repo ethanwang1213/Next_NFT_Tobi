@@ -48,7 +48,7 @@ const AuthTemplate = ({
     <div>
       <div className="flex items-center justify-center p-8 flex-col">
         <form
-          className="mt-20 rounded-[40px] flex flex-col gap-5 items-center z-10"
+          className="mt-20 rounded-[40px] flex flex-col gap-5 items-center z-10 pt-[56px]"
           onSubmit={handleSubmit(withMail)}
         >
           <Image
@@ -56,11 +56,12 @@ const AuthTemplate = ({
             alt={"link tobiratory account with flow account"}
             width={320}
             height={96}
+            className="w-full sm:w-[450px]"
           />
-          <div className={"mt-20 w-full"}>
+          <div className={"mt-20 w-full sm:w-[408px]"}>
             <GoogleButton label={googleLabel} onClick={withGoogle} />
           </div>
-          <div className={"mt-1 w-full"}>
+          <div className={"mt-1 w-full sm:w-[408px]"}>
             <AppleButton label={appleLabel} onClick={withApple} />
           </div>
           <div
@@ -70,7 +71,7 @@ const AuthTemplate = ({
           >
             <div className="font-normal text-2xl pb-[5px]">or</div>
           </div>
-          <div className="w-full">
+          <div className="w-full sm:w-[408px]">
             <EmailTextField
               placeholder={t("Email")}
               className="rounded-xl base-content font-normal w-full h-[48px] px-4 placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"

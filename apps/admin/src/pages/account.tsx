@@ -50,7 +50,7 @@ const AccountFieldComponent = ({
 }) => {
   return (
     <div
-      className={`flex border-b-[0.5px] border-secondary py-4 mr-7
+      className={`flex border-b-[0.5px] border-secondary py-4 mr-7 overflow-visible
     ${alignTop ? "items-start" : "items-center"} `}
     >
       <span className="w-[155px] shrink-0 text-[16px] text-base-200-content font-normal break-words">
@@ -446,7 +446,7 @@ export default function Index() {
               Edit Image
             </button>
           </div>
-          <div className="flex-1 flex flex-col mr-24">
+          <div className="w-full flex flex-col mr-24">
             <AccountFieldComponent label={t("UserName")}>
               <input
                 type="text"
@@ -480,7 +480,7 @@ export default function Index() {
             <AccountFieldComponent label={t("AboutMe")} alignTop={true}>
               <textarea
                 className={
-                  "text-[20px] font-normal flex-1 overflow-auto text-ellipsis h-[118px] outline-none resize-none"
+                  "text-[20px] font-normal w-full block overflow-y-auto text-ellipsis h-[118px] outline-none resize-none"
                 }
                 value={data?.aboutMe || ""}
                 placeholder={t("NotSet")}

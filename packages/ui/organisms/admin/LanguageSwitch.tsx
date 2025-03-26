@@ -57,7 +57,7 @@ const LanguageSwitch = () => {
             src="/admin/images/language.svg"
             alt="language icon"
           />
-          <button className="p-2 rounded text-gray-500 font-semibold">
+          <button className="p-2 rounded text-gray-500 font-semibold mr-1">
             {selectedLanguage
               ? selectedLanguage === "en"
                 ? "ENGLISH"
@@ -66,7 +66,7 @@ const LanguageSwitch = () => {
           </button>
           <ColorizedSvg
             url={"/admin/images/icon/down-arrow-icon.svg"}
-            className={`transition-transform duration-300 w-[12px] h-[12px] bg-gray-500 ${
+            className={`absolute right-1 transition-transform duration-300 w-[12px] h-[12px] bg-gray-500 ${
               isOpen ? "rotate-180" : ""
             }`}
           />
