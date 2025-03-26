@@ -1,4 +1,5 @@
 import { ProviderId as FirebaseProviderId } from "firebase/auth";
+import { NewItemInfo } from "hooks/useCustomUnityHook/types";
 import {
   ItemType,
   NftLoadData,
@@ -136,13 +137,48 @@ export type IdPairs = {
   next: number;
 }[];
 
-export type UpdateIdValues = ({ idPairs }: { idPairs: IdPairs }) => void;
+// add request handler
+export type NotifyAddRequestResult = ({
+  isSuccess,
+  idPairs,
+  apiRequestId,
+}: {
+  isSuccess: boolean;
+  idPairs: IdPairs;
+  apiRequestId: number;
+}) => void;
 
-export type SendSampleRemovalResult = (id: number, completed: boolean) => void;
-export type SendItemRemovalResult = (
+export type WorkspaceSaveDataGeneratedHandler = (
+  workspaceSaveData: WorkspaceSaveData,
+  newItemInfo: NewItemInfo,
+  notifyAddRequestResult: NotifyAddRequestResult,
+) => void;
+
+export type ShowcaseSaveDataGeneratedHandler = (
+  showcaseSaveData: ShowcaseSaveData,
+  newItemInfo: NewItemInfo,
+  notifyAddRequestResult: NotifyAddRequestResult,
+) => void;
+
+// remove request handler
+export type NotifyRemoveRequestResult = (
+  isSuccess: boolean,
   itemType: ItemType,
   id: number,
-  completed: boolean,
+  apiRequestId: number,
+) => void;
+
+export type ShowcaseRemoveItemRequestedHandler = (
+  itemType: ItemType,
+  id: number,
+  apiRequestId: number,
+  notifyRemoveRequestResult: NotifyRemoveRequestResult,
+) => void;
+
+export type WorkspaceRemoveItemRequestedHandler = (
+  id: number,
+  apiRequestId: number,
+  notifyRemoveRequestResult: NotifyRemoveRequestResult,
 ) => void;
 
 export type WasdParams = {

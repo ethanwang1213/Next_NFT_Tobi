@@ -25,6 +25,7 @@ export const getMessages = async (locale: string) => {
   const ui = (await import(`/messages/${newLocale}/ui.json`)).default;
   const workspace = (await import(`/messages/${newLocale}/workspace.json`))
     .default;
+  const unity = (await import(`/messages/${newLocale}/unity.json`)).default;
 
   return {
     ...account,
@@ -41,5 +42,6 @@ export const getMessages = async (locale: string) => {
     ...tcp,
     ...ui,
     ...workspace,
+    ...unity,
   };
 };
