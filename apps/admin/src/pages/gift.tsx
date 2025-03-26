@@ -1,8 +1,9 @@
 import { getMessages } from "admin/messages/messages";
+import { useLoading } from "contexts/LoadingContext";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext, Metadata } from "next";
 import { useTranslations } from "next-intl";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import CreateButton from "ui/molecules/CreateButton";
 import BoxNameEditDialog from "ui/organisms/admin/BoxNameEditDialog";
@@ -23,11 +24,17 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 
 export default function Index() {
   const apiUrl = "native/admin/boxes";
-  const { data, setData, getData, postData, deleteData } =
+  const { setLoading } = useLoading();
+  const { data, setData, getData, postData, deleteData, loading } =
     useRestfulAPI(apiUrl);
   const [loadingNewBox, setLoadingNewBox] = useState(false);
   const dialogRef = useRef(null);
   const t = useTranslations("GiftReceivingSettings");
+
+  useEffect(() => {
+    setLoading(loading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const deleteBoxHandler = useCallback(
     async (boxId) => {

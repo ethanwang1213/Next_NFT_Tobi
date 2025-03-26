@@ -24,12 +24,11 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    if (loading) {
-      setProgress(0);
+    if (loading && progress == 0) {
       interval = setInterval(() => {
-        setProgress((prev) => (prev < 90 ? prev + 10 : prev));
-      }, 200);
-    } else {
+        setProgress((prev) => (prev < 95 ? prev + 1 : prev));
+      }, 100);
+    } else if (!loading && progress > 0) {
       setProgress(100);
       setTimeout(() => setProgress(0), 500);
     }
@@ -41,7 +40,9 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
   return (
     <LoadingContext.Provider value={{ loading, setLoading }}>
       <div
-        className="fixed top-0 left-0 h-1 bg-blue-500 transition-all"
+        className={`fixed top-0 left-0 h-1 bg-blue-500 transition-all ${
+          progress === 0 ? "invisible" : "visible"
+        }`}
         style={{
           width: `${progress}%`,
           opacity: progress === 100 ? 0 : 1,
