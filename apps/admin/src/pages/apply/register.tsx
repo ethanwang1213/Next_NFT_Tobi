@@ -81,9 +81,9 @@ const Register = () => {
     }
   }, [data]);
 
-  useEffect(()=>{
-    window.scrollTo(0,0)
-  },[switchValue])
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [switchValue]);
 
   const [contentInfo, setContentInfo] = useState<TcpContent>({
     name: user.name,
@@ -325,11 +325,13 @@ const Register = () => {
     <div>
       <div className="md:container px-6 mx-auto my-2 sm:py-16 py-8 md:px-20 font-normal">
         <div className="flex flex-row justify-center mb-2">
-          <TripleToggleSwitch
-            labels={switchLabels}
-            onChange={toggleSwitchHandler}
-            value={switchValue}
-          />
+          {switchValue !== 3 && (
+            <TripleToggleSwitch
+              labels={switchLabels}
+              onChange={toggleSwitchHandler}
+              value={switchValue}
+            />
+          )}
         </div>
         <div className="md:pt-16 pt-6">
           {switchValue === 0 && (
