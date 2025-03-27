@@ -1,6 +1,6 @@
 import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { UpdateIdValues } from "types/adminTypes";
+import { NotifyAddRequestResult } from "types/adminTypes";
 import {
   DecorationId,
   ItemBaseData,
@@ -22,6 +22,7 @@ import {
   UnitySceneType,
 } from "../types";
 import { useCustomUnityHookBase } from "../useCustomUnityHookBase";
+import { useHandleIntMaxActionHistory } from "./useHandleIntMaxActionHistory";
 import { useKeyShortcut } from "./useKeyShortcut";
 import { useLoadData } from "./useLoadData";
 import { useMouseUp } from "./useMouseUp";
@@ -31,6 +32,7 @@ import { useUndoRedo } from "./useUndoRedo";
 export const useSaidanLikeUnityHookBase = ({
   sceneType,
   itemMenuX,
+  rollbackDialogRef,
   onRemoveItemEnabled,
   onRemoveItemDisabled,
   onActionUndone,
@@ -39,6 +41,7 @@ export const useSaidanLikeUnityHookBase = ({
 }: {
   sceneType: UnitySceneType;
   itemMenuX: number;
+  rollbackDialogRef: React.RefObject<HTMLDialogElement>;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
   onActionUndone?: UndoneOrRedoneHandler;
@@ -85,6 +88,8 @@ export const useSaidanLikeUnityHookBase = ({
   const {
     isUndoable,
     isRedoable,
+    setIsUndoable,
+    setIsRedoable,
     undoAction,
     redoAction,
     deleteAllActionHistory,
@@ -97,6 +102,8 @@ export const useSaidanLikeUnityHookBase = ({
     onActionRedone,
     postMessageToUnity,
   });
+
+  const { handleIntMaxActionHistory } = useHandleIntMaxActionHistory();
 
   // functions
   const requestSaveData = () => {
@@ -249,16 +256,21 @@ export const useSaidanLikeUnityHookBase = ({
     postMessageToUnity("RemoveSelectedItemMessageReceiver", "");
   }, [postMessageToUnity]);
 
-  const updateIdValues: UpdateIdValues = useCallback(
-    ({ idPairs }) => {
+  const notifyAddRequestResult: NotifyAddRequestResult = useCallback(
+    ({ isSuccess, idPairs, apiRequestId }) => {
+      if (!isSuccess && apiRequestId !== -1) {
+        rollbackDialogRef.current?.showModal();
+      }
       postMessageToUnity(
-        "UpdateItemIdMessageReceiver",
+        "NotifyAddRequestResultMessageReceiver",
         JSON.stringify({
+          isSuccess,
           idPairs,
+          apiRequestId,
         }),
       );
     },
-    [postMessageToUnity],
+    [rollbackDialogRef, postMessageToUnity],
   );
 
   useKeyShortcut({
@@ -361,7 +373,9 @@ export const useSaidanLikeUnityHookBase = ({
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
     removeItem,
-    updateIdValues,
+    notifyAddRequestResult,
+    setIsUndoable,
+    setIsRedoable,
     undoAction,
     redoAction,
     deleteAllActionHistory,
@@ -383,5 +397,6 @@ export const useSaidanLikeUnityHookBase = ({
     handleMouseUp,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   };
 };

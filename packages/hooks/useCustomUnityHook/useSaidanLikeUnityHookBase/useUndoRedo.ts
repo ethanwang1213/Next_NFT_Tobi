@@ -243,6 +243,8 @@ export const useUndoRedo = ({
   return {
     isUndoable,
     isRedoable,
+    setIsUndoable,
+    setIsRedoable,
     undoAction,
     redoAction,
     deleteAllActionHistory,
