@@ -244,8 +244,12 @@ export const createDigitalItem = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     try {
       if (decodedToken.provider_id == "anonymous") {
-        await prisma.accounts.create({
-          data: {
+        await prisma.accounts.upsert({
+          where: {
+            uuid: uid,
+          },
+          update: {},
+          create: {
             uuid: uid,
             email: Date.now().toString() + "@anonymous.com",
             username: "anonymous",
