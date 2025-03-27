@@ -244,8 +244,12 @@ export const createDigitalItem = async (req: Request, res: Response) => {
     const uid = decodedToken.uid;
     try {
       if (decodedToken.provider_id == "anonymous") {
-        await prisma.accounts.create({
-          data: {
+        await prisma.accounts.upsert({
+          where: {
+            uuid: uid,
+          },
+          update: {},
+          create: {
             uuid: uid,
             email: Date.now().toString() + "@anonymous.com",
             username: "anonymous",
@@ -404,10 +408,13 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
   await getAuth().verifyIdToken(authorization ?? "").then(async (decodedToken: DecodedIdToken) => {
     const uid = decodedToken.uid;
     try {
-      const digitalItem = await prisma.digital_items.findUnique({
+      const digitalItem = await prisma.sample_items.findUnique({
         where: {
           id: parseInt(id),
           is_deleted: false,
+        },
+        include: {
+          digital_item: true,
         },
       });
       if (!digitalItem) {
@@ -419,7 +426,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      if (digitalItem.account_uuid != uid) {
+      if (digitalItem.digital_item.account_uuid != uid) {
         res.status(401).send({
           status: "error",
           data: {
@@ -428,7 +435,7 @@ export const deleteDigitalItem = async (req: Request, res: Response) => {
         });
         return;
       }
-      await prisma.digital_items.update({
+      await prisma.sample_items.update({
         where: {
           id: parseInt(id),
         },
