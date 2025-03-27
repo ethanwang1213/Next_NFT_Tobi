@@ -1,16 +1,21 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import BackLink from "ui/molecules/BackLink";
+import {useEffect} from "react";
 
 type Props = {
   onClickBack: () => void;
 };
 
 const ConfirmationSent = ({ onClickBack }: Props) => {
+  useEffect(()=>{
+    window.scrollTo(0,0)
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const t = useTranslations("LogInSignUp");
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-[100dvh] p-8">
+      <div className="flex flex-col items-center justify-center p-8">
         <div className={"w-full"}>
           <BackLink hideText={true} onClickBack={onClickBack} />
         </div>

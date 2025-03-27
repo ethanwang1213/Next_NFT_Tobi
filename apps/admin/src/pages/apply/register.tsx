@@ -81,6 +81,10 @@ const Register = () => {
     }
   }, [data]);
 
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[switchValue])
+
   const [contentInfo, setContentInfo] = useState<TcpContent>({
     name: user.name,
     url: "",

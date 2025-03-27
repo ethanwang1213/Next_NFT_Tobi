@@ -61,7 +61,7 @@ const ProcessingStatus = ({
         {error ? (
           t("FailedToCreateFlowAccount")
         ) : (
-          <div className="flex gap-2 text-[20px] sm:text-[32px]">
+          <div className="flex items-end gap-2 text-[20px] sm:text-[32px] font-end">
             <span> {t("CreatingFlowAccount")} </span>
             <span className="loading loading-dots loading-md"></span>
           </div>

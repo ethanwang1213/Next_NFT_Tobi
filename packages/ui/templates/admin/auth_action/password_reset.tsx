@@ -67,8 +67,8 @@ const PasswordReset = ({
     );
   } else {
     return (
-      <div className="flex flow-row sm:justify-center min-h-screen min-w-[425px]">
-        <div className="grow flex flex-col self-stretch">
+      <div className="flex justify-center w-full">
+        <div className="grow flex flex-col self-stretch w-full sm:w-[425px]">
           <FlowAgreementWithEmailAndPassword
             title={t("PasswordReset")}
             buttonText={l("Reset")}
