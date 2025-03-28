@@ -150,9 +150,17 @@ export const createFlowAcc = async (req: Request, res: Response) => {
     const flowAcc = await prisma.flow_accounts.findUnique({
       where: {
         account_uuid: uid,
+        is_deleted: false,
       },
     });
     if (flowAcc) {
+      if (flowAcc.flow_address) {
+        res.status(401).send({
+          status: "error",
+          data: "flow-account-already-exists",
+        });
+        return;
+      }
       switch (flowAcc.status) {
         case flowAccountStatus.creating:
           res.status(401).send({
@@ -166,20 +174,24 @@ export const createFlowAcc = async (req: Request, res: Response) => {
             data: "flow-account-retrying",
           });
           return;
-        case flowAccountStatus.idle:
         case flowAccountStatus.error:
           res.status(401).send({
             status: "error",
             data: "flow-account-create-error",
           });
           return;
-      }
-      if (flowAcc.flow_address) {
-        res.status(401).send({
-          status: "error",
-          data: "flow-account-already-exists",
-        });
-        return;
+        case flowAccountStatus.idle:
+          await prisma.flow_accounts.update({
+            where: {
+              account_uuid: uid,
+              is_deleted: false,
+            },
+            data: {
+              status: flowAccountStatus.retrying,
+              tx_retry_count: 1,
+            },
+          });
+          break;
       }
     }
 
@@ -218,6 +230,11 @@ export const createFlowAcc = async (req: Request, res: Response) => {
               flow_job_id: flowJob.flowJobId,
             },
           });
+          res.status(401).send({
+            status: "error",
+            data: "flow-account-already-exists",
+          });
+          return;
         }
       }
     }
@@ -237,40 +254,35 @@ export const createFlowAcc = async (req: Request, res: Response) => {
       return;
     }
     try {
-      const flowAcc = await prisma.flow_accounts.findUnique({
-        where: {
-          account_uuid: uid,
-          is_deleted: false,
-        },
-      });
-      if (flowAcc) {
-        res.status(200).send({
-          status: "success",
-          data: {
-            flowAddress: flowAcc.flow_address,
-            publicKey: flowAcc.public_key,
-            txId: flowAcc.tx_id,
-          },
-        });
-      }
       const {fcmToken, locale}: { fcmToken?: string, locale?: string } = req.body;
       const flowInfo = await createFlowAccount(uid, fcmToken, email, name, locale);
-      const flowAccInfo = {
-        account_uuid: uid,
-        flow_job_id: flowInfo.flowJobId,
-      };
-      const flowData = await prisma.flow_accounts.create({
-        data: flowAccInfo,
-      });
 
-      res.status(200).send({
-        status: "success",
-        data: {
-          flowAddress: flowData.flow_address,
-          publicKey: flowData.public_key,
-          txId: flowData.tx_id,
+      await prisma.flow_accounts.upsert({
+        where: {
+          account_uuid: uid,
+        },
+        update: {
+          flow_job_id: flowInfo.flowJobId,
+          status: flowAccountStatus.creating,
+        },
+        create: {
+          account_uuid: uid,
+          flow_job_id: flowInfo.flowJobId,
+          status: flowAccountStatus.creating,
         },
       });
+
+      if (flowInfo.message == "success") {
+        res.status(200).send({
+          status: "success",
+          data: "flow-account-creating",
+        });
+      } else {
+        res.status(401).send({
+          status: "error",
+          data: "flow-account-create-error",
+        });
+      }
     } catch (error) {
       res.status(401).send({
         status: "success",
