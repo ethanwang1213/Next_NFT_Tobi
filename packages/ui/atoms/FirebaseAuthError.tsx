@@ -25,11 +25,11 @@ const FirebaseAuthError = ({ error }: Props) => {
       case "auth/credential-already-in-use":
         return t("CredentialAlreadyInUse");
       case "auth/user-not-found":
-        return t("UserNotFound");
+        return t("EmailOrPassWordIncorrect");
       case "auth/missing-password":
         return t("MissingPassword");
       case "auth/wrong-password":
-        return t("WrongPassword");
+        return t("EmailOrPassWordIncorrect");
       case "auth/too-many-requests":
         return t("TooManyRequests");
       case "auth/requires-recent-login":
