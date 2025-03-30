@@ -164,7 +164,7 @@ export const AppleButton = ({
         <div className={"w-13"}>
           <FontAwesomeIcon icon={faApple} size={"2x"} />
         </div>
-        <div className={"grow font-normal text-xl"}>{label}</div>
+        <div className={"grow font-normal text-lg"}>{label}</div>
         {!autosize && <div className={"w-13"}></div>}
       </div>
     </Button>

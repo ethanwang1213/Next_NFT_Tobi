@@ -83,29 +83,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   );
   const profileApiUrl = "native/my/profile";
   const { postData: saveEmail, error } = useRestfulAPI(null);
-  const redirectToLocale = () => {
-    if (typeof window !== "undefined") {
-      const language = navigator.language;
-
-      if (language.startsWith("ja")) {
-        router.replace("/admin/ja");
-      } else {
-        router.replace("/admin/en");
-      }
-    }
-  };
 
   useEffect(() => {
     if (error) console.error(error);
   }, [error]);
-
-  useEffect(() => {
-    if (pathname === "/admin") {
-      redirectToLocale();
-    }
-    setCurrentPath(pathname);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
 
   useEffect(() => {
     if (!currentPath) {
