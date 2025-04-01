@@ -66,6 +66,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
   const [instagramUrl, setInstagramUrl] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [siteName, setSiteName] = useState("");
   const [siteUrl, setSiteUrls] = useState("");
   const t = useTranslations("Account");
 
@@ -141,7 +142,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
     let validation = { isValid: true, errorMessage: "" };
     if (type === 2) validation = validateUrl("facebook", url);
     if (type === 3) validation = validateUrl("youtube", url);
-    if (type >= 4) validation = validateUrl("siteLink", url);
+    if (type > 4) validation = validateUrl("siteLink", url);
 
     if (!validation.isValid) {
       toast.dismiss();
@@ -155,6 +156,7 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
       instagramUrl,
       facebookUrl,
       youtubeUrl,
+      siteName,
       siteUrl,
     ];
     switch (type) {
@@ -174,10 +176,14 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
         setYoutubeUrl(url);
         newUrls[3] = url;
         break;
+      case 4:
+        setSiteName(url);
+        newUrls[4] = url;
+        break;
 
       default:
         setSiteUrls(url);
-        newUrls[4] = url;
+        newUrls[5] = url;
         break;
     }
     changeHandler(newUrls.filter((value) => value !== null && value !== ""));
@@ -278,18 +284,25 @@ const SocialLinksComponent = ({ socialLinks, changeHandler }) => {
             handleRedirect("social", siteUrl);
           }}
         />
-        <span className="text-[22px] font-semibold text-placeholder-color">
-          Site Link
-        </span>
+        <input
+          type="text"
+          className={`${valueClass} flex-1 outline-none`}
+          value={siteName}
+          onChange={(e) => urlChangeHandler(4, e.target.value)}
+          placeholder="Site Name"
+          onBlur={() => {
+            socialLinksValidation(4, siteName);
+          }}
+        />
       </div>
       <input
         type="text"
         className={`${valueClass} flex-1 outline-none ml-10`}
         value={siteUrl}
-        onChange={(e) => urlChangeHandler(4, e.target.value)}
+        onChange={(e) => urlChangeHandler(5, e.target.value)}
         placeholder="https://example.com"
         onBlur={() => {
-          socialLinksValidation(4, siteUrl);
+          socialLinksValidation(5, siteUrl);
         }}
       />
     </div>
