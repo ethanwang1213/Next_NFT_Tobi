@@ -11,7 +11,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
   const l = useTranslations("License");
 
   const copyrightInfoChangeHandler = (field, value) => {
-    if (field === "copyrightHolder") {
+    if (field === "copyrightHolder" && value.length<=100) {
       setCopyrightInfo({
         ...copyrightInfo,
         [field]: value.replace(/^©/, "").substring(0, 255),
@@ -110,11 +110,12 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
           )}
         >
           ©
+          <div className="relative w-full">
           <input
             id="copyright_holder"
             className={clsx(
               "w-full text-sm font-normal text-input-color",
-              "placeholder:text-placeholder-color placeholder:font-normal",
+              "placeholder:text-placeholder-color placeholder:font-normal via-primary-200",
             )}
             placeholder="Tobiratory"
             value={copyrightInfo.copyrightHolder}
@@ -123,6 +124,10 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             }
             ref={refs["copyrightHolder"]}
           />
+           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            0 | 100
+          </span>
+          </div>
         </label>
       </div>
       <div className={"md:flex flex-row justify-between md:mb-[50px] mb-1"}>

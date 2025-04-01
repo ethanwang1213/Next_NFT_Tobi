@@ -128,7 +128,6 @@ const Register = () => {
     },
   });
 
-
   const [registerTcp, validateCopyrightFile, response, loading] =
     useTcpRegistration(setError);
 
@@ -197,6 +196,9 @@ const Register = () => {
     });
 
     if (emptyField) {
+      if (emptyField === "email") {
+        setError(t("invalidEmailFormat"));
+      }
       if (userInfoInputRefs[emptyField].current) {
         userInfoInputRefs[emptyField].current.focus();
       }

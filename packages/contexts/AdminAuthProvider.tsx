@@ -72,6 +72,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState(pathname);
+  const [hasBusinessAccount, setHasBusinessAccount] = useState("");
 
   const unrestrictedPaths = useMemo(
     () => [
@@ -106,6 +107,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+   useEffect(() => {
+    if (hasBusinessAccount === "exist") {
+      router.push("/items");
+    } else if (
+      hasBusinessAccount === "reported" ||
+      hasBusinessAccount === "freezed"
+    ) {
+      router.push("/apply/contentReported");
+    } else if (hasBusinessAccount === "not-approved") {
+      router.push("/apply/contentApproval");
+    } else if (hasBusinessAccount === "rejected") {
+      router.push("/apply/contentRejected");
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+   },[hasBusinessAccount])
 
   useEffect(() => {
     // ログイン状態の変化を監視
@@ -139,13 +155,34 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
         const hasFlowAddress = !!profile?.data?.flow?.flowAddress;
         if (hasFlowAddress) {
-          const hasBusinessAccount = await checkBusinessAccount(
-            "businessAccount",
-          ).catch((error) => {
-            console.error(error);
-            auth.signOut();
-          });
+          const intervalTime = 5000;
+           let isMounted = true;
+          const checkAccount = async () => {
+            try {
+              const result = await checkBusinessAccount("businessAccount");
+              if (isMounted) { // Only update state if component is mounted
+                setHasBusinessAccount(result);
+              }
+              await createUser(
+                profile.data.userId,
+                firebaseUser.email,
+                profile.data.username,
+                profile.data.icon || "",
+                firebaseUser.emailVerified,
+                true,
+                true,
+                true,
+                result,
+              );
+        
 
+            } catch (error) {
+              console.error(error);
+              auth.signOut();
+            }
+          };
+          checkAccount();
+          const intervalId = setInterval(checkAccount, intervalTime);
           if (
             firebaseUser.emailVerified &&
             firebaseUser.email !== profile.data.email
@@ -157,18 +194,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
               },
             });
           }
-
-          await createUser(
-            profile.data.userId,
-            firebaseUser.email,
-            profile.data.username,
-            profile.data.icon || "",
-            firebaseUser.emailVerified,
-            true,
-            true,
-            true,
-            hasBusinessAccount,
-          );
           const inaccessiblePaths = [
             "/authentication",
             "/auth/email_auth",
@@ -187,7 +212,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           ) {
             router.push("/apply");
           }
-          return;
+          return () => {
+            isMounted = false;
+            clearInterval(intervalId)
+          };
         }
 
         const signInMethods = await fetchSignInMethodsForEmail(
@@ -362,7 +390,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    if (user.hasBusinessAccount === "exist") {
+    if (hasBusinessAccount === "exist") {
       return;
     }
 

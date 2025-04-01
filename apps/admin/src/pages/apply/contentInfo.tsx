@@ -45,10 +45,13 @@ const Row1 = ({
 const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
   const t = useTranslations("TCP");
   const contentInfoChangeHandler = (field, e) => {
-    setContentInfo({
-      ...contentInfo,
-      [field]: e.target.value.substring(0, 255),
-    });
+    const limits = { name: 30, description: 150, url: 100 };
+    if (limits[field] && e.target.value.length <= limits[field]) {
+      setContentInfo({
+        ...contentInfo,
+        [field]: e.target.value,
+      });
+    }
   };
 
   return (
@@ -57,49 +60,67 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
         {t("ContentInfo")}
       </div>
       <Row1 label={t("ContentName")} description={t("ContentNameUsage")}>
-        <input
-          id="content_name"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("ContentName")}
-          value={contentInfo.name}
-          onChange={(e) => contentInfoChangeHandler("name", e)}
-          ref={refs["name"]}
-        />
+        <div className="relative">
+          <input
+            id="content_name"
+            className={clsx(
+              "flex-1 w-full h-12 pl-5 p-6",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder={t("ContentName")}
+            value={contentInfo.name}
+            onChange={(e) => contentInfoChangeHandler("name", e)}
+            ref={refs["name"]}
+          />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            0 | 30
+          </span>
+        </div>
       </Row1>
-      <Row1 label={t("ContentDescription")}>
-        <textarea
-          id="content_description"
-          className={clsx(
-            "flex-1",
-            "w-full sm:h-32 h-[300px] pl-5 pt-4 resize-none",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("ContentDescription")}
-          value={contentInfo.description}
-          onChange={(e) => contentInfoChangeHandler("description", e)}
-          ref={refs["description"]}
-        />
+      <Row1
+        label={t("ContentDescription")}
+        description={t("ContentDescriptionUsage")}
+      >
+        <div className="relative">
+          <textarea
+            id="content_description"
+            className={clsx(
+              "flex-1",
+              "w-full sm:h-32 h-[300px] pl-5 pr-6 pt-4 resize-none",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder={t("ContentDescription")}
+            value={contentInfo.description}
+            onChange={(e) => contentInfoChangeHandler("description", e)}
+            ref={refs["description"]}
+          />
+          <span className="absolute right-6 top-5 -translate-y-1/2 pointer-events-none select-none text-[13px]">
+            0 | 150
+          </span>
+        </div>
       </Row1>
       <Row1 label={t("HomepageURL")} optional={true}>
-        <input
-          id="content_url"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("URL")}
-          value={contentInfo.url}
-          onChange={(e) => contentInfoChangeHandler("url", e)}
-        />
+        <div className="relative">
+          <input
+            id="content_url"
+            className={clsx(
+              "flex-1 w-full h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder={t("URL")}
+            value={contentInfo.url}
+            onChange={(e) => contentInfoChangeHandler("url", e)}
+          />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            0 | 100
+          </span>
+        </div>
       </Row1>
     </>
   );
