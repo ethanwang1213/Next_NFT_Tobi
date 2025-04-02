@@ -1,0 +1,13 @@
+[{
+  "relation": [
+	  "delegate_permission/common.handle_all_urls"
+  ],
+  "target":
+  {
+	  "namespace": "android_app",
+	  "package_name": "com.tobiratory.Tobiratory.dev",
+	  "sha256_cert_fingerprints":[
+		  "42:C0:25:3A:59:A8:BC:4C:C6:25:21:F9:B9:61:B8:13:00:61:1C:4E:9E:96:46:47:67:04:AA:EE:1B:B6:8C:B6"
+	  ]
+  }
+}]
