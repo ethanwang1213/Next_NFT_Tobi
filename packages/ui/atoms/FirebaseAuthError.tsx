@@ -32,6 +32,8 @@ const FirebaseAuthError = ({ error }: Props) => {
         return t("EmailOrPassWordIncorrect");
       case "auth/too-many-requests":
         return t("TooManyRequests");
+      case "auth/user-mismatch":
+        return t("UserMismatch");
       case "auth/requires-recent-login":
         return t.rich("RequiresRecentLogin", {
           br: () => <br />,
