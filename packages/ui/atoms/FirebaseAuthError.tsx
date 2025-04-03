@@ -11,7 +11,7 @@ type Props = DetailedHTMLProps<
 const FirebaseAuthError = ({ error }: Props) => {
   const t = useTranslations("FirebaseAuthError");
   const getErrorMessage = () => {
-    if (!error) {
+    if (!error || error.code === "auth/popup-closed-by-user") {
       return "";
     }
 
