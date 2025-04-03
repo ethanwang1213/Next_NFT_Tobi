@@ -402,11 +402,8 @@ const ShowcasePanel = ({ reload }) => {
   });
 };
 
-
   const sortedData = sortData(data);
-  console.log('sortedData: ', sortedData);
-  console.log('data: ', data);
-
+  
   const showcaseDeleteHandler = async () => {
     if (
       deleteShowcaseId &&
