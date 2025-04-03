@@ -174,8 +174,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
                 true,
                 result,
               );
-        
-
             } catch (error) {
               console.error(error);
               auth.signOut();
