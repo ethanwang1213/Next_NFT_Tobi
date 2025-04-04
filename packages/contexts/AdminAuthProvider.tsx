@@ -159,21 +159,28 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
            let isMounted = true;
           const checkAccount = async () => {
             try {
+              if (!auth.currentUser) {
+                clearInterval(intervalId);
+                return;
+              }
               const result = await checkBusinessAccount("businessAccount");
-              if (isMounted) { // Only update state if component is mounted
+              if (isMounted) {
                 setHasBusinessAccount(result);
               }
-              await createUser(
-                profile.data.userId,
-                firebaseUser.email,
-                profile.data.username,
-                profile.data.icon || "",
-                firebaseUser.emailVerified,
-                true,
-                true,
-                true,
-                result,
-              );
+              if(!user || user.hasBusinessAccount!==result){
+                await createUser(
+                  profile.data.userId,
+                  firebaseUser.email,
+                  profile.data.username,
+                  profile.data.icon || "",
+                  firebaseUser.emailVerified,
+                  true,
+                  true,
+                  true,
+                  result,
+                );
+                fetchMyProfile();
+              }
             } catch (error) {
               console.error(error);
               auth.signOut();

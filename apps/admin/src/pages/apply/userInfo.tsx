@@ -114,7 +114,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["lastName"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-              0 | 25
+            <span className={"text-[#FF811C]"}>{userInfo.lastName.length}</span> | 25
             </span>
           </div>
 
@@ -133,7 +133,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["firstName"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-              0 | 25
+            <span className={"text-[#FF811C]"}>{userInfo.firstName.length}</span> | 25
             </span>
           </div>
         </div>
@@ -205,7 +205,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["email"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 100
+          <span className={"text-[#FF811C]"}>{userInfo.email.length}</span> | 100
           </span>
         </div>
       </Row1>
@@ -225,7 +225,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["phone"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 15
+          <span className={"text-[#FF811C]"}>{userInfo.phone.length}</span> | 15
           </span>
         </div>
       </Row1>
@@ -245,7 +245,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["building"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 100
+          <span className={"text-[#FF811C]"}>{userInfo.building.length}</span> | 100
           </span>
         </div>
       </Row1>
@@ -265,7 +265,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["street"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 100
+          <span className={"text-[#FF811C]"}>{userInfo.street.length}</span> | 100
           </span>
         </div>
       </Row1>
@@ -285,17 +285,17 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["city"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 50
+          <span className={"text-[#FF811C]"}>{userInfo.city.length}</span> | 50
           </span>
         </div>
       </Row1>
       <Row1 label="">
-        <div className={"flex gap-1"}>
-          <div className="relative min-w-[286px] w-[49%]">
+        <div className={"flex gap-8"}>
+          <div className="relative flex-1">
             <input
               id="user_province"
               className={clsx(
-                "h-12 pl-5 w-full pr-20",
+                "w-full h-12 pl-5 pr-20",
                 "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
                 "text-sm font-normal text-input-color",
                 "placeholder:text-placeholder-color placeholder:font-normal",
@@ -306,14 +306,14 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["province"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-              0 | 50
+            <span className={"text-[#FF811C]"}>{userInfo.province.length}</span> | 50
             </span>
           </div>
-          <div className="relative min-w-[286px] w-[49%]">
+          <div className="relative flex-1">
             <input
               id="user_postal_code"
               className={clsx(
-                "w-full pr-20 h-12 ml-[25px] pl-5",
+                "w-full h-12 pl-5",
                 "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
                 "text-sm font-normal text-input-color",
                 "placeholder:text-placeholder-color placeholder:font-normal",
@@ -324,7 +324,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["postalCode"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-              0 | 50
+            <span className={"text-[#FF811C]"}>{userInfo.postalCode.length}</span> | 10
             </span>
           </div>
         </div>

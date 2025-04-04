@@ -75,7 +75,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
             ref={refs["name"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 30
+            <span className={"text-[#FF811C]"}>{contentInfo.name.length}</span> | 30
           </span>
         </div>
       </Row1>
@@ -99,7 +99,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
             ref={refs["description"]}
           />
           <span className="absolute right-6 top-5 -translate-y-1/2 pointer-events-none select-none text-[13px]">
-            0 | 150
+            <span className={"text-[#FF811C]"}>{contentInfo.description.length}</span> | 150
           </span>
         </div>
       </Row1>
@@ -118,7 +118,7 @@ const ContentInformation = ({ contentInfo, setContentInfo, refs }) => {
             onChange={(e) => contentInfoChangeHandler("url", e)}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 100
+            <span className={"text-[#FF811C]"}>{contentInfo.url.length}</span> | 100
           </span>
         </div>
       </Row1>

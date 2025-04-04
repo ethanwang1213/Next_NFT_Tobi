@@ -114,7 +114,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
           <input
             id="copyright_holder"
             className={clsx(
-              "w-full text-sm font-normal text-input-color",
+              "w-full text-sm font-normal text-input-color pr-20",
               "placeholder:text-placeholder-color placeholder:font-normal via-primary-200",
             )}
             placeholder="Tobiratory"
@@ -125,7 +125,7 @@ const CopyrightInformation = ({ copyrightInfo, setCopyrightInfo, refs }) => {
             ref={refs["copyrightHolder"]}
           />
            <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            0 | 100
+            <span className={"text-[#FF811C]"}>{copyrightInfo.copyrightHolder.length}</span> | 100
           </span>
           </div>
         </label>
