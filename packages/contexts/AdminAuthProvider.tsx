@@ -72,7 +72,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState(pathname);
-  const [hasBusinessAccount, setHasBusinessAccount] = useState("");
 
   const unrestrictedPaths = useMemo(
     () => [
@@ -84,10 +83,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   );
   const profileApiUrl = "native/my/profile";
   const { postData: saveEmail, error } = useRestfulAPI(null);
+  const checkBusinessAccountInterval = 5000;
 
   useEffect(() => {
     if (error) console.error(error);
   }, [error]);
+
+  useEffect(() => {
+    setCurrentPath(pathname);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   useEffect(() => {
     if (!currentPath) {
@@ -107,21 +112,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-   useEffect(() => {
-    if (hasBusinessAccount === "exist") {
-      router.push("/items");
-    } else if (
-      hasBusinessAccount === "reported" ||
-      hasBusinessAccount === "freezed"
-    ) {
-      router.push("/apply/contentReported");
-    } else if (hasBusinessAccount === "not-approved") {
-      router.push("/apply/contentApproval");
-    } else if (hasBusinessAccount === "rejected") {
-      router.push("/apply/contentRejected");
-    }
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-   },[hasBusinessAccount])
 
   useEffect(() => {
     // ログイン状態の変化を監視
@@ -155,72 +145,15 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
         const hasFlowAddress = !!profile?.data?.flow?.flowAddress;
         if (hasFlowAddress) {
-          const intervalTime = 5000;
-           let isMounted = true;
-          const checkAccount = async () => {
-            try {
-              if (!auth.currentUser) {
-                clearInterval(intervalId);
-                return;
-              }
-              const result = await checkBusinessAccount("businessAccount");
-              if (isMounted) {
-                setHasBusinessAccount(result);
-              }
-              if(!user || user.hasBusinessAccount!==result){
-                await createUser(
-                  profile.data.userId,
-                  firebaseUser.email,
-                  profile.data.username,
-                  profile.data.icon || "",
-                  firebaseUser.emailVerified,
-                  true,
-                  true,
-                  true,
-                  result,
-                );
-                fetchMyProfile();
-              }
-            } catch (error) {
-              console.error(error);
-              auth.signOut();
-            }
-          };
-          checkAccount();
-          const intervalId = setInterval(checkAccount, intervalTime);
-          if (
-            firebaseUser.emailVerified &&
-            firebaseUser.email !== profile.data.email
-          ) {
-            await saveEmail(profileApiUrl, {
-              account: {
-                userId: profile.data.userId,
-                email: firebaseUser.email,
-              },
-            });
-          }
-          const inaccessiblePaths = [
-            "/authentication",
-            "/auth/email_auth",
-            "/auth/sns_auth",
-          ];
-          if (inaccessiblePaths.includes(currentPath)) {
-            router.push("/");
-          } else if (
-            hasBusinessAccount === "exist" &&
-            isApplyPage(currentPath)
-          ) {
-            router.push("/");
-          } else if (
-            hasBusinessAccount !== "exist" &&
-            !isPageForNonBusinessAccount(currentPath)
-          ) {
-            router.push("/apply");
-          }
-          return () => {
-            isMounted = false;
-            clearInterval(intervalId)
-          };
+          await navigateFlowUser(
+            profile.data.userId,
+            firebaseUser.email,
+            profile.data.username,
+            profile.data.icon || "",
+            firebaseUser.emailVerified,
+            firebaseUser.email !== profile.data.email,
+          );
+          return;
         }
 
         const signInMethods = await fetchSignInMethodsForEmail(
@@ -293,6 +226,91 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unrestrictedPaths, currentPath]);
+
+  const navigateFlowUser = async (
+    userId: string,
+    email: string,
+    username: string,
+    icon: string,
+    emailVerified: boolean,
+    emailUpdated: boolean,
+  ) => {
+    const hasBusinessAccount: HasBusinessAccount = await checkBusinessAccount(
+      "businessAccount",
+    ).catch((error) => {
+      console.error(error);
+    });
+    if (!hasBusinessAccount) {
+      await auth.signOut();
+      return;
+    }
+
+    await createUser(
+      userId,
+      email,
+      username,
+      icon,
+      emailVerified,
+      true,
+      true,
+      true,
+      hasBusinessAccount,
+    );
+    setTimeout(checkAccount, checkBusinessAccountInterval);
+    if (emailVerified && emailUpdated) {
+      await saveEmail(profileApiUrl, {
+        account: {
+          userId,
+          email,
+        },
+      });
+    }
+    navigateByBusinessAccountState(hasBusinessAccount);
+    return;
+  };
+
+  const navigateByBusinessAccountState = async (state: HasBusinessAccount) => {
+    const inaccessiblePaths = [
+      "/authentication",
+      "/auth/email_auth",
+      "/auth/sns_auth",
+    ];
+    if (state === "not-exist") {
+      router.push("/apply");
+    } else if (state === "exist") {
+      if (inaccessiblePaths.includes(currentPath) || isApplyPage(currentPath)) {
+        router.push("/");
+      }
+    } else if (state === "reported" || state === "freezed") {
+      router.push("/apply/contentReported");
+    } else if (state === "not-approved") {
+      router.push("/apply/contentApproval");
+    } else if (state === "rejected") {
+      router.push("/apply/contentRejected");
+    }
+  };
+
+  const checkAccount = async () => {
+    if (!auth.currentUser) {
+      return;
+    }
+    const result: HasBusinessAccount = await checkBusinessAccount(
+      "businessAccount",
+    ).catch((error) => {
+      console.error(error);
+    });
+    if (!result) {
+      auth.signOut();
+      return;
+    }
+    if (user && user.hasBusinessAccount === result) {
+      setUser((prev) => {
+        return { ...prev, hasBusinessAccount: result };
+      });
+    }
+    setTimeout(checkAccount, checkBusinessAccountInterval);
+    navigateByBusinessAccountState(result);
+  };
 
   const emailLinkOnly = (signInMethods: string[]) => {
     return (
@@ -395,7 +413,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    if (hasBusinessAccount === "exist") {
+    if (user.hasBusinessAccount === "exist") {
       return;
     }
 
