@@ -122,7 +122,6 @@ export const useShowcaseEditUnityHook = ({
   // functions
   const processLoadData: ProcessLoadData = useCallback(
     (loadData: ShowcaseLoadData) => {
-      console.log(loadData);
       if (loadData == null) return null;
 
       const sampleList: SaidanItemData[] = loadData.sampleItemList.map((v) => {

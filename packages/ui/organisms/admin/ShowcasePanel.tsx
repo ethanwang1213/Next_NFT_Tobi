@@ -210,7 +210,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         className={`w-72 h-[430px] rounded-2xl relative
           ${
             status == ShowcaseStatus.Public
-              ? "outline outline-4 outline-success-200"
+              ? "border-4 border-success-200 box-border p-4"
               : ""
           }
         `}

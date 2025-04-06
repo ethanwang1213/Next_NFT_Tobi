@@ -31,7 +31,9 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
       province: 50,
       postalCode: 10,
     };
-    if (limits[field] && e.target.value.length <= limits[field]) {
+    if (field === "country") {
+      setUserInfo({ ...userInfo, [field]: e.target.value });
+    } else if (limits[field] && e.target.value.length <= limits[field]) {
       setUserInfo({ ...userInfo, [field]: e.target.value });
     }
   };
@@ -70,7 +72,7 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
     // Ensure that only numeric characters are allowed for the date
     const inputPhone = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
     // Apply any additional masking or validation logic as needed
-    if (inputPhone.length > 9 && inputPhone.length < 16)
+    if (inputPhone.length < 16)
       setUserInfo({ ...userInfo, phone: inputPhone });
   };
 
@@ -114,7 +116,10 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["lastName"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            <span className={"text-[#FF811C]"}>{userInfo.lastName.length}</span> | 25
+              <span className={"text-[#FF811C]"}>
+                {userInfo.lastName.length}
+              </span>{" "}
+              | 25
             </span>
           </div>
 
@@ -133,7 +138,10 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["firstName"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            <span className={"text-[#FF811C]"}>{userInfo.firstName.length}</span> | 25
+              <span className={"text-[#FF811C]"}>
+                {userInfo.firstName.length}
+              </span>{" "}
+              | 25
             </span>
           </div>
         </div>
@@ -205,7 +213,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["email"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-          <span className={"text-[#FF811C]"}>{userInfo.email.length}</span> | 100
+            <span className={"text-[#FF811C]"}>{userInfo.email.length}</span> |
+            100
           </span>
         </div>
       </Row1>
@@ -225,7 +234,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["phone"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-          <span className={"text-[#FF811C]"}>{userInfo.phone.length}</span> | 15
+            <span className={"text-[#FF811C]"}>{userInfo.phone.length}</span> |
+            15
           </span>
         </div>
       </Row1>
@@ -245,7 +255,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["building"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-          <span className={"text-[#FF811C]"}>{userInfo.building.length}</span> | 100
+            <span className={"text-[#FF811C]"}>{userInfo.building.length}</span>{" "}
+            | 100
           </span>
         </div>
       </Row1>
@@ -265,7 +276,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["street"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-          <span className={"text-[#FF811C]"}>{userInfo.street.length}</span> | 100
+            <span className={"text-[#FF811C]"}>{userInfo.street.length}</span> |
+            100
           </span>
         </div>
       </Row1>
@@ -285,7 +297,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
             ref={refs["city"]}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-          <span className={"text-[#FF811C]"}>{userInfo.city.length}</span> | 50
+            <span className={"text-[#FF811C]"}>{userInfo.city.length}</span> |
+            50
           </span>
         </div>
       </Row1>
@@ -306,7 +319,10 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["province"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            <span className={"text-[#FF811C]"}>{userInfo.province.length}</span> | 50
+              <span className={"text-[#FF811C]"}>
+                {userInfo.province.length}
+              </span>{" "}
+              | 50
             </span>
           </div>
           <div className="relative flex-1">
@@ -324,7 +340,10 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
               ref={refs["postalCode"]}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
-            <span className={"text-[#FF811C]"}>{userInfo.postalCode.length}</span> | 10
+              <span className={"text-[#FF811C]"}>
+                {userInfo.postalCode.length}
+              </span>{" "}
+              | 10
             </span>
           </div>
         </div>
