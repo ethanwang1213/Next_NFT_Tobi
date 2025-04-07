@@ -305,7 +305,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         router.push("/");
       }
     } else if (state === "reported" || state === "freezed") {
-      router.push("/apply/contentReported");
+      if (
+        !isAccountPage(currentPathRef.current) &&
+        !isAuthPage(currentPathRef.current)
+      ) {
+        router.push("/apply/contentReported");
+      }
     } else if (state === "not-approved") {
       if (
         !isAccountPage(currentPathRef.current) &&
