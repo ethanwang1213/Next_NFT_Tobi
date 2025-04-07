@@ -14,7 +14,12 @@ const ContentNameEditDialog = ({
   const [contentName, setContentName] = useState("");
   const t = useTranslations("ContentSettings");
   const l = useTranslations("GiftReceivingSettings");
-
+  const ContentNameChange = (e) => {
+    e.preventDefault();
+    if (e.target.value.length < 30) {
+      setContentName(e.target.value);
+    }
+  };
   useEffect(() => {
     setContentName(initialValue);
   }, [initialValue]);
@@ -42,13 +47,18 @@ const ContentNameEditDialog = ({
           <span className="text-base-black text-sm font-semibold">
             {t("ContentName")}
           </span>
-          <input
-            type="text"
-            className="flex-1 rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              className="w-full rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
             text-base-black text-sm leading-4 font-normal"
-            value={contentName}
-            onChange={(e) => setContentName(e.target.value)}
-          />
+              value={contentName}
+              onChange={(e) => ContentNameChange(e)}
+            />
+            <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+              <span className={"text-[#FF811C]"}>{contentName}</span> | 30
+            </span>
+          </div>
         </div>
         <div className="modal-action flex justify-end gap-4">
           <button
@@ -64,11 +74,12 @@ const ContentNameEditDialog = ({
             type="button"
             className="px-4 py-2 bg-primary rounded-[64px] 
               hover:shadow-xl hover:-top-[3px] transition-shadow
-              text-base-white text-sm leading-4 font-semibold"
+              text-base-white text-sm leading-4 font-semibold disabled:bg-neutral-300 disabled:cursor-not-allowed"
             onClick={() => {
               changeHandler(contentName);
               dialogRef.current.close();
             }}
+            disabled={!contentName.trim()}
           >
             {l("SaveChanges")}
           </button>

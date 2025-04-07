@@ -82,13 +82,6 @@ const ImageCropDialog = ({
   );
 
   const onCropChange = useCallback((c: Crop) => {
-    const { width, height } = imgRef.current;
-    const { clientWidth, clientHeight } = imgWrapperRef.current;
-    if (c.x < (clientWidth - width) / 2) return;
-    if (c.y < (clientHeight - height) / 2) return;
-    if (c.x + c.width > (clientWidth + width) / 2) return;
-    if (c.y + c.height > (clientHeight + height) / 2) return;
-
     setCrop(c);
   }, []);
 
@@ -150,16 +143,36 @@ const ImageCropDialog = ({
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!isDragging || !dragStart) return;
-
+      if (!isDragging || !dragStart || !imgRef.current || !imgWrapperRef.current)
+        return;
+  
       const dx = e.clientX - dragStart.x;
       const dy = e.clientY - dragStart.y;
-
-      const newCrop = { ...crop };
-      newCrop.x = crop.x + dx;
-      newCrop.y = crop.y + dy;
-
-      setCrop(newCrop);
+  
+      const wrapper = imgWrapperRef.current;
+      const image = imgRef.current;
+  
+      const wrapperWidth = wrapper.clientWidth;
+      const wrapperHeight = wrapper.clientHeight;
+      const imageWidth = image.width;
+      const imageHeight = image.height;
+  
+      const offsetX = (wrapperWidth - imageWidth) / 2;
+      const offsetY = (wrapperHeight - imageHeight) / 2;
+  
+      const minX = offsetX;
+      const minY = offsetY;
+      const maxX = offsetX + imageWidth - crop.width;
+      const maxY = offsetY + imageHeight - crop.height;
+  
+      let newX = crop.x + dx;
+      let newY = crop.y + dy;
+  
+      // ✅ Clamp to image area
+      newX = Math.max(minX, Math.min(newX, maxX));
+      newY = Math.max(minY, Math.min(newY, maxY));
+  
+      setCrop({ ...crop, x: newX, y: newY });
       setDragStart({ x: e.clientX, y: e.clientY });
     },
     [isDragging, dragStart, crop],
