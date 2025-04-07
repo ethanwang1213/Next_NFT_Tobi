@@ -4,6 +4,7 @@ import { useLoading } from "contexts/LoadingContext";
 import { ShowcaseEditUnityProvider } from "contexts/ShowcaseEditUnityContext";
 import { ImageType, uploadImage } from "fetchers/UploadActions";
 import { useShowcaseEditUnityHook } from "hooks/useCustomUnityHook";
+import { NewItemInfo } from "hooks/useCustomUnityHook/types";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
@@ -12,7 +13,11 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useToggle } from "react-use";
-import { SendItemRemovalResult, ShowcaseSaveData } from "types/adminTypes";
+import {
+  NotifyAddRequestResult,
+  ShowcaseRemoveItemRequestedHandler,
+  ShowcaseSaveData,
+} from "types/adminTypes";
 import {
   ActionType,
   ItemType,
@@ -21,6 +26,7 @@ import {
 } from "types/unityTypes";
 import Button from "ui/atoms/Button";
 import { CustomUnity } from "ui/molecules/CustomUnity";
+import { RollbackDialog } from "ui/molecules/RollbackDialog";
 import CustomToast from "ui/organisms/admin/CustomToast";
 import ShowcaseNameEditDialog from "ui/organisms/admin/ShowcaseNameEditDialog";
 import ShowcaseSampleDetail from "ui/organisms/admin/ShowcaseSampleDetail";
@@ -55,6 +61,7 @@ const Showcase = () => {
   const [containerWidth, setContainerWidth] = useState(0);
   const [selectedSampleItem, setSelectedSampleItem] = useState(0);
   const dialogRef = useRef(null);
+  const rollbackDialogRef = useRef(null);
   const { setLoading } = useLoading();
   const apiUrl = "native/admin/showcases";
   const {
@@ -80,13 +87,14 @@ const Showcase = () => {
   // showcase unity view event handlers
   const onSaveDataGenerated = async (
     showcaseSaveData: ShowcaseSaveData,
-    updateIdValues,
+    newItemInfo: NewItemInfo,
+    notifyAddRequestResult: NotifyAddRequestResult,
   ) => {
     const thumbnailUrl = await uploadImage(
       showcaseSaveData.thumbnailImageBase64,
       ImageType.ShowcaseThumbnail,
     );
-    const IdPairs = await postData(`${apiUrl}/${id}`, {
+    const idPairs = await postData(`${apiUrl}/${id}`, {
       sampleItemList: showcaseSaveData.sampleItemList,
       nftItemList: showcaseSaveData.nftItemList,
       thumbnailImage: thumbnailUrl,
@@ -109,7 +117,22 @@ const Showcase = () => {
         },
       },
     });
-    updateIdValues({ idPairs: IdPairs });
+    // notify saving result to Unity
+    if (typeof idPairs === "boolean" && !idPairs) {
+      // failed to save
+      notifyAddRequestResult({
+        isSuccess: false,
+        idPairs: [],
+        apiRequestId: newItemInfo.apiRequestId,
+      });
+    } else {
+      // success to save
+      notifyAddRequestResult({
+        isSuccess: true,
+        idPairs: idPairs,
+        apiRequestId: newItemInfo.apiRequestId,
+      });
+    }
   };
 
   const onRemoveItemEnabled = () => {
@@ -120,11 +143,11 @@ const Showcase = () => {
     setShowRestoreMenu(false);
   };
 
-  const onRemoveItemRequested = async (
-    itemType: ItemType,
-    uniqueId: number,
-    itemId: number,
-    sendItemRemovalResult: SendItemRemovalResult,
+  const onRemoveItemRequested: ShowcaseRemoveItemRequestedHandler = async (
+    itemType,
+    uniqueId,
+    apiRequestId,
+    nofityRemoveRequestResult,
   ) => {
     // hide the restore menu
     setShowRestoreMenu(false);
@@ -140,11 +163,13 @@ const Showcase = () => {
       });
       // update remains count for NFT item
     }
-    if (postResult == "thrown") {
-      sendItemRemovalResult(itemType, uniqueId, true);
-    } else {
-      sendItemRemovalResult(itemType, uniqueId, false);
-    }
+    // notify remove result to unity
+    nofityRemoveRequestResult(
+      postResult == "thrown",
+      itemType,
+      uniqueId,
+      apiRequestId,
+    );
   };
 
   const handleAction: (actionType: ActionType, text: string) => void = (
@@ -161,6 +186,7 @@ const Showcase = () => {
 
   const unityHookOutput = useShowcaseEditUnityHook({
     itemMenuX: contentWidth - (showDetailView ? 504 : 30),
+    rollbackDialogRef,
     onSaveDataGenerated,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
@@ -622,6 +648,7 @@ const Showcase = () => {
             dialogRef={dialogRef}
             changeHandler={changeShowcaseDetail}
           />
+          <RollbackDialog dialogRef={rollbackDialogRef} />
         </div>
       </div>
     </ShowcaseEditUnityProvider>

@@ -10,6 +10,7 @@
     "TooManyRequests": "リクエスト数が許容最大数を超えています。しばらく時間をおいてからお試し下さい。",
     "SomeError": "エラーが発生しました。",
     "VerificationErrorTitle": "メールアドレスを再度確認してください",
-    "VerificationError": "メールアドレスの確認のリクエストの期限が切れたか、リンクがすでに使用されています"
+    "VerificationError": "メールアドレスの確認のリクエストの期限が切れたか、リンクがすでに使用されています",
+    "UserMismatch": "選択されたGoogleアカウントが登録情報と一致しません"
   }
 }

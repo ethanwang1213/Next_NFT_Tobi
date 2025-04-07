@@ -133,7 +133,7 @@ export const GoogleButton = ({
             height={26}
           />
         </div>
-        <div className={"grow font-normal text-lg"}>{label}</div>
+        <div className={"grow font-normal text-lg ml-[10px]"}>{label}</div>
         {!autosize && <div className={"w-13"}></div>}
       </div>
     </Button>
@@ -164,7 +164,7 @@ export const AppleButton = ({
         <div className={"w-13"}>
           <FontAwesomeIcon icon={faApple} size={"2x"} />
         </div>
-        <div className={"grow font-normal text-lg"}>{label}</div>
+        <div className={"grow font-normal text-xl ml-[10px]"}>{label}</div>
         {!autosize && <div className={"w-13"}></div>}
       </div>
     </Button>

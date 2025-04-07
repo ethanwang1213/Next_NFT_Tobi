@@ -1,10 +1,10 @@
 import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback } from "react";
 import {
-  SendSampleRemovalResult,
-  UpdateIdValues,
+  NotifyRemoveRequestResult,
   WorkspaceLoadData,
-  WorkspaceSaveData,
+  WorkspaceRemoveItemRequestedHandler,
+  WorkspaceSaveDataGeneratedHandler,
 } from "types/adminTypes";
 import {
   AcrylicBaseScaleRatio,
@@ -29,21 +29,11 @@ import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useApplyAcrylicBaseScaleRatio } from "./useApplyAcrylicBaseScaleRatio";
 import { useHighlightSamples } from "./useHighlightSamples";
 
-type SaveDataGeneratedHandler = (
-  workspaceSaveData: WorkspaceSaveData,
-  updateIdValues: UpdateIdValues,
-) => void;
-
 type ItemThumbnailGeneratedHandler = (thumbnailBase64: string) => void;
-
-type RemoveSampleRequestedHandler = (
-  id: number,
-  itemId: number,
-  sendSampleRemovalResult: SendSampleRemovalResult,
-) => void;
 
 export const useWorkspaceUnityHook = ({
   sampleMenuX = -1,
+  rollbackDialogRef,
   onSaveDataGenerated,
   onItemThumbnailGenerated,
   onRemoveSampleEnabled,
@@ -54,11 +44,12 @@ export const useWorkspaceUnityHook = ({
   onNftModelGenerated,
 }: {
   sampleMenuX?: number;
-  onSaveDataGenerated?: SaveDataGeneratedHandler;
+  rollbackDialogRef: React.RefObject<HTMLDialogElement>;
+  onSaveDataGenerated?: WorkspaceSaveDataGeneratedHandler;
   onItemThumbnailGenerated?: ItemThumbnailGeneratedHandler;
   onRemoveSampleEnabled?: () => void;
   onRemoveSampleDisabled?: () => void;
-  onRemoveSampleRequested?: RemoveSampleRequestedHandler;
+  onRemoveSampleRequested?: WorkspaceRemoveItemRequestedHandler;
   onActionUndone?: UndoneOrRedoneHandler;
   onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
@@ -79,7 +70,9 @@ export const useWorkspaceUnityHook = ({
     placeNewSample,
     placeNewSampleWithDrag,
     removeItem,
-    updateIdValues,
+    notifyAddRequestResult,
+    setIsUndoable,
+    setIsRedoable,
     undoAction,
     redoAction,
     deleteAllActionHistory,
@@ -101,9 +94,11 @@ export const useWorkspaceUnityHook = ({
     handleMouseUp,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX: sampleMenuX,
+    rollbackDialogRef,
     onRemoveItemEnabled: onRemoveSampleEnabled,
     onRemoveItemDisabled: onRemoveSampleDisabled,
     onActionUndone,
@@ -191,31 +186,37 @@ export const useWorkspaceUnityHook = ({
   );
 
   const removeSamplesByItemId = useCallback(
-    (itemIdList: number[]) => {
+    (itemIdList: number[], shouldClearActionHistory: boolean = true) => {
       const list = itemIdList.map((itemId) => ({
         itemType: ItemType.Sample,
         itemId,
       }));
       postMessageToUnity(
         "RemoveItemsMessageReceiver",
-        JSON.stringify({ itemRefList: list }),
+        JSON.stringify({ itemRefList: list, shouldClearActionHistory }),
       );
+      setIsUndoable(false);
+      setIsRedoable(false);
     },
-    [postMessageToUnity],
+    [setIsUndoable, setIsRedoable, postMessageToUnity],
   );
 
-  const sendRemovalResult = useCallback(
-    (id: number, completed: boolean) => {
+  const notifyRemoveRequestResult: NotifyRemoveRequestResult = useCallback(
+    (isSuccess, itemType, id, apiRequestId) => {
+      if (!isSuccess && apiRequestId !== -1) {
+        rollbackDialogRef.current?.showModal();
+      }
       postMessageToUnity(
-        "RemovalResultMessageReceiver",
+        "NotifyRemoveRequestResultMessageReceiver",
         JSON.stringify({
-          itemType: ItemType.Sample,
+          isSuccess,
+          itemType,
           id,
-          completed,
+          apiRequestId,
         }),
       );
     },
-    [postMessageToUnity],
+    [rollbackDialogRef, postMessageToUnity],
   );
 
   const requestItemThumbnail = useCallback(
@@ -258,9 +259,13 @@ export const useWorkspaceUnityHook = ({
           scale: v.scale,
           acrylicBaseScaleRatio: v.acrylicBaseScaleRatio,
         }));
-      onSaveDataGenerated({ workspaceItemList }, updateIdValues);
+      onSaveDataGenerated(
+        { workspaceItemList },
+        messageBody.newItemInfo,
+        notifyAddRequestResult,
+      );
     },
-    [onSaveDataGenerated, updateIdValues],
+    [onSaveDataGenerated, notifyAddRequestResult],
   );
 
   const handleItemThumbnailGenerated = useCallback(
@@ -284,19 +289,20 @@ export const useWorkspaceUnityHook = ({
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
         itemType: ItemType;
-        id: number;
         itemId: number;
+        id: number;
+        apiRequestId: number;
       };
 
       if (!messageBody) return;
 
       onRemoveSampleRequested(
         messageBody.id,
-        messageBody.itemId,
-        sendRemovalResult,
+        messageBody.apiRequestId,
+        notifyRemoveRequestResult,
       );
     },
-    [onRemoveSampleRequested, sendRemovalResult],
+    [onRemoveSampleRequested, notifyRemoveRequestResult],
   );
 
   const { applyAcrylicBaseScaleRatio } = useApplyAcrylicBaseScaleRatio({
@@ -323,6 +329,7 @@ export const useWorkspaceUnityHook = ({
     handleActionRedone,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   });
 
   return {

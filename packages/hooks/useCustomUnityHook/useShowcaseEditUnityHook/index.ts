@@ -1,10 +1,10 @@
 import { useCustomUnityContext } from "contexts/CustomUnityContext";
 import { useCallback } from "react";
 import {
-  SendItemRemovalResult,
+  NotifyRemoveRequestResult,
   ShowcaseLoadData,
-  ShowcaseSaveData,
-  UpdateIdValues,
+  ShowcaseRemoveItemRequestedHandler,
+  ShowcaseSaveDataGeneratedHandler,
 } from "types/adminTypes";
 import {
   ItemType,
@@ -30,22 +30,11 @@ import { useUnityMessageHandler } from "../useUnityMessageHandler";
 import { useShowSmartphoneArea } from "./useShowSmartphoneArea";
 import { useUpdateItemTransform } from "./useUpdateTransform";
 
-type SaveDataGeneratedHandler = (
-  showcaseSaveData: ShowcaseSaveData,
-  updateIdValues: UpdateIdValues,
-) => void;
-
-type RemoveItemRequestedHandler = (
-  itemType: ItemType,
-  id: number,
-  itemId: number,
-  sendItemRemovalResult: SendItemRemovalResult,
-) => void;
-
 type ProcessLoadData = (loadData: ShowcaseLoadData) => SaidanLikeData | null;
 
 export const useShowcaseEditUnityHook = ({
   itemMenuX = -1,
+  rollbackDialogRef,
   onSaveDataGenerated,
   onRemoveItemEnabled,
   onRemoveItemDisabled,
@@ -55,10 +44,11 @@ export const useShowcaseEditUnityHook = ({
   onNftModelGenerated,
 }: {
   itemMenuX?: number;
-  onSaveDataGenerated?: SaveDataGeneratedHandler;
+  rollbackDialogRef: React.RefObject<HTMLDialogElement>;
+  onSaveDataGenerated?: ShowcaseSaveDataGeneratedHandler;
   onRemoveItemEnabled?: () => void;
   onRemoveItemDisabled?: () => void;
-  onRemoveItemRequested?: RemoveItemRequestedHandler;
+  onRemoveItemRequested?: ShowcaseRemoveItemRequestedHandler;
   onActionUndone?: UndoneOrRedoneHandler;
   onActionRedone?: UndoneOrRedoneHandler;
   onNftModelGenerated?: NftModelGeneratedHandler;
@@ -82,7 +72,7 @@ export const useShowcaseEditUnityHook = ({
     placeNewSampleWithDrag,
     placeNewNftWithDrag,
     removeItem,
-    updateIdValues,
+    notifyAddRequestResult,
     undoAction,
     redoAction,
     deleteAllActionHistory,
@@ -104,9 +94,11 @@ export const useShowcaseEditUnityHook = ({
     handleMouseUp,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   } = useSaidanLikeUnityHookBase({
     sceneType,
     itemMenuX,
+    rollbackDialogRef,
     onRemoveItemEnabled,
     onRemoveItemDisabled,
     onActionUndone,
@@ -181,14 +173,17 @@ export const useShowcaseEditUnityHook = ({
     [postMessageToUnity],
   );
 
-  const sendRemovalResult = useCallback(
-    (itemType: ItemType, id: number, completed: boolean) => {
+  const notifyRemoveRequestResult: NotifyRemoveRequestResult = useCallback(
+    (isSuccess, itemType, id, apiRequestId) => {
+      if (!isSuccess && apiRequestId !== -1) {
+        rollbackDialogRef.current?.showModal();
+      }
       postMessageToUnity(
-        "RemovalResultMessageReceiver",
-        JSON.stringify({ itemType, id, completed }),
+        "NotifyRemoveRequestResultMessageReceiver",
+        JSON.stringify({ isSuccess, itemType, id, apiRequestId }),
       );
     },
-    [postMessageToUnity],
+    [rollbackDialogRef, postMessageToUnity],
   );
 
   const { updateItemTransform, handleItemTransformUpdated } =
@@ -255,10 +250,11 @@ export const useShowcaseEditUnityHook = ({
           thumbnailImageBase64: messageBody.fixedPointSaidanThumbnailBase64,
           settings: messageBody.saidanData.saidanSettings,
         },
-        updateIdValues,
+        messageBody.newItemInfo,
+        notifyAddRequestResult,
       );
     },
-    [onSaveDataGenerated, updateIdValues],
+    [onSaveDataGenerated, notifyAddRequestResult],
   );
 
   const handleRemoveItemRequested = useCallback(
@@ -267,8 +263,9 @@ export const useShowcaseEditUnityHook = ({
 
       const messageBody = JSON.parse(msgObj.messageBody) as {
         itemType: ItemType;
-        id: number;
         itemId: number;
+        id: number;
+        apiRequestId: number;
       };
 
       if (!messageBody) return;
@@ -276,11 +273,11 @@ export const useShowcaseEditUnityHook = ({
       onRemoveItemRequested(
         messageBody.itemType,
         messageBody.id,
-        messageBody.itemId,
-        sendRemovalResult,
+        messageBody.apiRequestId,
+        notifyRemoveRequestResult,
       );
     },
-    [onRemoveItemRequested, sendRemovalResult],
+    [onRemoveItemRequested, notifyRemoveRequestResult],
   );
 
   useUnityMessageHandler({
@@ -303,6 +300,7 @@ export const useShowcaseEditUnityHook = ({
     handleItemTransformUpdated,
     handleLoadingCompleted,
     handleCheckConnection,
+    handleIntMaxActionHistory,
   });
 
   return {

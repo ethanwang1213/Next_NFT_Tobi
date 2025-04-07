@@ -31,6 +31,7 @@ type Props = {
   handleSaidanDetailViewIsInitialized?: () => void;
   handleLoadingCompleted?: () => void;
   handleCheckConnection?: () => void;
+  handleIntMaxActionHistory?: () => void;
 };
 
 export const useUnityMessageHandler = ({
@@ -55,6 +56,7 @@ export const useUnityMessageHandler = ({
   handleSaidanDetailViewIsInitialized,
   handleLoadingCompleted,
   handleCheckConnection,
+  handleIntMaxActionHistory,
 }: Props) => {
   const resolveUnityMessage = useCallback((json: string) => {
     try {
@@ -133,6 +135,9 @@ export const useUnityMessageHandler = ({
         case UnityMessageType.CheckConnection:
           handleCheckConnection?.();
           return;
+        case UnityMessageType.IntMaxActionHistory:
+          handleIntMaxActionHistory?.();
+          return;
         default:
           return;
       }
@@ -158,6 +163,7 @@ export const useUnityMessageHandler = ({
       handleSaidanDetailViewIsInitialized,
       handleLoadingCompleted,
       handleCheckConnection,
+      handleIntMaxActionHistory,
     ],
   );
 

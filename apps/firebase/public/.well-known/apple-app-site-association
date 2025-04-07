@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [ "622M9948S3.com.tobiratory.Tobiratory.test2" ],
+        "paths": [ "/__/auth/*" ]
+      }
+    ]
+  }
+}

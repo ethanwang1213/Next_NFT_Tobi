@@ -1,0 +1,6 @@
+{
+  "Unity": {
+    "RollbackDialogTitle": "Failed to save item",
+    "RollbackDialogText": "Due to a failed save, one item's placement has been reverted."
+  }
+}

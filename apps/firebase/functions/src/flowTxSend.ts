@@ -891,6 +891,7 @@ const createOrGetFlowAccountDocRef = async (tobiratoryAccountUuid: string) => {
       const flowAccount = await prisma.flow_accounts.findUnique({
         where: {
           account_uuid: tobiratoryAccountUuid,
+          is_deleted: false,
         },
       });
       if (!flowAccount || !flowAccount.flow_address) {

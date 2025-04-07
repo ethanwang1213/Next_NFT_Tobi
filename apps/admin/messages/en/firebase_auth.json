@@ -10,6 +10,7 @@
     "TooManyRequests": "The number of requests exceeds the maximum allowed. Please try again after some time.",
     "SomeError": "An error has occurred.",
     "VerificationErrorTitle": "Please check your email address again.",
-    "VerificationError": "Your request to verify your email address has expired or the link is already in use"
+    "VerificationError": "Your request to verify your email address has expired or the link is already in use",
+    "UserMismatch": "The selected Google account does not match the registered account."
   }
 }
