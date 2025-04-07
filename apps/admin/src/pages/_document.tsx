@@ -47,10 +47,6 @@ const Document = () => {
         <meta name="application-name" content="Tobiratory" />
         <meta name="msapplication-TileColor" content="#2b5797" />
         <meta name="theme-color" content="#ffffff" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no"
-        />
       </Head>
       <body>
         <Main />

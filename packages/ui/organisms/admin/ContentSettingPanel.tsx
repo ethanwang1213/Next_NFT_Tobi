@@ -317,27 +317,11 @@ const ContentSettingPanel = ({
             {t("ChangeContentNameGuidelines")}
           </span>
           <ContentNameEditComponent
-            initialValue={data.name}
+            initialValue={data.name? data.name : "NEW CONTENT NAME"}
             changedName={data.canChangeName}
             changeHandler={(v) => fieldChangeHandler("name", v)}
           />
           <ContentNameConfirmDialog dialogRef={confirmDialogRef} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-secondary text-2xl font-bold">
-            {t("ContentDescription")}
-          </h2>
-          <span className="text-neutral-400 text-xs font-medium py-2">
-            {t("EditDescription")}
-          </span>
-          <StyledTextArea
-            className=""
-            label="Description"
-            placeholder="Description"
-            value={data.description}
-            changeHandler={(value) => fieldChangeHandler("description", value)}
-            maxLen={1300}
-          />
         </div>
         <div className="flex flex-col gap-2">
           <div className="md:flex flex-row justify-between">
