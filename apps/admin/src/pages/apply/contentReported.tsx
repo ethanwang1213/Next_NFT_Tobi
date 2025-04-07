@@ -1,4 +1,5 @@
 "use client";
+import { getMessages } from "admin/messages/messages";
 import { ImageType, uploadFiles } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { GetStaticPropsContext } from "next";
@@ -8,7 +9,6 @@ import ContentReportedNotification from "ui/organisms/admin/ContentReportedNotif
 import DocumentPreview from "ui/organisms/admin/DocumentPreview";
 import DocumentUpload from "ui/organisms/admin/DocumentUpload";
 import Spinner from "ui/organisms/admin/Spinner";
-import { getMessages } from "../../../messages/messages";
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {
