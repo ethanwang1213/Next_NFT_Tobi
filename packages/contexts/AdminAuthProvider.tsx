@@ -15,6 +15,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -72,6 +73,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState(pathname);
+  const userRef = useRef<User | null>(user);
+  const currentPathRef = useRef<string | null>(currentPath);
 
   const unrestrictedPaths = useMemo(
     () => [
@@ -84,6 +87,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const profileApiUrl = "native/my/profile";
   const { postData: saveEmail, error } = useRestfulAPI(null);
   const checkBusinessAccountInterval = 5000;
+
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
+
+  useEffect(() => {
+    currentPathRef.current = currentPath;
+  }, [currentPath]);
 
   useEffect(() => {
     if (error) console.error(error);
@@ -114,6 +125,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }, [user]);
 
   useEffect(() => {
+    let ignore = false;
     // ログイン状態の変化を監視
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       // ログイン状態の場合|
@@ -122,8 +134,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           console.error(error);
           auth.signOut();
         });
-        if (!profile || !profile.data) {
-          router.push("/authentication");
+        if (ignore || !profile || !profile.data) {
           return;
         }
 
@@ -223,9 +234,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         }
       }
     });
-    return () => unsubscribe();
+    return () => {
+      ignore = true;
+      unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unrestrictedPaths, currentPath]);
+  }, [unrestrictedPaths]);
 
   const navigateFlowUser = async (
     userId: string,
@@ -256,7 +270,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       true,
       hasBusinessAccount,
     );
-    setTimeout(checkAccount, checkBusinessAccountInterval);
     if (emailVerified && emailUpdated) {
       await saveEmail(profileApiUrl, {
         account: {
@@ -266,6 +279,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       });
     }
     navigateByBusinessAccountState(hasBusinessAccount);
+    setTimeout(checkAccount, checkBusinessAccountInterval);
     return;
   };
 
@@ -276,17 +290,37 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       "/auth/sns_auth",
     ];
     if (state === "not-exist") {
-      router.push("/apply");
+      if (
+        !isApplyPage(currentPathRef.current) &&
+        !isAccountPage(currentPathRef.current) &&
+        !isAuthPage(currentPathRef.current)
+      ) {
+        router.push("/apply");
+      }
     } else if (state === "exist") {
-      if (inaccessiblePaths.includes(currentPath) || isApplyPage(currentPath)) {
+      if (
+        inaccessiblePaths.includes(currentPathRef.current) ||
+        isApplyPage(currentPathRef.current)
+      ) {
         router.push("/");
       }
     } else if (state === "reported" || state === "freezed") {
       router.push("/apply/contentReported");
     } else if (state === "not-approved") {
-      router.push("/apply/contentApproval");
+      if (
+        !isAccountPage(currentPathRef.current) &&
+        !isAuthPage(currentPathRef.current)
+      ) {
+        router.push("/apply/contentApproval");
+      }
     } else if (state === "rejected") {
-      router.push("/apply/contentRejected");
+      if (
+        !isApplyPage(currentPathRef.current) &&
+        !isAccountPage(currentPathRef.current) &&
+        !isAuthPage(currentPathRef.current)
+      ) {
+        router.push("/apply/contentRejected");
+      }
     }
   };
 
@@ -303,13 +337,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       auth.signOut();
       return;
     }
-    if (user && user.hasBusinessAccount === result) {
+    if (userRef.current && userRef.current.hasBusinessAccount !== result) {
       setUser((prev) => {
         return { ...prev, hasBusinessAccount: result };
       });
     }
-    setTimeout(checkAccount, checkBusinessAccountInterval);
     navigateByBusinessAccountState(result);
+    setTimeout(checkAccount, checkBusinessAccountInterval);
   };
 
   const emailLinkOnly = (signInMethods: string[]) => {
@@ -444,6 +478,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       </div>
     );
   }
+};
+
+const isAuthPage = (path: string) => {
+  return path === "/auth" || path.startsWith("/auth");
+};
+
+const isAccountPage = (path: string) => {
+  return path === "/account" || path.startsWith("/account/");
 };
 
 export const isApplyPage = (path: string) => {
