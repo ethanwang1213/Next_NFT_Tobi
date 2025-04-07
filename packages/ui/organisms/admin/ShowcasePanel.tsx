@@ -210,7 +210,7 @@ const ShowcaseComponent = (props: ShowcaseComponentProps) => {
         className={`w-72 h-[430px] rounded-2xl relative
           ${
             status == ShowcaseStatus.Public
-              ? "outline outline-4 outline-success-200"
+              ? "border-4 border-success-200 box-border p-4"
               : ""
           }
         `}
@@ -377,19 +377,33 @@ const ShowcasePanel = ({ reload }) => {
   const [deleteShowcaseId, setDeleteShowcaseId] = useState(null);
   const { setLoading } = useLoading();
 
-  const sortData = (data) => {
-    return data?.slice().sort((a, b) => {
-      // Move "PUBLISH" status (1) items to the front
-      if (a.status === 1 && b.status !== 1) return -1;
-      if (b.status === 1 && a.status !== 1) return 1;
+ const sortData = (data) => {
+  return data?.slice().sort((a, b) => {
+    // Prioritize by status order: 1 → 2 → 0
+    if (a.status !== b.status) {
+      return a.status === 1 ? -1 : b.status === 1 ? 1 : a.status === 2 ? -1 : 1;
+    }
 
-      // For all other statuses, preserve original order (no sorting)
-      return 0;
-    });
-  };
+    // If status is 2, sort by scheduleTime (earlier first)
+    if (a.status === 2 && b.status === 2) {
+      const timeA = a.scheduleTime ? new Date(a.scheduleTime).getTime() : Infinity;
+      const timeB = b.scheduleTime ? new Date(b.scheduleTime).getTime() : Infinity;
+      return timeA - timeB;
+    }
+
+    // If status is 0, sort by createTime (latest first)
+    if (a.status === 0 && b.status === 0) {
+      const timeA = a.createTime ? new Date(a.createTime).getTime() : 0;
+      const timeB = b.createTime ? new Date(b.createTime).getTime() : 0;
+      return timeB - timeA;
+    }
+
+    return 0;
+  });
+};
 
   const sortedData = sortData(data);
-
+  
   const showcaseDeleteHandler = async () => {
     if (
       deleteShowcaseId &&

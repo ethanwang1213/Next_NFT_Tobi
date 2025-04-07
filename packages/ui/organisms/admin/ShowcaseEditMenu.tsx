@@ -48,22 +48,19 @@ const ShowcaseEditMenu: React.FC<ShowcaseEditMenuProps> = ({
         return -1;
     }
   };
-  const filteredMenuItems = isPublic
-  ? menuItems.filter(item => item.text !== "Schedule")
-  : menuItems;
 
   return (
     <ul
       className="w-52 rounded bg-white z-30"
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >
-      {filteredMenuItems.map((item, index) => {
+      {menuItems.map((item, index) => {
         return item.type == "menu" ? (
           <li
             key={`item-menu-${index}`}
             className={`flex justify-between items-center px-2 py-3 cursor-pointer ${
               getIndexFromStatus(status) === index ? "bg-secondary-100" : ""
-            }`}
+            } ${isPublic && index===2 ? "hidden" : ""}`}
             onClick={() => clickHandler(index)}
           >
             <div className="flex justify-start gap-2">

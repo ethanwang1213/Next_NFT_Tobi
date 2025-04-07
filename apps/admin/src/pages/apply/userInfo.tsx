@@ -21,7 +21,21 @@ const Row1 = ({ label, children }) => {
 
 const UserInformation = ({ userInfo, setUserInfo, refs }) => {
   const userInfoChangeHandler = (field, e) => {
-    setUserInfo({ ...userInfo, [field]: e.target.value.substring(0, 255) });
+    const limits = {
+      lastName: 25,
+      firstName: 25,
+      email: 100,
+      building: 100,
+      street: 100,
+      city: 50,
+      province: 50,
+      postalCode: 10,
+    };
+    if (field === "country") {
+      setUserInfo({ ...userInfo, [field]: e.target.value });
+    } else if (limits[field] && e.target.value.length <= limits[field]) {
+      setUserInfo({ ...userInfo, [field]: e.target.value });
+    }
   };
 
   const t = useTranslations("TCP");
@@ -58,7 +72,8 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
     // Ensure that only numeric characters are allowed for the date
     const inputPhone = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
     // Apply any additional masking or validation logic as needed
-    setUserInfo({ ...userInfo, phone: inputPhone });
+    if (inputPhone.length < 16)
+      setUserInfo({ ...userInfo, phone: inputPhone });
   };
 
   const fieldColor = (value: string) => {
@@ -85,34 +100,50 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         </div>
       </div>
       <Row1 label={t("ApplicantName")}>
-        <div className="flex flex-row justify-between">
-          <input
-            id="user_last_name"
-            className={clsx(
-              "flex-1 w-full h-12 pl-5",
-              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-              "text-sm font-normal text-input-color",
-              "placeholder:text-placeholder-color placeholder:font-normal",
-            )}
-            placeholder={t("LastName")}
-            value={userInfo.lastName}
-            onChange={(e) => userInfoChangeHandler("lastName", e)}
-            ref={refs["lastName"]}
-          />
-          <span className="w-8"></span>
-          <input
-            id="user_first_name"
-            className={clsx(
-              "flex-1 w-full h-12 pl-5",
-              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-              "text-sm font-normal text-input-color",
-              "placeholder:text-placeholder-color placeholder:font-normal",
-            )}
-            placeholder={t("FirstName")}
-            value={userInfo.firstName}
-            onChange={(e) => userInfoChangeHandler("firstName", e)}
-            ref={refs["firstName"]}
-          />
+        <div className="flex flex-row justify-between gap-8">
+          <div className="relative flex-1">
+            <input
+              id="user_last_name"
+              className={clsx(
+                "w-full h-12 pl-5",
+                "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+                "text-sm font-normal text-input-color",
+                "placeholder:text-placeholder-color placeholder:font-normal pr-20",
+              )}
+              placeholder={t("LastName")}
+              value={userInfo.lastName}
+              onChange={(e) => userInfoChangeHandler("lastName", e)}
+              ref={refs["lastName"]}
+            />
+            <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+              <span className={"text-[#FF811C]"}>
+                {userInfo.lastName.length}
+              </span>{" "}
+              | 25
+            </span>
+          </div>
+
+          <div className="relative flex-1">
+            <input
+              id="user_first_name"
+              className={clsx(
+                "w-full h-12 pl-5 pr-20",
+                "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+                "text-sm font-normal text-input-color",
+                "placeholder:text-placeholder-color placeholder:font-normal",
+              )}
+              placeholder={t("FirstName")}
+              value={userInfo.firstName}
+              onChange={(e) => userInfoChangeHandler("firstName", e)}
+              ref={refs["firstName"]}
+            />
+            <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+              <span className={"text-[#FF811C]"}>
+                {userInfo.firstName.length}
+              </span>{" "}
+              | 25
+            </span>
+          </div>
         </div>
       </Row1>
       <Row1 label={t("DateOfBirth")}>
@@ -167,108 +198,154 @@ const UserInformation = ({ userInfo, setUserInfo, refs }) => {
         </div>
       </Row1>
       <Row1 label={t("MailAddress")}>
-        <input
-          id="user_email"
-          className={clsx(
-            "flex-1 min-w-[286px] w-[49%] h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder="tobiratory@example.com"
-          value={userInfo.email}
-          onChange={(e) => userInfoChangeHandler("email", e)}
-          ref={refs["email"]}
-        />
+        <div className="relative flex-1 min-w-[286px] w-[49%]">
+          <input
+            id="user_email"
+            className={clsx(
+              "h-12 w-full pl-5 pr-20",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder="tobiratory@example.com"
+            value={userInfo.email}
+            onChange={(e) => userInfoChangeHandler("email", e)}
+            ref={refs["email"]}
+          />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            <span className={"text-[#FF811C]"}>{userInfo.email.length}</span> |
+            100
+          </span>
+        </div>
       </Row1>
       <Row1 label={t("PhoneNumber")}>
-        <input
-          id="user_phone"
-          className={clsx(
-            "min-w-[286px] w-[49%] h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("NoHyphens")}
-          value={userInfo.phone}
-          onChange={handlePhoneChange}
-          ref={refs["phone"]}
-        />
+        <div className="relative min-w-[286px] w-[49%]">
+          <input
+            id="user_phone"
+            className={clsx(
+              "w-full h-12 pl-5 pr-20",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder={t("NoHyphens")}
+            value={userInfo.phone}
+            onChange={handlePhoneChange}
+            ref={refs["phone"]}
+          />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            <span className={"text-[#FF811C]"}>{userInfo.phone.length}</span> |
+            15
+          </span>
+        </div>
       </Row1>
       <Row1 label={t("Address")}>
-        <input
-          id="user_building"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("BuildingRoom")}
-          value={userInfo.building}
-          onChange={(e) => userInfoChangeHandler("building", e)}
-          ref={refs["building"]}
-        />
-      </Row1>
-      <Row1 label="">
-        <input
-          id="user_street"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("Street")}
-          value={userInfo.street}
-          onChange={(e) => userInfoChangeHandler("street", e)}
-          ref={refs["street"]}
-        />
-      </Row1>
-      <Row1 label="">
-        <input
-          id="user_city"
-          className={clsx(
-            "flex-1 w-full h-12 pl-5",
-            "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
-            "text-sm font-normal text-input-color",
-            "placeholder:text-placeholder-color placeholder:font-normal",
-          )}
-          placeholder={t("City")}
-          value={userInfo.city}
-          onChange={(e) => userInfoChangeHandler("city", e)}
-          ref={refs["city"]}
-        />
-      </Row1>
-      <Row1 label="">
-        <div className={"grid grid-cols-2 gap-1"}>
+        <div className="relative">
           <input
-            id="user_province"
+            id="user_building"
             className={clsx(
-              "h-12 pl-5",
+              "flex-1 w-full h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
             )}
-            placeholder={t("StatePrefecture")}
-            value={userInfo.province}
-            onChange={(e) => userInfoChangeHandler("province", e)}
-            ref={refs["province"]}
+            placeholder={t("BuildingRoom")}
+            value={userInfo.building}
+            onChange={(e) => userInfoChangeHandler("building", e)}
+            ref={refs["building"]}
           />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            <span className={"text-[#FF811C]"}>{userInfo.building.length}</span>{" "}
+            | 100
+          </span>
+        </div>
+      </Row1>
+      <Row1 label="">
+        <div className="relative">
           <input
-            id="user_postal_code"
+            id="user_street"
             className={clsx(
-              "h-12 ml-[25px] pl-5",
+              "flex-1 w-full h-12 pl-5",
               "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
               "text-sm font-normal text-input-color",
               "placeholder:text-placeholder-color placeholder:font-normal",
             )}
-            placeholder={t("PostalCode")}
-            value={userInfo.postalCode}
-            onChange={(e) => userInfoChangeHandler("postalCode", e)}
-            ref={refs["postalCode"]}
+            placeholder={t("Street")}
+            value={userInfo.street}
+            onChange={(e) => userInfoChangeHandler("street", e)}
+            ref={refs["street"]}
           />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            <span className={"text-[#FF811C]"}>{userInfo.street.length}</span> |
+            100
+          </span>
+        </div>
+      </Row1>
+      <Row1 label="">
+        <div className="relative">
+          <input
+            id="user_city"
+            className={clsx(
+              "flex-1 w-full h-12 pl-5",
+              "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+              "text-sm font-normal text-input-color",
+              "placeholder:text-placeholder-color placeholder:font-normal",
+            )}
+            placeholder={t("City")}
+            value={userInfo.city}
+            onChange={(e) => userInfoChangeHandler("city", e)}
+            ref={refs["city"]}
+          />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+            <span className={"text-[#FF811C]"}>{userInfo.city.length}</span> |
+            50
+          </span>
+        </div>
+      </Row1>
+      <Row1 label="">
+        <div className={"flex gap-8"}>
+          <div className="relative flex-1">
+            <input
+              id="user_province"
+              className={clsx(
+                "w-full h-12 pl-5 pr-20",
+                "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+                "text-sm font-normal text-input-color",
+                "placeholder:text-placeholder-color placeholder:font-normal",
+              )}
+              placeholder={t("StatePrefecture")}
+              value={userInfo.province}
+              onChange={(e) => userInfoChangeHandler("province", e)}
+              ref={refs["province"]}
+            />
+            <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+              <span className={"text-[#FF811C]"}>
+                {userInfo.province.length}
+              </span>{" "}
+              | 50
+            </span>
+          </div>
+          <div className="relative flex-1">
+            <input
+              id="user_postal_code"
+              className={clsx(
+                "w-full h-12 pl-5",
+                "outline-none border-2 rounded-lg border-input-color hover:border-hover-color focus:border-focus-color",
+                "text-sm font-normal text-input-color",
+                "placeholder:text-placeholder-color placeholder:font-normal",
+              )}
+              placeholder={t("PostalCode")}
+              value={userInfo.postalCode}
+              onChange={(e) => userInfoChangeHandler("postalCode", e)}
+              ref={refs["postalCode"]}
+            />
+            <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
+              <span className={"text-[#FF811C]"}>
+                {userInfo.postalCode.length}
+              </span>{" "}
+              | 10
+            </span>
+          </div>
         </div>
       </Row1>
       <Row1 label={""}>

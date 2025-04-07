@@ -113,7 +113,6 @@ export const useWorkspaceUnityHook = ({
 
   // functions
   const processLoadData = useCallback((loadData: WorkspaceLoadData) => {
-    console.log(loadData);
     if (loadData == null) return null;
 
     var saidanItemList = loadData.workspaceItemList.map((v) => {
