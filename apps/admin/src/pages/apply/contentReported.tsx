@@ -1,12 +1,22 @@
 "use client";
 import { ImageType, uploadFiles } from "fetchers/UploadActions";
 import useRestfulAPI from "hooks/useRestfulAPI";
+import { GetStaticPropsContext } from "next";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ContentReportedNotification from "ui/organisms/admin/ContentReportedNotification";
 import DocumentPreview from "ui/organisms/admin/DocumentPreview";
 import DocumentUpload from "ui/organisms/admin/DocumentUpload";
 import Spinner from "ui/organisms/admin/Spinner";
+import { getMessages } from "../../../messages/messages";
+
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  return {
+    props: {
+      messages: await getMessages(locale),
+    },
+  };
+}
 
 const ContentReported = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(true);
