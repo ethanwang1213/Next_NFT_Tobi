@@ -14,7 +14,7 @@ const ContentNameEditDialog = ({
   const [contentName, setContentName] = useState("");
   const t = useTranslations("ContentSettings");
   const l = useTranslations("GiftReceivingSettings");
-  const ContentNameChange = (e) => {
+  const contentNameChange = (e) => {
     e.preventDefault();
     if (e.target.value.length < 30) {
       setContentName(e.target.value);
@@ -53,7 +53,7 @@ const ContentNameEditDialog = ({
               className="w-full rounded-[64px] border-[1px] border-neutral-200 py-2 pl-3 pr-12 outline-none
             text-base-black text-sm leading-4 font-normal"
               value={contentName}
-              onChange={(e) => ContentNameChange(e)}
+              onChange={(e) => contentNameChange(e)}
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none select-none text-[13px] hidden md:inline-block">
               <span className={"text-[#FF811C]"}>{contentName}</span> | 30
