@@ -46,6 +46,7 @@ const ShowcaseNameEditDialog = ({
   };
 
   const handleSave = () => {
+    if (!isFormValid) return;
     changeHandler(title, description);
     dialogRef.current.close();
     if (typeof resumeUnityInputs === "function") {
@@ -114,7 +115,7 @@ const ShowcaseNameEditDialog = ({
             className={`px-4 py-2 bg-primary rounded-[64px] hover:shadow-xl hover:-top-[3px] transition-shadow text-base-white text-sm leading-4 font-semibold ${
               isFormValid ? "" : "opacity-50 cursor-not-allowed"
             }`}
-            onClick={isFormValid ? handleSave : undefined}
+            onClick={handleSave}
             disabled={!isFormValid}
           >
             {l("SaveChanges")}
