@@ -402,7 +402,19 @@ const Detail = () => {
     submitHandler();
   };
 
-  const sanitizeLicense = (license) => {
+  type License = {
+    com?: boolean;
+    adp?: boolean;
+    der?: boolean;
+    dst?: boolean;
+    mer?: boolean;
+    ncr?: boolean;
+  };
+
+  const sanitizeLicense = (license: License | null | undefined): License => {
+    if (!license) {
+      return {};
+    }
     return {
       com: license.com,
       adp: license.adp,
@@ -602,18 +614,18 @@ const Detail = () => {
                     changeHandler={(value) =>
                       fieldChangeHandler("quantityLimit", value)
                     }
-                    readOnly={isReadOnly() || digitalItem.quantityLimit == -1}
+                    readOnly={isReadOnly() || digitalItem.quantityLimit === null}
                   />
                   <div className="flex justify-start items-center gap-2">
                     <input
                       type="checkbox"
                       id="quantityLimit"
                       className="w-6 h-6"
-                      checked={digitalItem.quantityLimit == -1}
+                      checked={digitalItem.quantityLimit === null}
                       onChange={(e) => {
                         if (!isReadOnly()) {
                           if (e.target.checked) {
-                            fieldChangeHandler("quantityLimit", -1);
+                            fieldChangeHandler("quantityLimit", null);
                           } else {
                             fieldChangeHandler("quantityLimit", 0);
                           }

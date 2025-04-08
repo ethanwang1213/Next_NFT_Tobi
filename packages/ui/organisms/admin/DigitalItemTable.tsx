@@ -425,10 +425,10 @@ const DigitalItemTable = (filters: {
                     </td>
                     <td className="px-3 py-3 text-center justify-center">
                       <span>{item.mintedCount} / </span>
-                      {item.quantityLimit != -1 ? (
+                      {item.quantityLimit != null ? (
                         <span>{item.quantityLimit}</span>
                       ) : (
-                        <span className="text-[20px]">∞</span>
+                        <span className="text-[20px] text-start">∞</span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center justify-center">
