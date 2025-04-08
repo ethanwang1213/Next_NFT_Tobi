@@ -117,33 +117,32 @@ const CopyrightMultiSelect = ({
     }) {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
-        case useCombobox.stateChangeTypes.ItemClick:
-          if (newSelectedItem != undefined) {
-            if (selectedItems.indexOf(newSelectedItem) == -1) {
-              // check duplicated
-              setSelectedItems([...selectedItems, newSelectedItem]);
-              handleSelectedItemChange([...selectedItems, newSelectedItem]);
+          case useCombobox.stateChangeTypes.ItemClick:
+            if (newSelectedItem != undefined) {
+                const isDuplicate = selectedItems.some(
+                (item) => item.name === newSelectedItem.name
+                );
+              
+              if (!isDuplicate) {
+                const updatedItems = [...selectedItems, newSelectedItem];
+                setSelectedItems(updatedItems);
+                handleSelectedItemChange(updatedItems);
+              }
+            } else if (inputValue && inputValue.length > 0) {
+              const isDuplicate = selectedItems.some(item => 
+                item.name === inputValue
+              );
+              
+              if (!isDuplicate) {
+                const newItem = { id: null, name: inputValue };
+                const updatedItems = [...selectedItems, newItem];
+                setSelectedItems(updatedItems);
+                handleSelectedItemChange(updatedItems);
+              }
+              setInputValue("");
+              openMenu();
             }
-          } else if (inputValue && inputValue.length > 0) {
-            if (
-              selectedItems.findIndex(
-                (value, index) => value.name == inputValue,
-              ) == -1
-            ) {
-              // check duplicated
-              setSelectedItems([
-                ...selectedItems,
-                { id: null, name: inputValue },
-              ]);
-              handleSelectedItemChange([
-                ...selectedItems,
-                { id: null, name: inputValue },
-              ]);
-            }
-            setInputValue("");
-            openMenu();
-          }
-          break;
+            break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
           break;
@@ -322,13 +321,7 @@ const CopyrightMultiSelect = ({
             key={`${item.name}${index}`}
             {...getItemProps({ item, index })}
           >
-            <div className="flex gap-2">
-              <Image
-                width={7}
-                height={11}
-                alt="more move"
-                src="/admin/images/icon/more-move.svg"
-              />
+            <div className="flex">
               <span
                 style={{
                   backgroundColor: "#1779DE",
