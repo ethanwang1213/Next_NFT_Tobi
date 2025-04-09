@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { useCombobox, useMultipleSelection } from "downshift";
 import useRestfulAPI from "hooks/useRestfulAPI";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import CopyrightEditMenu from "./CopyrightEditMenu";
 
@@ -53,7 +52,9 @@ const CopyrightMultiSelect = ({
   }, [selectedItems, elements]);
 
   useEffect(() => {
-    const sortedItems = [...initialSelectedItems].sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+    const sortedItems = [...initialSelectedItems].sort(
+      (a, b) => (a.id ?? 0) - (b.id ?? 0),
+    );
     setSelectedItems(sortedItems);
   }, [initialSelectedItems]);
 
@@ -115,36 +116,39 @@ const CopyrightMultiSelect = ({
       type,
       selectedItem: newSelectedItem,
     }) {
+      const MAX_INPUT_LENGTH = 100;
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
-          case useCombobox.stateChangeTypes.ItemClick:
-            if (newSelectedItem != undefined) {
-                const isDuplicate = selectedItems.some(
-                (item) => item.name === newSelectedItem.name
-                );
-              
-              if (!isDuplicate) {
-                const updatedItems = [...selectedItems, newSelectedItem];
-                setSelectedItems(updatedItems);
-                handleSelectedItemChange(updatedItems);
-              }
-            } else if (inputValue && inputValue.length > 0) {
-              const isDuplicate = selectedItems.some(item => 
-                item.name === inputValue
-              );
-              
-              if (!isDuplicate) {
-                const newItem = { id: null, name: inputValue };
-                const updatedItems = [...selectedItems, newItem];
-                setSelectedItems(updatedItems);
-                handleSelectedItemChange(updatedItems);
-              }
-              setInputValue("");
-              openMenu();
+        case useCombobox.stateChangeTypes.ItemClick:
+          if (newSelectedItem != undefined) {
+            const isDuplicate = selectedItems.some(
+              (item) => item.name === newSelectedItem.name,
+            );
+
+            if (!isDuplicate) {
+              const updatedItems = [...selectedItems, newSelectedItem];
+              setSelectedItems(updatedItems);
+              handleSelectedItemChange(updatedItems);
             }
-            break;
+          } else if (inputValue && inputValue.length > 0) {
+            const isDuplicate = selectedItems.some(
+              (item) => item.name === inputValue,
+            );
+
+            if (!isDuplicate) {
+              const newItem = { id: null, name: inputValue };
+              const updatedItems = [...selectedItems, newItem];
+              setSelectedItems(updatedItems);
+              handleSelectedItemChange(updatedItems);
+            }
+            setInputValue("");
+            openMenu();
+          }
+          break;
         case useCombobox.stateChangeTypes.InputChange:
-          setInputValue(newInputValue);
+          if (newInputValue.length <= MAX_INPUT_LENGTH) {
+            setInputValue(newInputValue);
+          }
           break;
         case useCombobox.stateChangeTypes.InputBlur:
           setInputValue(""); // Clear the input value on blur
@@ -316,8 +320,7 @@ const CopyrightMultiSelect = ({
               padding: "4px 8px",
               borderRadius: "8px",
             }}
-            className="flex justify-between items-center 
-        cursor-pointer hover:bg-secondary-200"
+            className="flex justify-between items-center cursor-pointer hover:bg-secondary-200"
             key={`${item.name}${index}`}
             {...getItemProps({ item, index })}
           >

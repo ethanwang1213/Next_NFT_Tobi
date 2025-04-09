@@ -71,25 +71,25 @@ const AuthTemplate = ({
           >
             <div className="font-normal text-2xl pb-[5px]">or</div>
           </div>
-          <div className="w-full sm:w-[408px]">
+            <div className="w-full sm:w-[408px]">
             <EmailTextField
               placeholder={t("Email")}
-              className="rounded-xl base-content font-normal w-full h-[48px] px-4 placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+              className="rounded-xl base-content font-normal w-full h-[48px] px-4 placeholder:text-base-content placeholder:text-left border-none shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
               register={register}
             />
             <div className={"text-right"}>
               <button
-                type={"button"}
-                className={"btn-link font-medium text-xs text-primary"}
-                onClick={setAuthState}
+              type={"button"}
+              className={"btn-link font-medium text-xs text-primary"}
+              onClick={setAuthState}
               >
-                {prompt}
+              {prompt}
               </button>
             </div>
             <p className="pl-2 pt-1 text-xs text-attention text-center mt-8">
               {errors.email && `${errors.email.message}`}
             </p>
-          </div>
+            </div>
           <LoadingSpinnerButton
             type={"submit"}
             label={mailLabel}
