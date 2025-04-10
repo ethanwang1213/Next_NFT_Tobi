@@ -74,7 +74,7 @@ const AuthTemplate = ({
           <div className="w-full sm:w-[408px]">
             <EmailTextField
               placeholder={t("Email")}
-              className="rounded-xl base-content font-normal w-full h-[48px] px-4 placeholder:text-base-content placeholder:text-left input-bordered shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
+              className="rounded-xl base-content font-normal w-full h-[48px] px-4 placeholder:text-base-content placeholder:text-left border-none shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]"
               register={register}
             />
             <div className={"text-right"}>

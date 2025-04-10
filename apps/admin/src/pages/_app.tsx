@@ -1,3 +1,4 @@
+import basicAuthCheck from "@/methods/basicAuthCheck";
 import "@/styles/CropStyles.css";
 import "@/styles/global.scss";
 import "@/styles/globalicons.css";
@@ -5,23 +6,22 @@ import "@/styles/PublicSwitch.css";
 import "@/styles/Spinner.css";
 import "@/styles/TabView.css";
 import "@/styles/TripleToggleSwitch.scss";
-import type { AppContext, AppProps } from "next/app";
-import { default as NextApp } from "next/app";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import "react-easy-crop/react-easy-crop.css";
-import "swiper/css";
-import "swiper/css/effect-cards";
-
-import basicAuthCheck from "@/methods/basicAuthCheck";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { M_PLUS_2 } from "@next/font/google";
 import { LeavePageProvider } from "contexts/LeavePageProvider";
 import { NextIntlClientProvider } from "next-intl";
+import type { AppContext, AppProps } from "next/app";
+import { default as NextApp } from "next/app";
+import Head from "next/head";
+import { useRouter } from "next/router";
 import Script from "next/script";
+import { useEffect } from "react";
+import "react-easy-crop/react-easy-crop.css";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "swiper/css";
+import "swiper/css/effect-cards";
 import { getTimeZone, getValidLocale, Locale } from "types/localeTypes";
 import FcmTokenComp from "ui/organisms/admin/firebaseForeground";
 import Layout from "ui/organisms/admin/Layout";
@@ -69,6 +69,12 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [router.events]);
   return (
     <>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+      </Head>
       <Script
         id="google-analytics-init"
         strategy="afterInteractive"

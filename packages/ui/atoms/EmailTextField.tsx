@@ -27,7 +27,7 @@ const EmailTextField = ({ placeholder, className, register }: Props) => {
           message: t("EnterValidEmail"),
         },
       })}
-      className={`input ${className ?? ""}`}
+      className={`input ${className ?? ""} focus:outline-none focus:ring-0 focus:border-none`}
     />
   );
 };
