@@ -1,11 +1,11 @@
 ## Related Links
 
+- Product Backlog Items
+
+
 <!--
 List links to the references you used during implementation.
 
-e.g.
-
-- Product Backlog Items
 - Design Docs
 - ER diagrams
 - Figma designs
