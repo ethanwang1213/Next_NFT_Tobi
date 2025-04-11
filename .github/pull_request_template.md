@@ -23,18 +23,6 @@ Attach screenshots of the UI and/or mp4 files for UX verification.
 Write information about schema, endpoints, and so on.
 -->
 
-## How to check the operation
-
-<!--
-Write commands necessary for operational verification.
-
-e.g.
-
-1. `npm ci`
-2. `npm run admin`
-3. access `localhost:3002/admin`
--->
-
 ## What I want to be reviewed
 
 <!-- List points you want to be reviewed. -->
